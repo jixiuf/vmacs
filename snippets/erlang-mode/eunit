@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: eunit
+# key: eunit
+# --
+-include_lib("eunit/include/eunit.hrl").

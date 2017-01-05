@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: fmt.Println()
+# key: p
+# --
+fmt.Println(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
+}$2${1:$(if (string-match "%" yas-text) "\)" "")}

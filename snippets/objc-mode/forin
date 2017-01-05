@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for(Object o in List)
+# key: forin
+# --
+for(${1:NSString} ${2:*str} in ${3:collection}){
+    $0
+}

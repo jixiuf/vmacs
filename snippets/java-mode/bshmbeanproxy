@@ -1,0 +1,2 @@
+${1:proxy} = org.jboss.mx.util.MBeanProxyExt.create(${2:class}, "${3:objectNameString}", ${4:server});
+$0

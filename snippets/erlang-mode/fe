@@ -1,0 +1,4 @@
+# name: foreach(List,Ele). 
+# key: fe
+# --
+?FOREACH(${1:List},${2:Ele},$0),

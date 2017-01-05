@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+#name : encode
+#key : encode
+#contributor : 纪秀峰
+# --
+func Encode$1($2) (messages [][]byte) {
+	m := Render$1($2)
+	message_bytes, _ := proto.Marshal(m)
+
+	messages = make([][]byte, 1)
+	m1 := PackABS(int32(${3:PFActionType_}), message_bytes)
+	messages[0] = m1
+	return
+}

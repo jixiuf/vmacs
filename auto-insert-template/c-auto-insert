@@ -1,0 +1,12 @@
+//file name : `(buffer-name)`
+//created at: `(format-time-string "%c")`
+//author:  `user-full-name`
+           
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc, char *argv[]){
+  $0
+  return 0;
+}

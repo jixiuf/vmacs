@@ -1,0 +1,4 @@
+#name : @author 
+#key : author
+# --
+`(if (looking-back  "%%[ \t]*" (point-at-bol)) (just-one-space)(insert"%% ") )`@author `user-full-name` <`user-mail-address`>

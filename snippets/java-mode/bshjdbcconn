@@ -1,0 +1,12 @@
+ds = new javax.naming.InitialContext().lookup("${2:java:/DefaultDS}");
+conn = null;
+try {
+    conn = ds.getConnection();
+    $0
+} finally {
+    if (conn != null) {
+        try {
+            conn.close();
+        } catch (ignore) { }
+    }
+}

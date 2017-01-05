@@ -1,0 +1,4 @@
+#name : @hidden
+#key : hid
+# --
+`(if (looking-back  "%%[ \t]*" (point-at-bol)) (just-one-space)(insert"%% "))`@hidden mark the module so that it will not appear in the documentation

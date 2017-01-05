@@ -1,0 +1,4 @@
+# name: erlang:register(Name,Pid)
+# key: reg
+# --
+erlang:register($1,${2:Pid})

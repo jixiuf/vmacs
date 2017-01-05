@@ -1,0 +1,4 @@
+# name: -extends(parent_modlue). 
+# key: extends
+# --
+-extends($1).

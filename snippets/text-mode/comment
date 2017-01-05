@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: comment
+# key: comment
+# --
+`(let ((i 0) (comment (if (string-match "[ \t\n\r]+\\'" comment-start)(replace-match "" t t comment-start)comment-start))) (while (< i (/ fill-column (length comment))) (insert  comment) (setq i (1+ i))))`

@@ -1,0 +1,2 @@
+${1:result} = new javax.naming.InitialContext().lookup("${2:jndiName}");
+$0

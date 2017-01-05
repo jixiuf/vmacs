@@ -1,0 +1,4 @@
+objectName = javax.management.ObjectName.getInstance("${1:jboss.system:type=ServerInfo}");
+attributeName = "${2:JavaVMVersion}";
+${3:result} = ${4:server}.getAttribute(objectName, attributeName);
+$0

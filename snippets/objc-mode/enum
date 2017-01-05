@@ -1,0 +1,4 @@
+#name : enum
+#key : en
+# --
+enum ${1:enum_name}{$2}$0

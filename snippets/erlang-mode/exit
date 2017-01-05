@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: EXIT
+# key: exit
+# expand-env: ((yas/indent-line 'auto) )
+# --
+{'EXIT',${1:Pid},${2:Reason}}`(indent-for-tab-command)`

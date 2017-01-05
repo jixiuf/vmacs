@@ -1,0 +1,5 @@
+#!/bin/sh
+cd `dirname $0`
+
+# 当配置文件放到~/vmacs/时 用于加载~/vmacs/中配置的emacs启动脚本
+emacs -nw -q -l ../init.el --debug-init

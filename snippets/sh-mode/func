@@ -1,0 +1,6 @@
+# key: func
+# name: function .. {...}
+# --
+function ${1:name} () {
+$0$>
+}$>

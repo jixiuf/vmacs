@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: supervisor spec ..
+# key: spec
+# --
+{${1:child_id},                           %id
+           {${2:child_module_name},${3:start_link},[$4]},
+           ${5:$$(yas/choose-value '("transient" "temporary" "permanent"))}, ${6:infinity}, ${7:$$(yas/choose-value '("worker" "supervisor"))}, [${8:$2}]
+          }

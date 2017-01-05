@@ -1,0 +1,38 @@
+#+TITLE: vmacs
+
+基于evil-mode 提供一个适合vim emacs双修者,下载即可用的emacs配置集
+
+宗旨
+1. 下载即可用,所需的elisp依赖包都在此仓库中
+
+   针对特定编程语言的外部依赖需要你下载,不过会给出详细的安装文档,保证在国内可下载
+   #+BEGIN_SRC sh
+     git clone https://github.com/jixiuf/vmacs.git ~/.emacs.d
+   #+END_SRC
+2. 中文支持良好,适于国内使用,配置文件中会有大量中文注释以便学习理解
+
+与spacemacs 进行比较
+  1. spacemacs太笨重,安装过程有可能不顺利，导致想尝试的用户无法试用
+  2. spacemacs 高度模块化，提供各种layer供你配置，
+     而vmacs 则只提供本人觉得好的功能,尽量使配置简单化,你如果需要新功能
+     建议下载vmacs后，自己进行修改,从根本上理解vmacs的配置
+  3. 两者都将大量功能绑定到space上
+  4. 对evil-mode按键进行大量定制，与vim的操作习惯会有较大不同
+
+emacs使用时间长了会出现小指疼痛的现象，当然很多人有相应的习惯来缓解，
+比如用掌根按ctrl,换用合适的键盘，交换ctrl alt  capslock 的位置等。
+vmacs则尽量将功能移到space上减少小指的使用
+
+
+
+* 对evil-mode 的定制理念
+  vim 分为normal insert visual 3种状态
+  而evil-mode 提供了normal insert visual  emacs四种状态
+
+  其中 evil-emacs-state 状态相当于没起用 evil-mode,
+
+  与 evil-insert-state 的区别是evil-insert-state下进行了一些适合vim用户的绑定,
+  如ctrl-n ctrl-p进行补全等
+
+  vmacs进行定制时，希望进入insert态时，能够使用到原生的emacs按键绑定
+

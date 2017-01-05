@@ -1,0 +1,67 @@
+#!/bin/sh
+# check starting emacs daemon
+
+function call_emacsclient(){
+$EMACSCLIENT "$@"
+}
+
+sh ~/.emacs.d/bin/emd
+
+
+# if emacsclient major version ==22  
+if [ ! -z $EMACSCLIENT ] && [ `$EMACSCLIENT --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` = "22" ] ; then
+EMACSCLIENT=""
+fi
+
+
+
+#  if EMACSCLIENT is empty
+if [  -z $EMACSCLIENT ] && [ -x "~/bin/emacsclient"  ] && [ `~/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+EMACSCLIENT="~/bin/emacsclient" 
+call_emacsclient "$@"
+exit 
+fi
+
+
+if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+EMACSCLIENT="/usr/local/bin/emacsclient"
+call_emacsclient "$@"
+exit 
+fi
+
+
+if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"  ]; then
+EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient" 
+call_emacsclient "$@"
+exit 
+fi
+
+if [  -z $EMACSCLIENT ] && [ -x "/usr/bin/emacsclient"  ] && [ `/usr/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+EMACSCLIENT="/usr/bin/emacsclient"
+call_emacsclient "$@"
+exit 
+fi
+
+# /usr/bin/emacsclient  --socket-name=$HOME/.emacs.d/cache/emacs-server-file "$@"
+
+#     if [ -z "$1" ]
+#     then   #如果没有文件名
+#     echo ' show_matched_client({class="Emacs" ,instance="emacs"},"emacs","/usr/bin/emacsclient -c " ,nil)' |awesome-client
+# #        emacsclient -c  >/dev/null &
+#     else  #有文件名时 #先尝试显示已经存在的emacsclient(可能处于隐藏态) 
+#     echo ' show_matched_client({class="Emacs" ,instance="emacs"},"emacs","/usr/bin/emacsclient -c " ,nil)' |awesome-client
+#     #然后编辑
+# #         /usr/bin/emacsclient    -n  "$@" 
+# #         /usr/bin/emacsclient   --eval   "(find-file (expand-file-name \"$1\"  \"$PWD\")  )"
+#     /usr/bin/emacsclient  "$@" 
+#     fi
+
+
+# # raise the frame 
+#     echo ' show_matched_client({class="Emacs" ,instance="emacs"},"emacs","/usr/bin/emacsclient -c " ,nil)' |awesome-client
+#     if  [ -n "$1" ] #如果$1长度不为0
+#     then 
+#         /usr/bin/emacsclient  --socket-name "/tmp/emacs$UID/server" "$@"
+#     # else
+#     #     /usr/bin/emacsclient  
+#     fi

@@ -1,0 +1,12 @@
+#name : try, catch,finally
+#key : tryf
+# --
+@try {
+    $0
+}
+@catch (${1:NSException} ${2:* ex}) {
+    $3
+}
+@finally{
+    $4
+}

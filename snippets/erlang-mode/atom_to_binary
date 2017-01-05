@@ -1,0 +1,4 @@
+# name: atom_to_binary(Atom,latin1|utf8|unicode)
+# key: atom_to_binary
+# --
+atom_to_binary(${1:atom},${2:$$(yas/choose-value '("latin1" "utf8" "unicode"))})

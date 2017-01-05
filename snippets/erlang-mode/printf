@@ -1,0 +1,4 @@
+#name : printf
+#key : printf
+# --
+ io:format("$1~n",[$2])`(indent-for-tab-command)` 

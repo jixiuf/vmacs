@@ -1,0 +1,9 @@
+# name: -define(?FOLD()...).
+# key: deffold
+# --
+-define(FOLD(List,E,Init,Acc,Eval),
+        lists:foldl(
+          fun(E,Acc)->
+                  Eval
+          end,Init,List
+         )).

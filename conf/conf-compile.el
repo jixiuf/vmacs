@@ -1,0 +1,24 @@
+(with-eval-after-load 'compile
+  (setq compilation-read-command nil)   ;默认emacs提供M-x:compile 用于编译，编译前 不提示用户输入命令
+  (setq compilation-always-kill t)      ;启动新的compile命令前，自动杀掉之前未完成的compile命令
+  (define-key compilation-mode-map "g" nil)
+  (define-key compilation-mode-map "C-o" nil)
+  (evil-define-key 'normal compilation-mode-map
+    "C-j" 'compilation-display-error        ;old C-o
+    "r" 'recompile))
+
+(global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
+(evil-leader/set-key "<f5>" 'compile-dwim-compile)
+(evil-leader/set-key "<f6>" 'compile-dwim-run)
+(evil-leader/set-key "<f7>" 'recompile)
+;;                                ;
+
+
+
+(provide 'conf-compile)
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+
+;;; conf-compile.el ends here.

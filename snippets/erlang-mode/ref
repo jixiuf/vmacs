@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: make_ref
+# key: ref
+# --
+${1:${2:Ref} = }make_ref()$0

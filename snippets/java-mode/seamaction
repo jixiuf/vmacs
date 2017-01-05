@@ -1,0 +1,11 @@
+#name : Seam Action
+# --
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+
+@Name("$1")
+@Scope(ScopeType.CONVERSATION)
+public class ${2:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`} implements java.io.Serializable {
+    $0
+}

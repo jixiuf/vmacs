@@ -1,0 +1,82 @@
+#!/bin/sh
+# use default emacsclient in $PATH
+EMACSCLIENT=`command -v emacsclient`
+ALTERNATE_EDITOR=`command -v emacs`
+function call_emacsclient(){
+    if [  -z $EMACSCLIENT ] ; then
+        echo "can not find emacsclient exit"
+        exit 1
+    fi
+    if [ -z $ALTERNATE_EDITOR ]; then
+        ALTERNATE_EDITOR=vi
+    fi
+
+if [ -n "$INSIDE_EMACS" ]; then # 在emacs中的term里调用em ,则不加-t -nw
+        if [ 0 -ne "$#" ]; then        # 有文件名才执行emacsclient命令
+            $EMACSCLIENT  -a $ALTERNATE_EDITOR  "$@"
+        else
+            echo "you are in emacs ,and call em without filename,so do nothing"
+        fi
+    
+else 
+    $EMACSCLIENT -t   -nw -a $ALTERNATE_EDITOR  "$@"
+fi    
+}
+# check starting emacs daemon
+sh ~/.emacs.d/bin/emd
+
+# if emacsclient major version ==22  
+if [ ! -z $EMACSCLIENT ] && [ `$EMACSCLIENT --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` = "22" ] ; then
+    EMACSCLIENT=""
+    ALTERNATE_EDITOR=""
+fi
+
+
+
+#  if EMACSCLIENT is empty
+if [  -z $EMACSCLIENT ] && [ -x "~/bin/emacsclient"  ] && [ `~/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+    EMACSCLIENT="~/bin/emacsclient" 
+    if [  -x "~/bin/emacs" ]; then
+        ALTERNATE_EDITOR="~/bin/emacs"
+    fi
+    call_emacsclient "$@"
+    exit 
+fi
+
+
+if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+    EMACSCLIENT="/usr/local/bin/emacsclient"
+    if [ -x "/usr/local/bin/emacs" ]; then
+        ALTERNATE_EDITOR="/usr/local/bin/emacs"
+    fi
+    call_emacsclient "$@"
+    exit 
+fi
+
+
+if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"  ]; then
+    EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient" 
+    if [ ! -x /tmp/emacsclientwrapper.sh ]; then
+        echo "#!/bin/sh" >>/tmp/emacsclientwrapper.sh 
+        echo '/Applications/Emacs.app/Contents/MacOS/Emacs -nw "$@"' >>/tmp/emacsclientwrapper.sh 
+        chmod 755 /tmp/emacsclientwrapper.sh 
+    fi
+    ALTERNATE_EDITOR=/tmp/emacsclientwrapper.sh 
+    call_emacsclient "$@"
+    exit 
+fi
+
+if [  -z $EMACSCLIENT ] && [ -x "/usr/bin/emacsclient"  ] && [ `/usr/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+    EMACSCLIENT="/usr/bin/emacsclient"
+    if [ "/usr/bin/emacs" ]; then
+        ALTERNATE_EDITOR="/usr/bin/emacs"
+    fi
+    call_emacsclient "$@"
+    exit 
+fi
+
+
+EMACSCLIENT=`command -v emacsclient`
+if [ ! -z $EMACSCLIENT ]; then
+    call_emacsclient "$@"
+fi

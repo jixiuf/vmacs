@@ -1,0 +1,6 @@
+objectName = javax.management.ObjectName.getInstance("${1:jboss.system:type=Server}");
+operationName = "${2:runGarbageCollector}";
+params = new Object[0];
+sig = new String[0];
+${3:server}.invoke(objectName, operationName, params, sig);
+$0

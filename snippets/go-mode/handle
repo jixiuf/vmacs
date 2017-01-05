@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: func Handle$1(Uin uint64) (messages entity.MessagePairList) {
+# key: handle
+# --
+func (this *$1) Handle(msgHead MsgHead) {
+     $0
+}

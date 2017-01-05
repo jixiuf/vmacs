@@ -1,0 +1,56 @@
+# name: service
+# key: service
+# --
+       #region $4
+        public ICommand $1Command
+        {
+            get { return new BaseCommand($1, CanExecute); }
+        }
+
+        /// <summary>
+        ///`(progn (quick-jump-push-marker) nil) `$4 
+        /// </summary>
+        /// <param name="parameter">command的参数</param>
+        public void $1(object parameter)
+        {
+ 
+                 if (${2:serviceCall} == null)
+                {
+                    $2 = new `(substring (buffer-name) 0 (- (length (buffer-name) ) 6))`_SERVICEClient();
+                }
+                //回调事件注册
+                $2.$1Completed += new EventHandler<$1CompletedEventArgs>($1CallBack);
+                //wcf调用
+                $2.$1Async($3);
+
+
+        }
+        /// <summary>
+        /// `(substring (buffer-name) 0 (- (length (buffer-name) ) 6))`.$1() WCF 服务的回调函数
+        /// </summary>
+        /// <param name="result">wcf返回的数据</param>
+        /// <param name="e">事件参数</param>
+        private void $1CallBack(Object result, $1CompletedEventArgs e)
+        {
+            if (e.Error == null)
+            {
+                `(progn (quick-jump-push-marker) nil) nil`$0
+            }
+            else
+            {
+                //异常回调的场合
+                DoWorkFail(e.Error);
+            }
+
+            if ($2 != null)
+            {
+                //回调事件解除
+                $2.$1Completed -= new EventHandler<$1CompletedEventArgs>($1CallBack);
+
+                //wcf通信关闭
+                $2.CloseAsync();
+                $2.Abort();
+                $2 = null;
+            }
+        }
+        #endregion

@@ -1,0 +1,9 @@
+# name: define(FE) foreach
+# key: deffe
+# --
+-define(FOREACH(List,E,Eval),
+        lists:foreach(
+          fun(E)->
+                  Eval
+          end,List
+         )).

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: select
+#key : select
+# --
+select`(progn (bm-toggle) nil)` ${2:column_names} from ${1:tablename} $0

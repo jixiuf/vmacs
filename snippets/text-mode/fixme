@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fixme
+# key: fixme
+# --
+`(if (looking-back  (concat comment-start "[ \t]*")(point-at-bol))(just-one-space)(insert comment-start " ") )`FIXME: $0 `(insert comment-end)`

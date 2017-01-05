@@ -1,0 +1,6 @@
+# name: lists:map(List,Ele). 
+# key: map
+# --
+?MAP(${1:List},${2:Ele},
+     $0
+),

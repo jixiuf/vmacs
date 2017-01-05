@@ -1,0 +1,2 @@
+${1:server} = org.jboss.mx.util.MBeanServerLocator.locateJBoss();
+$0

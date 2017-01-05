@@ -1,0 +1,7 @@
+# name: receive
+# key: rece
+# --
+receive`(indent-for-tab-command)`
+$1->
+$0
+end

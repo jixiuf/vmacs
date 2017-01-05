@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: msg
+# key: msg
+# --
+message $1{
+$0
+}

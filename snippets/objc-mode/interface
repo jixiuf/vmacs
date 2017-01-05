@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: @interface
+# key: i
+# --
+@interface $1 :${2:NSObject}{
+$3
+}
+$0
+@end

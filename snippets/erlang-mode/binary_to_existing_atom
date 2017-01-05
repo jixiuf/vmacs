@@ -1,0 +1,4 @@
+# name: binary_to_existing_atom(Bin,latin1|utf8|unicode)
+# key: binary_to_existing_atom
+# --
+binary_to_existing_atom(${1:Bin},${2:$$(yas/choose-value '("latin1" "utf8" "unicode"))})

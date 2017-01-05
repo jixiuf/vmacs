@@ -1,0 +1,14 @@
+# -*- coding:utf-8 -*-
+#+LANGUAGE:  zh
+#+TITLE:     ${1:`(file-name-nondirectory (buffer-file-name))`}
+#+AUTHOR:    `user-full-name`
+#+EMAIL:     `user-mail-address`
+#+DATE:     `(format-time-string "%Y-%m-%d %a" )`
+#+DESCRIPTION:$1
+#+KEYWORDS: $2
+#+TAGS:$3
+#+FILETAGS: $4
+#+OPTIONS:   H:2 num:nil toc:t \n:t @:t ::t |:t ^:nil -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil 
+#+LATEX_HEADER: \usepackage{fontspec}
+#+LATEX_HEADER: \setmainfont{PingFang SC}

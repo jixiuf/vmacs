@@ -1,0 +1,4 @@
+# name: #define
+# key: def
+# --
+#define $1

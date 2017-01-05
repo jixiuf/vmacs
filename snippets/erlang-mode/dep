@@ -1,0 +1,4 @@
+#name : @deprecated
+#key : dep
+# --
+`(if (looking-back  "%%[ \t]*" (point-at-bol)) (just-one-space)(insert"%% ") )`@deprecated
