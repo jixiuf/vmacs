@@ -120,7 +120,6 @@
   '((c-basic-offset . 4)
     (indent-tabs-mode . nil)))
 
-(add-hook 'objc-mode-hook 'objc-mode-callback)
 
 
 (add-hook 'protobuf-mode-hook

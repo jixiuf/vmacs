@@ -80,6 +80,8 @@
 (with-eval-after-load 'magit (require 'conf-magit))
 (with-eval-after-load 'go-mode (require 'conf-program-golang))
 (with-eval-after-load 'python (require 'conf-program-python))
+(with-eval-after-load 'cc-mode (require 'conf-program-objc))
+
 
 (when (eq system-type 'darwin) (require 'conf-iterm2)) ;iterm2特有的配置
 
