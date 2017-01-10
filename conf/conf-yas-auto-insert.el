@@ -6,7 +6,7 @@
   (yas-expand-snippet (buffer-string) (point-min) (point-max)))
 
 ;;; auto-insert
-(setq-default auto-insert-directory (expand-file-name "auto-insert-template/" user-emacs-directory))
+(setq-default auto-insert-directory (concat user-emacs-directory "auto-insert-template/"))
 (unless noninteractive (auto-insert-mode 1))  ;;; Adds hook to find-files-hook
 
 (setq-default auto-insert-query nil) ;;; If you don't want to be prompted before insertion

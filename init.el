@@ -9,7 +9,7 @@
 (when (file-exists-p "~/vmacs/") (setq user-emacs-directory "~/vmacs/"))  ;default .emacs.d
 
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
-(setq custom-file (expand-file-name "conf/custom-file.el" user-emacs-directory))
+(setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (load custom-file t t )
 
 
@@ -28,7 +28,7 @@
 (package-initialize)
 
 ;; ~/.emacs.d/conf/目录加到load-path中
-(add-to-list 'load-path (expand-file-name "conf/" user-emacs-directory))
+(add-to-list 'load-path (concat user-emacs-directory "conf/"))
 
 (require 'conf-auto-compile)          ;自动编译elisp文件,以加快elisp的加载速度
 (require 'conf-package)                 ;make sure package are installed

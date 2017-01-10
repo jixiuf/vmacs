@@ -299,9 +299,9 @@
  '(mode-line-buffer-id ((t (:background "dark olive green" :foreground "beige"))))
  '(mode-line-highlight ((((class color) (min-colors 88)) nil)))
  '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light))))
- '(org-agenda-date ((t (:inherit org-agenda-structure))))
- '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))))
- '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))))
+ '(org-agenda-date ((t (:inherit org-agenda-structure))) t)
+ '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))) t)
+ '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))) t)
  '(org-agenda-done ((t (:foreground "#269926"))))
  '(org-agenda-restriction-lock ((t (:background "#FFB273"))))
  '(org-agenda-structure ((t (:foreground "gold1" :weight bold))))
@@ -348,6 +348,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auto-save-file-name-transforms
+   (quote
+    ((".*" (concat user-emacs-directory "cache/backup_files/") t))))
+ '(auto-save-list-file-prefix
+   (concat user-emacs-directory "cache/backup_files/saves-"))
  '(blink-cursor-mode t)
  '(column-number-mode t)
  '(custom-group-tag-faces (quote (default)))
@@ -364,51 +369,7 @@
  '(package-selected-packages
    (quote
     (company-jedi helm-dired-history dired-filetype-face company-go auto-compile ctags-update golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell actionscript-mode android-mode applescript-mode async batch-mode bm crontab-mode dockerfile-mode erlang etags-table ethan-wspace evil evil-leader evil-magit evil-matchit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git hide-lines hide-region iedit js3-mode logstash-conf lua-mode magit magit-popup magit-svn markdown-mode move-text openwith protobuf-mode sqlplus tern thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
- '(safe-local-variable-values
-   (quote
-    ((eval progn
-           (setq jedi:environment-root
-                 (expand-file-name "./virtual/"
-                                   (locate-dominating-file default-directory "Makefile")))
-           (setq jedi:server-args
-                 (\`
-                  ("--virtual-env"
-                   (\,
-                    (expand-file-name "./virtual/"
-                                      (locate-dominating-file default-directory "Makefile")))
-                   "--virtual-env"
-                   (\,
-                    (expand-file-name "~/python/"))
-                   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path"
-                   (\,
-                    (expand-file-name
-                     (expand-file-name "./src/"
-                                       (locate-dominating-file default-directory "Makefile"))))
-                   "--sys-path"
-                   (\,
-                    (expand-file-name
-                     (expand-file-name "./src/db"
-                                       (locate-dominating-file default-directory "Makefile"))))
-                   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" ".")))
-           (setq exec-path
-                 (delete-dups
-                  (cons
-                   (expand-file-name "./virtual/bin/"
-                                     (locate-dominating-file default-directory "Makefile"))
-                   exec-path)))
-           (setenv "PATH"
-                   (concat
-                    (expand-file-name "./virtual/bin/"
-                                      (locate-dominating-file default-directory "Makefile"))
-                    ":"
-                    (getenv "PATH")))
-           (setenv "PYTHONPATH"
-                   (expand-file-name "./src/"
-                                     (locate-dominating-file default-directory "Makefile")))
-           (setenv "PYTHONPATH"
-                   (expand-file-name "./db/"
-                                     (locate-dominating-file default-directory "Makefile")))))))
- '(save-place-file "~/.emacs.d/cache/place")
+ '(save-place-file (concat user-emacs-directory "/cache/place"))
  '(save-place-mode t)
  '(scroll-bar-mode nil)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))

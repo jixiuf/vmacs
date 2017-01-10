@@ -40,7 +40,7 @@
               eshell-hist-ignoredups t
               helm-eshell-hist-ignoredups t
               helm-ff-transformer-show-only-basename nil
-              helm-adaptive-history-file (expand-file-name "cache/helm-adaptive-history" user-emacs-directory)
+              helm-adaptive-history-file (concat user-emacs-directory "cache/helm-adaptive-history")
               helm-ff-no-preselect t
               helm-for-files-preferred-list '(
                                               helm-source-buffers-list

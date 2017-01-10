@@ -38,7 +38,7 @@
 
 
  ;;(require 'tramp)
- tramp-persistency-file-name  (expand-file-name "cache/tramp" user-emacs-directory)
+ tramp-persistency-file-name  (concat user-emacs-directory "cache/tramp")
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  remote-file-name-inhibit-cache 60 ;60s default 10s
  backup-by-copying t    ;自动备份
@@ -46,9 +46,8 @@
  kept-new-versions 10   ; 保留最近的6个备份文件
  kept-old-versions 2   ; 保留最早的2个备份文件
  version-control t    ; 多次备份
- backup-directory-alist `((".*" . ,(expand-file-name "cache/backup_files/" user-emacs-directory)))
- auto-save-file-name-transforms `((".*" ,(expand-file-name "cache/backup_files/" user-emacs-directory) t))
- auto-save-list-file-prefix   (expand-file-name "cache/backup_files/saves-" user-emacs-directory)
+ backup-directory-alist `((".*" . ,(concat user-emacs-directory "cache/backup_files/" )))
+ auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "cache/backup_files/") t))
  pulse-iterations 3
 
 
@@ -71,9 +70,10 @@
 
  ;;注意这两个变量是与recentf相关的,把它放在这里,是因为
  ;;觉得recentf与filecache作用有相通之处,
- recentf-save-file (expand-file-name "cache/recentf" user-emacs-directory)
+ recentf-save-file (concat user-emacs-directory "cache/recentf")
  ;;匹配这些表达示的文件，不会被加入到最近打开的文件中
- recentf-exclude  `("\\.elc$" ,(regexp-quote (expand-file-name "cache/" user-emacs-directory))   "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
+ recentf-exclude  `("\\.elc$" ,(regexp-quote (concat user-emacs-directory "cache/" ))
+                    "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
  recentf-max-saved-items 200
  ring-bell-function 'ignore
  kill-ring-max 20                       ;emacs内置剪切板默认保留60份，default 60
@@ -81,7 +81,7 @@
  initial-buffer-choice t                ;默认打开scratch buffer
  ;; initial-buffer-choice 'show-todo-list-after-init
  savehist-additional-variables '(helm-dired-history-variable magit-repository-directories mew-passwd-alist kill-ring sqlserver-connection-info mysql-connection-4-complete sql-server sql-database sql-user)
- savehist-file (expand-file-name "cache/history" user-emacs-directory)
+ savehist-file (concat user-emacs-directory "cache/history")
  ;;when meet long line ,whether to wrap it
  ;; truncate-lines t ;一行过长时 是否wrap显示
  save-place t                           ;记录上次打开文件的光标位置

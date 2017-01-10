@@ -97,12 +97,12 @@
 ;;与*类似但不相同的"?" 表示对mark的文件"分别" 运行这个命令
 ;;; image-dired
 (setq-default
- image-dired-db-file (expand-file-name "cache/image-dired/image-dired_db" user-emacs-directory)
- image-dired-dir (expand-file-name "cache/image-dired/image-dired" user-emacs-directory)
- image-dired-gallery-dir (expand-file-name "cache/image-dired/image-dired-gallery" user-emacs-directory)
- image-dired-main-image-directory (expand-file-name "cache/image" user-emacs-directory)
- image-dired-temp-image-file (expand-file-name "cache/image-dired-tmp" user-emacs-directory)
- thumbs-thumbsdir (expand-file-name "cache/thumbs-dir" user-emacs-directory)
+ image-dired-db-file (concat user-emacs-directory "cache/image-dired/image-dired_db" )
+ image-dired-dir (concat user-emacs-directory "cache/image-dired/image-dired" )
+ image-dired-gallery-dir (concat user-emacs-directory "cache/image-dired/image-dired-gallery")
+ image-dired-main-image-directory (concat user-emacs-directory "cache/image" )
+ image-dired-temp-image-file (concat user-emacs-directory "cache/image-dired-tmp")
+ thumbs-thumbsdir (concat user-emacs-directory "cache/thumbs-dir")
 
  dired-recursive-copies 'always         ;让 dired 可以递归的拷贝和删除目录。
  dired-recursive-deletes 'always       ;always表示不加询问
