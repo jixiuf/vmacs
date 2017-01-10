@@ -134,6 +134,14 @@
 ;;; wdired的配置
 ;; (define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
 (define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
+(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
+
+(put 'dired-find-alternate-file 'disabled nil)
+;; switch a and Enter
+(define-key dired-mode-map  (kbd "a") 'dired-find-file) ;
+(define-key dired-mode-map  (kbd "RET") 'dired-find-alternate-file) ;
+(define-key dired-mode-map "\C-m" 'dired-find-alternate-file)
+
 (setq-default wdired-allow-to-change-permissions t);; writable 时,不仅可以改文件名,还可以改权限
 (with-eval-after-load 'wdired
   (define-key wdired-mode-map (kbd "C-a") 'dired-smart-beginning-of-line)

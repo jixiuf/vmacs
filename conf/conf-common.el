@@ -129,7 +129,6 @@
 
 ;;(put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
 (put 'erase-buffer 'disabled nil)
 
 ;; 因为经常按出c-x c-u，总是出upcase region的警告，
