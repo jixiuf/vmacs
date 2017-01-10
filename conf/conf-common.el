@@ -245,9 +245,9 @@
  )
 ;; 只对特定的major mode 启用ethan-wspace-mode,因为在makefile 中启用会有bug
 (dolist (hook '(java-mode-hook c++-mode-hook python-mode-hook c-mode-hook org-mode-hook perl-mode-hook
-                               ojbc-mode-hook
+                               ojbc-mode-hook sh-mode-hook yaml-mode-hook
                                makefile-mode-hook makefile-bsdmake-mode-hook web-mode-hook
-                               protobuf-mode-hook objc-mode-hook lua-mode-hook nxml-mode-hook  python-mode-hook
+                               protobuf-mode-hook objc-mode-hook lua-mode-hook nxml-mode-hook
                                gitconfig-mode-hook go-mode-hook js-mode-hook js3-mode-hook
                                cperl-mode-hook emacs-lisp-mode-hook erlang-mode-hook))
   (add-hook hook 'ethan-wspace-mode))
