@@ -114,19 +114,6 @@
 ;(setq next-line-add-newlines t);到达最后一行后继续C-n将添加空行
 ;;(setq-default line-spacing 1);;设置行距
 
-(autoload 'thrift-mode "thrift-mode" "Major mode for editing thrift code." t)
-
-(defconst my-protobuf-style
-  '((c-basic-offset . 4)
-    (indent-tabs-mode . nil)))
-
-
-
-(add-hook 'protobuf-mode-hook
-          (lambda () (c-add-style "my-style" my-protobuf-style t)
-            (local-set-key (kbd "C-M-h") 'mark-defun)
-            (local-set-key (kbd "M-h") 'mark-paragraph)
-            (setq indent-region-function 'protobuf-indent-align)))
 
 
 ;;; 关于没有选中区域,则默认为选中整行的advice
