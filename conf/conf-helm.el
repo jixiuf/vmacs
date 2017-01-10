@@ -15,13 +15,13 @@
   )
 
 (setq-default
- ;; helm-locate-command (cl-case system-type
- ;;                                    ('gnu/linux (expand-file-name "~/.emacs.d/bin/everything.sh %s %s"))
- ;;                                    ;; "locate  %s -e -A %s"
- ;;                                    ('berkeley-unix "locate %s %s")
- ;;                                    ('windows-nt "es %s %s")
- ;;                                    ('darwin (expand-file-name "~/.emacs.d/bin/everything.sh %s %s")) ;mdfind -name %s %s
- ;;                                    (t "locate %s %s"))
+ helm-locate-command (cl-case system-type
+                                    ('gnu/linux (concat user-emacs-directory "bin/locate.sh %s %s"))
+                                    ;; "locate  %s -e -A %s"
+                                    ('berkeley-unix "locate %s %s")
+                                    ('windows-nt "es %s %s")
+                                    ('darwin (concat user-emacs-directory "bin/locate.sh %s %s")) ;mdfind -name %s %s
+                                    (t "locate %s %s"))
               helm-echo-input-in-header-line t
               helm-case-fold-search t;nil=case sensitive
               case-fold-search t ;nil=case sensitive //space cc toggle it
