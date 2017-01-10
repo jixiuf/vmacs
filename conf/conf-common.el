@@ -38,7 +38,6 @@
 
 
  ;;(require 'tramp)
- tramp-persistency-file-name  (concat user-emacs-directory "cache/tramp")
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  remote-file-name-inhibit-cache 60 ;60s default 10s
  backup-by-copying t    ;自动备份
@@ -47,8 +46,6 @@
  kept-old-versions 2   ; 保留最早的2个备份文件
  version-control t    ; 多次备份
  ;; 备份文件统一放在 ~/.emacs.d/cache/backup_files,避免每个目录生成一些临时文件
- backup-directory-alist `((".*" . ,(concat user-emacs-directory "cache/backup_files/" ))) ;
- auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "cache/backup_files/") t))
  pulse-iterations 3
 
 
@@ -71,7 +68,6 @@
 
  ;;注意这两个变量是与recentf相关的,把它放在这里,是因为
  ;;觉得recentf与filecache作用有相通之处,
- recentf-save-file (concat user-emacs-directory "cache/recentf")
  ;;匹配这些表达示的文件，不会被加入到最近打开的文件中
  recentf-exclude  `("\\.elc$" ,(regexp-quote (concat user-emacs-directory "cache/" ))
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
@@ -82,7 +78,6 @@
  initial-buffer-choice t                ;默认打开scratch buffer
  ;; initial-buffer-choice 'show-todo-list-after-init
  savehist-additional-variables '(helm-dired-history-variable magit-repository-directories mew-passwd-alist kill-ring sqlserver-connection-info mysql-connection-4-complete sql-server sql-database sql-user)
- savehist-file (concat user-emacs-directory "cache/history")
  ;;when meet long line ,whether to wrap it
  ;; truncate-lines t ;一行过长时 是否wrap显示
  save-place t                           ;记录上次打开文件的光标位置

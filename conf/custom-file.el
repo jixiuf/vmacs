@@ -348,12 +348,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-save-file-name-transforms
-   (quote
-    ((".*" (concat user-emacs-directory "cache/backup_files/") t))))
- '(auto-save-list-file-prefix
-   (concat user-emacs-directory "cache/backup_files/saves-"))
+ '(auto-save-file-name-transforms (quote ((".*" "~/.emacs.d/cache/backup_files/" t))))
+ '(auto-save-list-file-prefix (concat user-emacs-directory "cache/backup_files/saves-"))
+ '(backup-directory-alist (quote ((".*" . "~/.emacs.d/cache/backup_files/"))))
  '(blink-cursor-mode t)
+ '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(column-number-mode t)
  '(custom-group-tag-faces (quote (default)))
  '(electric-pair-mode t)
@@ -369,7 +368,10 @@
  '(package-selected-packages
    (quote
     (company-jedi helm-dired-history dired-filetype-face company-go auto-compile ctags-update golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell actionscript-mode android-mode applescript-mode async batch-mode bm crontab-mode dockerfile-mode erlang etags-table ethan-wspace evil evil-leader evil-magit evil-matchit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git hide-lines hide-region iedit js3-mode logstash-conf lua-mode magit magit-popup magit-svn markdown-mode move-text openwith protobuf-mode sqlplus tern thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
- '(save-place-file (concat user-emacs-directory "/cache/place"))
+ '(recentf-save-file "~/.emacs.d/cache/recentf")
+ '(save-place-file "~/.emacs.d/cache/place")
  '(save-place-mode t)
+ '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
+ '(tramp-persistency-file-name "~/.emacs.d/cache/tramp" nil (tramp))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
