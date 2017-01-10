@@ -137,12 +137,6 @@
 ;; (put 'downcase-region 'disabled nil)
 ;; (add-to-list 'byte-compile-not-obsolete-vars 'font-lock-beginning-of-syntax-function)
 ;; (add-to-list 'byte-compile-not-obsolete-vars 'font-lock-syntactic-keywords)
-(with-eval-after-load 'org (define-key org-mode-map (kbd "C-c e") 'org-edit-special))
-(with-eval-after-load 'org-src
-  (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
-  (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
-
-
 
 ;; after-init-hook 所有配置文件都加载完之后才会运行此hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))

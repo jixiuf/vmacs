@@ -104,6 +104,14 @@
 
 (run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
 
+(with-eval-after-load 'org (define-key org-mode-map (kbd "C-c e") 'org-edit-special))
+(with-eval-after-load 'org-src
+  (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
+  (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
+
+
+
+
 (provide 'conf-org)
 
 ;; Local Variables:
