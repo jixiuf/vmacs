@@ -252,10 +252,10 @@
                                cperl-mode-hook emacs-lisp-mode-hook erlang-mode-hook))
   (add-hook hook 'ethan-wspace-mode))
 
-(setq-default ace-jump-mode-case-fold nil
-              ace-jump-mode-scope 'window
-              ;; 59==; ,97=a
-              ace-jump-mode-move-keys '(97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 59))
+;; (setq-default ace-jump-mode-case-fold nil
+;;               ace-jump-mode-scope 'window
+;;               ;; 59==; ,97=a
+;;               ace-jump-mode-move-keys '(97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 59))
 
 ;;wgrep
 ;; (add-hook 'grep-setup-hook 'grep-mode-fun)
