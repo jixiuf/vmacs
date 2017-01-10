@@ -1,7 +1,6 @@
 ;; -*- coding:utf-8 -*-
 ;; eval-when-compile
 (declare-function upcase-first-char "lazy-camelize")
-
 (eval-when-compile
   (require  'ediff)
   (require  'vc-hooks)
@@ -385,39 +384,6 @@ Move point to end-of-line ,if point was already at that position,
     )))
 
 
-;; ;;让hipperextend不仅可以匹配开头,也可以匹配字符串的内部
-;; ;;将这个函数加入到hippie-expand-try-functions-list中，
-;; ;;;###autoload
-;; (defun try-vmacs-dabbrev-substring (old)
-;;   (let ((old-fun (symbol-function 'he-dabbrev-search)))
-;;     (fset 'he-dabbrev-search (symbol-function 'vmacs-dabbrev-substring-search))
-;;     (unwind-protect
-;;         (try-expand-dabbrev old)
-;;       (fset 'he-dabbrev-search old-fun))))
-
-;; (defun vmacs-dabbrev-substring-search (pattern &optional reverse limit)
-;;   (let ((result ())
-;;         (regpat (cond ((not hippie-expand-dabbrev-as-symbol)
-;;                        (concat (regexp-quote pattern) "\\sw+"))
-;;                       ((eq (char-syntax (aref pattern 0)) ?_)
-;;                        (concat (regexp-quote pattern) "\\(\\sw\\|\\s_\\)+"))
-;;                       (t
-;;                        (concat (regexp-quote pattern)
-;;                                "\\(\\sw\\|\\s_\\)+")))))
-;;     (while (and (not result)
-;;                 (if reverse
-;;                     (re-search-backward regpat limit t)
-;;                   (re-search-forward regpat limit t)))
-;;       (setq result (buffer-substring-no-properties (save-excursion
-;;                                                      (goto-char (match-beginning 0))
-;;                                                      (skip-syntax-backward "w_")
-;;                                                      (point))
-;;                                                    (match-end 0)))
-;;       (if (he-string-member result he-tried-table t)
-;;           (setq result nil)))     ; ignore if bad prefix or already in table
-;;     result))
-
-
 ;; 在当前行任何位置输入分号都在行尾添加分号，除非本行有for 这个关键字，
 ;; 如果行尾已经有分号则删除行尾的分号，将其插入到当前位置,就是说输入两次分号则不在行尾插入而是像正常情况一样.
 ;;;###autoload
@@ -444,38 +410,6 @@ Move point to end-of-line ,if point was already at that position,
           (delete-trailing-whitespace)
           (insert ";")
           )))))
-
-;; ;;;###autoload
-;; (defun vmacs-hide-frame()
-;;   "hide current frame"
-;;   (interactive)
-;;   (make-frame-invisible nil t))
-
-;; ;;;###autoload
-;; (defun scroll-other-window-up-or-previous-buffer(&optional ARG)
-;;   "if there is an `other-window' ,then scroll it up ,if
-;;  not ,call (previous-buffer)"
-;;   (interactive)
-;;   (if (equal 1 (length (window-list nil nil))) ;;if don't exist other window
-;;       (previous-buffer)
-;;     (scroll-other-window ARG)
-;;       ))
-
-;; ;;;###autoload
-;; (defun scroll-other-window-down-or-next-buffer(&optional lines)
-;;   "if there is an `other-window' ,then scroll it down ,if
-;;  not ,call (next-buffer)"
-;;   (interactive)
-;;   (if (equal 1 (length (window-list nil nil))) ;;if don't exist other window
-;;       (next-buffer)
-;;     (scroll-other-window-down  lines)
-;;     ))
-
-;;;###autoload
-(defun vmacs-forward-4-line() (interactive) (forward-line 4) (scroll-up   4))
-;;;###autoload
-(defun vmacs-backward-4-line() (interactive) (forward-line -4)(scroll-down 4))
-
 ;;代码注释工作，如果有选中区域，则注释或者反注释这个区域
 ;;如果，没选中区域，则注释或者注释当前行，如果光标在行末，则在行末添加或删除注释
 ;;;###autoload
@@ -490,26 +424,6 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
       (comment-or-uncomment-region (line-beginning-position) (line-end-position))
     (comment-dwim arg)))
 
-;; ;;;###autoload
-;; (defun vmacs-goto-line-by-percent ()
-;;   (interactive)
-;;   (let ((readed-string (read-from-minibuffer "Goto line( by percent): "))(percent) )
-;;     (if (string-match "^[ \t]*\\([0-9]+\\)[ \t]*$" readed-string )
-;;         (let* ((total (count-lines (point-min) (point-max))) (num ))
-;;           (setq percent  (string-to-number (match-string-no-properties 1 readed-string)))
-;;           (setq num (round (* (/ total 100.0) percent)))
-;;           (goto-char (point-min) )
-;;           (forward-line (1- num)) )
-;;       ))
-;;   )
-
-;; ;; date命令插入当前时间
-;; ;;;###autoload
-;; (defun date ()
-;;   "Insert a nicely formated date string."
-;;   (interactive)
-;;   (insert (format-time-string "%Y-%m-%d %H:%M")))
-;;
 ;; "run ediff with marked buffer in ibuffer mode
 ;; 如果有两个marked 的buffer,对这两个进行ediff ,默认在merge 模式,
 ;; `C-u'的话,即普通的ediff,不进行merge
@@ -555,21 +469,6 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
     (call-interactively 'keyboard-quit)
     )
   )
-
-;; ;;;###autoload
-;; (defun toggle-menu-bar-tool-bar()
-;;   "toggle menu-bar and tool-bar"
-;;   (interactive)
-;;   (if menu-bar-mode
-;;       (progn
-;;         (menu-bar-mode 0)
-;;         (tool-bar-mode 0)
-;;         )
-;;     (menu-bar-mode 1)
-;;     (tool-bar-mode 1)
-;;     )
-;;   )
-
 ;;;###autoload
 (defun minibuffer-quit ()
   "Quit the minibuffer command, even when the minibuffer loses focus."
@@ -776,6 +675,84 @@ end tell" (expand-file-name default-directory))))
         )
       )))
 
+
+
+;; ;;;###autoload
+;; (defun vmacs-hide-frame()
+;;   "hide current frame"
+;;   (interactive)
+;;   (make-frame-invisible nil t))
+
+;; ;;;###autoload
+;; (defun scroll-other-window-up-or-previous-buffer(&optional ARG)
+;;   "if there is an `other-window' ,then scroll it up ,if
+;;  not ,call (previous-buffer)"
+;;   (interactive)
+;;   (if (equal 1 (length (window-list nil nil))) ;;if don't exist other window
+;;       (previous-buffer)
+;;     (scroll-other-window ARG)
+;;       ))
+
+;; ;;;###autoload
+;; (defun scroll-other-window-down-or-next-buffer(&optional lines)
+;;   "if there is an `other-window' ,then scroll it down ,if
+;;  not ,call (next-buffer)"
+;;   (interactive)
+;;   (if (equal 1 (length (window-list nil nil))) ;;if don't exist other window
+;;       (next-buffer)
+;;     (scroll-other-window-down  lines)
+;;     ))
+
+;; ;;;###autoload
+;; (defun vmacs-forward-4-line() (interactive) (forward-line 4) (scroll-up   4))
+;; ;;;###autoload
+;; (defun vmacs-backward-4-line() (interactive) (forward-line -4)(scroll-down 4))
+
+
+;; ;;;###autoload
+;; (defun toggle-menu-bar-tool-bar()
+;;   "toggle menu-bar and tool-bar"
+;;   (interactive)
+;;   (if menu-bar-mode
+;;       (progn
+;;         (menu-bar-mode 0)
+;;         (tool-bar-mode 0)
+;;         )
+;;     (menu-bar-mode 1)
+;;     (tool-bar-mode 1)
+;;     )
+;;   )
+;; ;;让hipperextend不仅可以匹配开头,也可以匹配字符串的内部
+;; ;;将这个函数加入到hippie-expand-try-functions-list中，
+;; ;;;###autoload
+;; (defun try-vmacs-dabbrev-substring (old)
+;;   (let ((old-fun (symbol-function 'he-dabbrev-search)))
+;;     (fset 'he-dabbrev-search (symbol-function 'vmacs-dabbrev-substring-search))
+;;     (unwind-protect
+;;         (try-expand-dabbrev old)
+;;       (fset 'he-dabbrev-search old-fun))))
+
+;; (defun vmacs-dabbrev-substring-search (pattern &optional reverse limit)
+;;   (let ((result ())
+;;         (regpat (cond ((not hippie-expand-dabbrev-as-symbol)
+;;                        (concat (regexp-quote pattern) "\\sw+"))
+;;                       ((eq (char-syntax (aref pattern 0)) ?_)
+;;                        (concat (regexp-quote pattern) "\\(\\sw\\|\\s_\\)+"))
+;;                       (t
+;;                        (concat (regexp-quote pattern)
+;;                                "\\(\\sw\\|\\s_\\)+")))))
+;;     (while (and (not result)
+;;                 (if reverse
+;;                     (re-search-backward regpat limit t)
+;;                   (re-search-forward regpat limit t)))
+;;       (setq result (buffer-substring-no-properties (save-excursion
+;;                                                      (goto-char (match-beginning 0))
+;;                                                      (skip-syntax-backward "w_")
+;;                                                      (point))
+;;                                                    (match-end 0)))
+;;       (if (he-string-member result he-tried-table t)
+;;           (setq result nil)))     ; ignore if bad prefix or already in table
+;;     result))
 
 
 (provide 'lazy-command)

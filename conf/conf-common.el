@@ -295,28 +295,27 @@
  compilation-scroll-output t
  )
 
-;; (with-eval-after-load 'compile-dwim (require 'joseph-compile-dwim))
 
-(setq-default hippie-expand-try-functions-list
-              '(
-                yas-hippie-try-expand
-                try-expand-dabbrev
-                ;; try-vmacs-dabbrev-substring
-                try-expand-dabbrev-visible
-                try-expand-dabbrev-all-buffers
-                try-expand-dabbrev-from-kill
-                try-expand-list
-                try-expand-list-all-buffers
-                try-expand-line
-                try-expand-line-all-buffers
-                try-complete-file-name-partially
-                try-complete-file-name
-                try-expand-whole-kill
-                )
-              )
-
-;; use auto compile instead
-;; (add-hook 'after-save-hook 'vmacs-compile-current-el)
+;; (setq-default hippie-expand-try-functions-list
+;;               '(
+;;                 yas-hippie-try-expand
+;;                 try-expand-dabbrev
+;;                 ;; try-vmacs-dabbrev-substring
+;;                 try-expand-dabbrev-visible
+;;                 try-expand-dabbrev-all-buffers
+;;                 try-expand-dabbrev-from-kill
+;;                 try-expand-list
+;;                 try-expand-list-all-buffers
+;;                 try-expand-line
+;;                 try-expand-line-all-buffers
+;;                 try-complete-file-name-partially
+;;                 try-complete-file-name
+;;                 try-expand-whole-kill
+;;                 )
+;;               )
+;; (global-set-key [(meta return)] 'hippie-expand)
+;;  ;meta return on terminal
+;; (global-set-key (kbd "C-M-m") 'hippie-expand) ;meta return for terminal
 
 
 ;; (push '("lambda" . #x1d77a) prettify-symbols-alist)
@@ -349,9 +348,8 @@
 ;;快速跳转到当前buffer最后一次修改的位置 利用了undo定位最后一次在何处做了修改
 ;; (autoload 'goto-last-change "goto-last-change" "Set point to the position of the last change." t)
 (autoload 'goto-last-change-reverse "goto-chg.el" "goto last change reverse" t)
-(global-set-key (kbd "C-x C-/") 'goto-last-change)
-(global-set-key (kbd "C-x C-_") 'goto-last-change) ;C-x C-/ for terminal
-(global-set-key (kbd "C-x C-,") 'goto-last-change-reverse)
+(evil-leader/set-key "x/" 'goto-last-change)
+(evil-leader/set-key "x," 'goto-last-change-reverse)
 
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 
@@ -367,12 +365,9 @@
 (global-set-key [f2] 'toggle-eshell)
 (global-set-key [C-f2] 'toggle-eshell-cd)
 
-(global-set-key "\M-n"  'vmacs-forward-4-line)
-(global-set-key "\M-p"  'vmacs-backward-4-line)
+;; (global-set-key "\M-n"  'vmacs-forward-4-line)
+;; (global-set-key "\M-p"  'vmacs-backward-4-line)
 
-(global-set-key [(meta return)] 'hippie-expand)
- ;meta return on terminal
-(global-set-key (kbd "C-M-m") 'hippie-expand) ;meta return for terminal
 
 ;; ;; 因为evil的 jk 用于上下移动，C-n C-p基本上用不到
 ;; ;; 故把C-n C-p绑定到上下移动4 行，以便小范围的快速移动
