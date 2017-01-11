@@ -1,5 +1,8 @@
 (eval-when-compile
-  (require 'magit))
+  (require 'magit)
+  (require 'evil-magit))
+
+(setq-default evil-magit-use-y-for-yank t)
 (setq-default
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place

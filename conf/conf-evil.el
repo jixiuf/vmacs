@@ -18,8 +18,6 @@
   (require 'package)
   ;; (require 'conf-keybinding)
   (require 'compile)
-  (require 'magit)
-  (require 'evil-magit)
 )
 
 
@@ -133,7 +131,6 @@
 (global-evil-leader-mode)
 (evil-leader/set-leader "<SPC>")
 ;; (setq-default evil-magit-state 'normal)
-(setq-default evil-magit-use-y-for-yank t)
 
 (evil-mode 1)
 (unless (display-graphic-p)
