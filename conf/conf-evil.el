@@ -73,7 +73,7 @@
 ;; 设置一些mode的初始state
 (evil-set-initial-state 'bm-show-mode 'insert)
 (evil-set-initial-state 'diff-mode 'insert)
-(evil-set-initial-state 'git-rebase-mode 'insert)
+(evil-set-initial-state 'git-rebase-mode 'normal)
 (evil-set-initial-state 'package-menu-mode 'normal)
 (evil-set-initial-state 'vc-annotate-mode 'normal)
 (evil-set-initial-state 'Custom-mode 'normal)
