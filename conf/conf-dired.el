@@ -118,6 +118,7 @@
 ;;(setq directory-free-space-args "-Pkh")
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (define-key dired-mode-map "u" 'dired-up-directory) ;上层目录
+(define-key dired-mode-map "y" nil)     ;给evil-mode 的y让位
 ;;change to another directory
 ;; (define-key dired-mode-map "c" 'dired)
 ;;(define-key dired-mode-map "q" 'kill-buffer-and-window)
