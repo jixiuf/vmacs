@@ -82,6 +82,7 @@
 (with-eval-after-load 'python (require 'conf-program-python))
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
+(with-eval-after-load 'css-mode (require 'conf-css))
 
 
 (when (eq system-type 'darwin) (require 'conf-iterm2)) ;iterm2特有的配置
