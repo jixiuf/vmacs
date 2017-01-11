@@ -26,3 +26,5 @@ clean:
 	@rm -rf ./lazy/*.elc
 	@rm -rf ./conf/*.elc
 	@rm -rf *.elc
+clean-elpa:
+	find elpa -name "*.elc" -exec rm {} \;
