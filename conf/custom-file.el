@@ -71,9 +71,28 @@
                     (font-spec :family "Apple SD Gothic Neo" :size 16))
 
   )
-
 (when (and (equal system-type 'darwin) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-mac))
+
+(defun create-frame-font-w32()          ;emacs 若直接启动 启动时调用此函数似乎无效
+  (set-face-attribute
+   'default nil :font "Courier New 10")
+  ;; Chinese Font
+  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset
+                      (font-spec :family "新宋体" :size 16)))
+
+  (set-fontset-font (frame-parameter nil 'font)
+                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
+                    (font-spec :family "MS Mincho" :size 16))
+  (set-fontset-font (frame-parameter nil 'font)
+                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
+                    (font-spec :family "GulimChe" :size 16)))
+
+(when (and (equal system-type 'windows-nt) (window-system))
+  (add-hook 'after-init-hook 'create-frame-font-w32))
+
 ;; (create-frame-font-mac)
 ;; (create-fontset-from-fontset-spec
 ;;    "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-fontset-mymac,
@@ -98,6 +117,7 @@
   (with-selected-frame f
     (when (window-system)
       (when (equal system-type 'darwin) (create-frame-font-mac))
+      (when (equal system-type 'windows-nt) (create-frame-font-w32))
       (set-frame-position f 160 80)
       (set-frame-size f 140 50)
       (set-frame-parameter f 'alpha 85)
@@ -120,6 +140,7 @@
                   (top . 80)
                   (foreground-color . "#eeeeec")
                   (background-color . "#202020") ;;
+                  (background-mode . dark)
                   ;;  ;; (background-color . "#263111")
                   ;;  (cursor-color . "green")
                   ;;  (mouse-color ."gold")
@@ -129,9 +150,11 @@
                   ;;(font . "Menlo-14")
                   )
                  (w32
+                  (foreground-color . "#eeeeec")
+                  (background-color . "#202020") ;;
                   ;; (font . "fontset-w32")
                   ;; (background-color . "#0C1021")
-                  ;; (background-mode . dark)
+                  (background-mode . dark)
                   ;; (border-color . "black")
                   (alpha . 95)
                   ;; (cursor-color . "#A7A7A7")
@@ -148,7 +171,7 @@
                   )
                  (nil ;; if on term
                   ;; (background-color . "#0C1021")
-                  ;; (background-mode . dark)
+                  (background-mode . dark)
                   ;; (border-color . "black")
                   ;; (cursor-color . "#A7A7A7")
                   ;; (cursor-color . "green")
