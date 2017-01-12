@@ -14,7 +14,6 @@
 (when (or (not (file-exists-p  generated-autoload-file-path))
           noninteractive)
   (dolist (file (directory-files lazy-load-dir t "\.el$"))
-    (message file)
     (update-file-autoloads file t)))
 
 (when (file-exists-p  generated-autoload-file-path)

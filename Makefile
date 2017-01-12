@@ -18,7 +18,7 @@ compile:
 	make update-autoload-cookie
 update-autoload-cookie:
 	@echo "生成 lisp/update-autoload-cookie.el"
-	$(BATCH) -l ./conf/conf-lazy-load.el
+	@$(BATCH) -l ./conf/conf-lazy-load.el
 compile-elpa:
 	$(BATCH) --eval '(byte-recompile-directory "./elpa/" 0)'
 clean:
