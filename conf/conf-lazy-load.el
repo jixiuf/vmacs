@@ -1,6 +1,6 @@
 ;; 懒加载autoload
 ;; 你会发现lazy/目录下的很多函数上面都会有;;;###autoload的标识
-;; 此文伯为 .emacs.d/lazy/内的文件生成autoload cookie
+;; 此文件为 .emacs.d/lazy/内的文件生成autoload cookie
 ;; 生成的autoload 放在.emacs.d/lisp/lazy-loaddefs.el中,并load之
 ;; 如此 就可以做到在未真正用到这些函数之前，相应的文件不会被加载，以加快启动速度
 ;; 如果想重新生成.emacs.d/lisp/lazy-loaddefs.el,则只需要删除这个文件，重启emacs即可

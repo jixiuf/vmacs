@@ -595,6 +595,7 @@ end tell" (expand-file-name default-directory))))
       (fill-paragraph))
     (when (string-blank-p  is-blank-string)
       (skip-chars-forward "[ |\t|\n|\r]*"))))
+
 ;; 标点使用中文标点
 (defun chinese-normal()
   (interactive)
@@ -623,11 +624,8 @@ end tell" (expand-file-name default-directory))))
           (setq cnt (1+ cnt))
           (if (equal 1 (% cnt 2))
               (replace-match "「")
-            (replace-match "」"))
-          )
-        )
-      )))
-
+            (replace-match "」")))))
+    (call-interactively 'count-words)))   ;最后统计字数
 
 
 ;; ;;;###autoload
