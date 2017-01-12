@@ -391,7 +391,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (company-jedi helm-dired-history dired-filetype-face company-go auto-compile ctags-update golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell actionscript-mode android-mode applescript-mode async batch-mode bm crontab-mode dockerfile-mode erlang etags-table ethan-wspace evil evil-leader evil-magit evil-matchit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git hide-lines hide-region iedit js3-mode logstash-conf lua-mode magit magit-popup magit-svn markdown-mode move-text openwith protobuf-mode sqlplus tern thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
+    (helm-etags-plus company-jedi helm-dired-history dired-filetype-face company-go auto-compile ctags-update golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell actionscript-mode android-mode applescript-mode async batch-mode bm crontab-mode dockerfile-mode erlang etags-table ethan-wspace evil evil-leader evil-magit evil-matchit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git hide-lines hide-region iedit js3-mode logstash-conf lua-mode magit magit-popup magit-svn markdown-mode move-text openwith protobuf-mode sqlplus tern thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(save-place-file "~/.emacs.d/cache/place")
  '(save-place-mode t)
