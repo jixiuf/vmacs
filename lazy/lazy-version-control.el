@@ -1,8 +1,17 @@
-;;;###autoload
+(eval-when-compile
+  (require  'vc)
+  (require  'ediff)
+  (require 'ediff-vers)
+  (require  'vc-dir))
+
+(declare-function ediff-vc-internal "ediff-vers")
+
+
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
 ;; 使用方法在你在比较的两个版本中分别用m标记一下
 ;; 然后调用此函数即可
+;;;###autoload
 (defun log-view-ediff (beg end)
   "the ediff version of `log-view-diff'"
   (interactive
