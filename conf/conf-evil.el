@@ -14,12 +14,6 @@
 ;; (evil-set-command-property #'evil-find-char-to-backward :jump nil)
 
 
-(eval-when-compile
-  (require 'package)
-  ;; (require 'conf-keybinding)
-  (require 'compile)
-)
-
 
 (setq-default
  evil-search-module 'isearch        ;可以用C-w yank word

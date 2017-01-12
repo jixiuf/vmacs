@@ -1,11 +1,9 @@
 ;;; -*- coding:utf-8 -*-
-(eval-when-compile
-  (require 'wdired)
-  (require 'dired-x)
-  (require 'ls-lisp)
-  (require 'dired-aux)
-  )
-
+;; (eval-when-compile
+;;   (require 'wdired)
+;;   (require 'dired-x)
+;;   (require 'ls-lisp)
+;;   (require 'dired-aux))
 ;;; 一些命令注释
 
 ;;q        quit

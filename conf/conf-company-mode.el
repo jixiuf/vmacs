@@ -1,4 +1,4 @@
-(eval-when-compile (require 'company))
+;; (eval-when-compile (require 'company))
 
 (with-eval-after-load 'company
   ;; 调整默认backends

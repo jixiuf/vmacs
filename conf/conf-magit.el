@@ -1,6 +1,6 @@
-(eval-when-compile
-  (require 'magit)
-  (require 'evil-magit))
+;; (eval-when-compile
+;;   (require 'magit)
+;;   (require 'evil-magit))
 
 (setq-default evil-magit-use-y-for-yank t)
 (setq-default

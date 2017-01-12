@@ -1,19 +1,6 @@
 ;;; -*- coding:utf-8 -*-
 ;; (setq helm-idle-delay 0.3)
 ;; (setq helm-input-idle-delay 0)
-
-(eval-when-compile
-  (require 'cl-lib)                         ;func case is defined in cl.el
-  (require 'helm)                         ;func case is defined in cl.el
-  (require 'helm-mode)                         ;func case is defined in cl.el
-  (require 'helm-help)                         ;func case is defined in cl.el
-  (require 'helm-buffers)                         ;func case is defined in cl.el
-  (require 'helm-files)                         ;func case is defined in cl.el
-  (require 'helm-locate)                         ;func case is defined in cl.el
-  (require 'help)
-  (require 'helm-ls-git)                         ;func case is defined in cl.el
-  )
-
 (setq-default
  helm-locate-command (cl-case system-type
                                     ('gnu/linux (concat user-emacs-directory "bin/locate.sh %s %s"))

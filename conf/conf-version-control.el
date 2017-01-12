@@ -1,8 +1,8 @@
 ;;; -*- coding:utf-8-unix -*-
-(eval-when-compile
-  (require  'log-edit)
-  (require  'log-view)
-  (require 'vc-dir))
+;; (eval-when-compile
+;;   (require  'log-edit)
+;;   (require  'log-view)
+;;   (require 'vc-dir))
 ;;;; version control :VC
 ;;在进行`C-xvv' `C-xvi'等操作时不必进行确认,
 (autoload 'magit-status "magit" "magit")
