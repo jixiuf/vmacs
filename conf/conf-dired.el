@@ -255,6 +255,7 @@
 ;; (require 'joseph-single-dired)
 (require 'dired-filetype-face)
 (require 'lazy-dired-sort)
+(require 'vmacs-dired-single)
 
 
 
