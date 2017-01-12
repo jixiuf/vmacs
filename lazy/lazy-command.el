@@ -1,6 +1,5 @@
 ;; -*- coding:utf-8 -*-
 ;; eval-when-compile
-(declare-function upcase-first-char "lazy-camelize")
 (eval-when-compile
   (require  'ediff)
   (require  'vc-hooks)
@@ -13,6 +12,14 @@
   (require 'cc-mode)
   (require 'lazy-camelize)
   (require 'hippie-exp))
+
+(declare-function org-end-of-line "org")
+(declare-function org-beginning-of-line "org")
+(declare-function org-kill-line "org")
+(declare-function term-send-raw "term")
+(declare-function upcase-first-char "lazy-camelize")
+
+
 
 ;;vim 有o 与O 命令，用于在下一行与上一行插入一个空行，并定位光标到空格后
 ;; 此功能类似，当光标在行首时，则在上一行添加空行，当在行尾时，则在下一行添加空行
