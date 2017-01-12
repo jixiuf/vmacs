@@ -72,7 +72,7 @@
 
 ;; ;;; defined in ctags-update.el
 (when (equal system-type 'windows-nt)
-  (setq-default ctags-update-command (expand-file-name  "~/.emacs.d/bin/ctags.exe")))
+  (setq-default ctags-update-command (expand-file-name  "binw32/ctags.exe" user-emacs-directory)))
 (add-hook 'csharp-mode-hook  'turn-on-ctags-auto-update-mode)
 
 

@@ -62,6 +62,7 @@
 ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
 
 (when (eq system-type 'darwin) (require 'conf-macos))
+(when (eq system-type 'windows-nt) (require 'conf-w32))
 
 
 
