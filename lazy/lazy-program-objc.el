@@ -1,7 +1,7 @@
 ;;;###autoload
 (defun objc-surround()
   (interactive)
-  (unless (looking-back "\]") (forward-char 1))
+  (unless (looking-back "\]" (point-at-bol)) (forward-char 1))
   (backward-sexp)
   (insert "[")
   (forward-sexp)
