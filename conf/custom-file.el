@@ -141,6 +141,7 @@
                   (foreground-color . "#eeeeec")
                   (background-color . "#202020") ;;
                   (background-mode . dark)
+
                   ;;  ;; (background-color . "#263111")
                   ;;  (cursor-color . "green")
                   ;;  (mouse-color ."gold")

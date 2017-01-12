@@ -10,3 +10,6 @@
 /elpa/.elpa_compiled_by_make
 /lisp/lazy-loaddefs.el
 /cache/
+/server/server
+/eshell/history
+/eshell/lastdir

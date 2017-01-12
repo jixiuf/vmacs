@@ -23,7 +23,6 @@ Return a list of installed packages or nil for every skipped package."
 ;; 为evil-mode 的n让位
 (define-key tabulated-list-mode-map "n" nil)
 (define-key tabulated-list-mode-map "0" nil)
-
 (provide 'conf-package)
 
 ;; Local Variables:

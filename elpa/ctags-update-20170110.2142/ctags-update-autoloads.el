@@ -7,10 +7,10 @@
 ;;; Generated autoloads from ctags-update.el
 
 (autoload 'ctags-update "ctags-update" "\
-update TAGS in parent directory using `exuberant-ctags'.
+ctags-update in parent directory using `exuberant-ctags'.
 1. you can call this function directly,
 2. enable `ctags-auto-update-mode',
-3. with prefix `C-u' then you can generate a new TAGS file in directory,
+3. with prefix `C-u' then you can generate a new TAGS file in selected directory,
 4. with prefix `C-uC-u' save the command to kill-ring instead of execute it.
 
 \(fn &optional ARGS)" t nil)
