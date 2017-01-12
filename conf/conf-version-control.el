@@ -1,8 +1,8 @@
 ;;; -*- coding:utf-8-unix -*-
-;; (eval-when-compile
-;;   (require  'log-edit)
-;;   (require  'log-view)
-;;   (require 'vc-dir))
+(eval-when-compile
+  (require  'log-edit)
+  (require  'log-view)
+  (require 'vc-dir))
 ;;;; version control :VC
 ;;在进行`C-xvv' `C-xvi'等操作时不必进行确认,
 (autoload 'magit-status "magit" "magit")
@@ -58,7 +58,7 @@
 ;; you can pass Subversion-specific diff switches by setting
 ;; `vc-svn-diff-switches` to a string or list of strings.
 ;; For example, to tell `svn diff` to ignore EOL conventions and other whitespace, use
-(when (equal system-type 'windows-nt) (setq-default vc-git-program (expand-file-name "~/.emacs.d/bin/gitsh.exe")))
+(when (equal system-type 'windows-nt) (setq-default vc-git-program (expand-file-name "~/.emacs.d/binw32/gitsh.exe")))
 
 
 (with-eval-after-load 'vc-hooks

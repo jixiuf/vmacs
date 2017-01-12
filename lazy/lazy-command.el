@@ -321,67 +321,6 @@ Move point to end-of-line ,if point was already at that position,
 (autoload 'hippie-expand "hippie-exp" nil t)
 (autoload 'indent-according-to-mode "indent" nil t)
 
-(defun term-complete-tab()
-  (interactive)
-  ;; (require 'term)
-  (term-send-raw-string "\t")
-  )
-(defvar smart-tab-completion-functions
-  '((emacs-lisp-mode helm-lisp-completion-at-point)
-    (python-mode jedi:complete)
-    (magit-status-mode magit-section-toggle)
-    (magit-mode magit-section-toggle)
-    (magit-process-mode magit-section-toggle)
-    (term-mode term-complete-tab)
-    ;; (org-mode novel-fill)
-    (novel-mode novel-fill)
-    (text-mode novel-fill)
-    (help-mode forward-button)
-    (nxml-mode nxml-complete)
-    (objc-mode company-complete)
-    (go-mode auto-complete))
-  "List of major modes in which to use a mode specific completion
-  function.")
-
-(defvar smart-tab-mode-for-indent-tab-mode
-  '(applescript-mode))
-
-(defun get-completion-function()
-  "Get a completion function according to current major mode."
-  (let ((completion-function
-         (second (assq major-mode smart-tab-completion-functions))))
-    (if (null completion-function)
-        'hippie-expand
-
-      completion-function)))
-
-
-;;;###autoload
-(defun smart-tab (&optional arg)
-  (interactive "P")
-  (cond
-   ;; (looking-at "\\_>") at end of symbol
-   ;; (looking-at "\\>") at end of word
-   ((and (not buffer-read-only)
-         (not (member major-mode '(term-mode org-mode novel-mode text-mode)))
-         (or (looking-back "^[ \t]*" (point-at-bol))        ;at bol 在行首 不适合补全
-             (looking-back (string-trim (concat comment-start ".*")) (point-at-bol)) ;前面是注释 不适合补全
-             (and (looking-at "[ \t]*$")        ;at eol
-                  (or (looking-back "[,;)}]" (point-at-bol))   ;前面是,;)} 几种符号 ，则不适全补全
-                      (looking-back "]" (point-at-bol))        ;前面是] 也不适全补全
-                      ))))
-    (if (and mark-active )
-        (indent-region (region-beginning) (region-end))
-
-      (if (or indent-tabs-mode
-              (or (member major-mode smart-tab-mode-for-indent-tab-mode)))
-          (call-interactively 'indent-for-tab-command)
-        (call-interactively 'indent-according-to-mode))))
-   (t
-    ;; Hippie also expands yasnippets, due to `yas-hippie-try-expand' in
-    ;; `hippie-expand-try-functions-list'.
-    (call-interactively (get-completion-function))
-    )))
 
 
 ;; 在当前行任何位置输入分号都在行尾添加分号，除非本行有for 这个关键字，
@@ -564,37 +503,6 @@ end tell" (expand-file-name default-directory))))
          )
         (t
          (call-interactively 'hippie-expand))))
-
-;; 小说 段首缩进4格
-(defun novel-fill(&optional args)
-  (interactive)
-  (if (not mark-active)
-      (novel-fill-intern)
-    (save-excursion
-      (let ((begin (region-beginning))
-            (end (region-end)))
-        (deactivate-mark)
-        (goto-char begin)
-        (while  (< (point) end)
-          (novel-fill-intern)
-          (forward-paragraph)
-          (skip-chars-forward "[ |\t|\n|\r]*"))))))
-
-(defun novel-fill-intern()
-  (let* ((p (point))
-         (begin (save-excursion
-                  (forward-paragraph)
-                  (backward-paragraph)
-                  (point)))
-         (is-blank-string (buffer-substring-no-properties begin p)))
-    (save-excursion
-      (goto-char begin)
-      (skip-chars-forward "[ |\t|\n|\r]*")
-      (delete-horizontal-space)
-      (insert "    ")
-      (fill-paragraph))
-    (when (string-blank-p  is-blank-string)
-      (skip-chars-forward "[ |\t|\n|\r]*"))))
 
 ;; 标点使用中文标点
 (defun chinese-normal()

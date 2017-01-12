@@ -1,4 +1,6 @@
-
+(eval-when-compile
+  (require  'ediff)
+  (require 'magit))
 ;;;###autoload
 (defun toggle-diff-whitespace-eol()
   (interactive)

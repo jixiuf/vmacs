@@ -1,3 +1,9 @@
+(eval-when-compile
+  (require 'company)
+  (require 'helm-gtags))
+
+(declare-function helm-gtags-set-GTAGSLIBPATH-alist "helm-gtags")
+
 (add-hook 'objc-mode-hook 'vmacs-objc-mode-hook)
 
 (defun vmacs-objc-mode-hook()
