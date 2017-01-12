@@ -1,4 +1,11 @@
-;;用资源管理器打开当前文件所处目录
+;;用资源管理器打开当前文件所处目录 (open-in-filemanager)
+
+;; 你可能需要调整你的文件管理器， 这只是个demo for linux
+ ;; linux下文件管理器太多
+(defsubst open-directory-with-pcmanfm()
+  "a pcmanfm file manager for linux"
+  (start-process "pcmanfm"  nil "pcmanfm" (expand-file-name  default-directory)))
+
 ;;;###autoload
 (defun open-in-filemanager()
   (interactive)
@@ -22,11 +29,6 @@
       (w32explore (expand-file-name (dired-get-filename)))
     (w32explore (expand-file-name  (or (buffer-file-name) "~")))))
 
-;; 你可能需要调整你的文件管理器， 这只是个demo for linux
- ;; linux下文件管理器太多
-(defsubst open-directory-with-pcmanfm()
-  "a pcmanfm file manager for linux"
-  (start-process "pcmanfm"  nil "pcmanfm" (expand-file-name  default-directory)))
 
 
 (defun reveal-in-osx-finder ()
