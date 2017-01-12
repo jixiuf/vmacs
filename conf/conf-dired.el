@@ -13,7 +13,7 @@
 ;; o       open file other window 在另一个窗口中打开文件
 ;;C-o      open file other window (point in this window) ,在另个窗口打开文件,焦点仍在当前window
 ;;v        view-file 只读打开(q 退出)
-;; ^       上层目录 ,我改成了u
+;; ^       上层目录 ,我改成了u,以方便操作
 
 ;;关于mark,将文件标记之后,一些处理文件的命令会对mark的所有文件
 ;;采取一致的行动,如删除等.
@@ -243,19 +243,22 @@
     "gr" 'revert-buffer
     "gg" 'dired-beginning-of-buffer
     "G" 'dired-end-of-buffer
-    ";" nil                             ;取消对;的绑定
+    ";" nil                             ;取消对;的绑定，；进行clipboard的操作
 ))
 
 
-
+;; 绑定之后，你访问过的dired都会被记录住，当你copy rename 及打开dired时，可以从这些
+;; 已访问的目录中筛选以方便快速访问
 (require 'helm-dired-history)
 (define-key dired-mode-map "," 'dired)  ;
 
+;; 删除 copy 文件目录时 以异步的形式进行，以避copy大文件时emacs卡位无法进行其他操作
 (with-eval-after-load 'dired-aux (require 'dired-async nil t))
 ;; (require 'joseph-single-dired)
 (require 'dired-filetype-face)
+;; 实现按文件大小 时间 扩展名 名称排序，默认绑定在s上如ss 按size排序
 (require 'lazy-dired-sort)
-(require 'vmacs-dired-single)
+(require 'vmacs-dired-single)           ;确保只有一个dired buffer的存在
 
 
 
