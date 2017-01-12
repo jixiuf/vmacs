@@ -113,6 +113,8 @@
     (setq dired-listing-switches "--time-style=+%y-%m-%d/%H:%M  --group-directories-first -alhG")
   (setq dired-listing-switches "-alhG"))
 (when (eq system-type 'darwin)
+  ;; macos 使用emacs自带的ls-lisp来展示文件目录，
+  ;; 下文用到lazy-dired-sort 进行排序时，mac自带的ls有些参数不支持
   (require 'ls-lisp)
   (setq-default ls-lisp-use-insert-directory-program nil))
 ;;(setq directory-free-space-args "-Pkh")
@@ -125,36 +127,37 @@
 (define-key dired-mode-map "g" nil)     ;给evil-mode 的gg让位
 (define-key dired-mode-map "r" 'revert-buffer)
 
-;; 只显示匹配的文件 do filter  "z" 只显示匹配的文件
+;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 (define-key dired-mode-map  "/" 'dired-name-filter-only-show-matched-lines)
 ;; (dired-mark-unmarked-files "init" nil nil )
-;; 临时忽略某些文件,用正则表达示  "/"
+;; 临时忽略某些文件,用正则表达示  "z"跟/的作用相反
 (define-key dired-mode-map (kbd "z")  'dired-omit-expunge)
 ;; (define-key dired-mode-map (kbd "M-=") 'dired-ediff)
+
+;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
 (define-key dired-mode-map (kbd "C-a") 'dired-smart-beginning-of-line)
 ;;; wdired的配置
 ;; (define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
-(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
-(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
 
-(put 'dired-find-alternate-file 'disabled nil)
-;; switch a and Enter
-(define-key dired-mode-map  (kbd "a") 'dired-find-file) ;
-(define-key dired-mode-map  (kbd "RET") 'dired-find-alternate-file) ;
-(define-key dired-mode-map "\C-m" 'dired-find-alternate-file)
-
+;; wdired == writable dired
+;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state
 (setq-default wdired-allow-to-change-permissions t);; writable 时,不仅可以改文件名,还可以改权限
+;; C-gC-g 退出编辑或C-cC-c保存修改
+(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
+(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
+
+
 (with-eval-after-load 'wdired
   (define-key wdired-mode-map (kbd "C-a") 'dired-smart-beginning-of-line)
   (define-key wdired-mode-map (kbd "C-g") 'wdired-abort-changes))
 
 (with-eval-after-load 'dired-x
-  (define-key dired-mode-map "\M-o" 'dired-omit-mode) ;不显示一些不重要的文件
-  )
+  (define-key dired-mode-map "\M-o" 'dired-omit-mode)) ;不显示一些不重要的文件
 
 ;;; dired-x 增强的dired功能
 (with-eval-after-load 'dired-x
   (add-hook 'dired-mode-hook (lambda () (dired-omit-mode  1)));;M-o toggle 是否显示忽略的文件
+  ;; 默认这些后缀的文件 不显示，M-o后才显示
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$\\|^.*~$\\|^#.*#$\\|^\\.git$\\|^\\.svn$"))
   (setq dired-omit-extensions '("CVS/" ".o"  ".bin" ".lbin" "beam" "pyc"
                                 ".fasl" ".ufsl" ".a" ".ln" ".blg"
@@ -176,7 +179,7 @@
 ;;定义哪些文件会忽略如.git
 
 
-;;; 光标始终在文件名上
+;;; np下下运动的时候光标始终在文件名上（evil-mode 的j k 不受此限制）
 (defadvice dired-next-line (around dired-keep-point-on-filename-next activate)
   "Replace current buffer if file is a directory."
   ad-do-it
@@ -187,55 +190,8 @@
     (forward-line -1)
     (setq ad-return-value(dired-move-to-filename))))
 
-;; (defadvice dired-previous-line (around dired-keep-point-on-filename-previous activate)
-;;   "Replace current buffer if file is a directory."
-;;   ad-do-it
-;;   (while (and  (not  (bobp)) (not ad-return-value))
-;;     (forward-line -1)
-;;     (setq ad-return-value(dired-move-to-filename)))
-;;   (when (bobp)
-;;     (call-interactively 'dired-next-line)))
-
-
-;; (defadvice dired-find-file (around bury-dired-buf activate)
-;;   "bury dired buf when `dired-find-file'"
-;;   (bury-buffer  (current-buffer))
-;;   ad-do-it)
-
 (define-key dired-mode-map (kbd "M-<") 'dired-beginning-of-buffer)
 (define-key dired-mode-map (kbd "M->") ' dired-end-of-buffer)
-
-(define-key dired-mode-map "L" 'dired-add-to-load-path-or-load-it)
-;; (define-key dired-mode-map (kbd "C-o") 'golden-ratio-scroll-screen-down)
-
-
-;;; 排序
-;;;do sorting
-;; 1. s s 按照文件大小排序。
-;; 2. s x 按照文件扩展名排序。
-;; 3. s t 按照文件访问时间排序。
-;; 4. s n 按照文件名称的字母顺序排序。
-;; 5. s C-s 原来的s 功能 ,C=u s C-s 可手动编辑ls 的命令
-;; (define-key dired-sort-map "\C-s" 'dired-sort-toggle-or-edit )
-
-;;; Windows 的文件管理器可以把目录优先排在前面。把下面的代码放在你的 .emacs 中，可以实现这个功能。
-;; (defun dired-sort-directory-first ()
-;;   "Sort dired listings with directories first."
-;;   (save-excursion
-;;     (let (buffer-read-only)
-;;       (forward-line 2) ;; beyond dir. header
-;;       (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-;;     (set-buffer-modified-p nil)))
-
-;; (defadvice dired-readin
-;;   (after dired-after-updating-hook first () activate)
-;;   "Sort dired listings with directories first before adding marks."
-;;   (dired-sort-directory-first))
-
-;;; 避免打开多个dired-buffer,否则进行一定操作后,打开的dired-buffer 会很多很乱
-;;; 文件名着色
-;;;  dired-add-to-load-path-or-load-it
-
 ;; 默认dird 的r 修改了, 不是 wdired-change-to-wdired-mode,现在改回
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map
@@ -243,8 +199,11 @@
     "gr" 'revert-buffer
     "gg" 'dired-beginning-of-buffer
     "G" 'dired-end-of-buffer
-    ";" nil                             ;取消对;的绑定，；进行clipboard的操作
-))
+    ";" nil))                             ;取消对;的绑定，；进行clipboard的操作
+
+;; 把目录加入到load-path中，或load el文件
+(define-key dired-mode-map "L" 'dired-add-to-load-path-or-load-it)
+;; (define-key dired-mode-map (kbd "C-o") 'golden-ratio-scroll-screen-down)
 
 
 ;; 绑定之后，你访问过的dired都会被记录住，当你copy rename 及打开dired时，可以从这些
@@ -254,10 +213,26 @@
 
 ;; 删除 copy 文件目录时 以异步的形式进行，以避copy大文件时emacs卡位无法进行其他操作
 (with-eval-after-load 'dired-aux (require 'dired-async nil t))
-;; (require 'joseph-single-dired)
+
+;; 根据后缀名对文件进行着色
 (require 'dired-filetype-face)
+
 ;; 实现按文件大小 时间 扩展名 名称排序，默认绑定在s上如ss 按size排序
+;;; 排序
+;;;do sorting
+;; 1. s s 按照文件大小排序。
+;; 2. s x 按照文件扩展名排序。
+;; 3. s t 按照文件访问时间排序。
+;; 4. s n 按照文件名称的字母顺序排序。
+;; 5. s C-s 原来的s 功能 ,C=u s C-s 可手动编辑ls 的命令
 (require 'lazy-dired-sort)
+
+
+;; 启用vmacs-dired-single 没有必要对a RET进行特殊处理了
+;; (put 'dired-find-alternate-file 'disabled nil)
+;; (define-key dired-mode-map  (kbd "a") 'dired-find-file) ;
+;; (define-key dired-mode-map  (kbd "RET") 'dired-find-alternate-file) ;
+;; (define-key dired-mode-map "\C-m" 'dired-find-alternate-file)
 (require 'vmacs-dired-single)           ;确保只有一个dired buffer的存在
 
 
