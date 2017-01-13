@@ -12,7 +12,7 @@
 ;; Maintainer: Jonas Bernoulli <jonas@bernoul.li>
 
 ;; Package-Requires: ((emacs "24.4") (dash "20161121.55") (with-editor "20161231.826"))
-;; Package-Version: 20170109.1253
+;; Package-Version: 20170112.334
 ;; Keywords: git tools vc
 ;; Homepage: https://github.com/magit/magit
 
@@ -180,6 +180,7 @@ The major mode configured here is turned on by the minor mode
              git-commit-turn-on-auto-fill
              git-commit-turn-on-flyspell
              git-commit-propertize-diff
+             bug-reference-mode
              with-editor-usage-message))
 
 (defcustom git-commit-finish-query-functions
