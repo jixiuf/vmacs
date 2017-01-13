@@ -262,14 +262,6 @@
  completion-cycle-threshold 8)
 ;; (add-hook 'minibuffer-setup-hook 'minibuf-define-key-func )
 
-(setq-default
- compilation-ask-about-save nil         ;编译之前自动保存buffer
- compilation-auto-jump-to-first-error t ;编译完成后自动跳到第一个error处
- compilation-read-command t
- compilation-disable-input nil
- compilation-scroll-output t
- )
-
 
 ;; (setq-default hippie-expand-try-functions-list
 ;;               '(
