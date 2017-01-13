@@ -2,7 +2,7 @@
 
 ;; Created: 2011-10-16 13:17
 ;; Version: 1.0
-;; Package-Version: 20170110.2142
+;; Package-Version: 20170111.2150
 ;; Author: Joseph(纪秀峰)  jixiuf@gmail.com
 ;; Keywords: exuberant-ctags etags
 ;; URL: https://github.com/jixiuf/ctags-update
@@ -123,14 +123,15 @@ is enabled."
   "`tagfile-full-path' is the full path of TAGS file . when files in or under the same directory
 with `tagfile-full-path' changed ,then TAGS file need to be updated. this function will generate
 the command to update TAGS"
-  ;; on windows "ctags -R d:/.emacs.d"  works , but "ctags -R d:/.emacs.d/" doesn't
-  ;; On Windows, "gtags d:/tmp" work, but "gtags d:/tmp/" doesn't
   (append
    (list "-R" "-e" )
    (list "-f" (get-system-file-path (or save-tagfile-to-as tagfile-full-path)))
    ctags-update-other-options
    (if (equal system-type 'windows-nt)
-       (list (directory-file-name tagfile-full-path))
+       ;; on windows "ctags -R d:/.emacs.d"  works , but "ctags -R d:/.emacs.d/" doesn't
+       ;; On Windows, "gtags d:/tmp" work, but "gtags d:/tmp/" doesn't
+       (list (directory-file-name
+              (file-name-directory (or save-tagfile-to-as tagfile-full-path ))))
      (list "."))))
 
 (defun ctags-update-get-command(command command-args)
@@ -151,23 +152,7 @@ to \\ when on windows"
 path to that file or nil if a tags file is not found. Returns nil if the buffer is
 not visiting a file"
   (let ((tag-root-dir (locate-dominating-file default-directory "TAGS")))
-    (if tag-root-dir
-        (expand-file-name "TAGS" tag-root-dir)
-      (if (and tags-file-name
-               (string-match (regexp-quote (ctags-update-file-truename  default-directory))
-                             (ctags-update-file-truename tags-file-name)))
-          tags-file-name
-        (if tags-table-list
-            (let (matched-tag-names match-tag-element)
-              (dolist (tagname tags-table-list)
-                (when (string-match (regexp-quote (ctags-update-file-truename  default-directory))
-                                    (ctags-update-file-truename tagname))
-                  (add-to-list 'matched-tag-names tagname)))
-              (when matched-tag-names
-                (setq match-tag-element (car matched-tag-names))
-                (if (file-directory-p match-tag-element)
-                    (expand-file-name "TAGS"  match-tag-element)
-                  match-tag-element))))))))
+    (if tag-root-dir (expand-file-name "TAGS" tag-root-dir) nil)))
 
 (defsubst ctags-update-check-interval()
   (> (- (float-time (current-time))
@@ -196,20 +181,27 @@ this return t if current buffer file name is TAGS."
     (when (file-exists-p tmp-tags)
       (delete-file tmp-tags ))))
 
-(defun ctags-update-how-to-update()
+(defun ctags-update-how-to-update(is-interactive)
   "return a tagfile"
   (let (tags)
     (cond
      ((> (prefix-numeric-value current-prefix-arg) 1)  ;C-u or C-uC-u ,generate new tags in selected directory
-      (expand-file-name "TAGS" (read-directory-name "Generate TAGS in dir:")))
-     ((called-interactively-p 'interactive)
+      (setq tags (expand-file-name "TAGS" (read-directory-name "Generate TAGS in dir:"))))
+     (is-interactive
       (setq tags (ctags-update-find-tags-file))
-      (unless tags (expand-file-name "TAGS" (read-directory-name "Generate TAGS in dir:"))))
+      (unless tags
+        (setq tags (expand-file-name "TAGS" (read-directory-name "Generate TAGS in dir:")))))
      (t
       (setq tags (ctags-update-find-tags-file))
-      (unless tags (expand-file-name
-                    "TAGS" (read-directory-name
-                            "Generate TAGS in dir(or disable `ctags-auto-update-mode'):")))))))
+      (unless tags
+        (setq ctags-update-last-update-time
+              (- (float-time (current-time)) ctags-update-delay-seconds 1))
+        (setq tags
+              (expand-file-name
+               "TAGS" (read-directory-name
+                       "Generate TAGS in dir(or disable `ctags-auto-update-mode'):"))))))
+    tags))
+
 ;;;###autoload
 (defun ctags-update(&optional args)
   "ctags-update in parent directory using `exuberant-ctags'.
@@ -218,9 +210,8 @@ this return t if current buffer file name is TAGS."
 3. with prefix `C-u' then you can generate a new TAGS file in selected directory,
 4. with prefix `C-uC-u' save the command to kill-ring instead of execute it."
   (interactive "P")
-  (message "%dsss"(prefix-numeric-value current-prefix-arg))
   (let (tags proc)
-    (setq tags (ctags-update-how-to-update))
+    (setq tags (ctags-update-how-to-update (called-interactively-p 'interactive)))
     (when tags
       (when (get-process tags)          ;process name == tags
         (user-error "Another ctags-update process is already running"))
@@ -238,7 +229,7 @@ this return t if current buffer file name is TAGS."
            ;; sometime the directory you select need root privilege
            ;; so save the command to kill-ring,
            ((= (prefix-numeric-value current-prefix-arg) 16)
-            (kill-new (format "cd %s && %s" default-directory
+            (kill-new (format "cd %s && %s" (get-system-file-path default-directory)
                               (ctags-update-get-command
                                ctags-update-command (ctags-update-command-args tags))))
             (message "save ctags-upate command to king-ring. (C-y) yank it back."))
