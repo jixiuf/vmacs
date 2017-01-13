@@ -18,12 +18,7 @@
   (setq-local
    ;; flycheck-make-executable "/usr/local/bin/make"
    company-clang-executable
-   "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
-   )
-
-  ;; (setq    flycheck-c/c++-clang-executable
-  ;;          (concat "/Applications/Xcode.app/Contents/Developer/"
-  ;;                  "Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"))
+   "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++")
 
   (setq-local  company-clang-arguments
                '(
@@ -49,6 +44,7 @@
       (helm-gtags-set-GTAGSLIBPATH-alist (concat xcode-proj-root project-name)
                                          `(
                                            ;; ,(concat xcode-proj-root project-name)
+                                           ;; 在这两个目录运行sudo gtags,;;之后gd 可以跳转到函数定义处
                                            "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk"
                                            "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"))
       )
