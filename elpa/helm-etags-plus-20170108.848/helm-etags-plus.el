@@ -175,6 +175,10 @@ if you set this to nil"
   "*How long to highlight the tag."
   :group 'helm-etags-plus
   :type 'number)
+(defcustom helm-etags-plus-auto-create-tags t
+  "If no TAGS found,prompt creating one by `ctags-update' if ctags-update.el exists."
+  :group 'helm-etags-plus
+  :type 'number)
 
 (defface helm-etags-plus-highlight-face
   '((t (:foreground "white" :background "cadetblue4" :bold t)))
@@ -278,12 +282,14 @@ Returns nil if the buffer is not visiting a file"
 (defun helm-etags-plus-get-tag-files()
   "Get tag files."
   (let ((local-tag  (helm-etags-plus-find-tags-file)))
-      (when local-tag
-        (add-to-list 'tags-table-list (helm-etags-plus-find-tags-file)))
-      (dolist (tag tags-table-list)
-        (when (not (file-exists-p tag))
-          (setq  tags-table-list (delete tag tags-table-list))))
-      (mapcar 'tags-expand-table-name tags-table-list)))
+    (if local-tag
+        (add-to-list 'tags-table-list (helm-etags-plus-find-tags-file))
+      (when (and (featurep 'ctags-update)(boundp 'ctags-update))
+        (call-interactively 'ctags-update)))
+    (dolist (tag tags-table-list)
+      (when (not (file-exists-p tag))
+        (setq  tags-table-list (delete tag tags-table-list))))
+    (mapcar 'tags-expand-table-name tags-table-list)))
 
 (defun helm-etags-plus-rename-tag-buffer-maybe(buf)
   (with-current-buffer buf
@@ -692,8 +698,6 @@ Argument CANDIDATE-MARKER candidate marker."
           :preselect  "\t")))           ;if an candidate ,then this line is preselected
 
 (provide 'helm-etags-plus)
+
 ;;; helm-etags-plus.el ends here.
 
-(provide 'helm-etags-plus)
-
-;;; helm-etags-plus.el ends here
