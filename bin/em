@@ -17,15 +17,15 @@ if [ -n "$INSIDE_EMACS" ]; then # 在emacs中的term里调用em ,则不加-t -nw
         else
             echo "you are in emacs ,and call em without filename,so do nothing"
         fi
-    
-else 
+
+else
     $EMACSCLIENT -t   -nw -a $ALTERNATE_EDITOR  "$@"
-fi    
+fi
 }
 # check starting emacs daemon
 sh ~/.emacs.d/bin/emd
 
-# if emacsclient major version ==22  
+# if emacsclient major version ==22
 if [ ! -z $EMACSCLIENT ] && [ `$EMACSCLIENT --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` = "22" ] ; then
     EMACSCLIENT=""
     ALTERNATE_EDITOR=""
@@ -35,12 +35,12 @@ fi
 
 #  if EMACSCLIENT is empty
 if [  -z $EMACSCLIENT ] && [ -x "~/bin/emacsclient"  ] && [ `~/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
-    EMACSCLIENT="~/bin/emacsclient" 
+    EMACSCLIENT="~/bin/emacsclient"
     if [  -x "~/bin/emacs" ]; then
         ALTERNATE_EDITOR="~/bin/emacs"
     fi
     call_emacsclient "$@"
-    exit 
+    exit
 fi
 
 
@@ -50,20 +50,20 @@ if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local
         ALTERNATE_EDITOR="/usr/local/bin/emacs"
     fi
     call_emacsclient "$@"
-    exit 
+    exit
 fi
 
 
 if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"  ]; then
-    EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient" 
+    EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
     if [ ! -x /tmp/emacsclientwrapper.sh ]; then
-        echo "#!/bin/sh" >>/tmp/emacsclientwrapper.sh 
-        echo '/Applications/Emacs.app/Contents/MacOS/Emacs -nw "$@"' >>/tmp/emacsclientwrapper.sh 
-        chmod 755 /tmp/emacsclientwrapper.sh 
+        echo "#!/bin/sh" >>/tmp/emacsclientwrapper.sh
+        echo '/Applications/Emacs.app/Contents/MacOS/Emacs -nw "$@"' >>/tmp/emacsclientwrapper.sh
+        chmod 755 /tmp/emacsclientwrapper.sh
     fi
-    ALTERNATE_EDITOR=/tmp/emacsclientwrapper.sh 
+    ALTERNATE_EDITOR=/tmp/emacsclientwrapper.sh
     call_emacsclient "$@"
-    exit 
+    exit
 fi
 
 if [  -z $EMACSCLIENT ] && [ -x "/usr/bin/emacsclient"  ] && [ `/usr/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
@@ -72,7 +72,7 @@ if [  -z $EMACSCLIENT ] && [ -x "/usr/bin/emacsclient"  ] && [ `/usr/bin/emacscl
         ALTERNATE_EDITOR="/usr/bin/emacs"
     fi
     call_emacsclient "$@"
-    exit 
+    exit
 fi
 
 
