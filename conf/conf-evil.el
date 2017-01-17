@@ -289,14 +289,13 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "ge" (kbd "M-e"))
 ;; (define-key evil-normal-state-map "gA" (kbd "C-M-a"))
 ;; (define-key evil-normal-state-map "gE" (kbd "C-M-e"))
+
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-normal-state-map "sa" 'evil-begin-of-defun)
 
-(define-key evil-normal-state-map "sp" 'evil-paste-pop)
-(define-key evil-normal-state-map "sP" 'evil-paste-pop)
+;; (define-key evil-normal-state-map "sp" 'evil-paste-pop)
+;; (define-key evil-normal-state-map "sP" 'evil-paste-pop)
 
-(define-key evil-motion-state-map "gj" 'vmacs-forward-4-line)
-(define-key evil-motion-state-map "gk" 'vmacs-backward-4-line)
 
 (define-key evil-normal-state-map "ss" 'evil-end-of-defun)
 (define-key evil-normal-state-map "se" 'evil-end-of-defun)
@@ -327,13 +326,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "," 'repeat)
 (define-key evil-visual-state-map "," 'repeat)
 (define-key evil-motion-state-map "," 'repeat) ;
-(define-key evil-visual-state-map "x" 'exchange-point-and-mark)
-(define-key evil-visual-state-map "X" 'evil-visual-exchange-corners)
 
-;; (global-set-key (kbd "M-SPC") 'rm-set-mark);;alt+space 开始矩形操作，然后移动位置，就可得到选区
-(define-key evil-motion-state-map (kbd "M-SPC")  'evil-visual-block)
 (define-key evil-ex-completion-map (kbd "H-m") 'exit-minibuffer)
-(define-key global-map (kbd   "M-:") 'evil-ex)
 
 ;; (), {}, [], <>, '', "", ` `, or “” by default
 ;; 不论是何种 ，都会将最近的配对进行操作
@@ -358,27 +352,16 @@ execute emacs native `repeat' default binding to`C-xz'"
                           ("\\[" . "\\]")
                           ("\"" . "\"")))))
 
+;; dib dab绑定
 (define-key evil-inner-text-objects-map "b" 'evil-textobj-anyblock-inner-block)
 (define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
-;; (define-key evil-inner-text-objects-map "[" 'evil-textobj-anyblock-inner-block)
-;; (define-key evil-outer-text-objects-map "[" 'evil-textobj-anyblock-a-block)
-;; (define-key evil-outer-text-objects-map "]" 'evil-textobj-anyblock-a-block)
-;; (define-key evil-inner-text-objects-map "]" 'evil-textobj-anyblock-inner-block)
-
-;; 不常用， 且如果这样绑定则无法全无 vim 的 :s/abc/def/g替换
-;; (evil-ex-define-cmd "s[ave]" 'evil-write)
 
 
-
-
-
-
-(define-key evil-normal-state-map "sl" 'helm-locate)
 
 (define-key evil-normal-state-map "s;" 'vmacs-comment-dwim-line)
 
 
-(evil-leader/set-key "f" 'helm-find-files)
+
 
 (evil-leader/set-key "o" 'other-window)
 (evil-leader/set-key "g" 'helm-search)
@@ -388,7 +371,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-leader/set-key "d" 'evil-next-buffer) ;K prev-buffer
 (evil-leader/set-key "k" 'evil-prev-buffer) ;
 (evil-leader/set-key "q" 'bury-buffer-and-window)
-(evil-leader/set-key  "w;" 'ff-find-other-file) ;头文件与源文件间快速切换
 
 (evil-leader/set-key ";" 'helm-M-x)
 (evil-leader/set-key "；" 'helm-M-x)

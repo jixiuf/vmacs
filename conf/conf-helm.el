@@ -91,12 +91,15 @@
 (autoload 'helm-source-ls-git "helm-ls-git" "" nil nil)
 (autoload 'helm-lisp-completion-at-point "helm-elisp" "" t nil)
 
-(evil-leader/set-key "?" 'helm-descbinds)
 (evil-leader/set-key "SPC" 'helm-multi-files)
-(evil-leader/set-key "wl" 'helm-locate)
+(evil-leader/set-key "ff" 'helm-find-files)
+(evil-leader/set-key "fl" 'helm-locate)
+(evil-leader/set-key "fg" 'helm-ls-git-ls)
+(evil-leader/set-key  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
+(define-key evil-normal-state-map "sl" 'helm-locate)
+
+(evil-leader/set-key "?" 'helm-descbinds)
 (evil-leader/set-key "wi" 'helm-semantic-or-imenu)
-(evil-leader/set-key "wf" 'helm-locate)
-(evil-leader/set-key "wo" 'helm-ls-git-ls)
 (evil-leader/set-key "b" 'helm-resume)
 (evil-leader/set-key "wy" 'helm-all-mark-rings)
 (evil-leader/set-key "wp" 'helm-list-emacs-process)
