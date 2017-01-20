@@ -8,6 +8,10 @@
    针对特定编程语言的外部依赖需要你下载,不过会给出详细的安装文档,保证在国内可下载
    #+BEGIN_SRC sh
      git clone --depth 1 https://github.com/jixiuf/vmacs.git ~/.emacs.d
+
+     # on mac or linux
+     make compile-elpa
+     make compile
    #+END_SRC
 2. 中文支持良好,适于国内使用,配置文件中会有大量中文注释以便学习理解
 
