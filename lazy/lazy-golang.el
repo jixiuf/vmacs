@@ -3,7 +3,7 @@
 (defun golang-setter-getter(beg end)
   "generate sets and gets for golang."
   (interactive "r")
-  (require 'vmacs-camelize)
+  (require 'lazy-camelize)
   (let ((region-string (buffer-substring-no-properties beg end))
         (struct-name)
         (pairs)
@@ -34,6 +34,7 @@
     (goto-char end)
     (insert "\n")
     (insert buf-str)))
+
 (provide 'lazy-golang)
 
 ;; Local Variables:
