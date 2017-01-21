@@ -19,12 +19,13 @@
     (setq header-line-format
           (propertize  warning 'face 'toggle-to-root-header-face))))
 
-;;; 加载一个新文件时，如果是sudo 开头的文件 ，也加上红色的外观
+;; ;;; 加载一个新文件时，如果是sudo 开头的文件 ，也加上红色的外观
 (defun my-sudo-find-file-hook ()
   (if (string-match "^/sudo:\\||sudo" (or (buffer-file-name)  dired-directory)) (toggle-to-root-header-warning))
-  (when (or (string-match "^/etc" (or (buffer-file-name)  dired-directory))
-            (string-match "^/private/etc" (or (buffer-file-name)  dired-directory)))
-    (find-alternate-file (concat "/sudo:root@" (get-localhost-name) ":" (or (buffer-file-name)  dired-directory)))))
+  ;; (when (or (string-match "^/etc" (or (buffer-file-name)  dired-directory))
+  ;;           (string-match "^/private/etc" (or (buffer-file-name)  dired-directory)))
+  ;;   (find-alternate-file (concat "/sudo:root@" (get-localhost-name) ":" (or (buffer-file-name)  dired-directory))))
+  )
 
 (add-hook 'find-file-hooks 'my-sudo-find-file-hook);; find-file-hooks 是加载完file 之后调用的一个hook
 (add-hook 'dired-mode-hook 'my-sudo-find-file-hook) ;;
