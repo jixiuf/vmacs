@@ -14,14 +14,18 @@
 
 (autoload 'helm-eshell-history "helm-eshell" "" t nil)
 (autoload 'helm-esh-pcomplete "helm-eshell" "" t nil)
+
 ;;using helm.el as the complete engine
-(add-hook 'eshell-mode-hook
-          #'(lambda ()
-              ;; (define-key eshell-mode-map [M-right] 'copy-above-while-same);
-              (define-key eshell-mode-map (kbd "M-.") 'eshell-insert-last-cmd-argument)
-              (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
-              (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
-              (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete))) ;Tab
+(defun vmacs-eshell-hook()
+  (company-mode -1)
+  ;; (define-key eshell-mode-map [M-right] 'copy-above-while-same);
+  (define-key eshell-mode-map (kbd "M-.") 'eshell-insert-last-cmd-argument)
+  (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
+  (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
+  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)) ;Tab
+
+(add-hook 'eshell-mode-hook 'vmacs-eshell-hook)
+
 
 (defalias 'vi 'find-file)
 (defalias 'o 'find-file-other-window)
