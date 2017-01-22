@@ -75,6 +75,7 @@
 (require 'conf-common)
 (require 'conf-org)
 (with-eval-after-load 'eshell (require 'conf-eshell)) ;
+(with-eval-after-load 'term (require 'conf-term)) ;
 
 (require 'conf-version-control)         ;版本管理
 (require 'conf-company-mode)            ;补全
