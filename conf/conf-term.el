@@ -28,7 +28,8 @@
 ;; . 如果你使用的是mac系统，发现multi-term每行出出了4m，在shell里运
 ;;  行下：tic -o ~/.terminfo  /Applications/Emacs.app/Contents/Resources/etc/e/eterm-color.ti
 ;;  Use Emacs terminfo, not system terminfo, mac系统出现了4m
-(setq system-uses-terminfo nil)
+;; (setq system-uses-terminfo nil)
+
 (setq term-buffer-maximum-size 10000)
 
 
