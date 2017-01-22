@@ -127,9 +127,17 @@
 ;; (setq-default evil-magit-state 'normal)
 
 (evil-mode 1)
-(unless (display-graphic-p)
-  (require 'evil-terminal-cursor-changer)
-  (evil-terminal-cursor-changer-activate))
+
+(require 'evil-terminal-cursor-changer)
+(defun vmacs-change-cursor-hook(&optional f)
+  (if (display-graphic-p)
+      (evil-terminal-cursor-changer-deactivate)
+    (evil-terminal-cursor-changer-activate)
+    (remove-hook 'pre-command-hook 'etcc--evil-set-cursor)))
+
+(add-hook 'focus-in-hook 'vmacs-change-cursor-hook)
+(add-hook 'evil-insert-state-entry-hook 'vmacs-change-cursor-hook)
+
 
 (global-evil-matchit-mode 1)
 
