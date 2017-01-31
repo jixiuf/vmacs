@@ -1,4 +1,5 @@
 ;; 小说 段首缩进4格
+;;;###autoload
 (defun novel-fill(&optional args)
   (interactive)
   (if (not mark-active)
