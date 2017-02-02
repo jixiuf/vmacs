@@ -13,6 +13,8 @@
 ;; 下面这个链接 如何实现只保留一个squirrel输入法
 ;; https://github.com/rime/squirrel/wiki/如何实现mac下删除默认的英文输入法（只保留一个Squirrel)
 ;; https://raw.githubusercontent.com/jixiuf/dotfiles/master/mac/com.apple.HIToolbox.plist
+
+
 (defun disable-input-method-hook()
   ;; (start-process "squirrel-input-method-disable-chinese" nil "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" "-s" "ascii_mode" "--clear")
   (when (and (equal system-type 'darwin)(file-exists-p "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" )) ;mac 上squirrel与输入法相关
@@ -26,6 +28,9 @@
 (add-hook 'evil-normal-state-entry-hook 'disable-input-method-hook)
 (global-set-key (kbd "<f17>") 'evil-normal-state) ;mac karabiner用来控制输入法
 (define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见isearch-pre-command-hook
+
+;; 结合 hammerspoon 实现按下shift 切换输入法时，当切换到中文中自动进入insert state
+;; https://github.com/jixiuf/dotfiles/blob/master/mac/hammerspoon/init.lua
 ;; 当切换输入法到中文状态时的时候会回调到这里
 ;;回调的时候有可能是上面disable-input-method-hook 里调，此时不应该切到insert模式
 (defun my-evil-insert()
