@@ -6,7 +6,7 @@
 (setq-default
  user-full-name "纪秀峰"                ;记得改成你的名字
  user-login-name "jixiufeng"
- user-mail-address "jixiuf@gmail.com")
+ user-mail-address "jixiuf@qq.com")
 (setq load-prefer-newer t)              ;当el文件比elc文件新的时候,则加载el,即尽量Load最新文件文件
 
 ;; 测试的时候 配置文件放在 ~/vmacs/内，用下面的命令能加载~/vmacs内的配置
@@ -81,7 +81,8 @@
 (require 'conf-company-mode)            ;补全
 (require 'conf-yasnippet)               ;模版系统
 (require 'conf-yas-auto-insert)         ;利用yasnipet模版,在新建文件时,自动在文件中插入相应的模版
-
+;; gpg 自动加密解密文件相关
+(when (executable-find "gpg") (require 'conf-gpg))
 (require 'conf-compile)
 (require 'conf-tags)       ;对symbol 的操作
 (with-eval-after-load 'magit (require 'conf-magit))
