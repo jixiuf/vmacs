@@ -104,6 +104,7 @@
 ;; 设置成不是t 与nil的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
 ;; (setq-default epa-file-select-keys 'silent)
 (setq-default epa-file-encrypt-to user-mail-address) ;默认用哪个公钥私钥解密
+;; -*- epa-file-encrypt-to: ("your@email.address") -*-
 ;; 允许缓存密码，否则编辑时每次保存都要输入密码
 (setq-default epa-file-cache-passphrase-for-symmetric-encryption t)
 

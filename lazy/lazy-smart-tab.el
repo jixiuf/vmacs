@@ -23,6 +23,7 @@
     (magit-mode magit-section-toggle)
     (magit-process-mode magit-section-toggle)
     (term-mode term-complete-tab)
+    (epa-key-list-mode widget-forward)
     ;; (org-mode novel-fill)
     (novel-mode novel-fill)
     (text-mode novel-fill)

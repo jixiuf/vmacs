@@ -104,7 +104,6 @@
 (add-to-list 'evil-overriding-maps '(minibuffer-local-isearch-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-ns-map . nil))
 (add-to-list 'evil-overriding-maps '(epa-key-list-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(epa-key-mode-map . nil))
 
 
 
