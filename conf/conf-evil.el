@@ -419,9 +419,9 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-leader/set-key "/" 'undo)
 (evil-leader/set-key "$" 'toggle-truncate-lines)
 
-(evil-leader/set-key "pr" 'publish-my-note-recent)
-(evil-leader/set-key "pa" 'publish-my-note-all)
-(evil-leader/set-key "pp" 'publish-my-note-local-preview)
+;; (evil-leader/set-key "pr" 'publish-my-note-recent)
+;; (evil-leader/set-key "pa" 'publish-my-note-all)
+;; (evil-leader/set-key "pp" 'publish-my-note-local-preview)
 
 ;; (evil-leader/set-key "\\" 'just-one-space-or-delete-horizontal-space)
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)
