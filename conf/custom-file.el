@@ -130,9 +130,7 @@
                   (alpha . 80)
                   (cursor-color . "green")
                   )
-                 (ns ;; if frame created on mac
-                  ;; (border-color . "black")
-                  ;; (cursor-color . "green")
+                 (mac ;; mac-port emacs
                   (alpha . 80)
                   (height . 50)
                   (width . 140)
@@ -141,44 +139,30 @@
                   (foreground-color . "#eeeeec")
                   (background-color . "#202020") ;;
                   (background-mode . dark)
-
-                  ;;  ;; (background-color . "#263111")
-                  ;;  (cursor-color . "green")
-                  ;;  (mouse-color ."gold")
-                  ;;  (mouse-color . "Gainsboro")
-                  ;;         (font . "-unknown-DejaVu Sans Mono-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
-                  ;; (font . "fontset-mymac")
-                  ;;(font . "Menlo-14")
+                  )
+                 (ns ;; if frame created on mac
+                  (alpha . 80)
+                  (height . 50)
+                  (width . 140)
+                  (left . 160)
+                  (top . 80)
+                  (foreground-color . "#eeeeec")
+                  (background-color . "#202020") ;;
+                  (background-mode . dark)
                   )
                  (w32
                   (foreground-color . "#eeeeec")
                   (background-color . "#202020") ;;
-                  ;; (font . "fontset-w32")
-                  ;; (background-color . "#0C1021")
                   (background-mode . dark)
-                  ;; (border-color . "black")
                   (alpha . 95)
-                  ;; (cursor-color . "#A7A7A7")
                   (cursor-color . "green")
-                  ;; (foreground-color . "#F8F8F8")
-                  ;; (mouse-color . "sienna1")
-
                   (height . 30)
                   (width . 100)
                   (left . 200)
                   (top . 20)
-                  ;; (visibility . nil)
-                  ;;         (font . "fontset-gbk")
                   )
                  (nil ;; if on term
-                  ;; (background-color . "#0C1021")
                   (background-mode . dark)
-                  ;; (border-color . "black")
-                  ;; (cursor-color . "#A7A7A7")
-                  ;; (cursor-color . "green")
-                  ;; (foreground-color . "#F8F8F8")
-                  ;; (mouse-color . "sienna1")
-                  ;; (font . "fontset-mymac")
                   )))
 
 ;;
