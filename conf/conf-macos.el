@@ -62,8 +62,11 @@
       (global-set-key [mouse-5] '(lambda ()
                                    (interactive)
                                    (scroll-up 1))))))
+(when (equal window-system 'ns)
+  (add-hook 'after-make-frame-functions 'term-enable-mouse-scroll))
 
-(add-hook 'after-make-frame-functions 'term-enable-mouse-scroll)
+(setq mac-command-modifier 'super)
+(setq mac-option-modifier 'meta)
 
 (provide 'conf-macos)
 
