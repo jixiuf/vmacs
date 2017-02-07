@@ -23,7 +23,6 @@ else
 fi
 }
 # check starting emacs daemon
-sh ~/.emacs.d/bin/emd
 
 # if emacsclient major version ==22
 if [ ! -z $EMACSCLIENT ] && [ `$EMACSCLIENT --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` = "22" ] ; then
@@ -39,6 +38,7 @@ if [  -z $EMACSCLIENT ] && [ -x "~/bin/emacsclient"  ] && [ `~/bin/emacsclient -
     if [  -x "~/bin/emacs" ]; then
         ALTERNATE_EDITOR="~/bin/emacs"
     fi
+    sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
@@ -49,6 +49,7 @@ if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local
     if [ -x "/usr/local/bin/emacs" ]; then
         ALTERNATE_EDITOR="/usr/local/bin/emacs"
     fi
+    sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
@@ -62,6 +63,7 @@ if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/bin/emac
         chmod 755 /tmp/emacsclientwrapper.sh
     fi
     ALTERNATE_EDITOR=/tmp/emacsclientwrapper.sh
+    sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
@@ -71,12 +73,35 @@ if [  -z $EMACSCLIENT ] && [ -x "/usr/bin/emacsclient"  ] && [ `/usr/bin/emacscl
     if [ "/usr/bin/emacs" ]; then
         ALTERNATE_EDITOR="/usr/bin/emacs"
     fi
+    sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
+    exit
+fi
+
+# mac-port emacs no emacsclient
+if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/Emacs.sh"  ]; then
+    emacsProcessCount=`pgrep -f "Emacs"|wc -l`
+    if [ $emacsProcessCount -eq 0 ]; then
+        open -a /Applications/Emacs.app $@
+    else
+        if [  $# == 0 ]; then
+            open -a /Applications/Emacs.app
+        else
+            for filename in $@ ;do
+                # 不是以 - 与+ 开头， 且文件不存在，则创建这个文件(如果不存在会打开失败,所以提前建好文件),
+                if [ ! ${filename:0:1} == "+" ] && [ ! ${filename:0:1} == "-" ] && [ ! -f $filename ]; then
+                    touch $filename
+                fi
+            done
+             open $@ -a /Applications/Emacs.app
+        fi
+    fi
     exit
 fi
 
 
 EMACSCLIENT=`command -v emacsclient`
 if [ ! -z $EMACSCLIENT ]; then
+    sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
 fi
