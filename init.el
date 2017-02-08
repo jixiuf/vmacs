@@ -91,7 +91,7 @@
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
 (with-eval-after-load 'css-mode (require 'conf-css))
-
+(with-eval-after-load 'js (require 'conf-program-js))
 
 (when (eq system-type 'darwin) (require 'conf-iterm2)) ;iterm2特有的配置
 
