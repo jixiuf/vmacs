@@ -116,4 +116,3 @@
 ;; End:
 
 ;;; conf-clipboard.el ends here.
-

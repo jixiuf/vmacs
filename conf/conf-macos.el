@@ -1,3 +1,30 @@
+(setq mac-command-modifier 'super)
+(setq mac-option-modifier 'meta)
+
+(global-set-key (kbd "s-m") 'toggle-frame-maximized) ;cmd-m
+(global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
+(global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
+
+(global-set-key  (kbd "s-c") 'kill-ring-save)
+(global-set-key  (kbd "s-v") 'yank)
+(global-set-key  (kbd "s-x") 'vmacs-kill-region-or-line)
+(global-set-key  (kbd "s-s") 'evil-write-all)
+
+(global-set-key  (kbd "s-l") 'evil-goto-line)
+(global-set-key  (kbd "s-z") 'undo)
+(global-set-key  (kbd "s-r") 'compile-dwim-compile)
+
+(global-set-key  (kbd "s-o") 'other-window)
+(global-set-key  (kbd "s-n") 'evil-window-next)
+(global-set-key  (kbd "s-p") 'evil-window-prev)
+
+(global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
+
+(global-set-key  (kbd "s-w") 'delete-window)
+(global-set-key  (kbd "s-1") 'delete-other-windows)
+(global-set-key  (kbd "s-2") 'split-window-func-with-other-buffer-vertically)
+(global-set-key  (kbd "s-3") 'split-window-func-with-other-buffer-horizontally)
+
 ;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
 ;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
 ;; 从shell 中获取环境变量
@@ -43,9 +70,6 @@
 ;;It is necessary to perform an update!
 (jka-compr-update)
 
-(global-set-key (kbd "s-m") 'toggle-frame-maximized) ;cmd-m
-(global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
-(global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
 
 ;; f11 (toggle-frame-fullscreen) default
 (setq ns-pop-up-frames nil)
@@ -64,9 +88,6 @@
                                    (scroll-up 1))))))
 (when (equal window-system 'ns)
   (add-hook 'after-make-frame-functions 'term-enable-mouse-scroll))
-
-(setq mac-command-modifier 'super)
-(setq mac-option-modifier 'meta)
 
 (provide 'conf-macos)
 
