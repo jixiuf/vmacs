@@ -40,7 +40,7 @@
 (defun get-completion-function()
   "Get a completion function according to current major mode."
   (let ((completion-function
-         (second (assq major-mode smart-tab-completion-functions))))
+         (cadr (assq major-mode smart-tab-completion-functions))))
     (if (null completion-function)
         'hippie-expand
 
