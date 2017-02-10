@@ -41,6 +41,15 @@
         (when (frame-parameter frame 'window-id)
           (setq gui-frame-cnt (1+ gui-frame-cnt)))))
     gui-frame-cnt))
+;;;###autoload
+(defun vmacs-split-window-or-other-window()
+  (interactive)
+  (cond
+   (  (equal 1 (count-windows))
+      (split-window-func-with-other-buffer-horizontally)
+      (call-interactively 'other-window))
+   (t
+    (call-interactively 'other-window))))
 
 (provide 'lazy-window)
 

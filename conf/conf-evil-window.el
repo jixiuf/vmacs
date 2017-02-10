@@ -14,7 +14,7 @@
 (golden-ratio-mode 1)
 ;; Work with ediff and helm
 (add-to-list 'golden-ratio-exclude-modes "ediff-mode")
-(add-to-list 'golden-ratio-exclude-modes "magit-mode")
+;; (add-to-list 'golden-ratio-exclude-modes "magit-mode")
 (add-to-list 'golden-ratio-exclude-modes "magit-key-mode")
 (setq golden-ratio-extra-commands
       (append golden-ratio-extra-commands
@@ -30,11 +30,11 @@
   (when (boundp 'ediff-this-buffer-ediff-sessions)
     ediff-this-buffer-ediff-sessions))
 
-(defun my-helm-alive-p ()
+(defun vmacs-helm-alive-p ()
   (if (boundp 'helm-alive-p)
       (symbol-value 'helm-alive-p)))
 
-(add-to-list 'golden-ratio-inhibit-functions 'my-helm-alive-p)
+(add-to-list 'golden-ratio-inhibit-functions 'vmacs-helm-alive-p)
 
 
 (provide 'conf-evil-window)

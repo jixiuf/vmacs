@@ -10,12 +10,12 @@
 (global-set-key  (kbd "s-x") 'vmacs-kill-region-or-line)
 (global-set-key  (kbd "s-s") 'evil-write-all)
 
-(global-set-key  (kbd "s-l") 'evil-goto-line)
 (global-set-key  (kbd "s-z") 'undo)
 (global-set-key  (kbd "s-r") 'compile-dwim-compile)
 
+(global-set-key  (kbd "s-l") 'delete-other-windows)
 (global-set-key  (kbd "s-o") 'other-window)
-(global-set-key  (kbd "s-n") 'evil-window-next)
+(global-set-key  (kbd "s-n") 'vmacs-split-window-or-other-window)
 (global-set-key  (kbd "s-p") 'evil-window-prev)
 
 (global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
