@@ -208,6 +208,7 @@
 ;; 已访问的目录中筛选以方便快速访问
 (require 'helm-dired-history)
 (define-key dired-mode-map "," 'dired)  ;
+(define-key dired-mode-map "f" 'open-in-filemanager)  ;
 
 ;; 删除 copy 文件目录时 以异步的形式进行，以避copy大文件时emacs卡位无法进行其他操作
 (with-eval-after-load 'dired-aux (require 'dired-async nil t))
