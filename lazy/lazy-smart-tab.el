@@ -24,6 +24,8 @@
     (magit-process-mode magit-section-toggle)
     (term-mode term-complete-tab)
     (epa-key-list-mode widget-forward)
+    (minibuffer-local-completion minibuffer-complete)
+    (minibuffer-local-map minibuffer-complete)
     ;; (org-mode novel-fill)
     (novel-mode novel-fill)
     (text-mode novel-fill)
