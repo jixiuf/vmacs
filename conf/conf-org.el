@@ -27,6 +27,7 @@
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
  org-reverse-note-order t ;;org.el
+ org-link-file-path-type  'relative
  org-log-done 'time
  ;; code执行免应答（Eval code without confirm）
  org-confirm-babel-evaluate nil
