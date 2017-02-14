@@ -33,7 +33,6 @@
 (setq exec-path-from-shell-arguments '("-l" "-i")) ;remove -i read form .zshenv
 (exec-path-from-shell-initialize)
 
-
 (setenv "LANG" "zh_CN.UTF-8")
 
 ;; (setq-default server-auth-dir (expand-file-name "~/.emacs.d/cache/"))
