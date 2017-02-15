@@ -430,4 +430,5 @@
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
  '(tramp-persistency-file-name "~/.emacs.d/cache/tramp")
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify))
+ '(warning-suppress-types (quote ((yasnippet backquote-change)))))
