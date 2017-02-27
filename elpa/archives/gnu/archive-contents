@@ -23,7 +23,7 @@
 	    ((:keywords "languages" "ada")
 	     (:url . "http://www.nongnu.org/ada-mode/"))])
  (ada-ref-man .
-	      [(2012 0)
+	      [(2012 3)
 	       nil "Ada Reference Manual 2012" tar
 	       ((:keywords "languages" "ada")
 		(:url . "http://stephe-leake.org/ada/arm.html"))])
@@ -140,6 +140,13 @@
 	  nil "Properly prefixed CL functions and macros" single
 	  ((:url . "http://elpa.gnu.org/packages/cl-lib.html")
 	   (:keywords))])
+ (cl-print .
+	   [(1 0)
+	    ((emacs
+	      (25)))
+	    "CL-style generic printer facilies" single
+	    ((:url . "http://elpa.gnu.org/packages/cl-print.html")
+	     (:keywords))])
  (cobol-mode .
 	     [(1 0 0)
 	      nil "Mode for editing COBOL code" single
@@ -174,7 +181,7 @@
 		((:keywords "unicode" "symbols" "completion")
 		 (:url . "https://github.com/vspinu/company-math"))])
  (company-statistics .
-		     [(0 2 2)
+		     [(0 2 3)
 		      ((emacs
 			(24 3))
 		       (company
@@ -315,9 +322,11 @@
 		    ((:url . "http://elpa.gnu.org/packages/electric-spacing.html")
 		     (:keywords))])
  (enwc .
-       [(1 0)
-	nil "The Emacs Network Client" tar
-	((:keywords "enwc" "network" "wicd" "manager" "nm")
+       [(2 0 -2 1)
+	((emacs
+	  (25 1)))
+	"The Emacs Network Client" tar
+	((:keywords "external" "network" "wicd" "manager" "nm")
 	 (:url . "http://elpa.gnu.org/packages/enwc.html"))])
  (epoch-view .
 	     [(0 0 1)
@@ -946,7 +955,7 @@
 	       ((:url . "https://github.com/tlikonen/wcheck-mode")
 		(:keywords "text" "spell" "check" "languages" "ispell"))])
  (wconf .
-	[(0 2 0)
+	[(0 2 1)
 	 ((emacs
 	   (24 4)))
 	 "Minimal window layout manager" single
