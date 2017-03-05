@@ -1,54 +1,52 @@
-alias g=git $*
-alias v sudo vim $*
-alias umount sudo umount $*
-alias tn  tmux new -A -s $*
-alias ta  tmux attach $*
-alias tmux  tmux $*
-alias tget tsocks wget $*
-alias su su -l $*
-alias srm sudo rm -rf $*
-alias sl=ls
-alias rm rm -rf $*
-alias ps ps -ef $*
-alias pp ps -ef|grep -v grep|grep $*
-alias mount sudo mount $*
-alias mkdir mkdir -p $*
-alias ls ls -Gv  $*
-alias lp ls|less $*
-alias lls ls -lShGv $*
-alias llr ls -ltrhGv $*
-alias lln ls -lhGv $*
-alias lla ls -althGv $*
-alias lc=launchctl
-alias ll ls -lthGv $*
-alias la ls -aGvv $*
-alias gst git status $*
-alias dush du -sh $*
-alias date date +%Y-%m-%d_%H:%M-%A $*
-alias cp cp -r $*
-alias chown chown -R $*
-alias chmod chmod -R $*
-alias cdd cd - $*
-alias cd9 cd -9 $*
-alias cd8 cd -8 $*
-alias cd7 cd -7 $*
-alias cd6 cd -6 $*
-alias cd5 cd -5 $*
-alias cd4 cd -4 $*
-alias cd3 cd -3 $*
-alias cd2 cd -2 $*
-alias cd1 cd - $*
-alias cd.. cd .. $*
-alias 9 cd -9 $*
-alias 8 cd -8 $*
-alias 7 cd -7 $*
-alias 6 cd -6 $*
-alias 5 cd -5 $*
-alias 4 cd -4 $*
-alias 3 cd -3 $*
-alias 2 cd -2 $*
-alias 1 cd - $*
-alias ..... ../../../.. $*
-alias .... ../../.. $*
-alias ... ../.. $*
+alias g git $*
 alias .. cd .. $*
+alias ... ../.. $*
+alias .... ../../.. $*
+alias ..... ../../../.. $*
+alias 1 cd - $*
+alias 2 cd -2 $*
+alias 3 cd -3 $*
+alias 4 cd -4 $*
+alias 5 cd -5 $*
+alias 6 cd -6 $*
+alias 7 cd -7 $*
+alias 8 cd -8 $*
+alias 9 cd -9 $*
+alias cd.. cd .. $*
+alias cd1 cd - $*
+alias cd2 cd -2 $*
+alias cd3 cd -3 $*
+alias cd4 cd -4 $*
+alias cd5 cd -5 $*
+alias cd6 cd -6 $*
+alias cd7 cd -7 $*
+alias cd8 cd -8 $*
+alias cd9 cd -9 $*
+alias cdd cd - $*
+alias chmod chmod -R $*
+alias chown chown -R $*
+alias cp cp -r $*
+alias date date +%Y-%m-%d_%H:%M-%A $*
+alias dush du -sh $*
+alias gst git status $*
+alias la ls -aGvv $*
+alias lc=launchctl alias ll ls -lthGv $*
+alias lla ls -althGv $*
+alias lln ls -lhGv $*
+alias llr ls -ltrhGv $*
+alias lls ls -lShGv $*
+alias lp ls|less $*
+alias ls ls -Gv  $*
+alias mkdir mkdir -p $*
+alias mount sudo mount $*
+alias pp ps -ef|grep -v grep|grep $*
+alias ps ps -ef $*
+alias sl=ls alias rm rm -rf $*
+alias srm sudo rm -rf $*
+alias su su -l $*
+alias tget tsocks wget $*
+alias tmux tmux $*
+alias ta tmux attach $*
+alias tn tmux new -A -s $*
+alias umount sudo umount $*
+alias v sudo vim $*

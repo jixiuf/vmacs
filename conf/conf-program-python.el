@@ -37,7 +37,7 @@
  ;; jedi:key-complete (kbd "C-h")
  ;; jedi:key-show-doc C-c d
  ;; jedi:key-related-names C-c r
- jedi:key-goto-definition-pop-marker C-, default
+ ;; jedi:key-goto-definition-pop-marker C-, default
  ;; jedi:key-goto-definition-pop-marker  (kbd "M-,")
  ;; jedi:key-goto-definition (kbd "M-.")
  jedi:use-shortcuts nil
