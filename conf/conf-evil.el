@@ -142,7 +142,7 @@
   (add-hook 'evil-insert-state-entry-hook 'vmacs-change-cursor-hook))
 
 
-(global-evil-matchit-mode 1)
+;;(global-evil-matchit-mode 1)
 
 
 ;; emacs 自带的repeat 绑定在C-xz上， 这个advice ,奖 repeat 的功能 与evil 里的","功能合
