@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "openwith" "openwith.el" (0 0 0 0))
+;;;### (autoloads nil "openwith" "openwith.el" (22716 3779 0 0))
 ;;; Generated autoloads from openwith.el
 
 (defvar openwith-mode nil "\
@@ -20,8 +20,6 @@ or call the function `openwith-mode'.")
 Automatically open files with external programs.
 
 \(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "openwith" '("openwith-")))
 
 ;;;***
 

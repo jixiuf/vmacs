@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ctags-update" "ctags-update.el" (22690 54720
+;;;### (autoloads nil "ctags-update" "ctags-update.el" (22716 3653
 ;;;;;;  0 0))
 ;;; Generated autoloads from ctags-update.el
 

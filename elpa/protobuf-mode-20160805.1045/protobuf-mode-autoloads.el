@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "protobuf-mode" "protobuf-mode.el" (0 0 0 0))
+;;;### (autoloads nil "protobuf-mode" "protobuf-mode.el" (22716 3780
+;;;;;;  0 0))
 ;;; Generated autoloads from protobuf-mode.el
  (add-to-list 'auto-mode-alist '("\\.proto\\'" . protobuf-mode))
 
@@ -17,8 +18,6 @@ Key bindings:
 \\{protobuf-mode-map}
 
 \(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "protobuf-mode" '("protobuf-")))
 
 ;;;***
 

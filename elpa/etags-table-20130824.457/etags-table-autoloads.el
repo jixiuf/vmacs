@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "etags-table" "etags-table.el" (0 0 0 0))
+;;;### (autoloads nil "etags-table" "etags-table.el" (22716 3711
+;;;;;;  0 0))
 ;;; Generated autoloads from etags-table.el
 
 (let ((loads (get 'etags-table 'custom-loads))) (if (member '"etags-table" loads) nil (put 'etags-table 'custom-loads (cons '"etags-table" loads))))
@@ -38,8 +39,6 @@ captured with \\(\\) in the key.
 *Max depth to search up for a tags file.  nil means don't search.")
 
 (custom-autoload 'etags-table-search-up-depth "etags-table" t)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "etags-table" '("etags-table-")))
 
 ;;;***
 

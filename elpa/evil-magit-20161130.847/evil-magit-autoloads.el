@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "evil-magit" "evil-magit.el" (0 0 0 0))
+;;;### (autoloads nil "evil-magit" "evil-magit.el" (22716 3741 0
+;;;;;;  0))
 ;;; Generated autoloads from evil-magit.el
 
 (autoload 'evil-magit-init "evil-magit" "\
@@ -18,8 +19,6 @@ go back to evil-magit behavior.
 Revert changes by evil-magit that affect default evil+magit behavior.
 
 \(fn)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "evil-magit" '("evil-magit-")))
 
 ;;;***
 

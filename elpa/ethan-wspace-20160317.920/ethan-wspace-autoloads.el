@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "ethan-wspace" "ethan-wspace.el" (0 0 0 0))
+;;;### (autoloads nil "ethan-wspace" "ethan-wspace.el" (22716 3713
+;;;;;;  0 0))
 ;;; Generated autoloads from ethan-wspace.el
 
 (autoload 'ethan-wspace-mode "ethan-wspace" "\
@@ -34,8 +35,6 @@ Ethan-Wspace mode is enabled in all buffers where
 See `ethan-wspace-mode' for more information on Ethan-Wspace mode.
 
 \(fn &optional ARG)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ethan-wspace" '("ethan-wspace-")))
 
 ;;;***
 

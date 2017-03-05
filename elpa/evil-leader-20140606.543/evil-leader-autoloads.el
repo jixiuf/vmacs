@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "evil-leader" "evil-leader.el" (0 0 0 0))
+;;;### (autoloads nil "evil-leader" "evil-leader.el" (22716 3714
+;;;;;;  0 0))
 ;;; Generated autoloads from evil-leader.el
 
 (autoload 'global-evil-leader-mode "evil-leader" "\
@@ -30,8 +31,6 @@ Create keybindings for major-mode `mode' with `key' bound to command `def'.
 See `evil-leader/set-key'.
 
 \(fn MODE KEY DEF &rest BINDINGS)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "evil-leader" '("evil-leader")))
 
 ;;;***
 

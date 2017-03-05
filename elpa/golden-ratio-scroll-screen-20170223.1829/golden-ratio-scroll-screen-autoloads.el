@@ -4,7 +4,7 @@
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
 ;;;### (autoloads nil "golden-ratio-scroll-screen" "golden-ratio-scroll-screen.el"
-;;;;;;  (22707 60166 0 0))
+;;;;;;  (22716 3654 0 0))
 ;;; Generated autoloads from golden-ratio-scroll-screen.el
 
 (autoload 'golden-ratio-scroll-screen-up "golden-ratio-scroll-screen" "\

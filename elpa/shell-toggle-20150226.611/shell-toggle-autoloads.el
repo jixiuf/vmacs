@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "shell-toggle" "shell-toggle.el" (0 0 0 0))
+;;;### (autoloads nil "shell-toggle" "shell-toggle.el" (22716 3580
+;;;;;;  0 0))
 ;;; Generated autoloads from shell-toggle.el
 
 (autoload 'shell-toggle-cd "shell-toggle" "\
@@ -25,8 +26,6 @@ before calling this the first time.
 Options: `shell-toggle-goto-eob'
 
 \(fn MAKE-CD)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "shell-toggle" '("shell-toggle-")))
 
 ;;;***
 

@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "helm-etags-plus" "helm-etags-plus.el" (22707
-;;;;;;  60247 0 0))
+;;;### (autoloads nil "helm-etags-plus" "helm-etags-plus.el" (22716
+;;;;;;  3619 0 0))
 ;;; Generated autoloads from helm-etags-plus.el
 
 (autoload 'helm-etags-plus-select "helm-etags-plus" "\

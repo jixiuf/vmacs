@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "bm" "bm.el" (0 0 0 0))
+;;;### (autoloads nil "bm" "bm.el" (22716 3697 0 0))
 ;;; Generated autoloads from bm.el
 
 (autoload 'bm-toggle "bm" "\
@@ -61,18 +61,10 @@ EV is the mouse event.
 
 \(fn EV)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bm" '("bm-" "temporary-bookmark-p")))
-
 ;;;***
 
-;;;### (autoloads nil "bm-sync" "bm-sync.el" (0 0 0 0))
-;;; Generated autoloads from bm-sync.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bm-sync" '("bm-bookmark-")))
-
-;;;***
-
-;;;### (autoloads nil nil ("bm-pkg.el") (0 0 0 0))
+;;;### (autoloads nil nil ("bm-pkg.el" "bm-sync.el") (22716 3697
+;;;;;;  0 0))
 
 ;;;***
 

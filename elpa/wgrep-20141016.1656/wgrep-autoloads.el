@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "wgrep" "wgrep.el" (0 0 0 0))
+;;;### (autoloads nil "wgrep" "wgrep.el" (22716 3817 0 0))
 ;;; Generated autoloads from wgrep.el
 
 (autoload 'wgrep-setup "wgrep" "\
@@ -12,8 +12,6 @@ Setup wgrep preparation.
 \(fn)" nil nil)
 
 (add-hook 'grep-setup-hook 'wgrep-setup)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "wgrep" '("wgrep-")))
 
 ;;;***
 

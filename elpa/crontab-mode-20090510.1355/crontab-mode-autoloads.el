@@ -3,7 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "crontab-mode" "crontab-mode.el" (0 0 0 0))
+;;;### (autoloads nil "crontab-mode" "crontab-mode.el" (22716 3697
+;;;;;;  0 0))
 ;;; Generated autoloads from crontab-mode.el
 
 (autoload 'crontab-mode "crontab-mode" "\
@@ -19,8 +20,6 @@ Sets up command `font-lock-mode'.
 Get the crontab for the HOST into a buffer.
 
 \(fn HOST)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "crontab-mode" '("crontab-")))
 
 ;;;***
 

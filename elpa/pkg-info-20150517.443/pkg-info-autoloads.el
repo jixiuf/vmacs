@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "pkg-info" "pkg-info.el" (0 0 0 0))
+;;;### (autoloads nil "pkg-info" "pkg-info.el" (22716 3750 0 0))
 ;;; Generated autoloads from pkg-info.el
 
 (autoload 'pkg-info-library-original-version "pkg-info" "\
@@ -110,8 +110,6 @@ is the same as the LIBRARY version, do not include a package
 version.
 
 \(fn LIBRARY &optional PACKAGE SHOW)" t nil)
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pkg-info" '("pkg-info-")))
 
 ;;;***
 
