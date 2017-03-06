@@ -432,27 +432,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; 默认visual选中即复制到剪切版，去掉这个功能
 (fset 'evil-visual-update-x-selection 'ignore)
 
-;; ;; ;; 默认情况下普通的evil-paste-before，会move-back 一个字符，此defadvice向前move回去
-;; (defadvice evil-paste-before (around no-move-back activate)
-;;   (let* ((text (if register
-;;                    (evil-get-register register)
-;;                  (current-kill 0)))
-;;          (yh  (or yank-handler
-;;                   (when (stringp text)
-;;                     (car-safe (get-text-property
-;;                                0 'yank-handler text))))))
-;;     ad-do-it
-;;     (unless yh
-;;       (evil-set-marker ?\] (point))
-;;       (when (vectorp text)
-;;         (setq text (evil-vector-to-string text)))
-;;       (when (> (length text) 0)
-;;         (forward-char)))))
 
 ;; (fset 'yank 'evil-paste-before)
-;; ;; 交换p P
-;; (define-key evil-normal-state-map "P" 'evil-paste-after)
-;; (define-key evil-normal-state-map "p" 'evil-paste-before)
 
 (defadvice evil-ex-search-next (after dotemacs activate)
   (recenter))
