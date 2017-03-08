@@ -47,10 +47,10 @@
            (helm-gtags-find-files (match-string 1 line))
          (helm-gtags-find-tag-and-symbol)))
       (lua-mode
-       (call-interactively 'helm-etags-plus-select)
+       (call-interactively 'helm-gtags-find-tag-and-symbol)
        )
       (csharp-mode
-       (call-interactively 'helm-etags-plus-select)
+       (call-interactively 'helm-gtags-find-tag-and-symbol)
        )
       (js-mode
        (if (functionp 'tern-find-definition)

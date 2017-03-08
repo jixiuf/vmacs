@@ -21,76 +21,19 @@
 ;; * ‘M-x tags-apropos’ – list all tags in a tags file that match a regexp
 ;; * ‘M-x list-tags’ – list all tags defined in a source file
 
-;; ;;; etags-helm+.el 我写的
-;; ;;  (require 'helm-etags-plus)
-;; ;; (autoload 'helm-etags-plus-select "helm-etags-plus.el" "" t)
-;; ;; (autoload 'helm-etags-plus-history "helm-etags-plus.el" t)
-;; ;; (autoload 'helm-etags-plus-history-go-back "helm-etags-plus.el" "" t)
-;; ;; (autoload 'helm-etags-plus-history-go-forward "helm-etags-plus.el" "" t)
+;; ;; ;;; defined in ctags-update.el
+;; (when (equal system-type 'windows-nt)
+;;   (setq-default ctags-update-command (expand-file-name  "binw32/ctags.exe" user-emacs-directory)))
+;; (add-hook 'csharp-mode-hook  'turn-on-ctags-auto-update-mode)
 
-
-
-;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
-;; ;; (global-set-key "\M-." 'helm-etags-plus-select)
-;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
-;; (define-key global-map "\M-." 'goto-definition)
-;; ;; (define-key global-map "\M-," 'quick-jump-go-back)
-;; ;; (define-key global-map "\M-/" 'quick-jump-go-forward)
-
-;; ;;list all
-;; (global-set-key "\M-*" 'helm-etags-plus-history)
-;; ;;go back directly without-helm
-;; ;; (global-set-key "\M-," 'helm-etags-plus-history-go-back)
-;; ;;go forward directly without helm
-;; ;; (global-set-key "\M-/" 'helm-etags-plus-history-go-forward)
-;; ;;; etags-table
-;; ;;它会根据你打开的文件不同为 tags-table-list 属性设置不同的值
-;; ;; (require 'etags-table)
-;; (autoload 'etags-table-recompute "etags-table" "" nil)
-;; (add-hook 'helm-etags-plus-select-hook 'etags-table-recompute)
-
-;; ;;etags-table的正则语法 必须匹配全路径，所以要加上 ".*"
-;; (eval-after-load "etags-table"
-;;   '(progn
-;;      (if (equal system-type 'gnu/linux)
-;;          (setq etags-table-alist
-;;                `((".*\\.java$"  ,(expand-file-name "src/TAGS" (getenv "JAVA_HOME")))
-;;                  (".*\\.[ch]$"  "/usr/include/TAGS")
-;;                  (".*\\.el$" ,(concat "/usr/share/emacs/" (substring emacs-version 0 (string-match "\\.[0-9]+$"  emacs-version)) "/lisp/TAGS"))
-;;                  (".*\\.[he]rl$"  "/usr/lib/erlang/lib/TAGS")
-;;                  ))
-;;        (setq etags-table-alist
-;;              `((".*\\.java$"  ,(expand-file-name "src/TAGS" (getenv "JAVA_HOME")))
-;;                (".*\\.el$" ,(expand-file-name(concat exec-directory "../lisp/TAGS" )))
-;;                (".*\\.[he]rl$"  "d:/usr/erl5.8.5/lib/TAGS")
-;;                (".*\\.h$"  "D:/usr/vs/VC/atlmfc/TAGS")
-;;                (".*\\.cpp$"  "D:/usr/vs/VC/atlmfc/TAGS")
-;;                ))
-;;        )
-;;      )
-;;   )
-
-;; ;;; defined in ctags-update.el
-(when (equal system-type 'windows-nt)
-  (setq-default ctags-update-command (expand-file-name  "binw32/ctags.exe" user-emacs-directory)))
-(add-hook 'csharp-mode-hook  'turn-on-ctags-auto-update-mode)
-
-
-;; (add-hook 'c-mode-common-hook  'turn-on-ctags-auto-update-mode)
-;; (add-hook 'emacs-lisp-mode-hook  'turn-on-ctags-auto-update-mode)
-
-;; ;; (setq-default ctags-update-lighter "")
-;; ;; with prefix `C-u' ,then you can generate a new TAGS file in your
-;; ;; selected directory
-;; (global-set-key "\C-wE" 'ctags-update)
 
 (autoload 'bm-bookmark-add "bm" "add bookmark")
 (autoload 'bm-bookmark-remove "bm" "remove bookmark")
 
-(with-eval-after-load 'helm-etags-plus
-  (add-hook 'helm-etags-plus-before-jump-hook '(lambda()(bm-bookmark-add nil nil t)))
-  (add-hook 'helm-etags-plus-after-jump-hook '(lambda()(bm-bookmark-remove)))
-  )
+;; (with-eval-after-load 'helm-etags-plus
+;;   (add-hook 'helm-etags-plus-before-jump-hook '(lambda()(bm-bookmark-add nil nil t)))
+;;   (add-hook 'helm-etags-plus-after-jump-hook '(lambda()(bm-bookmark-remove)))
+;;   )
 
 (with-eval-after-load 'helm-gtags
   ;; (add-hook 'helm-for-files-preferred-list 'helm-source-gtags-files t)
@@ -133,29 +76,28 @@
 ;; (global-set-key "\C-wE" 'helm-gtags-update-tags)
 ;; (global-set-key "\M-*" 'helm-gtags-show-stack)
 
-(defun my-helm-gtags-mode-hook()
+(defun vmacs-helm-gtags-mode-hook()
   ;; (local-set-key (kbd "M-.") 'helm-gtags-find-tag-and-symbol)
   ;; (local-set-key (kbd "M-t") 'helm-gtags-find-tag)
   ;; (local-set-key (kbd "M-s") 'helm-gtags-find-symbol)
   (local-set-key [(control return)] 'helm-gtags-complete)
-  (local-set-key (kbd "C-[ [ a c") (key-binding [(control return)]))   ; iterm map to ctrl-return
-  )
+  (local-set-key (kbd "C-[ [ a c") (key-binding [(control return)])))   ; iterm map to ctrl-return
+
 ;; key bindings
-(add-hook 'helm-gtags-mode-hook 'my-helm-gtags-mode-hook)
+(add-hook 'helm-gtags-mode-hook 'vmacs-helm-gtags-mode-hook)
 ;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
 (define-key global-map "\M-." 'goto-definition)
 
 (define-key evil-motion-state-map "gd" 'goto-definition)
-(define-key evil-motion-state-map "gs" 'helm-etags-plus-select)
 (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
 (define-key evil-motion-state-map "gr" 'helm-gtags-find-rtag)
 (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
 
-(evil-leader/set-key "wge" 'helm-gtags-update-tags)
-(evil-leader/set-key "wgr" 'helm-gtags-find-rtag)
-(evil-leader/set-key "wgp" 'helm-gtags-parse-file)
-(evil-leader/set-key "wgi" 'helm-gtags-parse-file)
-(evil-leader/set-key "we" 'ctags-update)
+;; (evil-leader/set-key "wge" 'helm-gtags-update-tags)
+;; (evil-leader/set-key "wgr" 'helm-gtags-find-rtag)
+;; (evil-leader/set-key "wgp" 'helm-gtags-parse-file)
+;; (evil-leader/set-key "wgi" 'helm-gtags-parse-file)
+;; (evil-leader/set-key "we" 'ctags-update)
 
 
 (provide 'conf-tags)
