@@ -1,6 +1,4 @@
-(eval-when-compile
-  (require 'cl-lib)
-  )
+(eval-when-compile (require 'cl-lib))
 
 (autoload 'find-library-name "find-func" "find libary")
 ;; 跳转到函数定义的地方，跳转前在原处设置一个书签,space,可回原处
@@ -35,7 +33,7 @@
                    (when (variable-at-point) (find-variable (symbol-at-point)))
                  (error (helm-gtags-find-tag-and-symbol))))
            )))
-      (erlang-mode (erl-find-source-under-point))
+      ;; (erlang-mode (erl-find-source-under-point))
       (c++-mode
        (if (string-match "[ ]*#[ \t]*include[ \t]+[\"<]\\(.*\\)[\">]" line)
            ;; for c++-mode ,in current line contains #include ,then try to open the include file using helm-gtags
