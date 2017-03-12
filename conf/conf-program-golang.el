@@ -31,11 +31,12 @@
   ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; github.com/syohex/emacs-go-eldoc
   (go-eldoc-setup)                    ;autoloaded
-  (setq company-backends `(company-go
+  (setq company-backends `((company-yasnippet company-go)
                            company-files
                            company-capf
                            company-dabbrev-code
                            company-dabbrev))
+
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
   (add-hook 'before-save-hook 'gofmt-before-save)

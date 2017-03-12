@@ -3,6 +3,7 @@
 (with-eval-after-load 'company
   ;; 调整默认backends
   (setq-default company-backends `(,@(unless (version< "24.3.51" emacs-version)
+
                                        (list 'company-elisp))
                                    company-files
                                    company-nxml
@@ -13,11 +14,17 @@
                                    company-eclim
                                    company-semantic
                                    company-capf
-                                   (company-dabbrev-code company-gtags company-etags
-                                                         company-keywords)
-                                        company-dabbrev
-                                        company-oddmuse ;
-                                        company-bbdb))
+                                   (
+                                    ;; company-dabbrev-code
+                                    company-gtags
+                                    company-etags
+                                    company-keywords
+                                    company-dabbrev
+                                    company-yasnippet
+                                    )
+                                   ;; company-oddmuse ;
+                                   ;; company-bbdb
+                                   ))
 
   (setq-default company-idle-delay 0.08)
   (setq-default company-minimum-prefix-length 2)
