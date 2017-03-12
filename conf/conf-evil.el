@@ -414,7 +414,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-leader/set-key ")" 'kmacro-end-macro) ;C-x
 (evil-leader/set-key "ca" 'org-agenda)
 (evil-leader/set-key "cc" 'toggle-case-fold)
-(evil-leader/set-key "u" 'universal-argument)
+(evil-leader/set-key "u" 'backward-up-list)
 (evil-leader/set-key "t" 'org-agenda)
 (evil-leader/set-key "/" 'undo)
 (evil-leader/set-key "$" 'toggle-truncate-lines)
