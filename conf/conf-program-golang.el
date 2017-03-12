@@ -26,16 +26,18 @@
   (setq-default gofmt-command (executable-find "goimports")))
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
+(setq company-go-show-annotation t)
 
 (defun vmacs-go-mode-hook()
   ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; github.com/syohex/emacs-go-eldoc
   (go-eldoc-setup)                    ;autoloaded
-  (setq company-backends `((company-yasnippet company-go)
+  (setq company-backends `((company-go company-yasnippet )
                            company-files
                            company-capf
+                           company-dabbrev
                            company-dabbrev-code
-                           company-dabbrev))
+                           ))
 
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
