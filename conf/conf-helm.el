@@ -93,6 +93,7 @@
 
 (evil-leader/set-key "SPC" 'helm-multi-files)
 (evil-leader/set-key "ff" 'find-file)
+(evil-leader/set-key "fh" 'helm-find-files)
 (evil-leader/set-key "fl" 'helm-locate)
 (evil-leader/set-key "fg" 'helm-ls-git-ls)
 (evil-leader/set-key  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
