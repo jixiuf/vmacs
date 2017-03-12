@@ -30,6 +30,8 @@
   (setq-default company-idle-delay 0.2)
   (setq company-echo-delay 0)
   (setq company-tooltip-minimum-width 50)
+  (setq company-search-regexp-function 'company-search-flex-regexp)
+
   (setq-default company-minimum-prefix-length 2)
   (add-to-list 'company-begin-commands  'backward-delete-char-untabify)
   (add-to-list 'company-begin-commands  'backward-kill-word)
