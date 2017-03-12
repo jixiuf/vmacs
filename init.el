@@ -31,8 +31,8 @@
 ;; ~/.emacs.d/conf/目录加到load-path中
 (add-to-list 'load-path (concat user-emacs-directory "conf/"))
 
-(require 'conf-auto-compile)          ;自动编译elisp文件,以加快elisp的加载速度
 (require 'conf-package)                 ;make sure package are installed
+(require 'conf-auto-compile)          ;自动编译elisp文件,以加快elisp的加载速度
 
 ;; 如果你想重新编译，去掉这行前面的注释重新启动
 ;; (async-byte-recompile-directory user-emacs-directory)
