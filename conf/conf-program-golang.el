@@ -33,7 +33,7 @@
   ;; github.com/syohex/emacs-go-eldoc
   (go-eldoc-setup)                    ;autoloaded
   (setq company-backends `((company-go company-yasnippet )
-                           company-files
+                           (company-files company-yasnippet)
                            company-capf
                            company-dabbrev
                            company-dabbrev-code
