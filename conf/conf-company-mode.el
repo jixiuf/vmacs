@@ -29,11 +29,13 @@
 
   (setq-default company-idle-delay 0.2)
   (setq company-echo-delay 0)
+  (setq company-tooltip-minimum-width 50)
   (setq-default company-minimum-prefix-length 2)
   ;; (define-key company-mode-map (kbd "C-i") 'company-other-backend) ;iterm map to C-i
   ;; (define-key company-mode-map (kbd "C-[ [ a h") (key-binding (kbd "C-i"))) ;iterm map to C-i
   (define-key company-active-map (kbd "C-e") #'company-other-backend)
   (define-key company-active-map (kbd "C-s") #'company-filter-candidates)
+  (define-key company-active-map (kbd "M-s") #'company-search-candidates)
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous)
   (define-key company-active-map [tab] 'vmacs-company-complete-common-or-selection)
