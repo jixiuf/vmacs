@@ -31,6 +31,9 @@
   (setq company-echo-delay 0)
   (setq company-tooltip-minimum-width 50)
   (setq-default company-minimum-prefix-length 2)
+  (add-to-list 'company-begin-commands  'backward-delete-char-untabify)
+  (add-to-list 'company-begin-commands  'backward-kill-word)
+  (setq company-require-match nil)
   ;; (define-key company-mode-map (kbd "C-i") 'company-other-backend) ;iterm map to C-i
   ;; (define-key company-mode-map (kbd "C-[ [ a h") (key-binding (kbd "C-i"))) ;iterm map to C-i
   (define-key company-active-map (kbd "C-e") #'company-other-backend)
