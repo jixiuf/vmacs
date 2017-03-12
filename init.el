@@ -9,10 +9,6 @@
  user-mail-address "jixiuf@qq.com")
 (setq load-prefer-newer t)              ;当el文件比elc文件新的时候,则加载el,即尽量Load最新文件文件
 
-;; 测试的时候 配置文件放在 ~/vmacs/内，用下面的命令能加载~/vmacs内的配置
-;;  emacs -nw  -q --load ~/vmacs/init.el
-(when (file-exists-p "~/vmacs/") (setq user-emacs-directory "~/vmacs/"))  ;default .emacs.d
-
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (load custom-file t t )
