@@ -35,7 +35,7 @@
   (setq-default company-minimum-prefix-length 2)
   (add-to-list 'company-begin-commands  'backward-delete-char-untabify)
   (add-to-list 'company-begin-commands  'backward-kill-word)
-  (setq company-require-match nil)
+  (setq company-require-match nil)      ;不为nil的话，则如果输入的内容导致无匹配的选项，则不允许此输入
   ;; (define-key company-mode-map (kbd "C-i") 'company-other-backend) ;iterm map to C-i
   ;; (define-key company-mode-map (kbd "C-[ [ a h") (key-binding (kbd "C-i"))) ;iterm map to C-i
   (define-key company-active-map (kbd "C-e") #'company-other-backend)
