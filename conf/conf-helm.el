@@ -92,7 +92,7 @@
 (autoload 'helm-lisp-completion-at-point "helm-elisp" "" t nil)
 
 (evil-leader/set-key "SPC" 'helm-multi-files)
-(evil-leader/set-key "ff" 'helm-find-files)
+(evil-leader/set-key "ff" 'find-file)
 (evil-leader/set-key "fl" 'helm-locate)
 (evil-leader/set-key "fg" 'helm-ls-git-ls)
 (evil-leader/set-key  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
@@ -244,9 +244,9 @@
 (with-eval-after-load 'grep (define-key grep-mode-map (kbd "C-o") nil))
 (with-eval-after-load 'helm-mode
   (helm-mode 1)
-  ;; (add-to-list 'helm-completing-read-handlers-alist '(ibuffer-find-file . ido))
-  ;; (add-to-list 'helm-completing-read-handlers-alist '(switch-to-buffer . ido))
-  ;; (add-to-list 'helm-completing-read-handlers-alist '(find-file . ido))
+  (add-to-list 'helm-completing-read-handlers-alist '(ibuffer-find-file . ido))
+  (add-to-list 'helm-completing-read-handlers-alist '(switch-to-buffer . ido))
+  (add-to-list 'helm-completing-read-handlers-alist '(find-file . ido))
   )
 
 (run-with-idle-timer 3 nil '(lambda()
