@@ -92,7 +92,7 @@
 (autoload 'helm-lisp-completion-at-point "helm-elisp" "" t nil)
 
 (evil-leader/set-key "SPC" 'helm-multi-files)
-(evil-leader/set-key "ff" 'find-file)
+(evil-leader/set-key "ff" 'helm-find-files)
 (evil-leader/set-key "fh" 'helm-find-files)
 (evil-leader/set-key "fl" 'helm-locate)
 (evil-leader/set-key "fg" 'helm-ls-git-ls)
