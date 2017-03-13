@@ -167,6 +167,11 @@
   (define-key helm-map (kbd "C-o") 'helm-next-source)
   (define-key helm-map (kbd "`")        'helm-select-action)
   (define-key helm-map (kbd "C-c c")        'toggle-case-fold)
+  (define-key helm-map (kbd "C-,")        'helm-beginning-of-buffer)
+  (define-key helm-map (kbd "C-.")        'helm-end-of-buffer)
+  (define-key helm-map (kbd "C-e")        'vmacs-helm-magic-eol)
+
+
 
   ;; Use default-as-input in grep
   (add-to-list 'helm-sources-using-default-as-input 'helm-source-grep)
@@ -176,12 +181,52 @@
 
 (with-eval-after-load 'helm-buffers
 
+  (define-key helm-buffer-map (kbd "C-j")       'vmacs-helm-find-file-select-text) ;make it like C-j in ido
+  (define-key helm-buffers-ido-virtual-map (kbd "C-j") 'vmacs-helm-find-file-select-text)
+
   (define-key helm-buffers-ido-virtual-map (kbd "C-[ [ a i") 'helm-ff-run-grep) ;C-3 for iterm2 keymap
   (define-key helm-buffer-map (kbd "M-s")       'helm-buffers-run-multi-occur)
   (define-key helm-buffer-map (kbd "C-3")       'helm-buffer-run-zgrep)
   (define-key helm-buffer-map (kbd "C-[ [ a i") 'helm-buffer-run-zgrep) ;C-3 for iterm2 keymap
   (define-key helm-buffer-map (kbd "C-s")       'helm-next-line)
   (define-key helm-buffer-map (kbd "C-r") 'helm-previous-line))
+
+
+;; (defun vmacs-select-text())
+;; (helm-make-actions
+;;             "Create buffer (C-u choose mode)"
+;;             (lambda (candidate)
+;;              (let ((mjm (or (and helm-current-prefix-arg
+;;                                  (intern-soft (helm-comp-read
+;;                                                "Major-mode: "
+;;                                                helm-buffers-favorite-modes)))
+;;                             (cl-loop for (r . m) in auto-mode-alist
+;;                                      when (string-match r candidate)
+;;                                      return m)))
+;;                    (buffer (get-buffer-create candidate)))
+;;                (if mjm
+;;                    (with-current-buffer buffer (funcall mjm))
+;;                    (set-buffer-major-mode buffer))
+;;                (switch-to-buffer buffer))))
+
+;; ;; 像ido 一样 在目录上return 则进入目录而不是打开dired
+
+;; (defun vmacs-helm-find-files-navigate-forward (orig-fun &rest args)
+;;   (if (file-directory-p (helm-get-selection))
+;;       (helm-execute-persistent-action)
+;;     (apply orig-fun args)))
+;; (advice-add 'helm-maybe-exit-minibuffer :around #'vmacs-helm-find-files-navigate-forward)
+;; ;; (advice-add 'helm-confirm-and-exit-minibuffer :around #'vmacs-helm-find-files-navigate-forward)
+
+
+;; (defun vmacs-helm-find-files-navigate-forward (orig-fun &rest args)
+;;   (if (and (equal "Find Files" (assoc-default 'name (helm-get-current-source)))
+;;            (equal args nil)
+;;            (stringp (helm-get-selection))
+;;            (not (file-directory-p (helm-get-selection))))
+;;       (helm-maybe-exit-minibuffer)
+;;     (apply orig-fun args)))
+;; (advice-add 'helm-execute-persistent-action :around #'vmacs-helm-find-files-navigate-forward)
 
 (with-eval-after-load 'helm-files
   ;; (require 'helm-ls-git)
@@ -200,6 +245,14 @@
   (define-key helm-find-files-map (kbd "C-[ [ a a") 'helm-ff-run-toggle-auto-update) ;C-backspace
 
   (define-key helm-find-files-map (kbd "C-r") 'helm-previous-line) ;;
+
+  (define-key helm-find-files-map (kbd "C-d") 'vmacs-helm-magic-delete-char) ;;
+  (define-key helm-find-files-map (kbd "C-j") 'vmacs-helm-find-file-select-text) ;;
+  (define-key helm-find-files-map (kbd "<return>") 'vmacs-helm-ido-exit-minibuffer)
+  (define-key helm-find-files-map (kbd "<RET>")      'vmacs-helm-ido-exit-minibuffer)
+  (define-key helm-generic-files-map (kbd "C-d") 'vmacs-helm-magic-delete-char) ;;
+  (define-key helm-generic-files-map (kbd "C-j") 'vmacs-helm-find-file-select-text) ;;
+
   (define-key helm-generic-files-map (kbd "C-s")       'helm-next-line)
   (define-key helm-generic-files-map (kbd "C-r") 'helm-previous-line) ;;
   (define-key helm-generic-files-map (kbd "C-3")       'helm-ff-run-grep)
@@ -245,9 +298,9 @@
 (with-eval-after-load 'grep (define-key grep-mode-map (kbd "C-o") nil))
 (with-eval-after-load 'helm-mode
   (helm-mode 1)
-  (add-to-list 'helm-completing-read-handlers-alist '(ibuffer-find-file . ido))
-  (add-to-list 'helm-completing-read-handlers-alist '(switch-to-buffer . ido))
-  (add-to-list 'helm-completing-read-handlers-alist '(find-file . ido))
+  ;; (add-to-list 'helm-completing-read-handlers-alist '(ibuffer-find-file . ido))
+  ;; (add-to-list 'helm-completing-read-handlers-alist '(switch-to-buffer . ido))
+  ;; (add-to-list 'helm-completing-read-handlers-alist '(find-file . ido))
   )
 
 (run-with-idle-timer 3 nil '(lambda()
