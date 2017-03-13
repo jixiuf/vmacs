@@ -41,6 +41,47 @@
       (call-interactively 'helm-execute-persistent-action)
     (call-interactively 'end-of-line)))
 
+;; ;; 像ido 一样 在目录上return 则进入目录而不是打开dired
+;; (defun vmacs-helm-find-files-navigate-forward (orig-fun &rest args)
+;;   (if (file-directory-p (helm-get-selection))
+;;       (helm-execute-persistent-action)
+;;     (apply orig-fun args)))
+;; (advice-add 'helm-maybe-exit-minibuffer :around #'vmacs-helm-find-files-navigate-forward)
+;; ;; (advice-add 'helm-confirm-and-exit-minibuffer :around #'vmacs-helm-find-files-navigate-forward)
+
+
+;; (defun vmacs-helm-find-files-navigate-forward (orig-fun &rest args)
+;;   (if (and (equal "Find Files" (assoc-default 'name (helm-get-current-source)))
+;;            (equal args nil)
+;;            (stringp (helm-get-selection))
+;;            (not (file-directory-p (helm-get-selection))))
+;;       (helm-maybe-exit-minibuffer)
+;;     (apply orig-fun args)))
+;; (advice-add 'helm-execute-persistent-action :around #'vmacs-helm-find-files-navigate-forward)
+
+;;;###autoload
+(defun helm-search(&optional arg)
+  (interactive "P")
+  (if (vc-find-root default-directory ".git")
+      (call-interactively 'helm-grep-do-git-grep)
+    (helm-do-grep-1 (list default-directory) (not arg))))
+
+;; (defun helm-do-grep (&optional arg)
+;;   (interactive "P")
+;;   (helm-do-grep-1 (list default-directory) (not arg)))
+
+;; (defun helm-do-my-grep-ag (arg)
+;;   "Preconfigured helm for grepping with AG in `default-directory'.
+;; With prefix-arg prompt for type if available with your AG version."
+;;   (interactive "P")
+;;   (require 'helm-files)
+;;   (let ((helm-grep-ag-command))
+;;     (if  (> (prefix-numeric-value current-prefix-arg) 1)
+;;         (setq helm-grep-ag-command   "ag --line-numbers -S --hidden --color-match=\"10;35\" --depth 25 --nogroup %s %s %s")
+;;       (setq helm-grep-ag-command   "ag --line-numbers -S --hidden --color-match=\"10;35\"  --nogroup %s %s %s")))
+;;   (helm-grep-ag default-directory nil))
+
+
 (provide 'lazy-helm)
 
 ;; Local Variables:

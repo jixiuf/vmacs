@@ -52,27 +52,7 @@
               ;; helm-autoresize-min-height 6
               helm-always-two-windows t)
 ;; add --nocolor ,the default color is bad for helm selection
-(defun helm-search(&optional arg)
-  (interactive "P")
-  (if (vc-find-root default-directory ".git")
-      (call-interactively 'helm-grep-do-git-grep)
-    (helm-do-grep-1 (list default-directory) (not arg))))
 
-
-;; (defun helm-do-grep (&optional arg)
-;;   (interactive "P")
-;;   (helm-do-grep-1 (list default-directory) (not arg)))
-
-;; (defun helm-do-my-grep-ag (arg)
-;;   "Preconfigured helm for grepping with AG in `default-directory'.
-;; With prefix-arg prompt for type if available with your AG version."
-;;   (interactive "P")
-;;   (require 'helm-files)
-;;   (let ((helm-grep-ag-command))
-;;     (if  (> (prefix-numeric-value current-prefix-arg) 1)
-;;         (setq helm-grep-ag-command   "ag --line-numbers -S --hidden --color-match=\"10;35\" --depth 25 --nogroup %s %s %s")
-;;       (setq helm-grep-ag-command   "ag --line-numbers -S --hidden --color-match=\"10;35\"  --nogroup %s %s %s")))
-;;   (helm-grep-ag default-directory nil))
 
 ;; (when (executable-find "ack")
 ;;   (setq-default helm-grep-default-command "ack -Hn --no-group --no-color %e %p %f"
@@ -191,43 +171,6 @@
   (define-key helm-buffer-map (kbd "C-s")       'helm-next-line)
   (define-key helm-buffer-map (kbd "C-r") 'helm-previous-line))
 
-
-;; (defun vmacs-select-text())
-;; (helm-make-actions
-;;             "Create buffer (C-u choose mode)"
-;;             (lambda (candidate)
-;;              (let ((mjm (or (and helm-current-prefix-arg
-;;                                  (intern-soft (helm-comp-read
-;;                                                "Major-mode: "
-;;                                                helm-buffers-favorite-modes)))
-;;                             (cl-loop for (r . m) in auto-mode-alist
-;;                                      when (string-match r candidate)
-;;                                      return m)))
-;;                    (buffer (get-buffer-create candidate)))
-;;                (if mjm
-;;                    (with-current-buffer buffer (funcall mjm))
-;;                    (set-buffer-major-mode buffer))
-;;                (switch-to-buffer buffer))))
-
-;; ;; 像ido 一样 在目录上return 则进入目录而不是打开dired
-
-;; (defun vmacs-helm-find-files-navigate-forward (orig-fun &rest args)
-;;   (if (file-directory-p (helm-get-selection))
-;;       (helm-execute-persistent-action)
-;;     (apply orig-fun args)))
-;; (advice-add 'helm-maybe-exit-minibuffer :around #'vmacs-helm-find-files-navigate-forward)
-;; ;; (advice-add 'helm-confirm-and-exit-minibuffer :around #'vmacs-helm-find-files-navigate-forward)
-
-
-;; (defun vmacs-helm-find-files-navigate-forward (orig-fun &rest args)
-;;   (if (and (equal "Find Files" (assoc-default 'name (helm-get-current-source)))
-;;            (equal args nil)
-;;            (stringp (helm-get-selection))
-;;            (not (file-directory-p (helm-get-selection))))
-;;       (helm-maybe-exit-minibuffer)
-;;     (apply orig-fun args)))
-;; (advice-add 'helm-execute-persistent-action :around #'vmacs-helm-find-files-navigate-forward)
-
 (with-eval-after-load 'helm-files
   ;; (require 'helm-ls-git)
   ;; (unless helm-source-ls-git
@@ -263,35 +206,6 @@
   )
 
 
-;; (with-eval-after-load 'helm-swoop
-;;   (setq-default helm-swoop-pre-input-function 'ignore) ;初始不以光标下的内容作搜索内容，若需要，C-w即可
-;;   (defun push-mark-after-helm-swoop()
-;;     (isearch-update-ring helm-pattern evil-regexp-search))
-;;   (add-hook 'helm-swoop-goto-line-action-hook 'push-mark-after-helm-swoop)
-
-;;   ;; (defun helm-swoop-split-window-keep-two-window($buf)
-;;   ;;   (if helm-swoop-split-with-multiple-windows
-;;   ;;       (funcall helm-swoop-split-direction)
-;;   ;;     (unless (one-window-p) (delete-other-windows)) ;add this line
-;;   ;;     (when (one-window-p)
-;;   ;;       (funcall helm-swoop-split-direction)))
-;;   ;;   (other-window 1)
-;;   ;;   (switch-to-buffer $buf))
-
-;;   (setq helm-swoop-split-window-function 'helm-default-display-buffer)
-;;   ;; (setq helm-swoop-split-window-function 'helm-swoop-split-window-keep-two-window)
-;;   (defun push-mark-before-helm-swoop()
-;;     (bm-bookmark-add nil nil t)) ; push bookmark for bm.el
-
-;;   (add-hook 'helm-swoop-before-goto-line-action-hook 'push-mark-before-helm-swoop)
-
-;;   (define-key helm-swoop-map (kbd "C-x C-s") 'helm-swoop-edit)
-;;   (define-key helm-swoop-map (kbd "C-c C-c") 'helm-swoop-edit)
-;;   (define-key helm-multi-swoop-map (kbd "C-x C-s") 'helm-multi-swoop-edit)
-;;   (define-key helm-swoop-edit-map (kbd "C-c C-c") 'helm-swoop--edit-complete)
-;;   (define-key helm-swoop-edit-map (kbd "C-c C-k") 'helm-swoop--edit-cancel))
-
-
 (with-eval-after-load 'helm-grep
   (define-key helm-grep-mode-map (kbd "C-o") nil)
   (define-key helm-grep-map (kbd "C-c C-c") 'helm-grep-run-save-buffer))
@@ -310,15 +224,6 @@
                               (require 'helm-grep)
                               (require 'helm-ls-git)
                               (require 'helm-locate)))
-;; it's slow
-;; (with-eval-after-load 'helm-ls-git
-;;   (setq helm-source-ls-git
-;;         (helm-make-source "Git files" 'helm-ls-git-source
-;;                      :fuzzy-match helm-ls-git-fuzzy-match))
-;;   (add-to-list 'helm-for-files-preferred-list 'helm-source-ls-git t)
-;;   )
-
-
 
 (provide 'conf-helm)
 
