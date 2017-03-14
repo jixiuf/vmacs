@@ -30,7 +30,8 @@ alias date date +%Y-%m-%d_%H:%M-%A $*
 alias dush du -sh $*
 alias gst git status $*
 alias la ls -aGvv $*
-alias lc=launchctl alias ll ls -lthGv $*
+alias lc=launchctl $*
+alias ll ls -lthGv $*
 alias lla ls -althGv $*
 alias lln ls -lhGv $*
 alias llr ls -ltrhGv $*
@@ -41,7 +42,8 @@ alias mkdir mkdir -p $*
 alias mount sudo mount $*
 alias pp ps -ef|grep -v grep|grep $*
 alias ps ps -ef $*
-alias sl=ls alias rm rm -rf $*
+alias sl=ls $*
+alias rm rm -rf $*
 alias srm sudo rm -rf $*
 alias su su -l $*
 alias tget tsocks wget $*
