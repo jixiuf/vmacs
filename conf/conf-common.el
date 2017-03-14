@@ -10,18 +10,17 @@
  ;; inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭scratch消息提示
  initial-major-mode 'fundamental-mode ;scratch init mode
+ initial-buffer-choice t                ;默认打开scratch buffer
+ ;; initial-buffer-choice 'show-todo-list-after-init
+
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
  frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost
  ;;  mode-line 上显示当前文件是什么系统的文件(windows 的换行符是\n\r)
- eol-mnemonic-dos "\\nr"
- eol-mnemonic-unix "\\n"
- eol-mnemonic-mac "\\r"
+ eol-mnemonic-dos "[w32]"
+ eol-mnemonic-unix "[unix]"
+ eol-mnemonic-mac "[mac]"
  eol-mnemonic-undecided "[?]"
- indent-tabs-mode nil                   ;用空格代替tab
- tab-width 4
- indicate-empty-lines t                 ;如果文件末尾有空行， 以可视地形式提醒
- ;; x-stretch-cursor nil                  ;如果设置为t，光标在TAB字符上会显示为一个大方块
-                                        ;(setq track-eol t) ;; 当光标在行尾上下移动的时候，始终保持在行尾。
+ ;;(setq track-eol t) ;; 当光标在行尾上下移动的时候，始终保持在行尾。
  ;; (setq-default cursor-type 'bar);;光标显示为一竖线
 
  ;;中键点击时的功能
@@ -42,17 +41,9 @@
  version-control t    ; 多次备份
  ;; 备份文件统一放在 ~/.emacs.d/cache/backup_files,避免每个目录生成一些临时文件
  pulse-iterations 3
-
-
- ;;打开只读文件时,默认也进入view-mode.
- ;; (setq-default view-read-only t)
  large-file-warning-threshold nil       ;打开大文件时不必警告
- mode-require-final-newline nil
 
- ;;用 (require 'ethan-wspace)所以，取消require-final-newline的 customize
- ;; (setq-default require-final-newline t);; 文档末尾插入空行
- ;; (setq find-file-visit-truename t)
- ;; (setq-default require-final-newline nil)
+ ;;find-file-visit-truename t
 
  send-mail-function 'sendmail-send-it
  mail-addrbook-file (expand-file-name "mail_address" dropbox-dir)
@@ -69,8 +60,6 @@
  recentf-max-saved-items 200
  ring-bell-function 'ignore
 
- initial-buffer-choice t                ;默认打开scratch buffer
- ;; initial-buffer-choice 'show-todo-list-after-init
  savehist-additional-variables '(helm-dired-history-variable magit-repository-directories mew-passwd-alist kill-ring sqlserver-connection-info mysql-connection-4-complete sql-server sql-database sql-user)
  ;;when meet long line ,whether to wrap it
  ;; truncate-lines t ;一行过长时 是否wrap显示
@@ -101,14 +90,9 @@
 
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; 把Yes用y代替
-;(setq next-line-add-newlines t);到达最后一行后继续C-n将添加空行
-;;(setq-default line-spacing 1);;设置行距
-
-
-
 
 ;;(put 'dired-find-alternate-file 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil);; 启用narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
 
 ;; 因为经常按出c-x c-u，总是出upcase region的警告，
@@ -178,40 +162,6 @@
                                           magic-mode-regexp-match-limit t))))
                . objc-mode))
 
-;; https://github.com/glasserc/ethan-wspace
-;; ethan-wspace是用来处理 空格及TAB 相应的问题的
-;; 它的 特点是 "无害" "do not harm"
-;;有些脚本 提供了自动trim 掉行尾的空格有功能 ，但是在进行diff操作时，会多出不必要的diff
-;; ethan-wspace
-;;当你打开一个已存在的文件时
-;;1. 如果文件中的whitespace 已经都clean 掉了，则它会 在每次保存前进行一个clean ,确保无whitespace
-;;2. 如果没有，ethan-wspace 高度显示 errors，它不会自动改动这些errors ,但是它会阻止添加新的errors
-
-;; ethan-wspace 把以下几种情况定义为errors:
-;; 1: 行尾空格, trailing whitespace at end of line (eol).
-;; 2: 文末没有一个空行 no trailing newline (no-nl-eof).
-;; 3:文末有多个空行 more than one trailing newline (many-nls-eof).
-;; 4: TAB
-;;如果你不想让TAB成为一种error 可以 (set-default 'ethan-wspace-errors (remove 'tabs ethan-wspace-errors))
-;;
-;; You should also remove any customizations you have made to turn on either
-;; show-trailing-whitespace or require-final-newline; we handle those for you.
-;; 如果需要 手动删除之 M-x:delete-trailing-whitespace
-;; (global-ethan-wspace-mode 1)
-(setq-default
-  ethan-wspace-face-customized t        ;使用自定义的face ，不必自动计算 ，在daemon模式下怀疑有bug
-  ethan-wspace-mode-line-element nil    ;不在modeline 显示 是否启用ethan-wspace
-  ethan-wspace-errors '(no-nl-eof eol) ;many-nls-eof tabs
- )
-;; 只对特定的major mode 启用ethan-wspace-mode,因为在makefile 中启用会有bug
-(dolist (hook '(java-mode-hook c++-mode-hook python-mode-hook c-mode-hook org-mode-hook perl-mode-hook
-                               ojbc-mode-hook sh-mode-hook yaml-mode-hook
-                               makefile-mode-hook makefile-bsdmake-mode-hook web-mode-hook
-                               protobuf-mode-hook objc-mode-hook lua-mode-hook nxml-mode-hook
-                               gitconfig-mode-hook go-mode-hook js-mode-hook js3-mode-hook
-                               cperl-mode-hook emacs-lisp-mode-hook erlang-mode-hook))
-  (add-hook hook 'ethan-wspace-mode))
-
 ;; (setq-default ace-jump-mode-case-fold nil
 ;;               ace-jump-mode-scope 'window
 ;;               ;; 59==; ,97=a
@@ -245,6 +195,9 @@
  read-buffer-completion-ignore-case t
  read-file-name-completion-ignore-case t
  completion-cycle-threshold 8)
+;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
+(define-key  minibuffer-local-completion-map (kbd "C-l") 'minibuffer-up-parent-dir)
+(define-key  minibuffer-local-map (kbd "C-l") 'minibuffer-up-parent-dir)
 ;; (add-hook 'minibuffer-setup-hook 'minibuf-define-key-func )
 
 
@@ -330,9 +283,6 @@
 ;; (global-set-key "\M-n"  'next-line)
 ;; (global-set-key "\M-p"  'previous-line)
 
-;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
-(define-key  minibuffer-local-completion-map (kbd "C-l") 'minibuffer-up-parent-dir)
-(define-key  minibuffer-local-map (kbd "C-l") 'minibuffer-up-parent-dir)
 
 
 (provide 'conf-common)

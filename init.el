@@ -58,6 +58,7 @@
 
 ;; 一般性的配置在conf/conf-common.el中
 (require 'conf-common)
+(require 'conf-space-tab)
 (require 'conf-org)
 (with-eval-after-load 'eshell (require 'conf-eshell)) ;
 (with-eval-after-load 'term (require 'conf-term)) ;
