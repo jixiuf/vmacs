@@ -1,4 +1,13 @@
 ;;确保需要的package 在本地都存在
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
+;; make sure to have downloaded archive description.
+;; Or use package-archive-contents as suggested by Nicolas Dudebout
+(or (file-exists-p package-user-dir) (package-refresh-contents))
+(package-initialize)
+
+
 (defun ensure-package-installed (packages)
   "Assure every package is installed, ask for installation if it’s not.
 

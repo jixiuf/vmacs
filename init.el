@@ -13,20 +13,8 @@
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (load custom-file t t )
 
-
-
-;;  第三方package相关配置
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
-;; make sure to have downloaded archive description.
-;; Or use package-archive-contents as suggested by Nicolas Dudebout
-(or (file-exists-p package-user-dir) (package-refresh-contents))
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
+;; 下面(package-initialize) 这行注释不要删
+;; (package-initialize)
 
 ;; ~/.emacs.d/conf/目录加到load-path中
 (add-to-list 'load-path (concat user-emacs-directory "conf/"))
