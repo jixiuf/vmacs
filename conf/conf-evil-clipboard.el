@@ -49,6 +49,24 @@
 ;; gui-select-text 会同时考虑select-enable-clipboard 及select-enable-primary的值，故一般不需要将interprogram-cut-function设置成nil
 ;; (setq select-enable-clipboard   t)    ;每一次往kill-ring 里加入东西时,是否同时往clipboard中放一份,
 ;; (setq select-enable-primary  nil) ;每一次往kill-ring 里加入东西时,是否也往primary 中放入
+(setq
+ kill-do-not-save-duplicates t       ;不向kill-ring中加入重复内容
+ save-interprogram-paste-before-kill t  ;将系统剪切板的内容放一份到kill-ring中，
+ mouse-yank-at-point t
+ kill-whole-line t                     ;在行首 C-k 时，同时删除末尾换行符
+ kill-read-only-ok t                  ;kill read-only buffer内容时,copy之而不用警告
+ kill-ring-max 20                       ;emacs内置剪切板默认保留60份，default 60
+ )
+
+;;; 关于没有选中区域,则默认为选中整行的advice
+;;;;默认情况下M-w复制一个区域，但是如果没有区域被选中，则复制当前行
+(defadvice kill-ring-save (before slickcopy activate compile)
+  "When called interactively with no active region, copy a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (message "已选中当前行!")
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
 
 ;; "+p 从系统剪切板paste时会调到此处
 ;; 如果在mac 终端下使用emacs ,则使用pbpaste从clipboard 获取内容

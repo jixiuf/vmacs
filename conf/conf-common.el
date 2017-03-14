@@ -28,11 +28,6 @@
  ;;不要在鼠标中键点击的那个地方插入剪贴板内容。
  ;;而是光标在什么地方,就在哪插入(这个时候光标点击的地方不一定是光标的所在位置)
 
- mouse-yank-at-point t
- kill-whole-line t                     ;在行首 C-k 时，同时删除末尾换行符
- kill-read-only-ok t                  ;kill read-only buffer内容时,copy之而不用警告
- kill-do-not-save-duplicates t       ;不向kill-ring中加入重复内容
- save-interprogram-paste-before-kill t  ;将系统剪切板的内容放一份到kill-ring中，
  sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*"
  sentence-end-double-space nil         ;;设置 sentence-end 可以识别中文标点。不用在 fill 时在句号后插入两个空格。
 
@@ -73,7 +68,6 @@
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
  recentf-max-saved-items 200
  ring-bell-function 'ignore
- kill-ring-max 20                       ;emacs内置剪切板默认保留60份，default 60
 
  initial-buffer-choice t                ;默认打开scratch buffer
  ;; initial-buffer-choice 'show-todo-list-after-init
@@ -112,15 +106,6 @@
 
 
 
-;;; 关于没有选中区域,则默认为选中整行的advice
-;;;;默认情况下M-w复制一个区域，但是如果没有区域被选中，则复制当前行
-(defadvice kill-ring-save (before slickcopy activate compile)
-  "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (message "已选中当前行!")
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
 
 ;;(put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
@@ -318,6 +303,7 @@
 (evil-leader/set-key "x/" 'goto-last-change)
 (evil-leader/set-key "x," 'goto-last-change-reverse)
 
+(eval-when-compile (require 'cc-mode))
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 
 (setq-default iedit-toggle-key-default (kbd "C-;"))
