@@ -15,6 +15,7 @@
               helm-buffer-max-length 60
               helm-buffers-fuzzy-matching t
               helm-recentf-fuzzy-match t
+              helm-mode-fuzzy-match t
               ;; helm-locate-fuzzy-match t  ;mdfind doesnot support fuzzy match
               helm-M-x-fuzzy-match t
               helm-semantic-fuzzy-match t
