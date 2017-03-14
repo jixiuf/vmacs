@@ -4,9 +4,9 @@
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 
 (setq-default
- user-full-name "纪秀峰"                ;记得改成你的名字
- user-login-name "jixiufeng"
- user-mail-address "jixiuf@qq.com")
+ ;; user-full-name ""                ;记得改成你的名字
+ ;; user-login-name "jixiuf"
+ user-mail-address (concat "jixiuf" "@" "qq.com"))
 (setq load-prefer-newer t)              ;当el文件比elc文件新的时候,则加载el,即尽量Load最新文件文件
 
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
@@ -70,7 +70,7 @@
 ;; gpg 自动加密解密文件相关
 (when (executable-find "gpg") (require 'conf-gpg))
 (require 'conf-compile)
-(require 'conf-tags)       ;对symbol 的操作
+(require 'conf-tags)                    ;ctags gtags 相关，代码跳转
 (with-eval-after-load 'magit (require 'conf-magit))
 (with-eval-after-load 'go-mode (require 'conf-program-golang))
 (with-eval-after-load 'python (require 'conf-program-python))
