@@ -48,7 +48,7 @@
 (eval-after-load 'ibuffer '(require 'conf-ibuffer)) ;绑定在space l 上，用于列出当前打开的哪些文件
 (require 'conf-bm)              ; 可视化书签功能与跳转功能
 (require 'conf-helm)            ;
-(with-eval-after-load 'ido (require 'conf-ido)) ;
+;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
 ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
 
 (when (eq system-type 'darwin) (require 'conf-macos))

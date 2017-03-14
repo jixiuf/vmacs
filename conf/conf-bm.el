@@ -1,8 +1,5 @@
 ;;; Code:
 ;; 可视化书签功能与跳转功能
-;; (eval-when-compile
-;;   (require 'evil)
-;;   (require 'evil-leader))
 
 (require 'bm)
 (setq-default
