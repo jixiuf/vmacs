@@ -42,12 +42,12 @@ vmacs则尽量将功能移到space上减少小指的使用
   vmacs进行定制时，希望进入insert态时，能够使用到原生的emacs按键绑定
 
 * C C++ 开发
-** company 代码补全
+** company
 依赖的外部命令:clang
 相关配置
 https://github.com/jixiuf/vmacs/blob/master/conf/conf-company-mode.el
 [[file:doc/company-c.png]]
-** helm-gtags代码跳转
+** helm-gtags
    依赖的外部命令:GNU global
    #+BEGIN_SRC sh
      brew install global #on mac
