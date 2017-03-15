@@ -50,6 +50,8 @@
   ;; (define-key company-mode-map (kbd "C-:") 'helm-company)
   ;; (define-key company-active-map (kbd "C-:") 'helm-company)
   )
+(make-variable-buffer-local 'company-backends)
+
 (global-company-mode 1)
 ;; (add-hook 'after-init-hook (lambda() (global-company-mode 1)))
 
