@@ -1,6 +1,17 @@
 ;; org-mode 相关
 (evil-leader/set-key "t" 'org-agenda)   ;列出todo list等
 (evil-leader/set-key "T" 'org-capture)  ;新加一个todo 条目等
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
+  (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
+
+(with-eval-after-load 'org-src
+  (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
+  (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
+
+(run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
+
+
 ;; (define-key global-map [(control meta ?r)] 'org-agenda)
 
 (setq-default
@@ -76,7 +87,7 @@
 (define-derived-mode novel-mode org-mode "Novel"
   "novel mode")
 
-(defun txt-mode-hook()
+(defun vmacs-org-mode-hook()
   (modify-syntax-entry ?， "." ) ;; 识别中文标点
   (modify-syntax-entry ?。 "." ) ;; 识别中文标点
   (modify-syntax-entry ?！ "." ) ;; 识别中文标点
@@ -89,26 +100,12 @@
   ;; (org-set-local 'fill-paragraph-function 'fill-paragraph-function-org-mode-hook)
 
   )
-(add-hook 'text-mode-hook 'txt-mode-hook)
-(add-hook 'org-mode-hook 'txt-mode-hook)
-(add-hook 'novel-mode-hook 'txt-mode-hook)
+(add-hook 'org-mode-hook 'vmacs-org-mode-hook)
+(add-hook 'novel-mode-hook 'vmacs-org-mode-hook)
 
 
-(defun show-todo-list-after-init(&optional frame)
-  (require 'org-agenda)
-  (dolist (f org-agenda-files)
-    (unless (file-exists-p f)
-      (setq org-agenda-files (delete f org-agenda-files))))
-  (when org-agenda-files
-    (call-interactively 'org-todo-list)
-    (switch-to-buffer "*Org Agenda*")))
 
-(run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
 
-(with-eval-after-load 'org (define-key org-mode-map (kbd "C-c e") 'org-edit-special))
-(with-eval-after-load 'org-src
-  (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
-  (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
 
 
 
