@@ -42,6 +42,7 @@
  org-log-done 'time
  ;; code执行免应答（Eval code without confirm）
  org-confirm-babel-evaluate nil
+ org-image-actual-width '(600)
  org-default-notes-file (expand-file-name "notes.txt" dropbox-dir)
  org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d)")
                      (sequence "Info(i)")
