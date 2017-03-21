@@ -8,7 +8,11 @@
 (defvar boring-window-bof-name-regexp
   (rx (or
        "\*Helm"
+       "\*helm"
        "\*vc-diff\*"
+       "\*magit-"
+       "\*vc-"
+       "\*vc*"
        "*Completions*"
        "\*vc-change-log\*"
        "\*VC-log\*"
