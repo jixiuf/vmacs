@@ -3,55 +3,55 @@
 ;; (setq helm-input-idle-delay 0)
 (setq-default
  helm-locate-command (cl-case system-type
-                                    ('gnu/linux (concat user-emacs-directory "bin/locate.sh %s %s"))
-                                    ;; "locate  %s -e -A %s"
-                                    ('berkeley-unix "locate %s %s")
-                                    ('windows-nt "es %s %s")
-                                    ('darwin (concat user-emacs-directory "bin/locate.sh %s %s")) ;mdfind -name %s %s
-                                    (t "locate %s %s"))
-              helm-echo-input-in-header-line t
-              helm-case-fold-search t;nil=case sensitive
-              case-fold-search t ;nil=case sensitive //space cc toggle it
-              helm-buffer-max-length 60
-              helm-buffers-fuzzy-matching t
-              helm-recentf-fuzzy-match t
-              helm-mode-fuzzy-match t
-              ;; helm-locate-fuzzy-match t  ;mdfind doesnot support fuzzy match
-              helm-M-x-fuzzy-match t
-              helm-semantic-fuzzy-match t
-              helm-imenu-fuzzy-match t
-              helm-ls-git-status-command  'magit-status-internal
-              helm-grep-save-buffer-name-no-confirm t
-              helm-ls-git-fuzzy-match t
-              helm-apropos-fuzzy-match t
-              helm-lisp-fuzzy-completion t
-              eshell-hist-ignoredups t
-              helm-eshell-hist-ignoredups t
-              helm-ff-transformer-show-only-basename nil
-              helm-adaptive-history-file (concat user-emacs-directory "cache/helm-adaptive-history")
-              helm-ff-no-preselect t
-              helm-for-files-preferred-list '(
-                                              helm-source-buffers-list
-                                              ;; helm-source-ido-virtual-buffers
-                                              helm-source-recentf
-                                              helm-source-files-in-current-dir
-                                              ;; helm-source-bookmarks
-                                              helm-source-file-cache
-                                              ;; helm-source-files-in-all-dired
-                                              ;; helm-source-joseph-filelist
-                                              ;; helm-source-locate
-                                              ;; helm-source-ls-git
-                                              ;; helm-source-mac-spotlight
-                                              helm-source-buffer-not-found
-                                              )
-              helm-ff-skip-boring-files t
-              helm-ff-newfile-prompt-p nil
-              helm-ff-auto-update-initial-value t
-              helm-ff-file-name-history-use-recentf t
-              ;; helm-split-window-default-side 'above
-              ;; helm-display-buffer-default-size 1
-              ;; helm-autoresize-min-height 6
-              helm-always-two-windows t)
+                       ('gnu/linux (concat user-emacs-directory "bin/locate.sh %s %s"))
+                       ;; "locate  %s -e -A %s"
+                       ('berkeley-unix "locate %s %s")
+                       ('windows-nt "es %s %s")
+                       ('darwin (concat user-emacs-directory "bin/locate.sh %s %s")) ;mdfind -name %s %s
+                       (t "locate %s %s"))
+ helm-echo-input-in-header-line t
+ helm-case-fold-search t;nil=case sensitive
+ case-fold-search t ;nil=case sensitive //space cc toggle it
+ helm-buffer-max-length 60
+ helm-buffers-fuzzy-matching t
+ helm-recentf-fuzzy-match t
+ helm-mode-fuzzy-match t
+ ;; helm-locate-fuzzy-match t  ;mdfind doesnot support fuzzy match
+ helm-M-x-fuzzy-match t
+ helm-semantic-fuzzy-match t
+ helm-imenu-fuzzy-match t
+ helm-ls-git-status-command  'magit-status-internal
+ helm-grep-save-buffer-name-no-confirm t
+ helm-ls-git-fuzzy-match t
+ helm-apropos-fuzzy-match t
+ helm-lisp-fuzzy-completion t
+ eshell-hist-ignoredups t
+ helm-eshell-hist-ignoredups t
+ helm-ff-transformer-show-only-basename nil
+ helm-adaptive-history-file (concat user-emacs-directory "cache/helm-adaptive-history")
+ helm-ff-no-preselect t
+ helm-for-files-preferred-list '(
+                                 helm-source-buffers-list
+                                 ;; helm-source-ido-virtual-buffers
+                                 helm-source-recentf
+                                 helm-source-files-in-current-dir
+                                 ;; helm-source-bookmarks
+                                 helm-source-file-cache
+                                 ;; helm-source-files-in-all-dired
+                                 ;; helm-source-joseph-filelist
+                                 ;; helm-source-locate
+                                 ;; helm-source-ls-git
+                                 ;; helm-source-mac-spotlight
+                                 helm-source-buffer-not-found
+                                 )
+ helm-ff-skip-boring-files t
+ helm-ff-newfile-prompt-p nil
+ helm-ff-auto-update-initial-value t
+ helm-ff-file-name-history-use-recentf t
+ ;; helm-split-window-default-side 'above
+ ;; helm-display-buffer-default-size 1
+ ;; helm-autoresize-min-height 6
+ helm-always-two-windows t)
 ;; add --nocolor ,the default color is bad for helm selection
 
 
