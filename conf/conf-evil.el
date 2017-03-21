@@ -137,7 +137,7 @@
         (evil-terminal-cursor-changer-deactivate)
       (evil-terminal-cursor-changer-activate)
       (remove-hook 'pre-command-hook 'etcc--evil-set-cursor)))
-
+  (add-hook 'after-make-frame-functions 'vmacs-change-cursor-hook)
   (add-hook 'focus-in-hook 'vmacs-change-cursor-hook)
   (add-hook 'evil-insert-state-entry-hook 'vmacs-change-cursor-hook))
 
