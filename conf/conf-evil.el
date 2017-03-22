@@ -131,8 +131,8 @@
 (evil-mode 1)
 
 (unless (equal system-type 'windows-nt)
-  (require 'evil-terminal-cursor-changer)
   (defun vmacs-change-cursor-hook(&optional f)
+    (require 'evil-terminal-cursor-changer)
     (if (display-graphic-p)
         (evil-terminal-cursor-changer-deactivate)
       (evil-terminal-cursor-changer-activate)
