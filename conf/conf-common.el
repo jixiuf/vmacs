@@ -112,8 +112,6 @@
          ("\\.lua$" . lua-mode)
          ("\\.scpt\\'" . applescript-mode)
          ("\\.applescript$" . applescript-mode)
-         ("/\\.?gitconfig\\'" . gitconfig-mode)
-         ("/\\.git/config\\'" . gitconfig-mode)
          ("crontab\\'" . crontab-mode)
          ("\\.cron\\(tab\\)?\\'" . crontab-mode)
          ("cron\\(tab\\)?\\."    . crontab-mode)

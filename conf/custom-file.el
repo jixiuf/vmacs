@@ -375,7 +375,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (shell-toggle company-jedi helm-dired-history dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git iedit logstash-conf lua-mode magit markdown-mode protobuf-mode thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
+    (gitconfig-mode shell-toggle company-jedi helm-dired-history dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git iedit logstash-conf lua-mode magit markdown-mode protobuf-mode thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(save-place-file "~/.emacs.d/cache/place")
  '(save-place-mode t)
