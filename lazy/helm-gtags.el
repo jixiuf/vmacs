@@ -169,7 +169,7 @@ then `helm-gtags-update-tags' will be called,nil means update immidiately"
 (defvar helm-gtags-last-update-time (float-time (current-time))
   "`global -u --single-update'")
 
-(defvar helm-gtags-buffer "*helm gtags*")
+(defvar helm-gtags-buffer " *helm gtags*")
 
 (defvar helm-gtags-prompt-alist
   '((:tag    . "Find Definition: ")
