@@ -119,8 +119,8 @@
 
 
 (with-eval-after-load 'helm
-  (require 'helm-adaptive)
-  (helm-adaptive-mode 1)
+  ;; (require 'helm-adaptive)
+  ;; (helm-adaptive-mode 1)
   ;; (helm-autoresize-mode 1)
   ;; (set-face-attribute 'helm-selection nil
   ;;                     :inherit nil
