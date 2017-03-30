@@ -30,6 +30,37 @@
     (when (string-blank-p  is-blank-string)
       (skip-chars-forward "[ |\t|\n|\r]*"))))
 
+;; 标点使用中文标点
+;;;###autoload
+(defun chinese-normal()
+  (interactive)
+  (let ((begin)
+        (end))
+    (if (not mark-active)
+        (progn
+          (setq begin (point-min))
+          (setq end (point-max)))
+      (setq begin (region-beginning))
+      (setq end (region-end))
+      )
+    (save-excursion
+      (goto-char begin)
+      (while (search-forward "," end t) (replace-match "，"))
+      (goto-char begin)
+      (while (search-forward "?" end t) (replace-match "？"))
+
+      (goto-char begin)
+      (while (search-forward "“" end t) (replace-match "「"))
+      (goto-char begin)
+      (while (search-forward "”" end t) (replace-match "」"))
+      (goto-char begin)
+      (let ((cnt 0))
+        (while (search-forward "\"" end t)
+          (setq cnt (1+ cnt))
+          (if (equal 1 (% cnt 2))
+              (replace-match "「")
+            (replace-match "」")))))
+    (call-interactively 'count-words)))   ;最后统计字数
 
 
 (provide 'lazy-novel-mode)
