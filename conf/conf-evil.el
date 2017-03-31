@@ -276,8 +276,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-motion-state-map "`" nil) ;'evil-goto-mark
 
 
-(define-key evil-normal-state-map "q" 'kill-buffer-or-server-edit)
-(define-key evil-normal-state-map "Q" 'kill-buffer-and-window)
 ;; (define-key evil-motion-state-map "L" 'vmacs-forward-4-line)
 ;; (define-key evil-motion-state-map "H" 'vmacs-backward-4-line)
 ;; (define-key evil-normal-state-map "s" 'conf-forward-symbol-or-isearch-regexp-forward)
@@ -379,9 +377,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; (evil-leader/set-key "G" 'helm-do-zgrep)
 ;; magit
 
-(evil-leader/set-key "d" 'evil-next-buffer) ;K prev-buffer
-(evil-leader/set-key "k" 'evil-prev-buffer) ;
-(evil-leader/set-key "q" 'bury-buffer-and-window)
 
 (evil-leader/set-key ";" 'helm-M-x)
 (evil-leader/set-key "；" 'helm-M-x)

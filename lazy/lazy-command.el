@@ -1,6 +1,7 @@
 ;; -*- coding:utf-8 -*-
 ;; eval-when-compile
 (eval-when-compile
+  (require  'cl-seq)
   (require  'ediff)
   (require  'vc-hooks)
   (require  'log-edit)
@@ -303,21 +304,44 @@ Move point to end-of-line ,if point was already at that position,
 ;; 退出emacsclient,否则就是普通的关闭文件
 (autoload 'server-edit "server")
 ;;;###autoload
-(defun kill-buffer-or-server-edit()
+(defun kill-buffer-or-server-edit(&optional buf)
   (interactive)
-  (message "kill buffer %s" (buffer-name))
-  (when (equal (buffer-name) "*scratch*")
-    (copy-region-as-kill (point-min)(point-max)))
-  (if (and (featurep 'server)
-           (boundp 'server-buffer-clients)
-           server-buffer-clients)
-      (server-edit)
-    (kill-this-buffer)))
+  (with-current-buffer (or buf (current-buffer))
+    (message "kill buffer %s" (buffer-name buf))
+    (when (equal (buffer-name buf) "*scratch*")
+      (copy-region-as-kill (point-min)(point-max)))
+    (if (and (featurep 'server)
+             (boundp 'server-buffer-clients)
+             server-buffer-clients)
+        (server-edit)
+      (kill-this-buffer))))
 
-(autoload 'hippie-expand "hippie-exp" nil t)
-(autoload 'indent-according-to-mode "indent" nil t)
+;;;###autoload
+(defun kill-other-buffers ()
+  "kill all buffer which not showing in window."
+  (interactive)
+  (mapc 'kill-buffer-or-server-edit
+        (cl-remove-if 'get-buffer-window (buffer-list)))
+  (message "all other buffers are killed."))
 
+;;;###autoload
+(defun bury-buffer-and-window()
+  "bury buffer and window"
+  (interactive)
+  (bury-buffer)
+  (when (< 1 (count-windows))
+    (delete-window)))
 
+;; ;;;###autoload
+;; (defun keyboard-quit-or-bury-buffer-and-window()
+;;   "C-gC-g (bury buffer and window)"
+;;   (interactive)
+;;   (if (equal last-command 'keyboard-quit)
+;;       (bury-buffer-and-window)
+;;     (setq this-command 'keyboard-quit)
+;;     (call-interactively 'keyboard-quit)
+;;     )
+;;   )
 
 ;; 在当前行任何位置输入分号都在行尾添加分号，除非本行有for 这个关键字，
 ;; 如果行尾已经有分号则删除行尾的分号，将其插入到当前位置,就是说输入两次分号则不在行尾插入而是像正常情况一样.
@@ -387,24 +411,6 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
           )))
 
 ;;;###autoload
-(defun bury-buffer-and-window()
-  "bury buffer and window"
-  (interactive)
-  (bury-buffer)
-  (when (< 1 (count-windows))
-    (delete-window)))
-
-;;;###autoload
-(defun keyboard-quit-or-bury-buffer-and-window()
-  "C-gC-g (bury buffer and window)"
-  (interactive)
-  (if (equal last-command 'keyboard-quit)
-      (bury-buffer-and-window)
-    (setq this-command 'keyboard-quit)
-    (call-interactively 'keyboard-quit)
-    )
-  )
-;;;###autoload
 (defun minibuffer-quit ()
   "Quit the minibuffer command, even when the minibuffer loses focus."
   (interactive)
@@ -435,18 +441,6 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
   (goto-char (point-min))
   (while (search-forward "\n" nil t)
     (replace-match "\r\n")))
-
-;;;###autoload
-(defun vmacs_compile_current_el_outside()
-  (when (buffer-file-name)
-    (let ((command (format  " emacs  -batch    -l %s -f batch-byte-compile %s "
-                            (expand-file-name "~/.emacs.d/site-lisp/vmacs/vmacs_byte_compile_include.el")
-                            (buffer-file-name))))
-      (with-current-buffer (get-buffer-create "*vmacs_compile_current_el*")
-        (insert (shell-command-to-string command)))
-      (switch-to-buffer (get-buffer-create "*vmacs_compile_current_el*")))
-    )
-  )
 
 ;; mac上打开iterm2，并cd到当前编辑的文件所在目录
 ;;;###autoload
@@ -488,19 +482,30 @@ end tell" (expand-file-name default-directory))))
     (message "case insensitive")))
 
 
-;;;###autoload
-(defun my-complete()
-  (interactive)
-  (cond ((and (boundp 'company-mode) company-mode)
-         (call-interactively 'company-complete)
-         )
-        ((and (boundp 'auto-complete-mode) auto-complete-mode)
-         (call-interactively 'auto-complete)
-         )
-        (t
-         (call-interactively 'hippie-expand))))
+;; ;;;###autoload
+;; (defun my-complete()
+;;   (interactive)
+;;   (cond ((and (boundp 'company-mode) company-mode)
+;;          (call-interactively 'company-complete)
+;;          )
+;;         ((and (boundp 'auto-complete-mode) auto-complete-mode)
+;;          (call-interactively 'auto-complete)
+;;          )
+;;         (t
+;;          (call-interactively 'hippie-expand))))
 
 
+;; ;;;###autoload
+;; (defun vmacs_compile_current_el_outside()
+;;   (when (buffer-file-name)
+;;     (let ((command (format  " emacs  -batch    -l %s -f batch-byte-compile %s "
+;;                             (expand-file-name "~/.emacs.d/site-lisp/vmacs/vmacs_byte_compile_include.el")
+;;                             (buffer-file-name))))
+;;       (with-current-buffer (get-buffer-create "*vmacs_compile_current_el*")
+;;         (insert (shell-command-to-string command)))
+;;       (switch-to-buffer (get-buffer-create "*vmacs_compile_current_el*")))
+;;     )
+;;   )
 
 
 ;; ;;;###autoload
