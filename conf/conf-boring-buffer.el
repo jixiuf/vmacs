@@ -17,7 +17,7 @@
 
 
 (defvar boring-window-modes
-  '(help-mode compilation-mode log-view-mode log-edit-mode ibuffer-mode))
+  '(help-mode compilation-mode log-view-mode log-edit-mode org-agenda-mode ibuffer-mode))
 
 (defvar boring-window-bof-name-regexp
   (rx (or
@@ -26,6 +26,7 @@
        "\*vc-diff\*"
        "\*magit-"
        "\*vc-"
+       "todo.txt"
        "\*vc*"
        "*Completions*"
        "\*vc-change-log\*"
