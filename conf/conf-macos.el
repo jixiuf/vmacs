@@ -5,9 +5,6 @@
 (global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
 (global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
 
-(global-set-key  (kbd "s-c") 'kill-ring-save)
-(global-set-key  (kbd "s-v") 'yank)
-(global-set-key  (kbd "s-x") 'vmacs-kill-region-or-line)
 (global-set-key  (kbd "s-s") 'evil-write-all)
 
 (global-set-key  (kbd "s-z") 'undo)
