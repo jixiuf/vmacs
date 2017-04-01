@@ -1,5 +1,6 @@
 #!/bin/sh
 # use default emacs in $PATH
+ulimit -n 10000
 function call_emacs_daemon(){
     # echo "with emacs:$EMACSCMD"
     if [  -z $EMACSCMD ] ; then

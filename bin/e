@@ -1,5 +1,8 @@
 #!/bin/sh
 cd `dirname $0`
+
+ulimit -n 10000
+
 function call_emacs(){
     # echo "with emacs:$EMACSCMD"
     if [  -z $EMACSCMD ] ; then
@@ -65,4 +68,6 @@ if [ ! -z $EMACSCMD ]; then
     call_emacs $@
     exit
 fi
+
+
 
