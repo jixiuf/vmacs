@@ -29,14 +29,13 @@
 ;; ":  last command.
 ;; ". 里面存最近insert 的内容
 ;; "_ 类似于/dev/null 是个无底洞
-(define-key evil-normal-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
-(define-key evil-visual-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
-;; [;;yy]==["+yy] 将此行copy到clipboard
-
 ;; evil-use-register 默认绑定在" 双引号上,让;也具有evil-use-register的功能
-;; (define-key evil-motion-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
+(define-key evil-motion-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
+;; (define-key evil-normal-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
+;; (define-key evil-visual-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
+;; [;;yy]==["+yy] 将此行copy到clipboard
 ;; lazy-evil.el中对evil-use-register做了改变如果将;寄存器转化为+寄存器，
-;; 却"+p == ";p  "+d == ";d (其中+寄存是操纵的是clipboard)
+;; 即"+p == ";p  "+d == ";d (其中+寄存是操纵的是clipboard)
 ;;而evil-repeat-find-char-or-evil-use-register 绑定在;上,所以
 ;; 所以针对clipboard的操作，变成 ;;d  ;;p ;;y
 ;; 所以 如果想把内容copy到clipboard 则选中区域后按 ;;y
