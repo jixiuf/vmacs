@@ -10,8 +10,8 @@
 
 (define-key evil-normal-state-map "q" 'vmacs-prev-buffer)
 (with-eval-after-load 'dired (define-key dired-mode-map "q" 'kill-this-buffer))
-(define-key evil-normal-state-map "o" 'vmacs-next-buffer)
-(define-key evil-motion-state-map "o" 'vmacs-next-buffer)
+(define-key evil-normal-state-map (kbd "C-o") 'vmacs-next-buffer)
+(define-key evil-motion-state-map (kbd "C-o") 'vmacs-next-buffer)
 (define-key evil-normal-state-map "Q" 'kill-buffer-and-window)
 
 
