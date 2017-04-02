@@ -23,6 +23,8 @@
 (evil-leader/set-key "vj" 'magit-status) ;like dired-jump
 (evil-leader/set-key "vp" 'magit-push-current-to-upstream)
 (evil-leader/set-key "vs" 'magit-file-popup)
+(evil-leader/set-key "ve" 'magit-commit-extend)
+(evil-leader/set-key "va" 'magit-commit-amend)
 
 (setq-default
  ;; 只让vc支持git svn , 可以加快vc的一些处理
