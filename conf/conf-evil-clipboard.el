@@ -98,7 +98,10 @@
   "Paste text from system clipboard."
   (interactive)
   (if (not  (string= major-mode "term-mode"))
-      (evil-paste-from-register ?+)
+      (let ((text (evil-paste-from-register ?+)))
+        (when (> (length text) 0))
+        (backward-char)
+        )
     (require 'term)
     (term-send-raw-string (evil-get-register ?+))))
 
