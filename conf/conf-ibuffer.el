@@ -30,6 +30,8 @@
 ;; (define-key ibuffer-mode-map (kbd "C-x C-f") 'ido-find-file)
 (define-key ibuffer-mode-map "r" 'ibuffer-update)
 (define-key ibuffer-mode-map "g" 'ibuffer-toggle-maybe-show)
+(define-key ibuffer-mode-map "n" 'ibuffer-forward-filter-group)
+(define-key ibuffer-mode-map "p" 'ibuffer-backward-filter-group)
 ;;隐藏所有以*helm开头的buffer
 ;;(add-to-list 'ibuffer-never-show-predicates "^\\*helm")
 ;;ibuffer分组
