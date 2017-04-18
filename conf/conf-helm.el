@@ -225,7 +225,58 @@
                               (require 'helm-grep)
                               (require 'helm-ls-git)
                               (require 'helm-locate)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 隐藏helm buffer ，以避免干扰buffer list等
+(defun vmacs-helm-hide-buffer()
+  (unless (helm-alive-p)
+    (when (and  (string-match-p "^helm" (symbol-name last-command))
+                (not (string-match-p "^helm" (symbol-name this-command))))
+      (let ((backup))
+        (dolist (helm-current-buffer (buffer-list))
+          (when (string-match-p "^\\*[Hh]elm" (buffer-name helm-current-buffer))
+            (with-current-buffer helm-current-buffer
+              (setq backup (concat "  " (buffer-name helm-current-buffer)))
+              (when (get-buffer backup) (kill-buffer backup))
+              (rename-buffer backup))))))))
 
+(add-hook 'post-command-hook  'vmacs-helm-hide-buffer)
+(add-hook 'helm-after-action-hook 'vmacs-helm-hide-buffer)
+
+(defun vmacs-helm-resume(&optional arg)
+  (let ((backup))
+    (dolist (buf (buffer-list))
+      (when (string-match-p "^  \\*[Hh]elm" (buffer-name buf))
+        (with-current-buffer buf
+          (setq backup (substring (buffer-name buf) 2 ))
+          (when (get-buffer backup) (kill-buffer backup))
+          (rename-buffer backup))))))
+
+(advice-add #'helm-resume :before #'vmacs-helm-resume)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (defun vmacs-helm-hide-buffer()
+;;   (let ((backup))
+;;     (with-current-buffer (helm-buffer-get)
+;;       (setq backup (concat "  " (helm-buffer-get)))
+;;       (when (get-buffer backup) (kill-buffer backup))
+;;       (rename-buffer backup)
+;;       )
+;;     )
+;;   )
+;; (defun vmacs-helm-keyboard-quit()
+;;     "Quit minibuffer in helm.
+;; If action buffer is displayed, kill it."
+;;   (interactive)
+;;   (with-helm-alive-p
+;;     (when (get-buffer-window helm-action-buffer 'visible)
+;;       (kill-buffer helm-action-buffer))
+;;     (helm-cleanup)
+;;     (vmacs-helm-hide-buffer)
+;;     (setq helm-exit-status 1)
+;;     (abort-recursive-edit)))
+;; (with-eval-after-load 'helm (define-key helm-map  (kbd "C-g") 'vmacs-helm-keyboard-quit))
+
+;; (advice-add #'helm-keyboard-quit :after #'vmacs-helm-hide-buffer)
 (provide 'conf-helm)
 
 ;; Local Variables:
