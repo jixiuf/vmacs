@@ -18,7 +18,7 @@
 (defun disable-input-method-hook()
   ;; (start-process "squirrel-input-method-disable-chinese" nil "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" "-s" "ascii_mode" "--clear")
   (when (and (equal system-type 'darwin)(file-exists-p "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" )) ;mac 上squirrel与输入法相关
-    (call-process  "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" nil t nil "-s" "ascii_mode" )))
+    (call-process  "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" nil nil nil "-s" "ascii_mode" )))
 
 ;; (defadvice keyboard-quit (before disable-input-method activate)
 ;;   "disable-input-method-hook."
