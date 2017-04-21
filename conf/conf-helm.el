@@ -241,6 +241,7 @@
 
 (add-hook 'post-command-hook  'vmacs-helm-hide-buffer)
 (add-hook 'helm-after-action-hook 'vmacs-helm-hide-buffer)
+(add-hook 'helm-after-action-hook #'(lambda()(add-hook 'post-command-hook  'vmacs-helm-hide-buffer)))
 
 (defun vmacs-helm-resume(&optional arg)
   (let ((backup))
