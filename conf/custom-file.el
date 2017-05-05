@@ -369,7 +369,7 @@
  '(magit-commit-ask-to-stage t)
  '(magit-no-confirm
    (quote
-    (reverse discard rename trash delete abort-merge drop-stashes resect-bisect kill-process stage-all-changes unstage-all-changes)))
+    (reverse  rename   abort-merge  resect-bisect kill-process stage-all-changes unstage-all-changes)))
  '(magit-push-arguments (quote ("--force-with-lease")))
  '(magit-save-repository-buffers (quote dontask))
  '(menu-bar-mode nil)
