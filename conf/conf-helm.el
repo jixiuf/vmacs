@@ -225,35 +225,35 @@
                               (require 'helm-grep)
                               (require 'helm-ls-git)
                               (require 'helm-locate)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 隐藏helm buffer ，以避免干扰buffer list等
-(defun vmacs-helm-hide-buffer()
-  (unless (helm-alive-p)
-    (when (and  (string-match-p "^helm" (symbol-name last-command))
-                (not (string-match-p "^helm" (symbol-name this-command))))
-      (let ((backup))
-        (dolist (helm-current-buffer (buffer-list))
-          (when (string-match-p "^\\*[Hh]elm" (buffer-name helm-current-buffer))
-            (with-current-buffer helm-current-buffer
-              (setq backup (concat "  " (buffer-name helm-current-buffer)))
-              (when (get-buffer backup) (kill-buffer backup))
-              (rename-buffer backup))))))))
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; 隐藏helm buffer ，以避免干扰buffer list等
+;; (defun vmacs-helm-hide-buffer()
+;;   (unless (helm-alive-p)
+;;     (when (and  (string-match-p "^helm" (symbol-name last-command))
+;;                 (not (string-match-p "^helm" (symbol-name this-command))))
+;;       (let ((backup))
+;;         (dolist (helm-current-buffer (buffer-list))
+;;           (when (string-match-p "^\\*[Hh]elm" (buffer-name helm-current-buffer))
+;;             (with-current-buffer helm-current-buffer
+;;               (setq backup (concat "  " (buffer-name helm-current-buffer)))
+;;               (when (get-buffer backup) (kill-buffer backup))
+;;               (rename-buffer backup))))))))
 
-(add-hook 'post-command-hook  'vmacs-helm-hide-buffer)
-(add-hook 'helm-after-action-hook 'vmacs-helm-hide-buffer)
-(add-hook 'helm-after-action-hook #'(lambda()(add-hook 'post-command-hook  'vmacs-helm-hide-buffer)))
+;; (add-hook 'post-command-hook  'vmacs-helm-hide-buffer)
+;; (add-hook 'helm-after-action-hook 'vmacs-helm-hide-buffer)
+;; (add-hook 'helm-after-action-hook #'(lambda()(add-hook 'post-command-hook  'vmacs-helm-hide-buffer)))
 
-(defun vmacs-helm-resume(&optional arg)
-  (let ((backup))
-    (dolist (buf (buffer-list))
-      (when (string-match-p "^  \\*[Hh]elm" (buffer-name buf))
-        (with-current-buffer buf
-          (setq backup (substring (buffer-name buf) 2 ))
-          (when (get-buffer backup) (kill-buffer backup))
-          (rename-buffer backup))))))
+;; (defun vmacs-helm-resume(&optional arg)
+;;   (let ((backup))
+;;     (dolist (buf (buffer-list))
+;;       (when (string-match-p "^  \\*[Hh]elm" (buffer-name buf))
+;;         (with-current-buffer buf
+;;           (setq backup (substring (buffer-name buf) 2 ))
+;;           (when (get-buffer backup) (kill-buffer backup))
+;;           (rename-buffer backup))))))
 
-(advice-add #'helm-resume :before #'vmacs-helm-resume)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (advice-add #'helm-resume :before #'vmacs-helm-resume)
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (defun vmacs-helm-hide-buffer()
 ;;   (let ((backup))
