@@ -2,5 +2,5 @@
 # key: fori
 # group : control structure
 # --
-for ${var} in range(${1:n})
+for ${1:var} in range(${2:n})
     $0
