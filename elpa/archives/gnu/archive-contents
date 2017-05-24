@@ -354,7 +354,7 @@
 	       ((:keywords "calendar")
 		(:url . "http://elpa.gnu.org/packages/excorporate.html"))])
  (exwm .
-       [(0 13)
+       [(0 14)
 	((xelb
 	  (0 12)))
 	"Emacs X Window Manager" tar
@@ -670,7 +670,7 @@
 	     ((:url . "https://github.com/michael-heerdegen/on-screen.el")
 	      (:keywords "convenience"))])
  (org .
-      [(20170502)
+      [(20170515)
        nil "Outline-based notes management and organizer" tar nil])
  (osc .
       [(0 1)
@@ -678,7 +678,7 @@
        ((:url . "http://elpa.gnu.org/packages/osc.html")
 	(:keywords "comm" "processes" "multimedia"))])
  (other-frame-window .
-		     [(1 0 2)
+		     [(1 0 3)
 		      ((emacs
 			(24 4)))
 		      "Minor mode to enable global prefix keys for other frame/window buffer placement" single
@@ -950,6 +950,15 @@
 	    "Schema validation for Emacs-lisp" single
 	    ((:url . "http://elpa.gnu.org/packages/validate.html")
 	     (:keywords "lisp"))])
+ (vdiff .
+	[(0 2 3)
+	 ((emacs
+	   (24 4))
+	  (hydra
+	   (0 13 0)))
+	 "A diff tool similar to  vimdiff" single
+	 ((:url . "https://github.com/justbur/emacs-vdiff")
+	  (:keywords "diff"))])
  (vlf .
       [(1 7)
        nil "View Large Files" tar

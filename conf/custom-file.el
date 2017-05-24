@@ -369,7 +369,7 @@
  '(magit-commit-ask-to-stage t)
  '(magit-no-confirm
    (quote
-    (reverse  rename   abort-merge  resect-bisect kill-process stage-all-changes unstage-all-changes)))
+    (reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes)))
  '(magit-push-arguments (quote ("--force-with-lease")))
  '(magit-save-repository-buffers (quote dontask))
  '(menu-bar-mode nil)
@@ -377,10 +377,54 @@
    (quote
     (gitconfig-mode shell-toggle company-jedi helm-dired-history dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git iedit logstash-conf lua-mode magit markdown-mode protobuf-mode thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
+ '(safe-local-variable-values
+   (quote
+    ((eval progn
+           (setq jedi:environment-root
+                 (expand-file-name "./virtual/"
+                                   (locate-dominating-file default-directory "Makefile")))
+           (setq jedi:server-args
+                 (\`
+                  ("--virtual-env"
+                   (\,
+                    (expand-file-name "./virtual/"
+                                      (locate-dominating-file default-directory "Makefile")))
+                   "--virtual-env"
+                   (\,
+                    (expand-file-name "~/python/"))
+                   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path"
+                   (\,
+                    (expand-file-name
+                     (expand-file-name "./src/"
+                                       (locate-dominating-file default-directory "Makefile"))))
+                   "--sys-path"
+                   (\,
+                    (expand-file-name
+                     (expand-file-name "./src/db"
+                                       (locate-dominating-file default-directory "Makefile"))))
+                   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" ".")))
+           (setq exec-path
+                 (delete-dups
+                  (cons
+                   (expand-file-name "./virtual/bin/"
+                                     (locate-dominating-file default-directory "Makefile"))
+                   exec-path)))
+           (setenv "PATH"
+                   (concat
+                    (expand-file-name "./virtual/bin/"
+                                      (locate-dominating-file default-directory "Makefile"))
+                    ":"
+                    (getenv "PATH")))
+           (setenv "PYTHONPATH"
+                   (expand-file-name "./src/"
+                                     (locate-dominating-file default-directory "Makefile")))
+           (setenv "PYTHONPATH"
+                   (expand-file-name "./db/"
+                                     (locate-dominating-file default-directory "Makefile")))))))
  '(save-place-file "~/.emacs.d/cache/place")
  '(save-place-mode t)
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
- '(tramp-persistency-file-name "~/.emacs.d/cache/tramp")
+ '(tramp-persistency-file-name "~/.emacs.d/cache/tramp" nil (tramp))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(warning-suppress-types (quote ((yasnippet backquote-change)))))
