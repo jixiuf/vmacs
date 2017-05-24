@@ -9,6 +9,7 @@
                        ('windows-nt "es %s %s")
                        ('darwin (concat user-emacs-directory "bin/locate.sh %s %s")) ;mdfind -name %s %s
                        (t "locate %s %s"))
+ helm-mode-reverse-history t
  helm-echo-input-in-header-line t
  helm-case-fold-search t;nil=case sensitive
  case-fold-search t ;nil=case sensitive //space cc toggle it
