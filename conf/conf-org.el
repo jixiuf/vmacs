@@ -80,6 +80,16 @@
                                                              (quote regexp) "\n]+>")))
                                 (org-agenda-overriding-header "Unscheduled TODO entries: ")))
                               )
+ org-emphasis-regexp-components
+ ;; markup 记号前后允许中文
+ ;; https://emacs-china.org/t/org-mode/597/11
+ ;; Org 里中文/斜体/、*粗体*、_下划线_、+删除+、~代码~、=常量=。
+ (list (concat " \t('\"{"            "[:nonascii:]")
+       (concat "- \t.,:!?;'\")}\\["  "[:nonascii:]")
+       " \t\r\n,\"'"
+       "."
+       1)
+
 
 
  )
@@ -121,7 +131,7 @@
 ;; |:         turn on/off tables
 ;; ^:         turn on/off TeX-like syntax for sub- and superscripts.  If
 ;; you write "^:{}", a_{b} will be interpreted, but
-;; the simple a_b will be left as it is.
+;; the simple a_b will be left as it is.   Org 里中文/斜体/、*粗体*、_下划线_、+删除+、~代码~、=常量=。
 ;; -:         turn on/off conversion of special strings.
 ;; f:         turn on/off footnotes like this[1].
 ;; todo:      turn on/off inclusion of TODO keywords into exported text
