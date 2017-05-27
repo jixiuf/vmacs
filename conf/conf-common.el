@@ -122,6 +122,7 @@
          ("\\.md" . markdown-mode)
          ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
+         ("\\.go.txt$" . go-mode)
          ("\\.yaws$" . nxml-mode)
          ("\\.html$"  . web-mode)
          ("\\.htm$"   . web-mode)
