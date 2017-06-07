@@ -13,7 +13,7 @@
 (evil-leader/set-key "vl" 'vc-print-log)
 (evil-leader/set-key "vL" 'vc-print-root-log)
 (evil-leader/set-key "v+" 'vc-update)
-(evil-leader/set-key "vf" 'vc-pull)
+(evil-leader/set-key "vf" 'vmacs-magit-pull-default)
 (evil-leader/set-key "vg" 'vc-annotate)
 (evil-leader/set-key "vd" 'vc-dir)
 (evil-leader/set-key "v=" 'vc-diff)
@@ -21,10 +21,12 @@
 (evil-leader/set-key "+" 'vc-ediff)
 
 (evil-leader/set-key "vj" 'magit-status) ;like dired-jump
-(evil-leader/set-key "vp" 'magit-push-current-to-upstream)
+(evil-leader/set-key "vp" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (evil-leader/set-key "vs" 'magit-file-popup)
 (evil-leader/set-key "ve" 'magit-commit-extend)
 (evil-leader/set-key "va" 'magit-commit-amend)
+
+
 
 (setq-default
  ;; 只让vc支持git svn , 可以加快vc的一些处理

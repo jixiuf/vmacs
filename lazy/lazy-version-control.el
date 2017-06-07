@@ -78,6 +78,24 @@
            (message "%s " (with-current-buffer  (process-buffer proc) (buffer-string)))))))))
 
 
+(defun magit-svn-repos-p(&optional dir)
+  (let ((topdir (magit-toplevel (or dir default-directory))))
+    (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
+
+;;;###autoload
+(defun vmacs-magit-push-default(&optional args  upstream)
+  (interactive)
+  (if (magit-svn-repos-p)
+      (magit-run-git-async "svn" "dcommit" args)
+      (call-interactively 'magit-push-current-to-upstream)))
+;;;###autoload
+(defun vmacs-magit-pull-default(&optional args  upstream)
+  (interactive)
+  (if (magit-svn-repos-p)
+      (magit-run-git-async "svn" "rebase" args)
+      (call-interactively 'magit-pull-from-upstream)))
+
+
 (provide 'lazy-version-control)
 
 ;; Local Variables:
