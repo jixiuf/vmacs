@@ -78,6 +78,7 @@
            (message "%s " (with-current-buffer  (process-buffer proc) (buffer-string)))))))))
 
 
+(require 'magit)
 (defun magit-svn-repos-p(&optional dir)
   (let ((topdir (magit-toplevel (or dir default-directory))))
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
