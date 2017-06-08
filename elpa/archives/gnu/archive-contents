@@ -265,6 +265,15 @@
 	    nil "View diffs in side-by-side format" single
 	    ((:url . "https://github.com/mgalgs/diffview-mode")
 	     (:keywords "convenience" "diff"))])
+ (dired-du .
+	   [(0 5)
+	    ((emacs
+	      (24 4))
+	     (cl-lib
+	      (0 5)))
+	    "Dired with recursive directory sizes" tar
+	    ((:keywords "files" "unix" "convenience")
+	     (:url . "http://elpa.gnu.org/packages/dired-du.html"))])
  (dismal .
 	 [(1 5)
 	  ((cl-lib
@@ -503,6 +512,13 @@
 	 nil "jump to previous insertion points" single
 	 ((:url . "http://elpa.gnu.org/packages/jumpc.html")
 	  (:keywords))])
+ (kmb .
+      [(0 1)
+       ((emacs
+	 (24 1)))
+       "Kill buffers matching a regexp w/o confirmation" single
+       ((:url . "http://elpa.gnu.org/packages/kmb.html")
+	(:keywords "lisp" "convenience"))])
  (landmark .
 	   [(1 0)
 	    nil "Neural-network robot that learns landmarks" single
@@ -634,7 +650,7 @@
 	      ((:url . "http://elpa.gnu.org/packages/nhexl-mode.html")
 	       (:keywords "data"))])
  (nlinum .
-	 [(1 6)
+	 [(1 7)
 	  nil "Show line numbers in the margin" single
 	  ((:url . "http://elpa.gnu.org/packages/nlinum.html")
 	   (:keywords "convenience"))])
@@ -670,8 +686,19 @@
 	     ((:url . "https://github.com/michael-heerdegen/on-screen.el")
 	      (:keywords "convenience"))])
  (org .
-      [(20170515)
+      [(20170606)
        nil "Outline-based notes management and organizer" tar nil])
+ (org-edna .
+	   [(1 0 -3 1)
+	    ((emacs
+	      (25 1))
+	     (seq
+	      (2 19))
+	     (org
+	      (9 0 5)))
+	    "Extensible Dependencies 'N' Actions" tar
+	    ((:keywords "convenience" "text" "org")
+	     (:url . "https://savannah.nongnu.org/projects/org-edna-el/"))])
  (osc .
       [(0 1)
        nil "Open Sound Control protocol library" single
@@ -733,24 +760,25 @@
 	 ((:url . "http://www.dr-qubit.org/emacs.php")
 	  (:keywords "extensions" "data structures" "queue"))])
  (rainbow-mode .
-	       [(0 12)
+	       [(0 13)
 		nil "Colorize color names in buffers" single
 		((:url . "http://elpa.gnu.org/packages/rainbow-mode.html")
 		 (:keywords "faces"))])
  (realgud .
-	  [(1 4 3)
+	  [(1 4 4)
 	   ((load-relative
-	     (1 2))
+	     (1 3))
 	    (loc-changes
 	     (1 2))
 	    (test-simple
-	     (1 2 0))
+	     (1 3 0))
 	    (cl-lib
 	     (0 5))
 	    (emacs
 	     (24)))
 	   "A modular front-end for interacting with external debuggers" tar
-	   ((:url . "http://github.com/realgud/realgud/"))])
+	   ((:keywords "gdb" "python" "perl" "go" "bash" "nodejs" "zsh" "bashdb" "zshdb" "remake" "make" "trepan" "perldb")
+	    (:url . "http://github.com/realgud/realgud/"))])
  (register-list .
 		[(0 1)
 		 nil "Interactively list/edit registers" single
