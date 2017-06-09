@@ -1,0 +1,2 @@
+package `(file-name-nondirectory
+              (file-name-sans-extension (or (buffer-file-name) (buffer-name))))`
