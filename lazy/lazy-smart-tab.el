@@ -32,7 +32,7 @@
     (help-mode forward-button)
     (nxml-mode nxml-complete)
     (objc-mode company-complete)
-    (go-mode auto-complete))
+    (go-mode company-complete))
   "List of major modes in which to use a mode specific completion
   function.")
 
