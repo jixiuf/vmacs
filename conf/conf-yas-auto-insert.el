@@ -21,5 +21,6 @@
 (define-auto-insert "\\.tex$" ["tex-auto-insert" my-autoinsert-yas-expand])
 (define-auto-insert "\\.py$" ["py-auto-insert" my-autoinsert-yas-expand])
 (define-auto-insert "\\.go$" ["go-auto-insert" my-autoinsert-yas-expand])
+
 ;; (define-auto-insert "\\.org$" "org-auto-insert")
 (provide 'conf-yas-auto-insert)
