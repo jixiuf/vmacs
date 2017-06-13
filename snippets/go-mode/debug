@@ -2,5 +2,5 @@
 # name: log.Debug
 # key: dbg
 # --
-log.Debug(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
+game.Logger.Debug(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
 }$2${1:$(if (string-match "%" yas-text) "\)" "")}
