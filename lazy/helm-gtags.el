@@ -57,9 +57,9 @@
 
 (require 'helm)
 (require 'helm-multi-match)
-(require 'helm-types)
+;; (require 'helm-types)
 (require 'helm-source)
-(require 'helm-utils)
+;; (require 'helm-utils)
 (require 'thingatpt)
 (require 'tramp)
 
@@ -457,7 +457,8 @@ if `with-process-p' not nil then use global -p find gtagsroot"
     (find-file filename)
     (goto-char (point-min))
     (forward-line (1- line))
-    (helm-highlight-current-line)))
+    ;; (helm-highlight-current-line)
+    ))
 
 (defun helm-gtags-select-find-file-func()
   (if helm-gtags-use-otherwin
@@ -695,7 +696,15 @@ if `with-process-p' not nil then use global -p find gtagsroot"
     :init  nil
     :candidates 'helm-gtags-candidates-in-buffer-file
     :candidate-number-limit helm-gtags-default-candidate-limit
-    :action (helm-actions-from-type-file)))
+    :action 'helm-find-many-files))
+
+(defun helm-find-many-files (_ignore)
+  "Simple action that run `find-file' on marked candidates.
+Run `helm-find-many-files-after-hook' at end"
+  (let ((helm--reading-passwd-or-string t))
+    (mapc 'find-file (helm-marked-candidates))
+    ))
+
 
 
 (defvar helm-source-gtags-find-tag-from-here
