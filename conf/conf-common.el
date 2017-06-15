@@ -172,11 +172,11 @@
               wgrep-enable-key "i"
               wgrep-change-readonly-file t)
 (defun enable-wgrep-when-entry-insert()
-  (when (equal major-mode 'helm-grep-mode)
+  (when (member major-mode '(ivy-occur-mode helm-grep-mode))
     (wgrep-change-to-wgrep-mode)))
 
 (defun disable-wgrep-when-exit-insert()
-  (when (equal major-mode 'helm-grep-mode)
+  (when (member major-mode '(ivy-occur-mode helm-grep-mode))
     (wgrep-abort-changes)))
 
 (with-eval-after-load 'helm-grep
