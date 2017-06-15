@@ -8,7 +8,7 @@
 ;; URL: https://github.com/jixiuf/emacs-helm-gtags
 ;; Author: 纪秀峰 <jixiuf@gmail.com>
 ;; Version: 2.5
-;; Package-Requires: ((helm "1.8"))
+;; Package-Requires: ((helm-core "2.7.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -602,13 +602,19 @@ if `with-process-p' not nil then use global -p find gtagsroot"
           (insert content)))
       (goto-char (line-beginning-position)))))
 
+
 (defun helm-gtags-use-cache-p(type tagroot input cache-info)
   (cl-case type
-    (:file (and (string-prefix-p (nth 1 cache-info) input)
+    (:file (and input
+                cache-info
+                (nth 1 cache-info)
+                (string-prefix-p (nth 1 cache-info) input)
                 (or
                  (not tagroot)
+                 (car cache-info)
                  (string-equal tagroot (car cache-info)))))
-    (t (and (string-equal tagroot (car cache-info))
+    (t (and input
+            (string-equal tagroot (car cache-info))
             (string-equal input (nth 1 cache-info))))))
 
 (defun helm-gtags-get-candidates-buf-with-cache(type &optional in)
