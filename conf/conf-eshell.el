@@ -12,17 +12,21 @@
     (add-to-list 'eshell-visual-subcommands  '("tmux"))
     (add-to-list 'eshell-visual-subcommands  '("git" "l" "log" "diff" "show"))))
 
-(autoload 'helm-eshell-history "helm-eshell" "" t nil)
-(autoload 'helm-esh-pcomplete "helm-eshell" "" t nil)
+;; (autoload 'helm-eshell-history "helm-eshell" "" t nil)
+;; (autoload 'helm-esh-pcomplete "helm-eshell" "" t nil)
 
 ;;using helm.el as the complete engine
 (defun vmacs-eshell-hook()
   (company-mode -1)
   ;; (define-key eshell-mode-map [M-right] 'copy-above-while-same);
   (define-key eshell-mode-map (kbd "M-.") 'eshell-insert-last-cmd-argument)
-  (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
-  (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
-  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)) ;Tab
+  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
+  ;; (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
+  ;; (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete);Tab
+  (define-key eshell-mode-map (kbd "<tab>") (lambda () (interactive) (pcomplete-std-complete)))
+  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
+  (define-key eshell-mode-map [remap eshell-previous-matching-input] 'counsel-esh-history ) ;M-r
+  )
 
 (add-hook 'eshell-mode-hook 'vmacs-eshell-hook)
 

@@ -24,7 +24,7 @@
            "\*vc-"
            "*Backtrace*"
            "*Package-Lint*"
-           "todo.txt"
+           ;; "todo.txt"
            "\*vc*"
            "*Completions*"
            "\*vc-change-log\*"
@@ -32,7 +32,7 @@
            "\*Async Shell Command\*"
            "\*Shell Command Output\*"
            "\*sdcv\*"
-           "\*Messages\*"
+           ;; "\*Messages\*"
            "\*Ido Completions\*"))
 
 ;; (setq enable-recursive-minibuffers t)
@@ -59,14 +59,9 @@
 (evil-leader/set-key ";" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-
-
-(ivy-add-actions
- 'counsel-find-file
- `(("c" ,(vmacs-ivy-given-file #'copy-file "Copy") "copy file")
-   ("d" ,(vmacs-ivy-reloading #'vmacs-confirm-delete-file) "delete file")
-   ("m" ,(vmacs-ivy-reloading (vmacs-ivy-given-file #'rename-file "Move")) "move file")))
+(setq avy-timeout-seconds 0.3)
+(evil-leader/set-key "o" 'avy-goto-char-timer)
+(global-set-key  (kbd "s-o") 'avy-goto-char-timer)
 
 ;; From browse-kill-ring.el
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
@@ -87,15 +82,24 @@
 
 
 (define-key ivy-minibuffer-map (kbd "C-c C-c") 'ivy-occur)
-(define-key ivy-minibuffer-map (kbd "C-o") 'ivy-read-action)
+(define-key ivy-minibuffer-map (kbd "C-o") 'ivy-dispatching-done)
 (define-key ivy-minibuffer-map (kbd "C-w") 'ivy-yank-word)
 (define-key ivy-minibuffer-map (kbd "C-e") 'vmacs-ivy-magic-eol)
 (define-key ivy-minibuffer-map (kbd "<tab>") 'ivy-partial-or-done)
+;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
+;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
+(global-set-key (kdb ""))
 
 
 (with-eval-after-load 'counsel
   (define-key counsel-find-file-map (kbd "C-l") 'counsel-up-directory)
-  )
+  (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
+  (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
+
+(ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
+(ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
+
+
 (provide 'conf-ivy)
 
 ;; Local Variables:

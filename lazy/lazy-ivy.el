@@ -1,20 +1,3 @@
-;; -*- lexical-binding: t -*-
-;;;###autoload
-(defun vmacs-ivy-reloading (cmd)
-    (lambda (x)
-      (funcall cmd x)
-      (ivy--reset-state ivy-last)))
-;;;###autoload
-(defun vmacs-ivy-given-file (cmd prompt) ; needs lexical-binding
-  (lambda (source)
-    (let ((target
-           (let ((enable-recursive-minibuffers t))
-             (read-file-name
-              (format "%s %s to:" prompt source)))))
-      (funcall cmd source target 1))))
-
-(defun vmacs-confirm-delete-file (x)
-  (dired-delete-file x 'confirm-each-subdirectory))
 
 ;;;###autoload
 (defun vmacs-ivy-magic-eol( arg)
@@ -24,6 +7,25 @@
       (call-interactively 'ivy-immediate-done)
     (call-interactively 'end-of-line)))
 
+;;;###autoload
+(defun vmacs-ivy-swithc-buffer-open-dired(&optional buffer)
+  (interactive)
+  (if (zerop (length buffer))
+      (dired ivy-text)
+    (let ((virtual (assoc buffer ivy--virtual-buffers)))
+      (if (and virtual
+               (not (get-buffer buffer)))
+          (dired (file-name-directory (cdr virtual)))
+        (with-current-buffer buffer (dired default-directory))))))
+
+;;;###autoload
+(defun vmacs-ivy-dired(&optional buf)
+  (interactive)
+  (if ivy--directory
+      (ivy-quit-and-run
+       (dired ivy--directory))
+    (user-error
+     "Not completing files currently")))
 
 (provide 'lazy-ivy)
 
