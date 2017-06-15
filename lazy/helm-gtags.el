@@ -338,8 +338,9 @@ depending on `helm-gtags-GTAGSLIBPATH-alist'"
        (if (not (yes-or-no-p "File GTAGS not found. generate now? "))
            (user-error "Abort")
          (let* ((tagroot (read-directory-name "Generate tags at Directory: "))
+                (default-directory tagroot)
                 (label (helm-gtags-read-gtagslabel)))
-           (message "gtags is generating tags....")
+           (message "gtags is generating tags....%s" tagroot)
            (if (zerop (process-file "gtags" nil nil nil "-q" label))
                (message "generating tags done!!!")
              (error "Faild: 'gtags -q'"))
@@ -843,6 +844,7 @@ you could add `helm-source-gtags-files' to `helm-for-files-preferred-list'"
 
 (defun helm-gtags-read-tag-directory ()
   (let ((dir (read-directory-name "Directory tag generated: " nil nil t)))
+    (message dir)
     ;; On Windows, "gtags d:/tmp" work, but "gtags d:/tmp/" doesn't
     (directory-file-name (expand-file-name dir))))
 
@@ -854,6 +856,7 @@ you could add `helm-source-gtags-files' to `helm-for-files-preferred-list'"
 
 
 (defun helm-gtags-update-tags-command (how-to)
+  (print how-to)
   (cl-case how-to
     (entire-update (list helm-gtags-global-cmd "-u"))
     (generate-other-directory (list helm-gtags-cmd (helm-gtags-read-gtagslabel) (helm-gtags-read-tag-directory)))
