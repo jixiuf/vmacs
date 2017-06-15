@@ -27,6 +27,21 @@
     (user-error
      "Not completing files currently")))
 
+(unless (executable-find "rg")
+  (message "you need install rg on mac(brew install rg)")
+  (when (eq system-type 'darwin) (shell-command "brew install rg")))
+
+;;;###autoload
+(defun vmacs-ivy-search(&optional arg)
+  (interactive "P")
+  (if current-prefix-arg
+      (counsel-git-grep)
+    (call-interactively 'counsel-rg)))
+
+  ;; (if (vc-find-root default-directory ".git")
+  ;;     (call-interactively 'counsel-git-grep)
+  ;;   (call-interactively 'counsel-rg)))
+
 (provide 'lazy-ivy)
 
 ;; Local Variables:

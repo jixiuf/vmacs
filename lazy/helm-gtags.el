@@ -844,7 +844,6 @@ you could add `helm-source-gtags-files' to `helm-for-files-preferred-list'"
 
 (defun helm-gtags-read-tag-directory ()
   (let ((dir (read-directory-name "Directory tag generated: " nil nil t)))
-    (message dir)
     ;; On Windows, "gtags d:/tmp" work, but "gtags d:/tmp/" doesn't
     (directory-file-name (expand-file-name dir))))
 
@@ -856,7 +855,6 @@ you could add `helm-source-gtags-files' to `helm-for-files-preferred-list'"
 
 
 (defun helm-gtags-update-tags-command (how-to)
-  (print how-to)
   (cl-case how-to
     (entire-update (list helm-gtags-global-cmd "-u"))
     (generate-other-directory (list helm-gtags-cmd (helm-gtags-read-gtagslabel) (helm-gtags-read-tag-directory)))
