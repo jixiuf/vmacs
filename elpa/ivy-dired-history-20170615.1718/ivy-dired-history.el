@@ -4,7 +4,7 @@
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
 ;; Created:  2017-06-14
 ;; Version: 1.0
-;; Package-Version: 20170615.1444
+;; Package-Version: 20170615.1718
 ;; X-URL:https://github.com/jixiuf/ivy-dired-history
 ;; Package-Requires: ((ivy "0.9.0")(counsel "0.9.0")(cl-lib "0.5"))
 ;;
@@ -84,6 +84,13 @@
 
 (defvar ivy-dired-history-cleanup-p nil)
 
+(defvar ivy-dired-history-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "<return>") 'ivy-done)
+    (define-key map (kbd "<RET>")    'ivy-done)
+    map))
+
+(set-keymap-parent ivy-dired-history-map counsel-find-file-map)
 
 (defun ivy-dired-history--update(dir)
   "Update variable `ivy-dired-history-variable'.
@@ -140,6 +147,7 @@ Argument DIR directory."
              #'ivy-dired-history-read-file-name))
     ad-do-it))
 
+
 (defun ivy-dired-history-read-file-name
     (prompt &optional dir default-filename mustmatch initial predicate)
   "Read file name with hisotry as collection.
@@ -160,7 +168,7 @@ Optional argument PREDICATE predicate."
                   :initial-input initial
                   ;; :sort t
                   ;; :matcher #'counsel--find-file-matcher
-                  :keymap counsel-find-file-map
+                  :keymap ivy-dired-history-map
                   :caller 'read-file-name-internal)
         )))
 

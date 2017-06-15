@@ -59,9 +59,9 @@
 (evil-leader/set-key ";" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
-(setq avy-timeout-seconds 0.3)
-(evil-leader/set-key "o" 'avy-goto-char-timer)
-(global-set-key  (kbd "s-o") 'avy-goto-char-timer)
+;; (setq avy-timeout-seconds 0.3)
+;; (evil-leader/set-key "o" 'avy-goto-char-timer)
+;; (global-set-key  (kbd "s-o") 'avy-goto-char-timer)
 
 ;; From browse-kill-ring.el
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
@@ -88,13 +88,17 @@
 (define-key ivy-minibuffer-map (kbd "<tab>") 'ivy-partial-or-done)
 ;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
 ;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
-(global-set-key (kdb ""))
 
 
 (with-eval-after-load 'counsel
   (define-key counsel-find-file-map (kbd "C-l") 'counsel-up-directory)
   (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
   (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
+
+(with-eval-after-load 'ivy-dired-history
+  (define-key ivy-dired-history-map (kbd "<return>") 'ivy-done)
+  (define-key ivy-dired-history-map (kbd "<RET>")      'ivy-done))
+
 
 (ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
