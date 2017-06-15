@@ -11,18 +11,6 @@
 
 ;;;***
 
-;;;### (autoloads nil "ivy-dired-history-20170615.1021" "ivy-dired-history-20170615.1021.el"
-;;;;;;  (0 0 0 0))
-;;; Generated autoloads from ivy-dired-history-20170615.1021.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ivy-dired-history-20170615.1021" '("ivy-")))
-
-;;;***
-
-;;;### (autoloads nil nil ("ivy-dired-history-pkg.el") (0 0 0 0))
-
-;;;***
-
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t

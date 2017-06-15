@@ -1,16 +1,16 @@
-;;; ivy-dired-history.el ---quickly visit dired directory you have visted .
+;;; ivy-dired-history.el --- quickly visit dired directory you have visted
 
 ;; Author: 纪秀峰 <jixiuf@gmail.com>
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
 ;; Created:  2017-06-14
 ;; Version: 1.0
-;; Package-Version: 20170615.1021
+;; Package-Version: 20170615.1444
 ;; X-URL:https://github.com/jixiuf/ivy-dired-history
-;; Package-Requires: ((ivy "0.9.0")(counsel "0.0.1")(cl-lib "0.5"))
+;; Package-Requires: ((ivy "0.9.0")(counsel "0.9.0")(cl-lib "0.5"))
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `ivy' `dired'
+;; `ivy' `counsel'
 ;;
 ;;; This file is NOT part of GNU Emacs
 
@@ -42,11 +42,6 @@
 ;; an option allowing users to select a directory from the history
 ;; list.
 
-;; after integrated the initial-input of `dired' `dired-other-window'
-;; and `dired-other-frame' are changed from default-directory to empty,
-;; and the first element of history is default-directory,so you can
-;; just press `RET' or `C-j' to select it.
-
 
 
 ;;; Installation:
@@ -60,10 +55,6 @@
 ;; ;; if you are using ido,you'd better disable ido for dired
 ;; ;; (define-key (cdr ido-minor-mode-map-entry) [remap dired] nil) ;in ido-setup-hook
 ;;   (define-key dired-mode-map "," 'dired))
-;; or
-;; (with-eval-after-load 'dired
-;;   (require 'ivy-dired-history)
-;;   (define-key dired-mode-map "," 'dired))
 
 
 ;;; Code:
@@ -73,7 +64,6 @@
 (require 'ivy)
 (require 'counsel)
 (require 'cl-lib)
-(require 'savehist)
 
 (defgroup ivy-dired-history nil
   "dired history using Ivy"
@@ -84,6 +74,12 @@
   "Length of history for ivy-dired-history."
   :type 'number
   :group 'ivy-dired-history)
+
+(defcustom ivy-dired-ignore-directory '("/")
+  "Length of history for ivy-dired-history."
+  :type '(repeat string)
+  :group 'ivy-dired-history)
+
 (defvar ivy-dired-history-variable nil)
 
 (defvar ivy-dired-history-cleanup-p nil)
@@ -92,18 +88,20 @@
 (defun ivy-dired-history--update(dir)
   "Update variable `ivy-dired-history-variable'.
 Argument DIR directory."
-       (unless ivy-dired-history-cleanup-p
-         (setq ivy-dired-history-cleanup-p t)
-         (let ((tmp-history ))
-           (dolist (d ivy-dired-history-variable)
-             (when (or (file-remote-p d) (file-directory-p d))
-               (add-to-list 'tmp-history d t)))
-           (setq ivy-dired-history-variable tmp-history)))
-       (setq ivy-dired-history-variable
-             (delete-dups (delete dir ivy-dired-history-variable)))
-       (setq ivy-dired-history-variable
-             (append (list dir) ivy-dired-history-variable))
-       (ivy-dired-history-trim))
+       (setq dir (abbreviate-file-name (expand-file-name dir)))
+       (unless (member dir ivy-dired-ignore-directory)
+         (unless ivy-dired-history-cleanup-p
+           (setq ivy-dired-history-cleanup-p t)
+           (let ((tmp-history ))
+             (dolist (d ivy-dired-history-variable)
+               (when (or (file-remote-p d) (file-directory-p d))
+                 (add-to-list 'tmp-history d t)))
+             (setq ivy-dired-history-variable tmp-history)))
+         (setq ivy-dired-history-variable
+               (delete-dups (delete dir ivy-dired-history-variable)))
+         (setq ivy-dired-history-variable
+               (append (list dir) ivy-dired-history-variable))
+         (ivy-dired-history-trim)))
 
 (defun ivy-dired-history-update()
   "Update variable `ivy-dired-history-variable'."
@@ -112,7 +110,7 @@ Argument DIR directory."
 ;;when you open dired buffer ,update `ivy-dired-history-variable'.
 (add-hook 'dired-after-readin-hook 'ivy-dired-history-update)
 
-(defun ivy-dired-history-trim ()
+(defun ivy-dired-history-trim()
   "Retain only the first `ivy-dired-history-max' items in VALUE."
   (if (> (length ivy-dired-history-variable) ivy-dired-history-max)
       (setcdr (nthcdr (1- ivy-dired-history-max) ivy-dired-history-variable) nil)))
@@ -131,7 +129,7 @@ Argument DIR directory."
   "Wrapper ‘read-file-name’ with idv-dired-history-read-file-name."
   (ivy-dired-history--update (expand-file-name default-directory))
   (let ((default-directory default-directory))
-    (unless (next-read-file-uses-dialog-p) (setq default-directory "/"))
+    ;; (unless (next-read-file-uses-dialog-p) (setq default-directory "/"))
     (cl-letf (((symbol-function 'read-file-name)
                #'ivy-dired-history-read-file-name))
       ad-do-it)))
