@@ -78,7 +78,6 @@
 (evil-leader/set-key "fh" 'helm-find-files)
 (evil-leader/set-key "fl" 'helm-locate)
 (evil-leader/set-key "fg" 'helm-ls-git-ls)
-(evil-leader/set-key  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
 (define-key evil-normal-state-map "sl" 'helm-locate)
 
 (evil-leader/set-key "?" 'helm-descbinds)
@@ -87,6 +86,9 @@
 (evil-leader/set-key "wy" 'helm-all-mark-rings)
 (evil-leader/set-key "wp" 'helm-list-emacs-process)
 
+(evil-leader/set-key ";" 'helm-M-x)
+(evil-leader/set-key "；" 'helm-M-x)
+(evil-leader/set-key "g" 'helm-search)
 ;; (autoload 'helm-apropos "helm-elisp" "" t nil)
 ;; (define-key-lazy help-mode-map (kbd "a")         'helm-apropos "help-mode")
 ;; (global-set-key  [remap apropos-command] 'helm-apropos) ;C-ha f1-a

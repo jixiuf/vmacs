@@ -380,13 +380,10 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 
 (evil-leader/set-key "o" 'other-window)
-(evil-leader/set-key "g" 'helm-search)
 ;; (evil-leader/set-key "G" 'helm-do-zgrep)
 ;; magit
 
 
-(evil-leader/set-key ";" 'helm-M-x)
-(evil-leader/set-key "；" 'helm-M-x)
 
 (autoload 'dired-jump "dired-x" "dired-jump" t)
 (evil-leader/set-key "j" 'dired-jump)
@@ -420,6 +417,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-leader/set-key "t" 'org-agenda)
 (evil-leader/set-key "/" 'undo)
 (evil-leader/set-key "$" 'toggle-truncate-lines)
+(evil-leader/set-key  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
 
 ;; (evil-leader/set-key "pr" 'publish-my-note-recent)
 ;; (evil-leader/set-key "pa" 'publish-my-note-all)

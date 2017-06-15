@@ -375,11 +375,39 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (magit gitconfig-mode shell-toggle company-jedi helm-dired-history dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm helm-core helm-descbinds helm-ls-git iedit logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep wgrep-helm with-editor yaml-mode yasnippet)))
+    (ivy-dired-history counsel magit gitconfig-mode shell-toggle company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit evil-terminal-cursor-changer flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core iedit logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    (quote
-    ((eval progn
+    ((eval when
+           (and
+            (buffer-file-name)
+            (file-regular-p
+             (buffer-file-name))
+            (string-match-p "^[^.]"
+                            (buffer-file-name)))
+           (unless
+               (featurep
+                (quote package-build))
+             (let
+                 ((load-path
+                   (cons "../package-build" load-path)))
+               (require
+                (quote package-build))))
+           (package-build-minor-mode)
+           (set
+            (make-local-variable
+             (quote package-build-working-dir))
+            (expand-file-name "../working/"))
+           (set
+            (make-local-variable
+             (quote package-build-archive-dir))
+            (expand-file-name "../packages/"))
+           (set
+            (make-local-variable
+             (quote package-build-recipes-dir))
+            default-directory))
+     (eval progn
            (setq jedi:environment-root
                  (expand-file-name "./virtual/"
                                    (locate-dominating-file default-directory "Makefile")))
