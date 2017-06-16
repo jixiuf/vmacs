@@ -3,13 +3,16 @@
 (setq ivy-initial-inputs-alist nil)
 (setq ivy-extra-directories '("./")) ; default value: ("../" "./")
 (setq ivy-wrap t)
-(setq ivy-count-format "%d/%d ")
+(setq ivy-count-format "")
+;; (setq ivy-count-format "%d/%d ")
 ;; (setq ivy-virtual-abbreviate 'full) ; Show the full virtual file paths
 ;; (setq ivy-add-newline-after-prompt nil)
 (setq ivy-height 25)
 (setq ivy-fixed-height-minibuffer t)
 (setq counsel-git-grep-skip-counting-lines t)
-(setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
+;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
+
+(setq ivy-re-builders-alist '((swiper . ivy--regex-fuzzy)
                               (counsel-ag . ivy--regex-plus)
                               (counsel-rg . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
