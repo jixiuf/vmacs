@@ -79,10 +79,6 @@
   :type '(repeat string)
   :group 'ivy-dired-history)
 
-(defcustom ivy-dired-history-disable-flx-sort t
-  "Disable the automatic sort by flx when using `ivy--regex-fuzzy'."
-  :type 'boolean
-  :group 'ivy-dired-history)
 
 (defvar ivy-dired-history-variable nil)
 
@@ -152,6 +148,41 @@ Argument DIR directory."
     ad-do-it))
 
 
+(defun ivy-dired-history-sort (name candidates)
+  "Re-sort candidates by NAME.
+CANDIDATES is a list of directories(with path) each match NAME.
+equal>prefix>substring>other."
+       (if (or (string-match "^\\^" name) (string= name ""))
+           candidates
+         (let* ((base-re (funcall ivy--regex-function name))
+                (base-re (if (consp base-re) (caar base-re) base-re))
+                (re-prefix (concat "^\\*" base-re))
+                res-prefix
+                res-equal
+                res-substring
+                res-noprefix
+                dirname)
+           (unless (cl-find-if (lambda (s) (string-match re-prefix s)) candidates)
+             (setq re-prefix (concat "^" base-re)))
+           (dolist (s candidates)
+             (setq dirname (file-name-nondirectory
+                            (directory-file-name
+                             (file-name-directory (expand-file-name s)))))
+             (cond
+              ((string= name dirname)
+               (push s res-equal))
+              ((string-match-p re-prefix dirname)
+               (push s res-prefix))
+              ((string-match-p name dirname)
+               (push s res-substring))
+              (t
+               (push s res-noprefix))))
+           (nconc
+            (nreverse res-equal)
+            (nreverse res-prefix)
+            (nreverse res-substring)
+            (nreverse res-noprefix)))))
+
 (defun ivy-dired-history-read-file-name
     (prompt &optional dir default-filename mustmatch initial predicate)
   "Read file name with hisotry as collection.
@@ -165,16 +196,15 @@ Optional argument PREDICATE predicate."
                #'ivy-dired-history-read-file-name-internal))
       (let ((ivy-sort-functions-alist nil)
             (default-directory default-directory)
-            (ivy--flx-featurep ivy--flx-featurep)
+            (ivy--flx-featurep nil)
+            (ivy-sort-matches-functions-alist '((t . ivy-dired-history-sort)))
             (ivy-extra-directories nil))
         (when dir (setq default-directory dir))
-        (when ivy-dired-history-disable-flx-sort
-          (setq ivy--flx-featurep nil))
         (ivy-read prompt
                   'read-file-name-internal
                   :initial-input initial
-                  ;; :sort nil
-                  ;; :matcher #'counsel--find-file-matcher
+                  :sort t
+                  :matcher #'counsel--find-file-matcher
                   :keymap ivy-dired-history-map
                   :caller 'read-file-name-internal))))
 
