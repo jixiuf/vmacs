@@ -4,7 +4,6 @@
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
 ;; Created:  2017-06-14
 ;; Version: 1.0
-;; Package-Version: 20170615.218
 ;; X-URL:https://github.com/jixiuf/ivy-dired-history
 ;; Package-Requires: ((ivy "0.9.0")(counsel "0.9.0")(cl-lib "0.5"))
 ;;
@@ -75,9 +74,14 @@
   :type 'number
   :group 'ivy-dired-history)
 
-(defcustom ivy-dired-ignore-directory '("/")
+(defcustom ivy-dired-history-ignore-directory '("/")
   "Length of history for ivy-dired-history."
   :type '(repeat string)
+  :group 'ivy-dired-history)
+
+(defcustom ivy-dired-history-disable-flx-sort t
+  "Disable the automatic sort by flx when using `ivy--regex-fuzzy'."
+  :type 'boolean
   :group 'ivy-dired-history)
 
 (defvar ivy-dired-history-variable nil)
@@ -96,7 +100,7 @@
   "Update variable `ivy-dired-history-variable'.
 Argument DIR directory."
        (setq dir (abbreviate-file-name (expand-file-name dir)))
-       (unless (member dir ivy-dired-ignore-directory)
+       (unless (member dir ivy-dired-history-ignore-directory)
          (unless ivy-dired-history-cleanup-p
            (setq ivy-dired-history-cleanup-p t)
            (let ((tmp-history ))
@@ -134,7 +138,7 @@ Argument DIR directory."
 
 (defadvice dired-read-dir-and-switches(around ivy-dired-history activate)
   "Wrapper ‘read-file-name’ with idv-dired-history-read-file-name."
-  (ivy-dired-history--update (expand-file-name default-directory))
+  ;; (ivy-dired-history--update (expand-file-name default-directory))
   (let ((default-directory default-directory))
     ;; (unless (next-read-file-uses-dialog-p) (setq default-directory "/"))
     (cl-letf (((symbol-function 'read-file-name)
@@ -158,26 +162,28 @@ Optional argument MUSTMATCH mustmatch.
 Optional argument INITIAL init value.
 Optional argument PREDICATE predicate."
     (cl-letf (((symbol-function 'read-file-name-internal)
-               #'ivy-read-file-name-internal))
+               #'ivy-dired-history-read-file-name-internal))
       (let ((ivy-sort-functions-alist nil)
             (default-directory default-directory)
+            (ivy--flx-featurep ivy--flx-featurep)
             (ivy-extra-directories nil))
         (when dir (setq default-directory dir))
+        (when ivy-dired-history-disable-flx-sort
+          (setq ivy--flx-featurep nil))
         (ivy-read prompt
                   'read-file-name-internal
                   :initial-input initial
-                  ;; :sort t
+                  ;; :sort nil
                   ;; :matcher #'counsel--find-file-matcher
                   :keymap ivy-dired-history-map
-                  :caller 'read-file-name-internal)
-        )))
+                  :caller 'read-file-name-internal))))
 
 (defalias 'ivy-dired-history--read-file-name-internal
   (completion-table-in-turn #'completion--embedded-envvar-table
                             #'completion--file-name-table)
   "same as read-file-name-internal")
 
-(defun ivy-read-file-name-internal (string pred action)
+(defun ivy-dired-history-read-file-name-internal (string pred action)
   "Merge ivy-directory-history-variables with files in current directory.
 Argument STRING string.
 Argument PRED pred.
