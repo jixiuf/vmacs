@@ -68,6 +68,7 @@
 (evil-leader/set-key "wy" 'counsel-mark-ring)
 (evil-leader/set-key ";" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
+(global-set-key  (kbd "s-;") 'counsel-M-x)
 ;; (setq avy-timeout-seconds 0.3)
 ;; (evil-leader/set-key "o" 'avy-goto-char-timer)
 ;; (global-set-key  (kbd "s-o") 'avy-goto-char-timer)
