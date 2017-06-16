@@ -11,6 +11,7 @@
 (setq counsel-git-grep-skip-counting-lines t)
 (setq ivy-re-builders-alist '((swiper . ivy--regex-plus)
                               (counsel-ag . ivy--regex-plus)
+                              (counsel-rg . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
                               (counsel-grep-or-swiper . ivy--regex-plus)
                               (t . ivy--regex-fuzzy)))
@@ -56,7 +57,7 @@
 (evil-leader/set-key "fl" 'counsel-locate)
 (evil-leader/set-key "fg" 'counsel-git)
 (evil-leader/set-key "g" 'vmacs-counsel-rg-region-or-symbol)
-(evil-leader/set-key "fr" 'vmacs-counsel-git-grep-region-or-symbol)
+(evil-leader/set-key "fp" 'vmacs-counsel-git-grep-region-or-symbol)
 
 (evil-leader/set-key "?" 'counsel-descbinds)
 (evil-leader/set-key "wi" 'counsel-imenu)
@@ -93,6 +94,7 @@
 (define-key ivy-minibuffer-map (kbd "<tab>") 'ivy-partial-or-done)
 (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-h") 'ivy-backward-kill-word)
+(define-key ivy-minibuffer-map (kbd "C-k") 'ivy-kill-line)
 ;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
 ;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
 
