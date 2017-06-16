@@ -14,6 +14,9 @@
                               (counsel-git-grep . ivy--regex-plus)
                               (counsel-grep-or-swiper . ivy--regex-plus)
                               (t . ivy--regex-fuzzy)))
+
+(setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
+
 (setq magit-completing-read-function 'ivy-completing-read)
 (setq counsel-find-file-at-point t)
 (setq ivy-ignore-buffers
@@ -52,15 +55,14 @@
 (evil-leader/set-key "ff" 'counsel-find-file)
 (evil-leader/set-key "fl" 'counsel-locate)
 (evil-leader/set-key "fg" 'counsel-git)
-(evil-leader/set-key "g" 'vmacs-ivy-search)
-(evil-leader/set-key "fr" 'counsel-rg)
+(evil-leader/set-key "g" 'vmacs-counsel-rg-region-or-symbol)
+(evil-leader/set-key "fr" 'vmacs-counsel-git-grep-region-or-symbol)
 
 (evil-leader/set-key "?" 'counsel-descbinds)
 (evil-leader/set-key "wi" 'counsel-imenu)
 (evil-leader/set-key "b" 'ivy-resume)
 (evil-leader/set-key "wy" 'counsel-mark-ring)
 (evil-leader/set-key ";" 'counsel-M-x)
-(evil-leader/set-key "；" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
 ;; (setq avy-timeout-seconds 0.3)
 ;; (evil-leader/set-key "o" 'avy-goto-char-timer)
@@ -89,12 +91,21 @@
 (define-key ivy-minibuffer-map (kbd "C-w") 'ivy-yank-word)
 (define-key ivy-minibuffer-map (kbd "C-e") 'vmacs-ivy-magic-eol)
 (define-key ivy-minibuffer-map (kbd "<tab>") 'ivy-partial-or-done)
+(define-key ivy-minibuffer-map (kbd "C-l") 'ivy-backward-kill-word)
+(define-key ivy-minibuffer-map (kbd "C-h") 'ivy-backward-kill-word)
 ;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
 ;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
 
 
 (with-eval-after-load 'counsel
   (define-key counsel-find-file-map (kbd "C-l") 'counsel-up-directory)
+  (define-key counsel-find-file-map (kbd "C-h") 'counsel-up-directory)
+  ;; (define-key counsel-ag-map (kbd "C-l") 'counsel-up-directory)
+  ;; (define-key counsel-ag-map (kbd "C-h") 'counsel-up-directory)
+  ;; (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
+  ;; (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
+
+
   (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
   (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
 

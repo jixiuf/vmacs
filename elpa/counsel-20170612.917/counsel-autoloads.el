@@ -347,7 +347,7 @@ replacements.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "counsel" '("counsel-" "tmm-km-list")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "counsel" '(#("counsel-" 0 8 (fontified nil)) #("tmm-km-list" 0 11 (fontified nil)))))
 
 ;;;***
 
