@@ -331,7 +331,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "su" (kbd "C-u 0 C-k")) ;H-i =C-u 删除从光标位置到行首的内容
 (evil-leader/set-key "h" 'evil-mark-whole-buffer)
 
-(define-key evil-normal-state-map "so" 'helm-occur)
+;; (define-key evil-normal-state-map "so" 'helm-occur)
 
 
 

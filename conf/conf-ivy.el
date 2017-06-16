@@ -12,12 +12,12 @@
 (setq counsel-git-grep-skip-counting-lines t)
 ;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
 
-(setq ivy-re-builders-alist '((swiper . ivy--regex-fuzzy)
+(setq ivy-re-builders-alist '((swiper . ivy--regex-plus) ;
                               (counsel-ag . ivy--regex-plus)
                               (counsel-rg . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
                               (counsel-grep-or-swiper . ivy--regex-plus)
-                              (t . ivy--regex-fuzzy)))
+                              (t . ivy--regex-plus)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
 
@@ -122,6 +122,29 @@
 (ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
 
+;; (defvar noct--original-ivy-regex-function nil)
+
+;; (defun noct-ivy-space-switch-to-regex ()
+;;   (interactive)
+;;   (unless (eq ivy--regex-function 'ivy--regex-plus)
+;;     (setq ivy--old-re nil)
+;;     (setq noct--original-ivy-regex-function ivy--regex-function)
+;;     (setq ivy--regex-function 'ivy--regex-plus))
+;;   (self-insert-command 1))
+
+;; (define-key ivy-minibuffer-map (kbd "SPC") #'noct-ivy-space-switch-to-regex)
+
+;; (defun noct-ivy-maybe-reset-regex-function ()
+;;   (interactive)
+;;   (let ((input (replace-regexp-in-string "\n.*" "" (minibuffer-contents))))
+;;     (when (and noct--original-ivy-regex-function
+;;                (not (string-match " " input)))
+;;       (setq ivy--old-re nil)
+;;       (setq ivy--regex-function noct--original-ivy-regex-function)
+;;       (setq noct--original-ivy-regex-function nil))))
+
+;; (advice-add 'ivy-backward-delete-char :after #'noct-ivy-maybe-reset-regex-function)
+;; (advice-add 'ivy-delete-char :after #'noct-ivy-maybe-reset-regex-function)
 
 (provide 'conf-ivy)
 
