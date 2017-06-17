@@ -17,7 +17,7 @@
                               (counsel-rg . ivy--regex-fuzzy)
                               (counsel-git-grep . ivy--regex-fuzzy)
                               (counsel-grep-or-swiper . ivy--regex-fuzzy)
-                              (t . ivy--regex-fuzzy)))
+                              (t . ivy--regex-plus)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
 
@@ -99,7 +99,7 @@
 (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-h") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-k") 'ivy-kill-line)
-(define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
+;; (define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
 ;; (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-delete-char)
 
 ;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
