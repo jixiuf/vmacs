@@ -16,6 +16,7 @@
 ;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
 
 (setq ivy-re-builders-alist '((swiper . ivy--regex-fuzzy) ;
+                              (ivy-switch-buffer . ivy--regex-fuzzy)
                               (counsel-ag . ivy--regex-plus)
                               (counsel-rg . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
