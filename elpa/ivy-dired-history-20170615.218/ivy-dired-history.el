@@ -150,36 +150,46 @@ Argument DIR directory."
   "Re-sort candidates by NAME.
 CANDIDATES is a list of directories(with path) each match NAME.
 equal>prefix>substring>other."
-       (if (or (string-match "^\\^" name) (string= name ""))
-           candidates
-         (let* ((base-re (funcall ivy--regex-function name))
-                (base-re (if (consp base-re) (caar base-re) base-re))
-                (re-prefix (concat "^\\*" base-re))
-                res-prefix
-                res-equal
-                res-substring
-                res-noprefix
-                dirname)
-           (unless (cl-find-if (lambda (s) (string-match re-prefix s)) candidates)
-             (setq re-prefix (concat "^" base-re)))
-           (dolist (s candidates)
-             (setq dirname (file-name-nondirectory
-                            (directory-file-name
-                             (file-name-directory (expand-file-name s)))))
-             (cond
-              ((string= name dirname)
-               (push s res-equal))
-              ((string-match-p re-prefix dirname)
-               (push s res-prefix))
-              ((string-match-p name dirname)
-               (push s res-substring))
-              (t
-               (push s res-noprefix))))
-           (nconc
-            (nreverse res-equal)
-            (nreverse res-prefix)
-            (nreverse res-substring)
-            (nreverse res-noprefix)))))
+  (if (or (string-match "^\\^" name) (string= name ""))
+      candidates
+    (let* ((re-prefix (concat "^\\*" name))
+           (name-tokens (split-string name))
+           res-prefix
+           res-equal
+           res-substring
+           res-dirname-match-all-tokens
+           res-fullpath-match-all-tokens
+           res-fullpath-substring
+           res-noprefix
+           dirname)
+      (dolist (s candidates)
+        (setq dirname (file-name-nondirectory
+                       (directory-file-name
+                        (file-name-directory (expand-file-name s)))))
+        (cond
+         ((string= name dirname)
+          (push s res-equal))
+         ((string-match-p re-prefix dirname)
+          (push s res-prefix))
+         ((string-match-p name dirname)
+          (push s res-substring))
+         ((cl-every  (lambda(e) (string-match-p e dirname)) name-tokens)
+          (push s res-dirname-match-all-tokens))
+         ((cl-some  (lambda(dir) (cl-every  (lambda(e) (string-match-p e dir)) name-tokens))
+                    (split-string s "/" t ))
+          (push s res-fullpath-match-all-tokens))
+         ((string-match-p name (expand-file-name s))
+          (push s res-fullpath-substring))
+         (t
+          (push s res-noprefix))))
+      (nconc
+       (nreverse res-equal)
+       (nreverse res-prefix)
+       (nreverse res-substring)
+       (nreverse res-dirname-match-all-tokens)
+       (nreverse res-fullpath-match-all-tokens)
+       (nreverse res-fullpath-substring)
+       (nreverse res-noprefix)))))
 
 (defun ivy-dired-history-alt-done(&optional arg)
   "Exit the minibuffer with the selected candidate.
