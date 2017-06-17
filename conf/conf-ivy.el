@@ -1,4 +1,7 @@
+(eval-when-compile (require 'ivy-dired-history))
 (ivy-mode 1)
+(setq-default smex-save-file (expand-file-name "./cache/smex" user-emacs-directory))
+(setq-default smex-history-length 15)
 (setq ivy-use-virtual-buffers t)
 (setq ivy-initial-inputs-alist nil)
 (setq ivy-extra-directories '("./")) ; default value: ("../" "./")
@@ -13,10 +16,10 @@
 ;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
 
 (setq ivy-re-builders-alist '((swiper . ivy--regex-fuzzy) ;
-                              (counsel-ag . ivy--regex-fuzzy)
-                              (counsel-rg . ivy--regex-fuzzy)
-                              (counsel-git-grep . ivy--regex-fuzzy)
-                              (counsel-grep-or-swiper . ivy--regex-fuzzy)
+                              (counsel-ag . ivy--regex-plus)
+                              (counsel-rg . ivy--regex-plus)
+                              (counsel-git-grep . ivy--regex-plus)
+                              (counsel-grep-or-swiper . ivy--regex-plus)
                               (t . ivy--regex-plus)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
@@ -99,6 +102,8 @@
 (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-h") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-k") 'ivy-kill-line)
+(define-key ivy-minibuffer-map (kbd "C-.") 'ivy-next-history-element)
+(define-key ivy-minibuffer-map (kbd "C-[ [ a e") 'ivy-next-history-element) ;iterm2 map to ctrl-.
 ;; (define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
 ;; (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-delete-char)
 

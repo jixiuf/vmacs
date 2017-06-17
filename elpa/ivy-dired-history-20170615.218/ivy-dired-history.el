@@ -1,4 +1,4 @@
-;;; ivy-dired-history.el --- quickly visit dired directory you have visted
+;;; ivy-dired-history.el --- use ivy to open recent directories
 
 ;; Author: 纪秀峰 <jixiuf@gmail.com>
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
@@ -32,14 +32,11 @@
 
 ;;; Commentary:
 ;;
-;; remember dired directory you have visited and list them
-;; using `ivy.el'.
+;; use `ivy' to open recent directories.
 
-;; integrating dired history feature into commands like
-;; dired-do-copy and dired-do-rename. What I think of is that when
-;; user press C (copy) or R (rename) mode, it is excellent to have
-;; an option allowing users to select a directory from the history
-;; list.
+;; it is integrated with `dired-do-copy' and `dired-do-rename'.
+;; when you press C (copy) or R (rename) , it is excellent to
+;; allow users to select a directory from the recent dired history .
 
 
 
@@ -88,6 +85,7 @@
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "<return>") 'ivy-done)
     (define-key map (kbd "<RET>")    'ivy-done)
+    (define-key map [remap ivy-alt-done] 'ivy-dired-history-alt-done)
     map))
 
 (set-keymap-parent ivy-dired-history-map counsel-find-file-map)
@@ -182,6 +180,18 @@ equal>prefix>substring>other."
             (nreverse res-prefix)
             (nreverse res-substring)
             (nreverse res-noprefix)))))
+
+(defun ivy-dired-history-alt-done(&optional arg)
+  "Exit the minibuffer with the selected candidate.
+When ARG is t, exit with current text, ignoring the candidates."
+  (interactive "P")
+  (call-interactively 'ivy-alt-done)
+  (let ((idx ))
+    (cl-loop for cand in ivy--all-candidates
+             for i from 0
+             if (string= (expand-file-name ivy--directory)(expand-file-name cand))
+             return (setq idx i))
+    (ivy-set-index idx)))
 
 (defun ivy-dired-history-read-file-name
     (prompt &optional dir default-filename mustmatch initial predicate)
