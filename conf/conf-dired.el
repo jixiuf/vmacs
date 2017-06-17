@@ -89,6 +89,8 @@
 ;;
 ;;与*类似但不相同的"?" 表示对mark的文件"分别" 运行这个命令
 ;;; image-dired
+
+(eval-when-compile (require 'wdired))
 (setq-default
  image-dired-db-file (concat user-emacs-directory "cache/image-dired/image-dired_db" )
  image-dired-dir (concat user-emacs-directory "cache/image-dired/image-dired" )
@@ -206,8 +208,9 @@
 (define-key dired-mode-map "f" 'open-in-filemanager)  ;
 
 ;; 删除 copy 文件目录时 以异步的形式进行，以避copy大文件时emacs卡位无法进行其他操作
-(with-eval-after-load 'dired-aux (require 'dired-async nil t))
-
+(with-eval-after-load 'dired-aux
+  (require 'dired-async nil t)
+  (add-to-list 'dired-compress-files-alist '("\\.tgz\\'" . "tar -c %i | gzip -c9 > %o")))
 ;; 根据后缀名对文件进行着色
 (require 'dired-filetype-face)
 
