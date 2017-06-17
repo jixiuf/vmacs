@@ -21,7 +21,9 @@
                               (counsel-rg . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
                               (counsel-grep-or-swiper . ivy--regex-plus)
-                              (t . ivy--regex-plus)))
+                              (read-file-name-internal . ivy--regex-fuzzy)
+                              (counsel--M-x . ivy--regex-fuzzy)
+                              (t . ivy--regex-fuzzy)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
 
