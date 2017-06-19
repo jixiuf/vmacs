@@ -16,8 +16,8 @@
   (make-local-variable 'company-backends)
   (add-to-list 'company-backends 'company-jedi)
 
-  (push '("lambda" . #x1d77a) prettify-symbols-alist) ;lambda 入
-  (prettify-symbols-mode)
+  ;; (push '("lambda" . #x1d77a) prettify-symbols-alist) ;lambda 入
+  ;; (prettify-symbols-mode)
 
   (flycheck-mode)
 
