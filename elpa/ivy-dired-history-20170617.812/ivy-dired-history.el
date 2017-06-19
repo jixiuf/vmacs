@@ -4,6 +4,7 @@
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
 ;; Created:  2017-06-14
 ;; Version: 1.0
+;; Package-Version: 20170617.812
 ;; X-URL:https://github.com/jixiuf/ivy-dired-history
 ;; Package-Requires: ((ivy "0.9.0")(counsel "0.9.0")(cl-lib "0.5"))
 ;;
@@ -154,9 +155,13 @@ CANDIDATES is a list of directories(with path) each match NAME.
 equal>prefix>substring>other."
   (if (or (string-match "^\\^" name) (string= name ""))
       candidates
-    (let* ((re-prefix (concat "^\\*" name))
+    (let* ((base-re (funcall ivy--regex-function name))
+           (base-re (if (consp base-re) (caar base-re) base-re))
+           (base-re-prefix (concat "^\\*" base-re))
+           (re-prefix (concat "^\\*" name))
            (name-tokens (split-string name))
            res-prefix
+           res-base-prefix
            res-equal
            res-substring
            res-dirname-match-all-tokens
@@ -164,6 +169,9 @@ equal>prefix>substring>other."
            res-fullpath-substring
            res-noprefix
            dirname)
+      (unless (cl-find-if (lambda (s) (string-match-p base-re-prefix s)) candidates)
+        (setq base-re-prefix (concat "^" base-re)))
+
       (dolist (s candidates)
         (setq dirname (file-name-nondirectory
                        (directory-file-name
@@ -173,6 +181,8 @@ equal>prefix>substring>other."
           (push s res-equal))
          ((string-match-p re-prefix dirname)
           (push s res-prefix))
+         ((string-match-p base-re-prefix dirname)
+          (push s res-base-prefix))
          ((string-match-p name dirname)
           (push s res-substring))
          ((cl-every  (lambda(e) (string-match-p e dirname)) name-tokens)
@@ -187,6 +197,7 @@ equal>prefix>substring>other."
       (nconc
        (nreverse res-equal)
        (nreverse res-prefix)
+       (nreverse res-base-prefix)
        (nreverse res-substring)
        (nreverse res-dirname-match-all-tokens)
        (nreverse res-fullpath-match-all-tokens)

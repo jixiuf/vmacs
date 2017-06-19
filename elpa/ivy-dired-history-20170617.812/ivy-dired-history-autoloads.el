@@ -7,7 +7,7 @@
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from ivy-dired-history.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ivy-dired-history" '("ivy-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "ivy-dired-history" '("ivy-dired-history-")))
 
 ;;;***
 
