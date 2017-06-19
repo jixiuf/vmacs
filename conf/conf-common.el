@@ -171,6 +171,9 @@
 (setq-default wgrep-auto-save-buffer t
               wgrep-enable-key "i"
               wgrep-change-readonly-file t)
+(with-eval-after-load 'wgrep
+  (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes))
+
 ;; (defun enable-wgrep-when-entry-insert()
 ;;   (when (member major-mode '(ivy-occur-mode helm-grep-mode))
 ;;     (wgrep-change-to-wgrep-mode)))
