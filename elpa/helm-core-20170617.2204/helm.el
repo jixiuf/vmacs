@@ -1078,11 +1078,17 @@ you don't need the prefix arg when using \\[helm-mark-all] or \\[helm-toggle-all
 
 ** Follow candidates
 
-You can execute automatically an action specified in the source as persistent-action
-while moving up and down in helm-window or while updating the list of candidates by
-turning on `helm-follow-mode' while in helm.
-The follow behavior will be saved and used in next emacs sessions when `helm-follow-mode-persistent'
-is non-nil.
+You can execute automatically an action specified in the source as
+persistent-action while moving up and down in helm-window or while
+updating the list of candidates by turning on `helm-follow-mode' while
+in helm with \\<helm-map>\\[helm-follow-mode].  The follow behavior
+will be saved and used in next emacs sessions when
+`helm-follow-mode-persistent' is non-nil.
+
+If you just want to follow candidates occasionally without enabling
+`helm-follow-mode' you can use instead \\<helm-map>\\[helm-follow-action-forward] or \\[helm-follow-action-backward].
+Note that when `helm-follow-mode' is enabled these commands are just
+going to next/previous line without executing persistent action.
 
 ** Frequently Used Commands
 
@@ -4619,10 +4625,14 @@ first source."
   (helm-move-selection-common :where 'source :direction source-or-name))
 
 (defun helm--follow-action (arg)
-  (let ((helm--temp-follow-flag t))
+  (let ((helm--temp-follow-flag t) ; Needed in HFF.
+        (in-follow-mode (helm-follow-mode-p)))
+    ;; When follow-mode is already enabled, just go to next or
+    ;; previous line.
     (when (or (eq last-command 'helm-follow-action-forward)
               (eq last-command 'helm-follow-action-backward)
-              (eq last-command 'helm-execute-persistent-action))
+              (eq last-command 'helm-execute-persistent-action)
+              in-follow-mode)
       (if (> arg 0)
           (helm-move-selection-common :where 'line
                                       :direction 'next
@@ -4630,7 +4640,8 @@ first source."
           (helm-move-selection-common :where 'line
                                       :direction 'previous
                                       :follow nil)))
-    (helm-execute-persistent-action)))
+    (unless in-follow-mode
+      (helm-execute-persistent-action))))
 
 (defun helm-follow-action-forward ()
   "Go to next line and execute persistent action."
