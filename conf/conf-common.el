@@ -1,3 +1,6 @@
+(eval-when-compile (require 'org))
+(eval-when-compile (require 'cc-mode))
+(eval-when-compile (require 'wgrep))
 (defvar  dropbox-dir (expand-file-name "~/Documents/dropbox"))
 (when (equal system-type 'darwin)
   (when (or (not (file-exists-p dropbox-dir))
@@ -194,9 +197,6 @@
  read-buffer-completion-ignore-case t
  read-file-name-completion-ignore-case t
  completion-cycle-threshold 8)
-;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
-(define-key  minibuffer-local-completion-map (kbd "C-l") 'minibuffer-up-parent-dir)
-(define-key  minibuffer-local-map (kbd "C-l") 'minibuffer-up-parent-dir)
 ;; (add-hook 'minibuffer-setup-hook 'minibuf-define-key-func )
 
 
@@ -255,7 +255,6 @@
 (evil-leader/set-key "x/" 'goto-last-change)
 (evil-leader/set-key "x," 'goto-last-change-reverse)
 
-(eval-when-compile (require 'cc-mode))
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 
 (setq-default iedit-toggle-key-default (kbd "C-;"))
@@ -264,8 +263,7 @@
 ;; (define-key global-map (kbd "C-[ [ a f") 'iedit-mode) ;iterm map C-; to this
 (define-key isearch-mode-map iedit-toggle-key-default 'iedit-mode-from-isearch)
 
-(global-set-key [(tab)]       'smart-tab)
-(global-set-key (kbd "TAB")   'smart-tab)
+
 
 (global-set-key [f2] 'toggle-eshell)
 (global-set-key [C-f2] 'toggle-eshell-cd)

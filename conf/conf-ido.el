@@ -1,3 +1,4 @@
+(eval-when-compile (require 'ido))
 (setq-default ido-save-directory-list-file (convert-standard-filename (expand-file-name "cache/ido.last" user-emacs-directory)))
 (setq-default ido-use-virtual-buffers t)
 ;; (setq ido-decorations (quote ("\n   " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
@@ -47,12 +48,13 @@
   (define-key (cdr ido-minor-mode-map-entry) [remap dired] nil) ;dired 不使用ido
   "Add my keybindings for ido."
   (define-key ido-completion-map (kbd "C-e") 'ido-exit-minibuffer) ;select or expand
-  (define-key ido-completion-map [?\H-m] 'ido-exit-minibuffer) ;select or expand
   (define-key ido-completion-map (kbd "C-,") 'ido-up-directory)
-  (define-key  ido-completion-map (kbd "C-l") 'ido-up-directory)
+  (define-key ido-completion-map (kbd "C-l") 'ido-up-directory)
   (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
   (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
-  (define-key  ido-file-dir-completion-map (kbd "C-l") 'ido-up-directory)
+  (define-key ido-file-dir-completion-map (kbd "C-l") 'ido-up-directory)
+  (define-key ido-completion-map (kbd "<C-m>") 'ido-exit-minibuffer) ;select or expand
+  (define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ido-exit-minibuffer)
   (setq ido-enable-flex-matching t))
 
 

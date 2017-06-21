@@ -75,27 +75,10 @@
 (evil-leader/set-key ";" 'counsel-M-x)
 (evil-leader/set-key "；" 'counsel-M-x)
 (global-set-key  (kbd "s-;") 'counsel-M-x)
-;; (setq avy-timeout-seconds 0.3)
-;; (evil-leader/set-key "o" 'avy-goto-char-timer)
-;; (global-set-key  (kbd "s-o") 'avy-goto-char-timer)
+;; gui 下让ctrl-i与tab 不同
+(global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
 
-;; From browse-kill-ring.el
-(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
-  "If last action was not a yank, run `browse-kill-ring' instead."
-  ;; yank-pop has an (interactive "*p") form which does not allow
-  ;; it to run in a read-only buffer. We want browse-kill-ring to
-  ;; be allowed to run in a read only buffer, so we change the
-  ;; interactive form here. In that case, we need to
-  ;; barf-if-buffer-read-only if we're going to call yank-pop with
-  ;; ad-do-it
-  (interactive "p")
-  (if (not (eq last-command 'yank))
-      (counsel-yank-pop)
-    (barf-if-buffer-read-only)
-    ad-do-it))
-
-
-
+(define-key ivy-minibuffer-map (kbd "<C-i>") 'vmacs-ivy-dropto-counsel-git)
 
 (define-key ivy-minibuffer-map (kbd "C-c C-c") 'ivy-occur)
 (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-dispatching-done)
@@ -107,6 +90,8 @@
 (define-key ivy-minibuffer-map (kbd "C-k") 'ivy-kill-line)
 (define-key ivy-minibuffer-map (kbd "C-.") 'ivy-next-history-element)
 (define-key ivy-minibuffer-map (kbd "C-[ [ a e") 'ivy-next-history-element) ;iterm2 map to ctrl-.
+(define-key ivy-minibuffer-map (kbd "<C-m>") 'ivy-done)
+(define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ivy-done)
 ;; (define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
 ;; (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-delete-char)
 
@@ -126,13 +111,25 @@
   (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
   (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
 
-(with-eval-after-load 'ivy-dired-history
-  (define-key ivy-dired-history-map (kbd "<return>") 'ivy-done)
-  (define-key ivy-dired-history-map (kbd "<RET>")      'ivy-done))
-
-
 (ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
+
+;; From browse-kill-ring.el
+(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
+  "If last action was not a yank, run `browse-kill-ring' instead."
+  ;; yank-pop has an (interactive "*p") form which does not allow
+  ;; it to run in a read-only buffer. We want browse-kill-ring to
+  ;; be allowed to run in a read only buffer, so we change the
+  ;; interactive form here. In that case, we need to
+  ;; barf-if-buffer-read-only if we're going to call yank-pop with
+  ;; ad-do-it
+  (interactive "p")
+  (if (not (eq last-command 'yank))
+      (counsel-yank-pop)
+    (barf-if-buffer-read-only)
+    ad-do-it))
+
+
 
 ;; (defvar noct--original-ivy-regex-function nil)
 

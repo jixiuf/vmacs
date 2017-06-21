@@ -29,6 +29,12 @@
     (user-error
      "Not completing files currently")))
 
+;;;###autoload
+(defun vmacs-ivy-dropto-counsel-git()
+  (interactive)
+  (ivy-quit-and-run
+   (call-interactively 'counsel-git)))
+
 (unless (executable-find "rg")
   (message "you need install rg on mac(brew install rg)")
   (when (eq system-type 'darwin) (shell-command "brew install rg")))

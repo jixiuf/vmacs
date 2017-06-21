@@ -343,7 +343,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-visual-state-map "," 'repeat)
 (define-key evil-motion-state-map "," 'repeat) ;
 
-(define-key evil-ex-completion-map (kbd "H-m") 'exit-minibuffer)
+;; (define-key evil-ex-completion-map (kbd "H-m") 'exit-minibuffer)
+(define-key evil-ex-completion-map (kbd "<C-m>") 'exit-minibuffer)
 
 ;; (), {}, [], <>, '', "", ` `, or “” by default
 ;; 不论是何种 ，都会将最近的配对进行操作

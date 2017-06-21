@@ -33,6 +33,7 @@
 
 (require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 
+(require 'conf-keybind)
 (require 'conf-evil)
 (require 'conf-evil-clipboard)
 ;; mac 上处理evil-mode 与中文输入法
@@ -84,7 +85,6 @@
 (with-eval-after-load 'js (require 'conf-program-js))
 (with-eval-after-load 'lua (require 'conf-program-lua))
 
-(when (eq system-type 'darwin) (require 'conf-iterm2)) ;iterm2特有的配置
 
 ;; Local Variables:
 ;; coding: utf-8
