@@ -171,12 +171,14 @@
 
 (setq-default mode-line-cleaner-alist
               `((auto-complete-mode . " á")
-                (company-mode . " CA")
-                (yas-minor-mode . " ý")
-                (undo-tree-mode . " Út")
+                (company-mode . "")
+                (yas-minor-mode . "")
+                (undo-tree-mode . "")
                 (golden-ratio-mode . "")
                 (flymake-mode . " Fly")
+                (ivy-mode . "")
                 ;; major mode
+                (dired-mode . " Dired")
                 (fundamental-mode . "Fd")
                 (ibuffer-mode . "iBuf")
                 (python-mode . "Py")
