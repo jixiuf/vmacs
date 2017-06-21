@@ -263,6 +263,9 @@
 ;; (define-key global-map (kbd "C-[ [ a f") 'iedit-mode) ;iterm map C-; to this
 (define-key isearch-mode-map iedit-toggle-key-default 'iedit-mode-from-isearch)
 
+(global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
+;; (with-eval-after-load 'elisp-mode
+;;   (define-key emacs-lisp-mode-map (kbd "C-x C-e") 'eval-print-last-sexp))
 
 
 (global-set-key [f2] 'toggle-eshell)

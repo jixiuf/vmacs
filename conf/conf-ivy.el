@@ -130,6 +130,22 @@
     (barf-if-buffer-read-only)
     ad-do-it))
 
+(defadvice ivy--virtual-buffers (around counsel-git activate)
+  "Append git files as virtual buffer"
+  (let ((recentf-list recentf-list list)
+        (default-directory default-directory))
+    (setq counsel--git-dir (locate-dominating-file default-directory ".git"))
+    (when counsel--git-dir
+      (setq counsel--git-dir (expand-file-name counsel--git-dir))
+      (setq default-directory counsel--git-dir)
+      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"|head -n 1000" default-directory)) "\n" t))
+      ;; (when (< (length list) 5000)
+        (dolist (c list)
+          (setq c (expand-file-name c default-directory))
+          (add-to-list 'recentf-list c))
+        ;; )
+      )
+    ad-do-it))
 
 
 ;; (defvar noct--original-ivy-regex-function nil)

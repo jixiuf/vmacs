@@ -29,11 +29,33 @@
     (user-error
      "Not completing files currently")))
 
+(require 'counsel)
+
 ;;;###autoload
-(defun vmacs-ivy-dropto-counsel-git()
+(defun vmacs-counsel-git (&optional initial-input)
+  "Find file in the current Git repository."
+  (interactive)
+  (setq counsel--git-dir (locate-dominating-file
+                          default-directory ".git"))
+  (if (null counsel--git-dir)
+      (error "Not in a git repository")
+    (setq counsel--git-dir (expand-file-name
+                            counsel--git-dir))
+    (let* ((default-directory counsel--git-dir)
+           (cands (split-string
+                   (shell-command-to-string counsel-git-cmd)
+                   "\n"
+                   t)))
+      (ivy-read "Find Git file" cands
+                :initial-input initial-input
+                :action #'counsel-git-action
+                :caller 'counsel-git))))
+
+;;;###autoload
+(defun vmacs-ivy-dropto-counsel-git(&optional init)
   (interactive)
   (ivy-quit-and-run
-   (call-interactively 'counsel-git)))
+   (vmacs-counsel-git ivy-text)))
 
 (unless (executable-find "rg")
   (message "you need install rg on mac(brew install rg)")
