@@ -23,7 +23,7 @@
                               (counsel-ag . ivy--regex-plus)
                               (counsel-rg . ivy--regex-plus)
                               (counsel-git . ivy--regex-plus)
-                              (vmacs-counsel-git . ivy--regex-plus)
+                              (counsel-git . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
                               (counsel-grep-or-swiper . ivy--regex-plus)
                               (read-file-name-internal . ivy--regex-fuzzy)
@@ -69,7 +69,7 @@
 (evil-leader/set-key "SPC" 'ivy-switch-buffer)
 (evil-leader/set-key "ff" 'counsel-find-file)
 (evil-leader/set-key "fl" 'counsel-locate)
-(evil-leader/set-key "fg" 'vmacs-counsel-git)
+(evil-leader/set-key "fg" 'counsel-git)
 (evil-leader/set-key "g" 'vmacs-counsel-rg-region-or-symbol)
 (evil-leader/set-key "fp" 'vmacs-counsel-git-grep-region-or-symbol)
 
@@ -81,8 +81,8 @@
 (evil-leader/set-key "；" 'counsel-M-x)
 (global-set-key  (kbd "s-;") 'counsel-M-x)
 ;; gui 下让ctrl-i与tab 不同
-(global-set-key (kbd "<C-i>") 'vmacs-counsel-git) ;Ctrl-i not tab
-(global-set-key (kbd "s-i") 'vmacs-counsel-git)   ;cmd-i
+(global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
+(global-set-key (kbd "s-i") 'counsel-git)   ;cmd-i
 
 (define-key ivy-minibuffer-map (kbd "<C-i>") 'vmacs-ivy-dropto-counsel-git)
 
@@ -134,7 +134,7 @@
       (counsel-yank-pop)
     (barf-if-buffer-read-only)
     ad-do-it))
-(defadvice ivy--virtual-buffers (around vmacs-counsel-git activate)
+(defadvice ivy--virtual-buffers (around counsel-git activate)
   "Append git files as virtual buffer"
   (let ((recentf-list recentf-list )list
         (default-directory default-directory))
