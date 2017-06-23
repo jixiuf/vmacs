@@ -109,7 +109,7 @@ BUFFER defaults to the current one.
 (autoload 'counsel-git "counsel" "\
 Find file in the current Git repository.
 
-\(fn)" t nil)
+\(fn &optional INITIAL-INPUT)" t nil)
 
 (autoload 'counsel-git-grep "counsel" "\
 Grep for a string in the current git repository.
@@ -190,6 +190,13 @@ AG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument.
 Grep for a string in the current directory using pt.
 INITIAL-INPUT can be given as the initial minibuffer input.
 This uses `counsel-ag' with `counsel-pt-base-command' instead of
+`counsel-ag-base-command'.
+
+\(fn &optional INITIAL-INPUT)" t nil)
+
+(autoload 'counsel-ack "counsel" "\
+Grep for a string in the current directory using ack.
+This uses `counsel-ag' with `counsel-ack-base-command' replacing
 `counsel-ag-base-command'.
 
 \(fn &optional INITIAL-INPUT)" t nil)
@@ -347,7 +354,7 @@ replacements.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "counsel" '(#("counsel-" 0 8 (fontified nil)) #("tmm-km-list" 0 11 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "counsel" '("counsel-" "tmm-km-list")))
 
 ;;;***
 

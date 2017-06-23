@@ -593,7 +593,7 @@
 		((:url . "http://elpa.gnu.org/packages/memory-usage.html")
 		 (:keywords "maint"))])
  (metar .
-	[(0 2)
+	[(0 3)
 	 ((cl-lib
 	   (0 5)))
 	 "Retrieve and decode METAR weather information" single
@@ -695,7 +695,7 @@
 	     ((:url . "https://github.com/michael-heerdegen/on-screen.el")
 	      (:keywords "convenience"))])
  (org .
-      [(20170606)
+      [(20170622)
        nil "Outline-based notes management and organizer" tar nil])
  (org-edna .
 	   [(1 0 -3 1)

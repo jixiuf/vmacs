@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20170612.917
+;; Package-Version: 20170622.1103
 ;; Version: 0.9.1
 ;; Package-Requires: ((emacs "24.3") (swiper "0.9.0"))
 ;; Keywords: completion, matching
@@ -86,6 +86,13 @@
      (concat prefix (substring str 0 1))
      str)
     str))
+
+(defun counsel-require-program (program)
+  "Check system for PROGRAM, printing error if unfound."
+  (when (and (stringp program)
+             (not (string= program ""))
+             (not (executable-find program)))
+    (user-error "Required program \"%s\" not found in your path" program)))
 
 ;;* Async Utility
 (defvar counsel--async-time nil
@@ -992,6 +999,7 @@ BUFFER defaults to the current one."
 (defun counsel-git (&optional initial-input)
   "Find file in the current Git repository."
   (interactive)
+  (counsel-require-program (car (split-string counsel-git-cmd)))
   (setq counsel--git-dir (locate-dominating-file
                           default-directory ".git"))
   (ivy-set-prompt 'counsel-git counsel-prompt-function)
@@ -1169,6 +1177,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
                (delete-dups counsel-git-grep-cmd-history))))
       (t
        (setq counsel-git-grep-cmd counsel-git-grep-cmd-default)))
+    (counsel-require-program (car (split-string counsel-git-grep-cmd)))
     (setq counsel--git-grep-dir
           (if proj
               (car proj)
@@ -1180,17 +1189,27 @@ INITIAL-INPUT can be given as the initial minibuffer input."
               (if (eq system-type 'windows-nt)
                   0
                 (counsel--gg-count "" t))))
-      (ivy-read "git grep" (if proj
-                               'counsel-git-grep-proj-function
-                             'counsel-git-grep-function)
-                :initial-input initial-input
-                :matcher #'counsel-git-grep-matcher
-                :dynamic-collection (or proj counsel-git-grep-skip-counting-lines (> counsel--git-grep-count 20000))
-                :keymap counsel-git-grep-map
-                :action #'counsel-git-grep-action
-                :unwind #'swiper--cleanup
-                :history 'counsel-git-grep-history
-                :caller 'counsel-git-grep))))
+      (cl-flet
+          ((collection-function
+            (if proj
+                #'counsel-git-grep-proj-function
+              #'counsel-git-grep-function))
+           (unwind-function
+            (if proj
+                (lambda ()
+                  (counsel-delete-process)
+                  (swiper--cleanup))
+              (lambda ()
+                (swiper--cleanup)))))
+        (ivy-read "git grep" #'collection-function
+                  :initial-input initial-input
+                  :matcher #'counsel-git-grep-matcher
+                  :dynamic-collection (or proj counsel-git-grep-skip-counting-lines (> counsel--git-grep-count 20000))
+                  :keymap counsel-git-grep-map
+                  :action #'counsel-git-grep-action
+                  :unwind #'unwind-function
+                  :history 'counsel-git-grep-history
+                  :caller 'counsel-git-grep)))))
 
 (defun counsel-git-grep-proj-function (str)
   "Grep for STR in the current git repository."
@@ -1475,6 +1494,7 @@ TREE is the selected candidate."
 
 (defun counsel-find-file-as-root (x)
   "Find file X with root privileges."
+  (counsel-require-program counsel-root-command)
   (let* ((host (file-remote-p x 'host))
          (file-name (format "/%s:%s:%s"
                             counsel-root-command
@@ -1587,6 +1607,7 @@ When INITIAL-INPUT is non-nil, use it in the minibuffer during completion."
 
 (defun counsel-github-url-p ()
   "Return a Github issue URL at point."
+  (counsel-require-program "git")
   (let ((url (counsel-at-git-issue-p)))
     (when url
       (let ((origin (shell-command-to-string
@@ -1606,6 +1627,7 @@ When INITIAL-INPUT is non-nil, use it in the minibuffer during completion."
 
 (defun counsel-emacs-url-p ()
   "Return a Debbugs issue URL at point."
+  (counsel-require-program "git")
   (let ((url (counsel-at-git-issue-p)))
     (when url
       (let ((origin (shell-command-to-string
@@ -1688,20 +1710,24 @@ string - the full shell command to run."
 
 (defun counsel-locate-cmd-default (input)
   "Return a shell command based on INPUT."
+  (counsel-require-program "locate")
   (format "locate -i --regex '%s'"
           (counsel-unquote-regex-parens
            (ivy--regex input))))
 
 (defun counsel-locate-cmd-noregex (input)
   "Return a shell command based on INPUT."
+  (counsel-require-program "locate")
   (format "locate -i '%s'" input))
 
 (defun counsel-locate-cmd-mdfind (input)
   "Return a shell command based on INPUT."
+  (counsel-require-program "mdfind")
   (format "mdfind -name '%s'" input))
 
 (defun counsel-locate-cmd-es (input)
   "Return a shell command based on INPUT."
+  (counsel-require-program "es.exe")
   (format "es.exe -i -r %s"
           (counsel-unquote-regex-parens
            (ivy--regex input t))))
@@ -1735,6 +1761,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 (defun counsel-dpkg ()
   "Call the \"dpkg\" shell command."
   (interactive)
+  (counsel-require-program "dpkg")
   (let ((cands (mapcar
                 (lambda (x)
                   (let ((y (split-string x "  +")))
@@ -1755,6 +1782,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 (defun counsel-rpm ()
   "Call the \"rpm\" shell command."
   (interactive)
+  (counsel-require-program "rpm")
   (let ((cands (mapcar
                 (lambda (x)
                   (let ((y (split-string x "|")))
@@ -1782,6 +1810,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
    (list nil
          (when current-prefix-arg
            (read-directory-name "From directory: "))))
+  (counsel-require-program "find")
   (let* ((default-directory (or initial-directory default-directory)))
     (ivy-read "Find file: "
               (split-string
@@ -1811,6 +1840,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
    (list nil
          (when current-prefix-arg
            (read-directory-name "From directory: "))))
+  (counsel-require-program "find")
   (let* ((default-directory (or initial-directory default-directory)))
     (ivy-read "Directory: "
               (split-string
@@ -1821,6 +1851,30 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
               :caller 'counsel-dired-jump)))
 
 ;;* Grep
+(defun counsel--grep-mode-occur (git-grep-dir-is-file)
+  "Generate a custom occur buffer for grep like commands.
+If GIT-GREP-DIR-IS-FILE is t, then `counsel--git-grep-dir' is treated as a full
+path to a file rather than a directory (e.g. for `counsel-grep-occur').
+
+This function expects that the candidates have already been filtered.
+It applies no filtering to ivy--all-candidates."
+  (unless (eq major-mode 'ivy-occur-grep-mode)
+    (ivy-occur-grep-mode))
+  (let* ((directory
+          (if git-grep-dir-is-file
+              (file-name-directory counsel--git-grep-dir)
+            counsel--git-grep-dir))
+         (prepend
+          (if git-grep-dir-is-file
+              (concat (file-name-nondirectory counsel--git-grep-dir) ":")
+            "")))
+    (setq default-directory directory)
+    ;; Need precise number of header lines for `wgrep' to work.
+    (insert (format "-*- mode:grep; default-directory: %S -*-\n\n\n" default-directory))
+    (insert (format "%d candidates:\n" (length ivy--all-candidates)))
+    (ivy--occur-insert-lines
+     (mapcar (lambda (cand) (concat "./" prepend cand)) ivy--all-candidates))))
+
 ;;** `counsel-ag'
 (defvar counsel-ag-map
   (let ((map (make-sparse-keymap)))
@@ -1875,6 +1929,7 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search.
 EXTRA-AG-ARGS string, if non-nil, is appended to `counsel-ag-base-command'.
 AG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
   (interactive)
+  (counsel-require-program (car (split-string counsel-ag-base-command)))
   (when current-prefix-arg
     (setq initial-directory
           (or initial-directory
@@ -1905,27 +1960,7 @@ AG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
 
 (defun counsel-ag-occur ()
   "Generate a custom occur buffer for `counsel-ag'."
-  (unless (eq major-mode 'ivy-occur-grep-mode)
-    (ivy-occur-grep-mode))
-  (setq default-directory counsel--git-grep-dir)
-  (let* ((regex (counsel-unquote-regex-parens
-                 (setq ivy--old-re
-                       (ivy--regex
-                        (progn (string-match "\"\\(.*\\)\"" (buffer-name))
-                               (match-string 1 (buffer-name)))))))
-         (cands (split-string
-                 (shell-command-to-string
-                  (format counsel-ag-base-command (concat "-- " (shell-quote-argument regex))))
-                 "\n"
-                 t)))
-    ;; Need precise number of header lines for `wgrep' to work.
-    (insert (format "-*- mode:grep; default-directory: %S -*-\n\n\n"
-                    default-directory))
-    (insert (format "%d candidates:\n" (length cands)))
-    (ivy--occur-insert-lines
-     (mapcar
-      (lambda (cand) (concat "./" cand))
-      cands))))
+  (counsel--grep-mode-occur nil))
 
 ;;** `counsel-pt'
 (defcustom counsel-pt-base-command "pt --nocolor --nogroup -e %s"
@@ -1942,6 +1977,26 @@ This uses `counsel-ag' with `counsel-pt-base-command' instead of
   (interactive)
   (let ((counsel-ag-base-command counsel-pt-base-command))
     (counsel-ag initial-input)))
+
+;;** `counsel-ack'
+(defcustom counsel-ack-base-command
+  (concat
+   (file-name-nondirectory
+    (or (executable-find "ack-grep") "ack"))
+   " --nocolor --nogroup %s")
+  "Alternative to `counsel-ag-base-command' using ack."
+  :type 'string
+  :group 'ivy)
+
+;;;###autoload
+(defun counsel-ack (&optional initial-input)
+  "Grep for a string in the current directory using ack.
+This uses `counsel-ag' with `counsel-ack-base-command' replacing
+`counsel-ag-base-command'."
+  (interactive)
+  (let ((counsel-ag-base-command counsel-ack-base-command))
+    (counsel-ag initial-input)))
+
 
 ;;** `counsel-rg'
 (defcustom counsel-rg-base-command "rg -i --no-heading --line-number --max-columns 150 --color never %s ."
@@ -1966,6 +2021,7 @@ RG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
            (read-directory-name (concat
                                  (car (split-string counsel-rg-base-command))
                                  " in directory: ")))))
+  (counsel-require-program (car (split-string counsel-rg-base-command)))
   (ivy-set-prompt 'counsel-rg counsel-prompt-function)
   (setq counsel--git-grep-dir (or initial-directory default-directory))
   (ivy-read (or rg-prompt (car (split-string counsel-rg-base-command)))
@@ -1983,27 +2039,7 @@ RG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
 
 (defun counsel-rg-occur ()
   "Generate a custom occur buffer for `counsel-rg'."
-  (unless (eq major-mode 'ivy-occur-grep-mode)
-    (ivy-occur-grep-mode))
-  (setq default-directory counsel--git-grep-dir)
-  (let* ((regex (counsel-unquote-regex-parens
-                 (setq ivy--old-re
-                       (ivy--regex
-                        (progn (string-match "\"\\(.*\\)\"" (buffer-name))
-                               (match-string 1 (buffer-name)))))))
-         (cands (split-string
-                 (shell-command-to-string
-                  (format counsel-rg-base-command (shell-quote-argument regex)))
-                 "\n"
-                 t)))
-    ;; Need precise number of header lines for `wgrep' to work.
-    (insert (format "-*- mode:grep; default-directory: %S -*-\n\n\n"
-                    default-directory))
-    (insert (format "%d candidates:\n" (length cands)))
-    (ivy--occur-insert-lines
-     (mapcar
-      (lambda (cand) (concat "./" cand))
-      cands))))
+  (counsel--grep-mode-occur nil))
 
 ;;** `counsel-grep'
 (defcustom counsel-grep-base-command "grep -nE '%s' %s"
@@ -2060,28 +2096,7 @@ RG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
 
 (defun counsel-grep-occur ()
   "Generate a custom occur buffer for `counsel-grep'."
-  (unless (eq major-mode 'ivy-occur-grep-mode)
-    (ivy-occur-grep-mode))
-  (let ((cands
-         (split-string
-          (shell-command-to-string
-           (format counsel-grep-base-command
-                   (counsel-unquote-regex-parens
-                    (setq ivy--old-re
-                          (ivy--regex
-                           (progn (string-match "\"\\(.*\\)\"" (buffer-name))
-                                  (match-string 1 (buffer-name))) t)))
-                   (shell-quote-argument counsel--git-grep-dir)))
-          "\n" t))
-        (file (file-name-nondirectory counsel--git-grep-dir)))
-    ;; Need precise number of header lines for `wgrep' to work.
-    (insert (format "-*- mode:grep; default-directory: %S -*-\n\n\n"
-                    default-directory))
-    (insert (format "%d candidates:\n" (length cands)))
-    (ivy--occur-insert-lines
-     (mapcar
-      (lambda (cand) (concat "./" file ":" cand))
-      cands))))
+  (counsel--grep-mode-occur t))
 
 (ivy-set-occur 'counsel-grep 'counsel-grep-occur)
 (counsel-set-async-exit-code 'counsel-grep 1 "")
@@ -2090,6 +2105,7 @@ RG-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
 (defun counsel-grep ()
   "Grep for a string in the current file."
   (interactive)
+  (counsel-require-program (car (split-string counsel-grep-base-command)))
   (setq counsel-grep-last-line nil)
   (setq counsel--git-grep-dir (buffer-file-name))
   (let ((init-point (point))
@@ -2173,6 +2189,7 @@ You'll be given a list of files that match.
 Selecting a file will launch `swiper' for that file.
 INITIAL-INPUT can be given as the initial minibuffer input."
   (interactive)
+  (counsel-require-program "recoll")
   (ivy-read "recoll: " 'counsel-recoll-function
             :initial-input initial-input
             :dynamic-collection t
