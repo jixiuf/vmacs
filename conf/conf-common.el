@@ -80,6 +80,7 @@
 ;;   )
 
 (savehist-mode 1)
+(recentf-mode 1)
 
 ;; (defun pretty-chinese-char()
 ;;   (push '("“" . "「") prettify-symbols-alist)

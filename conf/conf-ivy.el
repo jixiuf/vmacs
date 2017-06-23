@@ -1,6 +1,7 @@
 (eval-when-compile (require 'ivy-dired-history))
-(eval-when-compile (require 'counsel))
-(eval-when-compile (require 'recentf))
+(require 'recentf)
+(require 'counsel)
+;; (eval-when-compile )
 (ivy-mode 1)
 (setq-default smex-save-file (expand-file-name "./cache/smex" user-emacs-directory))
 (setq-default smex-history-length 15)
@@ -133,10 +134,8 @@
       (counsel-yank-pop)
     (barf-if-buffer-read-only)
     ad-do-it))
-
 (defadvice ivy--virtual-buffers (around vmacs-counsel-git activate)
   "Append git files as virtual buffer"
-  (require 'recentf)
   (let ((recentf-list recentf-list )list
         (default-directory default-directory))
     (setq counsel--git-dir (locate-dominating-file default-directory ".git"))
