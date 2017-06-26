@@ -108,6 +108,7 @@ BUFFER defaults to the current one.
 
 (autoload 'counsel-git "counsel" "\
 Find file in the current Git repository.
+INITIAL-INPUT can be given as the initial minibuffer input.
 
 \(fn &optional INITIAL-INPUT)" t nil)
 
@@ -196,6 +197,7 @@ This uses `counsel-ag' with `counsel-pt-base-command' instead of
 
 (autoload 'counsel-ack "counsel" "\
 Grep for a string in the current directory using ack.
+INITIAL-INPUT can be given as the initial minibuffer input.
 This uses `counsel-ag' with `counsel-ack-base-command' replacing
 `counsel-ag-base-command'.
 
