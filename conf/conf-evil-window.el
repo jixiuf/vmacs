@@ -20,6 +20,9 @@
       (append golden-ratio-extra-commands
               '(evil-window-left
                 evil-window-right
+                evil-window-next
+                evil-window-new
+                evil-window-top-left
                 avy-goto-char-timer
                 avy-goto-word-1
                 evil-window-up
