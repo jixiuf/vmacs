@@ -39,7 +39,7 @@
 
 ;; (require 'magit-svn)
 
-(defun magit-mode-hook-fun()
+(defun vmacs-magit-mode-hook()
   ;; (magit-svn-mode)
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
@@ -49,7 +49,7 @@
       (add-to-list 'magit-repository-directories (expand-file-name ".." )))))
 
 ;; (eval-after-load 'git-commit-mode '(setq git-commit-setup-hook (delete 'git-commit-turn-on-flyspell git-commit-setup-hook)))
-(add-hook 'magit-mode-hook 'magit-mode-hook-fun)
+(add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
 
 (unless magit-repository-directories
