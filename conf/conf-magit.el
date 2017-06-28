@@ -37,18 +37,15 @@
 ;; (define-key magit-diff-mode-map "\s" nil) ;space
 ;; (define-key magit-diff-mode-map "j" nil)
 
-;; (require 'magit-svn)
 
 (defun vmacs-magit-mode-hook()
-  ;; (magit-svn-mode)
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
-  (let ((dir (magit-git-dir)))
-    (when (file-remote-p dir)
-      (add-to-list 'magit-repository-directories (expand-file-name ".." )))))
+  (let ((dir (magit-toplevel)))
+    (unless (file-remote-p dir)
+      (add-to-list 'magit-repository-directories dir))))
 
-;; (eval-after-load 'git-commit-mode '(setq git-commit-setup-hook (delete 'git-commit-turn-on-flyspell git-commit-setup-hook)))
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
 
