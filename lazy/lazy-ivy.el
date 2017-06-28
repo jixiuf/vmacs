@@ -63,7 +63,7 @@
                         (buffer-substring-no-properties
                          (region-beginning) (region-end))
                       (thing-at-point 'symbol t))))
-         (counsel-git-grep nil input)))
+         (counsel-git-grep nil nil)))
 
 ;;;###autoload
 (defun vmacs-counsel-rg-region-or-symbol (&optional arg)
@@ -82,7 +82,7 @@
            (if (setq vc-root (vc-find-root default-directory ".git"))
                (setq default-directory vc-root)
              (setq default-directory (read-directory-name "rg in directory: "))))
-         (counsel-rg  input default-directory nil
+         (counsel-rg  nil default-directory nil
                       (concat "rg in " (abbreviate-file-name default-directory)))))
 
 (provide 'lazy-ivy)
