@@ -49,8 +49,6 @@
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
 
-(unless magit-repository-directories
-  (setq magit-repository-directories (list user-emacs-directory)))
 
 (provide 'conf-magit)
 
