@@ -49,6 +49,8 @@
   ;; (define-key company-active-map [return]  'vmacs-company-complete-common-or-selection)
   (define-key company-active-map (kbd "C-j")  'company-complete-selection)
   (define-key company-active-map [(meta tab)] 'company-complete-common)
+  (define-key company-active-map (kbd "<C-m>") 'company-complete-selection)
+  (define-key company-active-map (kbd "C-[ [ a m")  'company-complete-selection)
 
   ;; (define-key company-mode-map (kbd "C-:") 'helm-company)
   ;; (define-key company-active-map (kbd "C-:") 'helm-company)
