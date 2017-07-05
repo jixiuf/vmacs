@@ -3,29 +3,28 @@
 
 (with-eval-after-load 'company
   ;; 调整默认backends
-  (setq-default company-backends `(,@(unless (version< "24.3.51" emacs-version)
+  (setq-default company-backends
+                `((company-files company-dabbrev company-keywords company-yasnippet)
+                company-nxml
+                company-css
+                company-clang
+                company-xcode
+                company-cmake
+                company-eclim
+                company-semantic
+                company-capf
+                (
+                 ;; company-dabbrev-code
+                 company-gtags
+                 company-etags
 
-                                       (list 'company-elisp))
-                                   company-files
-                                   company-nxml
-                                   company-css
-                                   company-clang
-                                   company-xcode
-                                   company-cmake
-                                   company-eclim
-                                   company-semantic
-                                   company-capf
-                                   (
-                                    ;; company-dabbrev-code
-                                    company-gtags
-                                    company-etags
-                                    company-keywords
-                                    company-dabbrev
-                                    company-yasnippet
-                                    )
-                                   ;; company-oddmuse ;
-                                   ;; company-bbdb
-                                   ))
+
+
+                 )
+                ;; company-oddmuse ;
+                ;; company-bbdb
+                ))
+
 
   (setq-default company-idle-delay 0.3)
   (setq company-echo-delay 0)
