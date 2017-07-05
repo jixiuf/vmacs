@@ -25,10 +25,11 @@
 
 ;;;###autoload
 (defun vmacs-idle-timer()
-  (show-todo-list-after-init)
   (require 'savehist)
   (savehist-autosave)
+  (require 'recentf)
   (recentf-save-list)
+  (require 'saveplace)
   (save-place-kill-emacs-hook))
 
 
