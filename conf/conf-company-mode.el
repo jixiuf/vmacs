@@ -31,6 +31,7 @@
   (setq company-tooltip-minimum-width 50)
   (setq company-search-regexp-function 'company-search-flex-regexp)
   (setq company-dabbrev-downcase nil)
+  (setq company-dabbrev-ignore-case nil)
 
   (setq-default company-minimum-prefix-length 2)
   (add-to-list 'company-begin-commands  'backward-delete-char-untabify)
