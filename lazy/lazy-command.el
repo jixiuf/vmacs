@@ -1,13 +1,16 @@
 ;; -*- coding:utf-8 -*-
 ;; eval-when-compile
 (eval-when-compile
+  (require 'savehist)
   (require  'cl-seq)
   (require  'ediff)
   (require  'vc-hooks)
+  (require 'recentf)
+  (require 'saveplace)
   (require  'log-edit)
   (require  'org)
   (require  'term)
-  (require  'helm)
+  ;; (require  'helm)
   (require  'ibuffer)
   (require  'log-view)
   (require 'cc-mode)
@@ -20,6 +23,13 @@
 (declare-function term-send-raw "term")
 (declare-function upcase-first-char "lazy-camelize")
 
+;;;###autoload
+(defun vmacs-idle-timer()
+  (show-todo-list-after-init)
+  (require 'savehist)
+  (savehist-autosave)
+  (recentf-save-list)
+  (save-place-kill-emacs-hook))
 
 
 ;;vim 有o 与O 命令，用于在下一行与上一行插入一个空行，并定位光标到空格后

@@ -4,7 +4,7 @@
   (require  'log-edit)
   (require  'org)
   (require  'term)
-  (require  'helm)
+  ;; (require  'helm)
   (require  'ibuffer)
   (require  'log-view)
   (require 'cc-mode)
@@ -17,7 +17,8 @@
   (term-send-raw-string "\t")
   )
 (defvar smart-tab-completion-functions
-  '((emacs-lisp-mode helm-lisp-completion-at-point)
+  '(
+    (emacs-lisp-mode company-complete)
     (python-mode jedi:complete)
     (magit-status-mode magit-section-toggle)
     (magit-mode magit-section-toggle)

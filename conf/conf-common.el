@@ -9,6 +9,7 @@
 
 (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 
+(run-with-idle-timer 10 t 'vmacs-idle-timer) ;idle 300=5*60s
 (setq-default
  ;; inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭scratch消息提示

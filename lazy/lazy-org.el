@@ -35,6 +35,7 @@
     (call-interactively 'org-todo-list)
     (switch-to-buffer "*Org Agenda*")))
 
+
 (provide 'lazy-org)
 
 ;; Local Variables:
