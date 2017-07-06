@@ -21,6 +21,14 @@
         (with-current-buffer buffer (dired default-directory))))))
 
 ;;;###autoload
+(defun vmacs-undo-kill-buffer(&optional args)
+  (interactive)
+  (require 'recentf)
+  (find-file (car recentf-list)))
+
+
+
+;;;###autoload
 (defun vmacs-ivy-dired(&optional buf)
   (interactive)
   (if ivy--directory

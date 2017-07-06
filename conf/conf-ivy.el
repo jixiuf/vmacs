@@ -74,6 +74,7 @@
 (evil-leader/set-key "fg" 'counsel-git)
 (evil-leader/set-key "g" 'vmacs-counsel-rg-region-or-symbol)
 (evil-leader/set-key "fp" 'vmacs-counsel-git-grep-region-or-symbol)
+(evil-leader/set-key "fr" 'vmacs-undo-kill-buffer)
 
 (evil-leader/set-key "?" 'counsel-descbinds)
 (evil-leader/set-key "wi" 'counsel-imenu)
