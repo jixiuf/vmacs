@@ -128,6 +128,18 @@
 (evil-leader/set-leader "<SPC>")
 ;; (setq-default evil-magit-state 'normal)
 
+;; (setq display-line-numbers-current-absolute t)
+(defun vmacs-change-line-number-abs()
+  (setq display-line-numbers 'absolute))
+
+(defun vmacs-change-line-number-relative()
+  (setq display-line-numbers 'visual))
+
+
+(add-hook 'evil-insert-state-entry-hook 'vmacs-change-line-number-abs)
+(add-hook 'evil-normal-state-entry-hook 'vmacs-change-line-number-relative)
+(add-hook 'evil-motion-state-entry-hook 'vmacs-change-line-number-relative)
+
 (evil-mode 1)
 
 ;; (unless (equal system-type 'windows-nt)

@@ -69,6 +69,7 @@
  ;;when meet long line ,whether to wrap it
  ;; truncate-lines t ;一行过长时 是否wrap显示
  save-place t                           ;记录上次打开文件的光标位置
+ display-line-numbers 'absolute
  )
 
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
