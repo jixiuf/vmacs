@@ -30,7 +30,8 @@
   (require 'recentf)
   (recentf-save-list)
   (require 'saveplace)
-  (save-place-kill-emacs-hook))
+  (save-place-kill-emacs-hook)
+  (message ""))
 
 
 ;;vim 有o 与O 命令，用于在下一行与上一行插入一个空行，并定位光标到空格后
