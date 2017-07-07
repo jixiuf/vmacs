@@ -49,6 +49,20 @@
 (define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
 (define-key minibuffer-local-completion-map (kbd "<C-m>") 'exit-minibuffer)
 (define-key minibuffer-local-must-match-map (kbd "<C-m>") 'exit-minibuffer)
+(define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
+(define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
+
+;; (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+(autoload 'minibuffer-keyboard-quit "delsel" "" t nil)
+;; (define-key minibuffer-local-map [escape]  'minibuffer-keyboard-quit)
+(define-key minibuffer-local-map [escape] 'abort-recursive-edit)
+(define-key minibuffer-local-ns-map [escape] 'abort-recursive-edit)
+(define-key minibuffer-local-completion-map [escape] 'abort-recursive-edit)
+(define-key minibuffer-local-must-match-map [escape] 'abort-recursive-edit)
+(define-key minibuffer-local-isearch-map [escape] 'abort-recursive-edit)
+
+(with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
+
 
 (provide 'conf-keybind)
 

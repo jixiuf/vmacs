@@ -101,6 +101,8 @@
 (define-key ivy-minibuffer-map (kbd "C-[ [ a e") 'ivy-next-history-element) ;iterm2 map to ctrl-.
 (define-key ivy-minibuffer-map (kbd "<C-m>") 'ivy-done)
 (define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ivy-done)
+(define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ivy-done)
+(define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
 ;; (define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
 ;; (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-delete-char)
 

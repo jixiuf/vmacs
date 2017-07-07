@@ -4,7 +4,8 @@
 (with-eval-after-load 'company
   ;; 调整默认backends
   (setq-default company-backends
-                `((company-files company-dabbrev company-keywords company-yasnippet)
+                `(company-elisp
+                  (company-files company-dabbrev company-keywords company-yasnippet)
                 company-nxml
                 company-css
                 company-clang
@@ -58,6 +59,11 @@
   ;; (define-key company-active-map (kbd "C-:") 'helm-company)
   )
 (make-variable-buffer-local 'company-backends)
+;; make evil repeat . work with company
+
+(when (fboundp 'evil-declare-change-repeat)
+  (mapc #'evil-declare-change-repeat
+        '(vmacs-company-complete-common-or-selection)))
 
 (global-company-mode 1)
 ;; (add-hook 'after-init-hook (lambda() (global-company-mode 1)))
@@ -65,7 +71,9 @@
 (defun vmacs-company-complete-common-or-selection()
   (interactive)
   (call-interactively 'company-complete-common)
+  (setq this-command 'company-complete-common)
   (when (equal company-prefix company-common)
+  (setq this-command 'company-complete-selection)
     (call-interactively 'company-complete-selection)))
 
 (provide 'conf-company-mode)

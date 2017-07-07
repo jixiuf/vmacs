@@ -210,18 +210,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map [escape] 'keyboard-quit)
 (define-key evil-visual-state-map [escape] 'keyboard-quit)
 
-(define-key minibuffer-local-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
-(define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
 (define-key evil-ex-completion-map (kbd "M-p") 'previous-history-element) ;
 (define-key evil-ex-completion-map (kbd "M-n")  'next-history-element)
-
-(define-key minibuffer-local-ns-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-completion-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-must-match-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-isearch-map [escape] 'abort-recursive-edit)
-
-(with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 
 (define-key evil-insert-state-map [escape] 'evil-normal-state)
 (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
@@ -294,6 +284,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 ;; C-3 加任一char ,start  and C-3 end ,then @char repeat
 (define-key evil-normal-state-map (kbd "C-[ [ a i") 'evil-record-macro) ;C-3 default q
+(define-key evil-normal-state-map (kbd "C-3") 'evil-record-macro) ;C-3 default q
 
 ;; g; goto-last-change
 ;; g,  goto-last-change-reverse
