@@ -42,7 +42,7 @@
 (require 'conf-evil-symbol)       ;对symbol 的操作
 
 (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
-(require 'conf-boring-buffer)
+(require 'conf-buffer)
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 
 (require 'conf-scroll)                  ;scroll screen C-v M-v

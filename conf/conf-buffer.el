@@ -6,6 +6,8 @@
 (evil-leader/set-key "k" 'vmacs-next-buffer) ;
 (evil-leader/set-key "q" 'kill-other-buffers) ;
 
+(evil-leader/set-key "fr" 'vmacs-undo-kill-buffer)
+
 (global-set-key  (kbd "s-k") 'kill-buffer-or-server-edit) ; default on mac
 
 (define-key evil-normal-state-map "q" 'vmacs-prev-buffer)
@@ -56,35 +58,29 @@
   (when (equal last-command 'keyboard-quit)
     (bury-boring-windows )))
 
-(defun vmacs-prev-buffer()
-  (interactive)
-  "switch to prev buffer ,but skip boring buffer."
-  (let ((buf-name (buffer-name))
-        (found  nil))
-    (cl-loop until found do
-             (previous-buffer)
-             (unless (or (memq  major-mode boring-window-modes)
-                         (string-match boring-window-bof-name-regexp (buffer-name)))
-               (setq found t))
-             (when (string= (buffer-name) buf-name)
-               (previous-buffer)
-               (setq found t)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar vmacs-killed-file-list nil
+  "List of recently killed files.")
 
-(defun vmacs-next-buffer()
-  (interactive)
-  "switch to next buffer ,but skip boring buffer."
-  (let ((buf-name (buffer-name))
-        (found  nil))
-    (cl-loop until found do
-             (next-buffer)
-             (unless (or (memq  major-mode boring-window-modes)
-                         (string-match boring-window-bof-name-regexp (buffer-name)))
-               (setq found t))
-             (when (string= (buffer-name) buf-name)
-               (next-buffer)
-               (setq found t)))))
+(defun vmacs-add-to-killed-file-list()
+  "If buffer is associated with a file name, add that file to the
+`vmacs-killed-file-list' when killing the buffer."
+  (when buffer-file-name
+    (unless (or (string-match-p "COMMIT_EDITMSG" buffer-file-name)
+                (string-match-p "/cache/recentf" buffer-file-name))
+      (push buffer-file-name vmacs-killed-file-list))))
 
-(provide 'conf-boring-buffer)
+(add-hook 'kill-buffer-hook #'vmacs-add-to-killed-file-list)
+
+(defun vmacs-undo-kill-buffer()
+  "Reopen the most recently killed file, if one exists."
+  (interactive)
+  (when vmacs-killed-file-list
+    (message "reopen file: %s" (find-file (pop vmacs-killed-file-list)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(provide 'conf-buffer)
 
 ;; Local Variables:
 ;; coding: utf-8
