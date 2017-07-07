@@ -290,6 +290,8 @@
  '(ivy-minibuffer-match-face-3 ((t (:foreground "green" :weight bold))))
  '(ivy-minibuffer-match-face-4 ((t (:foreground "green" :weight bold))))
  '(lazy-highlight ((t (:background "ivory4"))))
+ '(line-number ((t (:foreground "DarkGoldenrod2"))))
+ '(line-number-current-line ((t (:foreground "green"))))
  '(link ((t (:foreground "cyan" :underline t))))
  '(linum ((t (:inherit (shadow default) :foreground "green"))))
  '(linum-relative-current-face ((t (:inherit linum :foreground "#FBDE2D" :weight bold))))
