@@ -1,4 +1,4 @@
-
+;;;###autoload
 (defun vmacs-prev-buffer()
   (interactive)
   "switch to prev buffer ,but skip boring buffer."
@@ -13,6 +13,7 @@
                (previous-buffer)
                (setq found t)))))
 
+;;;###autoload
 (defun vmacs-next-buffer()
   (interactive)
   "switch to next buffer ,but skip boring buffer."
