@@ -33,6 +33,8 @@
   (setq company-search-regexp-function 'company-search-flex-regexp)
   (setq company-dabbrev-downcase nil)
   (setq company-dabbrev-ignore-case nil)
+  (setq company-dabbrev-other-buffers t)
+  (setq company-dabbrev-time-limit 0.5)
 
   (setq-default company-minimum-prefix-length 2)
   (add-to-list 'company-begin-commands  'backward-delete-char-untabify)
