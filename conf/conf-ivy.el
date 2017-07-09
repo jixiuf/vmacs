@@ -122,6 +122,7 @@
 
 (ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
+(ivy-add-actions 'counsel-git '(("d" vmacs-ivy-dired "dired")))
 
 ;; From browse-kill-ring.el
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
