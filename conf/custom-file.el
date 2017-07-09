@@ -284,7 +284,7 @@
  '(highline-face ((t (:background "SeaGreen"))))
  '(hl-paren-face ((t (:overline t :underline t :weight extra-bold))) t)
  '(isearch ((t (:background "seashell4" :foreground "green1"))))
- '(ivy-current-match ((t (:background "gray38"))))
+ '(ivy-current-match ((t (:background "chartreuse4"))))
  '(ivy-minibuffer-match-face-1 ((t (:inherit comment))))
  '(ivy-minibuffer-match-face-2 ((t (:foreground "green" :weight bold))))
  '(ivy-minibuffer-match-face-3 ((t (:foreground "green" :weight bold))))
