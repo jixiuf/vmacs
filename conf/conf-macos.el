@@ -16,6 +16,7 @@
 (global-set-key  (kbd "s-p") 'evil-window-prev)
 
 (global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
+(global-set-key  (kbd "s-C-S-M-q") 'save-buffers-kill-emacs)
 
 (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
