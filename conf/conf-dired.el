@@ -123,7 +123,7 @@
 (define-key dired-mode-map "r" 'revert-buffer)
 
 ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
-(define-key dired-mode-map  "/" 'dired-name-filter-only-show-matched-lines)
+(define-key dired-mode-map  "/" 'dired-narrow-fuzzy)
 ;; (dired-mark-unmarked-files "init" nil nil )
 ;; 临时忽略某些文件,用正则表达示  "z"跟/的作用相反
 (define-key dired-mode-map (kbd "z")  'dired-omit-expunge)
@@ -139,7 +139,6 @@
 (setq-default wdired-allow-to-change-permissions t);; writable 时,不仅可以改文件名,还可以改权限
 ;; C-gC-g 退出编辑或C-cC-c保存修改
 (define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
-(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
 
 
 (with-eval-after-load 'wdired
@@ -151,7 +150,7 @@
 
 ;;; dired-x 增强的dired功能
 (with-eval-after-load 'dired-x
-  (add-hook 'dired-mode-hook (lambda () (dired-omit-mode  1)));;M-o toggle 是否显示忽略的文件
+  (add-hook 'dired-mode-hook 'dired-omit-mode);;M-o toggle 是否显示忽略的文件
   ;; 默认这些后缀的文件 不显示，M-o后才显示
   (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$\\|^.*~$\\|^#.*#$\\|^\\.git$\\|^\\.svn$"))
   (setq dired-omit-extensions '("CVS/" ".o"  ".bin" ".lbin" "beam" "pyc"
@@ -185,8 +184,8 @@
     (forward-line -1)
     (setq ad-return-value(dired-move-to-filename))))
 
-(define-key dired-mode-map (kbd "M-<") 'dired-beginning-of-buffer)
-(define-key dired-mode-map (kbd "M->") ' dired-end-of-buffer)
+;; (define-key dired-mode-map (kbd "M-<") 'dired-beginning-of-buffer)
+;; (define-key dired-mode-map (kbd "M->") ' dired-end-of-buffer)
 ;; 默认dird 的r 修改了, 不是 wdired-change-to-wdired-mode,现在改回
 (with-eval-after-load 'dired
   (evil-define-key 'normal dired-mode-map

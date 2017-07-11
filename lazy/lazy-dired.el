@@ -5,23 +5,24 @@
   (require 'dired-x)
   (require 'wdired))
 
-;;;###autoload
-(defun dired-name-filter-only-show-matched-lines(filter-regexp)
-  (interactive "s(只显示匹配的文件):")
-  (let ((dired-marker-char 16)
-        (files (directory-files default-directory t)))
-    ;;(dired-unmark-all-files dired-marker-char)
-    (save-excursion
-      (dolist (file files)
-        (when (and (dired-goto-file  (expand-file-name file))
-                   (not (string= "" filter-regexp))
-                   (string-match filter-regexp (file-name-nondirectory file)))
-          (dired-mark 1)
-          )))
-    (dired-toggle-marks)
-    (dired-do-kill-lines nil (concat "Filter:'" filter-regexp "' omitted %d line%s"))
-    (when (eobp) (forward-char -1))
-    (dired-move-to-filename)))
+;; use dired-narrow install
+;; ;;;###autoload
+;; (defun dired-name-filter-only-show-matched-lines(filter-regexp)
+;;   (interactive "s(只显示匹配的文件):")
+;;   (let ((dired-marker-char 16)
+;;         (files (directory-files default-directory t)))
+;;     ;;(dired-unmark-all-files dired-marker-char)
+;;     (save-excursion
+;;       (dolist (file files)
+;;         (when (and (dired-goto-file  (expand-file-name file))
+;;                    (not (string= "" filter-regexp))
+;;                    (string-match filter-regexp (file-name-nondirectory file)))
+;;           (dired-mark 1)
+;;           )))
+;;     (dired-toggle-marks)
+;;     (dired-do-kill-lines nil (concat "Filter:'" filter-regexp "' omitted %d line%s"))
+;;     (when (eobp) (forward-char -1))
+;;     (dired-move-to-filename)))
 
 
 ;;;###autoload
