@@ -122,8 +122,15 @@
 (define-key dired-mode-map "g" nil)     ;给evil-mode 的gg让位
 (define-key dired-mode-map "r" 'revert-buffer)
 
+
+(define-key dired-mode-map (kbd "<C-m>" ) 'dired-find-file)
+(define-key dired-mode-map (kbd "C-[ [ a m") 'dired-find-file)
 ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 (define-key dired-mode-map  "/" 'dired-narrow-fuzzy)
+(with-eval-after-load 'dired-narrow
+  (define-key dired-narrow-map (kbd "<C-m>") 'exit-minibuffer)
+  (define-key dired-narrow-map (kbd "C-[ [ a m") 'exit-minibuffer)
+  )
 ;; (dired-mark-unmarked-files "init" nil nil )
 ;; 临时忽略某些文件,用正则表达示  "z"跟/的作用相反
 (define-key dired-mode-map (kbd "z")  'dired-omit-expunge)
