@@ -204,6 +204,7 @@
 
 ;; 把目录加入到load-path中，或load el文件
 (define-key dired-mode-map "L" 'dired-add-to-load-path-or-load-it)
+(define-key dired-mode-map "v" 'add-dir-local-variable)
 ;; (define-key dired-mode-map (kbd "C-o") 'golden-ratio-scroll-screen-down)
 
 
