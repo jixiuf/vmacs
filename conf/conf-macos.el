@@ -1,6 +1,10 @@
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
+;; ;; pip install jieba
+;; (setq osx-dictionary-use-chinese-text-segmentation t)
+(evil-leader/set-key "wd" 'osx-dictionary-search-pointer)
+
 (global-set-key (kbd "s-m") 'toggle-frame-maximized) ;cmd-m
 (global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
 (global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
