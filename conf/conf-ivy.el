@@ -22,7 +22,7 @@
                               (ivy-switch-buffer . ivy--regex-fuzzy)
                               (counsel-ag . ivy--regex-plus)
                               (counsel-rg . ivy--regex-plus)
-                              (counsel-git . ivy--regex-fuzzy)
+                              (counsel-git . ivy--regex-plus)
                               (counsel-git-grep . ivy--regex-plus)
                               (counsel-grep-or-swiper . ivy--regex-plus)
                               (read-file-name-internal . ivy--regex-fuzzy)
