@@ -149,7 +149,9 @@
 	     (:keywords))])
  (cobol-mode .
 	     [(1 0 0)
-	      nil "Mode for editing COBOL code" single
+	      ((cl-lib
+		(0 5)))
+	      "Mode for editing COBOL code" single
 	      ((:url . "http://elpa.gnu.org/packages/cobol-mode.html")
 	       (:keywords "languages"))])
  (coffee-mode .
@@ -163,7 +165,7 @@
 		      ((:url . "https://github.com/cpitclaudel/compact-docstrings")
 		       (:keywords "convenience" "faces" "lisp" "maint" "c"))])
  (company .
-	  [(0 9 3)
+	  [(0 9 4)
 	   ((emacs
 	     (24 3)))
 	   "Modular text completion framework" tar
@@ -534,12 +536,12 @@
 	    ((:url . "http://elpa.gnu.org/packages/landmark.html")
 	     (:keywords "games" "neural network" "adaptive search" "chemotaxis"))])
  (let-alist .
-	    [(1 0 5)
-	     ((emacs
-	       (24 1)))
-	     "Easily let-bind values of an assoc-list by their names" single
-	     ((:url . "http://elpa.gnu.org/packages/let-alist.html")
-	      (:keywords "extensions" "lisp"))])
+   [(1 0 5)
+    ((emacs
+      (24 1)))
+    "Easily let-bind values of an assoc-list by their names" single
+    ((:url . "http://elpa.gnu.org/packages/let-alist.html")
+     (:keywords "extensions" "lisp"))])
  (lex .
       [(1 1)
        nil "Lexical analyser construction" tar
@@ -695,7 +697,7 @@
 	     ((:url . "https://github.com/michael-heerdegen/on-screen.el")
 	      (:keywords "convenience"))])
  (org .
-      [(20170710)
+      [(20170717)
        nil "Outline-based notes management and organizer" tar nil])
  (org-edna .
 	   [(1 0 -3 1)
@@ -865,7 +867,7 @@
 	       ((:keywords "soap" "web-services" "comm" "hypermedia")
 		(:url . "http://elpa.gnu.org/packages/soap-client.html"))])
  (sokoban .
-	  [(1 4 1)
+	  [(1 4 4)
 	   nil "Implementation of Sokoban for Emacs." tar
 	   ((:keywords "games")
 	    (:url . "http://elpa.gnu.org/packages/sokoban.html"))])
@@ -1071,7 +1073,7 @@
        ((:keywords "multimedia" "xpm")
 	(:url . "http://www.gnuvola.org/software/xpm/"))])
  (yasnippet .
-	    [(0 11 0)
+	    [(0 12 0)
 	     ((cl-lib
 	       (0 5)))
 	     "Yet another snippet extension for Emacs." tar
