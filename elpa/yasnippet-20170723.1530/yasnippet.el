@@ -5,7 +5,7 @@
 ;;          João Távora <joaotavora@gmail.com>,
 ;;          Noam Postavsky <npostavs@gmail.com>
 ;; Maintainer: Noam Postavsky <npostavs@gmail.com>
-;; Version: 0.12.0
+;; Version: 0.12.1
 ;; X-URL: http://github.com/joaotavora/yasnippet
 ;; Keywords: convenience, emulation
 ;; URL: http://github.com/joaotavora/yasnippet
@@ -132,6 +132,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(declare-function cl-progv-after "cl-extra") ; Needed for 23.4.
 (require 'easymenu)
 (require 'help-mode)
 
@@ -535,7 +536,7 @@ override bindings from other packages (e.g., `company-mode')."
 
 ;;; Internal variables
 
-(defconst yas--version "0.12.0")
+(defconst yas--version "0.12.1")
 
 (defvar yas--menu-table (make-hash-table)
   "A hash table of MAJOR-MODE symbols to menu keymaps.")
@@ -584,6 +585,8 @@ override bindings from other packages (e.g., `company-mode')."
 
 (defvar yas--minor-mode-menu nil
   "Holds the YASnippet menu.")
+
+(defvar yas--condition-cache-timestamp nil)
 
 (defun yas--maybe-expand-key-filter (cmd)
   (when (let ((yas--condition-cache-timestamp (current-time)))
@@ -2183,7 +2186,6 @@ Just put this function in `hippie-expand-try-functions-list'."
 ;;;
 ;;;
 ;;;
-(defvar yas--condition-cache-timestamp nil)
 (defmacro yas-define-condition-cache (func doc &rest body)
   "Define a function FUNC with doc DOC and body BODY.
 BODY is executed at most once every snippet expansion attempt, to check
@@ -3028,9 +3030,16 @@ DEPTH is a count of how many nested mirrors can affect this mirror"
 
 (defmacro yas--letenv (env &rest body)
   "Evaluate BODY with bindings from ENV.
-ENV is a list of elements with the form (VAR FORM)."
+ENV is a lisp expression that evaluates to list of elements with
+the form (VAR FORM), where VAR is a symbol and FORM is a lisp
+expression that evaluates to its value."
   (declare (debug (form body)) (indent 1))
-  `(eval (cl-list* 'let* ,env ',body)))
+  (let ((envvar (make-symbol "envvar")))
+    `(let ((,envvar ,env))
+       (cl-progv
+           (mapcar #'car ,envvar)
+           (mapcar (lambda (v-f) (eval (cadr v-f))) ,envvar)
+         ,@body))))
 
 (defun yas--snippet-map-markers (fun snippet)
   "Apply FUN to all marker (sub)fields in SNIPPET.
@@ -3635,7 +3644,10 @@ field start.  This hook does nothing if an undo is in progress."
         (narrow-to-region beg end)
         (mapc #'yas--restore-marker-location remarkers)
         (mapc #'yas--restore-overlay-location reoverlays))
-      (mapc #'yas--update-mirrors snippets))))
+      (mapc (lambda (snippet)
+              (yas--letenv (yas--snippet-expand-env snippet)
+                (yas--update-mirrors snippet)))
+            snippets))))
 
 
 ;;; Apropos protection overlays:
@@ -4540,7 +4552,7 @@ When multiple expressions are found, only the last one counts."
             (when parent-field
               (yas--advance-start-maybe mirror (yas--fom-start parent-field))))
        ;; Update this mirror.
-       do (yas--mirror-update-display mirror field snippet)
+       do (yas--mirror-update-display mirror field)
        ;; Delay indenting until we're done all mirrors.  We must do
        ;; this to avoid losing whitespace between fields that are
        ;; still empty (i.e., they will be non-empty after updating).
@@ -4557,7 +4569,7 @@ When multiple expressions are found, only the last one counts."
          (cl-loop for (beg . end) in (cl-sort indent-regions #'< :key #'car)
                   do (yas--indent-region beg end snippet)))))))
 
-(defun yas--mirror-update-display (mirror field snippet)
+(defun yas--mirror-update-display (mirror field)
   "Update MIRROR according to FIELD (and mirror transform)."
 
   (let* ((mirror-parent-field (yas--mirror-parent-field mirror))

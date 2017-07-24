@@ -3015,20 +3015,32 @@ File: magit.info,  Node: Revision Buffer,  Prev: Diff Options,  Up: Diffing
      ‘magit-revision-header-format’.
 
      Both cells are regular expressions.  The car specifies where to
-     insert the author gravatar image.  The top halve of the image is
-     inserted right after the matched text, the bottom halve on the next
+     insert the author gravatar image.  The top half of the image is
+     inserted right after the matched text, the bottom half on the next
      line at the same offset.  The cdr specifies where to insert the
      committer image, accordingly.  Either the car or the cdr may be
      nil.
 
+   The diffs shown in the revision buffer may be automatically
+restricted to a subset of the changed files.  If the revision buffer is
+displayed from a log buffer, the revision buffer will share the same
+file restriction as that log buffer.  Note, however, that the log’s file
+restriction will be ignored when ‘magit-log-arguments’ includes
+‘--follow’.  In this case, the ‘-u’ argument of the log popup can be
+used to show the file-restricted diffs inline.
+
+   If the revision buffer is not displayed from a log buffer, the file
+restriction is determined by the file restriction in the repository’s
+diff buffer, if it exists, and the value of the option
+‘magit-use-sticky-arguments’.
+
 ‘M-x magit-revision-toggle-file-filter’     (‘magit-revision-toggle-file-filter’)
 
      This command toggles the file restriction of the current revision
-     buffer.  It is particularly useful when you display a revision from
-     a log buffer that is restricted to a file or files.  In this case,
-     the revision buffer is also restricted to these files, and this
-     command allows you to quickly switch between viewing all the
-     changes in the commit and the restricted subset.
+     buffer, allowing you to quickly switch between viewing all the
+     changes in the commit and the restricted subset.  It is
+     particularly useful when you display a revision from a log buffer
+     that is restricted to a file or files.
 
 
 File: magit.info,  Node: Ediffing,  Next: References Buffer,  Prev: Diffing,  Up: Inspecting
@@ -7991,7 +8003,7 @@ Appendix C Keystroke Index
                                                               (line  87)
 * M-x magit-reverse-in-index:            Staging and Unstaging.
                                                               (line  62)
-* M-x magit-revision-toggle-file-filter: Revision Buffer.     (line  26)
+* M-x magit-revision-toggle-file-filter: Revision Buffer.     (line  39)
 * M-x magit-stage-file:                  Staging from File-Visiting Buffers.
                                                               (line  10)
 * M-x magit-toggle-buffer-lock:          Modes and Buffers.   (line  17)

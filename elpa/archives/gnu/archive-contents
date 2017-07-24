@@ -458,7 +458,7 @@
 		((:keywords "html" "xml")
 		 (:url . "https://github.com/validator/validator"))])
  (hydra .
-	[(0 13 5)
+	[(0 14 0)
 	 ((cl-lib
 	   (0 5)))
 	 "Make bindings that stick around." tar
@@ -503,7 +503,7 @@
 	       ((:url . "http://elpa.gnu.org/packages/jgraph-mode.html")
 		(:keywords "tex" "wp"))])
  (js2-mode .
-	   [(20170116)
+	   [(20170721)
 	    ((emacs
 	      (24 1))
 	     (cl-lib
