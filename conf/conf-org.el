@@ -6,6 +6,9 @@
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
 (with-eval-after-load 'org-src
+
+  (add-to-list 'org-src-lang-modes (cons "go" 'go))
+  (add-to-list 'org-src-lang-modes (cons "golang" 'go))
   (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
   (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
 
