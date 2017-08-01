@@ -449,7 +449,10 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 ;; (fset 'evil-visual-update-x-selection 'ignore)
 
-
+(defadvice evil-write-all (after save-smart activate)
+  (when (string-match-p "*Org Src" (buffer-name))
+    (require 'org-src)
+    (call-interactively 'org-edit-src-exit)))
 
 
 
