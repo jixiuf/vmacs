@@ -9,6 +9,7 @@
 
   (add-to-list 'org-src-lang-modes (cons "go" 'go))
   (add-to-list 'org-src-lang-modes (cons "golang" 'go))
+  (setq org-src-ask-before-returning-to-edit-buffer nil)
   (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
   (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
 
