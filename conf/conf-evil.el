@@ -58,7 +58,7 @@
 (setq-default evil-buffer-regexps
               '(("**testing snippet:" . insert)
                 ("*compile*" . normal)
-                ("*Org Src" . insert)
+                ;; ("*Org Src" . insert)
                 ("*Org Export Dispatcher*" . insert)
                 ("*Async Shell Command*" . normal)
                 ("^ \\*load\\*")))
