@@ -455,6 +455,8 @@ execute emacs native `repeat' default binding to`C-xz'"
     (call-interactively 'org-edit-src-exit)))
 
 
+(global-set-key (kbd "C-c C-c") 'vmacs-smart-double-ctrl-c)
+
 
 (provide 'conf-evil)
 
