@@ -1,6 +1,7 @@
 ;; some code for windows system
 (setq exec-path (delete-dups  (cons (expand-file-name "~/.emacs.d/binw32") exec-path)))
 (setenv "PATH" (concat (convert-standard-filename (expand-file-name  "~/.emacs.d/binw32/")) ";" (getenv "PATH") ))
+;; (add-hook 'after-init-hook (lambda() (setq-default default-directory "c:/Users/Joseph")))
 
 ;;tramp 远程编译服务器上的文件（通过ssh /plink等）
 ;; ssh://user@server:path/to/file
@@ -20,16 +21,16 @@
 
 
 ;;进行server认证的目录,
-;; (setq server-auth-dir (expand-file-name "cache/" user-emacs-directory))
-;; (setq server-name "emacs-server-file")
+(setq server-auth-dir (expand-file-name "cache/" user-emacs-directory))
+(setq server-name "emacs-server-file")
 ;;上面两个值连起来即为emacsclient --server-file后面跟的参数
 ;;为方便计只需要设置EMACS_SERVER_FILE,值为emacs-server-file的绝对路径名称
 ;;如我的"d:\.emacs.d\cache\emacs-server-file"
 ;;注意在windows 上我把环境变量HOME设成了D:\,所以"~"就代表"D:\"了.
-;; (require 'server)
-;; (when (not (server-running-p))
-;;   (server-force-delete)
-;;   (server-start))
+(require 'server)
+(when (not (server-running-p))
+  (server-force-delete)
+  (server-start))
 
 ;; ;;这台机器用是日文系统 ,所以一些配置,采用日文编码
 ;; ;; (when (equal system-name "SB_QINGDAO")
