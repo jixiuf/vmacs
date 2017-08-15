@@ -391,6 +391,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (autoload 'dired-jump "dired-x" "dired-jump" t)
 (evil-leader/set-key "j" 'dired-jump)
+(global-set-key  (kbd "s-j") 'dired-jump)
+
 
 (evil-leader/set-key "l" 'ibuffer)
 
