@@ -5,32 +5,6 @@
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)
 (evil-leader/set-key "wd" 'osx-dictionary-search-pointer)
 
-(global-set-key (kbd "s-m") 'toggle-frame-maximized) ;cmd-m
-(global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
-(global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
-
-(global-set-key  (kbd "s-s") 'evil-write-all)
-
-(global-set-key  (kbd "s-z") 'undo)
-(global-set-key  (kbd "s-r") 'compile-dwim-compile)
-
-(global-set-key  (kbd "s-l") 'delete-other-windows)
-(global-set-key  (kbd "s-o") 'other-window)
-(global-set-key  (kbd "s-C-M-S-o") 'other-window)
-(global-set-key  (kbd "s-n") 'vmacs-split-window-or-other-window)
-(global-set-key  (kbd "s-p") 'evil-window-prev)
-
-(global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
-(global-set-key  (kbd "s-C-S-M-q") 'save-buffers-kill-emacs)
-
-(global-set-key  (kbd "s-w") 'delete-window)
-(global-set-key  (kbd "s-1") 'delete-other-windows)
-(global-set-key  (kbd "s-C-M-!") 'delete-other-windows) ;hyper-1
-(global-set-key  (kbd "s-C-M-@") 'split-window-func-with-other-buffer-vertically) ;hyper-2
-(global-set-key  (kbd "s-2") 'split-window-func-with-other-buffer-vertically)
-(global-set-key  (kbd "s-C-M-#") 'split-window-func-with-other-buffer-horizontally) ;hyper-2
-(global-set-key  (kbd "s-3") 'split-window-func-with-other-buffer-horizontally)
-
 ;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
 ;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
 ;; 从shell 中获取环境变量

@@ -2,7 +2,9 @@
 (setq exec-path (delete-dups  (cons (expand-file-name "~/.emacs.d/binw32") exec-path)))
 (setenv "PATH" (concat (convert-standard-filename (expand-file-name  "~/.emacs.d/binw32/")) ";" (getenv "PATH") ))
 ;; (add-hook 'after-init-hook (lambda() (setq-default default-directory "c:/Users/Joseph")))
-
+(setq w32-pass-lwindow-to-system nil)
+(setq w32-lwindow-modifier 'super)
+(global-set-key (kbd "M-<f4>") 'save-buffers-kill-emacs)
 ;;tramp 远程编译服务器上的文件（通过ssh /plink等）
 ;; ssh://user@server:path/to/file
 ;; /host:/filename

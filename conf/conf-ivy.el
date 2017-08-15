@@ -66,6 +66,14 @@
 (global-set-key (kbd "<f1> b") 'counsel-descbinds)
 
 ;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history) ;M-:
+;; windows 上将space映射成windows键，而单按时仍然发送空格键，便是在空格键前会发射lwindow键，
+;; (defun vmacs-space()
+;;   (interactive)
+;;   (unless (string= ivy-text "")
+;;     (insert " ")))
+;; (define-key ivy-switch-buffer-map " " 'vmacs-space)
+
+;; (evil-leader/set-key "<lwindow>" 'ivy-switch-buffer) ;for windows
 
 (evil-leader/set-key "SPC" 'ivy-switch-buffer)
 (evil-leader/set-key "ff" 'counsel-find-file)
