@@ -28,7 +28,7 @@
   (global-set-key (kbd "C-[ [ a i") (key-binding (kbd "C-3") ))   ;iterm2 map to ctrl-3
   (global-set-key (kbd "C-[ [ a j") 'ignore) ; iterm map to C-4
   (global-set-key (kbd "C-[ [ a j") (key-binding (kbd "C-4") ))   ;iterm2 map to ctrl-f3
-  (global-set-key (kbd "C-[ [ a m") (key-binding (kbd "C-m") ))   ;iterm2 map to C-m
+  (global-set-key (kbd "C-[ [ a m") (key-binding (kbd "<C-m>") ))   ;iterm2 map to C-m
   ;; (global-set-key (kbd "C-w C-[ [ a h") 'goto-definition) ; C-wC-i
 
   (global-set-key (kbd "C-[ [ a l") (key-binding (kbd "C-<f3>") ))   ;iterm2 map to ctrl-f3
