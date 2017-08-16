@@ -378,7 +378,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 
 
-(define-key evil-normal-state-map "s;" 'vmacs-comment-dwim-line)
+;; (define-key evil-normal-state-map "s;" 'vmacs-comment-dwim-line)
 
 
 
