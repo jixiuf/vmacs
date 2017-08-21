@@ -6,7 +6,7 @@
 (setq w32-lwindow-modifier 'super)
 (global-set-key (kbd "M-<f4>") 'save-buffers-kill-emacs)
 ;;tramp 远程编译服务器上的文件（通过ssh /plink等）
-;; ssh://user@server:path/to/file
+;; ssh://user@server#port:path/to/file
 ;; /host:/filename
 ;; http://blog.donews.com/pluskid/archive/2006/05/06/858306.aspx
 ;; (require 'tramp)
