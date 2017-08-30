@@ -115,15 +115,17 @@
 
 ;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
 ;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
+(define-key ivy-occur-grep-mode-map (kbd "n") 'evil-search-next)
+(define-key ivy-occur-grep-mode-map (kbd "p") 'evil-search-previous)
 
 
 (with-eval-after-load 'counsel
   (define-key counsel-find-file-map (kbd "C-l") 'counsel-up-directory)
   (define-key counsel-find-file-map (kbd "C-h") 'counsel-up-directory)
-  ;; (define-key counsel-ag-map (kbd "C-l") 'counsel-up-directory)
-  ;; (define-key counsel-ag-map (kbd "C-h") 'counsel-up-directory)
-  ;; (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
-  ;; (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
+  (define-key counsel-ag-map (kbd "C-l") 'counsel-up-directory)
+  (define-key counsel-ag-map (kbd "C-h") 'counsel-up-directory)
+  (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
+  (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
 
 
   (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
