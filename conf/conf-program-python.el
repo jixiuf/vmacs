@@ -1,6 +1,15 @@
 ;; brew install pyenv-virtualenv
 ;; pyenv install 2.7.13
 
+;; create
+;; pyenv virtualenv 2.7.10 env-2.7.10
+;; list
+;; pyenv virtualenvs
+;; pyenv activate env-name  # 激活虚拟环境
+;; pyenv deactivate #退出虚拟环境，回到系统环境
+
+;; pyenv commands
+
 ;; pip install jedi epc argparse
 ;; argparse (for Python 2.6)
 ;; doc http://tkf.github.io/emacs-jedi/latest/
