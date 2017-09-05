@@ -1,4 +1,6 @@
-;;
+;; brew install pyenv-virtualenv
+;; pyenv install 2.7.13
+
 ;; pip install jedi epc argparse
 ;; argparse (for Python 2.6)
 ;; doc http://tkf.github.io/emacs-jedi/latest/

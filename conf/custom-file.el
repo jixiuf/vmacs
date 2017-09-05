@@ -323,9 +323,9 @@
  '(mode-line-buffer-id ((t (:background "dark olive green" :foreground "beige"))))
  '(mode-line-highlight ((((class color) (min-colors 88)) nil)))
  '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light))))
- '(org-agenda-date ((t (:inherit org-agenda-structure))) t)
- '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))) t)
- '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))) t)
+ '(org-agenda-date ((t (:inherit org-agenda-structure))))
+ '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))))
+ '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))))
  '(org-agenda-done ((t (:foreground "#269926"))))
  '(org-agenda-restriction-lock ((t (:background "#FFB273"))))
  '(org-agenda-structure ((t (:foreground "gold1" :weight bold))))
@@ -388,6 +388,7 @@
  '(magit-push-arguments (quote ("--force-with-lease")))
  '(magit-save-repository-buffers (quote dontask))
  '(menu-bar-mode nil)
+ '(org-agenda-files nil)
  '(package-selected-packages
    (quote
     (osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode shell-toggle company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core iedit logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
