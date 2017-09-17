@@ -7,7 +7,7 @@
             (not (file-symlink-p dropbox-dir)))
     (start-process "lndropbox" "*Messages*" "ln"  "-f" "-s" (expand-file-name "~/Library/Mobile Documents/com~apple~CloudDocs/") dropbox-dir)))
 
-(when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
+;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 
 (run-with-idle-timer 10 t 'vmacs-idle-timer) ;idle 300=5*60s
 (setq-default
