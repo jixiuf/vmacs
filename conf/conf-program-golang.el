@@ -28,6 +28,16 @@
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (setq company-go-show-annotation t)
 
+(defun vmacs-go-format()
+  (when (eq major-mode 'go-mode)
+    (gofmt-before-save)
+    (save-mark-and-excursion
+      (goto-char (point-min))
+      (while  (search-forward-regexp "}\nfunc")
+        (replace-match "}\n\nfunc")))
+    )
+  )
+
 (defun vmacs-go-mode-hook()
   ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; github.com/syohex/emacs-go-eldoc
