@@ -478,6 +478,7 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 end tell" (expand-file-name default-directory))))
     (start-process "cd-iterm2" nil "osascript" "-e" cmd)))
 
+;;;###autoload
 (defun toggle-case-fold()
   (interactive)
   (if case-fold-search
@@ -485,9 +486,12 @@ end tell" (expand-file-name default-directory))))
         (setq
          helm-case-fold-search nil ;nil=case sensitive
          case-fold-search nil ;nil=case sensitive
+         ivy-case-fold-search-default  nil
          evil-ex-search-case 'sensitive)
+
         (message "case sensitive"))
     (setq
+     ivy-case-fold-search-default  'always
      helm-case-fold-search t ;nil=case sensitive
      case-fold-search t ;nil=case sensitive
      evil-ex-search-case 'insensitive)

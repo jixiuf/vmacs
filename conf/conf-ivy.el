@@ -95,6 +95,7 @@
 (global-set-key (kbd "C-S-M-s-i") 'counsel-git)   ;hyper-i
 
 (define-key ivy-minibuffer-map (kbd "<C-i>") 'vmacs-ivy-dropto-counsel-git)
+(define-key ivy-minibuffer-map (kbd "C-c c") 'ivy-toggle-case-fold)
 
 (define-key ivy-minibuffer-map (kbd "C-c C-c") 'ivy-occur)
 (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-dispatching-done)
