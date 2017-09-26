@@ -51,7 +51,8 @@
 
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
-  (add-hook 'before-save-hook 'before-save-hook)
+  (add-hook 'before-save-hook 'vmacs-go-format)
+
 
   (setq require-final-newline nil)
   (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
