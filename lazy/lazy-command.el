@@ -103,15 +103,15 @@ Move point to end-of-line ,if point was already at end of line (ignore white spa
   move point to end of line .if `C-u', then move to end of line directly."
   (interactive "^P")
   (if (and (string= major-mode "term-mode") (equal (line-number-at-pos)  (count-lines (point-min) (point-max)))) (term-send-raw) (if arg (end-of-line) (let ((oldpos (point)) (new-pos)) (beginning-of-line) (if (re-search-forward "[ \t]*$" (point-at-eol) t 1) (setq new-pos  (match-beginning 0)) (setq new-pos (point-at-eol)))
-        (when (= oldpos new-pos)
-          (setq new-pos (point-at-eol))
-          )
-        (when (> new-pos (+ (frame-width) oldpos))
-          (setq new-pos (+ (frame-width) oldpos)))
-        (goto-char new-pos)
-        )
+                                                                                                                                                            (when (= oldpos new-pos)
+                                                                                                                                                              (setq new-pos (point-at-eol))
+                                                                                                                                                              )
+                                                                                                                                                            (when (> new-pos (+ (frame-width) oldpos))
+                                                                                                                                                              (setq new-pos (+ (frame-width) oldpos)))
+                                                                                                                                                            (goto-char new-pos)
+                                                                                                                                                            )
+                                                                                                                                     )
       )
-    )
   )
 ;; 同smart-end-of-line
 ;;;###autoload
@@ -487,12 +487,14 @@ end tell" (expand-file-name default-directory))))
          helm-case-fold-search nil ;nil=case sensitive
          case-fold-search nil ;nil=case sensitive
          ivy-case-fold-search-default  nil
+         counsel-rg-base-command  "rg -s --no-heading --line-number --color never %s ."
          evil-ex-search-case 'sensitive)
 
         (message "case sensitive"))
     (setq
      ivy-case-fold-search-default  'always
      helm-case-fold-search t ;nil=case sensitive
+     counsel-rg-base-command  "rg -i --no-heading --line-number --color never %s ."
      case-fold-search t ;nil=case sensitive
      evil-ex-search-case 'insensitive)
     (message "case insensitive")))
