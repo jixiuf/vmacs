@@ -58,7 +58,9 @@
                           "* Info %? 创建于:%T\n  %i\n")
                          ("n" "Note" item (file ,org-default-notes-file)
                           " %? "))
- org-agenda-custom-commands '(("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file)))
+ org-agenda-custom-commands '(("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file)
+                                                                    (undo)
+                                                                    ))
                               ;; ("b" . "show item of tags prefix") ; describe prefix "h"
                               ;; ("be" tags "+Emacs")
                               ;; ("bj" tags "+Java")
