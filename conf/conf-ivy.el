@@ -78,7 +78,7 @@
 (evil-leader/set-key "SPC" 'ivy-switch-buffer)
 (evil-leader/set-key "ff" 'counsel-find-file)
 (evil-leader/set-key "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
-(evil-leader/set-key "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
+(evil-leader/set-key "fh" #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
 (evil-leader/set-key "fl" 'counsel-locate)
 (evil-leader/set-key "fg" 'counsel-git)
 (evil-leader/set-key "g" 'vmacs-counsel-rg-region-or-symbol)
