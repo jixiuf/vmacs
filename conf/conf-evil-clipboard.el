@@ -54,7 +54,7 @@
  mouse-yank-at-point t
  kill-whole-line t                     ;在行首 C-k 时，同时删除末尾换行符
  kill-read-only-ok t                  ;kill read-only buffer内容时,copy之而不用警告
- kill-ring-max 20                       ;emacs内置剪切板默认保留60份，default 60
+ kill-ring-max 200                       ;emacs内置剪切板默认保留60份，default 60
  )
 
 ;;; 关于没有选中区域,则默认为选中整行的advice
