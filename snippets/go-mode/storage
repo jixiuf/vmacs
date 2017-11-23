@@ -19,18 +19,18 @@ import (
 	"gitlab.luojilab.com/igetserver/storage"
 )
 
-type {1:StorageName}DB struct {
+type ${1:StorageName} struct {
 }
 
-func New{1:StorageName}DBStorage() *{1:StorageName}DB {
-	return &{1:StorageName}DB{}
+func New$1() *${1:StorageName} {
+	return &$1{}
 }
 
-func (this {1:StorageName}DB) GetKey() (key storage.Key) {
+func (this $1) GetKey() (key storage.Key) {
 	return nil
 }
 
-func (this *{1:StorageName}DB) parseKey(key storage.Key) (id int64, err error) {
+func (this *$1) parseKey(key storage.Key) (id int64, err error) {
 	tokens := strings.Split(key.String(), "|")
 	if len(tokens) != 1 {
 		err = errors.New("key format error:" + key.String())
@@ -44,38 +44,35 @@ func (this *{1:StorageName}DB) parseKey(key storage.Key) (id int64, err error) {
 }
 
 // Get ...
-func (this *{1:StorageName}DB) Get(ctx *context.Context, key storage.Key, object interface{}) error {
+func (this *$1) Get(ctx *context.Context, key storage.Key, object interface{}) error {
 
 	return nil
 
 }
 
-func (this *{1:StorageName}DB) Add(ctx *context.Context, key storage.Key, object interface{}) error {
+func (this *$1) Add(ctx *context.Context, key storage.Key, object interface{}) error {
 	return nil
 }
 
 // Set ...
-func (this *{1:StorageName}DB) Set(ctx *context.Context, key storage.Key, object interface{}) error {
+func (this *$1) Set(ctx *context.Context, key storage.Key, object interface{}) error {
 	return nil
 }
 
-// MultiGet ...
-func (this *{1:StorageName}DB) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap interface{}) error {
+func (this *$1) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap interface{}) error {
 	return nil
 }
 
-// MultiSet ...
-func (this *{1:StorageName}DB) MultiSet(ctx *context.Context, m map[storage.Key]interface{}) error {
+func (this *$1) MultiSet(ctx *context.Context, m map[storage.Key]interface{}) error {
 	return nil
 }
 
-// Delete
-func (this *{1:StorageName}DB) Delete(ctx *context.Context, key ...storage.Key) error {
+func (this *$1) Delete(ctx *context.Context, key ...storage.Key) error {
 	return nil
 }
 
-func New{1:StorageName}StorageProxy(proxyMgr *storage.RedisStorageProxyMgr, ) storage.Storage {
-	//dbStorage := New{1:StorageName}DBStorage()
+func New$1StorageProxy(proxyMgr *storage.RedisStorageProxyMgr, ) storage.Storage {
+	//dbStorage := New$1Storage()
 	keyPrefix := "coupon:coupon:phone~index"
 	defaultExpireTime := time.Duration(0)
 	encoding := storage.JsonGzipEncoding{}
