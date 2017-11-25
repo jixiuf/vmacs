@@ -41,7 +41,7 @@
  backup-by-copying t    ;自动备份
  delete-old-versions t ; 自动删除旧的备份文件
  kept-new-versions 10   ; 保留最近的6个备份文件
- kept-old-versions 2   ; 保留最早的2个备份文件
+ kept-old-versions 10   ; 保留最早的2个备份文件
  version-control t    ; 多次备份
  ;; 备份文件统一放在 ~/.emacs.d/cache/backup_files,避免每个目录生成一些临时文件
  pulse-iterations 3
