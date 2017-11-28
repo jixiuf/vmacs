@@ -22,7 +22,7 @@ import (
 type ${1:StorageName} struct {
 }
 
-func New$1() *${1:StorageName} {
+func New$1() *$1 {
 	return &$1{}
 }
 
@@ -31,15 +31,15 @@ func (this $1) GetKey() (key storage.Key) {
 }
 
 func (this *$1) parseKey(key storage.Key) (id int64, err error) {
-	tokens := strings.Split(key.String(), "|")
-	if len(tokens) != 1 {
-		err = errors.New("key format error:" + key.String())
-		return
-	}
-	id, err = int64(strconv.Atoi(tokens[0]))
-	if err != nil {
-		return
-	}
+	//tokens := strings.Split(key.String(), "|")
+	//if len(tokens) != 1 {
+		//err = errors.New("key format error:" + key.String())
+		//return
+	//}
+	//id, err = int64(strconv.Atoi(tokens[0]))
+	//if err != nil {
+		//return
+	//}
 	return
 }
 
