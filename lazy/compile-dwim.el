@@ -85,7 +85,7 @@ Its value should be 'always or list like (filename run compile).")
          "lua %n.lua")
     (go (name . "_test\\.go$")
         "go test"
-        "go test -test.run")
+        compile-go-test-current)
 
     (go (or (name . "\\.go$")
             (mode . go-mode))
@@ -425,6 +425,12 @@ key code 11 using {command down}
 end tell
 end tell"))
     (start-process "compile-dwim-xcode:build" nil "osascript" "-e" cmd)))
+
+(defun compile-go-test-current()
+  (interactive)
+  (setq compile-command (concat "go test -v -test.run "  (nth 0 (split-string (which-function) "("))))
+  (call-interactively 'compile))
+
 
 (provide 'compile-dwim)
 ;;; compile-dwim.el ends here
