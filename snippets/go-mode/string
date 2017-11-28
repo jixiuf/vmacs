@@ -1,0 +1,8 @@
+#name : String
+# key: str
+# expand-env: ((yas/indent-line 'fixed))
+# --
+func (this ${1:Class}) String() string {
+	data, _ := json.Marshal(this)
+	return string(data)
+}

@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: jsondeclare
+# key: jsd
+# --
+func (this ${1:Class}) MarshalJSON() (data []byte, err error) {
+return
+}
+
+func (this *$1) UnmarshalJSON(data []byte) (err error ){
+
+return 
+}
