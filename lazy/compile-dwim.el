@@ -47,6 +47,8 @@
   (require 'cl))
 (require 'format-spec)
 (require 'compile)
+(require 'which-func)
+
 
 (defgroup compile-dwim nil
   "Automatic generate compile-command"
