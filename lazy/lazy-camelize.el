@@ -63,7 +63,7 @@
           changed-symbol
           )
 
-      (if (string-match "_" symbol-name)
+      (if (or (string-match "_" symbol-name) (s-lowercase symbol-name))
           (setq changed-symbol (camelize symbol-name "_"))
         (setq changed-symbol  (un-camelcase-string symbol-name)))
       (delete-region (car bounds) (cdr bounds))
@@ -71,7 +71,9 @@
       )
     )
   )
-
+(defun s-lowercase (s)
+  (let ((case-fold-search nil))
+    (not (string-match-p "[A-Z]+" s))))
 
 (provide 'lazy-camelize)
 
