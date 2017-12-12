@@ -86,6 +86,22 @@
         (last-argv (last (split-string last-hist "[ \t]+"))))
     (when last-argv (insert (car last-argv)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Shared history.
+(defvar eshell-history-global-ring nil
+  "The history ring shared across Eshell sessions.")
+
+;;;###autoload
+(defun eshell-hist-use-global-history ()
+  "Make Eshell history shared across different sessions."
+  (unless eshell-history-global-ring
+    (let (eshell-history-ring)
+      (when eshell-history-file-name
+        (eshell-read-history nil t))
+      (setq eshell-history-global-ring eshell-history-ring))
+    (unless eshell-history-ring (setq eshell-history-global-ring (make-ring eshell-history-size))))
+  (setq eshell-history-ring eshell-history-global-ring))
+
 
 (provide 'lazy-toggle-eshell)
 
