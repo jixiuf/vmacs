@@ -111,7 +111,7 @@
   (modify-syntax-entry ?？ "." ) ;; 识别中文标点
   (modify-syntax-entry ?、 "." ) ;; 识别中文标点
   (modify-syntax-entry ?； "." ) ;; 识别中文标点
-  (iimage-mode 1)
+  ;; (iimage-mode 1)
   ;; (auto-fill-mode 1)
   ;; (paragraph-indent-minor-mode 1)
   ;; (org-set-local 'fill-paragraph-function 'fill-paragraph-function-org-mode-hook)
