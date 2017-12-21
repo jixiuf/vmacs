@@ -4,6 +4,7 @@
 # --
 func (this *${1:Class}) Clone() cachemap.Cloneable {
       var result  $1
+      result = *this
       $2
       return &result
 }
