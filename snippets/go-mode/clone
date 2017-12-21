@@ -1,0 +1,9 @@
+#name : Cloneable
+# key: clone
+# expand-env: ((yas/indent-line 'fixed))
+# --
+func (this *${1:Class}) Clone() cachemap.Cloneable {
+      var result  $1
+      $2
+      return &result
+}
