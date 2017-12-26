@@ -458,6 +458,66 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
 ;;;###autoload
 (defun cd-iterm2()
   (interactive)
+  (let ((cmd (format "
+tell application \"iTerm\"
+	activate
+	if (count of windows) = 0 then
+		set w to (create window with default profile)
+	else
+		set w to current window
+	end if
+
+	tell w
+		set targetSession to null
+
+		activate current session
+		tell current session of w
+			if is at shell prompt then
+				set targetSession to current session of w
+			end if
+		end tell
+		if targetSession is null then
+			repeat with aTab in tabs
+				if targetSession is null then
+					tell aTab
+						select
+						repeat with aSession in sessions
+							if targetSession is null then
+								tell aSession
+									select
+									if is at shell prompt then
+										set targetSession to aSession
+									end if
+								end tell
+							end if
+						end repeat
+					end tell
+				end if
+			end repeat
+		end if
+		if targetSession is null then
+			create tab with default profile
+			-- delay 0.1
+			set targetSession to current session of w
+		end if
+
+		if targetSession is not null then
+			tell targetSession
+				select
+				set cmd to \"cd \" & quote & \"%s\" & quote & \";clear\"
+				write text cmd
+			end tell
+
+		end if
+	end tell
+end tell
+" (expand-file-name default-directory))))
+    (start-process "cd-iterm2" nil "osascript" "-e" cmd)))
+
+;; mac上打开iterm2，并cd到当前编辑的文件所在目录
+;;;###autoload
+(defun cd-iterm2-new-tab()
+  (interactive)
   (let ((cmd (format "tell application \"iTerm\"
     activate
     if (count of windows) = 0 then
