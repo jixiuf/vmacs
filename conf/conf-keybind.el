@@ -40,6 +40,7 @@
  ;iterm2特有的配置
 
 (global-set-key (kbd "C-<f3>") 'cd-iterm2)
+(global-set-key (kbd "<f3>") 'cd-iterm2)
 ;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
 (define-key minibuffer-local-completion-map (kbd "C-l") 'minibuffer-up-parent-dir)
 (define-key minibuffer-local-map (kbd "C-l") 'minibuffer-up-parent-dir)
