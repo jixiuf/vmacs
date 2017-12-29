@@ -47,6 +47,7 @@
       (add-to-list 'magit-repository-directories dir))))
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
+(add-hook 'git-commit-setup-hook 'vmacs-update-repo-revision)
 
 
 

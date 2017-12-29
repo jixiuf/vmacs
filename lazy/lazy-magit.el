@@ -21,4 +21,15 @@
   (message "toggle diff show whitespace at end of line"))
 ;; (setq-default magit-log-format-graph-function 'magit-log-format-unicode-graph)
 
+;;;###autoload
+(defun vmacs-update-repo-revision()
+  (let* (( repos (magit-toplevel))
+         (config-file (expand-file-name "config.online.toml" repos)))
+    (when (and repos (file-exists-p config-file))
+      (with-current-buffer (find-file-noselect config-file)
+        (when (search-forward-regexp "git=\"\\(.*\\)\"")
+          (replace-match (magit-rev-parse "--short" "HEAD") t t nil 1)
+          )))))
+
+
 (provide 'lazy-magit)
