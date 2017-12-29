@@ -27,7 +27,8 @@
          (config-file (expand-file-name "config.online.toml" repos)))
     (when (and repos (file-exists-p config-file))
       (with-current-buffer (find-file-noselect config-file)
-        (when (search-forward-regexp "git=\"\\(.*\\)\"")
+        (goto-char (point-min))
+        (when (search-forward-regexp "git=\"\\(.*\\)\"" nil t)
           (replace-match (magit-rev-parse "--short" "HEAD") t t nil 1)
           )))))
 
