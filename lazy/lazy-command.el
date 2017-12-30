@@ -463,6 +463,7 @@ tell application \"iTerm\"
 	activate
 	if (count of windows) = 0 then
 		set w to (create window with default profile)
+		delay 0.3
 	else
 		set w to current window
 	end if
@@ -497,7 +498,7 @@ tell application \"iTerm\"
 		end if
 		if targetSession is null then
 			create tab with default profile
-			-- delay 0.1
+			delay 0.1
 			set targetSession to current session of w
 		end if
 
