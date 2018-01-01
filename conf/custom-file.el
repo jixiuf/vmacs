@@ -55,6 +55,7 @@
 ;; 까까까까까까까까까까까까까까까까까까까까|
 
 (defun create-frame-font-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
+  (interactive)
   (set-face-attribute
    'default nil :font "Menlo 12")
   ;; Chinese Font
@@ -71,8 +72,27 @@
                     (font-spec :family "Apple SD Gothic Neo" :size 16))
 
   )
+
+
+(defun create-frame-font-big-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
+  (interactive)
+  (set-face-attribute
+   'default nil :font "Menlo 16")
+  ;; Chinese Font
+  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset
+                      (font-spec :family "PingFang SC" :size 20)))
+
+  (set-fontset-font (frame-parameter nil 'font)
+                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
+                    (font-spec :family "Hiragino Sans" :size 20))
+  (set-fontset-font (frame-parameter nil 'font)
+                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
+                    (font-spec :family "Apple SD Gothic Neo" :size 23)))
+
 (when (and (equal system-type 'darwin) (window-system))
-  (add-hook 'after-init-hook 'create-frame-font-mac))
+  (add-hook 'after-init-hook 'create-frame-font-big-mac))
 
 (defun create-frame-font-w32()          ;emacs 若直接启动 启动时调用此函数似乎无效
   (set-face-attribute
@@ -93,7 +113,7 @@
 (when (and (equal system-type 'windows-nt) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-w32))
 
-;; (create-frame-font-mac)
+;; (create-frame-font-big-mac)
 ;; (create-fontset-from-fontset-spec
 ;;    "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-fontset-mymac,
 ;;  ascii:-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1,
@@ -116,7 +136,7 @@
   (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     (when (window-system)
-      (when (equal system-type 'darwin) (create-frame-font-mac))
+      (when (equal system-type 'darwin) (create-frame-font-big-mac))
       (when (equal system-type 'windows-nt) (create-frame-font-w32))
       (set-frame-position f 160 80)
       (set-frame-size f 140 50)

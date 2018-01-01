@@ -115,10 +115,17 @@
   ;; (auto-fill-mode 1)
   ;; (paragraph-indent-minor-mode 1)
   ;; (org-set-local 'fill-paragraph-function 'fill-paragraph-function-org-mode-hook)
-
+  ;; (create-frame-font-mac)
+  (create-frame-font-big-mac)
   )
+
+(defun vmacs-novel-mode-hook()
+  (vmacs-org-mode-hook)
+  (create-frame-font-big-mac)
+  )
+
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
-(add-hook 'novel-mode-hook 'vmacs-org-mode-hook)
+(add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
 
 
 

@@ -1,6 +1,9 @@
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 
+(global-set-key (kbd "s-=") 'create-frame-font-big-mac)
+(global-set-key (kbd "s--") 'create-frame-font-mac)
+
 ;; ;; pip install jieba
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)
 (evil-leader/set-key "wd" 'osx-dictionary-search-pointer)
