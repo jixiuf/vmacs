@@ -138,8 +138,8 @@
     (when (window-system)
       (when (equal system-type 'darwin) (create-frame-font-big-mac))
       (when (equal system-type 'windows-nt) (create-frame-font-w32))
-      (set-frame-position f 160 80)
-      (set-frame-size f 140 50)
+      (set-frame-position f 40 50)
+      (set-frame-size f 138 50)
       (set-frame-parameter f 'alpha 85)
       (raise-frame))))
 
@@ -161,11 +161,11 @@
                   (background-mode . dark)
                   )
                  (ns ;; if frame created on mac
-                  (alpha . 80)
-                  (height . 50)
-                  (width . 140)
-                  (left . 160)
-                  (top . 80)
+                  ;; (alpha . 80)
+                  ;; (height . 50)
+                  ;; (width . 140)
+                  ;; (left . 160)
+                  ;; (top . 80)
                   (foreground-color . "#eeeeec")
                   (background-color . "#202020") ;;
                   (background-mode . dark)
