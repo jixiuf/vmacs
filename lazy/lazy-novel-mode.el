@@ -1,3 +1,4 @@
+(require 'subr-x)                       ;string-blank-p
 ;; 小说 段首缩进4格
 ;;;###autoload
 (defun novel-fill(&optional args)
@@ -26,6 +27,7 @@
       (skip-chars-forward "[ |\t|\n|\r]*")
       (delete-horizontal-space)
       (insert "    ")
+      (forward-char 1) (insert "\n")    ;make sure the second line is at bol
       (fill-paragraph))
     (when (string-blank-p  is-blank-string)
       (skip-chars-forward "[ |\t|\n|\r]*"))))
