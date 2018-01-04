@@ -21,16 +21,13 @@
               '(
                 evil-window-left
                 evil-window-right
-                evil-window-next
-                evil-window-prev
-                evil-window-new
-                evil-window-top-left
-                avy-goto-char-timer
-                avy-goto-word-1
                 evil-window-up
                 evil-window-down
                 avy-goto-char-timer
+                avy-goto-word-1
+                avy-goto-char-timer
                 vmacs-split-window-or-other-window
+                vmacs-split-window-or-prev-window
                 avy-goto-word-1
                 ace-jump-mode-pop-mark)))
 

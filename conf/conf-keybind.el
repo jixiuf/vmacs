@@ -85,7 +85,12 @@
 (global-set-key  (kbd "s-C-M-S-n") 'vmacs-split-window-or-other-window)
 (global-set-key  (kbd "s-p") 'vmacs-split-window-or-prev-window)
 (global-set-key  (kbd "s-C-M-S-p") 'vmacs-split-window-or-prev-window)
+
 (global-set-key  (kbd "s-t") 'toggle-split-window-horizontally-vertically)
+(global-set-key  (kbd "s-C-M-|") 'evil-window-rotate-downwards)
+
+(global-set-key  (kbd "C-,") 'scroll-other-window)
+(global-set-key  (kbd "C-.") 'scroll-other-window-down)
 
 (global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key  (kbd "s-C-S-M-q") 'save-buffers-kill-emacs)
