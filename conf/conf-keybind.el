@@ -1,3 +1,4 @@
+;; C-x esc esc 可以查看global-set-key 究竟bind哪个key
 ;; 默认Emacs 把TAB==`C-i'
 ;;            RET==`C-m'
 ;;            ESC==`C-['
@@ -88,6 +89,8 @@
 
 (global-set-key  (kbd "s-t") 'toggle-split-window-horizontally-vertically)
 (global-set-key  (kbd "s-C-M-|") 'evil-window-rotate-downwards)
+(global-set-key [C-M-S-s-return] 'evil-window-rotate-downwards)
+
 
 (global-set-key  (kbd "C-,") 'scroll-other-window)
 (global-set-key  (kbd "C-.") 'scroll-other-window-down)
