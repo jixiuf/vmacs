@@ -5,7 +5,7 @@
 (evil-leader/set-key "3" 'split-window-func-with-other-buffer-horizontally) ;竖着分屏
 (global-set-key (kbd "C-x 2")  'split-window-func-with-other-buffer-vertically)
 (global-set-key (kbd "C-x 3")  'split-window-func-with-other-buffer-horizontally)
-(evil-leader/set-key "4" 'toggle-split-window-horizontally-vertically)
+(evil-leader/set-key "4" 'toggle-split-window)
 (evil-leader/set-key "1" 'delete-other-windows) ;只保留当前窗口
 (evil-leader/set-key "0" 'delete-window)        ;删除当前窗口
 

@@ -23,7 +23,7 @@
 ;; Rearrange split windows
 ;;----------------------------------------------------------------------------
 ;;;###autoload
-(defun toggle-split-window-horizontally-vertically()
+(defun toggle-split-window()
   (interactive)
   (save-excursion
     (delete-other-windows)
