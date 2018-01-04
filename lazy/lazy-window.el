@@ -47,9 +47,20 @@
   (cond
    (  (equal 1 (count-windows))
       (split-window-func-with-other-buffer-horizontally)
-      (call-interactively 'other-window))
+      (other-window 1))
    (t
-    (call-interactively 'other-window))))
+    (other-window 1)))
+  )
+;;;###autoload
+(defun vmacs-split-window-or-prev-window()
+  (interactive)
+  (cond
+   (  (equal 1 (count-windows))
+      (split-window-func-with-other-buffer-horizontally)
+      (other-window -1))
+   (t
+    (other-window -1)))
+  )
 
 (provide 'lazy-window)
 

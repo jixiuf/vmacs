@@ -19,6 +19,16 @@
 (setq golden-ratio-extra-commands
       (append golden-ratio-extra-commands
               '(
+                evil-window-left
+                evil-window-right
+                evil-window-next
+                evil-window-prev
+                evil-window-new
+                evil-window-top-left
+                avy-goto-char-timer
+                avy-goto-word-1
+                evil-window-up
+                evil-window-down
                 avy-goto-char-timer
                 vmacs-split-window-or-other-window
                 avy-goto-word-1
