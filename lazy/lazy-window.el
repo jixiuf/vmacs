@@ -4,14 +4,14 @@
 ;;----------------------------------------------------------------------------
 (defvar split-window-status nil)
 ;;;###autoload
-(defun split-window-func-with-other-buffer-horizontally()
+(defun vmacs-split-window-horizontally()
   (interactive)
   (split-window-horizontally)
   (setq split-window-status 'horizontally)
   (set-window-buffer (next-window) (other-buffer))
   )
 ;;;###autoload
-(defun split-window-func-with-other-buffer-vertically()
+(defun vmacs-split-window-vertically()
   (interactive)
   (split-window-vertically)
   (setq split-window-status 'vertically)
@@ -28,8 +28,8 @@
   (save-excursion
     (delete-other-windows)
     (if (equal split-window-status 'horizontally)
-        (split-window-func-with-other-buffer-vertically)
-      (split-window-func-with-other-buffer-horizontally)
+        (vmacs-split-window-vertically)
+      (vmacs-split-window-horizontally)
       )
     ))
 
@@ -46,7 +46,7 @@
   (interactive)
   (cond
    (  (equal 1 (count-windows))
-      (split-window-func-with-other-buffer-horizontally)
+      (vmacs-split-window-horizontally)
       (other-window 1))
    (t
     (other-window 1)))
@@ -56,16 +56,16 @@
   (interactive)
   (cond
    (  (equal 1 (count-windows))
-      (split-window-func-with-other-buffer-horizontally)
+      (vmacs-split-window-horizontally)
       (other-window -1))
    (t
     (other-window -1)))
   )
 
 ;;;###autoload
-(evil-define-command vmacs-evil-window-rotate-downwards()
+(defun vmacs-window-rotate()
   "Rotates the windows according to the currenty cyclic ordering."
-  :repeat nil
+  (interactive)
   (let* ((wlist (window-list))
          (cur-win (car wlist))
         (blist (mapcar #'(lambda (w) (window-buffer w))

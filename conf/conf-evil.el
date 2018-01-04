@@ -238,8 +238,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 ;; (define-key evil-window-map "1" 'delete-other-windows)
 ;; (define-key evil-window-map "0" 'delete-window)
-;; (define-key evil-window-map "2" 'split-window-func-with-other-buffer-vertically)
-;; (define-key evil-window-map "3" 'split-window-func-with-other-buffer-horizontally)
+;; (define-key evil-window-map "2" 'vmacs-split-window-vertically)
+;; (define-key evil-window-map "3" 'vmacs-split-window-horizontally)
 
 ;; (define-key evil-normal-state-map (kbd "f") 'ace-jump-mode)
 (define-key evil-normal-state-map (kbd "C-z") nil)

@@ -88,7 +88,7 @@
 (global-set-key  (kbd "s-C-M-S-p") 'vmacs-split-window-or-prev-window)
 
 (global-set-key  (kbd "s-t") 'toggle-split-window)
-(global-set-key [C-M-S-s-return] 'vmacs-evil-window-rotate-downwards)
+(global-set-key [C-M-S-s-return] 'vmacs-window-rotate)
 
 
 
@@ -102,10 +102,10 @@
 (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
 (global-set-key  (kbd "s-C-M-!") 'delete-other-windows) ;hyper-1
-(global-set-key  (kbd "s-C-M-@") 'split-window-func-with-other-buffer-vertically) ;hyper-2
-(global-set-key  (kbd "s-2") 'split-window-func-with-other-buffer-vertically)
-(global-set-key  (kbd "s-C-M-#") 'split-window-func-with-other-buffer-horizontally) ;hyper-2
-(global-set-key  (kbd "s-3") 'split-window-func-with-other-buffer-horizontally)
+(global-set-key  (kbd "s-C-M-@") 'vmacs-split-window-vertically) ;hyper-2
+(global-set-key  (kbd "s-2") 'vmacs-split-window-vertically)
+(global-set-key  (kbd "s-C-M-#") 'vmacs-split-window-horizontally) ;hyper-2
+(global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 
 
 
