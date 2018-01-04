@@ -46,8 +46,7 @@
   (interactive)
   (cond
    (  (equal 1 (count-windows))
-      (vmacs-split-window-horizontally)
-      (other-window 1))
+      (vmacs-split-window-horizontally))
    (t
     (other-window 1)))
   )
@@ -56,8 +55,7 @@
   (interactive)
   (cond
    (  (equal 1 (count-windows))
-      (vmacs-split-window-horizontally)
-      (other-window -1))
+      (vmacs-split-window-horizontally))
    (t
     (other-window -1)))
   )
