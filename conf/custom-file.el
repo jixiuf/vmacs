@@ -218,6 +218,8 @@
         (setq mode-name mode-str)))))
 
 (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+;; 然后将mode-line 的face header调成0.1，变成一条线
+;;(setq-default mode-line-format "")      ;clean mode line
 
 ;; (require 'vmacs-font)
 
@@ -339,10 +341,10 @@
  '(magit-log-date ((t (:foreground "cyan"))))
  '(magit-section-heading ((t (:background "gray29" :weight bold))))
  '(minibuffer-prompt ((t (:foreground "salmon1"))))
- '(mode-line ((t (:background "grey75" :foreground "black"))))
+ '(mode-line ((t (:background "grey75" :foreground "black" :height 0.1))))
  '(mode-line-buffer-id ((t (:background "dark olive green" :foreground "beige"))))
  '(mode-line-highlight ((((class color) (min-colors 88)) nil)))
- '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light))))
+ '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light :height 0.1))))
  '(org-agenda-date ((t (:inherit org-agenda-structure))))
  '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))))
  '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))))
@@ -396,7 +398,7 @@
  '(backup-directory-alist (quote ((".*" . "~/.emacs.d/cache/backup_files/"))))
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
- '(column-number-mode t)
+ '(column-number-mode nil)
  '(custom-group-tag-faces (quote (default)))
  '(electric-pair-mode t)
  '(global-auto-revert-mode t)
@@ -408,7 +410,7 @@
  '(magit-push-arguments (quote ("--force-with-lease")))
  '(magit-save-repository-buffers (quote dontask))
  '(menu-bar-mode nil)
- '(org-agenda-files nil)
+ '(org-agenda-files nil t)
  '(package-selected-packages
    (quote
     (ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
