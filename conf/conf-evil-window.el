@@ -16,6 +16,7 @@
 (add-to-list 'golden-ratio-exclude-modes "ediff-mode")
 ;; (add-to-list 'golden-ratio-exclude-modes "magit-mode")
 (add-to-list 'golden-ratio-exclude-modes "magit-key-mode")
+(setq golden-ratio-adjust-factor 0.92)
 (setq golden-ratio-extra-commands
       (append golden-ratio-extra-commands
               '(
@@ -26,6 +27,7 @@
                 avy-goto-char-timer
                 avy-goto-word-1
                 avy-goto-char-timer
+                evil-window-rotate-downwards
                 vmacs-split-window-or-other-window
                 vmacs-split-window-or-prev-window
                 avy-goto-word-1

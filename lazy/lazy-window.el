@@ -62,6 +62,21 @@
     (other-window -1)))
   )
 
+;;;###autoload
+(evil-define-command vmacs-evil-window-rotate-downwards()
+  "Rotates the windows according to the currenty cyclic ordering."
+  :repeat nil
+  (let* ((wlist (window-list))
+         (cur-win (car wlist))
+        (blist (mapcar #'(lambda (w) (window-buffer w))
+                       (window-list))))
+    (setq blist (append (last blist) blist))
+    (while (and wlist blist)
+      (set-window-buffer (car wlist) (car blist))
+      (setq wlist (cdr wlist)
+            blist (cdr blist)))
+    (select-window cur-win)))
+
 (provide 'lazy-window)
 
 ;; Local Variables:

@@ -88,8 +88,9 @@
 (global-set-key  (kbd "s-C-M-S-p") 'vmacs-split-window-or-prev-window)
 
 (global-set-key  (kbd "s-t") 'toggle-split-window-horizontally-vertically)
-(global-set-key  (kbd "s-C-M-|") 'evil-window-rotate-downwards)
-(global-set-key [C-M-S-s-return] 'evil-window-rotate-downwards)
+(global-set-key [C-M-S-s-return] 'vmacs-evil-window-rotate-downwards)
+
+
 
 
 (global-set-key  (kbd "C-,") 'scroll-other-window)
