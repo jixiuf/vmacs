@@ -67,7 +67,7 @@
 
  savehist-additional-variables '(ivy-dired-history-variable helm-dired-history-variable magit-repository-directories mew-passwd-alist kill-ring sqlserver-connection-info mysql-connection-4-complete sql-server sql-database sql-user)
  ;;when meet long line ,whether to wrap it
- ;; truncate-lines t ;一行过长时 是否wrap显示
+ truncate-lines t ;一行过长时 是否wrap显示
  save-place t                           ;记录上次打开文件的光标位置
  display-line-numbers 'absolute
  )
