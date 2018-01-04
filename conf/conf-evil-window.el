@@ -16,7 +16,7 @@
 (add-to-list 'golden-ratio-exclude-modes "ediff-mode")
 ;; (add-to-list 'golden-ratio-exclude-modes "magit-mode")
 (add-to-list 'golden-ratio-exclude-modes "magit-key-mode")
-(setq golden-ratio-adjust-factor 0.92)
+(setq golden-ratio-adjust-factor 0.91)
 (setq golden-ratio-extra-commands
       (append golden-ratio-extra-commands
               '(
