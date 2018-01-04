@@ -82,7 +82,10 @@
 (global-set-key  (kbd "s-o") 'other-window)
 (global-set-key  (kbd "s-C-M-S-o") 'other-window)
 (global-set-key  (kbd "s-n") 'vmacs-split-window-or-other-window)
+(global-set-key  (kbd "s-C-M-S-n") 'vmacs-split-window-or-other-window)
 (global-set-key  (kbd "s-p") 'evil-window-prev)
+(global-set-key  (kbd "s-C-M-S-p") 'evil-window-prev)
+(global-set-key  (kbd "s-t") 'toggle-split-window-horizontally-vertically)
 
 (global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key  (kbd "s-C-S-M-q") 'save-buffers-kill-emacs)
