@@ -68,7 +68,7 @@
          (cur-win (car wlist))
         (blist (mapcar #'(lambda (w) (window-buffer w))
                        (window-list))))
-    (setq blist (append (last blist) blist))
+    (setq blist (append (cdr blist) (list (car blist))))
     (while (and wlist blist)
       (set-window-buffer (car wlist) (car blist))
       (setq wlist (cdr wlist)
