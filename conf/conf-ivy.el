@@ -156,7 +156,8 @@
 (defadvice ivy--virtual-buffers (around counsel-git activate)
   "Append git files as virtual buffer"
   (let ((recentf-list recentf-list )list
-        (default-directory default-directory))
+        (default-directory default-directory)
+        counsel--git-dir)
     (setq counsel--git-dir (locate-dominating-file default-directory ".git"))
     (when counsel--git-dir
       (setq counsel--git-dir (expand-file-name counsel--git-dir))
