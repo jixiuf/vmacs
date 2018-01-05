@@ -162,7 +162,7 @@
     (when counsel--git-dir
       (setq counsel--git-dir (expand-file-name counsel--git-dir))
       (setq default-directory counsel--git-dir)
-      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"|head -n 1500" default-directory)) "\n" t))
+      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"|head -n 3000" default-directory)) "\n" t))
       (setq recentf-list (append recentf-list list))
       ;; (when (< (length list) 5000)
       ;; (dolist (c list)
