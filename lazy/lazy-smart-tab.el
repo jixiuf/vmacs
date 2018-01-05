@@ -20,6 +20,7 @@
   '(
     (emacs-lisp-mode company-complete)
     (python-mode jedi:complete)
+    (Custom-mode  widget-forward)
     (magit-status-mode magit-section-toggle)
     (magit-mode magit-section-toggle)
     (magit-process-mode magit-section-toggle)

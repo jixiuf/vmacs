@@ -189,37 +189,37 @@
 (setq-default undo-tree-mode-lighter " Ü") ;undo
 (setq-default helm-completion-mode-string " H")
 
-(setq-default mode-line-cleaner-alist
-              `((auto-complete-mode . " á")
-                (company-mode . "")
-                (yas-minor-mode . "")
-                (undo-tree-mode . "")
-                (golden-ratio-mode . "")
-                (flymake-mode . " Fly")
-                (ivy-mode . "")
-                ;; major mode
-                (dired-mode . " Dired")
-                (fundamental-mode . "Fd")
-                (ibuffer-mode . "iBuf")
-                (python-mode . "Py")
-                (lisp-interaction-mode . "iEL")
-                (emacs-lisp-mode . "EL")))
+;; (setq-default mode-line-cleaner-alist
+;;               `((auto-complete-mode . " á")
+;;                 (company-mode . "")
+;;                 (yas-minor-mode . "")
+;;                 (undo-tree-mode . "")
+;;                 (golden-ratio-mode . "")
+;;                 (flymake-mode . " Fly")
+;;                 (ivy-mode . "")
+;;                 ;; major mode
+;;                 (dired-mode . " Dired")
+;;                 (fundamental-mode . "Fd")
+;;                 (ibuffer-mode . "iBuf")
+;;                 (python-mode . "Py")
+;;                 (lisp-interaction-mode . "iEL")
+;;                 (emacs-lisp-mode . "EL")))
 
-(defun clean-mode-line ()
-  (interactive)
-  (dolist (cleaner mode-line-cleaner-alist)
-    (let* ((mode (car cleaner))
-           (mode-str (cdr cleaner))
-           (old-mode-str (cdr (assq mode minor-mode-alist))))
-      (when old-mode-str
-        (setcar old-mode-str mode-str))
-      ;; major mode
-      (when (eq mode major-mode)
-        (setq mode-name mode-str)))))
+;; (defun clean-mode-line ()
+;;   (interactive)
+;;   (dolist (cleaner mode-line-cleaner-alist)
+;;     (let* ((mode (car cleaner))
+;;            (mode-str (cdr cleaner))
+;;            (old-mode-str (cdr (assq mode minor-mode-alist))))
+;;       (when old-mode-str
+;;         (setcar old-mode-str mode-str))
+;;       ;; major mode
+;;       (when (eq mode major-mode)
+;;         (setq mode-name mode-str)))))
 
-(add-hook 'after-change-major-mode-hook 'clean-mode-line)
-;; 然后将mode-line 的face header调成0.1，变成一条线
-;;(setq-default mode-line-format "")      ;clean mode line
+;; (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+;; ;; 然后将mode-line 的face header调成0.1，变成一条线
+(setq-default mode-line-format nil)
 
 ;; (require 'vmacs-font)
 
@@ -341,10 +341,10 @@
  '(magit-log-date ((t (:foreground "cyan"))))
  '(magit-section-heading ((t (:background "gray29" :weight bold))))
  '(minibuffer-prompt ((t (:foreground "salmon1"))))
- '(mode-line ((t (:background "grey75" :foreground "black" :height 0.1))))
+ '(mode-line ((t (:background "grey75" :foreground "black"))))
  '(mode-line-buffer-id ((t (:background "dark olive green" :foreground "beige"))))
  '(mode-line-highlight ((((class color) (min-colors 88)) nil)))
- '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light :height 0.1))))
+ '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light))))
  '(org-agenda-date ((t (:inherit org-agenda-structure))))
  '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))))
  '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))))
@@ -384,6 +384,9 @@
  '(vmacs-scroll-highlight-line-face ((t (:background "cadetblue4" :foreground "white" :weight bold))))
  '(warning ((t (:foreground "Salmon" :weight bold))))
  '(web-mode-html-tag-bracket-face ((t (:inherit web-mode-html-tag-face))))
+ '(window-divider ((t (:foreground "gray"))))
+ '(window-divider-first-pixel ((t (:foreground "yellow"))))
+ '(window-divider-last-pixel ((t (:foreground "yellow"))))
  '(woman-addition ((t (:inherit font-lock-builtin-face :foreground "Tan2"))))
  '(woman-bold ((t (:inherit bold :foreground "yellow2"))))
  '(woman-italic ((t (:inherit italic :foreground "green"))))
@@ -410,7 +413,7 @@
  '(magit-push-arguments (quote ("--force-with-lease")))
  '(magit-save-repository-buffers (quote dontask))
  '(menu-bar-mode nil)
- '(org-agenda-files nil t)
+ '(org-agenda-files nil)
  '(package-selected-packages
    (quote
     (ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
@@ -494,4 +497,8 @@
  '(tramp-persistency-file-name "~/.emacs.d/cache/tramp")
  '(tramp-syntax (quote default) nil (tramp))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(warning-suppress-types (quote ((yasnippet backquote-change)))))
+ '(warning-suppress-types (quote ((yasnippet backquote-change))))
+ '(window-divider-default-bottom-width 1)
+ '(window-divider-default-places (quote bottom-only))
+ '(window-divider-default-right-width 1)
+ '(window-divider-mode t))
