@@ -24,7 +24,10 @@
 ;;;###autoload
 (defun vmacs-update-repo-revision()
   (when  (or (string-prefix-p "magit-commit" (symbol-name last-command))
-             (string-prefix-p "with-editor-finish" (symbol-name this-command)))
+              (string-prefix-p "magit-commit" (symbol-name this-command))
+              (string-prefix-p "with-editor-finish" (symbol-name this-command))
+              (string-prefix-p "with-editor-finish" (symbol-name last-command))
+              )
     (let* (( repos (magit-toplevel))
            (config-file (expand-file-name "config.online.toml" repos)))
       (when (and repos (file-exists-p config-file))
