@@ -23,7 +23,7 @@
                            font-lock-keyword-face)))
 ;; recognize some things as functions
 (font-lock-add-keywords 'emacs-lisp-mode
-                        '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\|define-key-lazy\\|define-key\\|global-set-key\\)\\>" .
+                        '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\||define-key\\|global-set-key\\)\\>" .
                            font-lock-function-name-face)))
 ;; recognize some things as constants
 (font-lock-add-keywords 'emacs-lisp-mode
@@ -75,36 +75,8 @@
 (when (and (equal system-type 'darwin) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-middle-mac))
 
-(defun create-frame-font-w32()          ;emacs 若直接启动 启动时调用此函数似乎无效
-  (set-face-attribute
-   'default nil :font "Courier New 10")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "新宋体" :size 16)))
-
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "MS Mincho" :size 16))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "GulimChe" :size 16)))
-
 (when (and (equal system-type 'windows-nt) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-w32))
-
-;; (create-frame-font-middle-mac)
-;; (create-fontset-from-fontset-spec
-;;    "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-fontset-mymac,
-;;  ascii:-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1,
-;; han:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
-;; cjk-misc:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
-;; Kana:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1")
-
-;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
-;; (set-frame-font "fontset-mymac" )
-
 
 ;; 禁用工具栏，滚运条 菜单栏
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -167,8 +139,8 @@
                   )))
 
 ;;
-(setq-default undo-tree-mode-lighter " Ü") ;undo
-(setq-default helm-completion-mode-string " H")
+;; (setq-default undo-tree-mode-lighter " Ü") ;undo
+;; (setq-default helm-completion-mode-string " H")
 
 ;; (setq-default mode-line-cleaner-alist
 ;;               `((auto-complete-mode . " á")
@@ -202,7 +174,6 @@
 ;; ;; 然后将mode-line 的face header调成0.1，变成一条线
 (setq-default mode-line-format nil)
 
-;; (require 'vmacs-font)
 
 ;;下面的值是通过Emacs的custom 系统关于外观的设置,如无必要不要手动修改
 
