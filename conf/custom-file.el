@@ -54,26 +54,8 @@
 ;; ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
 ;; 까까까까까까까까까까까까까까까까까까까까|
 
-(defun create-frame-font-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
-  (interactive)
-  (set-face-attribute
-   'default nil :font "Menlo 12")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 14)))
 
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 14))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 16))
-
-  )
-
-(defun create-frame-font-middle-mac()
+(defun create-frame-font-mac()
   (interactive)
   (set-face-attribute
    'default nil :font "Menlo 14")
@@ -88,9 +70,24 @@
                     (font-spec :family "Hiragino Sans" :size 16))
   (set-fontset-font (frame-parameter nil 'font)
                     'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 18))
+                    (font-spec :family "Apple SD Gothic Neo" :size 18)))
 
-  )
+(defun create-frame-font-middle-mac()
+  (interactive)
+  (set-face-attribute
+   'default nil :font "Menlo 15")
+  ;; Chinese Font
+  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset
+                      (font-spec :family "PingFang SC" :size 18)))
+
+  (set-fontset-font (frame-parameter nil 'font)
+                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
+                    (font-spec :family "Hiragino Sans" :size 18))
+  (set-fontset-font (frame-parameter nil 'font)
+                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
+                    (font-spec :family "Apple SD Gothic Neo" :size 21)))
 
 (defun create-frame-font-big-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
   (interactive)
