@@ -135,9 +135,12 @@
   (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
   (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
 
+(ivy-add-actions 'counsel-find-file '(( "" find-file-other-window "other window")))
+(ivy-add-actions 'ivy-switch-buffer '(( "" ivy--switch-buffer-other-window-action "other window")))
 (ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
 (ivy-add-actions 'counsel-git '(("d" vmacs-ivy-dired "dired")))
+(ivy-add-actions 'counsel-git '(("" find-file-other-window "other window")))
 
 ;; From browse-kill-ring.el
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
