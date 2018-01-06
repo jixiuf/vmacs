@@ -3,16 +3,16 @@
 ;; bury-boring-windows with `C-gC-g'
 
 (evil-leader/set-key "d" 'vmacs-prev-buffer)
-(evil-leader/set-key "k" 'vmacs-next-buffer) ;
+(evil-leader/set-key "k" 'kill-buffer-or-server-edit) ;
 (evil-leader/set-key "q" 'kill-other-buffers) ;
 
 (evil-leader/set-key "fr" 'vmacs-undo-kill-buffer)
 
-(global-set-key  (kbd "s-k") 'kill-buffer-or-server-edit) ; default on mac
-(global-set-key  (kbd "s-C-M-S-k") 'kill-buffer-or-server-edit) ; hyper-k default on mac
+(global-set-key  (kbd "s-k") 'vmacs-next-buffer) ; default on mac
+(global-set-key  (kbd "s-C-M-S-k") 'vmacs-next-buffer) ; hyper-k default on mac
 
-(define-key evil-normal-state-map "q" 'kill-buffer-or-server-edit)
-(with-eval-after-load 'dired (define-key dired-mode-map "q" 'kill-this-buffer))
+(define-key evil-normal-state-map "q" 'vmacs-prev-buffer)
+(with-eval-after-load 'dired (define-key dired-mode-map "q" 'vmacs-prev-buffer))
 (define-key evil-normal-state-map "Q" 'kill-buffer-and-window)
 
 
