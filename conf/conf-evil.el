@@ -130,10 +130,14 @@
 
 ;; (setq display-line-numbers-current-absolute t)
 (defun vmacs-change-line-number-abs()
-  (setq display-line-numbers 'absolute))
+  (if (member major-mode '(term-mode ansi-term-mode))
+      (setq display-line-numbers nil)
+    (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
-  (setq display-line-numbers 'visual))
+  (if (member major-mode '(term-mode ansi-term-mode))
+      (setq display-line-numbers nil)
+    (setq display-line-numbers 'visual)))
 
 
 (add-hook 'evil-insert-state-entry-hook 'vmacs-change-line-number-abs)
