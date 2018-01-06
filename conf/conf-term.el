@@ -30,8 +30,15 @@
 ;;  Use Emacs terminfo, not system terminfo, mac系统出现了4m
 ;; (setq system-uses-terminfo nil)
 
-(setq term-buffer-maximum-size 10000)
+(setq shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
+(require 'sane-term)
+(define-key term-mode-map (kbd "C-M-S-s-p") 'sane-term-prev)
+(define-key term-mode-map (kbd "C-M-S-s-n") 'sane-term-next)
+(define-key term-raw-map (kbd "C-M-S-s-n") 'sane-term-next)
+(define-key term-raw-map (kbd "C-M-S-s-p") 'sane-term-prev)
 
+(setq term-buffer-maximum-size 10000)
+;; sane-term-next
 
 (defun term-kill-auto-exit()
   (let ((p(get-buffer-process (current-buffer))))
