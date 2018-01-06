@@ -100,6 +100,7 @@
 (define-key ivy-minibuffer-map (kbd "C-c c") 'toggle-case-fold)
 (define-key ivy-minibuffer-map (kbd "C-t") 'toggle-case-fold)
 
+(define-key ivy-minibuffer-map (kbd "C-f") 'ivy-call)
 (define-key ivy-minibuffer-map (kbd "C-c C-c") 'ivy-occur)
 (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-dispatching-done)
 (define-key ivy-minibuffer-map (kbd "C-w") 'ivy-yank-word)
@@ -165,7 +166,7 @@
     (when counsel--git-dir
       (setq counsel--git-dir (expand-file-name counsel--git-dir))
       (setq default-directory counsel--git-dir)
-      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"|head -n 3000" default-directory)) "\n" t))
+      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"|head -n 3000" default-directory)) "\n" t))
       (setq recentf-list (append recentf-list list))
       ;; (when (< (length list) 5000)
       ;; (dolist (c list)
