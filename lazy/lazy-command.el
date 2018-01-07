@@ -70,8 +70,8 @@ open-line if point is at end of line , new-line-and-indent"
 Move point to beginning-of-line ,if point was already at that position,
   move point to first non-whitespace character. "
   (interactive)
-  (if (and (string= major-mode "term-mode") (equal (line-number-at-pos)  (count-lines (point-min) (point-max))))
-      (term-send-raw)
+  (if (derived-mode-p 'term-mode)
+      (term-bol nil)
     (let ((oldpos (point)))
       (beginning-of-line)
       (and (= oldpos (point))
