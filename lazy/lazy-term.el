@@ -2,15 +2,20 @@
 (require 'sane-term)
 
 ;;;###autoload
+(defun vmacs-shell-toggle(&optional create-new-term)
+  (interactive "p")
+  (if (> create-new-term 1) (vmacs-shell-toggle-new)
+    (shell-toggle nil)))
+
+;;;###autoload
 (defun vmacs-shell-toggle-cd(&optional create-new-term)
   (interactive "p")
-  (message "%d" create-new-term)
   (when (> create-new-term 1) (setq shell-toggle-shell-buffer nil))
   (call-interactively 'shell-toggle-cd))
 
 ;;;###autoload
-(defun vmacs-shell-toggle-new(&optional create-new-term)
-  (interactive "p")
+(defun vmacs-shell-toggle-new()
+  (interactive )
   (shell-toggle-ansi-term)
   (shell-toggle-this-is-the-shell-buffer))
 
