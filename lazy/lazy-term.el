@@ -1,10 +1,29 @@
+(require 'shell-toggle)
+(require 'sane-term)
+
 ;;;###autoload
 (defun vmacs-shell-toggle-cd(&optional create-new-term)
-  (interactive "P")
-  (when create-new-term (setq shell-toggle-shell-buffer nil))
+  (interactive "p")
+  (message "%d" create-new-term)
+  (when (> create-new-term 1) (setq shell-toggle-shell-buffer nil))
   (call-interactively 'shell-toggle-cd))
 
-(provide 'shell-toggle)
+;;;###autoload
+(defun vmacs-shell-toggle-new(&optional create-new-term)
+  (interactive "p")
+  (shell-toggle-ansi-term)
+  (shell-toggle-this-is-the-shell-buffer))
+
+
+;; sane-term.el 中当term exit 时会自动切到另一个term中，如果有的话
+;; 而此defadvice 则将当前term 设置为shell-toggle的对象
+;; 需要把此defadvice放在sane-term的 defadvice之后，所以使用last 关键字
+(defadvice term-handle-exit(after shell-toggle-set-buffer last activate)
+  (when (derived-mode-p 'term-mode)
+    (shell-toggle-this-is-the-shell-buffer)))
+
+
+(provide 'lazy-term)
 
 
 

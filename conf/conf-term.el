@@ -37,8 +37,11 @@
 (define-key term-raw-map (kbd "C-M-S-s-n") 'sane-term-next)
 (define-key term-raw-map (kbd "C-M-S-s-p") 'sane-term-prev)
 
+(define-key term-raw-map (kbd "C-t") 'vmacs-shell-toggle-new)
+(define-key term-mode-map (kbd "C-t") 'vmacs-shell-toggle-new)
+
+
 (setq term-buffer-maximum-size 10000)
-;; sane-term-next
 
 (defun term-kill-auto-exit()
   (let ((p(get-buffer-process (current-buffer))))
