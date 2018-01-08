@@ -33,6 +33,9 @@
 (setq-default shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
 (setq-default shell-toggle-goto-eob nil)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
+(setq-default term-buffer-maximum-size 10000)
+(setq-default term-scroll-show-maximum-output t)
+(setq-default term-suppress-hard-newline t)
 
 (require 'sane-term)
 
@@ -48,7 +51,10 @@
 (define-key term-mode-map (kbd "C-t") 'vmacs-shell-toggle-new)
 
 
-(setq term-buffer-maximum-size 10000)
+
+(defun vmacs-term-hook() (setq truncate-lines nil))
+
+(add-hook 'term-mode-hook 'vmacs-term-hook)
 
 (defun term-kill-auto-exit()
   (let ((p(get-buffer-process (current-buffer))))
