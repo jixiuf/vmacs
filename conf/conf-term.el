@@ -34,14 +34,14 @@
 (setq-default shell-toggle-goto-eob nil)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
 (setq-default term-buffer-maximum-size 10000)
-(setq-default term-scroll-show-maximum-output t)
-(setq-default term-suppress-hard-newline t)
+;; (setq-default term-scroll-show-maximum-output t) 不要设置为t, 否则clear Ctrl-l 无效
+(setq-default term-suppress-hard-newline t) ;不设置的话，有时长的输出无法展示全
 
-(require 'sane-term)
+;; (require 'sane-term)
 
 (define-key term-mode-map (kbd "C-M-S-s-p") 'sane-term-prev)
 (define-key term-mode-map (kbd "C-M-S-s-n") 'sane-term-next)
-;; (define-key term-mode-map (kbd "C-a") 'vmacs-term-bol)
+(define-key term-mode-map (kbd "C-a") 'vmacs-term-bol)
 (define-key term-raw-map (kbd "C-M-S-s-n") 'sane-term-next)
 (define-key term-raw-map (kbd "C-M-S-s-p") 'sane-term-prev)
 (define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
@@ -52,7 +52,11 @@
 
 
 
-(defun vmacs-term-hook() (setq truncate-lines nil))
+(defun vmacs-term-hook()
+  (setq truncate-lines nil)
+  ;; (auto-fill-mode -1)
+  (setq indicate-empty-lines nil)
+  )
 
 (add-hook 'term-mode-hook 'vmacs-term-hook)
 
@@ -98,10 +102,11 @@
 (defun term-ctrl-g ()
   "term ctrl-g"
   (interactive)
-  (if (equal last-command 'term-ctrl-g)
-      (progn (evil-normal-state)
-             (when (term-in-char-mode) (term-line-mode)))
-    (term-send-raw)))
+  (unless (equal last-command 'term-ctrl-g)
+    (term-send-raw)
+    (sit-for 0.1))
+  (evil-normal-state)
+  (when (term-in-char-mode) (term-line-mode)))
 
 
 ;; (term-send-raw-string "\^g") ;; send ctrl-g
@@ -117,6 +122,14 @@
   (interactive "P")
   (vmacs-kill-region-or-line arg)
   (term-send-raw-string "\^K"))
+
+(defun vmacs-term-bol()
+  (interactive)
+  (if (equal last-command 'vmacs-term-bol)
+      (progn
+        (term-bol nil)
+        (setq this-command 'term-bol))
+    (term-bol t)))
 
 (provide 'conf-term)
 
