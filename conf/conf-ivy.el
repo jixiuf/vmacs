@@ -100,6 +100,7 @@
 (define-key ivy-minibuffer-map (kbd "C-c c") 'toggle-case-fold)
 (define-key ivy-minibuffer-map (kbd "C-t") 'toggle-case-fold)
 
+(define-key ivy-minibuffer-map (kbd "C-f") 'ivy-call)
 (define-key ivy-minibuffer-map (kbd "C-c C-c") 'ivy-occur)
 (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-dispatching-done)
 (define-key ivy-minibuffer-map (kbd "C-w") 'ivy-yank-word)
@@ -135,9 +136,12 @@
   (define-key counsel-find-file-map (kbd "<return>") 'ivy-alt-done)
   (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
 
+(ivy-add-actions 'counsel-find-file `(( ,(kbd "C-o") find-file-other-window "other window")))
+(ivy-add-actions 'ivy-switch-buffer `(( ,(kbd "C-o") ivy--switch-buffer-other-window-action "other window")))
 (ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
 (ivy-add-actions 'counsel-git '(("d" vmacs-ivy-dired "dired")))
+(ivy-add-actions 'counsel-git `((,(kbd "C-o") find-file-other-window "other window")))
 
 ;; From browse-kill-ring.el
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
@@ -156,12 +160,13 @@
 (defadvice ivy--virtual-buffers (around counsel-git activate)
   "Append git files as virtual buffer"
   (let ((recentf-list recentf-list )list
-        (default-directory default-directory))
+        (default-directory default-directory)
+        counsel--git-dir)
     (setq counsel--git-dir (locate-dominating-file default-directory ".git"))
     (when counsel--git-dir
       (setq counsel--git-dir (expand-file-name counsel--git-dir))
       (setq default-directory counsel--git-dir)
-      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"|head -n 1500" default-directory)) "\n" t))
+      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"|head -n 3000" default-directory)) "\n" t))
       (setq recentf-list (append recentf-list list))
       ;; (when (< (length list) 5000)
       ;; (dolist (c list)

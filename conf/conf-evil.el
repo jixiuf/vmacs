@@ -104,6 +104,8 @@
 (add-to-list 'evil-overriding-maps '(minibuffer-local-isearch-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-ns-map . nil))
 (add-to-list 'evil-overriding-maps '(epa-key-list-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(term-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(term-raw-map . nil))
 
 
 
@@ -130,10 +132,14 @@
 
 ;; (setq display-line-numbers-current-absolute t)
 (defun vmacs-change-line-number-abs()
-  (setq display-line-numbers 'absolute))
+  (if (member major-mode '(term-mode ansi-term-mode))
+      (setq display-line-numbers nil)
+    (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
-  (setq display-line-numbers 'visual))
+  (if (member major-mode '(term-mode ansi-term-mode))
+      (setq display-line-numbers nil)
+    (setq display-line-numbers 'visual)))
 
 
 (add-hook 'evil-insert-state-entry-hook 'vmacs-change-line-number-abs)

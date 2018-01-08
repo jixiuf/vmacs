@@ -30,8 +30,25 @@
 ;;  Use Emacs terminfo, not system terminfo, mac系统出现了4m
 ;; (setq system-uses-terminfo nil)
 
-(setq term-buffer-maximum-size 10000)
+(setq-default shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
+(setq-default shell-toggle-goto-eob nil)
+(setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
 
+(require 'sane-term)
+
+(define-key term-mode-map (kbd "C-M-S-s-p") 'sane-term-prev)
+(define-key term-mode-map (kbd "C-M-S-s-n") 'sane-term-next)
+;; (define-key term-mode-map (kbd "C-a") 'vmacs-term-bol)
+(define-key term-raw-map (kbd "C-M-S-s-n") 'sane-term-next)
+(define-key term-raw-map (kbd "C-M-S-s-p") 'sane-term-prev)
+(define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
+(define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
+
+(define-key term-raw-map (kbd "C-t") 'vmacs-shell-toggle-new)
+(define-key term-mode-map (kbd "C-t") 'vmacs-shell-toggle-new)
+
+
+(setq term-buffer-maximum-size 10000)
 
 (defun term-kill-auto-exit()
   (let ((p(get-buffer-process (current-buffer))))
@@ -40,53 +57,60 @@
 
 (add-hook 'term-exec-hook 'term-kill-auto-exit)
 
+;; (defadvice evil-normal-state (after term-send-raw first activate)
+;;   "send C-g "
+;;   (when  (derived-mode-p 'term-mode)
+;;       (call-interactively 'term-send-raw)
+;;       ))
 
 ;; "进入term 输入命令模式"
 (defun evil-insert-state-term-char-mode ()
-  (when (and (or (string= major-mode 'term-mode)
-                 (string= major-mode "term-mode"))
-             (get-buffer-process (current-buffer)))
+  (when (and  (derived-mode-p 'term-mode)
+              (get-buffer-process (current-buffer)))
     (when (term-in-line-mode) (term-char-mode))))
 (add-hook 'evil-insert-state-entry-hook 'evil-insert-state-term-char-mode)
 
-;; 进入方便编辑buffer的模式
-(defun evil-normal-state-term-char-mode ()
-  (when  (and (or (string= major-mode 'term-mode)
-                  (string= major-mode "term-mode"))
-              (get-buffer-process (current-buffer)))
-    (when (term-in-char-mode)
-      (term-line-mode))))
-(add-hook 'evil-normal-state-entry-hook 'evil-normal-state-term-char-mode)
-
 (defadvice evil-paste-after (around paste-to-term activate)
-  ad-do-it
-  (when (or (string= major-mode 'term-mode)
-            (string= major-mode "term-mode"))
-    (term-send-raw-string (evil-get-register ?\" t)))) ; evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
+  (if (derived-mode-p 'term-mode)
+      (term-send-raw-string (evil-get-register ?\" t))
+      ad-do-it
+    )) ; evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
 
 (defadvice evil-paste-before (around paste-to-term activate)
-  ad-do-it
-  (when (or (string= major-mode 'term-mode)
-            (string= major-mode "term-mode"))
-    (term-send-raw-string (evil-get-register ?\" t)))) ;evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
+  (if (derived-mode-p 'term-mode)
+      (term-send-raw-string (evil-get-register ?\" t))
+    ad-do-it
+    )) ;evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
 
 
 (defadvice yank (around paste-to-term activate)
-  ad-do-it
-  (when (or (string= major-mode 'term-mode)
-            (string= major-mode "term-mode"))
-    (term-send-raw-string (evil-get-register ?\" t)))) ;evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
+  (if (derived-mode-p 'term-mode)
+      (term-send-raw-string (evil-get-register ?\" t))
+    ad-do-it
+    )) ;evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
+
+(defun term-ctrl-g ()
+  "term ctrl-g"
+  (interactive)
+  (if (equal last-command 'term-ctrl-g)
+      (progn (evil-normal-state)
+             (when (term-in-char-mode) (term-line-mode)))
+    (term-send-raw)))
+
+
+;; (term-send-raw-string "\^g") ;; send ctrl-g
+;; (term-send-raw-string (string ?\e)) ; send esc
+
 
 ;; (define-key term-raw-map (kbd "C-y") nil)
 
-;; (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
-;; (defun term-ctrl-k(&optional arg)
-;;   "this function is a wrapper of (kill-line).
-;;    When called interactively with no active region, this function
-;;   will call (kill-line) ,else kill the region."
-;;   (interactive "P")
-;;   (vmacs-kill-region-or-line arg)
-;;   (term-send-raw-string "\^K"))
+(defun term-ctrl-k(&optional arg)
+  "this function is a wrapper of (kill-line).
+   When called interactively with no active region, this function
+  will call (kill-line) ,else kill the region."
+  (interactive "P")
+  (vmacs-kill-region-or-line arg)
+  (term-send-raw-string "\^K"))
 
 (provide 'conf-term)
 

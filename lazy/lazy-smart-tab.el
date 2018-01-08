@@ -20,6 +20,7 @@
   '(
     (emacs-lisp-mode company-complete)
     (python-mode jedi:complete)
+    (Custom-mode  widget-forward)
     (magit-status-mode magit-section-toggle)
     (magit-mode magit-section-toggle)
     (magit-process-mode magit-section-toggle)
@@ -57,7 +58,7 @@
    ;; (looking-at "\\_>") at end of symbol
    ;; (looking-at "\\>") at end of word
    ((and (not buffer-read-only)
-         (not (member major-mode '(term-mode org-mode novel-mode text-mode)))
+         (not (member major-mode '(term-mode org-mode novel-mode Custom-mode text-mode)))
          (or (looking-back "^[ \t]*" (point-at-bol))        ;at bol 在行首 不适合补全
              (looking-back (string-trim (concat comment-start ".*")) (point-at-bol)) ;前面是注释 不适合补全
              (and (looking-at "[ \t]*$")        ;at eol

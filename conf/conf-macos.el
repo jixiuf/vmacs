@@ -3,6 +3,7 @@
 
 (global-set-key (kbd "s-=") 'create-frame-font-big-mac)
 (global-set-key (kbd "s--") 'create-frame-font-mac)
+(global-set-key (kbd "s-0") 'create-frame-font-middle-mac)
 
 ;; ;; pip install jieba
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)

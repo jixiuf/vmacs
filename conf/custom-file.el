@@ -23,7 +23,7 @@
                            font-lock-keyword-face)))
 ;; recognize some things as functions
 (font-lock-add-keywords 'emacs-lisp-mode
-                        '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\|define-key-lazy\\|define-key\\|global-set-key\\)\\>" .
+                        '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\||define-key\\|global-set-key\\)\\>" .
                            font-lock-function-name-face)))
 ;; recognize some things as constants
 (font-lock-add-keywords 'emacs-lisp-mode
@@ -54,76 +54,29 @@
 ;; ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
 ;; 까까까까까까까까까까까까까까까까까까까까|
 
-(defun create-frame-font-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
+(defun create-frame-font-middle-mac()
   (interactive)
   (set-face-attribute
-   'default nil :font "Menlo 12")
+   'default nil :font "Menlo 15")
   ;; Chinese Font
   (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
     (set-fontset-font (frame-parameter nil 'font)
                       charset
-                      (font-spec :family "PingFang SC" :size 14)))
+                      (font-spec :family "PingFang SC" :size 18)))
 
   (set-fontset-font (frame-parameter nil 'font)
                     'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 14))
+                    (font-spec :family "Hiragino Sans" :size 18))
   (set-fontset-font (frame-parameter nil 'font)
                     'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 16))
+                    (font-spec :family "Apple SD Gothic Neo" :size 21)))
 
-  )
-
-
-(defun create-frame-font-big-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
-  (interactive)
-  (set-face-attribute
-   'default nil :font "Menlo 16")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 20)))
-
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 20))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 23)))
 
 (when (and (equal system-type 'darwin) (window-system))
-  (add-hook 'after-init-hook 'create-frame-font-big-mac))
-
-(defun create-frame-font-w32()          ;emacs 若直接启动 启动时调用此函数似乎无效
-  (set-face-attribute
-   'default nil :font "Courier New 10")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "新宋体" :size 16)))
-
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "MS Mincho" :size 16))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "GulimChe" :size 16)))
+  (add-hook 'after-init-hook 'create-frame-font-middle-mac))
 
 (when (and (equal system-type 'windows-nt) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-w32))
-
-;; (create-frame-font-big-mac)
-;; (create-fontset-from-fontset-spec
-;;    "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-fontset-mymac,
-;;  ascii:-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1,
-;; han:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
-;; cjk-misc:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
-;; Kana:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1")
-
-;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
-;; (set-frame-font "fontset-mymac" )
-
 
 ;; 禁用工具栏，滚运条 菜单栏
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -136,8 +89,9 @@
   (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     (when (window-system)
-      (when (equal system-type 'darwin) (create-frame-font-big-mac))
+      (when (equal system-type 'darwin) (create-frame-font-middle-mac))
       (when (equal system-type 'windows-nt) (create-frame-font-w32))
+      (window-divider-mode t)
       (set-frame-position f 40 50)
       (set-frame-size f 138 50)
       (set-frame-parameter f 'alpha 85)
@@ -186,42 +140,41 @@
                   )))
 
 ;;
-(setq-default undo-tree-mode-lighter " Ü") ;undo
-(setq-default helm-completion-mode-string " H")
+;; (setq-default undo-tree-mode-lighter " Ü") ;undo
+;; (setq-default helm-completion-mode-string " H")
 
-(setq-default mode-line-cleaner-alist
-              `((auto-complete-mode . " á")
-                (company-mode . "")
-                (yas-minor-mode . "")
-                (undo-tree-mode . "")
-                (golden-ratio-mode . "")
-                (flymake-mode . " Fly")
-                (ivy-mode . "")
-                ;; major mode
-                (dired-mode . " Dired")
-                (fundamental-mode . "Fd")
-                (ibuffer-mode . "iBuf")
-                (python-mode . "Py")
-                (lisp-interaction-mode . "iEL")
-                (emacs-lisp-mode . "EL")))
+;; (setq-default mode-line-cleaner-alist
+;;               `((auto-complete-mode . " á")
+;;                 (company-mode . "")
+;;                 (yas-minor-mode . "")
+;;                 (undo-tree-mode . "")
+;;                 (golden-ratio-mode . "")
+;;                 (flymake-mode . " Fly")
+;;                 (ivy-mode . "")
+;;                 ;; major mode
+;;                 (dired-mode . " Dired")
+;;                 (fundamental-mode . "Fd")
+;;                 (ibuffer-mode . "iBuf")
+;;                 (python-mode . "Py")
+;;                 (lisp-interaction-mode . "iEL")
+;;                 (emacs-lisp-mode . "EL")))
 
-(defun clean-mode-line ()
-  (interactive)
-  (dolist (cleaner mode-line-cleaner-alist)
-    (let* ((mode (car cleaner))
-           (mode-str (cdr cleaner))
-           (old-mode-str (cdr (assq mode minor-mode-alist))))
-      (when old-mode-str
-        (setcar old-mode-str mode-str))
-      ;; major mode
-      (when (eq mode major-mode)
-        (setq mode-name mode-str)))))
+;; (defun clean-mode-line ()
+;;   (interactive)
+;;   (dolist (cleaner mode-line-cleaner-alist)
+;;     (let* ((mode (car cleaner))
+;;            (mode-str (cdr cleaner))
+;;            (old-mode-str (cdr (assq mode minor-mode-alist))))
+;;       (when old-mode-str
+;;         (setcar old-mode-str mode-str))
+;;       ;; major mode
+;;       (when (eq mode major-mode)
+;;         (setq mode-name mode-str)))))
 
-(add-hook 'after-change-major-mode-hook 'clean-mode-line)
-;; 然后将mode-line 的face header调成0.1，变成一条线
-;;(setq-default mode-line-format "")      ;clean mode line
+;; (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+;; ;; 然后将mode-line 的face header调成0.1，变成一条线
+(setq-default mode-line-format nil)
 
-;; (require 'vmacs-font)
 
 ;;下面的值是通过Emacs的custom 系统关于外观的设置,如无必要不要手动修改
 
@@ -313,7 +266,7 @@
  '(highline-face ((t (:background "SeaGreen"))))
  '(hl-paren-face ((t (:overline t :underline t :weight extra-bold))) t)
  '(isearch ((t (:background "seashell4" :foreground "green1"))))
- '(ivy-current-match ((t (:background "chartreuse4"))))
+ '(ivy-current-match ((t (:background "dark green"))))
  '(ivy-minibuffer-match-face-1 ((t (:inherit comment))))
  '(ivy-minibuffer-match-face-2 ((t (:foreground "green" :weight bold))))
  '(ivy-minibuffer-match-face-3 ((t (:foreground "green" :weight bold))))
@@ -341,10 +294,10 @@
  '(magit-log-date ((t (:foreground "cyan"))))
  '(magit-section-heading ((t (:background "gray29" :weight bold))))
  '(minibuffer-prompt ((t (:foreground "salmon1"))))
- '(mode-line ((t (:background "grey75" :foreground "black" :height 0.1))))
+ '(mode-line ((t (:background "grey75" :foreground "black"))))
  '(mode-line-buffer-id ((t (:background "dark olive green" :foreground "beige"))))
  '(mode-line-highlight ((((class color) (min-colors 88)) nil)))
- '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light :height 0.1))))
+ '(mode-line-inactive ((t (:background "dark olive green" :foreground "dark khaki" :weight light))))
  '(org-agenda-date ((t (:inherit org-agenda-structure))))
  '(org-agenda-date-today ((t (:inherit org-agenda-date :underline t))))
  '(org-agenda-date-weekend ((t (:inherit org-agenda-date :foreground "green"))))
@@ -384,6 +337,9 @@
  '(vmacs-scroll-highlight-line-face ((t (:background "cadetblue4" :foreground "white" :weight bold))))
  '(warning ((t (:foreground "Salmon" :weight bold))))
  '(web-mode-html-tag-bracket-face ((t (:inherit web-mode-html-tag-face))))
+ '(window-divider ((t (:foreground "gray"))))
+ '(window-divider-first-pixel ((t (:foreground "yellow"))))
+ '(window-divider-last-pixel ((t (:foreground "yellow"))))
  '(woman-addition ((t (:inherit font-lock-builtin-face :foreground "Tan2"))))
  '(woman-bold ((t (:inherit bold :foreground "yellow2"))))
  '(woman-italic ((t (:inherit italic :foreground "green"))))
@@ -393,8 +349,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-save-file-name-transforms (quote ((".*" "~/.emacs.d/cache/backup_files/" t))))
- '(auto-save-list-file-prefix (concat user-emacs-directory "cache/backup_files/saves-"))
+ '(auto-save-visited-interval 5)
+ '(auto-save-visited-mode t)
  '(backup-directory-alist (quote ((".*" . "~/.emacs.d/cache/backup_files/"))))
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
@@ -413,7 +369,7 @@
  '(org-agenda-files nil t)
  '(package-selected-packages
    (quote
-    (ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
+    (sane-term shell-toggle ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    (quote
@@ -491,7 +447,10 @@
  '(save-place-mode t)
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
- '(tramp-persistency-file-name "~/.emacs.d/cache/tramp")
+ '(tramp-persistency-file-name "~/.emacs.d/cache/tramp" nil (tramp))
  '(tramp-syntax (quote default) nil (tramp))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(warning-suppress-types (quote ((yasnippet backquote-change)))))
+ '(warning-suppress-types (quote ((yasnippet backquote-change))))
+ '(window-divider-default-bottom-width 1)
+ '(window-divider-default-places (quote bottom-only))
+ '(window-divider-default-right-width 1))
