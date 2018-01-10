@@ -28,6 +28,11 @@
     (shell-toggle-this-is-the-shell-buffer)))
 
 
+(defadvice sane-term-cycle(around shell-toggle-set-buffer activate)
+  ad-do-it
+  (when (derived-mode-p 'term-mode)
+    (shell-toggle-this-is-the-shell-buffer)))
+
 (provide 'lazy-term)
 
 
