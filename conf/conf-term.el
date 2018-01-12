@@ -46,6 +46,9 @@
 (define-key term-raw-map (kbd "C-M-S-s-p") 'sane-term-prev)
 (define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
 (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
+(define-key term-raw-map (kbd "C-y") 'vmacs-term-yank)
+(define-key term-raw-map (kbd "s-v") 'vmacs-term-yank)
+
 
 (define-key term-raw-map (kbd "C-t") 'vmacs-shell-toggle-new)
 (define-key term-mode-map (kbd "C-t") 'vmacs-shell-toggle-new)
@@ -96,8 +99,7 @@
 (defadvice yank (around paste-to-term activate)
   (if (derived-mode-p 'term-mode)
       (term-send-raw-string (evil-get-register ?\" t))
-    ad-do-it
-    )) ;evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
+    ad-do-it)) ;evil 所有的操作yank/delete/等都会把内容放到 "寄存器中
 
 (defun term-ctrl-g ()
   "term ctrl-g"
@@ -130,6 +132,10 @@
         (term-bol nil)
         (setq this-command 'term-bol))
     (term-bol t)))
+
+(defun vmacs-term-yank()
+  (interactive)
+  (term-send-raw-string (evil-get-register ?\" t)))
 
 (provide 'conf-term)
 
