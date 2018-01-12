@@ -40,8 +40,10 @@
 (add-hook 'after-init-hook 'iterm2-keybind-mapping)
  ;iterm2特有的配置
 
+;; (global-set-key (kbd "C-<f3>") 'vmacs-shell-toggle-cd)
+;; (global-set-key (kbd "<f3>") 'vmacs-shell-toggle)
 (global-set-key (kbd "C-<f3>") 'vmacs-shell-toggle-cd)
-(global-set-key (kbd "<f3>") 'vmacs-shell-toggle)
+(global-set-key (kbd "<f3>") 'cd-iterm2)
 (global-set-key  (kbd "s-C-S-M-d") 'vmacs-shell-toggle)
 (global-set-key (kbd "s-,") 'vmacs-shell-toggle-cd)
 
