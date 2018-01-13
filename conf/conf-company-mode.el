@@ -29,7 +29,7 @@
 
   (setq-default company-idle-delay 0.3)
   (setq company-echo-delay 0)
-  (setq company-tooltip-minimum-width 50)
+  (setq company-tooltip-minimum-width 20)
   (setq company-search-regexp-function 'company-search-flex-regexp)
   (setq company-dabbrev-downcase nil)
   (setq company-dabbrev-ignore-case nil)
