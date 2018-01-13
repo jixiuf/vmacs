@@ -17,6 +17,7 @@
 (define-key magit-mode-map "," '(lambda() (interactive)(magit-status-internal (magit-read-repository nil))))
 
 
+(define-key magit-mode-map "q" nil)
 (define-key magit-mode-map "p" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)
 (magit-define-popup-action 'magit-push-popup ?p "Push Upstream or svn dcommit" 'vmacs-magit-push-default)
