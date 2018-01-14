@@ -453,4 +453,5 @@
  '(warning-suppress-types (quote ((yasnippet backquote-change))))
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places (quote bottom-only))
- '(window-divider-default-right-width 1))
+ '(window-divider-default-right-width 1)
+ '(window-divider-mode t))
