@@ -29,51 +29,9 @@
 (font-lock-add-keywords 'emacs-lisp-mode
                         '(("\\<\\(nil\\|\\t\\)\\_>" .
                            font-lock-constant-face)))
-;;; faces
-;;(set-background-color "#2e2d28")
-;;(set-foreground-color "#a1aca7") "#f7f8c6"
-;;(set-default-font "DejaVu Sans Mono:pixelsize=16")
-;;几种不错的颜色 263111棕色 354022浅棕色 ;;48433d  41412e
-;; (set-background-color "#263111")
-;; (set-background-color "#2e2d28")
-
-;; (set-mouse-color "GreenYellow")
-;; (set-foreground-color "#f7f8c6")
-;; (require 'server)
-
-;; 如果配置好了， 下面20个汉字与40个英文字母应该等长
-;; here are 20 hanzi and 40 english chars, see if they are the same width
-;;
-;; aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
-;; 你你你你你你你你你你你你你你你你你你你你|
-;; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,|
-;; 。。。。。。。。。。。。。。。。。。。。|
-;; 1111111111111111111111111111111111111111|
-;; 東東東東東東東東東東東東東東東東東東東東|
-;; ここここここここここここここここここここ|
-;; ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
-;; 까까까까까까까까까까까까까까까까까까까까|
-
-(defun create-frame-font-middle-mac()
-  (interactive)
-  (set-face-attribute
-   'default nil :font "Menlo 15")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 18)))
-
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 18))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 21)))
-
 
 (when (and (equal system-type 'darwin) (window-system))
-  (add-hook 'after-init-hook 'create-frame-font-middle-mac))
+  (add-hook 'after-init-hook 'create-frame-font-mac))
 
 (when (and (equal system-type 'windows-nt) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-w32))
@@ -89,7 +47,7 @@
   (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     (when (window-system)
-      (when (equal system-type 'darwin) (create-frame-font-middle-mac))
+      (when (equal system-type 'darwin) (create-frame-font-mac))
       (when (equal system-type 'windows-nt) (create-frame-font-w32))
       (window-divider-mode t)
       (set-frame-position f 40 50)

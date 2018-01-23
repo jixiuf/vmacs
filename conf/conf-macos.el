@@ -2,8 +2,9 @@
 (setq mac-option-modifier 'meta)
 
 (global-set-key (kbd "s-=") 'create-frame-font-big-mac)
-(global-set-key (kbd "s--") 'create-frame-font-mac)
-(global-set-key (kbd "s-0") 'create-frame-font-middle-mac)
+(global-set-key (kbd "s--") 'create-frame-font-small-mac)
+(global-set-key (kbd "C-M-s-(") 'create-frame-font-middle-mac) ;s-9
+(global-set-key (kbd "s-0") 'create-frame-font-mac)
 
 ;; ;; pip install jieba
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)
