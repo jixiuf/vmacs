@@ -70,6 +70,29 @@
                     'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
                     (font-spec :family "Apple SD Gothic Neo" :size 18)))
 
+;; ;; 单独设置一个 fontset, 避免被影响
+;; ;; 核心思想就是挑选配对的中文和英文字体，然后分别设置期大小，
+;; ;; 让一个汉字的宽度正好是两个英文字符的宽度。
+;; (setq fontset-orgtable
+;;       (create-fontset-from-ascii-font "Menlo 16"))
+;; (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
+;;   (set-fontset-font fontset-orgtable
+;;                     charset
+;;                     (font-spec :family "PingFang SC" :size 20)))
+
+;; (set-fontset-font fontset-orgtable
+;;                   'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
+;;                   (font-spec :family "Hiragino Sans" :size 20))
+;; (set-fontset-font fontset-orgtable
+;;                   'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
+;;                   (font-spec :family "Apple SD Gothic Neo" :size 23))
+;; ;; (add-hook 'org-mode-hook
+;; ;; 	  '(lambda ()
+;; ;; 	     (set-face-attribute 'org-table nil
+;; ;; 				 :font "Menlo 16"
+;; ;; 				 :fontset fontset-orgtable)))
+
+
 ;;;###autoload
 (defun create-frame-font-w32()          ;emacs 若直接启动 启动时调用此函数似乎无效
   (set-face-attribute

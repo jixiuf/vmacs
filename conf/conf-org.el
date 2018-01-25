@@ -121,7 +121,6 @@
 
 (defun vmacs-novel-mode-hook()
   (vmacs-org-mode-hook)
-  (create-frame-font-big-mac)
   )
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
