@@ -5,6 +5,7 @@
   :group 'font-lock-faces)
 (defface font-lock-done-face nil
   "Font Lock mode face used to highlight DONE."
+
   :group 'font-lock-faces)
 (dolist (mode '(c-mode c++-mode java-mode lisp-mode emacs-lisp-mode erlang-mode
                        go-mode
@@ -224,7 +225,7 @@
  '(highline-face ((t (:background "SeaGreen"))))
  '(hl-paren-face ((t (:overline t :underline t :weight extra-bold))) t)
  '(isearch ((t (:background "seashell4" :foreground "green1"))))
- '(ivy-current-match ((t (:background "dark green"))))
+ '(ivy-current-match ((t (:background "cyan4"))))
  '(ivy-minibuffer-match-face-1 ((t (:inherit comment))))
  '(ivy-minibuffer-match-face-2 ((t (:foreground "green" :weight bold))))
  '(ivy-minibuffer-match-face-3 ((t (:foreground "green" :weight bold))))
