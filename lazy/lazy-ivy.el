@@ -10,6 +10,15 @@
       (call-interactively 'ivy-immediate-done)
     (call-interactively 'end-of-line)))
 
+
+;;;###autoload
+(defun vmacs-ivy-magic-call( arg)
+  "C-f move forward or execute `ivy-call'"
+  (interactive "P")
+  (if (eolp)
+      (call-interactively 'ivy-call)
+    (call-interactively 'forward-char)))
+
 ;;;###autoload
 (defun vmacs-ivy-swithc-buffer-open-dired(&optional buffer)
   (interactive)

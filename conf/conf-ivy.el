@@ -100,7 +100,7 @@
 (define-key ivy-minibuffer-map (kbd "C-c c") 'toggle-case-fold)
 (define-key ivy-minibuffer-map (kbd "C-t") 'toggle-case-fold)
 
-(define-key ivy-minibuffer-map (kbd "C-f") 'ivy-call)
+(define-key ivy-minibuffer-map (kbd "C-f") 'vmacs-ivy-magic-call)
 (define-key ivy-minibuffer-map (kbd "C-c C-c") 'ivy-occur)
 (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-dispatching-done)
 (define-key ivy-minibuffer-map (kbd "C-w") 'ivy-yank-word)
