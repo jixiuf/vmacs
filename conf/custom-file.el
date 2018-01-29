@@ -325,7 +325,7 @@
  '(magit-push-arguments (quote ("--force-with-lease")))
  '(magit-save-repository-buffers (quote dontask))
  '(menu-bar-mode nil)
- '(org-agenda-files nil)
+ '(org-agenda-files nil t)
  '(package-selected-packages
    (quote
     (iedit go-imports sane-term shell-toggle ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
