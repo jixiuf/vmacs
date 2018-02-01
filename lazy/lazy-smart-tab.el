@@ -16,6 +16,7 @@
   ;; (require 'term)
   (term-send-raw-string "\t")
   )
+
 (defvar smart-tab-completion-functions
   '(
     (emacs-lisp-mode company-complete)
@@ -28,7 +29,7 @@
     (epa-key-list-mode widget-forward)
     (minibuffer-local-completion minibuffer-complete)
     (minibuffer-local-map minibuffer-complete)
-    ;; (org-mode novel-fill)
+    (org-mode org-cycle)
     (novel-mode novel-fill)
     (text-mode novel-fill)
     (help-mode forward-button)
