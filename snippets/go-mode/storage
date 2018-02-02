@@ -20,6 +20,7 @@ import (
 )
 
 type ${1:StorageName} struct {
+   storage.StorageEmpty
 }
 
 func New$1() *$1 {
@@ -43,33 +44,6 @@ func (this *$1) parseKey(key storage.Key) (id int64, err error) {
 	return
 }
 
-// Get ...
-func (this *$1) Get(ctx *context.Context, key storage.Key, object interface{}) error {
-
-	return nil
-
-}
-
-func (this *$1) Add(ctx *context.Context, key storage.Key, object interface{}) error {
-	return nil
-}
-
-// Set ...
-func (this *$1) Set(ctx *context.Context, key storage.Key, object interface{}) error {
-	return nil
-}
-
-func (this *$1) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap interface{}) error {
-	return nil
-}
-
-func (this *$1) MultiSet(ctx *context.Context, m map[storage.Key]interface{}) error {
-	return nil
-}
-
-func (this *$1) Delete(ctx *context.Context, key ...storage.Key) error {
-	return nil
-}
 
 func New$1StorageProxy(proxyMgr *storage.RedisStorageProxyMgr, ) storage.Storage {
 	//dbStorage := New$1Storage()
@@ -78,7 +52,7 @@ func New$1StorageProxy(proxyMgr *storage.RedisStorageProxyMgr, ) storage.Storage
 	encoding := storage.JsonGzipEncoding{}
     newFunc:=func() interface{} { return new(int64) }
 
-	proxy, err := proxyMgr.NewRedisStorageProxy(dbStorage, keyPrefix, defaultExpireTime, encoding, newFunc, dao.IsBenchMarkFalse)
+	proxy, err := proxyMgr.NewStorage(dbStorage, keyPrefix, defaultExpireTime, encoding, newFunc, dao.IsBenchMarkFalse)
 	if err != nil {
 		glog.Error(err)
 		panic(err)

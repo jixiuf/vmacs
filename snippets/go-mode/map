@@ -1,1 +1,5 @@
-map[${1:keytype}]${2:valuetype}
+# -*- mode: snippet -*-
+# name: map
+# key: map
+# --
+map[${1:type}]${2:type}
