@@ -47,7 +47,7 @@
  evil-normal-state-cursor '("green" box)
  evil-visual-state-cursor '("cyan" hbar)
  evil-insert-state-cursor '("orange" bar)
- evil-motion-state-cursor '("gray" box))
+ evil-motion-state-cursor '("red" box))
 
 
 
