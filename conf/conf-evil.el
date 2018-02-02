@@ -77,6 +77,11 @@
 (evil-set-initial-state 'erlang-shell-mode 'normal)
 (evil-set-initial-state 'org-agenda-mode 'normal)
 (evil-set-initial-state 'minibuffer-inactive-mode 'normal)
+(evil-set-initial-state 'ivy-occur-mode 'normal)
+(evil-set-initial-state 'ivy-occur-grep-mode 'normal)
+(evil-set-initial-state 'grep-mode 'normal)
+
+
 
 ;; 把所有emacs state  的mode 都转成insert mode
 (dolist (mode evil-emacs-state-modes)
