@@ -99,6 +99,7 @@
 
 (global-set-key  (kbd "C-,") 'scroll-other-window-down)
 (global-set-key  (kbd "C-.") 'scroll-other-window)
+(global-set-key  (kbd "C-\\") 'hippie-expand)
 
 (global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
 (global-set-key  (kbd "s-C-S-M-q") 'save-buffers-kill-emacs)
