@@ -83,8 +83,9 @@
        (let ((input (if (region-active-p)
                         (buffer-substring-no-properties
                          (region-beginning) (region-end))
-                      (thing-at-point 'symbol t)))
+                      ""))
              (default-directory default-directory)
+             (extra-rg-args " ")
              vc-root)
          (when (= (prefix-numeric-value current-prefix-arg) 16)
            (setq default-directory (read-directory-name "rg in directory: ")) )
@@ -92,7 +93,7 @@
            (if (setq vc-root (vc-find-root default-directory ".git"))
                (setq default-directory vc-root)
              (setq default-directory (read-directory-name "rg in directory: "))))
-         (counsel-rg  nil default-directory nil
+         (counsel-rg  input default-directory extra-rg-args
                       (concat "rg in " (abbreviate-file-name default-directory)))))
 
 (provide 'lazy-ivy)
