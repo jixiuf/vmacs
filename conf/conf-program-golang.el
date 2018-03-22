@@ -65,6 +65,17 @@
   (local-set-key (kbd "C-c g") 'golang-setter-getter))
 
 
+;; (defun auto-go-install()
+;;   (when (equal major-mode 'go-mode)
+;;     (unless (get-buffer-process  " *go-install*")
+;;       (set-process-query-on-exit-flag
+;;        (start-process-shell-command
+;;         "go-install-generate-shell" " *go-install*"
+;;         (format "go install"))nil))
+;;     )
+;;   )
+;; (add-hook 'after-save-hook 'auto-go-install)
+
 (defun vmacs-auto-build-package()
   (interactive)
   (require 'go-imports)
