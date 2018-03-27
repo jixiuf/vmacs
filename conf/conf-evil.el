@@ -80,7 +80,15 @@
 (evil-set-initial-state 'ivy-occur-mode 'normal)
 (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
 (evil-set-initial-state 'grep-mode 'normal)
-
+(evil-set-initial-state 'calc-mode 'normal)
+(defun vmacs-calc-hook()
+  (require 'calc-bin)
+  ;; 默认calc 的移位移位操作是接32位的， 可以bw(calc-word-size) 来改成64位
+  (calc-word-size 64)
+  (define-key calc-mode-map (kbd "j") 'evil-next-line)
+  (define-key calc-mode-map (kbd "k") 'evil-previous-line)
+  (define-key calc-mode-map (kbd "y") 'evil-yank))
+(add-hook 'calc-mode-hook 'vmacs-calc-hook)
 
 
 ;; 把所有emacs state  的mode 都转成insert mode
@@ -111,6 +119,7 @@
 (add-to-list 'evil-overriding-maps '(epa-key-list-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(term-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(term-raw-map . nil))
+(add-to-list 'evil-overriding-maps '(calc-mode-map . nil))
 
 
 
@@ -129,6 +138,8 @@
                               'override-state
                               'evil-make-overriding-map
                               evil-overriding-maps))
+
+;; (evil-update-pending-maps)
 
 (require 'evil-leader)
 (global-evil-leader-mode)
