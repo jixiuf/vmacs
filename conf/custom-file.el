@@ -134,6 +134,25 @@
 ;; ;; 然后将mode-line 的face header调成0.1，变成一条线
 (setq-default mode-line-format nil)
 
+;;只auto save files
+(define-minor-mode auto-save-visited-mode
+  "Toggle automatic saving to file-visiting buffers on or off.
+With a prefix argument ARG, enable regular saving of all buffers
+visiting a file if ARG is positive, and disable it otherwise.
+Unlike `auto-save-mode', this mode will auto-save buffer contents
+to the visited files directly and will also run all save-related
+hooks.  See Info node `Saving' for details of the save process.
+
+If called from Lisp, enable the mode if ARG is omitted or nil,
+and toggle it if ARG is `toggle'."
+  :group 'auto-save
+  :global t
+  (when auto-save--timer (cancel-timer auto-save--timer))
+  (setq auto-save--timer
+        (when auto-save-visited-mode
+          (run-with-idle-timer
+           auto-save-visited-interval :repeat
+           #'save-some-buffers :no-prompt nil))))
 
 ;;下面的值是通过Emacs的custom 系统关于外观的设置,如无必要不要手动修改
 
