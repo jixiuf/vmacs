@@ -329,29 +329,30 @@ and toggle it if ARG is `toggle'."
  ;; If there is more than one, they won't work right.
  '(auto-save-visited-interval 5)
  '(auto-save-visited-mode t)
- '(backup-directory-alist (quote ((".*" . "~/.emacs.d/cache/backup_files/"))))
+ '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(column-number-mode nil)
- '(custom-group-tag-faces (quote (default)))
+ '(custom-group-tag-faces '(default))
  '(electric-pair-mode t)
  '(global-auto-revert-mode t)
  '(helm-minibuffer-history-key "C-r")
  '(magit-commit-ask-to-stage t)
  '(magit-no-confirm
-   (quote
-    (reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes)))
- '(magit-push-arguments (quote ("--force-with-lease")))
- '(magit-save-repository-buffers (quote dontask))
+   '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
+ '(magit-push-arguments '("--force-with-lease"))
+ '(magit-save-repository-buffers 'dontask)
  '(menu-bar-mode nil)
- '(org-agenda-files nil t)
+ '(org-agenda-files nil)
  '(package-selected-packages
-   (quote
-    (iedit go-imports sane-term shell-toggle ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet)))
+   '(json-mode iedit go-imports sane-term shell-toggle ctable dash deferred osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode async bm crontab-mode dockerfile-mode erlang ethan-wspace evil evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg helm-core logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
-   (quote
-    ((eval when
+   '((projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
+     (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
+     (projectile-project-compilation-cmd . "bear make")
+     (projectile-project-run-cmd . "make run")
+     (eval when
            (and
             (buffer-file-name)
             (file-regular-p
@@ -359,50 +360,36 @@ and toggle it if ARG is `toggle'."
             (string-match-p "^[^.]"
                             (buffer-file-name)))
            (unless
-               (featurep
-                (quote package-build))
+               (featurep 'package-build)
              (let
                  ((load-path
                    (cons "../package-build" load-path)))
-               (require
-                (quote package-build))))
+               (require 'package-build)))
            (package-build-minor-mode)
            (set
-            (make-local-variable
-             (quote package-build-working-dir))
+            (make-local-variable 'package-build-working-dir)
             (expand-file-name "../working/"))
            (set
-            (make-local-variable
-             (quote package-build-archive-dir))
+            (make-local-variable 'package-build-archive-dir)
             (expand-file-name "../packages/"))
            (set
-            (make-local-variable
-             (quote package-build-recipes-dir))
+            (make-local-variable 'package-build-recipes-dir)
             default-directory))
      (eval progn
            (setq jedi:environment-root
                  (expand-file-name "./virtual/"
                                    (locate-dominating-file default-directory "Makefile")))
            (setq jedi:server-args
-                 (\`
-                  ("--virtual-env"
-                   (\,
-                    (expand-file-name "./virtual/"
-                                      (locate-dominating-file default-directory "Makefile")))
-                   "--virtual-env"
-                   (\,
-                    (expand-file-name "~/python/"))
-                   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path"
-                   (\,
-                    (expand-file-name
-                     (expand-file-name "./src/"
-                                       (locate-dominating-file default-directory "Makefile"))))
-                   "--sys-path"
-                   (\,
-                    (expand-file-name
-                     (expand-file-name "./src/db"
-                                       (locate-dominating-file default-directory "Makefile"))))
-                   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" ".")))
+                 `("--virtual-env" ,(expand-file-name "./virtual/"
+                                                      (locate-dominating-file default-directory "Makefile"))
+                   "--virtual-env" ,(expand-file-name "~/python/")
+                   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path" ,(expand-file-name
+                                                                                                              (expand-file-name "./src/"
+                                                                                                                                (locate-dominating-file default-directory "Makefile")))
+                   "--sys-path" ,(expand-file-name
+                                  (expand-file-name "./src/db"
+                                                    (locate-dominating-file default-directory "Makefile")))
+                   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" "."))
            (setq exec-path
                  (delete-dups
                   (cons
@@ -420,16 +407,16 @@ and toggle it if ARG is `toggle'."
                                      (locate-dominating-file default-directory "Makefile")))
            (setenv "PYTHONPATH"
                    (expand-file-name "./db/"
-                                     (locate-dominating-file default-directory "Makefile")))))))
+                                     (locate-dominating-file default-directory "Makefile"))))))
  '(save-place-file "~/.emacs.d/cache/place")
  '(save-place-mode t)
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
  '(tramp-persistency-file-name "~/.emacs.d/cache/tramp" nil (tramp))
- '(tramp-syntax (quote default) nil (tramp))
- '(uniquify-buffer-name-style (quote forward) nil (uniquify))
- '(warning-suppress-types (quote ((yasnippet backquote-change))))
+ '(tramp-syntax 'default nil (tramp))
+ '(uniquify-buffer-name-style 'forward nil (uniquify))
+ '(warning-suppress-types '((yasnippet backquote-change)))
  '(window-divider-default-bottom-width 1)
- '(window-divider-default-places (quote bottom-only))
+ '(window-divider-default-places 'bottom-only)
  '(window-divider-default-right-width 1)
  '(window-divider-mode t))
