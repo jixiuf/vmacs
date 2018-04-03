@@ -85,7 +85,7 @@
                          (region-beginning) (region-end))
                       ""))
              (default-directory default-directory)
-             (extra-rg-args " ")
+             (extra-rg-args " -z")
              vc-root)
          (when (= (prefix-numeric-value current-prefix-arg) 16)
            (setq default-directory (read-directory-name "rg in directory: ")) )
