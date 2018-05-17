@@ -27,6 +27,7 @@
 
 
 (defvar eshll-toggle-commands '(toggle-eshell-cd toggle-eshell  toggle-shell))
+(defvar vmacs-window-configration nil)
 
 (defun toggle-eshell-internal (&optional  shell-buffer-name)
   (interactive "sshell name:\nsshell buffer name:")
@@ -34,29 +35,27 @@
            (buffer-live-p (get-buffer shell-buffer-name)))
       (cond
        ( (not (string= (buffer-name) shell-buffer-name))
-         (switch-to-buffer shell-buffer-name))
+         (setq vmacs-window-configration (current-window-configuration))
+         (pop-to-buffer shell-buffer-name)
+         (delete-other-windows))
        ;; ((and (string= (buffer-name) shell-buffer-name)
        ;;       (> (length (window-list)) 1)
        ;;       (member last-command eshll-toggle-commands))
        ;;  (delete-other-windows)
        ;;  )
-       ((and (string= (buffer-name) shell-buffer-name)
-             (> (length (window-list)) 1))
-        (delete-window)
-        )
-       ((and
-         (string= (buffer-name) shell-buffer-name)
-         (equal (length (window-list)) 1))
+       ((string= (buffer-name) shell-buffer-name)
         (bury-buffer)
+        (set-window-configuration vmacs-window-configration)
         ))
-    (let((old-window-config (current-window-configuration)))
-      (setq eshell-buffer-name shell-buffer-name)
-      (eshell)
-      (goto-char (point-max))
-      ;; (insert (concat "cd " (concat "\""default-directory "\""))) ;;make sure current directory is default-directory
-      ;; (eshell-send-input)
-      (set-window-configuration old-window-config)
-      (switch-to-buffer shell-buffer-name))))
+    (setq vmacs-window-configration (current-window-configuration))
+    (setq eshell-buffer-name shell-buffer-name)
+    (eshell)
+    (goto-char (point-max))
+    ;; (insert (concat "cd " (concat "\""default-directory "\""))) ;;make sure current directory is default-directory
+    ;; (eshell-send-input)
+    (delete-other-windows)
+    (pop-to-buffer shell-buffer-name)
+    ))
 
 
 (defvar shell-buffer-hist nil)

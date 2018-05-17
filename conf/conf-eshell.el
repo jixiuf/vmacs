@@ -9,6 +9,8 @@
 (setq-default eshell-destroy-buffer-when-process-dies t)
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
+  (add-to-list 'eshell-visual-commands  "bee")
+  (add-to-list 'eshell-visual-commands  "ssh")
   (when (boundp 'eshell-visual-subcommands) ;from emacs24.4
     (add-to-list 'eshell-visual-subcommands  '("tmux"))
     (add-to-list 'eshell-visual-subcommands  '("git" "l" "log" "diff" "show"))))
