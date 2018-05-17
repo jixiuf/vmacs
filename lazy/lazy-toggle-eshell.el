@@ -56,7 +56,7 @@
       ;; (insert (concat "cd " (concat "\""default-directory "\""))) ;;make sure current directory is default-directory
       ;; (eshell-send-input)
       (set-window-configuration old-window-config)
-      (switch-to-buffer-other-window shell-buffer-name))))
+      (switch-to-buffer shell-buffer-name))))
 
 
 (defvar shell-buffer-hist nil)
