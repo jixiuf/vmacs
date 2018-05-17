@@ -73,10 +73,22 @@
                                                  "):")
                                          shell-buffer-hist nil nil nil nil default-shell-buffer ))
       (unless (string-match "^\\*" buffer-name)
-        (setq buffer-name (concat "*"  buffer-name "*"))) )
+        (setq buffer-name (concat "*eshell* "  buffer-name ))) )
     (setq shell-buffer-hist (delete buffer-name shell-buffer-hist))
     (push buffer-name shell-buffer-hist)
     buffer-name))
+
+
+(defadvice eshell-send-input (around change-buffer-name activate)
+  "change-buffer-name."
+  (let ((input (eshell-get-old-input))
+        (eshell-buffer )
+        )
+    ad-do-it
+    (setq eshell-buffer (generate-new-buffer-name (format "*eshell* %s (%s)"  input default-directory)))
+    (rename-buffer eshell-buffer)
+    (pop shell-buffer-hist)
+    (push eshell-buffer shell-buffer-hist )))
 
 (defun eshell-insert-last-cmd-argument()
   "like Alt-. in bash"
