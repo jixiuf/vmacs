@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: sort
+# key: sort
+# --
+func (l $1) Sort() {
+	sort.Sort(l)
+}
+
+func (l $1) Len() int {
+	return len(l)
+}
+
+func (l $1) Less(i, j int) bool {
+	return l[i]<l[j]
+}
+
+func (l $1) Swap(i, j int) {
+	l[i], l[j] = l[j], l[i]
+}

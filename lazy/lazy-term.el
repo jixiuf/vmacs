@@ -1,6 +1,17 @@
 (require 'shell-toggle)
 (require 'sane-term)
 
+;; 外部emacsclient 调用 显示term-buffer
+;;;###autoload
+(defun vmacs-frame-pop-shell-buffer()
+  (dolist (frame (visible-frame-list))
+    (with-selected-frame frame
+      (when (frame-parameter frame 'window-id)
+        (vmacs-shell-toggle 0)
+        ))))
+
+
+
 ;;;###autoload
 (defun vmacs-shell-toggle(&optional create-new-term)
   (interactive "p")
