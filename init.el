@@ -3,14 +3,6 @@
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 
-(setq-default
- ;; user-full-name ""                ;记得改成你的名字
- ;; user-login-name "jixiuf"
- user-mail-address (concat "jixiuf" "@" "qq.com"))
-(setq load-prefer-newer t)              ;当el文件比elc文件新的时候,则加载el,即尽量Load最新文件文件
-;; By default Emacs will initiate GC every 0.76 MB allocated (gc-cons-threshold == 800000).
-;; If we increase this to 20 MB (gc-cons-threshold == 20000000) we get:
-(setq gc-cons-threshold 50000000)
 
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
