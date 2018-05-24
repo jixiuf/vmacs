@@ -2,6 +2,10 @@
 # name: sort
 # key: sort
 # --
+func (l $1) SortReverse() {
+	sort.Sort(sort.Reverse(l))
+}
+
 func (l $1) Sort() {
 	sort.Sort(l)
 }
