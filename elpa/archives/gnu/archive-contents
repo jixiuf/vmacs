@@ -374,8 +374,15 @@
 	     nil "Emacs Does Interactive Prolog" single
 	     ((:url . "http://elpa.gnu.org/packages/ediprolog.html")
 	      (:keywords "languages" "processes"))])
+ (eglot .
+	[(0 7)
+	 ((emacs
+	   (26 1)))
+	 "Client for Language Server Protocol (LSP) servers" tar
+	 ((:keywords "convenience" "languages")
+	  (:url . "https://github.com/joaotavora/eglot"))])
  (el-search .
-	    [(1 6 6)
+	    [(1 6 10)
 	     ((emacs
 	       (25))
 	      (stream
@@ -469,7 +476,7 @@
 	  ((:url . "https://github.com/leoliu/ggtags")
 	   (:keywords "tools" "convenience"))])
  (gited .
-	[(0 4 3)
+	[(0 5 3)
 	 ((emacs
 	   (24 4))
 	  (cl-lib
@@ -490,7 +497,7 @@
 		 ((:keywords "gnome" "c" "coding style")
 		  (:url . "http://elpa.gnu.org/packages/gnome-c-style.html"))])
  (gnorb .
-	[(1 5 3)
+	[(1 5 4)
 	 ((cl-lib
 	   (0 5)))
 	 "Glue code between Gnus, Org, and BBDB" tar
@@ -895,7 +902,7 @@
 	 ((:url . "http://www.dr-qubit.org/emacs.php")
 	  (:keywords "extensions" "data structures" "queue"))])
  (rainbow-mode .
-	       [(1 0)
+	       [(1 0 1)
 		nil "Colorize color names in buffers" single
 		((:url . "http://elpa.gnu.org/packages/rainbow-mode.html")
 		 (:keywords "faces"))])
@@ -1234,12 +1241,19 @@
        ((:keywords "multimedia" "xpm")
 	(:url . "http://www.gnuvola.org/software/xpm/"))])
  (yasnippet .
-	    [(0 12 2)
+	    [(0 13 0)
 	     ((cl-lib
 	       (0 5)))
 	     "Yet another snippet extension for Emacs." tar
 	     ((:keywords "convenience" "emulation")
 	      (:url . "http://github.com/joaotavora/yasnippet"))])
+ (yasnippet-classic-snippets .
+			     [(1 0 2)
+			      ((yasnippet
+				(0 9 1)))
+			      "\"Classic\" yasnippet snippets" tar
+			      ((:keywords "snippets")
+			       (:url . "http://elpa.gnu.org/packages/yasnippet-classic-snippets.html"))])
  (ztree .
 	[(1 0 5)
 	 ((cl-lib
