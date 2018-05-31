@@ -9,6 +9,11 @@ func (l $1) SortReverse() {
 func (l $1) Sort() {
 	sort.Sort(l)
 }
+func (s $1) Reverse() {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
 
 func (l $1) Len() int {
 	return len(l)
