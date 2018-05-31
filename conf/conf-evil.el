@@ -120,6 +120,7 @@
 (add-to-list 'evil-overriding-maps '(term-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(term-raw-map . nil))
 (add-to-list 'evil-overriding-maps '(calc-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(git-timemachine-mode-map . nil))
 
 
 

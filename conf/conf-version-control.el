@@ -26,6 +26,17 @@
 (evil-leader/set-key "ve" 'magit-commit-extend)
 (evil-leader/set-key "va" 'magit-commit-amend)
 
+(evil-leader/set-key "vm" 'git-timemachine-toggle)
+(add-hook 'git-timemachine-mode-hook 'vmacs-git-timemachine-hook)
+(defun vmacs-git-timemachine-hook()
+  (evil-define-key 'normal 'local "n" 'git-timemachine-show-next-revision)
+  (evil-define-key 'normal 'local "p" 'git-timemachine-show-previous-revision)
+  (evil-define-key 'normal 'local "t" 'git-timemachine-show-revision-fuzzy)
+  (evil-define-key 'normal 'local "q" 'git-timemachine-quit)
+  (evil-define-key 'normal 'local "b" 'git-timemachine-blame)
+  (evil-define-key 'normal 'local "w" 'git-timemachine-kill-abbreviated-revision)
+  (evil-define-key 'normal 'local "@" 'git-timemachine-kill-revision))
+
 
 
 (setq-default
