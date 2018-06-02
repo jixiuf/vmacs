@@ -375,7 +375,7 @@
 	     ((:url . "http://elpa.gnu.org/packages/ediprolog.html")
 	      (:keywords "languages" "processes"))])
  (eglot .
-	[(0 7)
+	[(0 8)
 	 ((emacs
 	   (26 1)))
 	 "Client for Language Server Protocol (LSP) servers" tar
