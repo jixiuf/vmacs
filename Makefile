@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 EMACS ?= emacs
-BATCH  = $(EMACS) -batch -Q $(LOAD_PATH) -l ./init.el
+BATCH  = $(EMACS) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 compile:
 	@echo "delete *.elc 以避免有问题的elc文件影响编译"
 	@rm -rf *.elc
