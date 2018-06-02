@@ -172,7 +172,7 @@
 
 (add-to-list 'magic-mode-alist
              `(,(lambda ()
-                  (when (looking-at "[ \t\n]*{[ \t\n]*\"")))
+                  (looking-at "[ \t\n]*{[ \t\n]*\""))
                . json-mode))
 
 
