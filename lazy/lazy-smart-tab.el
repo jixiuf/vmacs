@@ -34,6 +34,7 @@
     (text-mode novel-fill)
     (help-mode forward-button)
     (nxml-mode nxml-complete)
+    (json-mode vmacs-json-pretty)
     (objc-mode company-complete)
     (go-mode company-complete))
   "List of major modes in which to use a mode specific completion
@@ -59,7 +60,7 @@
    ;; (looking-at "\\_>") at end of symbol
    ;; (looking-at "\\>") at end of word
    ((and (not buffer-read-only)
-         (not (member major-mode '(term-mode org-mode novel-mode Custom-mode text-mode)))
+         (not (member major-mode '(term-mode org-mode json-mode novel-mode Custom-mode text-mode)))
          (or (looking-back "^[ \t]*" (point-at-bol))        ;at bol 在行首 不适合补全
              (looking-back (string-trim (concat comment-start ".*")) (point-at-bol)) ;前面是注释 不适合补全
              (and (looking-at "[ \t]*$")        ;at eol
