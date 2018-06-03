@@ -5,6 +5,7 @@
 
 (defvar vmacs-dumping-state nil)
 
+;; ~/.emacs.d/conf/目录加到load-path中
 (add-to-list 'load-path (concat user-emacs-directory "conf/"))
 (require 'conf-dump)
 
@@ -17,14 +18,13 @@
     (setq load-path load-path-backup)))
 
 
-;; ~/.emacs.d/conf/目录加到load-path中
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (require 'custom-file)
 
 
 ;; 下面(package-initialize) 这行注释不要删
-(package-initialize)
+;; (package-initialize)
 (require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 (require 'conf-space-tab)
