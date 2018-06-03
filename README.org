@@ -9,12 +9,19 @@
    针对特定编程语言的外部依赖需要你下载,不过会给出详细的安装文档,保证在国内可下载
    #+BEGIN_SRC sh
      git clone --depth 1 https://github.com/jixiuf/vmacs.git ~/.emacs.d
-
-     # on mac or linux
-     make compile-elpa
-     make compile
+     cd .emacs.d
    #+END_SRC
 2. 中文支持良好,适于国内使用,配置文件中会有大量中文注释以便学习理解
+3. 利用emacs27的pdump功能加快启动速度
+   brew tap d12frosted/emacs-plus
+   brew install emacs-plus --HEAD --with-pdumper
+   cd .emacs.d;make dump
+    生成dump文件
+4. mac 下几个脚本的封装
+   bin/emd 用户启动emacs --daemon
+   bin/ec 用户启动图形界面的emacsclient
+   bin/em 用于启动终端界面的emacsclient
+
 
 与spacemacs 进行比较
   1. spacemacs太笨重,安装过程有可能不顺利，导致想尝试的用户无法试用

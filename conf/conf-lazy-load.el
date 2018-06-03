@@ -17,7 +17,9 @@
     (update-file-autoloads file t)))
 
 (when (file-exists-p  generated-autoload-file-path)
-  (load generated-autoload-file-path t t))
+  (load generated-autoload-file-path t t)
+  (kill-buffer (get-file-buffer generated-autoload-file-path)))
+
 
 
 (provide 'conf-lazy-load)

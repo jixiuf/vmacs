@@ -13,10 +13,17 @@
 List of JSON file extensions.")
 
 (defsubst json-mode--update-auto-mode (filenames) "\
-Update the `json-mode' entry of `auto-mode-alist'.\n\nFILENAMES should be a list of file as string.\nReturn the new `auto-mode-alist' entry" (let* ((new-regexp (rx-to-string `(seq (eval (cons 'or (append json-mode-standard-file-ext ',filenames))) eot))) (new-entry (cons new-regexp 'json-mode)) (old-entry (when (boundp 'json-mode--auto-mode-entry) json-mode--auto-mode-entry))) (setq auto-mode-alist (delete old-entry auto-mode-alist)) (add-to-list 'auto-mode-alist new-entry) new-entry))
+Update the `json-mode' entry of `auto-mode-alist'.
+
+FILENAMES should be a list of file as string.
+Return the new `auto-mode-alist' entry" (let* ((new-regexp (rx-to-string `(seq (eval (cons 'or (append json-mode-standard-file-ext ',filenames))) eot))) (new-entry (cons new-regexp 'json-mode)) (old-entry (when (boundp 'json-mode--auto-mode-entry) json-mode--auto-mode-entry))) (setq auto-mode-alist (delete old-entry auto-mode-alist)) (add-to-list 'auto-mode-alist new-entry) new-entry))
 
 (defvar json-mode-auto-mode-list '(".babelrc" ".bowerrc" "composer.lock") "\
-List of filename as string to pass for the JSON entry of\n`auto-mode-alist'.\n\nNote however that custom `json-mode' entries in `auto-mode-alist'\nwon’t be affected.")
+List of filename as string to pass for the JSON entry of
+`auto-mode-alist'.
+
+Note however that custom `json-mode' entries in `auto-mode-alist'
+won’t be affected.")
 
 (custom-autoload 'json-mode-auto-mode-list "json-mode" nil)
 
@@ -24,16 +31,24 @@ List of filename as string to pass for the JSON entry of\n`auto-mode-alist'.\n\n
 Regexp generated from the `json-mode-auto-mode-list'.")
 
 (autoload 'json-mode "json-mode" "\
-Major mode for editing JSON files\n\n(fn)" t nil)
+Major mode for editing JSON files
+
+\(fn)" t nil)
 
 (autoload 'json-mode-show-path "json-mode" "\
-\n\n(fn)" t nil)
+
+
+\(fn)" t nil)
 
 (autoload 'json-mode-kill-path "json-mode" "\
-\n\n(fn)" t nil)
+
+
+\(fn)" t nil)
 
 (autoload 'json-mode-beautify "json-mode" "\
-Beautify / pretty-print the active region (or the entire buffer if no active region).\n\n(fn)" t nil)
+Beautify / pretty-print the active region (or the entire buffer if no active region).
+
+\(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json-")))
 

@@ -16,7 +16,11 @@ function call_emacs_daemon(){
     emacsOldDaemonCount=`ps -ef|grep "$EMACSCMD --old-daemon"|grep -v grep|wc -l`
     emacsNewDaemonCount=`ps -ef|grep "$EMACSCMD --new-daemon"|grep -v grep|wc -l`
     if [ $emacsfgDaemonCount -eq 0 ] && [ $emacsBgDaemonCount -eq 0 ] && [ $emacsDaemonCount -eq 0 ] && [ $emacsOldDaemonCount -eq 0 ] && [ $emacsNewDaemonCount -eq 0 ]; then
-        $EMACSCMD --daemon
+        if [ -f  ~/.emacs.d/cache/dump/emacs.pdump  ]; then
+            $EMACSCMD --dump-file  ~/.emacs.d/cache/dump/emacs.pdump --daemon
+         else
+            $EMACSCMD  --daemon
+        fi
     fi
 }
 

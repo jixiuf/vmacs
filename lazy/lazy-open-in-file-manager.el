@@ -86,7 +86,7 @@ This function runs the actual AppleScript."
 
 
 
-(provide 'lazy-open-in-file-manager.el)
+(provide 'lazy-open-in-file-manager)
 
 ;; Local Variables:
 ;; coding: utf-8

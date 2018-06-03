@@ -29,5 +29,5 @@ clean:
 clean-elpa:
 	find elpa -name "*.elc" -exec rm {} \;
 dump:
-   ./emacs --batch -l ~/.emacs.d/dump-init.el \
-           -eval '(dump-emacs-portable "~/.emacs.d/bin/emacs.pdmp")'
+	mkdir -p ~/.emacs.d/cache/dump/
+	emacs --batch -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs.pdump")'

@@ -1,11 +1,9 @@
 ;;; undo-tree.el --- Treat undo history as a tree  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2009-2014  Free Software Foundation, Inc
+;; Copyright (C) 2009-2013  Free Software Foundation, Inc
 
 ;; Author: Toby Cubitt <toby-undo-tree@dr-qubit.org>
-;; Maintainer: Toby Cubitt <toby-undo-tree@dr-qubit.org>
-;; Version: 0.6.6
-;; Package-Version: 20170706.246
+;; Version: 0.6.5
 ;; Keywords: convenience, files, undo, redo, history, tree
 ;; URL: http://www.dr-qubit.org/emacs.php
 ;; Repository: http://www.dr-qubit.org/git/undo-tree.git
@@ -412,7 +410,7 @@
 ;;                       o  o     o     o     o     o
 ;;                       |  |\    |\    |\    |\    |
 ;;                       |  | \   | \   | \   | \   |
-;;                       o  o  |  |  o  o  |  |  o  o
+;;                       o  o  |  |  o  o  o  |  o  o
 ;;                       | /   |  |  | /   |  |  | /
 ;;                       |/    |  |  |/    |  |  |/
 ;;      (already undid   o     |  |  o<.   |  |  o
@@ -588,7 +586,7 @@
 ;; Finally, hitting "q" will quit the visualizer, leaving the parent buffer in
 ;; whatever state you ended at. Hitting "C-q" will abort the visualizer,
 ;; returning the parent buffer to whatever state it was originally in when the
-;; visualizer was invoked.
+;; visualizer was .
 ;;
 ;;
 ;;
@@ -627,37 +625,24 @@
 ;;                       o     x  (undo the undo-in-region)
 ;;
 ;;
-;; In `undo-tree-mode', undo-in-region works much the same way: when there's
-;; an active region, undoing only undoes changes that affect that region. In
-;; `undo-tree-mode', redoing when there's an active region similarly only
-;; redoes changes that affect that region.
-;;
-;; However, the way these undo- and redo-in-region changes are recorded in the
-;; undo history is quite different. The good news is, you don't need to
-;; understand this to use undo- and redo-in-region in `undo-tree-mode' - just
-;; go ahead and use them! They'll probably work as you expect. But if you're
-;; masochistic enough to want to understand conceptually what's happening to
-;; the undo tree as you undo- and redo-in-region, then read on...
-;;
-;;
-;; Undo-in-region creates a new branch in the undo history. The new branch
-;; consists of an undo step that undoes some of the changes that affect the
-;; current region, and another step that undoes the remaining changes needed
-;; to rejoin the previous undo history.
+;; In `undo-tree-mode', undo-in-region works similarly: when there's an active
+;; region, undoing only undoes changes that affect that region. However, the
+;; way these undos-in-region are recorded in the undo history is quite
+;; different. In `undo-tree-mode', undo-in-region creates a new branch in the
+;; undo history. The new branch consists of an undo step that undoes some of
+;; the changes that affect the current region, and another step that undoes
+;; the remaining changes needed to rejoin the previous undo history.
 ;;
 ;;      Previous undo history                Undo-in-region
 ;;
 ;;               o                                o
 ;;               |                                |
 ;;               |                                |
-;;               |                                |
 ;;               o                                o
-;;               |                                |
-;;               |                                |
-;;               |                                |
-;;               o                                o_
+;;               |                                |\
 ;;               |                                | \
-;;               |                                |  x  (undo-in-region)
+;;               o                                o  x  (undo-in-region)
+;;               |                                |  |
 ;;               |                                |  |
 ;;               x                                o  o
 ;;
@@ -670,57 +655,48 @@
 ;;      First undo-in-region                 Second undo-in-region
 ;;
 ;;               o                                o
-;;               |                                |
-;;               |                                |
-;;               |                                |
-;;               o                                o_
+;;               |                                |\
 ;;               |                                | \
-;;               |                                |  x  (undo-in-region)
-;;               |                                |  |
-;;               o_                               o  |
+;;               o                                o  x  (undo-in-region)
+;;               |\                               |  |
 ;;               | \                              |  |
-;;		 |  x                             |  o
-;;		 |  |                             |  |
-;;		 o  o     			  o  o
+;;               o  x                             o  o
+;;               |  |                             |  |
+;;               |  |                             |  |
+;;               o  o                             o  o
 ;;
 ;; Redoing takes you back down the undo tree, as usual (as long as you haven't
 ;; changed the active region after undoing-in-region, it doesn't matter if it
 ;; is still active):
 ;;
 ;;                       o
-;;			 |
-;;			 |
-;;			 |
-;;			 o_
+;;			 |\
 ;;			 | \
-;;			 |  o
+;;			 o  o
 ;;			 |  |
-;;			 o  |
 ;;			 |  |
-;;			 |  o  (redo)
+;;			 o  o  (redo)
+;;			 |  |
 ;;			 |  |
 ;;			 o  x  (redo)
 ;;
 ;;
-;; What about redo-in-region? Obviously, redo-in-region only makes sense if
-;; you have already undone some changes, so that there are some changes to
-;; redo! Redoing-in-region splits off a new branch of the undo history below
-;; your current location in the undo tree. This time, the new branch consists
-;; of a first redo step that redoes some of the redo changes that affect the
-;; current region, followed by *all* the remaining redo changes.
+;; What about redo-in-region? Obviously, this only makes sense if you have
+;; already undone some changes, so that there are some changes to redo!
+;; Redoing-in-region splits off a new branch of the undo history below your
+;; current location in the undo tree. This time, the new branch consists of a
+;; redo step that redoes some of the redo changes that affect the current
+;; region, followed by all the remaining redo changes.
 ;;
 ;;      Previous undo history                Redo-in-region
 ;;
 ;;               o                                o
 ;;               |                                |
 ;;               |                                |
-;;               |                                |
-;;               x                                o_
+;;               x                                o
+;;               |                                |\
 ;;               |                                | \
-;;               |                                |  x  (redo-in-region)
-;;               |                                |  |
-;;               o                                o  |
-;;               |                                |  |
+;;               o                                o  x  (redo-in-region)
 ;;               |                                |  |
 ;;               |                                |  |
 ;;               o                                o  o
@@ -732,19 +708,19 @@
 ;;
 ;;      First redo-in-region                 Second redo-in-region
 ;;
-;;               o                                 o
-;;               |                                 |
-;;               |                                 |
-;;               |                                 |
-;;               o_                                o_
-;;               | \                               | \
-;;               |  x                              |  o
-;;               |  |                              |  |
-;;               o  |                              o  |
-;;               |  |                              |  |
-;;               |  |                              |  x  (redo-in-region)
-;;               |  |                              |  |
-;;               o  o                              o  o
+;;          o                                     o
+;;          |                                     |
+;;          |                                     |
+;;          o                                     o
+;;          |\                                    |\
+;;          | \                                   | \
+;;          o  x  (redo-in-region)                o  o
+;;          |  |                                  |  |
+;;          |  |                                  |  |
+;;          o  o                                  o  x  (redo-in-region)
+;;                                                   |
+;;                                                   |
+;;                                                   o
 ;;
 ;; Note that undo-in-region and redo-in-region only ever add new changes to
 ;; the undo tree, they *never* modify existing undo history. So you can always
@@ -1241,7 +1217,6 @@ in visualizer."
 			     :enable (and undo-tree-mode
 					  (not buffer-read-only)
 					  (not (eq t buffer-undo-list))
-					  (not (eq nil buffer-undo-tree))
 					  (undo-tree-node-previous
 					   (undo-tree-current buffer-undo-tree)))
 			     :help "Undo last operation"))
@@ -1250,7 +1225,6 @@ in visualizer."
 			     :enable (and undo-tree-mode
 					  (not buffer-read-only)
 					  (not (eq t buffer-undo-list))
-					  (not (eq nil buffer-undo-tree))
 					  (undo-tree-node-next
 					   (undo-tree-current buffer-undo-tree)))
 			     :help "Redo last operation")
@@ -1716,13 +1690,13 @@ Comparison is done with `eq'."
 (defun undo-tree-copy-list (undo-list)
   ;; Return a deep copy of first changeset in `undo-list'. Object id's are
   ;; replaced by corresponding objects from `buffer-undo-tree' object-pool.
+  (when undo-list
     (let (copy p)
       ;; if first element contains an object id, replace it with object from
       ;; pool, discarding element entirely if it's been GC'd
-    (while (and undo-list (null copy))
+      (while (null copy)
 	(setq copy
 	      (undo-tree-restore-GC-elts-from-pool (pop undo-list))))
-    (when copy
       (setq copy (list copy)
 	    p copy)
       ;; copy remaining elements, replacing object id's with objects from
@@ -2721,8 +2695,6 @@ within the current region. Similarly, when not in Transient Mark
 mode, just \\[universal-argument] as an argument limits undo to
 changes within the current region."
   (interactive "*P")
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; throw error if undo is disabled in buffer
   (when (eq buffer-undo-list t)
     (user-error "No undo information in this buffer"))
@@ -2830,8 +2802,6 @@ within the current region. Similarly, when not in Transient Mark
 mode, just \\[universal-argument] as an argument limits redo to
 changes within the current region."
   (interactive "*P")
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; throw error if undo is disabled in buffer
   (when (eq buffer-undo-list t)
     (user-error "No undo information in this buffer"))
@@ -2951,8 +2921,6 @@ using `undo-tree-redo'."
 				   (format "Branch (0-%d, on %d): "
 					   (1- (undo-tree-num-branches)) b)))
 				 ))))))
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; throw error if undo is disabled in buffer
   (when (eq buffer-undo-list t)
     (user-error "No undo information in this buffer"))
@@ -3009,8 +2977,6 @@ The saved state can be restored using
 `undo-tree-restore-state-from-register'.
 Argument is a character, naming the register."
   (interactive "cUndo-tree state to register: ")
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; throw error if undo is disabled in buffer
   (when (eq buffer-undo-list t)
     (user-error "No undo information in this buffer"))
@@ -3033,8 +2999,6 @@ Argument is a character, naming the register."
 The state must be saved using `undo-tree-save-state-to-register'.
 Argument is a character, naming the register."
   (interactive "*cRestore undo-tree state from register: ")
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; throw error if undo is disabled in buffer, or if register doesn't contain
   ;; an undo-tree node
   (let ((data (registerv-data (get-register register))))
@@ -3080,8 +3044,6 @@ Otherwise, prompt for one.
 If OVERWRITE is non-nil, any existing file will be overwritten
 without asking for confirmation."
   (interactive)
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   (when (eq buffer-undo-list t)
     (user-error "No undo information in this buffer"))
   (undo-list-transfer-to-tree)
@@ -3136,8 +3098,6 @@ Otherwise, prompt for one.
 If optional argument NOERROR is non-nil, return nil instead of
 signaling an error if file is not found."
   (interactive)
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; get filename
   (unless filename
     (setq filename
@@ -3208,8 +3168,6 @@ signaling an error if file is not found."
 (defun undo-tree-visualize ()
   "Visualize the current buffer's undo tree."
   (interactive "*")
-  (unless undo-tree-mode
-    (user-error "Undo-tree mode not enabled in buffer"))
   (deactivate-mark)
   ;; throw error if undo is disabled in buffer
   (when (eq buffer-undo-list t)
@@ -3874,8 +3832,6 @@ Within the undo-tree visualizer, the following keys are available:
 (defun undo-tree-visualize-undo (&optional arg)
   "Undo changes. A numeric ARG serves as a repeat count."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((old (undo-tree-current buffer-undo-tree))
 	current)
     ;; unhighlight old current node
@@ -3901,8 +3857,6 @@ Within the undo-tree visualizer, the following keys are available:
 (defun undo-tree-visualize-redo (&optional arg)
   "Redo changes. A numeric ARG serves as a repeat count."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((old (undo-tree-current buffer-undo-tree))
 	current)
     ;; unhighlight old current node
@@ -3930,8 +3884,6 @@ Within the undo-tree visualizer, the following keys are available:
 This will affect which branch to descend when *redoing* changes
 using `undo-tree-redo' or `undo-tree-visualizer-redo'."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   ;; un-highlight old active branch below current node
   (goto-char (undo-tree-node-marker (undo-tree-current buffer-undo-tree)))
   (let ((undo-tree-insert-face 'undo-tree-visualizer-default-face)
@@ -3965,8 +3917,6 @@ using `undo-tree-redo' or `undo-tree-visualizer-redo'."
 (defun undo-tree-visualizer-quit ()
   "Quit the undo-tree visualizer."
   (interactive)
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (undo-tree-clear-visualizer-data buffer-undo-tree)
   ;; remove kill visualizer hook from parent buffer
   (unwind-protect
@@ -3988,8 +3938,6 @@ using `undo-tree-redo' or `undo-tree-visualizer-redo'."
 (defun undo-tree-visualizer-abort ()
   "Quit the undo-tree visualizer and return buffer to original state."
   (interactive)
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((node undo-tree-visualizer-initial-node))
     (undo-tree-visualizer-quit)
     (undo-tree-set node)))
@@ -3999,8 +3947,6 @@ using `undo-tree-redo' or `undo-tree-visualizer-redo'."
   "Set buffer to state corresponding to undo tree node
 at POS, or point if POS is nil."
   (interactive)
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (unless pos (setq pos (point)))
   (let ((node (get-text-property pos 'undo-tree-node)))
     (when node
@@ -4017,8 +3963,6 @@ at POS, or point if POS is nil."
   "Set buffer to state corresponding to undo tree node
 at mouse event POS."
   (interactive "@e")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (undo-tree-visualizer-set (event-start (nth 1 pos))))
 
 
@@ -4034,8 +3978,6 @@ Interactively, a single \\[universal-argument] specifies
 specifies `saved', and a negative prefix argument specifies
 `register'."
   (interactive "P")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (when (and (called-interactively-p 'any) x)
     (setq x (prefix-numeric-value x)
 	  x (cond
@@ -4088,8 +4030,6 @@ Interactively, a single \\[universal-argument] specifies
 specifies `saved', and a negative prefix argument specifies
 `register'."
   (interactive "P")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (when (and (called-interactively-p 'any) x)
     (setq x (prefix-numeric-value x)
 	  x (cond
@@ -4133,8 +4073,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-toggle-timestamps ()
   "Toggle display of time-stamps."
   (interactive)
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (setq undo-tree-visualizer-timestamps (not undo-tree-visualizer-timestamps))
   (setq undo-tree-visualizer-spacing (undo-tree-visualizer-calculate-spacing))
   ;; redraw tree
@@ -4143,22 +4081,16 @@ specifies `saved', and a negative prefix argument specifies
 
 (defun undo-tree-visualizer-scroll-left (&optional arg)
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (scroll-left (or arg 1) t))
 
 
 (defun undo-tree-visualizer-scroll-right (&optional arg)
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (scroll-right (or arg 1) t))
 
 
 (defun undo-tree-visualizer-scroll-up (&optional arg)
   (interactive "P")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (if (or (and (numberp arg) (< arg 0)) (eq arg '-))
       (undo-tree-visualizer-scroll-down arg)
     ;; scroll up and expand newly-visible portion of tree
@@ -4174,8 +4106,6 @@ specifies `saved', and a negative prefix argument specifies
 
 (defun undo-tree-visualizer-scroll-down (&optional arg)
   (interactive "P")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (if (or (and (numberp arg) (< arg 0)) (eq arg '-))
       (undo-tree-visualizer-scroll-up arg)
     ;; ensure there's enough room at top of buffer to scroll
@@ -4229,8 +4159,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-select-previous (&optional arg)
   "Move to previous node."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((node undo-tree-visualizer-selected-node))
     (catch 'top
       (dotimes (i (or arg 1))
@@ -4251,8 +4179,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-select-next (&optional arg)
   "Move to next node."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((node undo-tree-visualizer-selected-node))
     (catch 'bottom
       (dotimes (i (or arg 1))
@@ -4275,8 +4201,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-select-right (&optional arg)
   "Move right to a sibling node."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((node undo-tree-visualizer-selected-node)
 	end)
     (goto-char (undo-tree-node-marker undo-tree-visualizer-selected-node))
@@ -4298,8 +4222,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-select-left (&optional arg)
   "Move left to a sibling node."
   (interactive "p")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (let ((node (get-text-property (point) 'undo-tree-node))
 	beg)
     (goto-char (undo-tree-node-marker undo-tree-visualizer-selected-node))
@@ -4339,8 +4261,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-mouse-select (pos)
   "Select undo tree node at mouse event POS."
   (interactive "@e")
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (undo-tree-visualizer-select (event-start (nth 1 pos))))
 
 
@@ -4352,8 +4272,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-toggle-diff ()
   "Toggle diff display in undo-tree visualizer."
   (interactive)
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (if undo-tree-visualizer-diff
       (undo-tree-visualizer-hide-diff)
     (undo-tree-visualizer-show-diff)))
@@ -4362,8 +4280,6 @@ specifies `saved', and a negative prefix argument specifies
 (defun undo-tree-visualizer-selection-toggle-diff ()
   "Toggle diff display in undo-tree visualizer selection mode."
   (interactive)
-  (unless (eq major-mode 'undo-tree-visualizer-mode)
-    (user-error "Undo-tree mode not enabled in buffer"))
   (if undo-tree-visualizer-diff
       (undo-tree-visualizer-hide-diff)
     (let ((node (get-text-property (point) 'undo-tree-node)))
@@ -4425,6 +4341,75 @@ specifies `saved', and a negative prefix argument specifies
     (when win
       (balance-windows)
       (shrink-window-if-larger-than-buffer win))))
+
+;;;; ChangeLog:
+
+;; 2013-12-28  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	* undo-tree: Update to version 0.6.5.
+;; 
+;; 2012-12-05  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	Update undo-tree to version 0.6.3
+;; 
+;; 	* undo-tree.el: Implement lazy tree drawing to significantly speed up 
+;; 	visualization of large trees + various more minor improvements.
+;; 
+;; 2012-09-25  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	Updated undo-tree package to version 0.5.5.
+;; 
+;; 	Small bug-fix to avoid hooks triggering an error when trying to save
+;; 	undo history in a buffer where undo is disabled.
+;; 
+;; 2012-09-11  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	Updated undo-tree package to version 0.5.4
+;; 
+;; 	Bug-fixes and improvements to persistent history storage.
+;; 
+;; 2012-07-18  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	Update undo-tree to version 0.5.3
+;; 
+;; 	* undo-tree.el: Cope gracefully with undo boundaries being deleted
+;; 	 (cf. bug#11774). Allow customization of directory to which undo
+;; 	history is
+;; 	 saved.
+;; 
+;; 2012-05-24  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	updated undo-tree package to version 0.5.2
+;; 
+;; 	* undo-tree.el: add diff view feature in undo-tree visualizer.
+;; 
+;; 2012-05-02  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	undo-tree.el: Update package to version 0.4
+;; 
+;; 2012-04-20  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	undo-tree.el: Update package to version 0.3.4
+;; 
+;; 	* undo-tree.el (undo-list-pop-changeset): fix pernicious bug causing
+;; 	undo history to be lost.
+;; 	(buffer-undo-tree): set permanent-local property.
+;; 	(undo-tree-enable-undo-in-region): add new customization option
+;; 	allowing undo-in-region to be disabled.
+;; 
+;; 2012-01-26  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	undo-tree.el: Fixed copyright attribution and Emacs status.
+;; 
+;; 2012-01-26  Toby S. Cubitt  <tsc25@cantab.net>
+;; 
+;; 	undo-tree.el: Update package to version 0.3.3
+;; 
+;; 2011-09-17  Stefan Monnier  <monnier@iro.umontreal.ca>
+;; 
+;; 	Add undo-tree.el
+;; 
+
 
 
 

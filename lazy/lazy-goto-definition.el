@@ -71,7 +71,7 @@
   )
 
 
-(provide 'lazy-goto-def)
+(provide 'lazy-goto-definition)
 
 ;; Local Variables:
 ;; coding: utf-8
