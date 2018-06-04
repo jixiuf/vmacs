@@ -10,7 +10,6 @@
 (or (file-exists-p package-user-dir) (package-refresh-contents))
 ;; (package-initialize)
 
-
 (defun ensure-package-installed (packages)
   "Assure every package is installed, ask for installation if it’s not.
 

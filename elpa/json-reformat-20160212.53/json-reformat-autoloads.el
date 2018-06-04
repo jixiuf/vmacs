@@ -10,7 +10,13 @@
 ;;; Generated autoloads from json-reformat.el
 
 (autoload 'json-reformat-region "json-reformat" "\
-Reformat the JSON in the specified region.\n\nIf you want to customize the reformat style,\nplease see the documentation of `json-reformat:indent-width'\nand `json-reformat:pretty-string?'.\n\n(fn BEGIN END)" t nil)
+Reformat the JSON in the specified region.
+
+If you want to customize the reformat style,
+please see the documentation of `json-reformat:indent-width'
+and `json-reformat:pretty-string?'.
+
+\(fn BEGIN END)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-reformat" '("json-reformat")))
 

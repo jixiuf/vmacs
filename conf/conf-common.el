@@ -170,6 +170,12 @@
                                           magic-mode-regexp-match-limit t))))
                . objc-mode))
 
+(add-to-list 'magic-mode-alist
+             `(,(lambda ()
+                  (looking-at "[ \t\n]*{[ \t\n]*\""))
+               . json-mode))
+
+
 ;; (setq-default ace-jump-mode-case-fold nil
 ;;               ace-jump-mode-scope 'window
 ;;               ;; 59==; ,97=a

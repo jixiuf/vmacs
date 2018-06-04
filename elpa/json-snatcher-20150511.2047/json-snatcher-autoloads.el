@@ -10,7 +10,9 @@
 ;;; Generated autoloads from json-snatcher.el
 
 (autoload 'jsons-print-path "json-snatcher" "\
-Print the path to the JSON value under point, and save it in the kill ring.\n\n(fn)" t nil)
+Print the path to the JSON value under point, and save it in the kill ring.
+
+\(fn)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-snatcher" '("jsons-")))
 

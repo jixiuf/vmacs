@@ -58,7 +58,9 @@
   (interactive)
   (let ((buffers (magit-mode-get-buffers)))
     (magit-restore-window-configuration)
-    (mapc #'kill-buffer buffers)))
+    (dolist (buf buffers)
+      (unless  (get-buffer-process buf)
+        (kill-buffer buf)))))
 
 
 

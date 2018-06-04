@@ -1,7 +1,10 @@
 ;;; ethan-wspace-autoloads.el --- automatically extracted autoloads
 ;;
 ;;; Code:
-(add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
+
+(add-to-list 'load-path (directory-file-name
+                         (or (file-name-directory #$) (car load-path))))
+
 
 ;;;### (autoloads nil "ethan-wspace" "ethan-wspace.el" (0 0 0 0))
 ;;; Generated autoloads from ethan-wspace.el
@@ -43,5 +46,6 @@ See `ethan-wspace-mode' for more information on Ethan-Wspace mode.
 ;; version-control: never
 ;; no-byte-compile: t
 ;; no-update-autoloads: t
+;; coding: utf-8
 ;; End:
 ;;; ethan-wspace-autoloads.el ends here
