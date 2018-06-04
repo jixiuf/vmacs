@@ -88,7 +88,7 @@
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 
 (when (vmacs-not-dumping-p)
-  (require 'conf-vterm)
+  ;; (require 'conf-vterm)
   (global-undo-tree-mode t)
   (global-font-lock-mode)
   (transient-mark-mode 1))

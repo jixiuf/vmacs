@@ -36,7 +36,8 @@
 (when (and (equal system-type 'windows-nt) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-w32))
 
-
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+;; (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (defun  emacs-daemon-after-make-frame-hook(&optional f) ;emacsclient 打开的窗口相关的设置
   (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
   (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
