@@ -7,7 +7,11 @@
 
 ;;; auto-insert
 (setq-default auto-insert-directory (concat user-emacs-directory "auto-insert-template/"))
-(unless noninteractive (auto-insert-mode 1))  ;;; Adds hook to find-files-hook
+  ;;; Adds hook to find-files-hook
+(if (and noninteractive (not (vmacs-dumping-p)))
+    (auto-insert-mode -1)
+  (auto-insert-mode 1))
+
 
 (setq-default auto-insert-query nil) ;;; If you don't want to be prompted before insertion
 (define-auto-insert "\\.el$" ["el-auto-insert" my-autoinsert-yas-expand])
