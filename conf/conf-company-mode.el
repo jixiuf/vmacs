@@ -60,7 +60,7 @@
   ;; (define-key company-mode-map (kbd "C-:") 'helm-company)
   ;; (define-key company-active-map (kbd "C-:") 'helm-company)
   )
-;; (make-variable-buffer-local 'company-backends)
+(make-variable-buffer-local 'company-backends)
 ;; make evil repeat . work with company
 
 (when (fboundp 'evil-declare-change-repeat)
