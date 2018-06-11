@@ -2,7 +2,7 @@
 # name: storage
 # key: storage
 # --
-package  `(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`
+package `(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`
 
 import (
 	"fmt"
@@ -15,48 +15,111 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
+	"gitlab.luojilab.com/igetserver/`(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`/dao"
+	"gitlab.luojilab.com/igetserver/`(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`/models"
 	"gitlab.luojilab.com/igetserver/common/context"
 	"gitlab.luojilab.com/igetserver/storage"
 )
 
-type ${1:StorageName} struct {
-   storage.StorageEmpty
+// ${1:$(un-camelcase-string yas/text)}+${3:$(un-camelcase-string yas/text)} 反查$8
+type ${1:Field1}${3:Field2}IndexDB struct {
+	storage.StorageEmpty
+	dao *${5:Models}Dao
 }
 
-func New$1() *$1 {
-	return &$1{}
+func new$1$3IndexDB(dao *$5Dao) *$1$3IndexDB {
+	return &$1$3IndexDB{StorageEmpty: storage.StorageEmpty{}, dao: dao}
 }
 
-func (this $1) GetKey() (key storage.Key) {
-	return nil
+func (this $1$3IndexDB) GetKey(${1:$(un-camelcase-string yas/text)} ${2:int64}, ${3:$(un-camelcase-string yas/text)} ${4:int64}) (key storage.Key) {
+	return storage.String(fmt.Sprintf("%d-%d", ${1:$(un-camelcase-string yas/text)}, ${3:$(un-camelcase-string yas/text)}))
 }
 
-func (this *$1) parseKey(key storage.Key) (id int64, err error) {
-	//tokens := strings.Split(key.String(), "|")
-	//if len(tokens) != 1 {
-		//err = errors.New("key format error:" + key.String())
-		//return
-	//}
-	//id, err = int64(strconv.Atoi(tokens[0]))
-	//if err != nil {
-		//return
-	//}
+func (this *$1$3IndexDB) ParseKey(key storage.Key) (${1:$(un-camelcase-string yas/text)} $2, ${3:$(un-camelcase-string yas/text)} $4, err error) {
+	tokens := strings.Split(key.String(), "-")
+	if len(tokens) != 2 {
+		err = errors.New("key format error:" + key.String())
+		return
+	}
+	${1:$(un-camelcase-string yas/text)}, err = strconv.ParseInt(tokens[0], 10, 0)
+	if err != nil {
+		return
+	}
+	${3:$(un-camelcase-string yas/text)}, err = strconv.ParseInt(tokens[1], 10, 0)
+	if err != nil {
+		return
+	}
+
 	return
 }
 
+func (this *$1$3IndexDB) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap interface{}) error {
+	if len(keys) == 0 {
+		return nil
+	}
 
-func New$1StorageProxy(proxyMgr *storage.RedisStorageProxyMgr, ) storage.Storage {
-	//dbStorage := New$1Storage()
-	keyPrefix := "coupon:coupon:phone~index"
-	defaultExpireTime := time.Duration(0)
-	encoding := storage.JsonGzipEncoding{}
-    newFunc:=func() interface{} { return new(int64) }
+	var sql string = "select ${8:id},${1:$(un-camelcase-string yas/text)},${3:$(un-camelcase-string yas/text)} from ${5:$(un-camelcase-string yas/text)} where(${1:$(un-camelcase-string yas/text)},${3:$(un-camelcase-string yas/text)}) in ( "
+	for idx, key := range keys {
+		${1:$(un-camelcase-string yas/text)}, ${3:$(un-camelcase-string yas/text)}, _ := this.ParseKey(key)
+		if idx == len(keys)-1 {
+			sql += fmt.Sprintf("(%d,%d)", ${1:$(un-camelcase-string yas/text)}, ${3:$(un-camelcase-string yas/text)})
+		} else {
+			sql += fmt.Sprintf("(%d,%d),", ${1:$(un-camelcase-string yas/text)}, ${3:$(un-camelcase-string yas/text)})
+		}
+	}
+	sql += " )"
+	var tmpResult []models.$5
+	this.dao.DB().NewSession(ctx).SQL(sql).Find(&tmpResult)
+	result := valuesMap.(map[storage.Key]interface{})
+	for idx, c := range tmpResult {
+		result[this.GetKey($2(c.$1), $4(c.$3))] = &(tmpResult[idx].${8:$(capitalize yas/text)})
+	}
+	return nil
+}
 
-	proxy, err := proxyMgr.NewStorage(dbStorage, keyPrefix, defaultExpireTime, encoding, newFunc, dao.IsBenchMarkFalse)
+// Get ...
+func (this *$1$3IndexDB) Get(ctx *context.Context, key storage.Key, object interface{}) error {
+	${1:$(un-camelcase-string yas/text)}, ${3:$(un-camelcase-string yas/text)}, err := this.ParseKey(key)
 	if err != nil {
-		glog.Error(err)
+		return err
+	}
+
+	var tmpResult models.$5
+	has, err := this.dao.DB().NewSession(ctx).Where("${1:$(un-camelcase-string yas/text)}=?", ${1:$(un-camelcase-string yas/text)}).Where("${3:$(un-camelcase-string yas/text)}=?", ${3:$(un-camelcase-string yas/text)}).Cols("$8").Get(&tmpResult)
+	if err != nil {
+		return err
+	}
+	if !has {
+		return nil
+	}
+
+	result, ok := object.(*${9:int64})
+	if !ok {
+		glog.Error("$1$3IndexDB.Get cast *int64 error")
+		return errors.New("$1$3IndexDB.Get cast *int64 error")
+	}
+
+	*result = tmpResult.${8:$(capitalize yas/text)}
+
+	return nil
+}
+
+func New$1$3IndexStorage() storage.Storage {
+	keyPrefix := dao.KEY_PREFIX_${5:$(capitalize yas/text)}_$1_$3_REF
+	defaultExpireTime := time.Duration(0)
+	encoding := storage.${9:$(capitalize yas/text)}Encoding{}
+	backup := new$1$3IndexDB(New$5Dao())
+
+	proxy, err := dao.GetStorageProxyMgr().NewStorage(backup, keyPrefix, defaultExpireTime,
+		encoding, func() interface{} { return new($9) }, dao.IsBenchMarkFalse)
+	if err != nil {
 		panic(err)
 	}
+	innerCacheSize := 1024 * 1024 * 200
+
+	proxy = storage.NewBigCacheStorageProxy(keyPrefix, time.Hour*24*30, encoding,
+		func() interface{} { return new(int64) },
+		innerCacheSize, proxy)
 
 	return proxy
 }
