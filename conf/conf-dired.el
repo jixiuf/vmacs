@@ -102,7 +102,7 @@
  dired-recursive-copies 'always         ;让 dired 可以递归的拷贝和删除目录。
  dired-recursive-deletes 'always       ;always表示不加询问
  dired-dwim-target t                   ;Dired试着猜处默认的目标目录
- ivy-dired-history-max 500
+ ivy-dired-history-max 300
  )
 
 (if (equal system-type 'gnu/linux)
