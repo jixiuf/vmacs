@@ -79,22 +79,70 @@
 (defun vmacs-counsel-rg-region-or-symbol (&optional arg)
   "Use `counsel-rg' to search for the selected region or
  the symbol around point in the current project with riggrep"
-       (interactive "P")
-       (let ((input (if (region-active-p)
-                        (buffer-substring-no-properties
-                         (region-beginning) (region-end))
-                      ""))
-             (default-directory default-directory)
-             (extra-rg-args " -z")
-             vc-root)
-         (when (= (prefix-numeric-value current-prefix-arg) 16)
-           (setq default-directory (read-directory-name "rg in directory: ")) )
-         (when (= (prefix-numeric-value current-prefix-arg) 4)
-           (if (setq vc-root (vc-find-root default-directory ".git"))
-               (setq default-directory vc-root)
-             (setq default-directory (read-directory-name "rg in directory: "))))
-         (counsel-rg  input default-directory extra-rg-args
-                      (concat "rg in " (abbreviate-file-name default-directory)))))
+  (interactive "P")
+  (let ((input (if (region-active-p)
+                   (buffer-substring-no-properties
+                    (region-beginning) (region-end))
+                 ""))
+        (default-directory default-directory)
+        (extra-rg-args ""))
+    (when current-prefix-arg
+      (setq extra-rg-args
+            (read-from-minibuffer (format
+                                   "%s args: "
+                                   (car (split-string counsel-ag-command))))))
+    (counsel-rg  input default-directory extra-rg-args
+                 (concat "rg in " (abbreviate-file-name default-directory)))))
+
+;;;###autoload
+(defun counsel-ag-up-directory ()
+  "Go to the parent directory."
+  (interactive)
+  (let* ((cur-dir (directory-file-name (abbreviate-file-name default-directory)))
+         (up-dir (abbreviate-file-name (file-name-directory (expand-file-name cur-dir)))))
+    (setf (ivy-state-directory ivy-last) up-dir)
+    (when (string-suffix-p cur-dir  (directory-file-name(ivy-state-prompt ivy-last)))
+      (setf (ivy-state-prompt ivy-last) (concat "rg in" up-dir)))
+    (setq default-directory up-dir))
+  (counsel-ag-function ivy-text))
+
+
+(defvar vmacs-last-ag-directory default-directory)
+;;;###autoload
+(defun counsel-ag-toggle-git-root ()
+  "Go to the parent directory."
+  (interactive)
+  (if current-prefix-arg
+      (counsel-rg-set-directory)
+    (let (dir (vc-root (vc-find-root default-directory ".git")))
+      (if (string= (expand-file-name default-directory)
+                   (expand-file-name vc-root))
+          (setq dir (abbreviate-file-name (or vmacs-last-ag-directory default-directory)))
+        (setq dir (abbreviate-file-name vc-root)))
+      (setf (ivy-state-directory ivy-last) dir)
+      (setf (ivy-state-prompt ivy-last) (concat "rg in " dir))
+      (setq default-directory dir))
+    (counsel-ag-function ivy-text)))
+
+
+(defvar vmacs-last-ivy-text )
+;; (defvar vmacs-last-state )
+;;;###autoload
+(defun counsel-rg-set-directory()
+  "Go to the parent directory."
+  (interactive)
+  (setq vmacs-last-ivy-text (or ivy-text ""))
+  ;; (setq vmacs-last-state ivy-last)
+  (ivy-quit-and-run
+    (let ((extra-rg-args ""))
+      (setq default-directory (read-directory-name "rg in directory:"))
+      (setq ivy-last vmacs-last-ivy-text)
+      (counsel-rg  vmacs-last-ivy-text default-directory extra-rg-args
+                   (concat "rg in " (abbreviate-file-name default-directory)))
+
+
+      )
+    ))
 
 (provide 'lazy-ivy)
 

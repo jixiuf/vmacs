@@ -30,6 +30,7 @@
                               (t . ivy--regex-plus)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
+(setq counsel-rg-base-command  "rg -S --no-heading --line-number --search-zip --color never %s .")
 
 (setq magit-completing-read-function 'ivy-completing-read)
 (setq counsel-find-file-at-point t)
@@ -127,8 +128,10 @@
 (with-eval-after-load 'counsel
   (define-key counsel-find-file-map (kbd "C-l") 'counsel-up-directory)
   (define-key counsel-find-file-map (kbd "C-h") 'counsel-up-directory)
-  (define-key counsel-ag-map (kbd "C-l") 'counsel-up-directory)
-  (define-key counsel-ag-map (kbd "C-h") 'counsel-up-directory)
+  (define-key counsel-ag-map (kbd "C-l") 'counsel-ag-up-directory)
+  (define-key counsel-ag-map (kbd "C-o") 'counsel-rg-set-directory)
+  (define-key counsel-ag-map (kbd "C-;") 'counsel-ag-toggle-git-root)
+  (define-key counsel-ag-map (kbd "C-h") 'counsel-ag-up-directory)
   (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
   (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
 
