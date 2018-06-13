@@ -180,6 +180,28 @@
     ad-do-it))
 
 
+;; ;; 主要为了支持 foo bar !far 模式
+;; (setq counsel-rg-base-command  " ~/.emacs.d/bin/rg.sh %s .")
+;; ;; 主要为了支持 foo bar !far 模式
+;; (defadvice counsel-ag-function (around support-multimatch (arg) activate)
+;;   "Grep in the current directory for STRING using BASE-CMD.
+;; If non-nil, append EXTRA-AG-ARGS to BASE-CMD."
+;;   (if (< (length (ad-get-arg 0)) 3)
+;;       (counsel-more-chars 3)
+;;     (let ((default-directory (ivy-state-directory ivy-last))
+;;           (regex (counsel-unquote-regex-parens
+;;                   (setq ivy--old-re
+;;                         (ivy--regex (ad-get-arg 0)))))
+;;           (param (with-temp-buffer
+;;                    (insert (shell-quote-argument (ad-get-arg 0)))
+;;                    (goto-char (point-min))
+;;                    (while (search-forward "\\ " nil t)
+;;                      (replace-match " " nil t))
+;;                    (buffer-string))))
+;;       (counsel--async-command
+;;        (format counsel-ag-command param)) nil)))
+
+
 ;; (defvar noct--original-ivy-regex-function nil)
 
 ;; (defun noct-ivy-space-switch-to-regex ()
