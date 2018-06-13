@@ -84,10 +84,27 @@ func (this $1$3Key)String()string{
 func (this $1$3Key) MarshalText() (text []byte, err error) {
 	return []byte(this.String()), nil
 }
-func (this *$1$3Key) ParseKey(key storage.Key) (err error) {
-	tokens := strings.Split(key.String(), "-")
+func (this $1$3Key) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + this.String() + "\""), nil
+}
+
+func (this *$1$3Key) UnmarshalJSON(b []byte) error {
+	if b == nil {
+		return nil
+	}
+	s := string(b)
+	s = strings.Trim(s, "\"")
+
+	if s == "" {
+		return nil
+	}
+	return this.ParseKey(s)
+}
+
+func (this *$1$3Key) ParseKey(key string) (err error) {
+	tokens := strings.Split(key, "-")
 	if len(tokens) != 2 {
-		err = errors.New("key format error:" + key.String())
+		err = errors.New("key format error:" + key)
 		return
 	}
      
