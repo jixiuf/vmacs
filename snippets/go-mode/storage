@@ -85,7 +85,7 @@ func (this $1$3Key) MarshalText() (text []byte, err error) {
 	return []byte(this.String()), nil
 }
 func (this $1$3Key) MarshalJSON() ([]byte, error) {
-	return []byte("\"" + this.String() + "\""), nil
+	return []byte("\\"" + this.String() + "\\""), nil
 }
 
 func (this *$1$3Key) UnmarshalJSON(b []byte) error {
@@ -93,7 +93,7 @@ func (this *$1$3Key) UnmarshalJSON(b []byte) error {
 		return nil
 	}
 	s := string(b)
-	s = strings.Trim(s, "\"")
+	s = strings.Trim(s, "\\"")
 
 	if s == "" {
 		return nil
