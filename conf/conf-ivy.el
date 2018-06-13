@@ -181,7 +181,7 @@
 
 
 ;; ;; 主要为了支持 foo bar !far 模式
-;; (setq counsel-rg-base-command  " ~/.emacs.d/bin/rg.sh %s .")
+(setq counsel-rg-base-command  " ~/.emacs.d/bin/rg.sh -z %s .")
 ;; ;; 主要为了支持 foo bar !far 模式
 ;; (defadvice counsel-ag-function (around support-multimatch (arg) activate)
 ;;   "Grep in the current directory for STRING using BASE-CMD.
