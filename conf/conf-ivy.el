@@ -72,7 +72,9 @@
 ;;   (interactive)
 ;;   (unless (string= ivy-text "")
 ;;     (insert " ")))
-;; (define-key ivy-switch-buffer-map " " 'vmacs-space)
+(define-key ivy-switch-buffer-map (kbd "M-k") 'ivy-switch-buffer-kill)
+(define-key ivy-switch-buffer-map (kbd "s-k") 'ivy-switch-buffer-kill)
+(define-key ivy-switch-buffer-map (kbd "C-M-S-s-k") 'ivy-switch-buffer-kill)
 
 ;; (evil-leader/set-key "<lwindow>" 'ivy-switch-buffer) ;for windows
 
