@@ -172,7 +172,7 @@ func (this *$1$3DB) Get(ctx *context.Context, key storage.Key, object interface{
 		return err
 	}
 	if !has {
-		return nil
+		return storage.EmptyObjectError{Key: key.String()}
 	}
 
 	result, ok := object.(*${9:int64})
