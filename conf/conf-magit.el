@@ -20,6 +20,7 @@
 
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
 (define-key magit-mode-map "p" 'magit-push-popup)
+;; (define-key magit-mode-map "v" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)
 (magit-define-popup-action 'magit-push-popup ?p "Push Upstream or svn dcommit" 'vmacs-magit-push-default)
 (magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
@@ -28,6 +29,8 @@
 
 (require 'evil-magit)
 ;;(setq evil-window-map  ctl-w-map)
+(evil-magit-define-key evil-magit-state 'magit-mode-map
+                       "v"  'magit-push-popup)
 (evil-magit-define-key evil-magit-state 'magit-mode-map
                        "C-w"  evil-window-map)
 
