@@ -4,15 +4,15 @@
 ;;            ESC==`C-['
 ;;这样可以进行绑定的键好像少了一些,
 ;;下面的方法可以实现将`C-i' `C-m'绑定与`TAB' `RET'不同的func
-(defun vmacs-translate-keybind(&optional f) ;
-  (with-selected-frame (or f (selected-frame))
-    (when (display-graphic-p)
-      (define-key input-decode-map [?\C-i] [C-i]) ;(global-set-key (kbd "<C-i>") 'counsel-git)
-      (define-key input-decode-map [?\C-m] [C-m]) ; (global-set-key (kbd "<C-m>") 'counsel-git)
-      )))
+;; (defun vmacs-translate-keybind(&optional f) ;
+;;   (with-selected-frame (or f (selected-frame))
+;;     (when (display-graphic-p)
+;;       (define-key input-decode-map [?\C-i] [C-i]) ;(global-set-key (kbd "<C-i>") 'counsel-git)
+;;       (define-key input-decode-map [?\C-m] [C-m]) ; (global-set-key (kbd "<C-m>") 'counsel-git)
+;;       )))
 
-(add-hook 'after-make-frame-functions 'vmacs-translate-keybind)
-(add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
+;; (add-hook 'after-make-frame-functions 'vmacs-translate-keybind)
+;; (add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
 
 
 ;; iterm2下实同一些 终端下本没有的按键
