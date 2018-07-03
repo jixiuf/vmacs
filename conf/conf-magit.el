@@ -47,7 +47,7 @@
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
-  (define-key magit-status-mode-map "q" #'vmacs-magit-kill-buffers)
+  (define-key magit-status-mode-map "q" #'ignore)
   (let ((dir (magit-toplevel)))
     (unless (file-remote-p dir)
       (add-to-list 'magit-repository-directories dir))))

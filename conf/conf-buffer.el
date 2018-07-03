@@ -11,8 +11,8 @@
 (global-set-key  (kbd "s-k") 'vmacs-next-buffer) ; default on mac
 (global-set-key  (kbd "s-C-M-S-k") 'vmacs-next-buffer) ; hyper-k default on mac
 
-(define-key evil-normal-state-map "q" 'vmacs-prev-buffer)
-(with-eval-after-load 'dired (define-key dired-mode-map "q" 'vmacs-prev-buffer))
+;; (define-key evil-normal-state-map "q" 'vmacs-prev-buffer)
+;; (with-eval-after-load 'dired (define-key dired-mode-map "q" 'vmacs-prev-buffer))
 (define-key evil-normal-state-map "Q" 'kill-buffer-and-window)
 
 
