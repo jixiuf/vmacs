@@ -52,6 +52,8 @@
     (unless (file-remote-p dir)
       (add-to-list 'magit-repository-directories dir))))
 
+(evil-leader/set-key-for-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
+
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
 (add-hook 'magit-post-refresh-hook 'vmacs-update-repo-revision)
