@@ -11,7 +11,7 @@
  '(company-scrollbar-bg ((t (:background "RoyalBlue4"))))
  '(company-scrollbar-fg ((t (:background "green"))))
  '(company-template-field ((t (:background "green" :foreground "black"))))
- '(company-tooltip ((t (:foreground "green"))))
+ '(company-tooltip ((t (:background "gray0" :foreground "green"))))
  '(company-tooltip-annotation ((t (:foreground "#FBDE2D"))))
  '(company-tooltip-common ((t (:foreground "#FBDE2D"))))
  '(company-tooltip-selection ((t (:background "dark slate gray"))))
@@ -191,7 +191,7 @@
  '(menu-bar-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(dockerfile-mode helm-core git-timemachine json-mode iedit go-imports sane-term shell-toggle osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports sane-term shell-toggle osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face company-go auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-leader evil-magit flycheck git-commit go-eldoc go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")

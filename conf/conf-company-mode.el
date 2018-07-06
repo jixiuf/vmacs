@@ -1,4 +1,6 @@
 (require 'company)
+(require 'company-posframe)
+
 
 
 (with-eval-after-load 'company
@@ -68,6 +70,7 @@
         '(vmacs-company-complete-common-or-selection)))
 
 (global-company-mode 1)
+(company-posframe-mode 1)
 ;; (add-hook 'after-init-hook (lambda() (global-company-mode 1)))
 
 (defun vmacs-company-complete-common-or-selection()
