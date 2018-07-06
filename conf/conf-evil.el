@@ -319,8 +319,10 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 
 ;; C-3 加任一char ,start  and C-3 end ,then @char repeat
-(define-key evil-normal-state-map (kbd "C-[ [ a i") 'evil-record-macro) ;C-3 default q
-(define-key evil-normal-state-map (kbd "C-3") 'evil-record-macro) ;C-3 default q
+;; (define-key evil-normal-state-map (kbd "C-[ [ a i") 'evil-record-macro) ;C-3 default q
+;; (define-key evil-normal-state-map (kbd "C-3") 'evil-record-macro) ;C-3 default q
+(define-key evil-normal-state-map (kbd "C-3") #'evil-search-word-backward) ;C-3
+(define-key evil-normal-state-map (kbd "C-8") #'evil-search-word-forward) ;C-8
 
 ;; g; goto-last-change
 ;; g,  goto-last-change-reverse

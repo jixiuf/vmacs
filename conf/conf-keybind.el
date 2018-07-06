@@ -57,6 +57,7 @@
 ;; (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
 (global-set-key (kbd "C-9")   #'(lambda() (interactive)(insert "()")(backward-char 1)))
 (global-set-key (kbd "C-0")   #'(lambda() (interactive)(insert ")")))
+(global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))
 
 
 
