@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: log.Debug
-# key: dbg
-# --
-game.Logger.Debug(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
-}$2${1:$(if (string-match "%" yas-text) "\)" "")}

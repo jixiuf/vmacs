@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: glog.Warning
+# key: warn
+# --
+glog.Warning(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
+}$2${1:$(if (string-match "%" yas-text) "\)" "")}

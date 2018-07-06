@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: field
+# key: f
+# --
+
+${1:Field}    ${2:int64}    \`${3:form:"${1:$(un-camelcase-string yas/text)}" } ${4:json:"${1:$(un-camelcase-string yas/text)}"} \`
+$0

@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: endpoint
+# key: end
+# --
+type $1Req struct {
+	$0
+}
+
+func (this *$2Endpoint) $1(c *gin.Context) {
+	var req $1Req
+	err := this.BindRequest(c, &req)
+	if err != nil {
+		glog.Warning("$2Endpoint.$1 ", err)
+		http.OutError(c, http.ErrInvalidParam)
+		return
+	}
+	uid := this.GetUid64(c)
+	ctx := this.GetContext(c)
+    
+}    
