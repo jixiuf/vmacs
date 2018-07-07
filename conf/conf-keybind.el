@@ -57,7 +57,6 @@ they are in `bind-map-set-keys'."
 MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
 major mode. The rest of the arguments are treated exactly like
 they are in `bind-map-set-keys'."
-  (message "%s %s" major-modes states )
   (let ((major-modes (if (listp major-modes ) major-modes (list major-modes))))
     (dolist (mode major-modes)
       (let ((map (intern (format "vmacs-%s-map" mode)))
