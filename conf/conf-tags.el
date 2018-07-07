@@ -93,11 +93,11 @@
 (define-key evil-motion-state-map "gr" 'helm-gtags-find-rtag)
 (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
 
-;; (evil-leader/set-key "wge" 'helm-gtags-update-tags)
-;; (evil-leader/set-key "wgr" 'helm-gtags-find-rtag)
-;; (evil-leader/set-key "wgp" 'helm-gtags-parse-file)
-;; (evil-leader/set-key "wgi" 'helm-gtags-parse-file)
-;; (evil-leader/set-key "we" 'ctags-update)
+;; (vmacs-leader "wge" 'helm-gtags-update-tags)
+;; (vmacs-leader "wgr" 'helm-gtags-find-rtag)
+;; (vmacs-leader "wgp" 'helm-gtags-parse-file)
+;; (vmacs-leader "wgi" 'helm-gtags-parse-file)
+;; (vmacs-leader "we" 'ctags-update)
 
 
 (provide 'conf-tags)

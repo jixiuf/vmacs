@@ -107,7 +107,7 @@
 ;; evil-overriding-maps中的按键绑定 优先级高于evil-mode
 (add-to-list 'evil-overriding-maps '(vc-git-log-view-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(vc-svn-log-view-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(evil-leader--default-map . nil))
+(add-to-list 'evil-overriding-maps '(vmacs-leader-map . nil))
 (add-to-list 'evil-overriding-maps '(custom-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(ediff-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(package-menu-mode-map . nil))
@@ -143,9 +143,9 @@
 
 ;; (evil-update-pending-maps)
 
-(require 'evil-leader)
-(global-evil-leader-mode)
-(evil-leader/set-leader "<SPC>")
+;; (require 'evil-leader)
+;; (global-evil-leader-mode)
+;; (evil-leader/set-leader "<SPC>")
 ;; (setq-default evil-magit-state 'normal)
 
 ;; (setq display-line-numbers-current-absolute t)
@@ -359,7 +359,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "sy" 'evil-copy-sexp-at-point) ;kill-sexp,undo
 (define-key evil-normal-state-map "sk" (kbd "C-k"))
 (define-key evil-normal-state-map "su" (kbd "C-u 0 C-k")) ;H-i =C-u 删除从光标位置到行首的内容
-(evil-leader/set-key "h" 'evil-mark-whole-buffer)
+(vmacs-leader "h" 'evil-mark-whole-buffer)
 
 ;; (define-key evil-normal-state-map "so" 'helm-occur)
 
@@ -410,59 +410,59 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 
 
-(evil-leader/set-key "o" 'other-window)
-;; (evil-leader/set-key "G" 'helm-do-zgrep)
+(vmacs-leader "o" 'other-window)
+;; (vmacs-leader "G" 'helm-do-zgrep)
 ;; magit
 
 
 
 (autoload 'dired-jump "dired-x" "dired-jump" t)
-(evil-leader/set-key "j" 'dired-jump)
+(vmacs-leader "j" 'dired-jump)
 (global-set-key  (kbd "s-j") 'dired-jump)
 
 
-(evil-leader/set-key "l" 'ibuffer)
+(vmacs-leader "l" 'ibuffer)
 
-(evil-leader/set-key (kbd "C-g") 'keyboard-quit)
-(evil-leader/set-key "zd" 'sdcv-to-buffer)
+(vmacs-leader (kbd "C-g") 'keyboard-quit)
+(vmacs-leader "zd" 'sdcv-to-buffer)
 
-(evil-leader/set-key "s" 'evil-write-all)
+(vmacs-leader "s" 'evil-write-all)
 (global-set-key (kbd "C-x C-s") 'evil-write-all)
 (global-set-key (kbd "C-x s") 'evil-write-all)
 
-;; (evil-leader/set-key "S" 'save-buffer)
-;; (evil-leader/set-key "j" 'open-line-or-new-line-dep-pos)
-(evil-leader/set-key "rt" 'string-rectangle)
-(evil-leader/set-key "rk" 'kill-rectangle)
-(evil-leader/set-key "ry" 'yank-rectangle)
+;; (vmacs-leader "S" 'save-buffer)
+;; (vmacs-leader "j" 'open-line-or-new-line-dep-pos)
+(vmacs-leader "rt" 'string-rectangle)
+(vmacs-leader "rk" 'kill-rectangle)
+(vmacs-leader "ry" 'yank-rectangle)
 
-(evil-leader/set-key "nw" 'widen)
-(evil-leader/set-key "nn" 'narrow-to-region)
+(vmacs-leader "nw" 'widen)
+(vmacs-leader "nn" 'narrow-to-region)
 
-(evil-leader/set-key "xu" 'undo-tree-visualize)
-(evil-leader/set-key "xv" 'switch-to-scratch-buffer)
-(evil-leader/set-key "<RET>r" 'revert-buffer-with-coding-system) ;C-x<RET>r
-(evil-leader/set-key "(" 'kmacro-start-macro) ;C-x(
-(evil-leader/set-key ")" 'kmacro-end-macro) ;C-x
-(evil-leader/set-key "ca" 'org-agenda)
-(evil-leader/set-key "cc" 'toggle-case-fold)
-(evil-leader/set-key "u" 'backward-up-list)
-(evil-leader/set-key "t" 'org-agenda)
-(evil-leader/set-key "/" 'undo)
-(evil-leader/set-key "$" 'toggle-truncate-lines)
-(evil-leader/set-key  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
+(vmacs-leader "xu" 'undo-tree-visualize)
+(vmacs-leader "xv" 'switch-to-scratch-buffer)
+(vmacs-leader "<RET>r" 'revert-buffer-with-coding-system) ;C-x<RET>r
+(vmacs-leader "(" 'kmacro-start-macro) ;C-x(
+(vmacs-leader ")" 'kmacro-end-macro) ;C-x
+(vmacs-leader "ca" 'org-agenda)
+(vmacs-leader "cc" 'toggle-case-fold)
+(vmacs-leader "u" 'backward-up-list)
+(vmacs-leader "t" 'org-agenda)
+(vmacs-leader "/" 'undo)
+(vmacs-leader "$" 'toggle-truncate-lines)
+(vmacs-leader  "f;" 'ff-find-other-file) ;头文件与源文件间快速切换
 
-;; (evil-leader/set-key "pr" 'publish-my-note-recent)
-;; (evil-leader/set-key "pa" 'publish-my-note-all)
-;; (evil-leader/set-key "pp" 'publish-my-note-local-preview)
+;; (vmacs-leader "pr" 'publish-my-note-recent)
+;; (vmacs-leader "pa" 'publish-my-note-all)
+;; (vmacs-leader "pp" 'publish-my-note-local-preview)
 
-;; (evil-leader/set-key "\\" 'just-one-space-or-delete-horizontal-space)
+;; (vmacs-leader "\\" 'just-one-space-or-delete-horizontal-space)
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)
 
 
 (global-set-key (kbd "C-s") 'evil-search-forward)
 (global-set-key (kbd "C-r") 'evil-search-backward)
-(evil-leader/set-key "y" 'evil-paste-before) ;default P
+(vmacs-leader "y" 'evil-paste-before) ;default P
 
 ;; 默认visual选中即复制到剪切版，去掉这个功能
 (fset 'evil-visual-update-x-selection 'ignore)

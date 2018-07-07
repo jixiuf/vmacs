@@ -1,6 +1,6 @@
 ;; org-mode 相关
-(evil-leader/set-key "t" 'org-agenda)   ;列出todo list等
-(evil-leader/set-key "T" 'org-capture)  ;新加一个todo 条目等
+(vmacs-leader "t" 'org-agenda)   ;列出todo list等
+(vmacs-leader "T" 'org-capture)  ;新加一个todo 条目等
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))

@@ -61,8 +61,8 @@
 ;; 在光标处手动添加一个书签
 (define-key evil-normal-state-map "mm" 'bm-toggle) ;evil-set-marker
 
-(evil-leader/set-key "," 'bm-previous)  ;space, 回到上一个书签
-(evil-leader/set-key "." 'bm-next)      ;space. 下一个书签
+(vmacs-leader "," 'bm-previous)  ;space, 回到上一个书签
+(vmacs-leader "." 'bm-next)      ;space. 下一个书签
 
 
 (provide 'conf-bm)

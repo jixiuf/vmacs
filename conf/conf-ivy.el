@@ -76,23 +76,23 @@
 (define-key ivy-switch-buffer-map (kbd "s-k") 'ivy-switch-buffer-kill)
 (define-key ivy-switch-buffer-map (kbd "C-M-S-s-k") 'ivy-switch-buffer-kill)
 
-;; (evil-leader/set-key "<lwindow>" 'ivy-switch-buffer) ;for windows
+;; (vmacs-leader "<lwindow>" 'ivy-switch-buffer) ;for windows
 
-(evil-leader/set-key "SPC" 'ivy-switch-buffer)
-(evil-leader/set-key "ff" 'counsel-find-file)
-(evil-leader/set-key "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
-(evil-leader/set-key "fh" #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
-(evil-leader/set-key "fl" 'counsel-locate)
-(evil-leader/set-key "fg" 'counsel-git)
-(evil-leader/set-key "g" 'vmacs-counsel-rg-region-or-symbol)
-(evil-leader/set-key "fp" 'vmacs-counsel-git-grep-region-or-symbol)
+(vmacs-leader "SPC" 'ivy-switch-buffer)
+(vmacs-leader "ff" 'counsel-find-file)
+(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
+(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
+(vmacs-leader "fl" 'counsel-locate)
+(vmacs-leader "fg" 'counsel-git)
+(vmacs-leader "g" 'vmacs-counsel-rg-region-or-symbol)
+(vmacs-leader "fp" 'vmacs-counsel-git-grep-region-or-symbol)
 
-(evil-leader/set-key "?" 'counsel-descbinds)
-(evil-leader/set-key "wi" 'counsel-imenu)
-(evil-leader/set-key "b" 'ivy-resume)
-(evil-leader/set-key "wy" 'counsel-mark-ring)
-(evil-leader/set-key ";" 'counsel-M-x)
-(evil-leader/set-key "；" 'counsel-M-x)
+(vmacs-leader "?" 'counsel-descbinds)
+(vmacs-leader "wi" 'counsel-imenu)
+(vmacs-leader "b" 'ivy-resume)
+(vmacs-leader "wy" 'counsel-mark-ring)
+(vmacs-leader ";" 'counsel-M-x)
+(vmacs-leader "；" 'counsel-M-x)
 (global-set-key  (kbd "s-;") 'counsel-M-x)
 ;; gui 下让ctrl-i与tab 不同
 (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab

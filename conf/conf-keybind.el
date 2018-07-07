@@ -13,6 +13,114 @@
 
 ;; (add-hook 'after-make-frame-functions 'vmacs-translate-keybind)
 ;; (add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
+(require 'bind-map)
+(bind-map vmacs-leader-map
+  :keys ("M-m")
+  :evil-keys ("SPC")
+  ;; :override-minor-modes t
+  :evil-states (normal motion visual))
+
+
+;; (macroexpand '(vmacs-leader "b" 'forward-char))
+;; (bind-map-set-keys vmacs-leader-map "b" 'forward-char)
+(defmacro vmacs-leader(key def &rest bindings)
+  `(bind-map-set-keys  vmacs-leader-map ,key ,def ,@bindings))
+
+
+;; 这种方式会使用vmacs-leader-map 的keys等属性，但:bindings并不会继承
+;; 即便此处没有:bingding也一样
+;; (bind-map-for-mode-inherit my-markdown-map vmacs-leader-map
+;;   :major-modes (markdown-mode)
+;;   :bindings ("c" 'forward-button))
+
+;; 几种用法举例
+;; 默认dired spc有绑定按键，却space不会做为leader key
+;; vmacs-leader-for-major-mode 会为dired-mode 启用leader key
+;; (vmacs-leader-for-major-mode 'dired-mode )
+;; (vmacs-leader-for-major-mode '(dired-mode message-mode))
+;; 除了继承默认的leader外，dired 中特殊绑定 "b" 按键
+;; (vmacs-leader-for-major-mode 'dired-mode "b" 'forward-char)
+(defmacro vmacs-leader-for-major-mode (major-modes  &rest bindings)
+  "enable leader key  for the major-mode
+MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
+major mode. The rest of the arguments are treated exactly like
+they are in `bind-map-set-keys'."
+  `(vmacs-leader-for ,major-modes nil ,@bindings))
+
+
+
+;; 几种用法举例
+;; insert 模式下为特定的major-mode启动leader
+;; states 可以为nil 表示使用默认值'(normal motion visual evilified)
+(defun vmacs-leader-for (major-modes &optional states  &rest bindings)
+  "enable leader key  for the major-mode
+MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
+major mode. The rest of the arguments are treated exactly like
+they are in `bind-map-set-keys'."
+  (message "%s %s" major-modes states )
+  (let ((major-modes (if (listp major-modes ) major-modes (list major-modes))))
+    (dolist (mode major-modes)
+      (let ((map (intern (format "vmacs-%s-map" mode)))
+            (key  (pop bindings)) def)
+        (when (vmacs--leader-map-init-map mode map nil states)
+          (while key
+            (setq def (pop bindings))
+            (define-key (symbol-value map) (kbd key) def)
+            (setq key (pop bindings) )))))))
+
+
+
+;; 目前未验证是否可用
+;; state 可以为nil 表示normal 模式
+;; (vmacs-leader-for-minor-mode '(mode1) '(insert) "b" 'forward-cahr)
+;; (vmacs-leader-for-minor-mode '(mode1) nil "b" 'forward-cahr)
+;; (vmacs-leader-for-minor-mode '(mode1) nil )
+;; (vmacs-leader-for-minor-mode '(mode1)  )
+;; (vmacs-leader-for-minor-mode mode1 nil )
+;; (vmacs-leader-for-minor-mode mode1  )
+(defun vmacs-leader-for-minor-mode(minor-modes &optional states  &rest bindings)
+  "enable leader key  for the minor-mode
+MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
+minor mode. The rest of the arguments are treated exactly like
+they are in `bind-map-set-keys'."
+  (let ((minor-modes (if (listp minor-modes ) minor-modes (list minor-modes))))
+    (dolist (mode minor-modes)
+      (let ((map (intern (format "vmacs-%s-map" mode)))
+            (key  (pop bindings)) def)
+        (when (vmacs--leader-map-init-map mode map t states)
+          (while key
+            (setq def (pop bindings))
+            (define-key (symbol-value map) (kbd key) def)
+            (setq key (pop bindings) )))))))
+
+
+
+(defun vmacs--leader-map-init-map(mode map &optional minor states)
+  (let ((prefix (intern (format "%s-prefix" map))))
+    (or (boundp prefix)
+        (progn
+          (eval
+           `(progn
+              (bind-map ,map
+                :prefix-cmd ,prefix
+                ,(if minor :minor-modes :major-modes) (,mode)
+                :keys ("M-m")
+                ;; :override-minor-modes t
+                :evil-keys ("SPC")
+                :evil-states ,(if states states '(normal motion visual evilified)))
+              ;; 默认会继承vmacs-leader-map 的全局设置
+              (set-keymap-parent ,map vmacs-leader-map)))
+          (boundp prefix)))))
+
+
+;; 为这些默认空格被占用的mode也起用leader mode
+(vmacs-leader-for-major-mode '(magit-mode dired-mode message-mode ibuffer-mode ivy-occur-mode gre-mode helm-mode help-mode))
+
+(vmacs-leader-for '(diff-mode) '(insert))
+
+
+
+
 
 
 ;; iterm2下实同一些 终端下本没有的按键

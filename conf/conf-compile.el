@@ -16,9 +16,9 @@
     "r" 'recompile))
 
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
-(evil-leader/set-key "<f5>" 'compile-dwim-compile)
-(evil-leader/set-key "<f6>" 'compile-dwim-run)
-(evil-leader/set-key "<f7>" 'recompile)
+(vmacs-leader "<f5>" 'compile-dwim-compile)
+(vmacs-leader "<f6>" 'compile-dwim-run)
+(vmacs-leader "<f7>" 'recompile)
 ;;                                ;
 
 

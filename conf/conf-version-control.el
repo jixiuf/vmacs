@@ -8,25 +8,25 @@
 (autoload 'magit-status "magit" "magit")
 (with-eval-after-load 'magit (require 'conf-magit))
 
-(evil-leader/set-key "vv" 'vc-next-action)
-(evil-leader/set-key "vu" 'vc-revert)
-(evil-leader/set-key "vl" 'vc-print-log)
-(evil-leader/set-key "vL" 'vc-print-root-log)
-(evil-leader/set-key "v+" 'vc-update)
-(evil-leader/set-key "vf" 'vmacs-magit-pull-default)
-(evil-leader/set-key "vg" 'vc-annotate)
-(evil-leader/set-key "vd" 'vc-dir)
-(evil-leader/set-key "v=" 'vc-diff)
-(evil-leader/set-key "=" 'vc-diff)
-(evil-leader/set-key "+" 'vc-ediff)
+(vmacs-leader "vv" 'vc-next-action)
+(vmacs-leader "vu" 'vc-revert)
+(vmacs-leader "vl" 'vc-print-log)
+(vmacs-leader "vL" 'vc-print-root-log)
+(vmacs-leader "v+" 'vc-update)
+(vmacs-leader "vf" 'vmacs-magit-pull-default)
+(vmacs-leader "vg" 'vc-annotate)
+(vmacs-leader "vd" 'vc-dir)
+(vmacs-leader "v=" 'vc-diff)
+(vmacs-leader "=" 'vc-diff)
+(vmacs-leader "+" 'vc-ediff)
 
-(evil-leader/set-key "vj" 'magit-status) ;like dired-jump
-(evil-leader/set-key "vp" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(evil-leader/set-key "vs" 'magit-file-popup)
-(evil-leader/set-key "ve" 'magit-commit-extend)
-(evil-leader/set-key "va" 'magit-commit-amend)
+(vmacs-leader "vj" 'magit-status) ;like dired-jump
+(vmacs-leader "vp" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
+(vmacs-leader "vs" 'magit-file-popup)
+(vmacs-leader "ve" 'magit-commit-extend)
+(vmacs-leader "va" 'magit-commit-amend)
 
-(evil-leader/set-key "vm" 'git-timemachine-toggle)
+(vmacs-leader "vm" 'git-timemachine-toggle)
 (add-hook 'git-timemachine-mode-hook 'vmacs-git-timemachine-hook)
 (defun vmacs-git-timemachine-hook()
   (evil-define-key 'normal 'local "n" 'git-timemachine-show-next-revision)
@@ -98,10 +98,8 @@
 
 
 (with-eval-after-load 'diff-mode
-  (evil-add-hjkl-bindings diff-mode-map 'insert
-    (kbd "SPC") evil-leader--default-map
-    "t" 'toggle-diff-whitespace-eol
-))
+  (define-key diff-mode-map "SPC" vmacs-leader-map)
+  (define-key diff-mode-map "t" 'toggle-diff-whitespace-eol))
 
 
 ;; c-xvl列出当前文件的历史版本

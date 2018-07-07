@@ -25,6 +25,7 @@
 
 
 
+(require 'diff-mode)
 (require 'log-edit)
 (require 'log-view)
 (require 'tramp)
@@ -134,7 +135,7 @@
 (require 'yasnippet)
 (require 'async)
 (require 'evil)
-(require 'evil-leader)
+(require 'bind-map)
 (require 'evil-magit)
 (require 'evil-textobj-anyblock)
 (require 'company)

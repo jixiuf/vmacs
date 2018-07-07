@@ -2,11 +2,11 @@
 (eval-when-compile (require 'cl-macs))
 ;; bury-boring-windows with `C-gC-g'
 
-(evil-leader/set-key "d" 'vmacs-prev-buffer)
-(evil-leader/set-key "k" 'kill-buffer-or-server-edit) ;
-(evil-leader/set-key "q" 'kill-other-buffers) ;
+(vmacs-leader "d" 'vmacs-prev-buffer)
+(vmacs-leader "k" 'kill-buffer-or-server-edit) ;
+(vmacs-leader "q" 'kill-other-buffers) ;
 
-(evil-leader/set-key "fr" 'vmacs-undo-kill-buffer)
+(vmacs-leader "fr" 'vmacs-undo-kill-buffer)
 
 (global-set-key  (kbd "s-k") 'vmacs-next-buffer) ; default on mac
 (global-set-key  (kbd "s-C-M-S-k") 'vmacs-next-buffer) ; hyper-k default on mac

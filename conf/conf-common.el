@@ -264,8 +264,8 @@
 ;;快速跳转到当前buffer最后一次修改的位置 利用了undo定位最后一次在何处做了修改
 ;; (autoload 'goto-last-change "goto-last-change" "Set point to the position of the last change." t)
 (autoload 'goto-last-change-reverse "goto-chg.el" "goto last change reverse" t)
-(evil-leader/set-key "x/" 'goto-last-change)
-(evil-leader/set-key "x," 'goto-last-change-reverse)
+(vmacs-leader "x/" 'goto-last-change)
+(vmacs-leader "x," 'goto-last-change-reverse)
 
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 

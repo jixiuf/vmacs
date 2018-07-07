@@ -122,7 +122,7 @@
 ;; ;; Y不常用故
 ;; (define-key evil-normal-state-map "Y" 'evil-yank-to-clipboard)
 ;; (define-key evil-motion-state-map "Y" 'evil-yank-to-clipboard)
-;; ;; (evil-leader/set-key "y" 'evil-yank-to-clipboard)
+;; ;; (vmacs-leader "y" 'evil-yank-to-clipboard)
 
 ;; (when (equal system-type 'darwin)
 ;;   (global-set-key (kbd "s-c") 'evil-yank-to-clipboard) ;等同于 "+y
