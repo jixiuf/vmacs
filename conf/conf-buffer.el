@@ -3,7 +3,7 @@
 ;; bury-boring-windows with `C-gC-g'
 
 (vmacs-leader "d" 'vmacs-prev-buffer)
-(vmacs-leader "k" 'kill-buffer-or-server-edit) ;
+(vmacs-leader "k" 'vmacs-kill-buffer-dwim) ;
 (vmacs-leader "q" 'kill-other-buffers) ;
 
 (vmacs-leader "fr" 'vmacs-undo-kill-buffer)

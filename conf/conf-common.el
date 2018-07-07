@@ -250,8 +250,8 @@
   (define-key org-mode-map "\C-a" 'org-mode-smart-beginning-of-line)
   (define-key org-mode-map "\C-e" 'org-mode-smart-end-of-line))
 
-(global-set-key (kbd "C-x k") 'kill-buffer-or-server-edit)
-(global-set-key (kbd "C-x C-k") 'kill-buffer-or-server-edit)
+(global-set-key (kbd "C-x k") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "C-x C-k") 'vmacs-kill-buffer-dwim)
 
 (global-set-key "\M-;" 'vmacs-comment-dwim-line)
 

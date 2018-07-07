@@ -26,7 +26,7 @@
 (setq ibuffer-default-display-maybe-show-predicates t)
 
 (define-key ibuffer-mode-map (kbd "M-=") 'ibuffer-ediff-merge)
-(define-key ibuffer-mode-map (kbd "q") 'kill-buffer-or-server-edit)
+(define-key ibuffer-mode-map (kbd "q") 'vmacs-kill-buffer-dwim)
 ;; (define-key ibuffer-mode-map (kbd "C-x C-f") 'ido-find-file)
 (define-key ibuffer-mode-map "r" 'ibuffer-update)
 (define-key ibuffer-mode-map "g" 'ibuffer-toggle-maybe-show)

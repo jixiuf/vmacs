@@ -316,23 +316,30 @@ Move point to end-of-line ,if point was already at that position,
 ;; 退出emacsclient,否则就是普通的关闭文件
 (autoload 'server-edit "server")
 ;;;###autoload
-(defun kill-buffer-or-server-edit(&optional buf)
+(defun vmacs-kill-buffer-dwim(&optional buf)
   (interactive)
   (with-current-buffer (or buf (current-buffer))
-    (message "kill buffer %s" (buffer-name buf))
-    (when (equal (buffer-name buf) "*scratch*")
+    (cond
+     ((equal (buffer-name buf) "*scratch*")
       (copy-region-as-kill (point-min)(point-max)))
-    (if (and (featurep 'server)
-             (boundp 'server-buffer-clients)
-             server-buffer-clients)
-        (server-edit)
-      (kill-this-buffer))))
+     ((and (featurep 'server)
+           (boundp 'server-buffer-clients)
+           server-buffer-clients)
+      (server-edit))
+     ( (derived-mode-p 'special-mode)
+       (call-interactively 'quit-window))
+     ( (derived-mode-p 'magit-mode)
+       (call-interactively 'magit-mode-bury-buffer))
+     (t
+      (message "kill buffer %s" (buffer-name buf))
+      (kill-this-buffer))
+     )))
 
 ;;;###autoload
 (defun kill-other-buffers ()
   "kill all buffer which not showing in window."
   (interactive)
-  (mapc 'kill-buffer-or-server-edit
+  (mapc 'vmacs-kill-buffer-dwim
         (cl-remove-if 'get-buffer-window (buffer-list)))
   (message "all other buffers are killed."))
 
