@@ -121,6 +121,7 @@ they are in `bind-map-set-keys'."
    magit-blame-mode
    magit-reflog-mode
    magit-branch-mode
+   org-agenda-mode
    dired-mode message-mode ibuffer-mode
    ivy-occur-grep-mode
    ivy-occur-mode gre-mode helm-mode help-mode))
