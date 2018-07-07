@@ -18,7 +18,8 @@
 
 
 (defvar boring-window-modes
-  '(help-mode compilation-mode log-view-mode log-edit-mode org-agenda-mode ibuffer-mode))
+  '(help-mode compilation-mode log-view-mode log-edit-mode
+              org-agenda-mode magit-revision-mode ibuffer-mode))
 
 (defvar boring-window-bof-name-regexp
   (rx (or

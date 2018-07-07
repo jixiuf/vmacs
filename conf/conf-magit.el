@@ -53,6 +53,8 @@
       (add-to-list 'magit-repository-directories dir))))
 
 (evil-leader/set-key-for-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
+(evil-leader/set-key-for-mode  'magit-revision-mode "k" 'vmacs-magit-kill-buffers)
+(evil-leader/set-key-for-mode  'magit-log-mode "k" 'magit-mode-bury-buffer)
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
