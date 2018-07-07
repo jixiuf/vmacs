@@ -113,7 +113,17 @@ they are in `bind-map-set-keys'."
 
 
 ;; 为这些默认空格被占用的mode也起用leader mode
-(vmacs-leader-for-major-mode '(magit-mode dired-mode message-mode ibuffer-mode ivy-occur-mode gre-mode helm-mode help-mode))
+(vmacs-leader-for-major-mode
+ '(magit-mode
+   magit-status-mode magit-process-mode
+   magit-diff-mode
+   magit-log-mode
+   magit-blame-mode
+   magit-reflog-mode
+   magit-branch-mode
+   dired-mode message-mode ibuffer-mode
+   ivy-occur-grep-mode
+   ivy-occur-mode gre-mode helm-mode help-mode))
 
 (vmacs-leader-for '(diff-mode) '(insert))
 
