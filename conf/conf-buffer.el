@@ -37,6 +37,9 @@
        "\*Shell Command Output\*"
        "\*sdcv\*"
        "\*Messages\*"
+       "magit-process"
+       "magit-diff"
+       "magit-stash"
        "\*Ido Completions\*")))
 
 
