@@ -53,7 +53,7 @@
       (add-to-list 'magit-repository-directories dir))))
 
 (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
-(vmacs-leader-for-major-mode  'magit-revision-mode "k" 'vmacs-magit-kill-buffers)
+(vmacs-leader-for-major-mode  'magit-revision-mode "k" 'magit-mode-bury-buffer)
 (vmacs-leader-for-major-mode  'magit-log-mode "k" 'magit-mode-bury-buffer)
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)

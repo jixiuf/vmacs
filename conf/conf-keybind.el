@@ -14,6 +14,24 @@
 ;; (add-hook 'after-make-frame-functions 'vmacs-translate-keybind)
 ;; (add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
 (require 'bind-map)
+
+(defun vmacs--leader-map-init-map(mode map &optional minor states)
+  (let ((prefix (intern (format "%s-prefix" map))))
+    (or (boundp prefix)
+        (progn
+          (eval
+           `(progn
+              (bind-map ,map
+                :prefix-cmd ,prefix
+                ,(if minor :minor-modes :major-modes) (,mode)
+                :keys ("M-m")
+                ;; :override-minor-modes t
+                :evil-keys ("SPC")
+                :evil-states ,(if states states '(normal motion visual evilified)))
+              ;; 默认会继承vmacs-leader-map 的全局设置
+              (set-keymap-parent ,map vmacs-leader-map)))
+          (boundp prefix)))))
+
 (bind-map vmacs-leader-map
   :keys ("M-m")
   :evil-keys ("SPC")
@@ -92,45 +110,51 @@ they are in `bind-map-set-keys'."
             (define-key (symbol-value map) (kbd key) def)
             (setq key (pop bindings) )))))))
 
+;; (define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
+;;;###autoload
+(defmacro define-key-lazy (mode-map key cmd  feature)
+  "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
+  `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd)))
+
+(defmacro vmacs-leader-for-map (map &optional feature)
+  `(define-key-lazy ,map (kbd "SPC") vmacs-leader-map ,feature))
 
 
-(defun vmacs--leader-map-init-map(mode map &optional minor states)
-  (let ((prefix (intern (format "%s-prefix" map))))
-    (or (boundp prefix)
-        (progn
-          (eval
-           `(progn
-              (bind-map ,map
-                :prefix-cmd ,prefix
-                ,(if minor :minor-modes :major-modes) (,mode)
-                :keys ("M-m")
-                ;; :override-minor-modes t
-                :evil-keys ("SPC")
-                :evil-states ,(if states states '(normal motion visual evilified)))
-              ;; 默认会继承vmacs-leader-map 的全局设置
-              (set-keymap-parent ,map vmacs-leader-map)))
-          (boundp prefix)))))
-
-
-;; 为这些默认空格被占用的mode也起用leader mode
-(vmacs-leader-for-major-mode
- '(magit-mode
-   magit-status-mode magit-process-mode
-   magit-diff-mode
-   magit-log-mode
-   magit-blame-mode
-   magit-reflog-mode
-   magit-branch-mode
-   org-agenda-mode
-   dired-mode message-mode ibuffer-mode
-   ivy-occur-grep-mode
-   ivy-occur-mode gre-mode helm-mode help-mode))
-
-(vmacs-leader-for '(diff-mode) '(insert))
+(vmacs-leader-for-map magit-mode-map 'magit)
+(vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
+(vmacs-leader-for-map dired-mode-map 'dired)
+(vmacs-leader-for-map ivy-occur-grep-mode-map 'ivy)
+(vmacs-leader-for-map calc-mode-map 'calc)
+(vmacs-leader-for-map Info-mode-map 'info)
+(vmacs-leader-for-map grep-mode-map 'grep)
+(vmacs-leader-for-map help-mode-map 'help-mode)
+(vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
+(vmacs-leader-for-map ert-results-mode-map 'ert)
+(vmacs-leader-for-map compilation-mode-map 'compile)
 
 
 
 
+
+;; ;; 为这些默认空格被占用的mode也起用leader mode
+;; (vmacs-leader-for-major-mode
+;;  '(magit-mode
+;;    magit-status-mode magit-process-mode
+;;    magit-diff-mode
+;;    magit-log-mode
+;;    magit-blame-mode
+;;    magit-reflog-mode
+;;    magit-branch-mode
+;;    org-agenda-mode
+;;    vc-git-log-view-mode
+;;    vc-svn-log-view-mode
+;;    dired-mode message-mode ibuffer-mode
+;;    ivy-occur-grep-mode
+;;    calc-mode
+;;    Info-mode
+;;    ivy-occur-mode gre-mode helm-mode help-mode))
+
+;; (vmacs-leader-for '(diff-mode) '(insert))
 
 
 ;; iterm2下实同一些 终端下本没有的按键

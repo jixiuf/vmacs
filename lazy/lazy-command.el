@@ -321,7 +321,8 @@ Move point to end-of-line ,if point was already at that position,
   (with-current-buffer (or buf (current-buffer))
     (cond
      ((equal (buffer-name buf) "*scratch*")
-      (copy-region-as-kill (point-min)(point-max)))
+      (copy-region-as-kill (point-min)(point-max))
+      (kill-this-buffer))
      ((and (featurep 'server)
            (boundp 'server-buffer-clients)
            server-buffer-clients)
@@ -330,6 +331,10 @@ Move point to end-of-line ,if point was already at that position,
        (call-interactively 'quit-window))
      ( (derived-mode-p 'magit-mode)
        (call-interactively 'magit-mode-bury-buffer))
+     ( (derived-mode-p 'calc-mode)
+       (call-interactively 'calc-quit))
+     ( (derived-mode-p 'Info-mode)
+       (call-interactively 'Info-exit))
      (t
       (message "kill buffer %s" (buffer-name buf))
       (kill-this-buffer))

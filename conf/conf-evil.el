@@ -87,7 +87,9 @@
   (calc-word-size 64)
   (define-key calc-mode-map (kbd "j") 'evil-next-line)
   (define-key calc-mode-map (kbd "k") 'evil-previous-line)
+  (define-key calc-mode-map (kbd "SPC") nil)
   (define-key calc-mode-map (kbd "y") 'evil-yank))
+
 (add-hook 'calc-mode-hook 'vmacs-calc-hook)
 
 
