@@ -9,7 +9,7 @@
 (with-eval-after-load 'magit (require 'conf-magit))
 
 (vmacs-leader "vv" 'vc-next-action)
-(vmacs-leader "vu" 'vc-revert)
+(vmacs-leader "vr" 'vc-revert)
 (vmacs-leader "vl" 'vc-print-log)
 (vmacs-leader "vL" 'vc-print-root-log)
 (vmacs-leader "v+" 'vc-update)
@@ -21,6 +21,7 @@
 (vmacs-leader "+" 'vc-ediff)
 
 (vmacs-leader "vj" 'magit-status) ;like dired-jump
+(vmacs-leader "vu" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader "vp" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader "vs" 'magit-file-popup)
 (vmacs-leader "ve" 'magit-commit-extend)

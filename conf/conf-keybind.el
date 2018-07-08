@@ -123,6 +123,8 @@ they are in `bind-map-set-keys'."
 (vmacs-leader-for-map magit-mode-map 'magit)
 (vmacs-leader-for-map magit-diff-mode-map 'magit)
 (vmacs-leader-for-map magit-stash-mode-map 'magit)
+(vmacs-leader-for-map log-view-mode-map 'magit)
+
 (vmacs-leader-for-map tabulated-list-mode-map 'tabulated-list)
 (vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
 (vmacs-leader-for-map dired-mode-map 'dired)
