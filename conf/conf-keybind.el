@@ -131,11 +131,7 @@ they are in `bind-map-set-keys'."
 (vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
 (vmacs-leader-for-map ert-results-mode-map 'ert)
 (vmacs-leader-for-map compilation-mode-map 'compile)
-
-
-
-
-
+(vmacs-leader-for '(diff-mode) '(insert))
 ;; ;; 为这些默认空格被占用的mode也起用leader mode
 ;; (vmacs-leader-for-major-mode
 ;;  '(magit-mode
@@ -154,7 +150,6 @@ they are in `bind-map-set-keys'."
 ;;    Info-mode
 ;;    ivy-occur-mode gre-mode helm-mode help-mode))
 
-;; (vmacs-leader-for '(diff-mode) '(insert))
 
 
 ;; iterm2下实同一些 终端下本没有的按键

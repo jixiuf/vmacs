@@ -327,18 +327,19 @@ Move point to end-of-line ,if point was already at that position,
            (boundp 'server-buffer-clients)
            server-buffer-clients)
       (server-edit))
-     ( (derived-mode-p 'special-mode)
-       (call-interactively 'quit-window))
      ( (derived-mode-p 'magit-mode)
        (call-interactively 'magit-mode-bury-buffer))
      ( (derived-mode-p 'calc-mode)
        (call-interactively 'calc-quit))
      ( (derived-mode-p 'Info-mode)
        (call-interactively 'Info-exit))
+     ( (derived-mode-p 'special-mode)
+       (  (get-buffer-process buf)
+          (bury-buffer-and-window)
+          (kill-buffer-and-window)))
      (t
       (message "kill buffer %s" (buffer-name buf))
-      (kill-this-buffer))
-     )))
+      (kill-this-buffer)))))
 
 ;;;###autoload
 (defun kill-other-buffers ()
