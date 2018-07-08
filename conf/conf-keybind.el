@@ -136,6 +136,8 @@ they are in `bind-map-set-keys'."
 (vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
 (vmacs-leader-for-map ert-results-mode-map 'ert)
 (vmacs-leader-for-map compilation-mode-map 'compile)
+(vmacs-leader-for-map debugger-mode 'debug)
+
 (vmacs-leader-for '(diff-mode) '(insert))
 ;; ;; 为这些默认空格被占用的mode也起用leader mode
 ;; (vmacs-leader-for-major-mode
