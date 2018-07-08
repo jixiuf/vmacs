@@ -27,6 +27,7 @@
 ;; (define-key magit-mode-map "v" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)
 (magit-define-popup-action 'magit-push-popup ?p "Push Upstream or svn dcommit" 'vmacs-magit-push-default)
+(magit-define-popup-action 'magit-push-popup ?v "Push Upstream or svn dcommit" 'vmacs-magit-push-default)
 (magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
 (magit-define-popup-action 'magit-rebase-popup ?g "Refresh" 'magit-refresh)
 (magit-define-popup-action 'magit-rebase-popup ?r "Refresh" 'magit-refresh)
