@@ -340,6 +340,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-normal-state-map "sa" 'evil-begin-of-defun)
+(define-key evil-normal-state-map "sw" 'evil-begin-of-defun)
 
 ;; (define-key evil-normal-state-map "sp" 'evil-paste-pop)
 ;; (define-key evil-normal-state-map "sP" 'evil-paste-pop)
