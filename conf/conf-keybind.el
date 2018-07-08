@@ -199,16 +199,24 @@ they are in `bind-map-set-keys'."
 (global-set-key (kbd "C-9")   #'(lambda() (interactive)(insert "()")(backward-char 1)))
 (global-set-key (kbd "C-0")   #'(lambda() (interactive)(insert ")")))
 (global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))
+(defun vmacs-isearch-insert_()
+  (interactive)
+  (isearch-printing-char ?_))
+(define-key isearch-mode-map  (kbd "C--")   'vmacs-isearch-insert_)
+(defun vmacs-isearch-insert-quote()
+  (interactive)
+  (isearch-printing-char ?\"))
+
+(define-key isearch-mode-map  (kbd "C-'")   'vmacs-isearch-insert-quote)
 (global-set-key (kbd "C-'")   #'(lambda() (interactive)(insert "\"\"")(backward-char 1)))
+
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
 (global-set-key (kbd "C-8")   #'(lambda() (interactive)(insert "*")))
+(defun vmacs-isearch-insert-shift1()
+  (interactive)
+  (isearch-printing-char ?\!))
 (global-set-key (kbd "C-1")   #'(lambda() (interactive)(insert "!")))
-
-
-
-
-
-
+(define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
 
 (define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
