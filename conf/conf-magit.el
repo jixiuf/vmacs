@@ -21,7 +21,7 @@
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
 (define-key magit-mode-map "d" 'magit-section-toggle)
 (define-key magit-mode-map (kbd "TAB") 'magit-diff-popup)
-(define-key magit-mode-map [(tab)] "TAB") 'magit-diff-popup)
+(define-key magit-mode-map [(tab)]  'magit-diff-popup)
 
 (define-key magit-mode-map "p" 'magit-push-popup)
 ;; (define-key magit-mode-map "v" 'magit-push-popup)
