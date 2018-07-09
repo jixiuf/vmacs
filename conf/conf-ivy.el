@@ -30,7 +30,9 @@
                               (t . ivy--regex-plus)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
-(setq counsel-rg-base-command  "rg -S --no-heading --line-number --search-zip --color never %s .")
+;; (setq counsel-rg-base-command  "rg -S --no-heading --line-number --search-zip --color never %s .")
+(setq counsel-rg-base-command  "~/.emacs.d/bin/rgwrapper -z %s ")
+
 
 (setq magit-completing-read-function 'ivy-completing-read)
 (setq counsel-find-file-at-point t)
@@ -183,7 +185,6 @@
 
 
 ;; ;; 主要为了支持 foo bar !far 模式
-(setq counsel-rg-base-command  " ~/.emacs.d/bin/rg.sh -z %s .")
 ;; ;; 主要为了支持 foo bar !far 模式
 ;; (defadvice counsel-ag-function (around support-multimatch (arg) activate)
 ;;   "Grep in the current directory for STRING using BASE-CMD.
