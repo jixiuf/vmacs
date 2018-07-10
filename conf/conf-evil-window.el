@@ -30,6 +30,8 @@
                 evil-window-rotate-downwards
                 vmacs-split-window-or-other-window
                 vmacs-split-window-or-prev-window
+                magit-show-commit
+                magit-stash-show
                 avy-goto-word-1
                 ace-jump-mode-pop-mark)))
 
