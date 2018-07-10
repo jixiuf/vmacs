@@ -2,6 +2,7 @@
 EMACS ?= emacs
 BATCH  = $(EMACS) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 compile:
+	cd ./bin/&&go build ./rgwrapper.go
 	@echo "delete *.elc 以避免有问题的elc文件影响编译"
 	@rm -rf *.elc
 	@rm -rf ./lazy/*.elc
