@@ -142,13 +142,13 @@ func (this *$1$3DB) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap
 		return nil
 	}
 
-	var sql string = "select ${8:id},${1:$(un-camelcase-string yas/text)},${3:$(un-camelcase-string yas/text)} from ${5:$(un-camelcase-string yas/text)} where(${1:$(un-camelcase-string yas/text)},${3:$(un-camelcase-string yas/text)}) in ( "
+	var sql string = "select ${8:id},${1:$(un-camelcase-string yas/text)},${3:$(un-camelcase-string yas/text)} from ${5:$(un-camelcase-string yas/text)} where ( "
 	for idx, key := range keys {
 		k:=key.($1$3Key)
 		if idx == len(keys)-1 {
-			sql += fmt.Sprintf("(%d,%d)", k.$1,k.$3)
+			sql += fmt.Sprintf("(${1:$(un-camelcase-string yas/text)}=%d and ${3:$(un-camelcase-string yas/text)}=%d)", k.$1,k.$3)
 		} else {
-			sql += fmt.Sprintf("(%d,%d),", k.$1,k.$3)
+			sql += fmt.Sprintf("(${1:$(un-camelcase-string yas/text)}=%d and ${3:$(un-camelcase-string yas/text)}=%d) or ", k.$1,k.$3)
 		}
 	}
 	sql += " )"
