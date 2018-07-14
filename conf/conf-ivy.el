@@ -86,7 +86,7 @@
 (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
 (vmacs-leader "fl" 'counsel-locate)
 (vmacs-leader "fg" 'counsel-git)
-(vmacs-leader "g" 'vmacs-counsel-rg-region-or-symbol)
+(vmacs-leader "g" 'vmacs-counsel-rg)
 (vmacs-leader "fp" 'vmacs-counsel-git-grep-region-or-symbol)
 
 (vmacs-leader "?" 'counsel-descbinds)
@@ -132,10 +132,10 @@
 (with-eval-after-load 'counsel
   (define-key counsel-find-file-map (kbd "C-l") 'counsel-up-directory)
   (define-key counsel-find-file-map (kbd "C-h") 'counsel-up-directory)
-  (define-key counsel-ag-map (kbd "C-l") 'counsel-ag-up-directory)
-  (define-key counsel-ag-map (kbd "C-o") 'counsel-rg-set-directory)
-  (define-key counsel-ag-map (kbd "C-;") 'counsel-ag-toggle-git-root)
-  (define-key counsel-ag-map (kbd "C-h") 'counsel-ag-up-directory)
+  (define-key counsel-ag-map (kbd "C-l") 'vmacs-counsel-ag-up-directory)
+  (define-key counsel-ag-map (kbd "C-o") 'vmacs-counsel-rg-select-directory)
+  (define-key counsel-ag-map (kbd "C-;") 'vmacs-counsel-ag-toggle-git-root)
+  (define-key counsel-ag-map (kbd "C-h") 'vmacs-counsel-ag-up-directory)
   (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
   (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
 

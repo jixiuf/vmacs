@@ -58,7 +58,7 @@
 ;;   (interactive "P")
 ;;   (if current-prefix-arg
 ;;       (vmacs-counsel-git-grep-region-or-symbol)
-;;     (call-interactively 'vmacs-counsel-rg-region-or-symbol)))
+;;     (call-interactively 'vmacs-counsel-rg)))
 
   ;; (if (vc-find-root default-directory ".git")
   ;;     (call-interactively 'counsel-git-grep)
@@ -76,7 +76,7 @@
          (counsel-git-grep nil nil)))
 
 ;;;###autoload
-(defun vmacs-counsel-rg-region-or-symbol (&optional arg)
+(defun vmacs-counsel-rg (&optional arg)
   "Use `counsel-rg' to search for the selected region or
  the symbol around point in the current project with riggrep"
   (interactive "P")
@@ -95,7 +95,7 @@
                  (concat "rg in " (abbreviate-file-name default-directory)))))
 
 ;;;###autoload
-(defun counsel-ag-up-directory ()
+(defun vmacs-counsel-ag-up-directory ()
   "Go to the parent directory."
   (interactive)
   (let* ((cur-dir (directory-file-name (abbreviate-file-name default-directory)))
@@ -109,11 +109,11 @@
 
 (defvar vmacs-last-ag-directory default-directory)
 ;;;###autoload
-(defun counsel-ag-toggle-git-root ()
-  "Go to the parent directory."
+(defun vmacs-counsel-ag-toggle-git-root ()
+  "Toggle go to the git root directory."
   (interactive)
   (if current-prefix-arg
-      (counsel-rg-set-directory)
+      (vmacs-counsel-rg-select-directory)
     (let (dir (vc-root (vc-find-root default-directory ".git")))
       (if (string= (expand-file-name default-directory)
                    (expand-file-name vc-root))
@@ -121,6 +121,7 @@
         (setq dir (abbreviate-file-name vc-root)))
       (setf (ivy-state-directory ivy-last) dir)
       (setf (ivy-state-prompt ivy-last) (concat "rg in " dir))
+      (setq vmacs-last-ag-directory default-directory)
       (setq default-directory dir))
     (counsel-ag-function ivy-text)))
 
@@ -128,8 +129,8 @@
 (defvar vmacs-last-ivy-text )
 ;; (defvar vmacs-last-state )
 ;;;###autoload
-(defun counsel-rg-set-directory()
-  "Go to the parent directory."
+(defun vmacs-counsel-rg-select-directory()
+  " dynamicly select directory in counsel-ag session."
   (interactive)
   (setq vmacs-last-ivy-text (or ivy-text ""))
   ;; (setq vmacs-last-state ivy-last)
