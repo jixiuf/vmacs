@@ -6,6 +6,8 @@
 (setq-default smex-save-file (expand-file-name "./cache/smex" user-emacs-directory))
 (setq-default smex-history-length 15)
 (setq ivy-use-virtual-buffers t)
+(setq counsel-find-file-at-point t)
+(setq counsel-preselect-current-file t)
 (setq ivy-initial-inputs-alist nil)
 (setq ivy-extra-directories '("./")) ; default value: ("../" "./")
 (setq ivy-wrap t)
