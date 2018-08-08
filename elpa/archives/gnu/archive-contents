@@ -341,7 +341,7 @@
 	     ((:keywords "killing" "convenience")
 	      (:url . "https://github.com/leoliu/easy-kill"))])
  (ebdb .
-       [(0 5 3)
+       [(0 6)
 	((emacs
 	  (25 1))
 	 (cl-lib
@@ -375,14 +375,16 @@
 	     ((:url . "http://elpa.gnu.org/packages/ediprolog.html")
 	      (:keywords "languages" "processes"))])
  (eglot .
-	[(1 0)
+	[(1 1)
 	 ((emacs
-	   (26 1)))
+	   (26 1))
+	  (jsonrpc
+	   (1 0 0)))
 	 "Client for Language Server Protocol (LSP) servers" tar
 	 ((:keywords "convenience" "languages")
 	  (:url . "https://github.com/joaotavora/eglot"))])
  (el-search .
-	    [(1 7 1)
+	    [(1 7 6)
 	     ((emacs
 	       (25))
 	      (stream
@@ -415,11 +417,13 @@
 	      ((:url . "http://elpa.gnu.org/packages/epoch-view.html")
 	       (:keywords "data" "timestamp" "epoch" "unix"))])
  (ergoemacs-mode .
-		 [(5 14 7 3)
+		 [(5 16 10 12)
 		  ((emacs
 		    (24 1))
 		   (undo-tree
-		    (0 6 5)))
+		    (0 6 5))
+		   (cl-lib
+		    (0 5)))
 		  "Emacs mode based on common modern interface and ergonomics." tar
 		  ((:keywords "convenience")
 		   (:url . "https://github.com/ergoemacs/ergoemacs-mode"))])
@@ -437,9 +441,9 @@
 	       ((:keywords "calendar")
 		(:url . "http://elpa.gnu.org/packages/excorporate.html"))])
  (exwm .
-       [(0 18)
+       [(0 19)
 	((xelb
-	  (0 14)))
+	  (0 15)))
 	"Emacs X Window Manager" tar
 	((:keywords "unix")
 	 (:url . "https://github.com/ch11ng/exwm"))])
@@ -449,7 +453,7 @@
 			 ((:url . "http://github.com/wence-/f90-iface/")
 			  (:keywords))])
  (filladapt .
-	    [(2 12 1)
+	    [(2 12 2)
 	     ((emacs
 	       (24 4)))
 	     "Adaptive fill" single
@@ -479,7 +483,7 @@
        ((:url . "http://elpa.gnu.org/packages/fsm.html")
 	(:keywords "extensions"))])
  (ggtags .
-	 [(0 8 12)
+	 [(0 8 13)
 	  ((emacs
 	    (24))
 	   (cl-lib
@@ -850,7 +854,7 @@
        ((:url . "http://elpa.gnu.org/packages/osc.html")
 	(:keywords "comm" "processes" "multimedia"))])
  (other-frame-window .
-		     [(1 0 4)
+		     [(1 0 5)
 		      ((emacs
 			(24 4)))
 		      "Minor mode to enable global prefix keys for other frame/window buffer placement" single
@@ -931,8 +935,10 @@
 	((:url . "http://elpa.gnu.org/packages/rbit.html")
 	 (:keywords "data structures" "binary tree" "intervals"))])
  (rcirc-color .
-	      [(0 3)
-	       nil "color nicks" single
+	      [(0 4 1)
+	       ((emacs
+		 (24 4)))
+	       "color nicks" single
 	       ((:url . "http://elpa.gnu.org/packages/rcirc-color.html")
 		(:keywords "comm"))])
  (rcirc-menu .
@@ -1246,7 +1252,7 @@
 	 ((:url . "http://elpa.gnu.org/packages/xclip.html")
 	  (:keywords "convenience" "tools"))])
  (xelb .
-       [(0 14)
+       [(0 15)
 	((emacs
 	  (24 4))
 	 (cl-generic
