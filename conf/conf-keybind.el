@@ -271,10 +271,10 @@ they are in `bind-map-set-keys'."
 
 (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
-(global-set-key  (kbd "s-C-M-!") 'delete-other-windows) ;hyper-1
-(global-set-key  (kbd "s-C-M-@") 'vmacs-split-window-vertically) ;hyper-2
+(global-set-key  (kbd "s-C-M-1") 'delete-other-windows) ;hyper-1
+(global-set-key  (kbd "s-C-M-2") 'vmacs-split-window-vertically) ;hyper-2
 (global-set-key  (kbd "s-2") 'vmacs-split-window-vertically)
-(global-set-key  (kbd "s-C-M-#") 'vmacs-split-window-horizontally) ;hyper-2
+(global-set-key  (kbd "s-C-M-3") 'vmacs-split-window-horizontally) ;hyper-2
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 
 
