@@ -250,14 +250,14 @@ they are in `bind-map-set-keys'."
 
 (global-set-key  (kbd "s-l") 'delete-other-windows)
 (global-set-key  (kbd "s-o") 'other-window)
-(global-set-key  (kbd "s-C-M-S-o") 'other-window)
+(global-set-key  (kbd "s-C-M-o") 'other-window)
 (global-set-key  (kbd "s-n") 'vmacs-split-window-or-other-window)
-(global-set-key  (kbd "s-C-M-S-n") 'vmacs-split-window-or-other-window)
+(global-set-key  (kbd "s-C-M-n") 'vmacs-split-window-or-other-window)
 (global-set-key  (kbd "s-p") 'vmacs-split-window-or-prev-window)
-(global-set-key  (kbd "s-C-M-S-p") 'vmacs-split-window-or-prev-window)
+(global-set-key  (kbd "s-C-M-p") 'vmacs-split-window-or-prev-window)
 
 (global-set-key  (kbd "s-t") 'toggle-split-window)
-(global-set-key [C-M-S-s-return] 'vmacs-window-rotate)
+(global-set-key [C-M-s-return] 'vmacs-window-rotate)
 
 
 

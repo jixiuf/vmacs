@@ -78,7 +78,7 @@
 ;;     (insert " ")))
 (define-key ivy-switch-buffer-map (kbd "M-k") 'ivy-switch-buffer-kill)
 (define-key ivy-switch-buffer-map (kbd "s-k") 'ivy-switch-buffer-kill)
-(define-key ivy-switch-buffer-map (kbd "C-M-S-s-k") 'ivy-switch-buffer-kill)
+(define-key ivy-switch-buffer-map (kbd "C-M-s-k") 'ivy-switch-buffer-kill)
 
 ;; (vmacs-leader "<lwindow>" 'ivy-switch-buffer) ;for windows
 

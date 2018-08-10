@@ -39,11 +39,11 @@
 
 ;; (require 'sane-term)
 
-(define-key term-mode-map (kbd "C-M-S-s-p") 'sane-term-prev)
-(define-key term-mode-map (kbd "C-M-S-s-n") 'sane-term-next)
+(define-key term-mode-map (kbd "C-M-s-p") 'sane-term-prev)
+(define-key term-mode-map (kbd "C-M-s-n") 'sane-term-next)
 (define-key term-mode-map (kbd "C-a") 'vmacs-term-bol)
-(define-key term-raw-map (kbd "C-M-S-s-n") 'sane-term-next)
-(define-key term-raw-map (kbd "C-M-S-s-p") 'sane-term-prev)
+(define-key term-raw-map (kbd "C-M-s-n") 'sane-term-next)
+(define-key term-raw-map (kbd "C-M-s-p") 'sane-term-prev)
 (define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
 (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
 (define-key term-raw-map (kbd "C-y") 'vmacs-term-yank)
