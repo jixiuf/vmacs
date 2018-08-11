@@ -55,7 +55,7 @@
   (define-key magit-status-mode-map "q" #'ignore)
   (let ((dir (magit-toplevel)))
     (unless (file-remote-p dir)
-      (add-to-list 'magit-repository-directories dir))))
+      (add-to-list 'magit-repository-directories (list dir 0)))))
 
 (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
 (vmacs-leader-for-major-mode  'magit-revision-mode "k" 'magit-mode-bury-buffer)
