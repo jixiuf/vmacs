@@ -91,7 +91,12 @@
   ;; (require 'conf-vterm)
   (global-undo-tree-mode t)
   (global-font-lock-mode)
-  (transient-mark-mode 1))
+  (transient-mark-mode 1)
+  (save-place-mode t)
+  (savehist-mode 1)
+  (recentf-mode 1)
+  (run-with-idle-timer 10 t 'vmacs-idle-timer) ;idle 300=5*60s
+  )
 
 
 ;; Local Variables:

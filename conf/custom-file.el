@@ -255,7 +255,6 @@
                    (expand-file-name "./db/"
                                      (locate-dominating-file default-directory "Makefile"))))))
  '(save-place-file "~/.emacs.d/cache/place")
- '(save-place-mode t)
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
  '(tramp-persistency-file-name "~/.emacs.d/cache/tramp" nil (tramp))
