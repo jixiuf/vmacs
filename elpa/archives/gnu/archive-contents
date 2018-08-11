@@ -623,7 +623,7 @@
 	     ((:url . "http://elpa.gnu.org/packages/json-mode.html")
 	      (:keywords "data"))])
  (jsonrpc .
-	  [(1 0 0)
+	  [(1 0 3)
 	   ((emacs
 	     (25 2)))
 	   "JSON-RPC library" single
