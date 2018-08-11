@@ -101,7 +101,7 @@
 ;; gui 下让ctrl-i与tab 不同
 (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
 (global-set-key (kbd "s-i") 'counsel-git)   ;cmd-i
-(global-set-key (kbd "C-S-M-s-i") 'counsel-git)   ;hyper-i
+(global-set-key (kbd "C-s-M-i") 'counsel-git)   ;hyper-i
 
 (define-key ivy-minibuffer-map (kbd "<C-i>") 'vmacs-ivy-dropto-counsel-git)
 (define-key ivy-minibuffer-map (kbd "C-c c") 'toggle-case-fold)
