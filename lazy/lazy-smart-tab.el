@@ -57,6 +57,8 @@
 ;;;###autoload
 (defun smart-tab (&optional arg)
   (interactive "P")
+  ;;根据buffer内容自动设置major-mode
+  (when (equal "*scratch*" (buffer-name)) (set-auto-mode))
   (cond
    ;; (looking-at "\\_>") at end of symbol
    ;; (looking-at "\\>") at end of word
