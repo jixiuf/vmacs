@@ -16,6 +16,7 @@
 
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
+  (add-to-list 'eshell-visual-commands  "redis-cli")
   (add-to-list 'eshell-visual-commands  "bee")
   (add-to-list 'eshell-visual-commands  "ssh")
   (when (boundp 'eshell-visual-subcommands) ;from emacs24.4
