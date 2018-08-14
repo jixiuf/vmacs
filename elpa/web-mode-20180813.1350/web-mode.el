@@ -3,8 +3,8 @@
 
 ;; Copyright 2011-2018 François-Xavier Bois
 
-;; Version: 16.0.13
-;; Package-Version: 20180809.2128
+;; Version: 16.0.15
+;; Package-Version: 20180813.1350
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -25,7 +25,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "16.0.13"
+(defconst web-mode-version "16.0.15"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -1846,6 +1846,7 @@ shouldn't be moved back.)")
    '("#{?\\([[:alpha:]_]+\\)\\_>" (1 'web-mode-block-control-face))
    (cons (concat "\\_<\\(" web-mode-velocity-keywords "\\)\\_>") '(1 'web-mode-keyword-face t t))
    '("#macro([ ]*\\([[:alpha:]]+\\)[ ]+" 1 'web-mode-function-name-face)
+   '("\\(def\\|define\\) \\([[:alnum:]_-]+\\)(" 2 'web-mode-function-name-face)
    '("[.]\\([[:alnum:]_-]+\\)" 1 'web-mode-variable-name-face)
    '("\\_<\\($[!]?[{]?\\)\\([[:alnum:]_-]+\\)[}]?" (1 nil) (2 'web-mode-variable-name-face))
    ))
@@ -3367,8 +3368,12 @@ another auto-completion with different ac-sources (e.g. ac-php)")
       (forward-char))
     (when (member (char-after) '(?\!))
       (forward-char))
-    (if (member (char-after) '(?\{))
-        (search-forward "}")
+    (cond
+     ((member (char-after) '(?\{))
+      (search-forward "}"))
+     ((looking-at-p "def \\|define ")
+      (search-forward ")" (line-end-position) t))
+     (t
       (setq continue t)
       (while continue
         (skip-chars-forward "a-zA-Z0-9_-")
@@ -3381,7 +3386,8 @@ another auto-completion with different ac-sources (e.g. ac-php)")
             (forward-char)
           (setq continue nil))
         ) ;while
-      ) ;if
+      ) ;t
+     ) ;cond
     ))
 
 (defun web-mode-razor-skip (pos)
@@ -4296,7 +4302,8 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           (setq controls (append controls (list (cons 'close "ctrl")))))
          ((web-mode-block-starts-with "{?els" reg-beg)
           (setq controls (append controls (list (cons 'inside "ctrl")))))
-         ((web-mode-block-starts-with "{?\\(define\\|if\\|for\\|foreach\\|macro\\)" reg-beg)
+         ((web-mode-block-starts-with "{?\\(def\\|if\\|for\\|foreach\\|macro\\)" reg-beg)
+          ;;((web-mode-block-starts-with "{?\\(define\\|\\|if\\|for\\|foreach\\|macro\\)" reg-beg)
           (setq controls (append controls (list (cons 'open "ctrl")))))
          )
         ) ;velocity
@@ -8278,14 +8285,13 @@ another auto-completion with different ac-sources (e.g. ac-php)")
     (when (and initial-column (> initial-column indentation))
       (setq indentation initial-column)
       )
+    (setq case-fold-search nil) ; #1006
     (cond
      ((or (null open-ctx) (null (plist-get open-ctx :pos)))
       (setq offset initial-column))
      ((and (member language '("javascript" "jsx" "ejs"))
            (eq (plist-get open-ctx :char) ?\{)
-           (web-mode-looking-back "switch[ ]*" (plist-get open-ctx :pos))
-           ;;(web-mode-looking-back "switch[ ]*(.*)[ ]*" (plist-get open-ctx :pos))
-           )
+           (web-mode-looking-back "switch[ ]*" (plist-get open-ctx :pos)))
       (setq sub (if (cdr (assoc "case-extra-offset" web-mode-indentation-params)) 0 1))
       (cond
        ((looking-at-p "case\\|default")
@@ -8297,6 +8303,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
      (t
       (setq offset (+ indentation language-offset)))
      ) ;cond
+    (setq case-fold-search t)
     (cons (if (< offset initial-column) initial-column offset) open-ctx)
     ))
 

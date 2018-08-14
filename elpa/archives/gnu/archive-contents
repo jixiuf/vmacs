@@ -120,6 +120,11 @@
 	  "Highlight the cursor whenever the window scrolls" single
 	  ((:url . "https://github.com/Malabarba/beacon")
 	   (:keywords "convenience"))])
+ (brief .
+	[(5 80)
+	 nil "Brief Editor Emulator" single
+	 ((:url . "http://elpa.gnu.org/packages/brief.html")
+	  (:keywords "brief" "emulations" "crisp"))])
  (bug-hunter .
 	     [(1 3 1)
 	      ((seq
@@ -623,7 +628,7 @@
 	     ((:url . "http://elpa.gnu.org/packages/json-mode.html")
 	      (:keywords "data"))])
  (jsonrpc .
-	  [(1 0 3)
+	  [(1 0 6)
 	   ((emacs
 	     (25 2)))
 	   "JSON-RPC library" single

@@ -1,4 +1,4 @@
-(define-package "ghub" "20180805.1851" "minuscule client library for the Github API"
+(define-package "ghub" "20180812.1628" "minuscule client library for the Github API"
   '((emacs "24.4")
     (let-alist "1.0.5"))
   :keywords

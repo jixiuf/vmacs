@@ -167,6 +167,14 @@ Forward to `bookmark-jump' or `bookmark-set' if bookmark doesn't exist.
 
 \(fn)" t nil)
 
+(autoload 'counsel-bookmarked-directory "counsel" "\
+Ivy interface for bookmarked directories.
+
+With a prefix argument, this command creates a new bookmark which points to the
+current value of `default-directory'.
+
+\(fn)" t nil)
+
 (autoload 'counsel-file-register "counsel" "\
 Search file in register.
 

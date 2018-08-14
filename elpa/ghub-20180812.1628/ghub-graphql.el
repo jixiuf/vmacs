@@ -42,6 +42,24 @@ behave as for `ghub-request' (which see)."
                 :callback callback :errorback errorback
                 :extra extra :value value))
 
+(cl-defun ghub-graphql-rate-limit (&key username auth host)
+  "Return rate limit information."
+  (let-alist (ghub-graphql
+              "query { rateLimit { limit cost remaining resetAt }}"
+              nil :username username :auth auth :host host)
+    .data.rateLimit))
+
+(cl-defun ghub-repository-id (owner name &key username auth host)
+  "Return the id of the repository specified by OWNER, NAME and HOST."
+  (let-alist (ghub-graphql
+              "query ($owner:String!, $name:String!) {
+                 repository(owner:$owner, name:$name) { id }
+               }"
+              `((owner . ,owner)
+                (name  . ,name))
+              :username username :auth auth :host host)
+    .data.repository.id))
+
 ;;; _
 (provide 'ghub-graphql)
 ;;; ghub-graphql.el ends here
