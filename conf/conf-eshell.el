@@ -7,6 +7,13 @@
 ;; alias | awk '{print "alias "$0}' | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/'\\\''/'/g;" > ~/.emacs.d/eshell/alias
 (setq-default eshell-directory-name (concat user-emacs-directory "eshell"))
 (setq-default eshell-destroy-buffer-when-process-dies t)
+
+(autoload 'epe-theme-lambda "eshell-prompt-extras")
+(setq-default eshell-highlight-prompt nil)
+(setq-default epe-show-python-info nil)
+(setq-default eshell-prompt-function 'epe-theme-lambda)
+
+
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
   (add-to-list 'eshell-visual-commands  "bee")
