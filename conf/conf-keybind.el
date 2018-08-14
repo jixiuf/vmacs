@@ -112,33 +112,37 @@ they are in `bind-map-set-keys'."
 
 ;; (define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
 ;;;###autoload
-(defmacro define-key-lazy (mode-map key cmd  feature)
+(defmacro define-key-lazy (mode-map key cmd  feature &optional state)
   "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
-  `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd)))
+  (if state
+      `(eval-after-load ,feature '(evil-define-key ,state ,mode-map ,key ,cmd))
+      `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd))))
 
-(defmacro vmacs-leader-for-map (map &optional feature)
-  `(define-key-lazy ,map (kbd "SPC") vmacs-leader-map ,feature))
 
+(defmacro vmacs-leader-for-map (map feature)
+  `(define-key-lazy ,map ,(kbd "SPC") vmacs-leader-map ,feature '(normal motion visual)))
 
-(vmacs-leader-for-map magit-mode-map 'magit)
-(vmacs-leader-for-map magit-diff-mode-map 'magit)
-(vmacs-leader-for-map magit-stash-mode-map 'magit)
-(vmacs-leader-for-map log-view-mode-map 'magit)
+(defun vmacs-leader-after-init-hook()
+  (vmacs-leader-for-map magit-mode-map 'magit)
+  (vmacs-leader-for-map magit-diff-mode-map 'magit)
+  (vmacs-leader-for-map magit-stash-mode-map 'magit)
+  (vmacs-leader-for-map log-view-mode-map 'magit)
+  (vmacs-leader-for-map tabulated-list-mode-map 'tabulated-list)
+  (vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
+  (vmacs-leader-for-map dired-mode-map 'dired)
+  (vmacs-leader-for-map ivy-occur-grep-mode-map 'ivy)
+  (vmacs-leader-for-map calc-mode-map 'calc)
+  (vmacs-leader-for-map Info-mode-map 'info)
+  (vmacs-leader-for-map grep-mode-map 'grep)
+  (vmacs-leader-for-map help-mode-map 'help-mode)
+  (vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
+  (vmacs-leader-for-map ert-results-mode-map 'ert)
+  (vmacs-leader-for-map compilation-mode-map 'compile)
+  (vmacs-leader-for-map debugger-mode-map 'debug)
+  (vmacs-leader-for '(diff-mode debugger-mode) '(insert))
+  )
+(add-hook 'after-init-hook 'vmacs-leader-after-init-hook)
 
-(vmacs-leader-for-map tabulated-list-mode-map 'tabulated-list)
-(vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
-(vmacs-leader-for-map dired-mode-map 'dired)
-(vmacs-leader-for-map ivy-occur-grep-mode-map 'ivy)
-(vmacs-leader-for-map calc-mode-map 'calc)
-(vmacs-leader-for-map Info-mode-map 'info)
-(vmacs-leader-for-map grep-mode-map 'grep)
-(vmacs-leader-for-map help-mode-map 'help-mode)
-(vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
-(vmacs-leader-for-map ert-results-mode-map 'ert)
-(vmacs-leader-for-map compilation-mode-map 'compile)
-(vmacs-leader-for-map debugger-mode-map 'debug)
-
-(vmacs-leader-for '(diff-mode debugger-mode) '(insert))
 ;; ;; 为这些默认空格被占用的mode也起用leader mode
 ;; (vmacs-leader-for-major-mode
 ;;  '(magit-mode

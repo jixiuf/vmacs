@@ -80,6 +80,7 @@
 (evil-set-initial-state 'ivy-occur-mode 'normal)
 (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
 (evil-set-initial-state 'grep-mode 'normal)
+(evil-set-initial-state 'Info-mode 'motion)
 (evil-set-initial-state 'calc-mode 'normal)
 (defun vmacs-calc-hook()
   (require 'calc-bin)

@@ -67,7 +67,9 @@
 (require 'picture)
 (require 'text-mode)
 (require 'texinfo)
+(require 'info)
 (require 'table)
+(require 'calc)
 
 (require 'vc)
 (require 'vc-git)
