@@ -332,7 +332,7 @@ Move point to end-of-line ,if point was already at that position,
      ( (derived-mode-p 'calc-mode)
        (call-interactively 'calc-quit))
      ( (derived-mode-p 'Info-mode)
-       (call-interactively 'Info-exit))
+       (call-interactively 'kill-buffer-and-window))
      ( (derived-mode-p 'special-mode)
        (if (get-buffer-process buf)
            (bury-buffer-and-window)
