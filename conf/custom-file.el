@@ -173,7 +173,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-save-visited-interval 5)
+ '(auto-save-visited-interval 15)
  '(auto-save-visited-mode t)
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
  '(blink-cursor-mode t)
