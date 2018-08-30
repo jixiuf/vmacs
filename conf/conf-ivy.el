@@ -129,6 +129,12 @@
 ;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
 (define-key ivy-occur-grep-mode-map (kbd "n") 'evil-search-next)
 (define-key ivy-occur-grep-mode-map (kbd "p") 'evil-search-previous)
+(define-key ivy-occur-mode-map (kbd "g") nil)
+
+(define-key ivy-occur-mode-map (kbd "r") 'ivy-occur-revert-buffer)
+(define-key ivy-occur-grep-mode-map (kbd "r") 'ivy-occur-revert-buffer)
+(define-key ivy-occur-grep-mode-map (kbd "g") nil)
+
 
 
 (with-eval-after-load 'counsel
