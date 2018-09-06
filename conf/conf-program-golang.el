@@ -15,6 +15,7 @@
 ;;     cd $GOPATH/src/golang.org/x/tools;git pull;cd -
 ;; fi
 ;; go install golang.org/x/tools/cmd/goimports
+(require 'eglot)
 
 (let ((gopath (getenv "GOPATH")))
   (when
