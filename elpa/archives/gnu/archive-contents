@@ -121,7 +121,7 @@
 	  ((:url . "https://github.com/Malabarba/beacon")
 	   (:keywords "convenience"))])
  (brief .
-	[(5 80)
+	[(5 84)
 	 nil "Brief Editor Emulator" single
 	 ((:url . "http://elpa.gnu.org/packages/brief.html")
 	  (:keywords "brief" "emulations" "crisp"))])
@@ -389,7 +389,7 @@
 	 ((:keywords "convenience" "languages")
 	  (:url . "https://github.com/joaotavora/eglot"))])
  (el-search .
-	    [(1 7 6)
+	    [(1 7 7)
 	     ((emacs
 	       (25))
 	      (stream
@@ -433,13 +433,13 @@
 		  ((:keywords "convenience")
 		   (:url . "https://github.com/ergoemacs/ergoemacs-mode"))])
  (excorporate .
-	      [(0 7 6)
+	      [(0 7 7)
 	       ((emacs
 		 (24 1))
 		(fsm
 		 (0 2))
 		(soap-client
-		 (3 1 1))
+		 (3 1 4))
 		(url-http-ntlm
 		 (2 0 3)))
 	       "Exchange integration" tar
@@ -831,7 +831,7 @@
 	     ((:url . "https://github.com/michael-heerdegen/on-screen.el")
 	      (:keywords "convenience"))])
  (org .
-      [(9 1 13)
+      [(9 1 14)
        nil "Outline-based notes management and organizer" tar
        ((:keywords "outlines" "hypermedia" "calendar" "wp")
 	(:url . "http://elpa.gnu.org/packages/org.html"))])
@@ -859,7 +859,7 @@
        ((:url . "http://elpa.gnu.org/packages/osc.html")
 	(:keywords "comm" "processes" "multimedia"))])
  (other-frame-window .
-		     [(1 0 5)
+		     [(1 0 6)
 		      ((emacs
 			(24 4)))
 		      "Minor mode to enable global prefix keys for other frame/window buffer placement" single
@@ -1253,7 +1253,7 @@
 	    (:keywords))])
  (xclip .
 	[(1 4)
-	 nil "use xclip to copy&paste" single
+	 nil "Copy&paste GUI clipboard from text terminal" single
 	 ((:url . "http://elpa.gnu.org/packages/xclip.html")
 	  (:keywords "convenience" "tools"))])
  (xelb .
