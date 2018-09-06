@@ -44,10 +44,9 @@
   ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; github.com/syohex/emacs-go-eldoc
   (go-eldoc-setup)                    ;autoloaded
-  (setq company-backends `((company-go company-yasnippet company-files )
+  (eglot-ensure)
+  (setq company-backends `((company-capf company-yasnippet company-files )
                            company-dabbrev
-                           company-capf
-
                            company-dabbrev-code
                            ))
 
