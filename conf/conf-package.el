@@ -2,7 +2,10 @@
 (require 'package)
 ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;; mirror
-(add-to-list 'package-archives '("melpa" . "http://www.mirrorservice.org/sites/melpa.org/packages/"))
+(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
+                         ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+
+;; (add-to-list 'package-archives '("melpa" . "http://www.mirrorservice.org/sites/melpa.org/packages/"))
 
 ;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 ;; make sure to have downloaded archive description.
