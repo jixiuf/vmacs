@@ -40,6 +40,7 @@
 (setq counsel-find-file-at-point t)
 (setq ivy-ignore-buffers
        (list
+        "\*EGLOT"
            "\\` "
            "\*Helm"
            "\*helm"
