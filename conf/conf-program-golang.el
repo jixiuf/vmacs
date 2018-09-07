@@ -15,7 +15,6 @@
 ;;     cd $GOPATH/src/golang.org/x/tools;git pull;cd -
 ;; fi
 ;; go install golang.org/x/tools/cmd/goimports
-(require 'eglot)
 
 (let ((gopath (getenv "GOPATH")))
   (when
@@ -45,9 +44,10 @@
   ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; github.com/syohex/emacs-go-eldoc
   (go-eldoc-setup)                    ;autoloaded
-  (eglot-ensure)
-  (setq company-backends `((company-capf company-yasnippet company-files )
+  (setq company-backends `((company-go company-yasnippet company-files )
                            company-dabbrev
+                           company-capf
+
                            company-dabbrev-code
                            ))
 
