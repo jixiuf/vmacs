@@ -391,7 +391,7 @@ file extensions only, no glob or regexp patterns."
     "sql"
     "st"))
 
-(deffiletype-face "program" "blue")
+(deffiletype-face "program" "green3")
 
 (deffiletype-face-regexp program
   :regexp
