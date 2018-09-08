@@ -55,6 +55,7 @@
            (call-interactively 'tern-find-definition)
          (helm-gtags-find-tag-and-symbol)))
       (go-mode
+       ;;(xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))
        (call-interactively 'godef-jump)
        )
       (python-mode
