@@ -43,6 +43,8 @@
 ;;我给绑定到gf 与gb
 (define-key evil-normal-state-map "gf" 'evil-jump-forward)
 (define-key evil-normal-state-map "gb" 'evil-jump-backward)
+(define-key evil-normal-state-map "gn" 'next-error)
+(define-key evil-normal-state-map "gp" 'previous-error)
 ;; 其实这个绑定不需要了
 
 ;; 有了下面的功能当evil-mode在某个地方设置标记时，同时在那里加一个可视化书签
