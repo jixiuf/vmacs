@@ -270,8 +270,8 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "C-.") 'scroll-other-window)
 (global-set-key  (kbd "C-\\") 'hippie-expand)
 
-(global-set-key  (kbd "s-q") 'save-buffers-kill-emacs)
-(global-set-key  (kbd "s-C-S-M-q") 'save-buffers-kill-emacs)
+(global-set-key  (kbd "s-q") 'delete-frame)
+(global-set-key  (kbd "s-C-S-M-q") 'delete-frame)
 
 (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
