@@ -38,6 +38,8 @@
   ;; :override-minor-modes t
   :evil-states (normal motion visual))
 
+(define-key special-mode-map " " nil)
+
 
 ;; (macroexpand '(vmacs-leader "b" 'forward-char))
 ;; (bind-map-set-keys vmacs-leader-map "b" 'forward-char)

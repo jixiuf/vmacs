@@ -110,8 +110,8 @@
 
 
 (with-eval-after-load 'xref
-  (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
-  (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
   (define-key xref--xref-buffer-mode-map (kbd "r") #'xref-query-replace-in-results)
   (define-key xref--xref-buffer-mode-map (kbd "TAB") #'xref-goto-xref)
   (define-key xref--xref-buffer-mode-map (kbd "<return>")  #'xref-quit-and-goto-xref)
