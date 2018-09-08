@@ -3,7 +3,7 @@
 ;; Copyright (C) 2018 Free Software Foundation, Inc.
 
 ;; Version: 1.1
-;; Package-Version: 20180827.1317
+;; Package-Version: 20180907.1146
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -84,8 +84,7 @@
                                   js2-mode
                                   rjsx-mode) . ("javascript-typescript-stdio"))
                                 (sh-mode . ("bash-language-server" "start"))
-                                ((c++-mode
-                                  c-mode) . (eglot-cquery "cquery"))
+                                ((c++-mode c-mode) . ("ccls"))
                                 (ruby-mode
                                  . ("solargraph" "socket" "--port"
                                     :autoport))
@@ -988,7 +987,8 @@ Uses THING, FACE, DEFS and PREPEND."
 (cl-defmethod eglot-handle-notification
   (_server method &key &allow-other-keys)
   "Handle unknown notification"
-  (eglot--warn "Server sent unknown notification method `%s'" method))
+  (unless (string-prefix-p "$" (format "%s" method))
+    (eglot--warn "Server sent unknown notification method `%s'" method)))
 
 (cl-defmethod eglot-handle-request
   (_server method &key &allow-other-keys)
