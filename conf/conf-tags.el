@@ -90,7 +90,7 @@
 
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
-(define-key evil-motion-state-map "gr" 'xref-find-references)
+(define-key evil-motion-state-map "gr" 'vmacs-xref-find-references)
 (define-key evil-motion-state-map "gd" 'goto-definition)
 (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
 (define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
@@ -101,6 +101,12 @@
 ;; (vmacs-leader "wgp" 'helm-gtags-parse-file)
 ;; (vmacs-leader "wgi" 'helm-gtags-parse-file)
 ;; (vmacs-leader "we" 'ctags-update)
+
+(defun vmacs-xref-find-references()
+  (interactive)
+  (if current-prefix-arg
+      (call-interactively 'xref-find-references)
+    (xref-find-references (xref-backend-identifier-at-point (xref-find-backend)))))
 
 
 (provide 'conf-tags)
