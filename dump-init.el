@@ -165,7 +165,7 @@
 (require 'company-xcode)
 (require 'company-yasnippet)
 (require 'company-jedi)
-(require 'company-go)
+(require 'eglot)
 
 
 (require 'lazy-evil)
