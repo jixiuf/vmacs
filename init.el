@@ -76,6 +76,7 @@
 ;; gpg 自动加密解密文件相关
 (when (executable-find "gpg") (require 'conf-gpg))
 (require 'conf-tags)                    ;ctags gtags 相关，代码跳转
+(with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
 (with-eval-after-load 'magit (require 'conf-magit))
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
 (with-eval-after-load 'css-mode (require 'conf-css))

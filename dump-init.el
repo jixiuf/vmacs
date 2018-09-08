@@ -121,7 +121,7 @@
 (require 'flycheck)
 (require 'git-commit)
 (require 'go-mode)
-(require 'go-eldoc)
+;; (require 'go-eldoc)
 (require 'golden-ratio)
 (require 'goto-chg)
 

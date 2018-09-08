@@ -28,7 +28,7 @@
   (setq-default gofmt-command (executable-find "goimports")))
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
-(setq company-go-show-annotation t)
+;; (setq company-go-show-annotation t)
 
 (defun vmacs-go-format()
   (when (eq major-mode 'go-mode)
@@ -43,7 +43,7 @@
 (defun vmacs-go-mode-hook()
   ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; github.com/syohex/emacs-go-eldoc
-  (go-eldoc-setup)                    ;autoloaded
+  ;; (go-eldoc-setup)                    ;autoloaded
   (eglot-ensure)
   (setq company-backends `(( company-capf company-yasnippet company-files )
                            company-dabbrev
