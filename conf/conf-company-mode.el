@@ -28,6 +28,7 @@
                 ;; company-bbdb
                 ))
 
+   (setq completion-ignore-case t)      ;company-capf匹配时不区分大小写
 
    ;; 'all 的意思是像 dabbrev-expand 那样搜索所有 buffer 的内容, 而不仅仅是和当前模式相同的buffer里面去搜索.
   (setq-default company-dabbrev-code-other-buffers 'all)
