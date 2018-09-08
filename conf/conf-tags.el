@@ -89,7 +89,7 @@
 (define-key global-map "\M-." 'goto-definition)
 
 
-(define-key evil-motion-state-map "g." 'xref-find-definitions)
+(define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 (define-key evil-motion-state-map "gr" 'xref-find-references)
 (define-key evil-motion-state-map "gd" 'goto-definition)
 (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
