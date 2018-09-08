@@ -88,9 +88,12 @@
 ;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
 (define-key global-map "\M-." 'goto-definition)
 
+
+(define-key evil-motion-state-map "g." 'xref-find-definitions)
+(define-key evil-motion-state-map "gr" 'xref-find-references)
 (define-key evil-motion-state-map "gd" 'goto-definition)
 (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
-(define-key evil-motion-state-map "gr" 'helm-gtags-find-rtag)
+(define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
 (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
 
 ;; (vmacs-leader "wge" 'helm-gtags-update-tags)
