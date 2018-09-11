@@ -39,6 +39,15 @@
     )
   )
 
+;; ;; 启用 company-lsp 补全后端
+;; (push 'company-lsp company-backends)
+;; ;; 各种设置, 避免 lsp-mode 花式报错.
+;; (setq lsp-enable-eldoc nil) ;we will got error "Wrong type argument: sequencep" from `eldoc-message' if `lsp-enable-eldoc' is non-nil
+;; (setq lsp-message-project-root-warning t) ;avoid popup warning buffer if lsp can't found root directory (such as edit simple *.py file)
+;; (setq create-lockfiles nil) ;we will got error "Error from the Language Server: FileNotFoundError" if `create-lockfiles' is non-nil
+;; ;; 避免 eglot 在 minibuffer 各种弹帮助文档, 弹得我眼睛疼.
+;; (setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
+
 ;; (require 'eglot)
 (defun vmacs-go-mode-hook()
   (require 'go-eldoc) ;; Don't need to require, if you install by package.el
