@@ -15,7 +15,6 @@
 ;;     cd $GOPATH/src/golang.org/x/tools;git pull;cd -
 ;; fi
 ;; go install golang.org/x/tools/cmd/goimports
-(require 'eglot)
 (let ((gopath (getenv "GOPATH")))
   (when
       (dolist (path  (parse-colon-path gopath))
@@ -28,7 +27,7 @@
   (setq-default gofmt-command (executable-find "goimports")))
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
-;; (setq company-go-show-annotation t)
+(setq company-go-show-annotation t)
 
 (defun vmacs-go-format()
   (when (eq major-mode 'go-mode)
@@ -40,12 +39,13 @@
     )
   )
 
+;; (require 'eglot)
 (defun vmacs-go-mode-hook()
-  ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
+  (require 'go-eldoc) ;; Don't need to require, if you install by package.el
+  (go-eldoc-setup)                    ;autoloaded
   ;; github.com/syohex/emacs-go-eldoc
-  ;; (go-eldoc-setup)                    ;autoloaded
-  (eglot-ensure)
-  (setq company-backends `(( company-capf company-yasnippet company-files )
+  ;; (eglot-ensure)
+  (setq company-backends `(( company-go company-capf company-yasnippet company-files )
                            company-dabbrev
 
 
