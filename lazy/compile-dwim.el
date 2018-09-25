@@ -399,9 +399,11 @@ if found return the directory or nil"
         ))))
 
 (defun compile-dwim-make()
-  (let ((project-root (compile-dwim-locate-makefile))
+  (let* ((project-root (compile-dwim-locate-makefile))
+        (default-directory default-directory)
         (compile-command compile-command))
     (when project-root
+      (setq default-directory project-root)
       (setq compile-command (concat "make --directory=" project-root)))
     (call-interactively 'compile)))
 

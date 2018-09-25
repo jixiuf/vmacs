@@ -26,7 +26,7 @@
 
                  ;; If coding for OS X
                  "-isysroot"
-                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk"
+                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
 
                  ;; If coding for iOS
                  ;; "-isysroot"
@@ -45,7 +45,7 @@
                                          `(
                                            ;; ,(concat xcode-proj-root project-name)
                                            ;; 在这两个目录运行sudo gtags,;;之后gd 可以跳转到函数定义处
-                                           "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk"
+                                           "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
                                            "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"))
       )
     )

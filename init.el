@@ -87,6 +87,7 @@
 (with-eval-after-load 'go-mode (require 'conf-program-golang))
 (with-eval-after-load 'python (require 'conf-program-python))
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
+(require 'conf-sql)
 
 (when (vmacs-not-dumping-p)
   ;; (require 'conf-vterm)
@@ -97,6 +98,7 @@
   (savehist-mode 1)
   (recentf-mode 1)
   (run-with-idle-timer 10 t 'vmacs-idle-timer) ;idle 300=5*60s
+  (require 'conf-tmp nil t)
   )
 
 

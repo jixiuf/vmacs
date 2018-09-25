@@ -1,4 +1,5 @@
 (eval-when-compile
+  (require 'git-timemachine)
   (require  'ediff)
   (require 'magit))
 ;;;###autoload
@@ -39,5 +40,10 @@
     )
   )
 
+(defun vmacs-git-timemachine-save()
+  (interactive)
+  (write-file (expand-file-name git-timemachine-file git-timemachine-directory) nil)
+  (git-timemachine-quit)
+  )
 
 (provide 'lazy-magit)

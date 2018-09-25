@@ -30,6 +30,7 @@
 (vmacs-leader "vm" 'git-timemachine-toggle)
 (add-hook 'git-timemachine-mode-hook 'vmacs-git-timemachine-hook)
 (defun vmacs-git-timemachine-hook()
+  (evil-define-key 'normal 'local "a" 'vmacs-git-timemachine-save)
   (evil-define-key 'normal 'local "n" 'git-timemachine-show-next-revision)
   (evil-define-key 'normal 'local "p" 'git-timemachine-show-previous-revision)
   (evil-define-key 'normal 'local "t" 'git-timemachine-show-revision-fuzzy)

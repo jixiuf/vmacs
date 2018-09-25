@@ -198,6 +198,9 @@
 (require 'lazy-window)
 (require 'vmacs-dired-single)
 (require 'vmacs-switch-buffer)
+;; (require 'mysql-query)
+(require 'sqlparser-mysql-complete)
+
 
 (when (vmacs-dumping-p)
   ;; disable undo-tree to prevent from segfaulting when loading the dump
