@@ -43,12 +43,23 @@ vmacs则尽量将功能移到space上减少小指的使用
   vim 分为normal insert visual 3种状态
   而evil-mode 提供了normal insert visual  emacs四种状态
 
-  其中 evil-emacs-state 状态相当于没起用 evil-mode,
+  其中 evil-emacs-state 状态相当于原生emacs,
 
   与 evil-insert-state 的区别是evil-insert-state下进行了一些适合vim用户的绑定,
   如ctrl-n ctrl-p进行补全等
 
   vmacs进行定制时，希望进入insert态时，能够使用到原生的emacs按键绑定
+
+  几个需要着重说明的按键
+| gd          | goto-definition            | 跳转到函数、类、等的定义处                                   |
+| space,      | bm-previous                | 比如/搜索后，或gd跳转后以方便回退到光标原本的位置            |
+| v           | evil-backward-symbol-begin | 向后移动到symbol的开头处                                     |
+| e           | evil-forward-symbol-begin  | 向前移动到symbol的开头处                                     |
+| sv          | evil-visual-char           | 开始选中一片区域,等同于vim里的v                              |
+| mv          | evil-visual-block          | 开始选中块状区域,等同于vim里的ctrl-v                         |
+| sm或V       | evil-visual-line           | 按行选中                                                     |
+| space space | ivy-switch-buffer          | 快速打开文件或切换buffer(支持recentf/git内文件搜索)          |
+| space j     | dired-jump                 | 打开dired浏览目录(打开之后"u"表示到上层目录),"/"可以搜过过滤 |
 
 * C C++ 开发
 ** company
