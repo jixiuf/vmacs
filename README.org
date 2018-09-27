@@ -13,9 +13,11 @@
    #+END_SRC
 2. 中文支持良好,适于国内使用,配置文件中会有大量中文注释以便学习理解
 3. 利用emacs27的pdump功能加快启动速度
-   brew tap d12frosted/emacs-plus
-   brew install emacs-plus --HEAD --with-pdumper
-   cd .emacs.d;make dump
+   #+BEGIN_SRC sh
+    brew tap d12frosted/emacs-plus
+    brew install emacs-plus --HEAD --with-pdumper
+    cd .emacs.d;make dump
+   #+END_SRC
     生成dump文件
 4. mac 下几个脚本的封装
    bin/emd 用户启动emacs --daemon
