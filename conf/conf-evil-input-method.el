@@ -44,6 +44,8 @@
 (define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见isearch-pre-command-hook
 ;; "Non-nil means random control characters terminate incremental search."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "<f19>") nil) ;mac karabiner用来控制输入法
+(define-key isearch-mode-map (kbd "<f19>") nil) ;详见isearch-pre-command-hook
 (provide 'conf-evil-input-method)
 
 ;; Local Variables:
