@@ -51,16 +51,27 @@ vmacs则尽量将功能移到space上减少小指的使用
   vmacs进行定制时，希望进入insert态时，能够使用到原生的emacs按键绑定
 
   几个需要着重说明的按键
-| gd          | goto-definition            | 跳转到函数、类、等的定义处                                   |
-| space,      | bm-previous                | 比如/搜索后，或gd跳转后以方便回退到光标原本的位置            |
-| v           | evil-backward-symbol-begin | 向后移动到symbol的开头处                                     |
-| e           | evil-forward-symbol-begin  | 向前移动到symbol的开头处                                     |
-| sv          | evil-visual-char           | 开始选中一片区域,等同于vim里的v                              |
-| mv          | evil-visual-block          | 开始选中块状区域,等同于vim里的ctrl-v                         |
-| sm或V       | evil-visual-line           | 按行选中                                                     |
-| space space | ivy-switch-buffer          | 快速打开文件或切换buffer(支持recentf/git内文件搜索)          |
-| space j     | dired-jump                 | 打开dired浏览目录(打开之后"u"表示到上层目录),"/"可以搜过过滤 |
-
+  | gd          | goto-definition                 | 跳转到函数、类、等的定义处                                                  |
+  | space,      | bm-previous                     | 比如/搜索后，或gd跳转后以方便回退到光标原本的位置                           |
+  | v           | evil-backward-symbol-begin      | 向后移动到symbol的开头处                                                    |
+  | e           | evil-forward-symbol-begin       | 向前移动到symbol的开头处                                                    |
+  | sv          | evil-visual-char                | 开始选中一片区域,等同于vim里的v                                             |
+  | mv          | evil-visual-block               | 开始选中块状区域,等同于vim里的ctrl-v                                        |
+  | sm或V       | evil-visual-line                | 按行选中                                                                    |
+  | space space | ivy-switch-buffer               | 快速打开文件或切换buffer(支持recentf/git内文件搜索) (可以用空格分隔关键词)  |
+  | space i     | counsel-git                     | 快速打开git管理的文件                                (可以用空格分隔关键词) |
+  | space j     | dired-jump                      | 打开dired浏览目录(打开之后"u"表示到上层目录),"/"可以搜过过滤                |
+  | space g     | vmacs-counsel-rg                | 使用rg来grep当前目录的文件                                                  |
+  | space s     | evil-write-all                  | 保存所有文件                                                                |
+  | space vj    | magit-status                    | 打开magit ，git管理的插件                                                   |
+  | space ff    | counsel-find-file               | 按目录层级一层层的寻找、打开、新建文件                                      |
+  | ctrl-;      | iedit-mode                      | 启动iedit 用于同时快速编辑光标下的变量等,相当于批量替换变量名               |
+  | mf          | evil-mark-defun                 | 选中当前function,键ctrl-g，则光标回退到未选中状态时的位置                   |
+  | mh          | evil-M-h                        | 选中一个段落，   键ctrl-g，则光标回退到未选中状态时的位置                   |
+  | mxh/或mb    | evil-mark-whole-buffer          | 选中当前buffer的所有内容，全选                                              |
+  | f3          | cd-iterm2                       | 在iterm2中新开一个tab页并跳转到当前文件所在的目录                           |
+  | Ctrl-v      | golden-ratio-scroll-screen-up   | 向下翻页                                                                    |
+  | alt-v       | golden-ratio-scroll-screen-down | 向上翻页                                                                    |
 * C C++ 开发
 ** company
 依赖的外部命令:clang
