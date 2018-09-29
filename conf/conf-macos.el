@@ -19,7 +19,7 @@
 (setq exec-path-from-shell-shell-name "zsh")
 (setq exec-path-from-shell-check-startup-files nil) ;
 (setq exec-path-from-shell-arguments '("-l" )) ;remove -i read form .zshenv
-(exec-path-from-shell-initialize)
+
 
 (setenv "LANG" "zh_CN.UTF-8")
 
