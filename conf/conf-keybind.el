@@ -283,6 +283,12 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "s-C-M-3") 'vmacs-split-window-horizontally) ;hyper-2
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 
+(evil-declare-motion 'golden-ratio-scroll-screen-down)
+(evil-declare-motion 'golden-ratio-scroll-screen-up)
+
+(global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up) ;C-v
+;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)
+(global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
 
 
 (provide 'conf-keybind)

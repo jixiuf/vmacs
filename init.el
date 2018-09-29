@@ -50,7 +50,6 @@
 (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
 (require 'conf-buffer)
 
-(require 'conf-scroll)                  ;scroll screen C-v M-v
 (when (eq system-type 'darwin) (require 'conf-evil-input-method))
 
 
