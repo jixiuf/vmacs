@@ -3,13 +3,14 @@
 ;; bury-boring-windows with `C-gC-g'
 
 (vmacs-leader "d" 'vmacs-prev-buffer)
-(vmacs-leader "k" 'vmacs-kill-buffer-dwim) ;
 (vmacs-leader "q" 'kill-other-buffers) ;
 
 (vmacs-leader "fr" 'vmacs-undo-kill-buffer)
 
-(global-set-key  (kbd "s-k") 'vmacs-next-buffer) ; default on mac
-(global-set-key  (kbd "s-C-M-k") 'vmacs-next-buffer) ; hyper-k default on mac
+(vmacs-leader "k" 'vmacs-kill-buffer-dwim) ;
+(global-set-key  (kbd "s-C-M-k") 'vmacs-kill-buffer-dwim) ; hyper-k default on mac
+(global-set-key  (kbd "s-C-M-u") 'vmacs-undo-kill-buffer)
+(vmacs-leader (kbd "u") 'vmacs-undo-kill-buffer) ;
 
 ;; (define-key evil-normal-state-map "q" 'vmacs-prev-buffer)
 ;; (with-eval-after-load 'dired (define-key dired-mode-map "q" 'vmacs-prev-buffer))
@@ -68,10 +69,14 @@
 (defun vmacs-add-to-killed-file-list()
   "If buffer is associated with a file name, add that file to the
 `vmacs-killed-file-list' when killing the buffer."
-  (when buffer-file-name
+  (cond
+   (buffer-file-name
     (unless (or (string-match-p "COMMIT_EDITMSG" buffer-file-name)
                 (string-match-p "/cache/recentf" buffer-file-name))
-      (push buffer-file-name vmacs-killed-file-list))))
+      (push buffer-file-name vmacs-killed-file-list)))
+   ((equal major-mode 'dired-mode)
+    (push default-directory vmacs-killed-file-list))))
+
 
 (add-hook 'kill-buffer-hook #'vmacs-add-to-killed-file-list)
 
