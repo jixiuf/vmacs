@@ -8,7 +8,7 @@
 (autoload 'magit-status "magit" "magit")
 (with-eval-after-load 'magit (require 'conf-magit))
 
-(vmacs-leader "vv" 'vc-next-action)
+(vmacs-leader "vv" 'vmacs-vc-next-action)
 (vmacs-leader "vr" 'vc-revert)
 (vmacs-leader "vl" 'vc-print-log)
 (vmacs-leader "vL" 'vc-print-root-log)

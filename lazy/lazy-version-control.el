@@ -1,6 +1,7 @@
 (eval-when-compile
   (require  'vc)
   (require  'ediff)
+  (require 'dash)
   (require 'ediff-vers)
   (require  'vc-dir))
 
@@ -94,8 +95,20 @@
   (interactive)
   (if (magit-svn-repos-p)
       (magit-run-git-async "svn" "rebase" args)
-      (call-interactively 'magit-pull-from-upstream)))
+    (call-interactively 'magit-pull-from-upstream)))
 
+(defun vmacs-vc-next-action()
+  (interactive)
+  (call-interactively 'vc-next-action)
+  (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
+         (state (nth 3 vc-fileset)))
+    (when (and (eq state 'up-to-date)
+               (not (zerop (vmacs-magit-get-unpushed-count))))
+      (call-interactively 'vmacs-magit-push-default))))
+
+(defun vmacs-magit-get-unpushed-count()
+  (--when-let (magit-get-upstream-branch nil t)
+    (car (magit-rev-diff-count "HEAD" it))))
 
 (provide 'lazy-version-control)
 
