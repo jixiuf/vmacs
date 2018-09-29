@@ -102,17 +102,23 @@ or end-of-line.
 Move point to end-of-line ,if point was already at end of line (ignore white space)
   move point to end of line .if `C-u', then move to end of line directly."
   (interactive "^P")
-  (if (and (string= major-mode "term-mode") (equal (line-number-at-pos)  (count-lines (point-min) (point-max)))) (term-send-raw) (if arg (end-of-line) (let ((oldpos (point)) (new-pos)) (beginning-of-line) (if (re-search-forward "[ \t]*$" (point-at-eol) t 1) (setq new-pos  (match-beginning 0)) (setq new-pos (point-at-eol)))
-                                                                                                                                                            (when (= oldpos new-pos)
-                                                                                                                                                              (setq new-pos (point-at-eol))
-                                                                                                                                                              )
-                                                                                                                                                            (when (> new-pos (+ (frame-width) oldpos))
-                                                                                                                                                              (setq new-pos (+ (frame-width) oldpos)))
-                                                                                                                                                            (goto-char new-pos)
-                                                                                                                                                            )
-                                                                                                                                     )
+  (if (and (string= major-mode "term-mode")
+           (equal (line-number-at-pos)
+                  (count-lines (point-min) (point-max))))
+      (term-send-raw)
+    (if arg (end-of-line)
+      (let ((oldpos (point)) (new-pos)) (beginning-of-line) (if (re-search-forward "[ \t]*$" (point-at-eol) t 1) (setq new-pos  (match-beginning 0)) (setq new-pos (point-at-eol)))
+           (when (= oldpos new-pos)
+             (setq new-pos (point-at-eol))
+             )
+           (when (> new-pos (+ (frame-width) oldpos))
+             (setq new-pos (+ (frame-width) oldpos)))
+           (goto-char new-pos)
+           )
       )
+    )
   )
+
 ;; 同smart-end-of-line
 ;;;###autoload
 (defun org-mode-smart-end-of-line()
@@ -526,7 +532,7 @@ tell application \"iTerm\"
 	end tell
 end tell
 " (expand-file-name default-directory))))
-    (start-process "cd-iterm2" nil "osascript" "-e" cmd)))
+    (ns-do-applescript cmd)))
 
 ;; mac上打开iterm2，并cd到当前编辑的文件所在目录
 ;;;###autoload
@@ -550,7 +556,7 @@ end tell
 
     end tell
 end tell" (expand-file-name default-directory))))
-    (start-process "cd-iterm2" nil "osascript" "-e" cmd)))
+    (ns-do-applescript cmd)))
 
 ;;;###autoload
 (defun toggle-case-fold()
