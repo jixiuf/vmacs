@@ -495,6 +495,13 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map (kbd "C-o") 'toggle-camelize)
 (define-key evil-motion-state-map (kbd "C-o") 'toggle-camelize)
 
+(evil-declare-motion 'golden-ratio-scroll-screen-down)
+(evil-declare-motion 'golden-ratio-scroll-screen-up)
+
+(global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up) ;C-v
+;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)
+(global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
+
 
 (provide 'conf-evil)
 

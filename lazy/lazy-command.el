@@ -333,6 +333,11 @@ Move point to end-of-line ,if point was already at that position,
            (boundp 'server-buffer-clients)
            server-buffer-clients)
       (server-edit))
+     ((equal major-mode 'magit-status-mode)
+      (let ((default-directory default-directory))
+        (put-text-property 0 1 'type 'magit default-directory)
+        (push default-directory vmacs-killed-file-list)
+        (call-interactively 'magit-mode-bury-buffer)))
      ( (derived-mode-p 'magit-mode)
        (call-interactively 'magit-mode-bury-buffer))
      ( (derived-mode-p 'calc-mode)
@@ -346,6 +351,50 @@ Move point to end-of-line ,if point was already at that position,
      (t
       (message "kill buffer %s" (buffer-name buf))
       (kill-this-buffer)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar vmacs-killed-file-list nil
+  "List of recently killed files.")
+
+(defun vmacs-add-to-killed-file-list()
+  "If buffer is associated with a file name, add that file to the
+`vmacs-killed-file-list' when killing the buffer."
+  (let ((default-directory default-directory))
+    (cond
+     (buffer-file-name
+      (unless (or (string-match-p "COMMIT_EDITMSG" buffer-file-name)
+                  (string-match-p "/cache/recentf" buffer-file-name))
+        (push buffer-file-name vmacs-killed-file-list)))
+     ((equal major-mode 'magit-status-mode)
+      (put-text-property 0 1 'type 'magit default-directory)
+      (push default-directory vmacs-killed-file-list))
+     ((equal major-mode 'dired-mode)
+      (push default-directory vmacs-killed-file-list)))))
+
+
+
+(add-hook 'kill-buffer-hook #'vmacs-add-to-killed-file-list)
+
+;;;###autoload
+(defun vmacs-undo-kill-buffer()
+  "Reopen the most recently killed file, if one exists."
+  (interactive)
+  (when vmacs-killed-file-list
+    (let* ((file (pop vmacs-killed-file-list))
+           (type (get-text-property 0 'type file))
+           )
+      (cond
+       ((equal type 'magit)
+        (magit-status file)
+        (message "reopen magit-status in %s" file))
+       (t
+        (find-file file)
+        (message "reopen file: %s" file))
+       ))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;;###autoload
 (defun kill-other-buffers ()

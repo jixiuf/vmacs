@@ -62,32 +62,6 @@
   (when (equal last-command 'keyboard-quit)
     (bury-boring-windows )))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar vmacs-killed-file-list nil
-  "List of recently killed files.")
-
-(defun vmacs-add-to-killed-file-list()
-  "If buffer is associated with a file name, add that file to the
-`vmacs-killed-file-list' when killing the buffer."
-  (cond
-   (buffer-file-name
-    (unless (or (string-match-p "COMMIT_EDITMSG" buffer-file-name)
-                (string-match-p "/cache/recentf" buffer-file-name))
-      (push buffer-file-name vmacs-killed-file-list)))
-   ((equal major-mode 'dired-mode)
-    (push default-directory vmacs-killed-file-list))))
-
-
-(add-hook 'kill-buffer-hook #'vmacs-add-to-killed-file-list)
-
-(defun vmacs-undo-kill-buffer()
-  "Reopen the most recently killed file, if one exists."
-  (interactive)
-  (when vmacs-killed-file-list
-    (message "reopen file: %s" (find-file (pop vmacs-killed-file-list)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (provide 'conf-buffer)
 
 ;; Local Variables:
