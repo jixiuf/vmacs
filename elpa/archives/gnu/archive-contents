@@ -389,7 +389,7 @@
 	 ((:keywords "convenience" "languages")
 	  (:url . "https://github.com/joaotavora/eglot"))])
  (el-search .
-	    [(1 7 8)
+	    [(1 7 9)
 	     ((emacs
 	       (25))
 	      (stream
@@ -433,7 +433,7 @@
 		  ((:keywords "convenience")
 		   (:url . "https://github.com/ergoemacs/ergoemacs-mode"))])
  (excorporate .
-	      [(0 7 7)
+	      [(0 8 1)
 	       ((emacs
 		 (24 1))
 		(fsm
@@ -441,7 +441,9 @@
 		(soap-client
 		 (3 1 4))
 		(url-http-ntlm
-		 (2 0 3)))
+		 (2 0 3))
+		(nadvice
+		 (0 3)))
 	       "Exchange integration" tar
 	       ((:keywords "calendar")
 		(:url . "http://elpa.gnu.org/packages/excorporate.html"))])
@@ -769,6 +771,11 @@
 	 "Random-access singly-linked lists" single
 	 ((:url . "http://elpa.gnu.org/packages/myers.html")
 	  (:keywords "list" "containers"))])
+ (nadvice .
+	  [(0 3)
+	   nil "Forward compatibility for Emacs-24.4's nadvice" single
+	   ((:url . "http://elpa.gnu.org/packages/nadvice.html")
+	    (:keywords))])
  (nameless .
 	   [(1 0 2)
 	    ((emacs
@@ -781,7 +788,9 @@
 	 ((emacs
 	   (24 1))
 	  (cl-lib
-	   (0 5)))
+	   (0 5))
+	  (nadvice
+	   (0 3)))
 	 "Namespaces for emacs-lisp. Avoid name clobbering without hiding symbols." tar
 	 ((:keywords "extensions" "lisp")
 	  (:url . "https://github.com/Malabarba/names"))])
@@ -847,7 +856,7 @@
 	    ((:keywords "convenience" "text" "org")
 	     (:url . "https://savannah.nongnu.org/projects/org-edna-el/"))])
  (orgalist .
-	   [(1 8)
+	   [(1 9)
 	    ((emacs
 	      (24 4)))
 	    "Manage Org-like lists in non-Org buffers" single
@@ -990,7 +999,9 @@
 	  (cl-lib
 	   (0 5))
 	  (cl-generic
-	   (0 3)))
+	   (0 3))
+	  (cl-print
+	   (1 0)))
 	 "A collaborative editing framework for Emacs" tar
 	 ((:keywords "rudel" "collaboration")
 	  (:url . "http://rudel.sourceforge.net/"))])
