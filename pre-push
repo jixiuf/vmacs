@@ -4,7 +4,6 @@
 # dumb transports.
 #
 # To enable this hook, rename this file to "post-update".
-
-nohup make dump&
+make dump </dev/null &>/dev/null & disown
 
 exit 0

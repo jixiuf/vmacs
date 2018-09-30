@@ -30,8 +30,8 @@ clean:
 clean-elpa:
 	find elpa -name "*.elc" -exec rm {} \;
 dump: clean update-autoload-cookie
-	@cp -f  post-receive .git/hooks/
-	@cp -f  pre-push .git/hooks/
+	@ln -sf  `pwd`/post-receive .git/hooks/
+	@ln -sf  `pwd`/pre-push .git/hooks/
 	@-pkill  -f dump-emacs-portable
 	@mkdir -p ~/.emacs.d/cache/dump/
 	emacs --batch -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs.pdump")'

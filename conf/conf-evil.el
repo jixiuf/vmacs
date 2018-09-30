@@ -364,7 +364,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "sy" 'evil-copy-sexp-at-point) ;kill-sexp,undo
 (define-key evil-normal-state-map "sk" (kbd "C-k"))
 (define-key evil-normal-state-map "su" (kbd "C-u 0 C-k")) ;H-i =C-u 删除从光标位置到行首的内容
-(vmacs-leader "h" 'evil-mark-whole-buffer)
+;; (vmacs-leader "h" 'evil-mark-whole-buffer)
 
 ;; (define-key evil-normal-state-map "so" 'helm-occur)
 

@@ -16,7 +16,8 @@
    #+BEGIN_SRC sh
     brew tap d12frosted/emacs-plus
     brew install emacs-plus --HEAD --with-pdumper
-    cd .emacs.d;make dump
+    cd .emacs.d
+    make dump
    #+END_SRC
     生成dump文件
 4. mac 下几个脚本的封装
