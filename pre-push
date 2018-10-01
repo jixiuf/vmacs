@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 #
 # An example hook script to prepare a packed repository for use over
 # dumb transports.
 #
 # To enable this hook, rename this file to "post-update".
+
 make dump </dev/null &>/dev/null & disown
 
 exit 0
