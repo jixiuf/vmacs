@@ -197,7 +197,7 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "s-C-M-d") 'vmacs-shell-toggle)
 (global-set-key (kbd "s-,") 'vmacs-shell-toggle-cd)
 (global-set-key [f2] 'toggle-eshell)
-(global-set-key [f1] 'toggle-eshell)
+;; (global-set-key [f1] 'toggle-eshell)
 ;; (global-set-key  (kbd "s-t") 'toggle-eshell)
 (global-set-key [C-f2] 'toggle-eshell-cd)
 
