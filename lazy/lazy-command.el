@@ -333,6 +333,9 @@ Move point to end-of-line ,if point was already at that position,
            (boundp 'server-buffer-clients)
            server-buffer-clients)
       (server-edit))
+     ((member major-mode '(eshell-mode term-mode ))
+      (vmacs-add-to-killed-file-list)
+      (bury-buffer))
      ((equal major-mode 'magit-status-mode)
       (let ((default-directory default-directory))
         (put-text-property 0 1 'type 'magit default-directory)
@@ -360,15 +363,18 @@ Move point to end-of-line ,if point was already at that position,
 (defun vmacs-add-to-killed-file-list()
   "If buffer is associated with a file name, add that file to the
 `vmacs-killed-file-list' when killing the buffer."
-  (let ((default-directory default-directory))
+  (let ((default-directory default-directory)
+        (bufname (buffer-name))
+        )
     (cond
      (buffer-file-name
       (unless (or (string-match-p "COMMIT_EDITMSG" buffer-file-name)
                   (string-match-p "/cache/recentf" buffer-file-name))
         (push buffer-file-name vmacs-killed-file-list)))
      ((equal major-mode 'magit-status-mode)
-      (put-text-property 0 1 'type 'magit default-directory)
-      (push default-directory vmacs-killed-file-list))
+      (put-text-property 0 1 'type 'magit default-directory))
+     ((member major-mode '(eshell-mode term-mode ))
+      (push (current-buffer) vmacs-killed-file-list))
      ((equal major-mode 'dired-mode)
       (push default-directory vmacs-killed-file-list)))))
 
@@ -382,16 +388,25 @@ Move point to end-of-line ,if point was already at that position,
   (interactive)
   (when vmacs-killed-file-list
     (let* ((file (pop vmacs-killed-file-list))
-           (type (get-text-property 0 'type file))
-           )
-      (cond
-       ((equal type 'magit)
-        (magit-status file)
-        (message "reopen magit-status in %s" file))
-       (t
-        (find-file file)
-        (message "reopen file: %s" file))
-       ))))
+           type)
+      (while (and file (bufferp file) (not (buffer-live-p file)))
+        (setq file (pop vmacs-killed-file-list)))
+      (when file
+        (when (stringp file)
+          (setq type (get-text-property 0 'type file)))
+        (cond
+         ((bufferp file)
+          (switch-to-buffer file))
+         ((equal type 'magit)
+          (magit-status file)
+          (message "reopen magit-status in %s" file))
+
+         (t
+          (find-file file)
+          (message "reopen file: %s" file))
+         )
+        )
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
