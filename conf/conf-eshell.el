@@ -17,10 +17,10 @@
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
   (add-to-list 'eshell-visual-commands  "redis-cli")
-  (add-to-list 'eshell-visual-commands  "bee")
   (add-to-list 'eshell-visual-commands  "ssh")
   (when (boundp 'eshell-visual-subcommands) ;from emacs24.4
     (add-to-list 'eshell-visual-subcommands  '("tmux"))
+    (add-to-list 'eshell-visual-subcommands  '("bee" "run"))
     (add-to-list 'eshell-visual-subcommands  '("git" "l" "log" "diff" "show"))))
 
 ;; (autoload 'helm-eshell-history "helm-eshell" "" t nil)
@@ -31,6 +31,10 @@
   (company-mode -1)
   (define-key eshell-mode-map (kbd "M-k") 'eshell-previous-prompt)
   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
+  (define-key eshell-mode-map (kbd "C-t") 'toggle-eshell-new)
+  (define-key eshell-mode-map (kbd "s-t") 'toggle-eshell-new)
+  (define-key eshell-mode-map (kbd "C-M-S-s-t") 'toggle-eshell-new)
+
 
   (define-key eshell-mode-map (kbd "M-.") 'eshell-insert-last-cmd-argument)
 

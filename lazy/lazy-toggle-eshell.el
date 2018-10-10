@@ -25,6 +25,13 @@
   (interactive "P")
   (toggle-eshell-internal  (toggle-shell-completing-read-buffer-name arg "*eshell*")))
 
+;;;###autoload
+(defun toggle-eshell-new(&optional dir)
+  (interactive )
+  (let ((buffer-name (generate-new-buffer-name (format "*eshell*  (%s)"  default-directory))))
+    (setq shell-buffer-hist (delete buffer-name shell-buffer-hist))
+    (push buffer-name shell-buffer-hist)
+    (toggle-eshell-internal  buffer-name)))
 
 (defvar eshll-toggle-commands '(toggle-eshell-cd toggle-eshell  toggle-shell))
 (defvar vmacs-window-configration nil)
