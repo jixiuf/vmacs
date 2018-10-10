@@ -137,7 +137,8 @@ Create new one if no eshell buffer exists."
         )
     ad-do-it
     (setq eshell-buffer (generate-new-buffer-name (format "*eshell* %s (%s)"  input default-directory)))
-    (rename-buffer eshell-buffer)))
+    (when (equal major-mode 'eshell-mode)
+      (rename-buffer eshell-buffer))))
 
 (defun vmacs-eshell-remove-from-shell-buffer-hist()
   (let ((current-buffer-index (cl-position (current-buffer) shell-buffer-hist))
