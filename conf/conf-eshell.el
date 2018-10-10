@@ -4,7 +4,7 @@
   (require 'eshell))
 
 ;; zsh 的alias  转变成eshell
-;; alias | awk '{print "alias "$0}' | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/'\\\''/'/g;" > ~/.emacs.d/eshell/alias
+;; alias | awk '{print "alias "$0}' | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/^alias ([^= ]+)=(.*)$/alias \1 \2 \$*/g;  s/'\\\''/'/g;" >~/.emacs.d/eshell/alias
 (setq-default eshell-directory-name (concat user-emacs-directory "eshell"))
 (setq-default eshell-destroy-buffer-when-process-dies t)
 
@@ -48,6 +48,9 @@
 
 (defalias 'vi 'find-file)
 (defalias 'o 'find-file-other-window)
+
+(defun eshell/clear ()
+   (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer)))
 
 (provide 'conf-eshell)
 

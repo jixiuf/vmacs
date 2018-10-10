@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+.PHONY: eshell
 EMACS ?= emacs
 BATCH  = $(EMACS) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 compile:
@@ -35,3 +36,6 @@ dump: clean update-autoload-cookie
 	@-pkill  -f dump-emacs-portable
 	@mkdir -p ~/.emacs.d/cache/dump/
 	emacs --batch -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs.pdump")'
+
+eshell:
+	./bin/zsh-to-eshell-alias.sh
