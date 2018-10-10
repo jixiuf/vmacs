@@ -298,8 +298,6 @@
 ;;   (define-key emacs-lisp-mode-map (kbd "C-x C-e") 'eval-print-last-sexp))
 
 
-(global-set-key [f2] 'toggle-eshell)
-(global-set-key [C-f2] 'toggle-eshell-cd)
 
 ;; (global-set-key "\M-n"  'vmacs-forward-4-line)
 ;; (global-set-key "\M-p"  'vmacs-backward-4-line)

@@ -9,7 +9,8 @@
 (defun toggle-eshell-cd(&optional arg dir)
   (interactive "P")
   (let ((dest-dir-cd (or dir default-directory))
-        (shell-buffer-name (toggle-shell-completing-read-buffer-name arg "*eshell*")))
+        (shell-buffer-name (toggle-shell-completing-read-buffer-name
+                            arg (generate-new-buffer-name (format "*eshell*  (%s)"  default-directory)))))
     (toggle-eshell-internal shell-buffer-name)
     (with-current-buffer shell-buffer-name
       (goto-char (point-max))
@@ -23,15 +24,50 @@
 ;;;###autoload
 (defun toggle-eshell(&optional arg dir)
   (interactive "P")
-  (toggle-eshell-internal  (toggle-shell-completing-read-buffer-name arg "*eshell*")))
+  (toggle-eshell-internal  (toggle-shell-completing-read-buffer-name
+                            arg (generate-new-buffer-name (format "*eshell*  (%s)"  default-directory)))))
 
 ;;;###autoload
 (defun toggle-eshell-new(&optional dir)
   (interactive )
   (let ((buffer-name (generate-new-buffer-name (format "*eshell*  (%s)"  default-directory))))
-    (setq shell-buffer-hist (delete buffer-name shell-buffer-hist))
-    (push buffer-name shell-buffer-hist)
     (toggle-eshell-internal  buffer-name)))
+
+(defun vmscs-eshell-next-index ()
+  (let* ((current-buffer-index (cl-position (current-buffer) shell-buffer-hist))
+         (switch-index (if current-buffer-index
+                           (if (>= current-buffer-index (- (length shell-buffer-hist) 1))
+                               0
+                             (+ 1 current-buffer-index))
+                         nil)))
+    (when (equal current-buffer-index switch-index)
+      (message "no next eshell buffer")
+      )
+    switch-index))
+
+;;;###autoload
+(defun vmscs-eshell-next ()
+  "Select next eshell buffer.
+Create new one if no eshell buffer exists."
+  (interactive)
+  (let ((switch-index (vmscs-eshell-next-index)))
+    (when switch-index
+      (switch-to-buffer  (nth switch-index shell-buffer-hist))
+      (vmacs-eshell-update-hist))))
+
+(defun vmscs-eshell-prev ()
+  "Select previous eshell buffer.
+Create new one if no eshell buffer exists."
+  (interactive)
+  (let* ((current-buffer-index (cl-position (current-buffer) shell-buffer-hist))
+         (switch-index (if current-buffer-index
+                           (if (<= current-buffer-index 0)
+                               (- (length shell-buffer-hist) 1)
+                             (- current-buffer-index 1))
+                         (- (length shell-buffer-hist) 1))))
+    (switch-to-buffer (nth switch-index shell-buffer-hist))
+    (vmacs-eshell-update-hist)))
+
 
 (defvar eshll-toggle-commands '(toggle-eshell-cd toggle-eshell  toggle-shell))
 (defvar vmacs-window-configration nil)
@@ -44,7 +80,9 @@
        ( (not (string= (buffer-name) shell-buffer-name))
          (setq vmacs-window-configration (current-window-configuration))
          (pop-to-buffer shell-buffer-name)
-         (delete-other-windows))
+         (delete-other-windows)
+         (vmacs-eshell-update-hist)
+         )
        ;; ((and (string= (buffer-name) shell-buffer-name)
        ;;       (> (length (window-list)) 1)
        ;;       (member last-command eshll-toggle-commands))
@@ -62,15 +100,23 @@
     ;; (eshell-send-input)
     (delete-other-windows)
     (pop-to-buffer shell-buffer-name)
-    ))
+    (vmacs-eshell-update-hist)
 
+    )
+
+
+  )
+(defun vmacs-eshell-update-hist(&optional buf)
+  (add-to-list 'shell-buffer-hist (or buf (current-buffer)) t)
+  (setq  last-shell-buffer (or buf (current-buffer))))
 
 (defvar shell-buffer-hist nil)
+(defvar last-shell-buffer nil)
 
 (defun toggle-shell-completing-read-buffer-name(arg &optional default-buffer-name-when-no-hist )
   (let* ((default-shell-buffer
-           (if (and shell-buffer-hist (listp shell-buffer-hist) (car shell-buffer-hist))
-               (car shell-buffer-hist) default-buffer-name-when-no-hist ))
+           (if (and last-shell-buffer (buffer-live-p last-shell-buffer))
+               (buffer-name last-shell-buffer) default-buffer-name-when-no-hist ))
          (buffer-name default-shell-buffer))
     (when arg
       (setq buffer-name (completing-read (concat "shell buffer name(default:"
@@ -78,24 +124,33 @@
                                                      default-shell-buffer
                                                    (concat "*"  default-shell-buffer "*"))
                                                  "):")
-                                         shell-buffer-hist nil nil nil nil default-shell-buffer ))
+                                         (mapcar 'buffer-name shell-buffer-hist) nil nil nil nil default-shell-buffer ))
       (unless (string-match "^\\*" buffer-name)
         (setq buffer-name (concat "*eshell* "  buffer-name ))) )
-    (setq shell-buffer-hist (delete buffer-name shell-buffer-hist))
-    (push buffer-name shell-buffer-hist)
     buffer-name))
 
 
 (defadvice eshell-send-input (around change-buffer-name activate)
   "change-buffer-name."
   (let ((input (eshell-get-old-input))
-        (eshell-buffer )
+        (eshell-buffer)
         )
     ad-do-it
     (setq eshell-buffer (generate-new-buffer-name (format "*eshell* %s (%s)"  input default-directory)))
-    (rename-buffer eshell-buffer)
-    (pop shell-buffer-hist)
-    (push eshell-buffer shell-buffer-hist )))
+    (rename-buffer eshell-buffer)))
+
+(defun vmacs-eshell-remove-from-shell-buffer-hist()
+  (let ((current-buffer-index (cl-position (current-buffer) shell-buffer-hist))
+        (next-index (vmscs-eshell-next-index)))
+    (when (eq (current-buffer) last-shell-buffer)
+      (if (or (not next-index)
+              (equal current-buffer-index next-index))
+          (setq last-shell-buffer nil)
+        (setq last-shell-buffer (nth next-index shell-buffer-hist))))
+    (setq shell-buffer-hist (delq (current-buffer) shell-buffer-hist))
+    ))
+
+(add-hook 'eshell-exit-hook #'vmacs-eshell-remove-from-shell-buffer-hist)
 
 (defun eshell-insert-last-cmd-argument()
   "like Alt-. in bash"
