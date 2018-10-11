@@ -21,6 +21,7 @@
   (when (boundp 'eshell-visual-subcommands) ;from emacs24.4
     (add-to-list 'eshell-visual-subcommands  '("tmux"))
     (add-to-list 'eshell-visual-subcommands  '("bee" "run"))
+    (add-to-list 'eshell-visual-subcommands  '("go" "run"))
     (add-to-list 'eshell-visual-subcommands  '("git" "l" "log" "diff" "show"))))
 
 ;; (autoload 'helm-eshell-history "helm-eshell" "" t nil)
