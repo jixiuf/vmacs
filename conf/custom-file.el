@@ -193,7 +193,7 @@
  '(menu-bar-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(go-eldoc company-go eglot eshell-prompt-extras company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports sane-term shell-toggle osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-magit flycheck git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(go-eldoc company-go eglot eshell-prompt-extras company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports sane-term osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-magit flycheck git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")

@@ -17,6 +17,8 @@
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
   (add-to-list 'eshell-visual-commands  "redis-cli")
+  (add-to-list 'eshell-visual-commands  "zsh")
+  (add-to-list 'eshell-visual-commands  "bash")
   (add-to-list 'eshell-visual-commands  "ssh")
   (when (boundp 'eshell-visual-subcommands) ;from emacs24.4
     (add-to-list 'eshell-visual-subcommands  '("tmux"))
@@ -55,8 +57,19 @@
 (defalias 'vi 'find-file)
 (defalias 'o 'find-file-other-window)
 
-(defun eshell/clear ()
-   (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer)))
+(with-eval-after-load 'esh-mode
+  (defun eshell/clear ()
+    (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer))))
+
+(defun eshell/zsh ()
+  (interactive)
+  (vmacs-shell-toggle 0))
+
+(defun vmacs-term-exec-hook(&optional cmd )
+  (rename-buffer (generate-new-buffer-name (format "*term* %s (%s)"  (or cmd (buffer-name))  default-directory))))
+;; eshell里启动term的时候rename 之
+(with-eval-after-load 'term
+  (add-hook 'term-exec-hook 'vmacs-term-exec-hook))
 
 (provide 'conf-eshell)
 

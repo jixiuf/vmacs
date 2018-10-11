@@ -133,6 +133,7 @@
 ;; (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 ;; ;; 然后将mode-line 的face header调成0.1，变成一条线
 (setq-default mode-line-format nil)
+(setq mode-line-format nil)
 
 
 

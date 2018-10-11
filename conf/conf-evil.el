@@ -82,6 +82,8 @@
 (evil-set-initial-state 'grep-mode 'normal)
 (evil-set-initial-state 'Info-mode 'motion)
 (evil-set-initial-state 'calc-mode 'normal)
+;; (evil-set-initial-state 'term-mode 'normal)
+;; (evil-set-initial-state 'eshell-mode 'normal)
 (defun vmacs-calc-hook()
   (require 'calc-bin)
   ;; 默认calc 的移位移位操作是接32位的， 可以bw(calc-word-size) 来改成64位

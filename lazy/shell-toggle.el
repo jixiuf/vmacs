@@ -249,15 +249,16 @@ current buffer.
 
 Stores the window configuration before creating and/or switching window."
   (setq shell-toggle-pre-shell-win-conf
-	(current-window-configuration))
+	    (current-window-configuration))
   (setq shell-toggle-pre-shell-selected-frame
-	(selected-frame))
+	    (selected-frame))
   (run-hooks 'shell-toggle-leave-buffer-hook)
   (let ((shell-buffer shell-toggle-shell-buffer)
-	(cd-command
-	 ;; Find out which directory we are in (the method differs for
-	 ;; different buffers)
-	 (and make-cd
+        (char-mode)
+	    (cd-command
+	     ;; Find out which directory we are in (the method differs for
+	     ;; different buffers)
+	     (and make-cd
               (or (and (buffer-file-name)
                        (file-name-directory (buffer-file-name))
                        (concat "cd " (shell-quote-argument
@@ -267,40 +268,40 @@ Stores the window configuration before creating and/or switching window."
                                       list-buffers-directory)))
                   (and default-directory
                        (concat "cd " (shell-quote-argument
-                                      default-directory)))))))
+                                      (expand-file-name default-directory))))))))
 
     ;; Switch to an existing shell if one exists, otherwise switch to another
     ;; window and start a new shell
     (run-hooks 'shell-toggle-leave-buffer-hook)
     (if (buffer-live-p shell-buffer)
-	  ;; buffer exists, let's see where it is.
-	  (let ((in-current-frame
-		 (get-buffer-window shell-buffer nil)))
-	    (if in-current-frame
-		(switch-to-buffer-other-window shell-buffer)
-	      (let ((buffer-window
-		     (get-buffer-window shell-buffer t)))
-		(if buffer-window ;; buffer is active in other frame
-		    (progn
-		      (select-frame-set-input-focus (window-frame buffer-window))
-		      (select-window buffer-window))
-		  ;; buffer is shown nowhere
-		  (switch-to-buffer-other-window shell-buffer)))))
+	    ;; buffer exists, let's see where it is.
+	    (let ((in-current-frame
+		       (get-buffer-window shell-buffer nil)))
+	      (if in-current-frame
+		      (switch-to-buffer-other-window shell-buffer)
+	        (let ((buffer-window
+		           (get-buffer-window shell-buffer t)))
+		      (if buffer-window ;; buffer is active in other frame
+		          (progn
+		            (select-frame-set-input-focus (window-frame buffer-window))
+		            (select-window buffer-window))
+		        ;; buffer is shown nowhere
+		        (switch-to-buffer-other-window shell-buffer)))))
       ;; Sometimes an error is generated when I call `shell'
       ;; (it has to do with my shell-mode-hook which inserts text into the
       ;; newly created shell-buffer and thats not allways a good idea).
-	      (shell-toggle-buffer-switch-to-other-window)
+	  (shell-toggle-buffer-switch-to-other-window)
       (condition-case the-error
-	  (setq shell-toggle-shell-buffer
-		(funcall shell-toggle-launch-shell))
-	(error (switch-to-buffer shell-toggle-shell-buffer))))
+	      (setq shell-toggle-shell-buffer
+		        (funcall shell-toggle-launch-shell))
+	    (error (switch-to-buffer shell-toggle-shell-buffer))))
     (if (or cd-command shell-toggle-goto-eob)
-	(goto-char (point-max)))
+	    (goto-char (point-max)))
     (if (not (get-buffer-process (current-buffer)))
         (setq shell-toggle-shell-buffer
               (funcall shell-toggle-launch-shell)))
     (if cd-command
-	(progn
+	    (progn
           (cond ((eq shell-toggle-launch-shell 'shell)
                  (progn
                    (insert " ")
@@ -312,19 +313,27 @@ Stores the window configuration before creating and/or switching window."
                 ((eq shell-toggle-launch-shell
                      'shell-toggle-eshell))
                 (t (message "Shell type not recognized")))
-	  (insert cd-command)
-	  (if shell-toggle-automatic-cd
-	      (cond ((eq shell-toggle-launch-shell 'shell)
-		     (comint-send-input))
-		    ((eq shell-toggle-launch-shell
-			 'shell-toggle-ansi-term)
-		     (term-send-input))
+
+          (if (not (derived-mode-p 'term-mode))
+	          (insert cd-command)
+            (setq char-mode (term-in-char-mode))
+            (when char-mode (term-line-mode))
+            (insert cd-command)
+            )
+
+	      (if shell-toggle-automatic-cd
+	          (cond ((eq shell-toggle-launch-shell 'shell)
+		             (comint-send-input))
+		            ((eq shell-toggle-launch-shell
+			             'shell-toggle-ansi-term)
+		             (term-send-input))
                     ((eq shell-toggle-launch-shell
                          'shell-toggle-eshell)
                      (eshell-send-input))
-		    (t (message "Shell type not recognized")))
-	    )
-	  ))
+		            (t (message "Shell type not recognized")))
+	        )
+	      ))
+    (when char-mode (term-char-mode))
     (run-hooks 'shell-toggle-goto-shell-hook)
     ))
 

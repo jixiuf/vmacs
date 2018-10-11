@@ -48,6 +48,9 @@
 (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
 (define-key term-raw-map (kbd "C-y") 'vmacs-term-yank)
 (define-key term-raw-map (kbd "s-v") 'vmacs-term-yank)
+(define-key term-raw-map (kbd "<return>") 'vmacs-term-return)
+(define-key term-raw-map (kbd "<RET>") 'vmacs-term-return)
+
 
 
 (define-key term-raw-map (kbd "C-t") 'vmacs-shell-toggle-new)
@@ -85,6 +88,13 @@
     (when (term-in-line-mode) (term-char-mode))))
 (add-hook 'evil-insert-state-entry-hook 'evil-insert-state-term-char-mode)
 
+(defun evil-normal-state-term-char-mode ()
+  (when (and  (derived-mode-p 'term-mode)
+              (get-buffer-process (current-buffer)))
+    (when (term-in-char-mode) (term-line-mode))))
+
+(add-hook 'evil-normal-state-entry-hook 'evil-normal-state-term-char-mode)
+
 (defadvice evil-paste-after (around paste-to-term activate)
   (if (derived-mode-p 'term-mode)
       (term-send-raw-string (evil-get-register ?\" t))
@@ -106,12 +116,20 @@
 (defun term-ctrl-g ()
   "term ctrl-g"
   (interactive)
-  (unless (equal last-command 'term-ctrl-g)
-    (term-send-raw)
-    (sit-for 0.1))
-  (evil-normal-state)
-  (when (term-in-char-mode) (term-line-mode)))
+  (let ((input (funcall term-get-old-input)))
+    (unless (equal last-command 'term-ctrl-g)
+      (unless (string-equal "" input)
+        (term-send-raw)
+        (sit-for 0.1)))
+    (evil-normal-state)
+    ))
 
+(defun vmacs-term-return()
+  (interactive)
+  (let ((input (funcall term-get-old-input)))
+    (term-send-raw-string "\^M")
+    (rename-buffer (generate-new-buffer-name (format "*term* %s (%s)"  input  default-directory)))
+    ))
 
 ;; (term-send-raw-string "\^g") ;; send ctrl-g
 ;; (term-send-raw-string (string ?\e)) ; send esc
