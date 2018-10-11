@@ -335,7 +335,10 @@ Move point to end-of-line ,if point was already at that position,
       (server-edit))
      ((member major-mode '(eshell-mode term-mode ))
       (vmacs-add-to-killed-file-list)
-      (bury-buffer))
+      (bury-buffer)
+      ;; (awesome-tab-forward-group)
+      ;; (awesome-tab-backward-group)
+      )
      ((equal major-mode 'magit-status-mode)
       (let ((default-directory default-directory))
         (put-text-property 0 1 'type 'magit default-directory)
@@ -359,7 +362,6 @@ Move point to end-of-line ,if point was already at that position,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar vmacs-killed-file-list nil
   "List of recently killed files.")
-
 (defun vmacs-add-to-killed-file-list()
   "If buffer is associated with a file name, add that file to the
 `vmacs-killed-file-list' when killing the buffer."

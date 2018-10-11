@@ -67,6 +67,7 @@
 ;; 一般性的配置在conf/conf-common.el中
 (require 'conf-common)
 (require 'conf-org)
+(require 'conf-awesome-tab)
 (with-eval-after-load 'eshell (require 'conf-eshell)) ;
 (with-eval-after-load 'term (require 'conf-term)) ;
 

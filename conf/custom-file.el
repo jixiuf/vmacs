@@ -6,6 +6,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(awesome-tab-selected ((t (:inherit awesome-tab-default :foreground "green3" :overline "yellow" :underline "yellow" :weight ultra-bold :width semi-expanded))))
+ '(awesome-tab-separator ((t (:inherit awesome-tab-default :box (:line-width 2 :color "yellow" :style pressed-button) :height 0.1))))
  '(bm-face ((t (:background "#272728"))))
  '(buffers-tab ((t (:background "#0C1021" :foreground "#F8F8F8"))))
  '(company-scrollbar-bg ((t (:background "RoyalBlue4"))))
@@ -191,9 +193,9 @@
  '(magit-push-arguments '("--force-with-lease"))
  '(magit-save-repository-buffers 'dontask)
  '(menu-bar-mode nil)
- '(org-agenda-files nil)
+ '(org-agenda-files nil t)
  '(package-selected-packages
-   '(go-eldoc company-go eglot eshell-prompt-extras company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports sane-term osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-magit flycheck git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(projectile go-eldoc company-go eglot eshell-prompt-extras company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports sane-term osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-magit flycheck git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
