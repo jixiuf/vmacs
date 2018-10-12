@@ -34,9 +34,15 @@
 
 ;;using helm.el as the complete engine
 (defun vmacs-eshell-hook()
-  (company-mode -1)
+  ;; (company-mode -1)
 
   (define-key eshell-mode-map (kbd "C-a") nil)
+
+  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
+  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'counsel-esh-history ) ;M-r
+  (define-key eshell-mode-map (kbd "C-r") 'vmacs-esh-history)
+  ;; (define-key eshell-mode-map (kbd "M-r") 'vmacs-esh-history)
+
   (define-key eshell-mode-map (kbd "M-k") 'eshell-previous-prompt)
   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
   (define-key eshell-mode-map (kbd "C-t") 'vmacs-eshell-new)
@@ -51,8 +57,6 @@
   ;; (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
   ;; (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete);Tab
   (define-key eshell-mode-map (kbd "<tab>") (lambda () (interactive) (pcomplete-std-complete)))
-  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
-  (define-key eshell-mode-map [remap eshell-previous-matching-input] 'counsel-esh-history ) ;M-r
   (eshell-hist-use-global-history)
   )
 

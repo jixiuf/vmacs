@@ -140,6 +140,57 @@
   (setq eshell-history-ring eshell-history-global-ring))
 
 
+(defun vmacs-esh-parse-zsh-history ()
+  "Parse the bash history."
+  (if (file-exists-p "~/.zsh_history")
+      (let (collection zsh_history)
+        ;; (vmacs-esh-reload-shell-history)
+        (setq collection
+              (nreverse
+               (split-string (with-temp-buffer (insert-file-contents (file-truename "~/.zsh_history"))
+                                               (replace-regexp-in-string "^:[^;]*;" "" (buffer-string)))
+                             "\n"
+                             t)))
+        (when (and collection (> (length collection) 0)
+                   (setq zsh_history collection))
+          zsh_history))
+    nil))
+
+(defun vmacs-esh-parse-shell-history ()
+  "Parse history from eshell/bash/zsh/ ."
+  (delete-dups
+   (mapcar
+    (lambda (str)
+      (string-trim (substring-no-properties str)))
+    (append
+     (ring-elements eshell-history-ring)
+     (vmacs-esh-parse-zsh-history)))))
+
+;;;###autoload
+(defun vmacs-esh-history ()
+  "Browse Eshell/zsh history."
+  (interactive)
+  (require 'em-hist)
+  (let ((cands (vmacs-esh-parse-shell-history)))
+    (setq ivy-completion-beg (eshell-beginning-of-input))
+    (setq ivy-completion-end (point))
+    (ivy-read "Symbol name: " cands
+              :initial-input (eshell-get-old-input)
+              :action #'ivy-completion-in-region-action
+              :caller 'counsel-shell-history)))
+
+
+;; (defun vmacs-esh-reload-shell-history ()
+;;   (with-temp-message ""
+;;     (let* ((shell-command (getenv "SHELL")))
+;;       (cond ((string-equal shell-command "/bin/bash")
+;;              (shell-command "history -r"))
+;;             ((string-equal shell-command "/bin/zsh")
+;;              (shell-command "fc -W; fc -R"))))))
+
+
+
+
 (provide 'lazy-toggle-eshell)
 
 ;; Local Variables:
