@@ -30,8 +30,8 @@
 ;;  Use Emacs terminfo, not system terminfo, mac系统出现了4m
 ;; (setq system-uses-terminfo nil)
 
-(setq-default shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
-(setq-default shell-toggle-goto-eob nil)
+;; (setq-default shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
+;; (setq-default shell-toggle-goto-eob nil)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
 (setq-default term-buffer-maximum-size 10000)
 ;; (setq-default term-scroll-show-maximum-output t) 不要设置为t, 否则clear Ctrl-l 无效
@@ -128,8 +128,7 @@
   (interactive)
   (let ((input (funcall term-get-old-input)))
     (term-send-raw-string "\^M")
-    (rename-buffer (generate-new-buffer-name (format "*term* %s (%s)"  input  default-directory)))
-    ))
+    (rename-buffer (vmacs-eshell--generate-buffer-name "*term* " input default-directory))))
 
 ;; (term-send-raw-string "\^g") ;; send ctrl-g
 ;; (term-send-raw-string (string ?\e)) ; send esc

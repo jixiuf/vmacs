@@ -28,8 +28,7 @@
 ;;;###autoload
 (defun vmacs-eshell-new ()
   (interactive)
-  (let* ((pwd (abbreviate-file-name default-directory))
-         (shell-buffer-name (generate-new-buffer-name (format "*eshell*  (%s)" pwd))))
+  (let* ((shell-buffer-name (vmacs-eshell--generate-buffer-name "*esh* " "" default-directory)))
     (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
       (setq vmacs-window-configration (current-window-configuration))
       (setq vmacs-shell-last-buffer (current-buffer)))
@@ -88,11 +87,7 @@
          (dir-tokens (split-string pwd "[/|\\]" t " ")))
     (when (> (length dir-tokens) 2)
       (setq pwd (mapconcat  'identity (last dir-tokens 2)  "/")))
-    (generate-new-buffer-name (format "%s %s (%s)"  prefix cmd pwd))
-    ))
-
-(vmacs-eshell--generate-buffer-name "*eshell*" "pwd ls" "~")
-
+    (generate-new-buffer-name (format "%s%s(%s)"  prefix (or cmd "") pwd))))
 
 
 (defadvice eshell-send-input (around change-buffer-name activate)
@@ -101,10 +96,18 @@
         (eshell-buffer)
         )
     ad-do-it
-    (setq eshell-buffer (generate-new-buffer-name (format "*eshell* %s (%s)"  input default-directory)))
+    (setq eshell-buffer (vmacs-eshell--generate-buffer-name "*esh* " input default-directory))
     (when (equal major-mode 'eshell-mode)
       ;; 有可能exit之后，当前buffer就不是eshell了
       (rename-buffer eshell-buffer))))
+
+(defun vmacs-term-exec-hook(&optional cmd )
+  (rename-buffer (vmacs-eshell--generate-buffer-name "*term* " (or cmd "") default-directory)))
+
+;; eshell里启动term的时候rename 之
+(with-eval-after-load 'term
+  (add-hook 'term-exec-hook 'vmacs-term-exec-hook))
+
 
 
 (defun eshell-insert-last-cmd-argument()

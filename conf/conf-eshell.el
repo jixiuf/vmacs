@@ -13,6 +13,9 @@
 (setq-default epe-show-python-info nil)
 (setq-default eshell-prompt-function 'epe-theme-lambda)
 
+;; ;始终确何prompt 出现在行首
+;; *echo -n "hello"
+;; (add-hook 'eshell-before-prompt-hook 'eshell-begin-on-new-line)
 
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
@@ -65,13 +68,7 @@
 
 (defun eshell/zsh ()
   (interactive)
-  (vmacs-shell-toggle 0))
-
-(defun vmacs-term-exec-hook(&optional cmd )
-  (rename-buffer (generate-new-buffer-name (format "*term* %s (%s)"  (or cmd (buffer-name))  default-directory))))
-;; eshell里启动term的时候rename 之
-(with-eval-after-load 'term
-  (add-hook 'term-exec-hook 'vmacs-term-exec-hook))
+  (ansi-term  (getenv "SHELL")))
 
 (provide 'conf-eshell)
 
