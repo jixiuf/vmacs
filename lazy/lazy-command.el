@@ -70,12 +70,22 @@ open-line if point is at end of line , new-line-and-indent"
 Move point to beginning-of-line ,if point was already at that position,
   move point to first non-whitespace character. "
   (interactive)
-  (if (derived-mode-p 'term-mode)
-      (term-bol nil)
+  (cond
+   ((derived-mode-p 'term-mode) (term-bol nil))
+   ((derived-mode-p 'eshell-mode)
+    (let ((oldpos (point)))
+      (eshell-bol)
+      (and (= oldpos (point))
+           (beginning-of-line) ))
+    )
+   (t
     (let ((oldpos (point)))
       (beginning-of-line)
       (and (= oldpos (point))
-           (back-to-indentation) ))))
+           (back-to-indentation) ))
+    )
+   )
+  )
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
 ;; 一般绑在C-a上

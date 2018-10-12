@@ -32,6 +32,8 @@
 ;;using helm.el as the complete engine
 (defun vmacs-eshell-hook()
   (company-mode -1)
+
+  (define-key eshell-mode-map (kbd "C-a") nil)
   (define-key eshell-mode-map (kbd "M-k") 'eshell-previous-prompt)
   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
   (define-key eshell-mode-map (kbd "C-t") 'toggle-eshell-new)
