@@ -53,10 +53,10 @@
 
 
 
-(define-key term-raw-map (kbd "C-t") 'vmacs-shell-toggle-new)
-(define-key term-mode-map (kbd "C-t") 'vmacs-shell-toggle-new)
-(define-key term-raw-map (kbd "s-t") 'vmacs-shell-toggle-new)
-(define-key term-raw-map (kbd "s-t") 'vmacs-shell-toggle-new)
+(define-key term-raw-map (kbd "C-t") 'vmacs-eshell-new)
+(define-key term-mode-map (kbd "C-t") 'vmacs-eshell-new)
+(define-key term-raw-map (kbd "s-t") 'vmacs-eshell-new)
+(define-key term-raw-map (kbd "s-t") 'vmacs-eshell-new)
 
 
 

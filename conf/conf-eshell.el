@@ -68,7 +68,7 @@
 
 (defun eshell/zsh ()
   (interactive)
-  (ansi-term  (getenv "SHELL")))
+  (term  (getenv "SHELL")))
 
 (provide 'conf-eshell)
 

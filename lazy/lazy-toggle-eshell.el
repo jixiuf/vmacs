@@ -1,4 +1,5 @@
 (eval-when-compile
+  (require 'term)
   (require 'em-term)
   (require 'em-hist)
   (require 'eshell))
@@ -26,21 +27,23 @@
 (defvar vmacs-shell-last-buffer nil)    ;记录切到eshell/term前 激活的buffer,以便恢复现场
 
 ;;;###autoload
-(defun vmacs-eshell-new ()
-  (interactive)
-  (let* ((shell-buffer-name
-          (generate-new-buffer-name
-           (vmacs-eshell--generate-buffer-name "*esh* " "" default-directory))))
-    (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
-      (setq vmacs-window-configration (current-window-configuration))
-      (setq vmacs-shell-last-buffer (current-buffer)))
-    (setq eshell-buffer-name shell-buffer-name)
-    (eshell)
-    (goto-char (point-max))
-    ;; (insert (concat "cd " (concat "\""default-directory "\""))) ;;make sure current directory is default-directory
-    ;; (eshell-send-input)
-    (delete-other-windows)
-    (pop-to-buffer shell-buffer-name)))
+(defun vmacs-eshell-new (&optional term-mode)
+  (interactive "P")
+    (if term-mode
+        (term  (getenv "SHELL") )
+      (let* ((shell-buffer-name
+              (generate-new-buffer-name
+               (vmacs-eshell--generate-buffer-name "*esh* " "" default-directory))))
+        (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
+          (setq vmacs-window-configration (current-window-configuration))
+          (setq vmacs-shell-last-buffer (current-buffer)))
+        (setq eshell-buffer-name shell-buffer-name)
+        (eshell)
+        (goto-char (point-max))
+        ;; (insert (concat "cd " (concat "\""default-directory "\""))) ;;make sure current directory is default-directory
+        ;; (eshell-send-input)
+        (delete-other-windows)
+        (pop-to-buffer shell-buffer-name))))
 
 ;;;###autoload
 (defun vmacs-eshell-toggle()

@@ -198,6 +198,7 @@ they are in `bind-map-set-keys'."
 (global-set-key (kbd "s-,") 'vmacs-eshell-toggle)
 (global-set-key [f2] 'vmacs-eshell-toggle)
 (global-set-key [C-f2] 'vmacs-eshell-toggle)
+(global-set-key  (kbd "s-t") 'vmacs-eshell-new)
 
 
 ;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
@@ -267,7 +268,6 @@ they are in `bind-map-set-keys'."
 ;; (global-set-key  (kbd "s-C-M-p") 'vmacs-split-window-or-prev-window)
 
 
-(global-set-key  (kbd "s-t") 'toggle-split-window)
 (global-set-key [C-M-s-return] 'vmacs-window-rotate)
 
 
