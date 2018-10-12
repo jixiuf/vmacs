@@ -102,7 +102,7 @@
     (when (equal major-mode 'eshell-mode)
       ;; 有可能exit之后，当前buffer就不是eshell了
       (unless (string-equal eshell-buffer (buffer-name))
-        (rename-buffer eshell-buffer)))))
+        (rename-buffer eshell-buffer t)))))
 
 ;; (defun vmacs-term-exec-hook(&optional cmd )
 ;;   (rename-buffer (vmacs-eshell--generate-buffer-name "*term* " (or cmd "") default-directory)))

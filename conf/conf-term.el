@@ -134,7 +134,7 @@ Optionally go to next term buffer."
   (interactive)
   (let ((input (funcall term-get-old-input)))
     (term-send-raw-string "\^M")
-    (rename-buffer (vmacs-eshell--generate-buffer-name "*term* " input default-directory))))
+    (rename-buffer (vmacs-eshell--generate-buffer-name "*term* " input default-directory) t)))
 
 ;; (term-send-raw-string "\^g") ;; send ctrl-g
 ;; (term-send-raw-string (string ?\e)) ; send esc
