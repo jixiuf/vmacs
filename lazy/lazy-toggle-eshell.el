@@ -188,8 +188,24 @@
 ;;             ((string-equal shell-command "/bin/zsh")
 ;;              (shell-command "fc -W; fc -R"))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun vmacs-cat-syntax-highlight (filename)
+  "Like cat(1) but with syntax highlighting."
+  (let ((existing-buffer (get-file-buffer filename))
+        (buffer (find-file-noselect filename)))
+    (eshell-print
+     (with-current-buffer buffer
+       (if (fboundp 'font-lock-ensure)
+           (font-lock-ensure)
+         (with-no-warnings
+           (font-lock-fontify-buffer)))
+       (buffer-string)))
+    (unless existing-buffer
+      (kill-buffer buffer))
+    nil))
 
+(advice-add 'eshell/cat :override #'vmacs-cat-syntax-highlight)
 
 (provide 'lazy-toggle-eshell)
 

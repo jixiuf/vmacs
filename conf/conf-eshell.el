@@ -3,6 +3,7 @@
   (require 'em-hist)
   (require 'eshell))
 
+(require 'pcmpl-git)
 ;; zsh 的alias  转变成eshell
 ;; alias | awk '{print "alias "$0}' | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/^alias ([^= ]+)=(.*)$/alias \1 \2 \$*/g;  s/'\\\''/'/g;" >~/.emacs.d/eshell/alias
 (setq-default eshell-directory-name (concat user-emacs-directory "eshell"))
@@ -43,6 +44,8 @@
   (define-key eshell-mode-map (kbd "C-r") 'vmacs-esh-history)
   ;; (define-key eshell-mode-map (kbd "M-r") 'vmacs-esh-history)
 
+  (define-key eshell-mode-map (kbd "C-p") 'eshell-previous-matching-input-from-input)
+  (define-key eshell-mode-map (kbd "C-n") 'eshell-next-matching-input-from-input)
   (define-key eshell-mode-map (kbd "M-k") 'eshell-previous-prompt)
   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
   (define-key eshell-mode-map (kbd "C-t") 'vmacs-eshell-new)

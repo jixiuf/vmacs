@@ -1,0 +1,374 @@
+;;; -*- Emacs-Lisp -*-
+;;; Generated on 2017-01-21 for git version 2.11.0
+
+#s(hash-table size 149 test equal rehash-size 1.5 rehash-threshold 0.8 data
+              ("add"
+               ("nvfipeuAN"
+                ("--dry-run" "--verbose" "--force" "--interactive" "--patch" "--edit" "--update" "--all" "--no-ignore-removal" "--no-all" "--ignore-removal" "--intent-to-add" "--refresh" "--ignore-errors" "--ignore-missing" "--chmod=" "--help"))
+               "am"
+               ("skcmqu3CpiSr"
+                ("--signoff" "--keep" "--keep-non-patch" "--scissors" "--no-scissors" "--message-id" "--no-message-id" "--quiet" "--utf8" "--no-utf8" "--3way" "--no-3way" "--ignore-space-change" "--ignore-whitespace" "--whitespace=" "--directory=" "--exclude=" "--include=" "--reject" "--patch-format" "--interactive" "--committer-date-is-author-date" "--ignore-date" "--skip" "--gpg-sign" "--continue" "--resolved" "--resolvemsg=" "--abort" "--help"))
+               "annotate"
+               ("bLltSpMCh"
+                ("--root" "--show-stats" "--reverse" "--porcelain" "--line-porcelain" "--incremental" "--encoding=" "--contents" "--date" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--help"))
+               "apply"
+               ("3RzpCv"
+                ("--stat" "--numstat" "--summary" "--check" "--index" "--cached" "--3way" "--build-fake-ancestor=" "--reverse" "--reject" "--unidiff-zero" "--apply" "--no-add" "--allow-binary-replacement" "--binary" "--exclude=" "--include=" "--ignore-space-change" "--ignore-whitespace" "--whitespace=" "--inaccurate-eof" "--verbose" "--recount" "--directory=" "--unsafe-paths" "--help"))
+               "archimport"
+               ("hvTfoDat"
+                ("--help"))
+               "archive"
+               ("lvo09"
+                ("--format=" "--list" "--verbose" "--prefix=" "--output=" "--worktree-attributes" "--remote=" "--exec=" "--help"))
+               "bisect"
+               (""
+                ("--no-checkout" "--help"))
+               "blame"
+               ("bLltSpMChcfnsew"
+                ("--root" "--show-stats" "--reverse" "--porcelain" "--line-porcelain" "--incremental" "--encoding=" "--contents" "--date" "--score-debug" "--show-name" "--show-number" "--show-email" "--abbrev=" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--help"))
+               "branch"
+               ("dDlfmMravqtu"
+                ("--delete" "--create-reflog" "--force" "--move" "--color" "--no-color" "--column" "--no-column" "--remotes" "--all" "--list" "--verbose" "--quiet" "--abbrev=" "--no-abbrev" "--track" "--no-track" "--set-upstream" "--set-upstream-to=" "--unset-upstream" "--edit-description" "--contains" "--merged" "--no-merged" "--sort=" "--points-at" "--help"))
+               "bundle"
+               (""
+                ("--help"))
+               "cat-file"
+               ("tsep"
+                ("--textconv" "--filters" "--path=" "--batch" "--batch=" "--batch-check" "--batch-check=" "--batch-all-objects" "--buffer" "--allow-unknown-type" "--follow-symlinks" "--help"))
+               "checkout"
+               ("qfbBtlmp"
+                ("--quiet" "--force" "--ours" "--theirs" "--track" "--no-track" "--detach" "--orphan" "--ignore-skip-worktree-bits" "--merge" "--conflict=" "--patch" "--ignore-other-worktrees" "--help"))
+               "checkout-index"
+               ("uqfanz"
+                ("--index" "--quiet" "--force" "--all" "--no-create" "--prefix=" "--stage=" "--temp" "--stdin" "--help"))
+               "check-attr"
+               ("az"
+                ("--cached" "--stdin" "--help"))
+               "check-ignore"
+               ("qvzn"
+                ("--stdin" "--no-index" "--help"))
+               "check-mailmap"
+               (""
+                ("--stdin" "--help"))
+               "check-ref-format"
+               (""
+                ("--refspec-pattern" "--normalize" "--help"))
+               "cherry"
+               ("v"
+                ("--help"))
+               "cherry-pick"
+               ("exrmnsSX"
+                ("--edit" "--mainline" "--no-commit" "--signoff" "--gpg-sign" "--ff" "--allow-empty" "--allow-empty-message" "--keep-redundant-commits" "--strategy=" "--strategy-option=" "--continue" "--quit" "--abort" "--help"))
+               "clean"
+               ("dfinqexX"
+                ("--force" "--interactive" "--dry-run" "--quiet" "--exclude=" "--help"))
+               "clone"
+               ("lsqvnobucj"
+                ("--local" "--no-hardlinks" "--shared" "--reference" "--dissociate" "--quiet" "--verbose" "--progress" "--no-checkout" "--bare" "--mirror" "--origin" "--branch" "--upload-pack" "--template=" "--config" "--depth" "--shallow-since=" "--shallow-exclude=" "--recursive" "--recurse-submodules" "--separate-git-dir=" "--jobs" "--help"))
+               "column"
+               (""
+                ("--command=" "--mode=" "--raw-mode=" "--width=" "--indent=" "--nl=" "--padding=" "--help"))
+               "commit"
+               ("apCczFmtsneiouvqS"
+                ("--all" "--patch" "--reuse-message=" "--reedit-message=" "--fixup=" "--squash=" "--reset-author" "--short" "--branch" "--porcelain" "--long" "--null" "--file=" "--author=" "--date=" "--message=" "--template=" "--signoff" "--no-verify" "--allow-empty" "--allow-empty-message" "--cleanup=" "--edit" "--no-edit" "--amend" "--no-post-rewrite" "--include" "--only" "--untracked-files" "--verbose" "--quiet" "--dry-run" "--status" "--no-status" "--gpg-sign" "--no-gpg-sign" "--help"))
+               "commit-tree"
+               ("pmFS"
+                ("--gpg-sign" "--no-gpg-sign" "--help"))
+               "config"
+               ("flze"
+                ("--replace-all" "--add" "--get" "--get-all" "--get-regexp" "--get-urlmatch" "--global" "--system" "--local" "--file" "--blob" "--remove-section" "--rename-section" "--unset" "--unset-all" "--list" "--bool" "--int" "--bool-or-int" "--path" "--null" "--name-only" "--show-origin" "--get-colorbool" "--get-color" "--edit" "--help"))
+               "count-objects"
+               ("vH"
+                ("--verbose" "--human-readable" "--help"))
+               "credential-cache"
+               (""
+                ("--timeout" "--socket" "--help"))
+               "credential-store"
+               (""
+                ("--file=" "--help"))
+               "cvsexportcommit"
+               ("cpadfPmukwWv"
+                ("--help"))
+               "cvsimport"
+               ("vdCroikuspzPmMSaLARh"
+                ("--help"))
+               "cvsserver"
+               ("VhH"
+                ("--base-path" "--strict-paths" "--export-all" "--version" "--help"))
+               "daemon"
+               (""
+                ("--strict-paths" "--base-path=" "--base-path-relaxed" "--interpolated-path=" "--export-all" "--inetd" "--listen=" "--port=" "--init-timeout=" "--timeout=" "--max-connections=" "--syslog" "--user-path" "--user-path=" "--verbose" "--reuseaddr" "--detach" "--pid-file=" "--user=" "--group=" "--enable=" "--disable=" "--allow-override=" "--forbid-override=" "--access-hook=" "--help"))
+               "describe"
+               (""
+                ("--dirty" "--all" "--tags" "--contains" "--abbrev=" "--candidates=" "--exact-match" "--debug" "--long" "--match" "--always" "--first-parent" "--help"))
+               "diff"
+               ("pusUzBMCDlSGORabwW"
+                ("--staged" "--cached" "--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--quiet" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--help"))
+               "difftool"
+               ("dytxg"
+                ("--dir-diff" "--no-prompt" "--prompt" "--tool=" "--tool-help" "--extcmd=" "--gui" "--help"))
+               "diff-files"
+               ("pusUzBMCDlSGORabwW1230cq"
+                ("--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--quiet" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--cc" "--help"))
+               "diff-index"
+               ("pusUzBMCDlSGORabwWm"
+                ("--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--quiet" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--cached" "--help"))
+               "diff-tree"
+               ("pusUzBMCDlSGORabwWrtmvc"
+                ("--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--quiet" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--root" "--stdin" "--pretty" "--format=" "--abbrev-commit" "--no-abbrev-commit" "--oneline" "--encoding=" "--expand-tabs=" "--expand-tabs" "--no-expand-tabs" "--notes" "--no-notes" "--show-notes" "--show-signature" "--no-commit-id" "--cc" "--always" "--help"))
+               "fast-export"
+               ("MC"
+                ("--progress=" "--signed-tags=" "--tag-of-filtered-object=" "--export-marks=" "--import-marks=" "--fake-missing-tagger" "--use-done-feature" "--no-data" "--full-tree" "--anonymize" "--refspec" "--help"))
+               "fast-import"
+               (""
+                ("--force" "--quiet" "--stats" "--cat-blob-fd=" "--date-format=" "--done" "--export-marks=" "--import-marks=" "--import-marks-if-exists=" "--active-branches=" "--big-file-threshold=" "--depth=" "--export-pack-edges=" "--max-pack-size=" "--help"))
+               "fetch"
+               ("afkpntjuqv46"
+                ("--all" "--append" "--depth=" "--deepen=" "--shallow-since=" "--shallow-exclude=" "--unshallow" "--update-shallow" "--dry-run" "--force" "--keep" "--multiple" "--prune" "--no-tags" "--refmap=" "--tags" "--recurse-submodules" "--jobs=" "--no-recurse-submodules" "--submodule-prefix=" "--recurse-submodules-default=" "--update-head-ok" "--upload-pack" "--quiet" "--verbose" "--progress" "--ipv4" "--ipv6" "--help"))
+               "fetch-pack"
+               ("qkv"
+                ("--all" "--stdin" "--quiet" "--keep" "--thin" "--include-tag" "--upload-pack=" "--exec=" "--depth=" "--shallow-since=" "--shallow-exclude=" "--deepen-relative" "--no-progress" "--check-self-contained-and-connected" "--help"))
+               "filter-branch"
+               ("df"
+                ("--env-filter" "--tree-filter" "--index-filter" "--parent-filter" "--msg-filter" "--commit-filter" "--tag-name-filter" "--subdirectory-filter" "--prune-empty" "--original" "--force" "--help"))
+               "fmt-merge-msg"
+               ("mF"
+                ("--log" "--no-log" "--message" "--file" "--help"))
+               "format-patch"
+               ("pusUzBMCDlSGORabwWonNkvq"
+                ("--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--quiet" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--output-directory" "--numbered" "--no-numbered" "--start-number" "--numbered-files" "--keep-subject" "--signoff" "--stdout" "--attach" "--no-attach" "--inline" "--thread" "--no-thread" "--in-reply-to=" "--ignore-if-in-upstream" "--subject-prefix=" "--rfc" "--reroll-count=" "--to=" "--cc=" "--from" "--from=" "--add-header=" "--notes" "--signature-file=" "--suffix=" "--no-binary" "--zero-commit" "--base=" "--root" "--help"))
+               "for-each-ref"
+               (""
+                ("--shell" "--perl" "--python" "--tcl" "--points-at" "--merged" "--no-merged" "--contains" "--help"))
+               "fsck"
+               (""
+                ("--unreachable" "--root" "--tags" "--cache" "--no-reflogs" "--full" "--connectivity-only" "--strict" "--verbose" "--lost-found" "--name-objects" "--help"))
+               "gc"
+               (""
+                ("--aggressive" "--auto" "--prune=" "--no-prune" "--quiet" "--force" "--help"))
+               "grep"
+               ("aiIwvhHEGPFnlLOzcpCABWfeq"
+                ("--cached" "--no-index" "--untracked" "--no-exclude-standard" "--exclude-standard" "--text" "--textconv" "--no-textconv" "--ignore-case" "--max-depth" "--word-regexp" "--invert-match" "--full-name" "--extended-regexp" "--basic-regexp" "--perl-regexp" "--fixed-strings" "--line-number" "--files-with-matches" "--name-only" "--files-without-match" "--open-files-in-pager" "--null" "--count" "--color" "--no-color" "--break" "--heading" "--show-function" "--context" "--after-context" "--before-context" "--function-context" "--threads" "--and" "--or" "--not" "--all-match" "--quiet" "--help"))
+               "hash-object"
+               ("tw"
+                ("--stdin" "--stdin-paths" "--path" "--no-filters" "--literally" "--help"))
+               "help"
+               ("agimw"
+                ("--all" "--guides" "--info" "--man" "--web" "--help"))
+               "http-fetch"
+               ("ctavw"
+                ("--stdin" "--recover" "--help"))
+               "http-push"
+               ("dD"
+                ("--all" "--force" "--dry-run" "--verbose" "--help"))
+               "index-pack"
+               ("vo"
+                ("--stdin" "--fix-thin" "--keep" "--keep=" "--index-version=" "--strict" "--check-self-contained-and-connected" "--threads=" "--max-input-size=" "--help"))
+               "init"
+               ("q"
+                ("--quiet" "--bare" "--template=" "--separate-git-dir=" "--shared" "--help"))
+               "instaweb"
+               ("ldmpb"
+                ("--local" "--httpd" "--module-path" "--port" "--browser" "--start" "--stop" "--restart" "--help"))
+               "interpret-trailers"
+               (""
+                ("--in-place" "--trim-empty" "--trailer" "--help"))
+               "log"
+               ("LniEFgcmrtpusUzBMCDlSGORabwW"
+                ("--follow" "--no-decorate" "--decorate" "--source" "--use-mailmap" "--full-diff" "--log-size" "--max-count=" "--skip=" "--since=" "--after=" "--until=" "--before=" "--max-age=" "--min-age=" "--author=" "--committer=" "--grep-reflog=" "--grep=" "--all-match" "--invert-grep" "--regexp-ignore-case" "--basic-regexp" "--extended-regexp" "--fixed-strings" "--perl-regexp" "--remove-empty" "--merges" "--no-merges" "--min-parents=" "--max-parents=" "--no-min-parents" "--no-max-parents" "--first-parent" "--not" "--all" "--branches" "--tags" "--remotes" "--glob=" "--exclude=" "--reflog" "--ignore-missing" "--bisect" "--stdin" "--quiet" "--cherry-mark" "--cherry-pick" "--left-only" "--right-only" "--cherry" "--walk-reflogs" "--merge" "--boundary" "--use-bitmap-index" "--progress=" "--simplify-by-decoration" "--full-history" "--dense" "--sparse" "--simplify-merges" "--ancestry-path" "--bisect-vars" "--bisect-all" "--date-order" "--author-date-order" "--topo-order" "--reverse" "--objects" "--objects-edge" "--objects-edge-aggressive" "--indexed-objects" "--unpacked" "--no-walk" "--do-walk" "--pretty" "--format=" "--abbrev-commit" "--no-abbrev-commit" "--oneline" "--encoding=" "--expand-tabs=" "--expand-tabs" "--no-expand-tabs" "--notes" "--no-notes" "--show-notes" "--show-signature" "--relative-date" "--date=" "--header" "--parents" "--children" "--timestamp" "--left-right" "--graph" "--show-linear-break" "--count" "--cc" "--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--help"))
+               "ls-files"
+               ("cdmoisukzxXtv"
+                ("--cached" "--deleted" "--modified" "--others" "--ignored" "--stage" "--directory" "--no-empty-directory" "--unmerged" "--killed" "--exclude=" "--exclude-from=" "--exclude-per-directory=" "--exclude-standard" "--error-unmatch" "--with-tree=" "--full-name" "--recurse-submodules" "--abbrev" "--debug" "--eol" "--help"))
+               "ls-remote"
+               ("htq"
+                ("--heads" "--tags" "--refs" "--quiet" "--upload-pack=" "--exit-code" "--get-url" "--symref" "--help"))
+               "ls-tree"
+               ("drtlz"
+                ("--long" "--name-only" "--name-status" "--abbrev" "--full-name" "--full-tree" "--help"))
+               "mailinfo"
+               ("kbunm"
+                ("--encoding=" "--message-id" "--scissors" "--no-scissors" "--help"))
+               "mailsplit"
+               ("obdf"
+                ("--keep-cr" "--mboxrd" "--help"))
+               "merge"
+               ("ensXqvSm"
+                ("--commit" "--no-commit" "--edit" "--no-edit" "--ff" "--no-ff" "--ff-only" "--log" "--no-log" "--stat" "--no-stat" "--squash" "--no-squash" "--strategy=" "--strategy-option=" "--verify-signatures" "--no-verify-signatures" "--summary" "--no-summary" "--quiet" "--verbose" "--progress" "--no-progress" "--allow-unrelated-histories" "--gpg-sign" "--abort" "--help"))
+               "mergetool"
+               ("tyO"
+                ("--tool=" "--tool-help" "--no-prompt" "--prompt" "--help"))
+               "merge-base"
+               ("a"
+                ("--all" "--help"))
+               "merge-file"
+               ("Lpq"
+                ("--diff3" "--ours" "--theirs" "--union" "--help"))
+               "merge-index"
+               ("aoq"
+                ("--help"))
+               "mktree"
+               ("z"
+                ("--missing" "--batch" "--help"))
+               "mv"
+               ("fknv"
+                ("--force" "--dry-run" "--verbose" "--help"))
+               "name-rev"
+               (""
+                ("--tags" "--refs=" "--all" "--stdin" "--name-only" "--no-undefined" "--always" "--help"))
+               "notes"
+               ("fmFCcnsqv"
+                ("--force" "--message=" "--file=" "--reuse-message=" "--reedit-message=" "--allow-empty" "--ref" "--ignore-missing" "--stdin" "--dry-run" "--strategy=" "--commit" "--abort" "--quiet" "--verbose" "--help"))
+               "p4"
+               ("v/Mn"
+                ("--git-dir" "--verbose" "--branch" "--detect-branches" "--changesfile" "--silent" "--detect-labels" "--import-labels" "--import-local" "--max-changes" "--changes-block-size" "--keep-path" "--use-client-spec" "--destination" "--bare" "--origin" "--preserve-user" "--export-labels" "--dry-run" "--prepare-p4-only" "--conflict=" "--help"))
+               "pack-objects"
+               ("q"
+                ("--stdout" "--revs" "--unpacked" "--all" "--include-tag" "--window=" "--depth=" "--window-memory=" "--max-pack-size=" "--honor-pack-keep" "--incremental" "--local" "--non-empty" "--progress" "--all-progress" "--all-progress-implied" "--no-reuse-delta" "--no-reuse-object" "--compression=" "--thin" "--shallow" "--delta-base-offset" "--threads=" "--index-version=" "--keep-true-parents" "--help"))
+               "pack-redundant"
+               (""
+                ("--all" "--alt-odb" "--verbose" "--help"))
+               "pack-refs"
+               (""
+                ("--all" "--no-prune" "--help"))
+               "patch-id"
+               (""
+                ("--stable" "--unstable" "--help"))
+               "prune"
+               ("nv"
+                ("--dry-run" "--verbose" "--expire" "--help"))
+               "prune-packed"
+               ("nq"
+                ("--dry-run" "--quiet" "--help"))
+               "pull"
+               ("qvensXrafkptju46"
+                ("--quiet" "--verbose" "--commit" "--no-commit" "--edit" "--no-edit" "--ff" "--no-ff" "--ff-only" "--log" "--no-log" "--stat" "--no-stat" "--squash" "--no-squash" "--strategy=" "--strategy-option=" "--verify-signatures" "--no-verify-signatures" "--summary" "--no-summary" "--progress" "--no-progress" "--allow-unrelated-histories" "--rebase" "--no-rebase" "--autostash" "--no-autostash" "--all" "--append" "--depth=" "--deepen=" "--shallow-since=" "--shallow-exclude=" "--unshallow" "--update-shallow" "--dry-run" "--force" "--keep" "--multiple" "--prune" "--no-tags" "--refmap=" "--tags" "--recurse-submodules" "--jobs=" "--no-recurse-submodules" "--submodule-prefix=" "--recurse-submodules-default=" "--update-head-ok" "--upload-pack" "--ipv4" "--ipv6" "--help"))
+               "push"
+               ("nofuqv46"
+                ("--all" "--prune" "--mirror" "--dry-run" "--porcelain" "--delete" "--tags" "--follow-tags" "--sign=" "--push-option" "--receive-pack=" "--exec=" "--force-with-lease=" "--force" "--repo=" "--set-upstream" "--quiet" "--verbose" "--progress" "--no-recurse-submodules" "--recurse-submodules=" "--ipv4" "--ipv6" "--help"))
+               "quiltimport"
+               ("n"
+                ("--dry-run" "--author" "--patches" "--series" "--help"))
+               "read-tree"
+               ("muinv"
+                ("--reset" "--dry-run" "--trivial" "--aggressive" "--prefix=" "--exclude-per-directory=" "--index-output=" "--no-sparse-checkout" "--empty" "--help"))
+               "rebase"
+               ("msXSqvnCfipx"
+                ("--onto" "--continue" "--abort" "--keep-empty" "--skip" "--edit-todo" "--merge" "--strategy=" "--strategy-option=" "--gpg-sign" "--quiet" "--verbose" "--stat" "--no-stat" "--no-verify" "--verify" "--force-rebase" "--fork-point" "--no-fork-point" "--ignore-whitespace" "--whitespace=" "--committer-date-is-author-date" "--ignore-date" "--interactive" "--preserve-merges" "--exec" "--root" "--autosquash" "--no-autosquash" "--autostash" "--no-autostash" "--no-ff" "--help"))
+               "receive-pack"
+               (""
+                ("--help"))
+               "reflog"
+               ("n"
+                ("--all" "--expire=" "--expire-unreachable=" "--updateref" "--rewrite" "--stale-fix" "--dry-run" "--verbose" "--help"))
+               "relink"
+               (""
+                ("--safe" "--help"))
+               "remote"
+               ("v"
+                ("--verbose" "--help"))
+               "repack"
+               ("aAdlfFqnbk"
+                ("--window=" "--depth=" "--window-memory=" "--max-pack-size=" "--write-bitmap-index" "--pack-kept-objects" "--unpack-unreachable=" "--keep-unreachable" "--help"))
+               "replace"
+               ("fdl"
+                ("--force" "--delete" "--edit" "--raw" "--graft" "--list" "--format=" "--help"))
+               "request-pull"
+               ("p"
+                ("--help"))
+               "reset"
+               ("q"
+                ("--quiet" "--help"))
+               "revert"
+               ("emnSsX"
+                ("--edit" "--mainline" "--no-edit" "--no-commit" "--gpg-sign" "--signoff" "--strategy=" "--strategy-option=" "--continue" "--quit" "--abort" "--help"))
+               "rev-list"
+               ("niEFgcmrt"
+                ("--max-count=" "--skip=" "--since=" "--after=" "--until=" "--before=" "--max-age=" "--min-age=" "--author=" "--committer=" "--grep-reflog=" "--grep=" "--all-match" "--invert-grep" "--regexp-ignore-case" "--basic-regexp" "--extended-regexp" "--fixed-strings" "--perl-regexp" "--remove-empty" "--merges" "--no-merges" "--min-parents=" "--max-parents=" "--no-min-parents" "--no-max-parents" "--first-parent" "--not" "--all" "--branches" "--tags" "--remotes" "--glob=" "--exclude=" "--reflog" "--ignore-missing" "--bisect" "--stdin" "--quiet" "--cherry-mark" "--cherry-pick" "--left-only" "--right-only" "--cherry" "--walk-reflogs" "--merge" "--boundary" "--use-bitmap-index" "--progress=" "--simplify-by-decoration" "--full-history" "--dense" "--sparse" "--simplify-merges" "--ancestry-path" "--bisect-vars" "--bisect-all" "--date-order" "--author-date-order" "--topo-order" "--reverse" "--objects" "--objects-edge" "--objects-edge-aggressive" "--indexed-objects" "--unpacked" "--no-walk" "--do-walk" "--pretty" "--format=" "--abbrev-commit" "--no-abbrev-commit" "--oneline" "--encoding=" "--expand-tabs=" "--expand-tabs" "--no-expand-tabs" "--notes" "--no-notes" "--show-notes" "--show-signature" "--relative-date" "--date=" "--header" "--parents" "--children" "--timestamp" "--left-right" "--graph" "--show-linear-break" "--count" "--cc" "--help"))
+               "rev-parse"
+               ("q"
+                ("--parseopt" "--sq-quote" "--keep-dashdash" "--stop-at-non-option" "--stuck-long" "--revs-only" "--no-revs" "--flags" "--no-flags" "--default" "--prefix" "--verify" "--quiet" "--sq" "--not" "--abbrev-ref" "--short" "--short=" "--symbolic" "--symbolic-full-name" "--all" "--branches" "--tags" "--remotes" "--glob=" "--exclude=" "--disambiguate=" "--local-env-vars" "--git-dir" "--git-common-dir" "--is-inside-git-dir" "--is-inside-work-tree" "--is-bare-repository" "--resolve-git-dir" "--git-path" "--show-cdup" "--show-prefix" "--show-toplevel" "--shared-index-path" "--since=" "--after=" "--until=" "--before=" "--help"))
+               "rm"
+               ("fnrq"
+                ("--force" "--dry-run" "--cached" "--ignore-unmatch" "--quiet" "--help"))
+               "send-email"
+               (""
+                ("--annotate" "--bcc=" "--cc=" "--compose" "--from=" "--in-reply-to=" "--subject=" "--to=" "--8bit-encoding=" "--compose-encoding=" "--transfer-encoding=" "--xmailer" "--no-xmailer" "--envelope-sender=" "--smtp-encryption=" "--smtp-domain=" "--smtp-auth=" "--smtp-pass" "--smtp-server=" "--smtp-server-port=" "--smtp-server-option=" "--smtp-ssl" "--smtp-ssl-cert-path" "--smtp-user=" "--smtp-debug=" "--to-cmd=" "--cc-cmd=" "--identity=" "--suppress-cc=" "--confirm=" "--dry-run" "--quiet" "--force" "--dump-aliases" "--help"))
+               "send-pack"
+               (""
+                ("--receive-pack=" "--exec=" "--all" "--stdin" "--dry-run" "--force" "--verbose" "--thin" "--atomic" "--sign=" "--help"))
+               "shortlog"
+               ("nsew"
+                ("--numbered" "--summary" "--email" "--format" "--help"))
+               "show"
+               ("pusUzBMCDlSGORabwW"
+                ("--pretty" "--format=" "--abbrev-commit" "--no-abbrev-commit" "--oneline" "--encoding=" "--expand-tabs=" "--expand-tabs" "--no-expand-tabs" "--notes" "--no-notes" "--show-notes" "--show-signature" "--no-stat" "--patch" "--no-patch" "--unified=" "--raw" "--patch-with-raw" "--indent-heuristic" "--no-indent-heuristic" "--compaction-heuristic" "--no-compaction-heuristic" "--minimal" "--patience" "--histogram" "--diff-algorithm=" "--stat" "--numstat" "--shortstat" "--dirstat" "--summary" "--patch-with-stat" "--name-only" "--name-status" "--submodule" "--color" "--no-color" "--word-diff" "--word-diff-regex=" "--color-words" "--no-renames" "--check" "--ws-error-highlight=" "--full-index" "--binary" "--abbrev" "--break-rewrites" "--find-renames" "--find-copies" "--find-copies-harder" "--irreversible-delete" "--diff-filter=" "--pickaxe-all" "--pickaxe-regex" "--relative" "--text" "--ignore-space-at-eol" "--ignore-space-change" "--ignore-all-space" "--ignore-blank-lines" "--inter-hunk-context=" "--function-context" "--exit-code" "--quiet" "--ext-diff" "--no-ext-diff" "--textconv" "--no-textconv" "--ignore-submodules" "--src-prefix=" "--dst-prefix=" "--no-prefix" "--line-prefix=" "--ita-invisible-in-index" "--help"))
+               "show-branch"
+               ("rag"
+                ("--remotes" "--all" "--current" "--topo-order" "--date-order" "--sparse" "--more=" "--list" "--merge-base" "--independent" "--no-name" "--sha1-name" "--topics" "--reflog" "--color" "--no-color" "--help"))
+               "show-ref"
+               ("dsq"
+                ("--head" "--tags" "--heads" "--dereference" "--hash" "--verify" "--abbrev" "--quiet" "--exclude-existing" "--help"))
+               "stash"
+               (""
+                ("--help"))
+               "status"
+               ("sbvuz"
+                ("--short" "--branch" "--porcelain" "--long" "--verbose" "--untracked-files" "--ignore-submodules" "--ignored" "--column" "--no-column" "--help"))
+               "stripspace"
+               ("sc"
+                ("--strip-comments" "--comment-lines" "--help"))
+               "submodule"
+               ("qbfnNj"
+                ("--quiet" "--all" "--branch" "--force" "--cached" "--files" "--summary-limit" "--remote" "--no-fetch" "--checkout" "--merge" "--rebase" "--init" "--name" "--reference" "--recursive" "--depth" "--jobs" "--help"))
+               "svn"
+               ("relAqmspniR"
+                ("--shared" "--template=" "--revision" "--stdin" "--rmdir" "--edit" "--find-copies-harder" "--authors-file=" "--authors-prog=" "--quiet" "--merge" "--strategy=" "--preserve-merges" "--dry-run" "--use-log-author" "--add-author-from" "--id" "--svn-remote" "--follow-parent" "--help"))
+               "symbolic-ref"
+               ("dqm"
+                ("--delete" "--quiet" "--short" "--help"))
+               "tag"
+               ("asufdvnlmF"
+                ("--annotate" "--sign" "--local-user=" "--force" "--delete" "--verify" "--list" "--sort=" "--column" "--no-column" "--contains" "--points-at" "--message=" "--file=" "--cleanup=" "--create-reflog" "--help"))
+               "unpack-file"
+               (""
+                ("--help"))
+               "unpack-objects"
+               ("nqr"
+                ("--strict" "--max-input-size=" "--help"))
+               "update-index"
+               ("qgz"
+                ("--add" "--remove" "--refresh" "--ignore-submodules" "--unmerged" "--ignore-missing" "--cacheinfo" "--index-info" "--chmod=" "--really-refresh" "--again" "--unresolve" "--info-only" "--force-remove" "--replace" "--stdin" "--verbose" "--index-version" "--split-index" "--no-split-index" "--untracked-cache" "--no-untracked-cache" "--test-untracked-cache" "--force-untracked-cache" "--help"))
+               "update-server-info"
+               ("f"
+                ("--force" "--help"))
+               "upload-archive"
+               (""
+                ("--help"))
+               "upload-pack"
+               (""
+                ("--timeout=" "--stateless-rpc" "--advertise-refs" "--help"))
+               "var"
+               ("l"
+                ("--help"))
+               "verify-commit"
+               ("v"
+                ("--raw" "--verbose" "--help"))
+               "verify-pack"
+               ("vs"
+                ("--verbose" "--stat-only" "--help"))
+               "verify-tag"
+               ("v"
+                ("--raw" "--verbose" "--help"))
+               "web--browse"
+               ("btc"
+                ("--browser=" "--tool=" "--config=" "--help"))
+               "worktree"
+               ("fbBnv"
+                ("--force" "--detach" "--dry-run" "--porcelain" "--verbose" "--expire" "--reason" "--help"))
+               "write-tree"
+               (""
+                ("--missing-ok" "--prefix=" "--help"))))
+
+
+;;; 'git config' variables
+("boolean" "integer" "color" "pathname" "advice.pushUpdateRejected" "advice.pushNonFFCurrent" "advice.pushNonFFMatching" "advice.pushAlreadyExists" "advice.pushFetchFirst" "advice.pushNeedsForce" "advice.statusHints" "advice.statusUoption" "advice.commitBeforeMerge" "advice.resolveConflict" "advice.implicitIdentity" "advice.detachedHead" "advice.amWorkDir" "advice.rmHints" "core.fileMode" "core.hideDotFiles" "core.ignoreCase" "core.precomposeUnicode" "core.protectHFS" "core.protectNTFS" "core.trustctime" "core.untrackedCache" "core.checkStat" "core.quotePath" "core.eol" "core.safecrlf" "core.autocrlf" "core.symlinks" "core.gitProxy" "core.sshCommand" "core.ignoreStat" "core.preferSymlinkRefs" "core.bare" "core.worktree" "core.logAllRefUpdates" "core.repositoryFormatVersion" "core.sharedRepository" "core.warnAmbiguousRefs" "core.compression" "core.looseCompression" "core.packedGitWindowSize" "core.packedGitLimit" "core.deltaBaseCacheLimit" "core.bigFileThreshold" "core.excludesFile" "core.askPass" "core.attributesFile" "core.hooksPath" "core.editor" "core.commentChar" "core.packedRefsTimeout" "sequence.editor" "core.pager" "core.whitespace" "core.fsyncObjectFiles" "core.preloadIndex" "core.createObject" "core.notesRef" "core.sparseCheckout" "core.abbrev" "add.ignoreErrors" "alias.*" "am.keepcr" "am.threeWay" "apply.ignoreWhitespace" "apply.whitespace" "branch.autoSetupMerge" "branch.autoSetupRebase" "branch.<name>.remote" "branch.<name>.pushRemote" "branch.<name>.merge" "branch.<name>.mergeOptions" "branch.<name>.rebase" "branch.<name>.description" "browser.<tool>.cmd" "browser.<tool>.path" "clean.requireForce" "color.branch" "color.branch.<slot>" "color.diff" "color.diff.<slot>" "color.decorate.<slot>" "color.grep" "color.grep.<slot>" "color.interactive" "color.interactive.<slot>" "color.pager" "color.showBranch" "color.status" "color.status.<slot>" "color.ui" "column.ui" "column.branch" "column.clean" "column.status" "column.tag" "commit.cleanup" "commit.gpgSign" "commit.status" "commit.template" "commit.verbose" "credential.helper" "credential.useHttpPath" "credential.username" "credential.<url>.*" "credentialCache.ignoreSIGHUP" "diff.autoRefreshIndex" "diff.dirstat" "diff.statGraphWidth" "diff.context" "diff.external" "diff.ignoreSubmodules" "diff.mnemonicPrefix" "diff.noprefix" "diff.orderFile" "diff.renameLimit" "diff.renames" "diff.suppressBlankEmpty" "diff.submodule" "diff.wordRegex" "diff.<driver>.command" "diff.<driver>.xfuncname" "diff.<driver>.binary" "diff.<driver>.textconv" "diff.<driver>.wordRegex" "diff.<driver>.cachetextconv" "diff.tool" "diff.indentHeuristic" "diff.compactionHeuristic" "diff.algorithm" "diff.wsErrorHighlight" "difftool.<tool>.path" "difftool.<tool>.cmd" "difftool.prompt" "fastimport.unpackLimit" "fetch.recurseSubmodules" "fetch.fsckObjects" "fetch.unpackLimit" "fetch.prune" "fetch.output" "format.attach" "format.from" "format.numbered" "format.headers" "format.to" "format.cc" "format.subjectPrefix" "format.signature" "format.signatureFile" "format.suffix" "format.pretty" "format.thread" "format.signOff" "format.coverLetter" "format.outputDirectory" "format.useAutoBase" "filter.<driver>.clean" "filter.<driver>.smudge" "fsck.<msg-id>" "fsck.skipList" "gc.aggressiveDepth" "gc.aggressiveWindow" "gc.auto" "gc.autoPackLimit" "gc.autoDetach" "gc.packRefs" "gc.pruneExpire" "gc.worktreePruneExpire" "gc.reflogExpire" "gc.<pattern>.reflogExpire" "gc.reflogExpireUnreachable" "gc.<pattern>.reflogExpireUnreachable" "gc.rerereResolved" "gc.rerereUnresolved" "gitcvs.commitMsgAnnotation" "gitcvs.enabled" "gitcvs.logFile" "gitcvs.usecrlfattr" "gitcvs.allBinary" "gitcvs.dbName" "gitcvs.dbDriver" "gitcvs.dbTableNamePrefix" "gitweb.category" "gitweb.description" "gitweb.owner" "gitweb.url" "gitweb.avatar" "gitweb.blame" "gitweb.grep" "gitweb.highlight" "gitweb.patches" "gitweb.pickaxe" "gitweb.remote_heads" "gitweb.showSizes" "gitweb.snapshot" "grep.lineNumber" "grep.patternType" "grep.extendedRegexp" "grep.threads" "grep.fallbackToNoIndex" "gpg.program" "gui.commitMsgWidth" "gui.diffContext" "gui.displayUntracked" "gui.encoding" "gui.matchTrackingBranch" "gui.newBranchTemplate" "gui.pruneDuringFetch" "gui.trustmtime" "gui.spellingDictionary" "gui.fastCopyBlame" "gui.copyBlameThreshold" "gui.blamehistoryctx" "guitool.<name>.cmd" "guitool.<name>.needsFile" "guitool.<name>.noConsole" "guitool.<name>.noRescan" "guitool.<name>.confirm" "guitool.<name>.argPrompt" "guitool.<name>.revPrompt" "guitool.<name>.revUnmerged" "guitool.<name>.title" "guitool.<name>.prompt" "help.browser" "help.format" "help.autoCorrect" "help.htmlPath" "http.proxy" "http.proxyAuthMethod" "http.emptyAuth" "http.delegation" "http.extraHeader" "http.cookieFile" "http.saveCookies" "http.sslVersion" "http.sslCipherList" "http.sslVerify" "http.sslCert" "http.sslKey" "http.sslCertPasswordProtected" "http.sslCAInfo" "http.sslCAPath" "http.pinnedpubkey" "http.sslTry" "http.maxRequests" "http.minSessions" "http.postBuffer" "http.noEPSV" "http.userAgent" "http.<url>.*" "i18n.commitEncoding" "i18n.logOutputEncoding" "imap" "index.version" "init.templateDir" "instaweb.browser" "instaweb.httpd" "instaweb.local" "instaweb.modulePath" "instaweb.port" "interactive.singleKey" "interactive.diffFilter" "log.abbrevCommit" "log.date" "log.decorate" "log.follow" "log.showRoot" "log.mailmap" "mailinfo.scissors" "mailmap.file" "mailmap.blob" "man.viewer" "man.<tool>.cmd" "man.<tool>.path" "merge.conflictStyle" "merge.defaultToUpstream" "merge.ff" "merge.branchdesc" "merge.log" "merge.renameLimit" "merge.renormalize" "merge.stat" "merge.tool" "merge.verbosity" "merge.<driver>.name" "merge.<driver>.driver" "merge.<driver>.recursive" "mergetool.<tool>.path" "mergetool.<tool>.cmd" "mergetool.<tool>.trustExitCode" "mergetool.meld.hasOutput" "mergetool.keepBackup" "mergetool.keepTemporaries" "mergetool.writeToTemp" "mergetool.prompt" "notes.mergeStrategy" "notes.<name>.mergeStrategy" "notes.displayRef" "notes.rewrite.<command>" "notes.rewriteMode" "notes.rewriteRef" "pack.window" "pack.depth" "pack.windowMemory" "pack.compression" "pack.deltaCacheSize" "pack.deltaCacheLimit" "pack.threads" "pack.indexVersion" "pack.packSizeLimit" "pack.useBitmaps" "pack.writeBitmapHashCache" "pager.<cmd>" "pretty.<name>" "pull.ff" "pull.rebase" "pull.octopus" "pull.twohead" "push.default" "push.followTags" "push.gpgSign" "push.recurseSubmodules" "rebase.stat" "rebase.autoSquash" "rebase.autoStash" "rebase.missingCommitsCheck" "rebase.instructionFormat" "receive.advertiseAtomic" "receive.advertisePushOptions" "receive.autogc" "receive.certNonceSeed" "receive.certNonceSlop" "receive.fsckObjects" "receive.fsck.<msg-id>" "receive.fsck.skipList" "receive.keepAlive" "receive.unpackLimit" "receive.maxInputSize" "receive.denyDeletes" "receive.denyDeleteCurrent" "receive.denyCurrentBranch" "receive.denyNonFastForwards" "receive.hideRefs" "receive.updateServerInfo" "receive.shallowUpdate" "remote.pushDefault" "remote.<name>.url" "remote.<name>.pushurl" "remote.<name>.proxy" "remote.<name>.proxyAuthMethod" "remote.<name>.fetch" "remote.<name>.push" "remote.<name>.mirror" "remote.<name>.skipDefaultUpdate" "remote.<name>.skipFetchAll" "remote.<name>.receivepack" "remote.<name>.uploadpack" "remote.<name>.tagOpt" "remote.<name>.vcs" "remote.<name>.prune" "remotes.<group>" "repack.useDeltaBaseOffset" "repack.packKeptObjects" "repack.writeBitmaps" "rerere.autoUpdate" "rerere.enabled" "sendemail.identity" "sendemail.smtpEncryption" "sendemail.smtpsslcertpath" "sendemail.<identity>.*" "sendemail.aliasesFile" "sendemail.aliasFileType" "sendemail.annotate" "sendemail.bcc" "sendemail.cc" "sendemail.ccCmd" "sendemail.chainReplyTo" "sendemail.confirm" "sendemail.envelopeSender" "sendemail.from" "sendemail.multiEdit" "sendemail.signedoffbycc" "sendemail.smtpPass" "sendemail.suppresscc" "sendemail.suppressFrom" "sendemail.to" "sendemail.smtpDomain" "sendemail.smtpServer" "sendemail.smtpServerPort" "sendemail.smtpServerOption" "sendemail.smtpUser" "sendemail.thread" "sendemail.transferEncoding" "sendemail.validate" "sendemail.xmailer" "showbranch.default" "status.relativePaths" "status.short" "status.branch" "status.displayCommentPrefix" "status.showUntrackedFiles" "status.submoduleSummary" "stash.showPatch" "stash.showStat" "submodule.<name>.url" "submodule.<name>.update" "submodule.<name>.branch" "submodule.<name>.fetchRecurseSubmodules" "submodule.<name>.ignore" "submodule.fetchJobs" "submodule.alternateLocation" "tag.forceSignAnnotated" "tag.sort" "tar.umask" "transfer.fsckObjects" "transfer.hideRefs" "transfer.unpackLimit" "uploadarchive.allowUnreachable" "uploadpack.hideRefs" "uploadpack.allowTipSHA1InWant" "uploadpack.allowReachableSHA1InWant" "uploadpack.keepAlive" "uploadpack.packObjectsHook" "url.<base>.insteadOf" "url.<base>.pushInsteadOf" "user.email" "user.name" "user.useConfigOnly" "user.signingKey" "versionsort.prereleaseSuffix" "web.browser")
