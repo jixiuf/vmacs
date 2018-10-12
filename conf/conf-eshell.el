@@ -36,9 +36,9 @@
   (define-key eshell-mode-map (kbd "C-a") nil)
   (define-key eshell-mode-map (kbd "M-k") 'eshell-previous-prompt)
   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
-  (define-key eshell-mode-map (kbd "C-t") 'toggle-eshell-new)
-  (define-key eshell-mode-map (kbd "s-t") 'toggle-eshell-new)
-  (define-key eshell-mode-map (kbd "C-M-s-t") 'toggle-eshell-new)
+  (define-key eshell-mode-map (kbd "C-t") 'vmacs-eshell-new)
+  (define-key eshell-mode-map (kbd "s-t") 'vmacs-eshell-new)
+  (define-key eshell-mode-map (kbd "C-M-s-t") 'vmacs-eshell-new)
   ;; (define-key eshell-mode-map (kbd "C-M-s-n") 'vmscs-eshell-next)
   ;; (define-key eshell-mode-map (kbd "C-M-s-p") 'vmscs-eshell-prev)
 
