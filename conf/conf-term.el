@@ -75,6 +75,12 @@
 
 (add-hook 'term-exec-hook 'term-kill-auto-exit)
 
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  "Kill term buffers on exiting term (C-d or `exit`).
+Optionally go to next term buffer."
+  (kill-buffer))
+
 ;; (defadvice evil-normal-state (after term-send-raw first activate)
 ;;   "send C-g "
 ;;   (when  (derived-mode-p 'term-mode)
