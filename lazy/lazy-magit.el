@@ -41,6 +41,7 @@
     )
   )
 
+;;;###autoload
 (defun vmacs-git-timemachine-save()
   (interactive)
   (write-file (expand-file-name git-timemachine-file git-timemachine-directory) nil)
