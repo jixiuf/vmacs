@@ -164,11 +164,16 @@ Optionally go to next term buffer."
   (let ((proc-name (ad-get-arg 0)))
     (remove-hook 'pre-command-hook 'term-set-goto-process-mark t)
     (remove-hook 'post-command-hook 'term-goto-process-mark-maybe t)
-    (when (member proc-name '("terminal" "/bin/bash"
-                              "/usr/bin/ssh"
-                              "/bin/zsh" "/usr/bin/zsh"))
+    (when (string-match vmacs-term-auto-kill-process-regexp proc-name)
       (kill-buffer))))
 
+
+(defvar vmacs-term-auto-kill-process-regexp
+  (rx
+   ( or "terminal" "/bin/bash"
+    "/usr/bin/ssh"
+    "/usr/bin/top"
+    "/bin/zsh" "/usr/bin/zsh")))
 
 
 (provide 'conf-term)

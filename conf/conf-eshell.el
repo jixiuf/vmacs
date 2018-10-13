@@ -36,11 +36,20 @@
 
 ;;using helm.el as the complete engine
 (defun vmacs-eshell-hook()
-  ;; (company-mode -1)
+  (company-mode -1)
+  (setq pcomplete-ignore-case t)
+  (setq eshell-ls-use-in-dired t)
+  ;; (setq pcomplete-cycle-completions nil)
+  (setq pcomplete-cycle-cutoff-length 4)
+  ;; (setq pcomplete-expand-before-complete t)
+  ;; (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
+  ;; (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete);Tab
+  ;; (define-key eshell-mode-map (kbd "<tab>") (lambda () (interactive) (pcomplete-std-complete)))
 
   (setenv "TERM" "xterm-256color")
   (define-key eshell-mode-map (kbd "C-a") nil)
 
+  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
   ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
   (define-key eshell-mode-map [remap eshell-previous-matching-input] 'vmacs-esh-history ) ;M-r
   (define-key eshell-mode-map (kbd "C-r") 'vmacs-esh-history)
@@ -58,10 +67,6 @@
 
   (define-key eshell-mode-map (kbd "M-.") 'eshell-insert-last-cmd-argument)
 
-  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
-  ;; (define-key eshell-mode-map [remap pcomplete] 'helm-esh-pcomplete) ;tab
-  ;; (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete);Tab
-  (define-key eshell-mode-map (kbd "<tab>") (lambda () (interactive) (pcomplete-std-complete)))
   (eshell-hist-use-global-history)
   )
 
@@ -84,6 +89,17 @@
   (interactive)
   (term  (getenv "SHELL"))
   nil)
+
+
+
+;; (defun eshell/curl( &rest args)
+;;   (interactive)
+
+;;   (print args)
+;;   (s "curl")
+;;   (print (eshell-external-command "curl" args))
+;;   "ss"
+;;   )
 
 (provide 'conf-eshell)
 
