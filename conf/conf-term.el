@@ -68,18 +68,6 @@
 
 (add-hook 'term-mode-hook 'vmacs-term-hook)
 
-(defun term-kill-auto-exit()
-  (let ((p(get-buffer-process (current-buffer))))
-    (when p
-      (set-process-query-on-exit-flag p nil))))
-
-(add-hook 'term-exec-hook 'term-kill-auto-exit)
-
-(defadvice term-handle-exit
-    (after term-kill-buffer-on-exit activate)
-  "Kill term buffers on exiting term (C-d or `exit`).
-Optionally go to next term buffer."
-  (kill-buffer))
 
 ;; (defadvice evil-normal-state (after term-send-raw first activate)
 ;;   "send C-g "
@@ -161,6 +149,27 @@ Optionally go to next term buffer."
 (defun vmacs-term-yank()
   (interactive)
   (term-send-raw-string (evil-get-register ?\" t)))
+
+(defun term-kill-auto-exit()
+  (let ((p(get-buffer-process (current-buffer))))
+    (when p
+      (set-process-query-on-exit-flag p nil))))
+
+(add-hook 'term-exec-hook 'term-kill-auto-exit)
+
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  "Kill term buffers on exiting term (C-d or `exit`).
+Optionally go to next term buffer."
+  (let ((proc-name (ad-get-arg 0)))
+    (remove-hook 'pre-command-hook 'term-set-goto-process-mark t)
+    (remove-hook 'post-command-hook 'term-goto-process-mark-maybe t)
+    (when (member proc-name '("terminal" "/bin/bash"
+                              "/usr/bin/ssh"
+                              "/bin/zsh" "/usr/bin/zsh"))
+      (kill-buffer))))
+
+
 
 (provide 'conf-term)
 

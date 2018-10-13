@@ -7,7 +7,8 @@
 ;; zsh 的alias  转变成eshell
 ;; alias | awk '{print "alias "$0}' | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/^alias ([^= ]+)=(.*)$/alias \1 \2 \$*/g;  s/'\\\''/'/g;" >~/.emacs.d/eshell/alias
 (setq-default eshell-directory-name (concat user-emacs-directory "eshell"))
-(setq-default eshell-destroy-buffer-when-process-dies t)
+
+;; (setq-default eshell-destroy-buffer-when-process-dies t)
 
 (autoload 'epe-theme-lambda "eshell-prompt-extras")
 (setq-default eshell-highlight-prompt nil)
@@ -16,7 +17,7 @@
 
 ;; ;始终确何prompt 出现在行首
 ;; *echo -n "hello"
-;; (add-hook 'eshell-before-prompt-hook 'eshell-begin-on-new-line)
+(add-hook 'eshell-before-prompt-hook 'eshell-begin-on-new-line)
 
 (with-eval-after-load 'em-term
   (add-to-list 'eshell-visual-commands  "tmux")
@@ -37,6 +38,7 @@
 (defun vmacs-eshell-hook()
   ;; (company-mode -1)
 
+  (setenv "TERM" "xterm-256color")
   (define-key eshell-mode-map (kbd "C-a") nil)
 
   ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
@@ -69,13 +71,19 @@
 (defalias 'vi 'find-file)
 (defalias 'o 'find-file-other-window)
 
+
+
 (with-eval-after-load 'esh-mode
-  (defun eshell/clear ()
+  (defadvice eshell/clear (around zsh-like-clear activate)
+    "clear eshell buffer"
     (let ((eshell-buffer-maximum-lines 0)) (eshell-truncate-buffer))))
+
+
 
 (defun eshell/zsh ()
   (interactive)
-  (term  (getenv "SHELL")))
+  (term  (getenv "SHELL"))
+  nil)
 
 (provide 'conf-eshell)
 
