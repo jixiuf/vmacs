@@ -5,6 +5,7 @@
 (global-set-key  (kbd "s-p") 'awesome-tab-backward)
 (global-set-key  (kbd "s-C-M-p") 'awesome-tab-backward)
 
+(vmacs-leader "e" 'awesome-tab-build-ivy-source)
 ;; 只为eshell-mode term-mode 启用awesome-tab
 
 (setq awesome-tab-buffer-groups-function 'vmacs-awesome-tab-buffer-groups)
@@ -18,6 +19,8 @@ Other buffer group by `projectile-project-p' with project name."
    (cond
     ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
      "Shell")
+    ((memq major-mode '(org-mode org-agenda-mode diary-mode novel-mode))
+     "OrgMode")
     ((or (string-equal "*" (substring (buffer-name) 0 1))
          (memq major-mode '(magit-process-mode
                             magit-status-mode
@@ -32,8 +35,6 @@ Other buffer group by `projectile-project-p' with project name."
     ;;  "Elisp")
     ;; ((derived-mode-p 'dired-mode)
     ;;  "Dired")
-    ((memq major-mode '(org-mode org-agenda-mode diary-mode))
-     "OrgMode")
     (t
      (if (projectile-project-p)
          (awesome-tab-get-group-name (current-buffer))
