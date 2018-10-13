@@ -183,7 +183,7 @@
   (let ((cands (vmacs-esh-parse-shell-history)))
     (setq ivy-completion-beg (eshell-beginning-of-input))
     (setq ivy-completion-end (point))
-    (ivy-read "Symbol name: " cands
+    (ivy-read "cmd history: " cands
               :initial-input (eshell-get-old-input)
               :action #'ivy-completion-in-region-action
               :caller 'counsel-shell-history)))

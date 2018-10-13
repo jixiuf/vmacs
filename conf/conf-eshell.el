@@ -42,7 +42,7 @@
   (define-key eshell-mode-map (kbd "C-a") nil)
 
   ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'helm-eshell-history ) ;M-r
-  ;; (define-key eshell-mode-map [remap eshell-previous-matching-input] 'counsel-esh-history ) ;M-r
+  (define-key eshell-mode-map [remap eshell-previous-matching-input] 'vmacs-esh-history ) ;M-r
   (define-key eshell-mode-map (kbd "C-r") 'vmacs-esh-history)
   ;; (define-key eshell-mode-map (kbd "M-r") 'vmacs-esh-history)
 
