@@ -105,14 +105,15 @@
  ivy-dired-history-max 200
  )
 
-(if (equal system-type 'gnu/linux)
-    (setq dired-listing-switches "--time-style=+%y-%m-%d/%H:%M  --group-directories-first -alhG")
-  (setq dired-listing-switches "-alhG"))
-(when (eq system-type 'darwin)
-  ;; macos 使用emacs自带的ls-lisp来展示文件目录，
-  ;; 下文用到lazy-dired-sort 进行排序时，mac自带的ls有些参数不支持
-  (require 'ls-lisp)
-  (setq-default ls-lisp-use-insert-directory-program nil))
+;; (if (equal system-type 'gnu/linux)
+;;     (setq dired-listing-switches "--time-style=+%y-%m-%d/%H:%M  --group-directories-first -alhG")
+;;   (setq dired-listing-switches "-alhG"))
+;; (when (eq system-type 'darwin)
+;;   ;; macos 使用emacs自带的ls-lisp来展示文件目录，
+;;   ;; 下文用到lazy-dired-sort 进行排序时，mac自带的ls有些参数不支持
+;;   (require 'ls-lisp)
+;;   (setq-default ls-lisp-use-insert-directory-program nil))
+
 ;;(setq directory-free-space-args "-Pkh")
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (define-key dired-mode-map "u" 'dired-up-directory) ;上层目录

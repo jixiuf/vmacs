@@ -345,7 +345,7 @@ Move point to end-of-line ,if point was already at that position,
       (server-edit))
      ((member major-mode '(eshell-mode term-mode ))
       (vmacs-add-to-killed-file-list)
-      (vmacs-eshell-hide)
+      (vmacs-eshell-term-hide)
       ;; (awesome-tab-forward-group)
       ;; (awesome-tab-backward-group)
       )

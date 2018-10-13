@@ -192,13 +192,13 @@ they are in `bind-map-set-keys'."
 
 ;; (global-set-key (kbd "C-<f3>") 'vmacs-shell-toggle-cd)
 ;; (global-set-key (kbd "<f3>") 'vmacs-shell-toggle)
-;; (global-set-key (kbd "C-<f3>") 'vmacs-eshell-toggle)
+;; (global-set-key (kbd "C-<f3>") 'vmacs-eshell-term-toggle)
 ;; (global-set-key  (kbd "s-C-M-d") 'vmacs-shell-toggle)
 (global-set-key (kbd "<f3>") 'cd-iterm2)
-(global-set-key (kbd "s-,") 'vmacs-eshell-toggle)
-(global-set-key [f2] 'vmacs-eshell-toggle)
-(global-set-key [C-f2] 'vmacs-eshell-toggle)
-(global-set-key  (kbd "s-t") 'vmacs-eshell-show)
+(global-set-key (kbd "s-,") 'vmacs-eshell-term-toggle)
+(global-set-key [f2] 'vmacs-eshell-new)
+(global-set-key [C-f2] 'vmacs-term-new)
+(global-set-key  (kbd "s-t") 'vmacs-eshell-term-show)
 
 
 ;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到

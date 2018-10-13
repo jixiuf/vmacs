@@ -1,5 +1,10 @@
 ;; 用sudo 打开当前编辑的文件或目录
 (global-set-key (kbd "C-c o") 'toggle-read-only-file-with-sudo)
+;; su: or /sudo: on remote hosts
+;; You can also use this syntax to sudo/su to root (or of course any other use) on a remote host:
+;; C-xC-f /ssh:you@remotehost|sudo:remotehost:/path/to/file RET
+;; /-: 表示使用默认的method
+;; C-xC-f /-:you@remotehost|sudo:remotehost:/path/to/file RET
 
 ;;; 当切换到root 用户时，为作区别 ，外观显红色
 

@@ -59,9 +59,9 @@
   (define-key eshell-mode-map (kbd "C-n") 'eshell-next-matching-input-from-input)
   (define-key eshell-mode-map (kbd "M-k") 'eshell-previous-prompt)
   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
-  (define-key eshell-mode-map (kbd "C-t") 'vmacs-eshell-new)
-  (define-key eshell-mode-map (kbd "s-t") 'vmacs-eshell-new)
-  (define-key eshell-mode-map (kbd "C-M-s-t") 'vmacs-eshell-new)
+  (define-key eshell-mode-map (kbd "C-t") 'vmacs-eshell-term-new)
+  (define-key eshell-mode-map (kbd "s-t") 'vmacs-eshell-term-new)
+  (define-key eshell-mode-map (kbd "C-M-s-t") 'vmacs-eshell-term-new)
   ;; (define-key eshell-mode-map (kbd "C-M-s-n") 'vmscs-eshell-next)
   ;; (define-key eshell-mode-map (kbd "C-M-s-p") 'vmscs-eshell-prev)
 

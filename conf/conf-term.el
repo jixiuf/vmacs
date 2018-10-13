@@ -44,6 +44,7 @@
 (define-key term-mode-map (kbd "C-a") 'vmacs-term-bol)
 ;; (define-key term-raw-map (kbd "C-M-s-n") 'sane-term-next)
 ;; (define-key term-raw-map (kbd "C-M-s-p") 'sane-term-prev)
+(define-key term-raw-map (kbd "C-u") nil)
 (define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
 (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
 (define-key term-raw-map (kbd "C-y") 'vmacs-term-yank)
@@ -53,10 +54,10 @@
 
 
 
-(define-key term-raw-map (kbd "C-t") 'vmacs-eshell-new)
-(define-key term-mode-map (kbd "C-t") 'vmacs-eshell-new)
-(define-key term-raw-map (kbd "s-t") 'vmacs-eshell-new)
-(define-key term-raw-map (kbd "s-t") 'vmacs-eshell-new)
+(define-key term-raw-map (kbd "C-t") 'vmacs-eshell-term-new)
+(define-key term-mode-map (kbd "C-t") 'vmacs-eshell-term-new)
+(define-key term-raw-map (kbd "s-t") 'vmacs-eshell-term-new)
+(define-key term-mode-map (kbd "s-t") 'vmacs-eshell-term-new)
 
 
 
