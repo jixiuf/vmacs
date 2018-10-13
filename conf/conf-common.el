@@ -10,11 +10,11 @@
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 
 (setq-default
- ;; inhibit-startup-screen t;隐藏启动显示画面
+ inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭scratch消息提示
  initial-major-mode 'emacs-lisp-mode ;scratch init mode
- initial-buffer-choice t                ;默认打开scratch buffer
- ;; initial-buffer-choice 'show-todo-list-after-init
+ ;; initial-buffer-choice t                ;默认打开scratch buffer
+ initial-buffer-choice 'show-todo-list-after-init
 
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost

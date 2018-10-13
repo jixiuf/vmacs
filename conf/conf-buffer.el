@@ -26,7 +26,7 @@
   '(help-mode compilation-mode log-view-mode log-edit-mode
               org-agenda-mode magit-revision-mode ibuffer-mode))
 
-(defvar boring-window-bof-name-regexp
+(setq-default boring-window-bof-name-regexp
   (rx (or
        "\*Helm"
        "\*helm"
@@ -35,6 +35,7 @@
        "\*vc-"
        "todo.txt"
        "\*vc*"
+       "\*tramp"
        "*Completions*"
        "\*vc-change-log\*"
        "\*VC-log\*"
