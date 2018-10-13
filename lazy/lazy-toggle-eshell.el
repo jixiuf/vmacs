@@ -11,8 +11,6 @@
   :type 'boolean
   :group 'vmacs-eshell)
 (defvar vmacs-window-configration nil)
-(defvar vmacs-shell-last-buffer nil)    ;记录切到eshell/term前 激活的buffer,以便恢复现场
-
 
 ;;;###autoload
 (defun vmacs-eshell-new (&optional term-mode)
@@ -23,8 +21,7 @@
               (generate-new-buffer-name
                (vmacs-eshell--generate-buffer-name "*esh* " "" default-directory))))
         (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
-          (setq vmacs-window-configration (current-window-configuration))
-          (setq vmacs-shell-last-buffer (current-buffer)))
+          (setq vmacs-window-configration (current-window-configuration)))
         (setq eshell-buffer-name shell-buffer-name)
         (eshell)
         (goto-char (point-max))
@@ -42,16 +39,23 @@
 ;;;###autoload
 (defun vmacs-eshell-hide()
   (interactive)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
+        (bury-buffer))))
+  (message "%s" (vmacs-eshell--recent-other-buffer))
   (switch-to-buffer (vmacs-eshell--recent-other-buffer))
   (set-window-configuration vmacs-window-configration))
+
 ;;;###autoload
 (defun vmacs-eshell-show()
   (interactive)
-  (setq vmacs-shell-last-buffer (current-buffer))
   (let ((shell-buffer (vmacs-eshell--recent-buffer)))
     (if shell-buffer                 ;存在eshell，直接切到这个 eshell buffer
         (progn
-          (setq vmacs-window-configration (current-window-configuration))
+          (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
+            (setq vmacs-window-configration (current-window-configuration))
+            )
           (pop-to-buffer shell-buffer)
           (delete-other-windows)
           )
@@ -96,6 +100,18 @@
     (when (> (length dir-tokens) 2)
       (setq pwd (mapconcat  'identity (last dir-tokens 2)  "/")))
     (format "%s%s(%s)"  prefix (or cmd "") pwd)))
+
+(defun vmacs-kill-buffer-hook()
+  (when (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
+    (let ((proc (get-buffer-process (current-buffer))))
+      (when (process-live-p proc)
+        (when (derived-mode-p 'term-mode)
+          (term-send-raw-string "\^C")
+          (term-send-raw-string "\^D")
+          (term-send-raw-string "\^\\"))
+        (kill-process proc)))))
+
+(add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
 
 (provide 'lazy-toggle-eshell)
 
