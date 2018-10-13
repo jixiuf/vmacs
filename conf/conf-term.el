@@ -158,6 +158,14 @@
 
 (add-hook 'term-exec-hook 'term-kill-auto-exit)
 
+
+(defvar vmacs-term-auto-kill-process-regexp
+  (rx
+   ( or "terminal" "/bin/bash"
+    "/usr/bin/ssh"
+    "/usr/bin/top"
+    "/bin/zsh" "/usr/bin/zsh")))
+
 (defadvice term-handle-exit
     (after term-kill-buffer-on-exit activate)
   "Kill term buffers on exiting term (C-d or `exit`).
@@ -168,13 +176,6 @@ Optionally go to next term buffer."
     (when (string-match vmacs-term-auto-kill-process-regexp proc-name)
       (kill-buffer))))
 
-
-(defvar vmacs-term-auto-kill-process-regexp
-  (rx
-   ( or "terminal" "/bin/bash"
-    "/usr/bin/ssh"
-    "/usr/bin/top"
-    "/bin/zsh" "/usr/bin/zsh")))
 
 
 (provide 'conf-term)

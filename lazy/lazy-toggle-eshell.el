@@ -1,5 +1,6 @@
 (eval-when-compile
   (require 'term)
+  (require 'ange-ftp)
   (require 'em-term)
   (require 'em-hist)
   (require 'eshell))
