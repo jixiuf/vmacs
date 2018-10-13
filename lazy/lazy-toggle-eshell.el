@@ -46,23 +46,32 @@
         (pop-to-buffer shell-buffer-name))))
 
 ;;;###autoload
+(defun vmacs-eshell-hide()
+  (interactive)
+  (switch-to-buffer (vmacs-eshell--recent-other-buffer))
+  (set-window-configuration vmacs-window-configration))
+;;;###autoload
+(defun vmacs-eshell-show()
+  (interactive)
+  (setq vmacs-shell-last-buffer (current-buffer))
+  (let ((shell-buffer (vmacs-eshell--recent-buffer)))
+    (if shell-buffer                 ;存在eshell，直接切到这个 eshell buffer
+        (progn
+          (setq vmacs-window-configration (current-window-configuration))
+          (pop-to-buffer shell-buffer)
+          (delete-other-windows)
+          )
+      ;; 不存在已打开的eshell buffer
+      (vmacs-eshell-new))))
+
+;;;###autoload
 (defun vmacs-eshell-toggle()
   (interactive)
   (cond
    ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode) ;当前在eshell中
-    (switch-to-buffer (vmacs-eshell--recent-other-buffer))
-    (set-window-configuration vmacs-window-configration))
+    (vmacs-eshell-hide))
    (t                                   ; ;当前不在eshell中
-    (setq vmacs-shell-last-buffer (current-buffer))
-    (let ((shell-buffer (vmacs-eshell--recent-buffer)))
-      (if shell-buffer                 ;存在eshell，直接切到这个 eshell buffer
-          (progn
-            (setq vmacs-window-configration (current-window-configuration))
-            (pop-to-buffer shell-buffer)
-            (delete-other-windows)
-            )
-        ;; 不存在已打开的eshell buffer
-        (vmacs-eshell-new))))))
+    (vmacs-eshell-show))))
 
 ;; 返回最近打开过的eshell term mode的buffer
 (defun vmacs-eshell--recent-buffer()

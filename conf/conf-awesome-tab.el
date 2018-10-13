@@ -28,10 +28,10 @@ Other buffer group by `projectile-project-p' with project name."
                             magit-blame-mode
                             )))
      "Emacs")
-    ((derived-mode-p 'emacs-lisp-mode)
-     "Elisp")
-    ((derived-mode-p 'dired-mode)
-     "Dired")
+    ;; ((derived-mode-p 'emacs-lisp-mode)
+    ;;  "Elisp")
+    ;; ((derived-mode-p 'dired-mode)
+    ;;  "Dired")
     ((memq major-mode '(org-mode org-agenda-mode diary-mode))
      "OrgMode")
     (t
@@ -59,7 +59,7 @@ only show eshell-mode term-mode and shell-mode."
          (mapcar #'(lambda (b)
                      (cond
                       ;; Always include the current buffer.
-                      ;; ((eq (current-buffer) b) b)
+                      ((eq (current-buffer) b) b)
                       ((with-current-buffer b (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)) b)
                       ((char-equal ?\  (aref (buffer-name b) 0)) nil)
                       (t b)

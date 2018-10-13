@@ -345,7 +345,7 @@ Move point to end-of-line ,if point was already at that position,
       (server-edit))
      ((member major-mode '(eshell-mode term-mode ))
       (vmacs-add-to-killed-file-list)
-      (bury-buffer)
+      (vmacs-eshell-hide)
       ;; (awesome-tab-forward-group)
       ;; (awesome-tab-backward-group)
       )
@@ -410,7 +410,7 @@ Move point to end-of-line ,if point was already at that position,
          ((bufferp file)
           (switch-to-buffer file))
          ((equal type 'magit)
-          (magit-status file)
+          (magit-status-internal file)
           (message "reopen magit-status in %s" file))
 
          (t
