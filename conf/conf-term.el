@@ -33,7 +33,7 @@
 ;; (setq-default shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
 ;; (setq-default shell-toggle-goto-eob nil)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
-(setq-default term-buffer-maximum-size 10000)
+(setq-default term-buffer-maximum-size 2048)
 ;; (setq-default term-scroll-show-maximum-output t) 不要设置为t, 否则clear Ctrl-l 无效
 (setq-default term-suppress-hard-newline t) ;不设置的话，有时长的输出无法展示全
 
