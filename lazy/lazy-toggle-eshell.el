@@ -56,7 +56,8 @@
         (bury-buffer))))
   (message "%s" (vmacs-eshell--recent-other-buffer))
   (switch-to-buffer (vmacs-eshell--recent-other-buffer))
-  (set-window-configuration vmacs-window-configration))
+  (when vmacs-window-configration
+    (set-window-configuration vmacs-window-configration)))
 
 ;;;###autoload
 (defun vmacs-eshell-term-show()
