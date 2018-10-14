@@ -152,9 +152,9 @@
   (interactive)
   (if (equal last-command 'vmacs-term-bol)
       (progn
-        (term-bol nil)
+        (term-bol t)
         (setq this-command 'term-bol))
-    (term-bol t)))
+    (term-bol nil)))
 
 (defun vmacs-term-yank()
   (interactive)
