@@ -81,7 +81,7 @@
   ;; (local-set-key (kbd "M-t") 'helm-gtags-find-tag)
   ;; (local-set-key (kbd "M-s") 'helm-gtags-find-symbol)
   (local-set-key [(control return)] 'helm-gtags-complete)
-  (local-set-key (kbd "C-[ [ a c") (key-binding [(control return)])))   ; iterm map to ctrl-return
+  (local-set-key (kbd "C-[ [ 1 c") (key-binding [(control return)])))   ; iterm map to ctrl-return
 
 ;; key bindings
 (add-hook 'helm-gtags-mode-hook 'vmacs-helm-gtags-mode-hook)

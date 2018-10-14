@@ -118,16 +118,16 @@
 (define-key ivy-minibuffer-map (kbd "C-h") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-k") 'ivy-kill-line)
 (define-key ivy-minibuffer-map (kbd "C-.") 'ivy-next-history-element)
-(define-key ivy-minibuffer-map (kbd "C-[ [ a e") 'ivy-next-history-element) ;iterm2 map to ctrl-.
+(define-key ivy-minibuffer-map (kbd "C-[ [ 1 e") 'ivy-next-history-element) ;iterm2 map to ctrl-.
 (define-key ivy-minibuffer-map (kbd "<C-m>") 'ivy-done)
-(define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ivy-done)
-(define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ivy-done)
+(define-key ivy-minibuffer-map (kbd "C-[ [ 1 m")  'ivy-done)
+(define-key ivy-minibuffer-map (kbd "C-[ [ 1 m")  'ivy-done)
 (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
 ;; (define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
 ;; (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-delete-char)
 
 ;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
-;; (define-key ivy-minibuffer-map (kbd "C-[ [ a f") 'ivy-avy) ; ;iterm map C-; to this
+;; (define-key ivy-minibuffer-map (kbd "C-[ [ 1 f") 'ivy-avy) ; ;iterm map C-; to this
 (define-key ivy-occur-grep-mode-map (kbd "n") 'evil-search-next)
 (define-key ivy-occur-grep-mode-map (kbd "p") 'evil-search-previous)
 (define-key ivy-occur-mode-map (kbd "g") nil)

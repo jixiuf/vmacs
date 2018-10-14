@@ -290,7 +290,7 @@
 
 
 (define-key global-map iedit-toggle-key-default 'iedit-mode)
-;; (define-key global-map (kbd "C-[ [ a f") 'iedit-mode) ;iterm map C-; to this
+;; (define-key global-map (kbd "C-[ [ 1 f") 'iedit-mode) ;iterm map C-; to this
 (define-key isearch-mode-map iedit-toggle-key-default 'iedit-mode-from-isearch)
 
 (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)

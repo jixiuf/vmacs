@@ -54,7 +54,7 @@
   (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)
   (define-key ido-file-dir-completion-map (kbd "C-l") 'ido-up-directory)
   (define-key ido-completion-map (kbd "<C-m>") 'ido-exit-minibuffer) ;select or expand
-  (define-key ivy-minibuffer-map (kbd "C-[ [ a m")  'ido-exit-minibuffer)
+  (define-key ivy-minibuffer-map (kbd "C-[ [ 1 m")  'ido-exit-minibuffer)
   (setq ido-enable-flex-matching t))
 
 
