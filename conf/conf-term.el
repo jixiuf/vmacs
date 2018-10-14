@@ -47,6 +47,7 @@
 (define-key term-raw-map (kbd "C-u") nil)
 (define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
 (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
+(define-key term-mode-map (kbd "C-l") 'term-ctrl-l)
 (define-key term-raw-map (kbd "C-y") 'vmacs-term-yank)
 (define-key term-raw-map (kbd "s-v") 'vmacs-term-yank)
 (define-key term-raw-map (kbd "<return>") 'vmacs-term-return)
@@ -137,6 +138,15 @@
   (interactive "P")
   (vmacs-kill-region-or-line arg)
   (term-send-raw-string "\^K"))
+
+
+(defun term-ctrl-l(&optional arg)
+  "this function is a wrapper of (kill-line).
+   When called interactively with no active region, this function
+  will call (kill-line) ,else kill the region."
+  (interactive "P")
+  (vmacs-kill-region-or-line arg)
+  (term-send-raw-string "\^L"))
 
 (defun vmacs-term-bol()
   (interactive)
