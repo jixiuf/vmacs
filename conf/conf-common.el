@@ -17,7 +17,7 @@
  initial-buffer-choice '(lambda()   (if (get-buffer-create "*scratch*")
                                         (with-current-buffer "*scratch*"
 	                                      (if (eq major-mode 'fundamental-mode)
-	                                          (funcall initial-major-mode))))
+	                                          (emacs-lisp-mode 1))))
                           (get-buffer "*scratch*"))
 
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
