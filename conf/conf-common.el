@@ -14,11 +14,8 @@
  initial-scratch-message nil;关闭scratch消息提示
  initial-major-mode 'emacs-lisp-mode ;scratch init mode
  ;; initial-buffer-choice t                ;默认打开scratch buffer
- initial-buffer-choice '(lambda()   (if (get-buffer-create "*scratch*")
-                                        (with-current-buffer "*scratch*"
-	                                      (if (eq major-mode 'fundamental-mode)
-	                                          (emacs-lisp-mode 1))))
-                          (get-buffer "*scratch*"))
+ initial-buffer-choice "~/"
+
 
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost
@@ -77,8 +74,6 @@
  display-line-numbers 'absolute
  )
 
-(with-eval-after-load 'tramp
-  (add-to-list 'tramp-remote-path "/usr/local/go/bin"))
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
                               "xelatex -interaction nonstopmode %f"))
 ;; (with-eval-after-load 'org
