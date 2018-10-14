@@ -51,8 +51,7 @@
 (define-key term-raw-map (kbd "s-v") 'vmacs-term-yank)
 (define-key term-raw-map (kbd "<return>") 'vmacs-term-return)
 (define-key term-raw-map (kbd "<RET>") 'vmacs-term-return)
-
-
+(define-key term-raw-map (kbd "M-x") 'counsel-M-x)
 
 (define-key term-raw-map (kbd "C-t") 'vmacs-eshell-term-new)
 (define-key term-mode-map (kbd "C-t") 'vmacs-eshell-term-new)
