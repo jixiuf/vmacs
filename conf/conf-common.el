@@ -14,7 +14,11 @@
  initial-scratch-message nil;关闭scratch消息提示
  initial-major-mode 'emacs-lisp-mode ;scratch init mode
  ;; initial-buffer-choice t                ;默认打开scratch buffer
- initial-buffer-choice 'show-todo-list-after-init
+ initial-buffer-choice '(lambda()   (if (get-buffer-create "*scratch*")
+                                        (with-current-buffer "*scratch*"
+	                                      (if (eq major-mode 'fundamental-mode)
+	                                          (funcall initial-major-mode))))
+                          (get-buffer "*scratch*"))
 
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost
