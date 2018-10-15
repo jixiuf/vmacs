@@ -1,3 +1,4 @@
+;; brew install libvterm
 ;; https://github.com/akermu/emacs-libvterm
 ;; mkdir -p build
 ;; cd build

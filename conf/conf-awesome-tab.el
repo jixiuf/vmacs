@@ -16,7 +16,7 @@
     Other buffer group by `projectile-project-p' with project name."
   (list
    (cond
-    ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
+    ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
      "Shell")
     ((memq major-mode '(org-mode  diary-mode novel-mode))
      "OrgMode")
@@ -66,7 +66,7 @@ only show eshell-mode term-mode and shell-mode."
                      (cond
                       ;; Always include the current buffer.
                       ;; ((eq (current-buffer) b) b)
-                      ((with-current-buffer b (derived-mode-p 'eshell-mode 'term-mode 'shell-mode)) b)
+                      ((with-current-buffer b (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)) b)
                       ((char-equal ?\  (aref (buffer-name b) 0)) nil)
                       (t b)
                       ))
