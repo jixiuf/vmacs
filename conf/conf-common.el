@@ -14,7 +14,8 @@
  initial-scratch-message nil;关闭scratch消息提示
  initial-major-mode 'emacs-lisp-mode ;scratch init mode
  ;; initial-buffer-choice t                ;默认打开scratch buffer
- initial-buffer-choice 'show-todo-list-after-init
+ initial-buffer-choice "~/"
+
 
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost
@@ -73,8 +74,6 @@
  display-line-numbers 'absolute
  )
 
-(with-eval-after-load 'tramp
-  (add-to-list 'tramp-remote-path "/usr/local/go/bin"))
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
                               "xelatex -interaction nonstopmode %f"))
 ;; (with-eval-after-load 'org
@@ -291,7 +290,7 @@
 
 
 (define-key global-map iedit-toggle-key-default 'iedit-mode)
-;; (define-key global-map (kbd "C-[ [ a f") 'iedit-mode) ;iterm map C-; to this
+;; (define-key global-map (kbd "C-[ [ 1 f") 'iedit-mode) ;iterm map C-; to this
 (define-key isearch-mode-map iedit-toggle-key-default 'iedit-mode-from-isearch)
 
 (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)

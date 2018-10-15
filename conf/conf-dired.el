@@ -126,13 +126,13 @@
 
 
 (define-key dired-mode-map (kbd "<C-m>" ) 'dired-find-file)
-(define-key dired-mode-map (kbd "C-[ [ a m") 'dired-find-file)
+(define-key dired-mode-map (kbd "C-[ [ 1 m") 'dired-find-file)
 ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 (define-key dired-mode-map  "/" 'dired-narrow) ;dired-narrow-fuzzy
 (define-key dired-mode-map  (kbd "C-s") 'dired-narrow) ;dired-narrow-fuzzy
 (with-eval-after-load 'dired-narrow
   (define-key dired-narrow-map (kbd "<C-m>") 'exit-minibuffer)
-  (define-key dired-narrow-map (kbd "C-[ [ a m") 'exit-minibuffer)
+  (define-key dired-narrow-map (kbd "C-[ [ 1 m") 'exit-minibuffer)
   )
 ;; (dired-mark-unmarked-files "init" nil nil )
 ;; 临时忽略某些文件,用正则表达示  "z"跟/的作用相反

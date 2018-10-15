@@ -7,6 +7,8 @@
 ;; C-xC-f /-:you@remotehost|sudo:remotehost:/path/to/file RET
 
 ;;; 当切换到root 用户时，为作区别 ，外观显红色
+(with-eval-after-load 'tramp
+  (add-to-list 'tramp-remote-path "/usr/local/go/bin"))
 
 (defface toggle-to-root-header-face
   '((t (:foreground "white" :background "red3")))

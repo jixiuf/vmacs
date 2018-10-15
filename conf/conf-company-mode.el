@@ -48,7 +48,7 @@
   (add-to-list 'company-begin-commands  'backward-kill-word)
   (setq company-require-match nil)      ;不为nil的话，则如果输入的内容导致无匹配的选项，则不允许此输入
   ;; (define-key company-mode-map (kbd "C-i") 'company-other-backend) ;iterm map to C-i
-  ;; (define-key company-mode-map (kbd "C-[ [ a h") (key-binding (kbd "C-i"))) ;iterm map to C-i
+  ;; (define-key company-mode-map (kbd "C-[ [ 1 h") (key-binding (kbd "C-i"))) ;iterm map to C-i
   (define-key company-active-map (kbd "C-e") #'company-other-backend)
   (define-key company-active-map (kbd "C-s") #'company-filter-candidates)
   (define-key company-active-map (kbd "M-s") #'company-search-candidates)
@@ -60,7 +60,7 @@
   (define-key company-active-map (kbd "C-j")  'company-complete-selection)
   (define-key company-active-map [(meta tab)] 'company-complete-common)
   (define-key company-active-map (kbd "<C-m>") 'company-complete-selection)
-  (define-key company-active-map (kbd "C-[ [ a m")  'company-complete-selection)
+  (define-key company-active-map (kbd "C-[ [ 1 m")  'company-complete-selection)
   ;; (define-key company-active-map  (kbd "<return>") nil)
   ;; (define-key company-active-map  (kbd "RET") nil)
 

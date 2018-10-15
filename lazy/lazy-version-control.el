@@ -97,6 +97,7 @@
       (magit-run-git-async "svn" "rebase" args)
     (call-interactively 'magit-pull-from-upstream)))
 
+;;;###autoload
 (defun vmacs-vc-next-action()
   (interactive)
   (call-interactively 'vc-next-action)

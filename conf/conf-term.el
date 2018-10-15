@@ -33,7 +33,7 @@
 ;; (setq-default shell-toggle-full-screen-window-only t) ;toggle term buffer fullscreen
 ;; (setq-default shell-toggle-goto-eob nil)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
-(setq-default term-buffer-maximum-size 10000)
+(setq-default term-buffer-maximum-size 2048)
 ;; (setq-default term-scroll-show-maximum-output t) 不要设置为t, 否则clear Ctrl-l 无效
 (setq-default term-suppress-hard-newline t) ;不设置的话，有时长的输出无法展示全
 
@@ -47,12 +47,12 @@
 (define-key term-raw-map (kbd "C-u") nil)
 (define-key term-raw-map (kbd "C-g") 'term-ctrl-g)
 (define-key term-raw-map (kbd "C-k") 'term-ctrl-k)
+(define-key term-mode-map (kbd "C-l") 'term-ctrl-l)
 (define-key term-raw-map (kbd "C-y") 'vmacs-term-yank)
 (define-key term-raw-map (kbd "s-v") 'vmacs-term-yank)
 (define-key term-raw-map (kbd "<return>") 'vmacs-term-return)
 (define-key term-raw-map (kbd "<RET>") 'vmacs-term-return)
-
-
+(define-key term-raw-map (kbd "M-x") 'counsel-M-x)
 
 (define-key term-raw-map (kbd "C-t") 'vmacs-eshell-term-new)
 (define-key term-mode-map (kbd "C-t") 'vmacs-eshell-term-new)
@@ -139,13 +139,22 @@
   (vmacs-kill-region-or-line arg)
   (term-send-raw-string "\^K"))
 
+
+(defun term-ctrl-l(&optional arg)
+  "this function is a wrapper of (kill-line).
+   When called interactively with no active region, this function
+  will call (kill-line) ,else kill the region."
+  (interactive "P")
+  (vmacs-kill-region-or-line arg)
+  (term-send-raw-string "\^L"))
+
 (defun vmacs-term-bol()
   (interactive)
   (if (equal last-command 'vmacs-term-bol)
       (progn
-        (term-bol nil)
+        (term-bol t)
         (setq this-command 'term-bol))
-    (term-bol t)))
+    (term-bol nil)))
 
 (defun vmacs-term-yank()
   (interactive)
@@ -158,6 +167,14 @@
 
 (add-hook 'term-exec-hook 'term-kill-auto-exit)
 
+
+(defvar vmacs-term-auto-kill-process-regexp
+  (rx
+   ( or "terminal" "/bin/bash"
+    "/usr/bin/ssh"
+    "/usr/bin/top"
+    "/bin/zsh" "/usr/bin/zsh")))
+
 (defadvice term-handle-exit
     (after term-kill-buffer-on-exit activate)
   "Kill term buffers on exiting term (C-d or `exit`).
@@ -168,13 +185,6 @@ Optionally go to next term buffer."
     (when (string-match vmacs-term-auto-kill-process-regexp proc-name)
       (kill-buffer))))
 
-
-(defvar vmacs-term-auto-kill-process-regexp
-  (rx
-   ( or "terminal" "/bin/bash"
-    "/usr/bin/ssh"
-    "/usr/bin/top"
-    "/bin/zsh" "/usr/bin/zsh")))
 
 
 (provide 'conf-term)

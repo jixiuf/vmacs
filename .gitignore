@@ -18,3 +18,5 @@
 /bin/rgwrapper
 
 /conf/conf-tmp.el
+/elpa/archives/gnu/archive-contents
+/elpa/archives/melpa/archive-contents
