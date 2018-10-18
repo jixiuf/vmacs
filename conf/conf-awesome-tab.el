@@ -18,10 +18,10 @@
    (cond
     ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode)
      "Shell")
-    ((memq major-mode '(org-mode  diary-mode novel-mode))
-     "OrgMode")
+    ;; ((memq major-mode '(org-mode  diary-mode novel-mode))
+    ;;  "OrgMode")
     ( (member (buffer-name) '("*scratch*") )
-      "scratch")
+      "Scratch")
     ((or (and (string-equal "*" (substring (buffer-name) 0 1))
               (not (vmacs-hide-tabbar-p)))
          (memq major-mode '(magit-process-mode
@@ -33,17 +33,8 @@
                             magit-blame-mode
                             )))
      "Emacs")
-    ((vmacs-hide-tabbar-p)
-     "Hidden"
-     )
-    ;; ((derived-mode-p 'emacs-lisp-mode)
-    ;;  "Elisp")
-    ;; ((derived-mode-p 'dired-mode)
-    ;;  "Dired")
-    (t
-     (if (projectile-project-p)
-         (awesome-tab-get-group-name (current-buffer))
-       "Common"))
+    ((vmacs-hide-tabbar-p) "Hidden")
+    (t "Common")
     ))
   )
 
