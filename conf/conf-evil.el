@@ -280,8 +280,21 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-motion-state-map "\C-v" nil)
 (define-key evil-normal-state-map "\C-e" nil)
 
-(fset 'evil-next-line 'evil-next-visual-line)
-(fset 'evil-previous-line 'evil-previous-visual-line)
+(evil-define-motion vmacs-evil-next-line (count)
+  "Move the cursor COUNT lines down."
+  :type line
+  (let ((line-move-visual (not truncate-lines)))
+    (evil-line-move (or count 1))))
+
+(evil-define-motion vmacs-evil-previous-line (count)
+  "Move the cursor COUNT lines up."
+  :type line
+  (let ((line-move-visual (not truncate-lines)))
+    (evil-line-move (- (or count 1)))))
+
+
+(fset 'evil-next-line 'vmacs-evil-next-line)
+(fset 'evil-previous-line 'vmacs-evil-previous-line)
 ;; (define-key evil-motion-state-map "j" 'evil-next-visual-line)
 ;; (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
 
