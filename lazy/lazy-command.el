@@ -605,7 +605,7 @@ tell application \"iTerm\"
 		if targetSession is not null then
 			tell targetSession
 				select
-				set cmd to \"cd \" & quote & \"%s\" & quote & \";clear\"
+				set cmd to \" cd \" & quote & \"%s\" & quote & \"; clear\"
 				write text cmd
 			end tell
 
