@@ -30,7 +30,7 @@
   (let* ((shell-buffer-name
           (generate-new-buffer-name
            (vmacs-eshell--generate-buffer-name "*esh* " "" default-directory))))
-    (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode ')
+    (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode )
       (setq vmacs-window-configration (current-window-configuration)))
     (setq eshell-buffer-name shell-buffer-name)
     (eshell)
