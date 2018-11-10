@@ -132,9 +132,13 @@ they are in `bind-map-set-keys'."
   (vmacs-leader-for-map tabulated-list-mode-map 'tabulated-list)
   (vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
   (vmacs-leader-for-map dired-mode-map 'dired)
+  (vmacs-leader-for-map custom-mode-map 'cus-edit)
+
   (vmacs-leader-for-map ivy-occur-grep-mode-map 'ivy)
   (vmacs-leader-for-map calc-mode-map 'calc)
   (vmacs-leader-for-map Info-mode-map 'info)
+  (define-key-lazy Info-mode-map "g" nil 'info)
+  (define-key-lazy Info-mode-map "n" nil 'info)
   (vmacs-leader-for-map grep-mode-map 'grep)
   (vmacs-leader-for-map help-mode-map 'help-mode)
   (vmacs-leader-for-map ibuffer-mode-map 'ibuffer)

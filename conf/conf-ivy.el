@@ -67,7 +67,7 @@
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
 (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
 (global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f1> i") 'counsel-info-lookup-symbol)
+;; (global-set-key (kbd "<f1> i") 'counsel-info-lookup-symbol)
 (global-set-key (kbd "<f1> u") 'counsel-unicode-char)
 (global-set-key (kbd "<f1> b") 'counsel-descbinds)
 

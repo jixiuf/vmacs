@@ -171,21 +171,20 @@
              `(,(lambda ()
                   (looking-at "[ \t\n]*{[ \t\n]*\""))
                . json-mode))
-
-(add-to-list 'magic-mode-alist
-             `(,(lambda ()
-                  (and
-                   (or
-                    ;; (re-search-forward "insert "
-                    ;;                           magic-mode-regexp-match-limit t)
-                    ;; (re-search-forward "delete "
-                    ;;                           magic-mode-regexp-match-limit t)
-                    (re-search-forward "alter "
-                                              magic-mode-regexp-match-limit t)
-                    (re-search-forward "grant"
-                                              magic-mode-regexp-match-limit t)
-                           )))
-               . mysql-mode))
+;; (add-to-list 'magic-mode-alist
+;;              `(,(lambda ()
+;;                   (and
+;;                    (or
+;;                     ;; (re-search-forward "insert "
+;;                     ;;                           magic-mode-regexp-match-limit t)
+;;                     ;; (re-search-forward "delete "
+;;                     ;;                           magic-mode-regexp-match-limit t)
+;;                     (re-search-forward "alter "
+;;                                               magic-mode-regexp-match-limit t)
+;;                     (re-search-forward "grant"
+;;                                               magic-mode-regexp-match-limit t)
+;;                            )))
+;;                . mysql-mode))
 
 ;; (setq-default ace-jump-mode-case-fold nil
 ;;               ace-jump-mode-scope 'window
