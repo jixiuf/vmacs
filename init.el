@@ -68,8 +68,8 @@
 (require 'conf-common)
 (require 'conf-org)
 (require 'conf-awesome-tab)
-(with-eval-after-load 'eshell (require 'conf-eshell)) ;
-(with-eval-after-load 'term (require 'conf-term)) ;
+;; (with-eval-after-load 'eshell (require 'conf-eshell)) ;
+;; (with-eval-after-load 'term (require 'conf-term)) ;
 
 (require 'conf-yasnippet)               ;模版系统
 (require 'conf-yas-auto-insert)         ;利用yasnipet模版,在新建文件时,自动在文件中插入相应的模版
