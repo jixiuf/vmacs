@@ -14,7 +14,6 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'ibuf-macs)
-(require 'htmlfontify)
 (require 'helm)
 (require 'hippie-exp)
 (require 'ffap)
@@ -36,15 +35,12 @@
 
 (require 'abbrev)
 (require 'align)
-(require 'align)
 (require 'eshell)
 (require 'em-term)
 (require 'css-mode)
-(require 'less-css-mode)
 (require 'winner)
 (require 'widget)
 (require 'cc-mode)
-(require 'cperl-mode)
 (require 'flymake)
 (require 'hideshow)
 (require 'grep)
@@ -52,24 +48,10 @@
 (require 'python)
 (require 'which-func)
 (require 'sh-script)
-(require 'project)
 (require 'pcomplete)
 (require 'outline)
 (require 'json)
 (require 'isearch)
-(require 'image)
-(require 'image-dired)
-(require 'iimage)
-
-
-
-
-(require 'picture)
-(require 'text-mode)
-(require 'texinfo)
-(require 'info)
-(require 'table)
-(require 'calc)
 
 (require 'vc)
 (require 'vc-git)
@@ -83,13 +65,8 @@
 (require 'ediff-vers)
 (require 'ediff-wind)
 (require 'em-tramp)
-(require 'term)
 (require 'org)
 (require 'org-agenda)
-(require 'bookmark)
-
-
-
 
 (require 'git-timemachine)
 (require 'json-mode)
@@ -125,15 +102,9 @@
 (require 'golden-ratio)
 (require 'goto-chg)
 
-(require 'logstash-conf)
-(require 'lua-mode)
-(require 'markdown-mode)
-(require 'protobuf-mode)
 (require 'thrift)
-(require 'web-mode)
 (require 'wgrep)
 (require 'with-editor)
-(require 'yaml-mode)
 (require 'yasnippet)
 (require 'async)
 (require 'evil)
