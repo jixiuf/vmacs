@@ -31,6 +31,9 @@
   (recentf-save-list)
   (require 'saveplace)
   (save-place-kill-emacs-hook)
+  ;;recentf-save-list里有bug会导致cursor恢复成默认color,而不能与evil配置的cursor相配
+  (evil-refresh-cursor)
+
   (message ""))
 
 
