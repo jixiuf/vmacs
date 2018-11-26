@@ -70,6 +70,7 @@
   (evil-forward-beginning 'evil-symbol count)
   (let ((sym (thing-at-point 'evil-symbol)))
     (while (and sym (not (string-match "\\<" sym)))
+      (evil-signal-at-bob-or-eob count)
       (evil-forward-beginning 'evil-symbol 1)
       (setq sym (thing-at-point 'evil-symbol))
       )
@@ -81,13 +82,21 @@
   "Move to the end of the COUNT-th next symbol."
   ;; :jump t
   :type exclusive
-  ;; (evil-signal-at-bob-or-eob count)
   ;; (forward-evil-symbol count)
   (evil-backward-beginning 'evil-symbol count)
-  (let ((sym (thing-at-point 'evil-symbol)))
-    (while (and sym (not (string-match "\\<" sym)))
+  (evil-signal-at-bob-or-eob count)
+  (let ((sym (thing-at-point 'evil-symbol))
+        (pos (point))
+        break)
+    (while (and sym
+                (not (string-match "\\<" sym))
+                (not break))
       (evil-backward-beginning 'evil-symbol 1)
-      (setq sym (thing-at-point 'evil-symbol)))))
+      (when (equal pos (point)) (setq break t))
+      (setq pos (point))
+      (evil-signal-at-bob-or-eob count)
+      (setq sym (thing-at-point 'evil-symbol))))
+  )
 
 
 ;;;###autoload
