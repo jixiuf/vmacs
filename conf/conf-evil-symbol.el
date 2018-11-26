@@ -40,22 +40,22 @@
 
 ;; e ,r 移动
 (define-key evil-normal-state-map "e" 'evil-forward-symbol-begin)
-(define-key evil-normal-state-map "r" 'evil-forward-symbol-end)
+;; (define-key evil-normal-state-map "r" 'evil-forward-symbol-end)
 ;; (define-key evil-normal-state-map "E" 'evil-forward-symbol-end)
 (define-key evil-normal-state-map "v" 'evil-backward-symbol-begin)
 ;; (define-key evil-normal-state-map ";" 'evil-repeat-find-char-or-evil-backward-symbol-begin)
-(define-key evil-normal-state-map "R" 'evil-backward-symbol-end)
+;; (define-key evil-normal-state-map "R" 'evil-backward-symbol-end)
 
 (define-key evil-visual-state-map "e" 'evil-forward-symbol-begin)
-(define-key evil-visual-state-map "r" 'evil-forward-symbol-end)
+;; (define-key evil-visual-state-map "r" 'evil-forward-symbol-end)
 ;; (define-key evil-visual-state-map "E" 'evil-forward-symbol-end)
 (define-key evil-visual-state-map "v" 'evil-backward-symbol-begin)
-(define-key evil-visual-state-map "R" 'evil-backward-symbol-end)
+;; (define-key evil-visual-state-map "R" 'evil-backward-symbol-end)
 
 
 ;; de dr
 (define-key evil-motion-state-map "e" 'evil-forward-symbol-end)
-(define-key evil-motion-state-map "r" 'evil-backward-symbol-begin)
+;; (define-key evil-motion-state-map "r" 'evil-backward-symbol-begin)
 ;; dae die
 (define-key evil-outer-text-objects-map "e" 'evil-a-symbol)
 (define-key evil-inner-text-objects-map "e" 'evil-inner-symbol)
