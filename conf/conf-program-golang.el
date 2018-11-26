@@ -63,41 +63,42 @@
 
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
-  (add-hook 'before-save-hook 'vmacs-go-format)
+  (add-hook 'before-save-hook 'vmacs-go-format t t)
+  (add-hook 'after-save-hook 'auto-go-install t t)
 
 
   (setq require-final-newline nil)
   (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
   (flycheck-mode 1)
-  (local-set-key (kbd "C-c C-a") 'go-imports-insert-import)
-  (local-set-key (kbd "C-c C-r") 'go-imports-reload-packages-list)
+  ;; (local-set-key (kbd "C-c C-a") 'go-imports-insert-import)
+  ;; (local-set-key (kbd "C-c C-r") 'go-imports-reload-packages-list)
   (local-set-key (kbd "C-c i") 'go-goto-imports)
+  (local-set-key (kbd "C-c C-a") 'go-import-add)
   (local-set-key (kbd "C-c g") 'golang-setter-getter))
 
 
-;; (defun auto-go-install()
-;;   (when (equal major-mode 'go-mode)
-;;     (unless (get-buffer-process  " *go-install*")
-;;       (set-process-query-on-exit-flag
-;;        (start-process-shell-command
-;;         "go-install-generate-shell" " *go-install*"
-;;         (format "go install"))nil))
-;;     )
-;;   )
-;; (add-hook 'after-save-hook 'auto-go-install)
+(defun auto-go-install()
+  (when (equal major-mode 'go-mode)
+    (unless (get-buffer-process  " *go-install*")
+      (set-process-query-on-exit-flag
+       (start-process-shell-command
+        "go-install-generate-shell" " *go-install*"
+        (format "go install"))nil))
+    )
+  )
 
-(defun vmacs-auto-build-package()
-  (interactive)
-  (require 'go-imports)
-  (go-imports-reload-packages-list)
-  (unless (get-buffer-process  " *go-install*")
-    (set-process-query-on-exit-flag
-     (start-process-shell-command
-      "go-install-generate-shell" " *go-install*"
-      (format "perl %s ~/go |cut -d '\"' -f 4|grep -v vendor|sort|uniq|sed 's/^/go install /g'|sh"
-              go-imports-find-packages-pl-path))nil)))
+;; (defun vmacs-auto-build-package()
+;;   (interactive)
+;;   (require 'go-imports)
+;;   (go-imports-reload-packages-list)
+;;   (unless (get-buffer-process  " *go-install*")
+;;     (set-process-query-on-exit-flag
+;;      (start-process-shell-command
+;;       "go-install-generate-shell" " *go-install*"
+;;       (format "perl %s ~/go |cut -d '\"' -f 4|grep -v vendor|sort|uniq|sed 's/^/go install /g'|sh"
+;;               go-imports-find-packages-pl-path))nil)))
 
-(run-with-idle-timer (* 60 5) t 'vmacs-auto-build-package)
+;; (run-with-idle-timer (* 60 5) t 'vmacs-auto-build-package)
 
 (provide 'conf-program-golang)
 
