@@ -90,7 +90,6 @@
 (require 'conf-sql)
 
 (when (vmacs-not-dumping-p)
-  ;; (require 'conf-vterm)
   (global-undo-tree-mode t)
   (global-font-lock-mode)
   (transient-mark-mode 1)
@@ -99,6 +98,7 @@
   (recentf-mode 1)
   (run-with-idle-timer 10 t 'vmacs-idle-timer) ;idle 300=5*60s
   (require 'conf-tmp nil t)
+  (require 'conf-vterm)
   (when (eq system-type 'darwin) (exec-path-from-shell-initialize)))
 
 

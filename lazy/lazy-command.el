@@ -346,7 +346,7 @@ Move point to end-of-line ,if point was already at that position,
            (boundp 'server-buffer-clients)
            server-buffer-clients)
       (server-edit))
-     ((member major-mode '(eshell-mode term-mode ))
+     ((member major-mode '(eshell-mode term-mode vterm-mode))
       (vmacs-add-to-killed-file-list)
       (vmacs-eshell-term-hide)
       ;; (awesome-tab-forward-group)

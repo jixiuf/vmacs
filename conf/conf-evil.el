@@ -63,6 +63,7 @@
                 ("*Async Shell Command*" . normal)
                 ("^ \\*load\\*")))
 ;; 设置一些mode的初始state
+(evil-set-initial-state 'vterm-mode 'insert)
 (evil-set-initial-state 'bm-show-mode 'insert)
 (evil-set-initial-state 'diff-mode 'normal)
 (evil-set-initial-state 'git-rebase-mode 'normal)
@@ -156,12 +157,12 @@
 
 ;; (setq display-line-numbers-current-absolute t)
 (defun vmacs-change-line-number-abs()
-  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode vterm-mode))
+  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode tsmterm-mode ))
       (setq display-line-numbers nil)
     (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
-  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode vterm-mode))
+  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode tsmterm-mode))
       (setq display-line-numbers nil)
     (setq display-line-numbers 'visual)))
 
@@ -512,6 +513,13 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (evil-declare-motion 'golden-ratio-scroll-screen-down)
 (evil-declare-motion 'golden-ratio-scroll-screen-up)
+
+;; this is need for vterm
+(define-key evil-motion-state-map (kbd "C-v") 'golden-ratio-scroll-screen-up)
+(define-key evil-motion-state-map (kbd "M-v") 'golden-ratio-scroll-screen-down)
+(define-key evil-motion-state-map (kbd "C-l") 'recenter-top-bottom)
+(define-key evil-motion-state-map (kbd "C-k") 'vmacs-kill-region-or-line)
+
 
 (global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up) ;C-v
 ;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)

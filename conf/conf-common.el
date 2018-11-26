@@ -254,6 +254,9 @@
 
 (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 (global-set-key (kbd "C-e") 'smart-end-of-line)
+(define-key evil-motion-state-map (kbd "C-a") 'smart-beginning-of-line)
+(define-key evil-motion-state-map (kbd "C-e") 'smart-end-of-line)
+
 (global-set-key "\C-k" 'vmacs-kill-region-or-line)
 (with-eval-after-load 'org
   (define-key org-mode-map "\C-k" 'vmacs-kill-region-or-org-kill-line)
