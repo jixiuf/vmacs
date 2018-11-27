@@ -16,13 +16,13 @@
     Other buffer group by `projectile-project-p' with project name."
   (list
    (cond
-    ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
-     "Shell")
+    ((or (member (buffer-name) '("*scratch*") )
+         (string-match-p "\\*scratch.*" (buffer-name))
+         (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
+         )
+     "Term")
     ;; ((memq major-mode '(org-mode  diary-mode novel-mode))
     ;;  "OrgMode")
-    ( (or (member (buffer-name) '("*scratch*") )
-          (string-match-p "\\*scratch.*" (buffer-name)))
-      "Scratch")
     ((or (and (string-equal "*" (substring (buffer-name) 0 1))
               (not (vmacs-hide-tabbar-p)))
          (memq major-mode '(magit-process-mode
