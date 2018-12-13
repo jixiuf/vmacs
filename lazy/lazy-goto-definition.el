@@ -14,25 +14,11 @@
     (bm-bookmark-add line nil t)        ;跳转前在原处加一个书签
     (cl-case major-mode
       (emacs-lisp-mode
-       (if (or (string-match "(\\brequire\\b" line) (string-match "(\\bprovide\\b" line))
-           (find-file (find-library-name (symbol-name (symbol-at-point))))
-         (condition-case nil
-             (if  (or (functionp (symbol-at-point))(macrop (symbol-at-point)))
-                 (find-function (symbol-at-point))
-               (condition-case nil
-                   (when (variable-at-point) (find-variable (symbol-at-point)))
-                 (error (helm-gtags-find-tag-and-symbol))))
-           )))
+       (elisp-def-mode 1)
+       (call-interactively 'elisp-def))
       (lisp-interaction-mode
-       (if (or (string-match "(\\brequire\\b" line) (string-match "(\\bprovide\\b" line))
-           (find-file (find-library-name (symbol-name (symbol-at-point))))
-         (condition-case nil
-             (if  (or (functionp (symbol-at-point))(macrop (symbol-at-point)))
-                 (find-function (symbol-at-point))
-               (condition-case nil
-                   (when (variable-at-point) (find-variable (symbol-at-point)))
-                 (error (helm-gtags-find-tag-and-symbol))))
-           )))
+       (elisp-def-mode 1)
+       (call-interactively 'elisp-def))
       ;; (erlang-mode (erl-find-source-under-point))
       (c++-mode
        (if (string-match "[ ]*#[ \t]*include[ \t]+[\"<]\\(.*\\)[\">]" line)
