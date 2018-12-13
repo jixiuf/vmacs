@@ -70,7 +70,7 @@ only show eshell-mode term-mode and shell-mode."
 
 (defun vmacs-hide-tabbar-p()
   (cond
-   ((member (buffer-name) '("*scratch*" "*Messages*" "*Org Agenda*" "*Compile-Log*") ) t)
+   ((member (buffer-name) '("*Messages*" "*Org Agenda*" "*Compile-Log*") ) t)
    ((member major-mode '(compilation-mode))  t)
    ((string-match boring-window-bof-name-regexp (buffer-name)) t)
    (t

@@ -65,6 +65,7 @@ open-line if point is at end of line , new-line-and-indent"
         (end-of-line))
       (newline-and-indent))))
 
+
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
 ;; 一般绑在C-a上
 ;;;###autoload
@@ -75,6 +76,11 @@ Move point to beginning-of-line ,if point was already at that position,
   (interactive)
   (cond
    ((derived-mode-p 'term-mode) (term-bol nil))
+   ((derived-mode-p 'vterm-mode)
+    (let ((pt (point)))
+      (beginning-of-line)
+      (when (equal pt (point-at-bol))
+      (vterm-skip-prompt))))
    ((derived-mode-p 'eshell-mode)
     (let ((oldpos (point)))
       (eshell-bol)

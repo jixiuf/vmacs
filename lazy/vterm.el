@@ -81,6 +81,13 @@ for different shell. "
   :type 'hook
   :group 'vterm)
 
+(defcustom  vterm-timer-delay 0.01
+  "Delay for refreshing the terminal buffer after receiving updates from
+libvterm. Improves performance when receiving large bursts of data.
+If nil, never delay"
+  :type 'number
+  :group 'vterm)
+
 (defface vterm
   '((t :inherit default))
   "Default face to use in Term mode."
@@ -225,34 +232,23 @@ for different shell. "
     (dolist (char (string-to-list string))
       (vterm--update vterm--term (char-to-string char) nil nil nil))))
 
-(defvar vterm-timer nil "Vterm redraw timer.")
-(defvar vterm--buffers-hash (make-hash-table :test 'eq))
-
-(defvar vterm-timer-delay 0.01
-  "Delay for refreshing the terminal buffer after receiving updates from
-libvterm. Improves performance when receiving large bursts of data.")
-
+(defvar vterm--redraw-timer nil)
+(make-variable-buffer-local 'vterm--redraw-timer)
 (defun vterm--invalidate()
-  (puthash (current-buffer) t vterm--buffers-hash)
-  (when (not vterm-timer)
-    (setq vterm-timer
-          (run-with-timer vterm-timer-delay
-                          nil 'vterm--redrawing))))
+  (if vterm-timer-delay
+      (unless vterm--redraw-timer
+        (setq vterm--redraw-timer
+              (run-with-timer vterm-timer-delay nil
+                              #'vterm--delayed-redraw (current-buffer))))
+    (vterm--delayed-redraw (current-buffer))))
 
-(defun vterm--redrawing()
-  (maphash #'(lambda(buf _val)
-               (when (buffer-live-p buf )
-                 (with-current-buffer buf
-                   (let ((inhibit-redisplay t)
-                         (inhibit-read-only t))
-                     (when vterm--term
-                       (vterm--redraw vterm--term))
-                     (setq vterm-timer nil)))
-                 )
-               )
-           vterm--buffers-hash)
-  (clrhash vterm--buffers-hash))
-
+(defun vterm--delayed-redraw(buffer)
+  (with-current-buffer buffer
+    (let ((inhibit-redisplay t)
+          (inhibit-read-only t))
+      (when vterm--term
+        (vterm--redraw vterm--term)))
+    (setq vterm--redraw-timer nil)))
 
 ;;;###autoload
 (defun vterm ()
@@ -289,10 +285,9 @@ Then triggers a redraw from the module."
 
 (defun vterm--sentinel (process event)
   "Sentinel of vterm PROCESS."
-  (when (not (process-live-p process))
-    (let ((buf (process-buffer process)))
-      (run-hook-with-args 'vterm-exit-functions
-                          (if (buffer-live-p buf) buf nil)))))
+  (let ((buf (process-buffer process)))
+    (run-hook-with-args 'vterm-exit-functions
+                        (if (buffer-live-p buf) buf nil))))
 
 (defun vterm--window-size-change (frame)
   "Callback triggered by a size change of the FRAME.
@@ -335,7 +330,7 @@ Feeds the size change to the virtual terminal."
 
 (defun vterm--buffer-line-num()
   "Return the maximum line number."
-  (line-number-at-pos (point-max)))
+  (count-lines (point-min) (point-max)))
 
 (defun vterm--set-title (title)
   "Run the `vterm--set-title-hook' with TITLE as argument."

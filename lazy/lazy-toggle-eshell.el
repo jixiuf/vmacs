@@ -23,6 +23,9 @@
     (vmacs-eshell-new))
    ((string-equal vmacs-eshell-default-term "term")
     (vmacs-term-new))))
+(defun vmacs-term-mode-p()
+  (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+      (string-match-p "\\*scratch.*" (buffer-name))))
 
 
 ;;;###autoload
@@ -31,7 +34,7 @@
   (let* ((shell-buffer-name
           (generate-new-buffer-name
            (vmacs-eshell--generate-buffer-name "*esh* " "" default-directory))))
-    (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode )
+    (unless (vmacs-term-mode-p)
       (setq vmacs-window-configration (current-window-configuration)))
     (setq eshell-buffer-name shell-buffer-name)
     (eshell)
@@ -55,7 +58,7 @@
   (interactive)
   (dolist (buf (buffer-list))
     (with-current-buffer buf
-      (when (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+      (when (vmacs-term-mode-p)
         (evil-normal-state)
         (bury-buffer))))
   (switch-to-buffer (vmacs-eshell--recent-other-buffer))
@@ -68,7 +71,7 @@
   (let ((shell-buffer (vmacs-eshell--recent-buffer)))
     (if shell-buffer                 ;存在eshell，直接切到这个 eshell buffer
         (progn
-          (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+          (unless (vmacs-term-mode-p)
             (setq vmacs-window-configration (current-window-configuration))
             )
           (pop-to-buffer shell-buffer)
@@ -82,7 +85,7 @@
 (defun vmacs-eshell-term-toggle()
   (interactive)
   (cond
-   ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode) ;当前在eshell中
+   ((vmacs-term-mode-p)
     (vmacs-eshell-term-hide))
    (t                                   ; ;当前不在eshell中
     (vmacs-eshell-term-show))))
@@ -92,7 +95,7 @@
   (let ((shell-buffer ))
     (dolist (buf (buffer-list))
       (with-current-buffer buf
-        (when (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+        (when (vmacs-term-mode-p)
           (unless shell-buffer
                  (setq shell-buffer buf)))))
     shell-buffer))
@@ -104,7 +107,7 @@
     (cl-loop until shell-buffer do
              (setq buf (nth index list))
              (with-current-buffer buf
-               (unless (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+               (unless (vmacs-term-mode-p)
                  (setq shell-buffer buf)))
              (setq index (1+ index)))
     shell-buffer))
@@ -118,7 +121,7 @@
     (format "%s%s(%s)"  prefix (or cmd "") pwd)))
 
 (defun vmacs-kill-buffer-hook()
-  (when (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+  (when (vmacs-term-mode-p)
     (let ((proc (get-buffer-process (current-buffer))))
       (when (process-live-p proc)
         (when (derived-mode-p 'term-mode)
