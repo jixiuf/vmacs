@@ -47,6 +47,8 @@
   (evil-define-key 'normal 'local (kbd "C-p") 'vterm--self-insert)
   (evil-define-key 'normal 'local (kbd "C-n") 'vterm--self-insert)
   (evil-define-key 'normal 'local (kbd "C-r") 'vterm--self-insert)
+  (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
+  (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
 
   (let ((p (get-buffer-process (current-buffer))))
     (when p
