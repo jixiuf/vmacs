@@ -1,21 +1,25 @@
 (require 'subr-x)                       ;string-blank-p
 ;; 小说 段首缩进4格
 ;;;###autoload
-(defun novel-fill(&optional args)
+(defun novel-fill()
   (interactive)
-  (if (not mark-active)
-      (novel-fill-intern)
-    (save-excursion
-      (let ((begin (region-beginning))
-            (end (region-end)))
-        (deactivate-mark)
-        (goto-char begin)
-        (while  (< (point) end)
-          (novel-fill-intern)
-          (forward-paragraph)
-          (skip-chars-forward "[ |\t|\n|\r]*"))))))
+  (let ((insert-header-4space (not current-prefix-arg)))
+    (if (not mark-active)
+        (novel-fill-intern insert-header-4space)
+      (save-excursion
+        (let ((begin (region-beginning))
+              (end (region-end)))
+          (deactivate-mark)
+          (goto-char begin)
+          (while  (< (point) end)
+            (novel-fill-intern insert-header-4space)
+            (forward-paragraph)
+            (skip-chars-forward "[ |\t|\n|\r]*")))))
 
-(defun novel-fill-intern()
+    )
+  )
+
+(defun novel-fill-intern(insert-header-4space)
   (let* ((p (point))
          (begin (save-excursion
                   (forward-paragraph)
@@ -26,7 +30,8 @@
       (goto-char begin)
       (skip-chars-forward "[ |\t|\n|\r]*")
       (delete-horizontal-space)
-      (insert "    ")
+      (when insert-header-4space
+        (insert "    "))
       (forward-char 1) (insert "\n")    ;make sure the second line is at bol
       (fill-paragraph))
     (when (string-blank-p  is-blank-string)
