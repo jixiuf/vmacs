@@ -47,6 +47,10 @@
 ;; (setq create-lockfiles nil) ;we will got error "Error from the Language Server: FileNotFoundError" if `create-lockfiles' is non-nil
 ;; ;; 避免 eglot 在 minibuffer 各种弹帮助文档, 弹得我眼睛疼.
 ;; (setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
+;; (setf (cdr (assoc 'go-mode  eglot-server-programs)) '("bingo" "--mode"
+;;                                                       "stdio" "--logfile" "/tmp/lspserver-go.log"
+;;                                                       "--trace"
+;;                                                       "--pprof" ":6060" ))
 
 ;; (require 'eglot)
 (defun vmacs-go-mode-hook()
