@@ -69,6 +69,7 @@
 (defun tramp-remote-file-name-p(filename local-hostname)
   (and (or (string-match "/ssh:"  filename)
            (string-match "/sshx:"  filename)
+           (string-match "/su:"  filename)
            (string-match "/sudo:"  filename))
        (not (string-match (concat (regexp-quote local-hostname) "[:\\|\\]")  filename))
        (not (string-match "localhost[:\\|\\]"  filename))
