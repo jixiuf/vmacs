@@ -81,12 +81,6 @@ for different shell. "
   :type 'hook
   :group 'vterm)
 
-(defcustom  vterm-timer-delay 0.01
-  "Delay for refreshing the terminal buffer after receiving updates from
-libvterm. Improves performance when receiving large bursts of data.
-If nil, never delay"
-  :type 'number
-  :group 'vterm)
 
 (defface vterm
   '((t :inherit default))
@@ -153,7 +147,8 @@ If nil, never delay"
   (setq-local scroll-margin 0)
 
   (add-hook 'window-size-change-functions #'vterm--window-size-change t t)
-  (let ((process-environment (append '("TERM=xterm") process-environment)))
+  (let ((process-environment (append '("TERM=xterm") process-environment))
+        (process-adaptive-read-buffering nil))
     (setq vterm--process
           (make-process
            :name "vterm"
@@ -184,6 +179,8 @@ If nil, never delay"
 (define-key vterm-mode-map [remap yank]                #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-c C-y")             #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "C-c C-c")             #'vterm-send-ctrl-c)
+(define-key vterm-mode-map (kbd "C-/")   #'vterm-undo)
+(define-key vterm-mode-map (kbd "C-_")   #'vterm-undo)
 
 ;; Function keys and most of C- and M- bindings
 (mapcar (lambda (key)
@@ -221,19 +218,30 @@ If nil, never delay"
   (interactive)
   (vterm-send-key "c" nil nil t))
 
+(defun vterm-undo()
+  (interactive)
+  (vterm-send-key "_" nil nil t))
+
+
 (defun vterm-yank ()
   "Implementation of `yank' (paste) in vterm."
   (interactive)
-  (vterm-send-string (current-kill 0)))
+  (vterm-send-string (current-kill 0)
+                     (not current-prefix-arg)))
 
-(defun vterm-send-string (string)
+(defun vterm-send-string (string &optional paste-p)
   "Send the string STRING to vterm."
   (when vterm--term
-    (dolist (char (string-to-list string))
-      (vterm--update vterm--term (char-to-string char) nil nil nil))))
+    (vterm--update vterm--term string nil nil nil t paste-p)))
 
 (defvar vterm--redraw-timer nil)
 (make-variable-buffer-local 'vterm--redraw-timer)
+
+(defvar vterm-timer-delay 0.01
+  "Delay for refreshing the terminal buffer after receiving updates from
+libvterm. Improves performance when receiving large bursts of data.
+If nil, never delay")
+
 (defun vterm--invalidate()
   (if vterm-timer-delay
       (unless vterm--redraw-timer
