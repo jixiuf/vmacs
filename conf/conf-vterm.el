@@ -20,6 +20,14 @@
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
+(define-key vterm-mode-map [(control return)]   #'vterm-compile)
+
+
+(defun vterm-compile ()
+  (interactive)
+  (vterm-send-key "a" nil nil t)
+  (vterm-send-string "c ")
+  (vterm-send-key "<return>" nil nil nil))
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
