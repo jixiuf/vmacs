@@ -47,6 +47,11 @@
       (evil-normal-state)
       (call-interactively 'keyboard-quit))))
 
+(defun vterm-eob()
+  (interactive)
+  (goto-char (point-max))
+  (forward-char -1))
+
 (defun vmacs-vterm-hook()
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
   (evil-define-key 'normal 'local "y" 'evil-yank-join)
@@ -57,6 +62,7 @@
   (evil-define-key 'normal 'local (kbd "C-r") 'vterm--self-insert)
   (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
+  (evil-define-key 'normal 'local (kbd "G") 'vterm-eob)
 
   (let ((p (get-buffer-process (current-buffer))))
     (when p

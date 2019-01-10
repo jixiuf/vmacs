@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "company-posframe" "20181222.818" "Use a posframe as company candidate menu" '((emacs "26.0") (company "0.9.0") (posframe "0.1.0")) :commit "91e8ce6823d1174399f8908e2f70ebcb693aa56d" :keywords '("abbrev" "convenience" "matching") :authors '(("Clément Pit-Claudel, Feng Shu")) :maintainer '("Feng Shu" . "tumashu@163.com") :url "https://github.com/tumashu/company-posframe")

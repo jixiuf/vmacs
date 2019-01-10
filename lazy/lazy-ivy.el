@@ -102,7 +102,8 @@
          (up-dir (abbreviate-file-name (file-name-directory (expand-file-name cur-dir)))))
     (setf (ivy-state-directory ivy-last) up-dir)
     (when (string-suffix-p cur-dir  (directory-file-name(ivy-state-prompt ivy-last)))
-      (setf (ivy-state-prompt ivy-last) (concat "rg in" up-dir)))
+      ;; (setf (ivy-state-prompt ivy-last) (concat "rg in" up-dir))
+      (setq ivy--prompt (concat "rg in " up-dir)))
     (setq default-directory up-dir))
   (counsel-ag-function ivy-text))
 
@@ -120,7 +121,8 @@
           (setq dir (abbreviate-file-name (or vmacs-last-ag-directory default-directory)))
         (setq dir (abbreviate-file-name vc-root)))
       (setf (ivy-state-directory ivy-last) dir)
-      (setf (ivy-state-prompt ivy-last) (concat "rg in " dir))
+      ;; (setf (ivy-state-prompt ivy-last) (concat "rg in " dir))
+      (setq ivy--prompt (concat "rg in " dir))
       (setq vmacs-last-ag-directory default-directory)
       (setq default-directory dir))
     (counsel-ag-function ivy-text)))
@@ -135,7 +137,8 @@
   (setq vmacs-last-ivy-text (or ivy-text ""))
   ;; (setq vmacs-last-state ivy-last)
   (ivy-quit-and-run
-    (let ((extra-rg-args ""))
+    (let ((extra-rg-args "")
+          (default-directory default-directory))
       (setq default-directory (read-directory-name "rg in directory:"))
       (setq ivy-last vmacs-last-ivy-text)
       (counsel-rg  vmacs-last-ivy-text default-directory extra-rg-args

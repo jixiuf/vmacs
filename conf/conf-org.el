@@ -121,7 +121,9 @@
 
 (defun vmacs-novel-mode-hook()
   (vmacs-org-mode-hook)
-  )
+  (create-frame-font-large-mac)
+  (local-set-key [(tab)]       'smart-tab)
+  (local-set-key (kbd "TAB")   'smart-tab))
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
