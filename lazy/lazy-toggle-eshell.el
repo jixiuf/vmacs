@@ -112,6 +112,7 @@
              (setq index (1+ index)))
     shell-buffer))
 
+;;;###autoload
 (defun vmacs-eshell--generate-buffer-name(prefix cmd default-directory)
   (let* ((cmd (car (split-string cmd "[ |\t]" t " ")))
          (pwd (abbreviate-file-name default-directory))
