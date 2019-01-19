@@ -43,6 +43,7 @@
   (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
+    ;;(kill-buffer "*scratch*" )
     (when (window-system)
       (when (equal system-type 'darwin) (create-frame-font-mac))
       (when (equal system-type 'windows-nt) (create-frame-font-w32))
@@ -56,6 +57,7 @@
       (raise-frame))))
 
 (add-hook 'after-make-frame-functions 'emacs-daemon-after-make-frame-hook)
+;; emacs-daemon-after-make-frame-hook
 
 (when  (and (not (daemonp))
             (vmacs-not-dumping-p))

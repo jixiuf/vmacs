@@ -124,7 +124,7 @@ they are in `bind-map-set-keys'."
 (defmacro vmacs-leader-for-map (map feature)
   `(define-key-lazy ,map ,(kbd "SPC") vmacs-leader-map ,feature '(normal motion visual)))
 
-(defun vmacs-leader-after-init-hook()
+(defun vmacs-leader-after-init-hook(&optional frame)
   (vmacs-leader-for-map magit-mode-map 'magit)
   (vmacs-leader-for-map magit-diff-mode-map 'magit)
   (vmacs-leader-for-map magit-stash-mode-map 'magit)
@@ -147,7 +147,12 @@ they are in `bind-map-set-keys'."
   (vmacs-leader-for-map debugger-mode-map 'debug)
   (vmacs-leader-for '(diff-mode debugger-mode) '(insert))
   )
-(add-hook 'after-init-hook 'vmacs-leader-after-init-hook)
+;; emacs27 daemonp 启动的时候 after-init-hook会有问题
+(unless (daemonp)
+  (add-hook 'after-init-hook 'vmacs-leader-after-init-hook))
+(add-hook 'after-make-frame-functions 'vmacs-leader-after-init-hook)
+
+
 
 ;; ;; 为这些默认空格被占用的mode也起用leader mode
 ;; (vmacs-leader-for-major-mode

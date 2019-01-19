@@ -54,6 +54,15 @@ if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local
     exit
 fi
 
+if [  -z $EMACSCLIENT ] && [ -x "/usr/local/emacs/bin/emacsclient"  ] && [ `/usr/local/emacs/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+    EMACSCLIENT="/usr/local/emacs/bin/emacsclient"
+    if [ -x "/usr/local/emacs/bin/emacs" ]; then
+        ALTERNATE_EDITOR="/usr/local/emacs/bin/emacs"
+    fi
+    sh ~/.emacs.d/bin/emd
+    call_emacsclient "$@"
+    exit
+fi
 
 if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"  ]; then
     EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
