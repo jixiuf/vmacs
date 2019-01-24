@@ -78,7 +78,12 @@
 
 (unless (daemonp)
   (company-posframe-mode 1))
-(add-hook 'after-make-frame-functions 'company-posframe-mode)
+
+(defun vmacs-company-posframe-mode(&optional frame)
+  (with-selected-frame frame
+    (company-posframe-mode 1)))
+
+(add-hook 'after-make-frame-functions 'vmacs-company-posframe-mode)
 ;; (add-hook 'after-init-hook (lambda() (global-company-mode 1)))
 
 (defun vmacs-company-complete-common-or-selection()
