@@ -1,3 +1,5 @@
+;; https://github.com/saibing/bingo/wiki/Install
+
 ;; # (-u flag for "update")
 ;; go get -u github.com/nsf/gocode
 ;; gocode set
