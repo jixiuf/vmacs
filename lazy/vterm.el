@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+(require 'ansi-color)
+
 (defvar vterm-install-buffer-name " *Install vterm"
   "Name of the buffer used for compiling vterm-module.")
 
@@ -81,132 +83,6 @@ for different shell. "
   :type 'hook
   :group 'vterm)
 
-(defface vterm-color-default-fg
-  '((t :foreground "white"))
-  "Foreground of the console."
-  :group 'vterm)
-
-(defface vterm-color-default-bg
-  '((t :background "black"))
-  "Background of the console."
-  :group 'vterm)
-
-(defface vterm-color-black-fg
-  '((t :foreground "black"))
-  "Face used to render black color code."
-  :group 'vterm)
-
-(defface vterm-color-black-bg
-  '((t :background "black"))
-  "Face used to render black color code."
-  :group 'vterm)
-
-(defface vterm-color-red-fg
-  '((t :foreground "red3"))
-  "Face used to render red color code."
-  :group 'vterm)
-
-(defface vterm-color-red-bg
-  '((t :background "red3"))
-  "Face used to render red color code."
-  :group 'vterm)
-
-(defface vterm-color-green-fg
-  '((t :foreground "green3"))
-  "Face used to render green color code."
-  :group 'vterm)
-
-(defface vterm-color-green-bg
-  '((t :background "green3"))
-  "Face used to render green color code."
-  :group 'vterm)
-
-(defface vterm-color-yellow-fg
-  '((t :foreground "yellow3"))
-  "Face used to render yellow color code."
-  :group 'vterm)
-
-(defface vterm-color-yellow-bg
-  '((t :background "yellow3"))
-  "Face used to render yellow color code."
-  :group 'vterm)
-
-(defface vterm-color-blue-fg
-  '((t :foreground "blue2"))
-  "Face used to render blue color code."
-  :group 'vterm)
-
-(defface vterm-color-blue-bg
-  '((t :background "blue2"))
-  "Face used to render yellow color code."
-  :group 'vterm)
-
-(defface vterm-color-magenta-fg
-  '((t :foreground "magenta3"))
-  "Face used to render magenta color code."
-  :group 'vterm)
-
-(defface vterm-color-magenta-bg
-  '((t :foreground "magenta3"))
-  "Face used to render magenta color code."
-  :group 'vterm)
-
-(defface vterm-color-cyan-fg
-  '((t :foreground "cyan3"))
-  "Face used to render cyan color code."
-  :group 'vterm)
-
-(defface vterm-color-cyan-bg
-  '((t :background "cyan3"))
-  "Face used to render cyan color code."
-  :group 'vterm)
-
-(defface vterm-color-white-fg
-  '((t :foreground "white"))
-  "Face used to render white color code."
-  :group 'vterm)
-
-(defface vterm-color-white-bg
-  '((t :background "white"))
-  "Face used to render white color code."
-  :group 'vterm)
-
-(defvar vterm-color-palette-fg [vterm-color-black-fg
-                                vterm-color-red-fg
-                                vterm-color-green-fg
-                                vterm-color-yellow-fg
-                                vterm-color-blue-fg
-                                vterm-color-magenta-fg
-                                vterm-color-cyan-fg
-                                vterm-color-white-fg
-                                vterm-color-black-fg
-                                vterm-color-red-fg
-                                vterm-color-green-fg
-                                vterm-color-yellow-fg
-                                vterm-color-blue-fg
-                                vterm-color-magenta-fg
-                                vterm-color-cyan-fg
-                                vterm-color-white-fg]
-  "Color palette for the foreground.")
-
-(defvar vterm-color-palette-bg [vterm-color-black-bg
-                                vterm-color-red-bg
-                                vterm-color-green-bg
-                                vterm-color-yellow-bg
-                                vterm-color-blue-bg
-                                vterm-color-magenta-bg
-                                vterm-color-cyan-bg
-                                vterm-color-white-bg
-                                vterm-color-black-bg
-                                vterm-color-red-bg
-                                vterm-color-green-bg
-                                vterm-color-yellow-bg
-                                vterm-color-blue-bg
-                                vterm-color-magenta-bg
-                                vterm-color-cyan-bg
-                                vterm-color-white-bg]
-  "Color palette for the background.")
-
 (defvar vterm--term nil
   "Pointer to Term.")
 (make-variable-buffer-local 'vterm--term)
@@ -227,7 +103,7 @@ for different shell. "
   (setq-local scroll-margin 0)
 
   (add-hook 'window-size-change-functions #'vterm--window-size-change t t)
-  (let ((process-environment (append '("TERM=xterm") process-environment))
+  (let ((process-environment (append '("TERM=xterm" "INSIDE_EMACS=vterm") process-environment))
         (process-adaptive-read-buffering nil))
     (setq vterm--process
           (make-process
@@ -259,8 +135,9 @@ for different shell. "
 (define-key vterm-mode-map [remap yank]                #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-c C-y")             #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "C-c C-c")             #'vterm-send-ctrl-c)
-(define-key vterm-mode-map (kbd "C-/")   #'vterm-undo)
-(define-key vterm-mode-map (kbd "C-_")   #'vterm-undo)
+(define-key vterm-mode-map (kbd "C-_")                 #'vterm--self-insert)
+(define-key vterm-mode-map (kbd "C-SPC")               #'vterm--self-insert)
+(define-key vterm-mode-map (kbd "C-/")                 #'vterm-undo)
 
 ;; Function keys and most of C- and M- bindings
 (mapcar (lambda (key)
@@ -300,10 +177,10 @@ for different shell. "
   (interactive)
   (vterm-send-key "c" nil nil t))
 
-(defun vterm-undo()
+(defun vterm-undo ()
+  "Sends C-_ to the libvterm"
   (interactive)
   (vterm-send-key "_" nil nil t))
-
 
 (defun vterm-yank ()
   "Implementation of `yank' (paste) in vterm."
@@ -314,7 +191,12 @@ for different shell. "
 (defun vterm-send-string (string &optional paste-p)
   "Send the string STRING to vterm."
   (when vterm--term
-    (vterm--update vterm--term string nil nil nil t paste-p)))
+    (when paste-p
+      (vterm--update vterm--term "<start_paste>" nil nil nil))
+    (dolist (char (string-to-list string))
+      (vterm--update vterm--term (char-to-string char) nil nil nil))
+    (when paste-p
+      (vterm--update vterm--term "<end_paste>" nil nil nil))))
 
 (defvar vterm--redraw-timer nil)
 (make-variable-buffer-local 'vterm--redraw-timer)
@@ -333,12 +215,13 @@ If nil, never delay")
     (vterm--delayed-redraw (current-buffer))))
 
 (defun vterm--delayed-redraw(buffer)
-  (with-current-buffer buffer
-    (let ((inhibit-redisplay t)
-          (inhibit-read-only t))
-      (when vterm--term
-        (vterm--redraw vterm--term)))
-    (setq vterm--redraw-timer nil)))
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (let ((inhibit-redisplay t)
+            (inhibit-read-only t))
+        (when vterm--term
+          (vterm--redraw vterm--term)))
+      (setq vterm--redraw-timer nil))))
 
 ;;;###autoload
 (defun vterm ()
