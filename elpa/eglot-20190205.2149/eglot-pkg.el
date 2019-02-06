@@ -1,0 +1,2 @@
+;;; -*- no-byte-compile: t -*-
+(define-package "eglot" "20190205.2149" "Client for Language Server Protocol (LSP) servers" '((emacs "26.1") (jsonrpc "1.0.7") (flymake "1.0.2")) :commit "d65d13944d809cb83ea940b2d2a2760ebda1d493" :keywords '("convenience" "languages") :authors '(("João Távora" . "joaotavora@gmail.com")) :maintainer '("João Távora" . "joaotavora@gmail.com") :url "https://github.com/joaotavora/eglot")

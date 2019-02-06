@@ -45,7 +45,7 @@
        (call-interactively 'godef-jump)
        )
       (python-mode
-       (call-interactively 'jedi:goto-definition)
+       (call-interactively 'lsp-find-definition)
        )
       (otherwise
        (helm-gtags-find-tag-and-symbol)))
