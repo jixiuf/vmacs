@@ -98,6 +98,15 @@
 (vmacs-leader "wy" 'counsel-mark-ring)
 (vmacs-leader ";" 'counsel-M-x)
 (vmacs-leader "；" 'counsel-M-x)
+
+;; window layout
+(vmacs-leader "wl" 'ivy-switch-view)
+(vmacs-leader "m" 'ivy-push-view)
+(vmacs-leader "wc" 'ivy-push-view)
+(vmacs-leader "wn" 'ivy-push-view)
+(vmacs-leader "wk" 'ivy-pop-view)
+
+
 (global-set-key  (kbd "s-;") 'counsel-M-x)
 ;; gui 下让ctrl-i与tab 不同
 (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
