@@ -23,9 +23,11 @@
     (vmacs-eshell-new))
    ((string-equal vmacs-eshell-default-term "term")
     (vmacs-term-new))))
-(defun vmacs-term-mode-p()
+(defun vmacs-term-mode-p(&optional ignore-scratch)
   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
-      (string-match-p "\\*scratch.*" (buffer-name))))
+      (if ignore-scratch
+          nil
+        (string-match-p "\\*scratch.*" (buffer-name)))))
 
 
 ;;;###autoload
@@ -66,12 +68,12 @@
     (set-window-configuration vmacs-window-configration)))
 
 ;;;###autoload
-(defun vmacs-eshell-term-show()
+(defun vmacs-eshell-term-show(&optional ignore-scratch)
   (interactive)
-  (let ((shell-buffer (vmacs-eshell--recent-buffer)))
+  (let ((shell-buffer (vmacs-eshell--recent-buffer ignore-scratch)))
     (if shell-buffer                 ;存在eshell，直接切到这个 eshell buffer
         (progn
-          (unless (vmacs-term-mode-p)
+          (unless (vmacs-term-mode-p ignore-scratch)
             (setq vmacs-window-configration (current-window-configuration))
             )
           (pop-to-buffer shell-buffer)
@@ -82,20 +84,21 @@
   (evil-insert-state))
 
 ;;;###autoload
-(defun vmacs-eshell-term-toggle()
-  (interactive)
+(defun vmacs-eshell-term-toggle(&optional ignore-scratch)
+  (interactive "P")
   (cond
    ((vmacs-term-mode-p)
     (vmacs-eshell-term-hide))
    (t                                   ; ;当前不在eshell中
-    (vmacs-eshell-term-show))))
+    (print ignore-scratch)
+    (vmacs-eshell-term-show ignore-scratch))))
 
 ;; 返回最近打开过的eshell term mode的buffer
-(defun vmacs-eshell--recent-buffer()
+(defun vmacs-eshell--recent-buffer(&optional ignore-scratch)
   (let ((shell-buffer ))
     (dolist (buf (buffer-list))
       (with-current-buffer buf
-        (when (vmacs-term-mode-p)
+        (when (vmacs-term-mode-p ignore-scratch)
           (unless shell-buffer
                  (setq shell-buffer buf)))))
     shell-buffer))
