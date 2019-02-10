@@ -10,6 +10,13 @@
       (call-interactively 'ivy-immediate-done)
     (call-interactively 'end-of-line)))
 
+;;;###autoload
+(defun vmacs-ivy-magic-kill( arg)
+  "C-e move to end of line or execute `ivy-immediate-done'"
+  (interactive "P")
+  (if (eolp)
+      (call-interactively 'ivy-switch-buffer-kill)
+    (call-interactively 'ivy-kill-line)))
 
 ;;;###autoload
 (defun vmacs-ivy-magic-call( arg)

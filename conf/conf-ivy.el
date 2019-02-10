@@ -93,7 +93,7 @@
 (vmacs-leader "fp" 'vmacs-counsel-git-grep-region-or-symbol)
 
 (vmacs-leader "?" 'counsel-descbinds)
-(vmacs-leader "wi" 'counsel-imenu)
+(vmacs-leader "wi" 'counsel-semantic-or-imenu)
 (vmacs-leader "b" 'ivy-resume)
 (vmacs-leader "wy" 'counsel-mark-ring)
 (vmacs-leader ";" 'counsel-M-x)
@@ -116,7 +116,7 @@
 (define-key ivy-minibuffer-map (kbd "<tab>") 'ivy-partial-or-done)
 (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-backward-kill-word)
 (define-key ivy-minibuffer-map (kbd "C-h") 'ivy-backward-kill-word)
-(define-key ivy-minibuffer-map (kbd "C-k") 'ivy-kill-line)
+(define-key ivy-minibuffer-map (kbd "C-k") 'vmacs-ivy-magic-kill)
 (define-key ivy-minibuffer-map (kbd "C-.") 'ivy-next-history-element)
 (define-key ivy-minibuffer-map (kbd "C-[ [ 1 e") 'ivy-next-history-element) ;iterm2 map to ctrl-.
 (define-key ivy-minibuffer-map (kbd "<C-m>") 'ivy-done)
