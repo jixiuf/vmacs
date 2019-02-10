@@ -22,6 +22,7 @@
  evil-ex-search-highlight-all nil
  evil-toggle-key "<f16>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
  evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
+ evil-want-abbrev-expand-on-insert-exit nil
  evil-want-C-i-jump nil
  evil-cross-lines t
  evil-default-state 'normal
@@ -525,6 +526,62 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)
 (global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
 
+
+
+;; 多行编辑时 优化性能
+(defun vmacs-evil-cleanup-insert-state (orig-fun &rest args)
+  (if  (not evil-insert-vcount)
+      (apply orig-fun args)
+    (let ((vcount (nth 2 evil-insert-vcount))
+          (company-mode-p (and (boundp 'company-mode) company-mode))
+          (blink-cursor-mode-p (and (boundp 'blink-cursor-mode) blink-cursor-mode))
+          (electric-indent-mode-p (and (boundp 'electric-indent-mode) electric-indent-mode))
+          (electric-pair-mode-p (and (boundp 'electric-pair-mode) electric-pair-mode))
+          (flycheck-mode-p (and (boundp 'flycheck-mode) flycheck-mode))
+          (yas-minor-mode-p (and (boundp 'yas-minor-mode) yas-minor-mode))
+          (flymake-mode-p (and (boundp 'flymake-mode) flymake-mode))
+          (eldoc-mode-p (and (boundp 'eldoc-mode) eldoc-mode))
+          (ethan-wspace-mode-p (and (boundp 'ethan-wspace-mode) ethan-wspace-mode)))
+
+
+      (if (and vcount (> vcount 200))
+          (progn
+            (jit-lock-mode nil)
+            (when electric-indent-mode-p (electric-indent-mode -1))
+            (when company-mode-p (company-mode -1) )
+            (when blink-cursor-mode-p (blink-cursor-mode -1))
+            (when electric-pair-mode-p (electric-pair-mode -1))
+            (when flycheck-mode-p (flycheck-mode -1))
+            (when flymake-mode-p (flymake-mode -1))
+            (when yas-minor-mode-p (yas-minor-mode -1))
+            (when eldoc-mode-p (eldoc-mode -1))
+            (when ethan-wspace-mode-p (ethan-wspace-mode -1))
+
+
+            (remove-hook 'pre-command-hook 'evil--jump-hook)
+
+
+            (apply orig-fun args)
+
+            (jit-lock-mode t)
+            (when electric-indent-mode-p (electric-indent-mode t))
+            (when company-mode-p (company-mode t))
+            (when blink-cursor-mode-p (blink-cursor-mode t))
+            (when electric-pair-mode-p (electric-pair-mode t))
+            (when flycheck-mode-p (flycheck-mode t))
+            (when flymake-mode-p (flymake-mode t))
+            (when yas-minor-mode-p (yas-minor-mode t))
+            (when eldoc-mode-p (eldoc-mode t))
+            (when ethan-wspace-mode-p (ethan-wspace-mode t))
+            (add-hook 'pre-command-hook 'evil--jump-hook)
+            )
+
+
+        (apply orig-fun args)
+        ))))
+
+(advice-add 'evil-cleanup-insert-state :around #'vmacs-evil-cleanup-insert-state)
+;; (advice-remove 'evil-cleanup-insert-state #'vmacs-evil-cleanup-insert-state)
 
 (provide 'conf-evil)
 
