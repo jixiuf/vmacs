@@ -18,7 +18,8 @@
  ;; evil-search-module 'isearch        ;可以用C-w yank word
  evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
 ;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
- evil-ex-search-highlight-all nil
+ evil-ex-search-highlight-all t
+ evil-ex-search-persistent-highlight nil
  evil-toggle-key "<f16>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
  evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
  evil-want-abbrev-expand-on-insert-exit nil
@@ -492,10 +493,14 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; (fset 'yank 'evil-paste-before)
 
 (defadvice evil-ex-search-next (after dotemacs activate)
-  (recenter))
+  ;; (recenter)
+  (sit-for 0.1)
+  (evil-ex-delete-hl 'evil-ex-search))
 
 (defadvice evil-ex-search-previous (after dotemacs activate)
-  (recenter))
+  ;; (recenter)
+  (sit-for 0.1)
+  (evil-ex-delete-hl 'evil-ex-search))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
