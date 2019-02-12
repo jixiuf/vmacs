@@ -492,15 +492,21 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 ;; (fset 'yank 'evil-paste-before)
 
-(defadvice evil-ex-search-next (after dotemacs activate)
+(defadvice evil-ex-search (after dotemacs activate)
   ;; (recenter)
-  (sit-for 0.1)
-  (evil-ex-delete-hl 'evil-ex-search))
+  (unless evil-ex-search-persistent-highlight
+    (sit-for 0.1)
+    (evil-ex-delete-hl 'evil-ex-search)))
+;; (defadvice evil-ex-search-next (after dotemacs activate)
+;;   (unless evil-ex-search-persistent-highlight
+;;     (sit-for 0.1)
+;;     (evil-ex-delete-hl 'evil-ex-search)))
 
-(defadvice evil-ex-search-previous (after dotemacs activate)
-  ;; (recenter)
-  (sit-for 0.1)
-  (evil-ex-delete-hl 'evil-ex-search))
+;; (defadvice evil-ex-search-previous (after dotemacs activate)
+;;   ;; (recenter)
+;;   (unless evil-ex-search-persistent-highlight
+;;   (sit-for 0.1)
+;;   (evil-ex-delete-hl 'evil-ex-search)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
