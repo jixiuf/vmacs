@@ -14,10 +14,9 @@
 ;; (evil-set-command-property #'evil-find-char-to-backward :jump nil)
 
 
-
 (setq-default
- evil-search-module 'isearch        ;可以用C-w yank word
- ;; evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
+ ;; evil-search-module 'isearch        ;可以用C-w yank word
+ evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
 ;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
  evil-ex-search-highlight-all nil
  evil-toggle-key "<f16>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
