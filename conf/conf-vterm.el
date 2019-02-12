@@ -13,6 +13,13 @@
   (vterm-send-key "_" nil nil t))
 
 
+(defun vterm-send-ctrl-x-ctrl-e ()
+  "edit with editor"
+  (interactive)
+  (vterm-send-key "x" nil nil t)
+  (vterm-send-key "e" nil nil t))
+
+(define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "C-/")   #'vterm-undo)
 (define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
@@ -51,6 +58,7 @@
   (interactive)
   (goto-char (point-max))
   (forward-char -1))
+
 
 (defun vmacs-vterm-hook()
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
