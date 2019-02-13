@@ -35,7 +35,7 @@
     (text-mode novel-fill)
     (help-mode forward-button)
     (nxml-mode nxml-complete)
-    (json-mode json-mode-beautify)
+    (json-mode vmacs-json-pretty)
     (objc-mode company-complete)
     (go-mode company-complete))
   "List of major modes in which to use a mode specific completion

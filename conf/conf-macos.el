@@ -14,15 +14,13 @@
 ;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
 ;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
 ;; 从shell 中获取环境变量
-(setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH" "EDITOR" "PYTHONPATH"))
+(setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH" "EDITOR" "PYTHONPATH" "LC_ALL" "LANG"))
 
 ;; 设成nil 则不从 .zshrc 读 只从 .zshenv读（可以加快速度，但是需要你将环境变量相关的都放到 .zshenv 中，而非 .zshrc 中）
 (setq exec-path-from-shell-shell-name "zsh")
 (setq exec-path-from-shell-check-startup-files nil) ;
 (setq exec-path-from-shell-arguments '("-l" )) ;remove -i read form .zshenv
 
-
-(setenv "LANG" "zh_CN.UTF-8")
 
 ;; (setq-default server-auth-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-socket-dir (expand-file-name "~/.emacs.d/cache/"))

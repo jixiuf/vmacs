@@ -1,3 +1,4 @@
+;; man json_pp
 ;;;###autoload
 (defun vmacs-json-pretty()
   (interactive)
@@ -7,7 +8,7 @@
       (setq start (region-beginning))
       (setq end (region-end)))
     (save-excursion
-      (shell-command-on-region start end "json_pp" (current-buffer) t) "*Message*")))
+      (shell-command-on-region start end "json_pp --json_opt=canonical,pretty" (current-buffer) t) "*Message*")))
 
 (provide 'lazy-json)
 
