@@ -24,7 +24,7 @@
 ;;;### (autoloads nil "evil-common" "evil-common.el" (0 0 0 0))
 ;;; Generated autoloads from evil-common.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "evil-common" '("evil-" "forward-evil-" "bounds-of-evil-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "evil-common" '("bounds-of-evil-" "evil-" "forward-evil-")))
 
 ;;;***
 

@@ -790,10 +790,7 @@ the direcion is determined by `evil-ex-search-direction'."
     (setq evil-ex-search-match-beg (match-beginning 0)
           evil-ex-search-match-end (match-end 0))
     (evil-ex-search-goto-offset evil-ex-search-offset)
-    (evil-ex-search-activate-highlight evil-ex-search-pattern))
-  (unless evil-ex-search-persistent-highlight
-    (sit-for 0.1)
-    (evil-ex-delete-hl 'evil-ex-search)))
+    (evil-ex-search-activate-highlight evil-ex-search-pattern)))
 
 (defun evil-ex-find-next (&optional pattern direction nowrap)
   "Search for the next occurrence of the PATTERN in DIRECTION.
@@ -893,10 +890,7 @@ message to be shown. This function does nothing if
   (remove-hook 'after-change-functions #'evil-ex-search-update-pattern t)
   (when evil-ex-search-overlay
     (delete-overlay evil-ex-search-overlay)
-    (setq evil-ex-search-overlay nil))
-  (setq evil-ex-search-yank-point nil))
-
-
+    (setq evil-ex-search-overlay nil)))
 (put 'evil-ex-search-stop-session 'permanent-local-hook t)
 
 (defun evil-ex-split-search-pattern (pattern direction)
@@ -1294,30 +1288,6 @@ a :substitute command with arguments."
   (interactive)
   (evil-ex-delete-hl 'evil-ex-substitute)
   (evil-ex-delete-hl 'evil-ex-search))
-
-;; Yank text at point.
-(defvar evil-ex-search-yank-point nil)
-
-(defun evil-search-yank-word (&optional arg)
-  "Pull next word from buffer into search string."
-  (interactive)
-  (let ((fwd-fn #'forward-word)
-        word)
-    (with-current-buffer evil-ex-current-buffer
-      ;; Start to initial point if C-w have never been hit.
-      (unless evil-ex-search-yank-point
-        (setq evil-ex-search-yank-point evil-ex-search-start-point))
-
-      (save-excursion
-        (goto-char evil-ex-search-yank-point)
-        (funcall fwd-fn 1)
-        (setq word (buffer-substring-no-properties
-                    evil-ex-search-yank-point (point)))
-        (setq evil-ex-search-yank-point (point))))
-    (when (string-prefix-p (minibuffer-contents) word)
-      (setq word (substring-no-properties word (length (minibuffer-contents)))))
-    (evil-set-register ?s word)
-    (evil-paste-from-register ?s)))
 
 (provide 'evil-search)
 
