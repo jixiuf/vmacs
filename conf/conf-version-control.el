@@ -23,7 +23,7 @@
 (vmacs-leader "vj" 'magit-status) ;like dired-jump
 (vmacs-leader "vu" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader "vp" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader "vs" 'magit-file-popup)
+(vmacs-leader "vs" 'magit-file-dispatch)
 (vmacs-leader "ve" 'magit-commit-extend)
 (vmacs-leader "va" 'magit-commit-amend)
 

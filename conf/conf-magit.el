@@ -1,5 +1,6 @@
 (eval-when-compile
   (require 'magit)
+  (require 'magit-push)
   (require 'evil-magit))
 
 (setq-default evil-magit-use-y-for-yank t)
@@ -20,22 +21,24 @@
 
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
 (define-key magit-mode-map "d" 'magit-section-toggle)
-(define-key magit-mode-map (kbd "TAB") 'magit-diff-popup)
-(define-key magit-mode-map [(tab)]  'magit-diff-popup)
+(define-key magit-mode-map (kbd "TAB") 'magit-diff)
+(define-key magit-mode-map [(tab)]  'magit-diff)
 
-(define-key magit-mode-map "p" 'magit-push-popup)
 ;; (define-key magit-mode-map "v" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)
-(magit-define-popup-action 'magit-push-popup ?p "Push Upstream or svn dcommit" 'vmacs-magit-push-default)
-(magit-define-popup-action 'magit-push-popup ?v "Push Upstream or svn dcommit" 'vmacs-magit-push-default)
-(magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
-(magit-define-popup-action 'magit-rebase-popup ?g "Refresh" 'magit-refresh)
-(magit-define-popup-action 'magit-rebase-popup ?r "Refresh" 'magit-refresh)
+;; (transient-append-suffix 'magit-push ?v 'magit-push-current-to-pushremote)
 
+(transient-suffix-put 'magit-push "p" :key "v")
+;; (magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
+;; (magit-define-popup-action 'magit-rebase-popup ?g "Refresh" 'magit-refresh)
+;; (magit-define-popup-action 'magit-rebase-popup ?r "Refresh" 'magit-refresh)
+(define-key transient-map        "q" 'transient-quit-one)
+(define-key transient-edit-map   "q" 'transient-quit-one)
+(define-key transient-sticky-map "q" 'transient-quit-seq)
 (require 'evil-magit)
 ;;(setq evil-window-map  ctl-w-map)
 (evil-magit-define-key evil-magit-state 'magit-mode-map
-                       "v"  'magit-push-popup)
+                       "v"  'magit-push)
 (evil-magit-define-key evil-magit-state 'magit-mode-map
                        "C-w"  evil-window-map)
 
