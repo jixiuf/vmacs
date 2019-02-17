@@ -28,7 +28,30 @@
 (define-key magit-mode-map "P" 'magit-section-backward)
 ;; (transient-append-suffix 'magit-push ?v 'magit-push-current-to-pushremote)
 
+(setq magit-pull-or-fetch t)
+(define-key magit-mode-map (kbd "f") 'magit-pull)
+(define-key magit-mode-map (kbd "F") 'magit-fetch)
+;; (transient-suffix-put 'magit-pull "p" :key "f")
+(transient-remove-suffix 'magit-pull "f")
+(transient-append-suffix 'magit-pull "u"
+  '("f"  magit-pull-from-pushremote))
+
+(transient-insert-suffix 'magit-pull "F"
+     '("a"  "all remotes" magit-fetch-all))
+;; (transient-insert-suffix 'magit-pull "F"
+;;      '("e"  "elsewhere" magit-fetch-other))
+(transient-insert-suffix 'magit-pull "F"
+  '("p" magit-fetch-from-pushremote))
+(transient-insert-suffix 'magit-pull "F"
+  '("u" magit-fetch-from-upstream))
+
+;; (transient-append-suffix 'magit-fetch "f"
+;;      '("f" "Full from pushremote" magit-pull))
+
+
+
 (transient-suffix-put 'magit-push "p" :key "v")
+(transient-suffix-put 'magit-rebase "p" :key "r")
 ;; (magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
 ;; (magit-define-popup-action 'magit-rebase-popup ?g "Refresh" 'magit-refresh)
 ;; (magit-define-popup-action 'magit-rebase-popup ?r "Refresh" 'magit-refresh)
