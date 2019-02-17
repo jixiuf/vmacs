@@ -16,7 +16,17 @@
 
 (define-key magit-mode-map (kbd "C-w") nil)
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
-(define-key magit-mode-map "," '(lambda() (interactive)(magit-status-internal (magit-read-repository nil))))
+(defun vmacs-magit-status-list()
+  (interactive)
+  (let (list)
+    (dolist (ele magit-repository-directories)
+      (when (file-exists-p (car ele))
+        (add-to-list 'list ele)))
+    (setq magit-repository-directories list))
+  (magit-status-internal (magit-read-repository)))
+
+(define-key magit-mode-map "," #'vmacs-magit-status-list)
+
 
 
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
@@ -83,6 +93,7 @@
     (unless (file-remote-p dir)
       (add-to-list 'magit-repository-directories (list dir 0)))))
 
+(define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
 (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
 (vmacs-leader-for-major-mode  'magit-revision-mode "k" 'magit-mode-bury-buffer)
 (vmacs-leader-for-major-mode  'magit-log-mode "k" 'magit-mode-bury-buffer)
