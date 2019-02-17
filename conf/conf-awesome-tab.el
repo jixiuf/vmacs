@@ -24,7 +24,7 @@
     ;; ((memq major-mode '(org-mode  diary-mode novel-mode))
     ;;  "OrgMode")
     ((or (and (string-equal "*" (substring (buffer-name) 0 1))
-              (not (vmacs-hide-tabbar-p)))
+              (vmacs-show-tabbar-p))
          (memq major-mode '(magit-process-mode
                             magit-status-mode
                             magit-diff-mode
@@ -34,7 +34,7 @@
                             magit-blame-mode
                             )))
      "Emacs")
-    ((vmacs-hide-tabbar-p) "Hidden")
+    ((not (vmacs-show-tabbar-p)) nil)
     (t "Common")
     ))
   )
@@ -43,16 +43,7 @@
   "Return the list of buffers to show in tabs.
 only show eshell-mode term-mode and shell-mode."
   (awesome-tab-filter
-   (lambda (x)
-     (let ((name (format "%s" x)))
-       (and
-        (not (string-prefix-p "*epc" name))
-        (not (string-prefix-p "*helm" name))
-        (not (string-prefix-p "*Compile-Log*" name))
-        (not (string-prefix-p "*lsp" name))
-        (not (and (string-prefix-p "magit" name)
-                  (not (file-name-extension name))))
-        )))
+   #'vmacs-show-tabbar-p
    (delq nil
          (mapcar #'(lambda (b)
                      (cond
@@ -66,28 +57,27 @@ only show eshell-mode term-mode and shell-mode."
 
 (setq awesome-tab-buffer-list-function 'vmacs-awesome-tab-buffer-list)
 
+(defun vmacs-show-tabbar-p(&optional buf redisplay)
+  (let ((show t))
+    (with-current-buffer (or buf (current-buffer))
+      (cond
+       ((member (buffer-name) '("*Messages*" " *LV*" "*Org Agenda*" "*Compile-Log*") )
+        (setq show nil))
+       ((member major-mode '(compilation-mode))
+        (setq show nil))
+       ((string-match boring-window-bof-name-regexp (buffer-name))
+        (setq show nil))
+       (t t))
+      (unless show
+        ;; (kill-local-variable 'header-line-format)
+        (setq header-line-format nil)
+        (when redisplay (redisplay t)))
+      show)))
 
+(defun vmacs-awesome-tab-inhibit-function()
+  (not (vmacs-show-tabbar-p (current-buffer) t)))
 
-(defun vmacs-hide-tabbar-p()
-  (cond
-   ((member (buffer-name) '("*Messages*" "*Org Agenda*" "*Compile-Log*") ) t)
-   ((member major-mode '(compilation-mode))  t)
-   ((string-match boring-window-bof-name-regexp (buffer-name)) t)
-   (t
-    nil)))
-
-(defun vmacs-hide-tabbar()
-  (when  (vmacs-hide-tabbar-p)
-    (setq-local header-line-format nil)))
-
-(dolist (hook '(emacs-lisp-mode-hook
-                org-agenda-mode-hook
-                ;; compilation-mode-hook
-                ;; messages-buffer-mode-hook
-                ))
-  (add-hook hook 'vmacs-hide-tabbar))
-
-
+(setq awesome-tab-inhibit-functions '(vmacs-awesome-tab-inhibit-function))
 
 
 (awesome-tab-mode t)
