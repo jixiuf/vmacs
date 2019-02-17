@@ -44,16 +44,7 @@
 only show eshell-mode term-mode and shell-mode."
   (awesome-tab-filter
    #'vmacs-show-tabbar-p
-   (delq nil
-         (mapcar #'(lambda (b)
-                     (cond
-                      ;; Always include the current buffer.
-                      ;; ((eq (current-buffer) b) b)
-                      ((with-current-buffer b (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)) b)
-                      ((char-equal ?\  (aref (buffer-name b) 0)) nil)
-                      (t b)
-                      ))
-                 (buffer-list)))))
+   (buffer-list)))
 
 (setq awesome-tab-buffer-list-function 'vmacs-awesome-tab-buffer-list)
 
@@ -61,6 +52,8 @@ only show eshell-mode term-mode and shell-mode."
   (let ((show t))
     (with-current-buffer (or buf (current-buffer))
       (cond
+       ((char-equal ?\  (aref (buffer-name) 0))
+        (setq show nil))
        ((member (buffer-name) '("*Messages*" " *LV*" "*Org Agenda*" "*Compile-Log*") )
         (setq show nil))
        ((member major-mode '(compilation-mode))
