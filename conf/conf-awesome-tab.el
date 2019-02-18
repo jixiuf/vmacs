@@ -54,7 +54,8 @@ only show eshell-mode term-mode and shell-mode."
       (cond
        ((char-equal ?\  (aref (buffer-name) 0))
         (setq show nil))
-       ((member (buffer-name) '("*Messages*" " *LV*" "*Org Agenda*" "*Compile-Log*") )
+       ((member (buffer-name) '("*Messages*"  "*Org Agenda*" "*Compile-Log*"
+                                "*Ediff Control Panel*"))
         (setq show nil))
        ((member major-mode '(compilation-mode))
         (setq show nil))
