@@ -90,7 +90,6 @@
    ((vmacs-term-mode-p)
     (vmacs-eshell-term-hide))
    (t                                   ; ;当前不在eshell中
-    (print ignore-scratch)
     (vmacs-eshell-term-show ignore-scratch))))
 
 ;; 返回最近打开过的eshell term mode的buffer
