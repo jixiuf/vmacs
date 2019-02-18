@@ -76,7 +76,7 @@
 
 (global-company-mode 1)
 
-(unless (daemonp)
+(unless (or (daemonp) (vmacs-dumping-p))
   (company-posframe-mode 1))
 
 (defun vmacs-company-posframe-mode(&optional frame)
