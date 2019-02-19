@@ -594,6 +594,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (advice-add 'evil-cleanup-insert-state :around #'vmacs-evil-cleanup-insert-state)
 ;; (advice-remove 'evil-cleanup-insert-state #'vmacs-evil-cleanup-insert-state)
 
+(require 'conf-evil-search)
+
 (provide 'conf-evil)
 
 ;; Local Variables:
