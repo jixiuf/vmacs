@@ -31,15 +31,15 @@
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (setq company-go-show-annotation t)
 
-(defun vmacs-go-format()
-  (when (eq major-mode 'go-mode)
-    (gofmt-before-save)
-    (save-mark-and-excursion
-      (goto-char (point-min))
-      (while  (search-forward-regexp "}\nfunc")
-        (replace-match "}\n\nfunc")))
-    )
-  )
+;; (defun vmacs-go-format()
+;;   (when (eq major-mode 'go-mode)
+;;     (gofmt-before-save)
+;;     (save-mark-and-excursion
+;;       (goto-char (point-min))
+;;       (while  (search-forward-regexp "}\nfunc")
+;;         (replace-match "}\n\nfunc")))
+;;     )
+;;   )
 
 ;; ;; 启用 company-lsp 补全后端
 ;; (push 'company-lsp company-backends)
@@ -69,7 +69,7 @@
 
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
-  (add-hook 'before-save-hook 'vmacs-go-format t t)
+  (add-hook 'before-save-hook 'gofmt-before-save t t)
   (add-hook 'after-save-hook 'auto-go-install t t)
 
 
