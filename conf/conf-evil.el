@@ -249,7 +249,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 
 ;; ;; 清空所有insert-state的绑定,这样 ,insert mode 就是没装evil 前的正常emacs了
-(setcdr evil-insert-state-map nil)
+;; (setcdr evil-insert-state-map nil);evil-disable-insert-state-bindings
 (setq evil-window-map nil)
 ;; (define-key evil-insert-state-map [escape] nil) ;emacs karabiner shift 输入法切换相关
 (define-key evil-normal-state-map [escape] 'keyboard-quit)
