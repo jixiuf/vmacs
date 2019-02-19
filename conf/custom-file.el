@@ -191,7 +191,6 @@
  '(magit-commit-ask-to-stage t)
  '(magit-no-confirm
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
- '(magit-push-arguments '("--force-with-lease"))
  '(magit-save-repository-buffers 'dontask)
  '(menu-bar-mode nil)
  '(org-agenda-files nil)
