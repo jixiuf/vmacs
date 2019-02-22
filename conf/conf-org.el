@@ -13,7 +13,7 @@
   (define-key org-src-mode-map "\C-c\C-c" 'org-edit-src-exit)
   (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
 
-(run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
+;; (run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
 
 
 ;; (define-key global-map [(control meta ?r)] 'org-agenda)
