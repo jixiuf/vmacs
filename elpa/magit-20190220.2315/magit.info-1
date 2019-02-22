@@ -31,7 +31,7 @@ to perform almost all of their daily version control tasks directly from
 within Emacs.  While many fine Git clients exist, only Magit and Git
 itself deserve to be called porcelains.
 
-This manual is for Magit version 2.90.1 (v2.90.1-96-g8a87e935+1).
+This manual is for Magit version 2.90.1 (v2.90.1-245-g732de659a+1).
 
      Copyright (C) 2015-2019 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -76,7 +76,7 @@ Interface Concepts
 
 * Modes and Buffers::
 * Sections::
-* Popup Buffers and Prefix Commands::
+* Transient Commands::
 * Completion, Confirmation and the Selection: Completion Confirmation and the Selection.
 * Running Git::
 
@@ -453,10 +453,10 @@ File: magit.info,  Node: Installing from the Git Repository,  Next: Post-Install
 2.2 Installing from the Git Repository
 ======================================
 
-Magit depends on the ‘dash’, ‘magit-popup’, and ‘with-editor’ libraries
-which are available from Melpa and Melpa-Stable.  Install them using
-‘M-x package-install RET <package> RET’.  Of course you may also install
-them manually from their repository.
+Magit depends on the ‘dash’, ‘lv’, ‘transient’ and ‘with-editor’
+libraries which are available from Melpa and Melpa-Stable.  Install them
+using ‘M-x package-install RET <package> RET’.  Of course you may also
+install them manually from their repository.
 
    Then clone the Magit repository:
 
@@ -467,15 +467,19 @@ them manually from their repository.
 
      $ make
 
-   If you haven’t installed ‘dash’, ‘magit-popup’ and ‘with-editor’ from
-Melpa or at ‘/path/to/magit/../<package>’, then you have to tell ‘make’
-where to find them.  To do so create the file ‘/path/to/magit/config.mk’
-with the following content before running ‘make’:
+   If you haven’t installed ‘dash’, ‘lv’, ‘transient’ and ‘with-editor’
+from Melpa or at ‘/path/to/magit/../<package>’, then you have to tell
+‘make’ where to find them.  To do so create the file
+‘/path/to/magit/config.mk’ with the following content before running
+‘make’:
 
      LOAD_PATH  = -L /path/to/magit/lisp
      LOAD_PATH += -L /path/to/dash
-     LOAD_PATH += -L /path/to/magit-popup
+     LOAD_PATH += -L /path/to/hydra
+     LOAD_PATH += -L /path/to/transient
      LOAD_PATH += -L /path/to/with-editor
+
+   Note that ‘lv.el’ is part of the ‘hydra’ repository.
 
    Finally add this to your init file:
 
@@ -660,7 +664,7 @@ File: magit.info,  Node: Interface Concepts,  Next: Inspecting,  Prev: Getting S
 
 * Modes and Buffers::
 * Sections::
-* Popup Buffers and Prefix Commands::
+* Transient Commands::
 * Completion, Confirmation and the Selection: Completion Confirmation and the Selection.
 * Running Git::
 
@@ -1199,7 +1203,7 @@ buffer) and you would not be asked whether you want to save the buffer
 (because it isn’t modified).
 
 
-File: magit.info,  Node: Sections,  Next: Popup Buffers and Prefix Commands,  Prev: Modes and Buffers,  Up: Interface Concepts
+File: magit.info,  Node: Sections,  Next: Transient Commands,  Prev: Modes and Buffers,  Up: Interface Concepts
 
 4.2 Sections
 ============
@@ -1570,24 +1574,20 @@ certain type of sections.  As you can see there are not many of those.
      only affects sections that could benefit from this information.
 
 
-File: magit.info,  Node: Popup Buffers and Prefix Commands,  Next: Completion Confirmation and the Selection,  Prev: Sections,  Up: Interface Concepts
+File: magit.info,  Node: Transient Commands,  Next: Completion Confirmation and the Selection,  Prev: Sections,  Up: Interface Concepts
 
-4.3 Popup Buffers and Prefix Commands
-=====================================
+4.3 Transient Commands
+======================
 
-Many Magit commands are implemented using *popup buffers*.  First the
-user invokes a *popup* or *prefix* command, which causes a popup buffer
-with the available *infix* arguments and *suffix* commands to be
-displayed.  The user then optionally toggles/sets some arguments and
-finally invokes one of the suffix commands.
+Many Magit commands are implemented as *transient* commands.  First the
+user invokes a *prefix* command, which causes its *infix* arguments and
+*suffix* commands to be displayed in the echo area.  The user then
+optionally sets some infix arguments and finally invokes one of the
+suffix commands.
 
-   This is implemented in the library ‘magit-popup’.  Earlier releases
-used the library ‘magit-key-mode’.  A future release will switch to a
-yet-to-be-written successor, which will likely be named ‘transient’.
-
-   Because ‘magit-popup’ can also be used by other packages without
-having to depend on all of Magit, it is documented in its own manual.
-See *note (magit-popup)Top::.
+   This is implemented in the library ‘~transient’.  Earlier Magit
+releases used the package ‘magit-popup’ and even earlier versions
+library ‘magit-key-mode’.
 
 ‘C-c C-c’     (‘magit-dispatch-popup’)
 
@@ -1624,7 +1624,7 @@ differently, depending on the value of ‘magit-use-sticky-arguments’.
      ‘magit-diff-arguments’ is always used.
 
 
-File: magit.info,  Node: Completion Confirmation and the Selection,  Next: Running Git,  Prev: Popup Buffers and Prefix Commands,  Up: Interface Concepts
+File: magit.info,  Node: Completion Confirmation and the Selection,  Next: Running Git,  Prev: Transient Commands,  Up: Interface Concepts
 
 4.4 Completion, Confirmation and the Selection
 ==============================================
@@ -2816,8 +2816,8 @@ separate log buffer.
 can be changed before invoking one of the suffix commands.  However, in
 the case of the log popup, these arguments may be taken from those
 currently in use in the current repository’s log buffer, depending on
-the value of ‘magit-use-sticky-arguments’ (see *note Popup Buffers and
-Prefix Commands::).
+the value of ‘magit-use-sticky-arguments’ (see [BROKEN LINK: *Popup
+Buffers and Prefix Commands]).
 
    For information about the various arguments, see *note
 (gitman)git-log::.
@@ -3259,8 +3259,8 @@ a separate diff buffer.
 that can be changed before invoking one of the suffix commands.
 However, in the case of the diff popup, these arguments may be taken
 from those currently in use in the current repository’s log buffer,
-depending on the value of ‘magit-use-sticky-arguments’ (see *note Popup
-Buffers and Prefix Commands::).
+depending on the value of ‘magit-use-sticky-arguments’ (see [BROKEN
+LINK: *Popup Buffers and Prefix Commands]).
 
    Also see *note (gitman)git-diff::.
 
@@ -7575,7 +7575,7 @@ few key bindings, but this might be extended in the future.
      Visit the previous blob which modified the current file.
 
    There are a few additional commands that operate on a single file but
-are not available from the file popup by default:
+are not enabled in the file transient command by default:
 
  -- Command: magit-file-rename
 
@@ -7595,16 +7595,10 @@ are not available from the file popup by default:
      contents from a revision.  Both the revision and file are read from
      the user.
 
-   You could add them to the popup like so:
-
-     (magit-define-popup-action 'magit-file-popup
-       ?R "Rename file" 'magit-file-rename)
-     (magit-define-popup-action 'magit-file-popup
-       ?K "Delete file" 'magit-file-delete)
-     (magit-define-popup-action 'magit-file-popup
-       ?U "Untrack file" 'magit-file-untrack)
-     (magit-define-popup-action 'magit-file-popup
-       ?C "Checkout file" 'magit-file-checkout)
+   To enable them invoke the transient (‘C-c M-g’), enter "edit mode"
+(‘C-x l’), set the "transient level" (‘C-x l’ again), enter ‘5’, and
+leave edit mode (‘C-g’).  Also see *note (transient)Enabling and
+Disabling Suffixes::.
 
 
 File: magit.info,  Node: Minor Mode for Buffers Visiting Blobs,  Prev: Minor Mode for Buffers Visiting Files,  Up: Miscellaneous

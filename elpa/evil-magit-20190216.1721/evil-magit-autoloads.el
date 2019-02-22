@@ -26,10 +26,6 @@ Revert changes by evil-magit that affect default evil+magit behavior.
 
 ;;;***
 
-;;;### (autoloads nil nil ("evil-magit-pkg.el") (0 0 0 0))
-
-;;;***
-
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
