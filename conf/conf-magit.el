@@ -33,6 +33,9 @@
 (define-key magit-mode-map "d" 'magit-section-toggle)
 (define-key magit-mode-map (kbd "TAB") 'magit-diff)
 (define-key magit-mode-map [(tab)]  'magit-diff)
+(transient-suffix-put 'magit-diff "d" :key (kbd "<tab>"))
+
+
 
 ;; (define-key magit-mode-map "v" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)

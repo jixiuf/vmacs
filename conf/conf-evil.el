@@ -23,6 +23,7 @@
  evil-ex-search-persistent-highlight nil
  evil-toggle-key "<f16>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
  evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
+ evil-want-C-w-delete nil
  evil-want-abbrev-expand-on-insert-exit nil
  evil-want-C-i-jump nil
  evil-cross-lines t
