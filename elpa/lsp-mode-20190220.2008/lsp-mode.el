@@ -163,29 +163,31 @@ the buffer when it becomes large."
   "Timed out while waiting for a response from the language server" 'lsp-error)
 (define-error 'lsp-capability-not-supported
   "Capability not supported by the language server" 'lsp-error)
+(define-error 'lsp-file-scheme-not-supported
+  "Unsupported file scheme" 'lsp-error)
 
 (defcustom lsp-auto-guess-root nil
   "Automatically guess the project root using projectile/project."
-  :group 'lsp
-  :type 'bool)
+  :group 'lsp-mode
+  :type 'boolean)
 
 (defcustom lsp-restart 'interactive
   "Defines how server exited event must be handled."
-  :group 'lsp
+  :group 'lsp-mode
   :type '(choice (const interactive)
                  (const auto-restart)
                  (const ignore)))
 
 (defcustom lsp-session-file (expand-file-name (locate-user-emacs-file ".lsp-session-v1"))
   "Automatically guess the project root using projectile/project."
-  :group 'lsp
+  :group 'lsp-mode
   :type 'file)
 
 (defcustom lsp-auto-configure t
   "Auto configure `lsp-mode'.
 When set to t `lsp-mode' will auto-configure `lsp-ui' and `company-lsp'."
-  :group 'lsp
-  :type 'bool)
+  :group 'lsp-mode
+  :type 'boolean)
 
 (defvar lsp-clients (make-hash-table :test 'eql)
   "Hash table server-id -> client.
@@ -223,12 +225,14 @@ It contains all of the clients that are currently registered.")
   "Sync method recommended by the server.")
 
 (defgroup lsp-mode nil
-  "Customization group for ‘lsp-mode’."
-  :group 'tools)
+  "Language Server Protocol client."
+  :group 'tools
+  :tag "Language Server")
 
 (defgroup lsp-faces nil
-  "Faces for ‘lsp-mode’."
-  :group 'lsp-mode)
+  "Faces."
+  :group 'lsp-mode
+  :tag "Faces")
 
 (defcustom lsp-document-sync-method nil
   "How to sync the document with the language server."
@@ -242,6 +246,16 @@ It contains all of the clients that are currently registered.")
   "Auto-execute single action."
   :type 'boolean
   :group 'lsp-mode)
+
+(defcustom lsp-enable-links t
+  "If non-nil, all references to links in a file will be made clickable, if supported by the language server."
+  :type 'boolean
+  :group 'lsp-mode)
+
+(defcustom lsp-links-check-internal 0.1
+  "The interval for updating document links."
+  :group 'lsp-mode
+  :type 'float)
 
 (defcustom lsp-eldoc-enable-hover t
   "If non-nil, eldoc will display hover info when it is present."
@@ -318,8 +332,9 @@ The hook is called with two params: the signature information and hover data."
   :group 'lsp-mode)
 
 (defgroup lsp-imenu nil
-  "Customization group for `lsp-imenu'."
-  :group 'lsp-mode)
+  "Imenu."
+  :group 'lsp-mode
+  :tag "Imenu")
 
 (defcustom lsp-imenu-show-container-name t
   "Display the symbol's container name in an imenu entry."
@@ -362,7 +377,9 @@ than the second parameter.")
 (defcustom lsp-prefer-flymake t
   "Auto-configure to prefer `flymake' over `lsp-ui' if both are present.
 If set to `:none' neither of two will be enabled."
-  :type 'boolean
+  :type '(choice (const :tag "Prefer flymake" t)
+                 (const :tag "Prefer lsp-ui" nil)
+                 (const :tag "Use neither flymake nor lsp-ui" :none))
   :group 'lsp-mode)
 
 (defvar-local lsp--flymake-report-fn nil)
@@ -450,7 +467,7 @@ must be used for handling a particular message.")
 (defface lsp-lens-mouse-face
   '((t :height 0.8 :inherit link))
   "The face used for code lens overlays."
-  :group'lsp-mode)
+  :group 'lsp-mode)
 
 (defface lsp-lens-face
   '((t :height 0.8 :inherit shadow))
@@ -482,6 +499,11 @@ must be used for handling a particular message.")
 
 (defvar-local lsp--buffer-workspaces ()
   "List of the buffer workspaces.")
+
+(defvar-local lsp--link-overlays nil
+  "A list of overlays that display document links.")
+
+(defvar-local lsp--links-idle-timer nil)
 
 (defvar lsp--session nil
   "Contain the `lsp-session' for the current Emacs instance.")
@@ -781,7 +803,7 @@ On other systems, returns path without change."
          (file-name (if (and type (not (string= type "file")))
                         (if-let ((handler (lsp--get-uri-handler type)))
                             (funcall handler uri)
-                          (error "Unsupported file scheme: %s" uri))
+                          (signal 'lsp-file-scheme-not-supported (list uri)))
                       ;; `url-generic-parse-url' is buggy on windows:
                       ;; https://github.com/emacs-lsp/lsp-mode/pull/265
                       (or (and (eq system-type 'windows-nt)
@@ -892,6 +914,7 @@ PARAMS - the data sent from _WORKSPACE."
                (1 'lsp--error)
                (2 'lsp--warn)
                (t 'lsp--info))
+             "%s"
              message)))
 
 (defun lsp--window-log-message (workspace params)
@@ -902,7 +925,7 @@ PARAMS - the data sent from WORKSPACE."
     (when (or (not client)
               (cl-notany (lambda (r) (string-match-p r message))
                          (lsp--client-ignore-messages client)))
-      (lsp-log (lsp--propertize message (gethash "type" params))))))
+      (lsp-log "%s" (lsp--propertize message (gethash "type" params))))))
 
 (defun lsp--window-log-message-request (params)
   "Display a message request to the user and send the user's selection back to the server."
@@ -1701,8 +1724,9 @@ disappearing, unset all the variables related to it."
                                                 :hierarchicalDocumentSymbolSupport t)
                    :formatting (:dynamicRegistration t)
                    :codeAction (:dynamicRegistration t)
-                   :completion (:completionItem (:snippetSupport ,lsp-enable-snippet))
-                   :signatureHelp (:signatureInformation (:parameterInformation (:labelOffsetSupport t))))))
+                   :completion (:completionItem (:snippetSupport ,(if lsp-enable-snippet t :json-false)))
+                   :signatureHelp (:signatureInformation (:parameterInformation (:labelOffsetSupport t)))
+                   :documentLink (:dynamicRegistration t))))
 
 (defun lsp--server-register-capability (reg)
   "Register capability REG."
@@ -1842,7 +1866,8 @@ disappearing, unset all the variables related to it."
     (remove-hook 'completion-at-point-functions #'lsp-completion-at-point t)
     (remove-hook 'kill-buffer-hook #'lsp--text-document-did-close t)
     (remove-hook 'post-self-insert-hook #'lsp--on-self-insert t)
-    (remove-hook 'xref-backend-functions #'lsp--xref-backend t))))
+    (lsp--cancel-document-link-timer))
+   (remove-hook 'xref-backend-functions #'lsp--xref-backend t)))
 
 (defun lsp--text-document-did-open ()
   "'document/didOpen event."
@@ -1863,7 +1888,8 @@ disappearing, unset all the variables related to it."
          (kind (if (hash-table-p sync) (gethash "change" sync) sync)))
     (setq lsp--server-sync-method (or lsp-document-sync-method
                                       (alist-get kind lsp--sync-methods))))
-  (run-hooks 'lsp-after-open-hook))
+  (run-hooks 'lsp-after-open-hook)
+  (lsp--set-document-link-timer))
 
 (define-inline lsp--text-document-identifier ()
   "Make TextDocumentIdentifier.
@@ -2190,7 +2216,8 @@ Added to `after-change-functions'."
                    ('incremental (vector (lsp--text-document-content-change-event
                                           start end length)))
                    ('full (vector (lsp--full-change-event))))))))))
-     (lsp-workspaces))))
+     (lsp-workspaces)))
+  (lsp--set-document-link-timer))
 
 (defun lsp--on-self-insert ()
   "Self insert handling.
@@ -2206,6 +2233,79 @@ Applies on type formatting."
                                    `(:ch ,(char-to-string ch) :position ,(lsp--cur-position)))
                            (lambda (edits)
                              (when (= tick (buffer-chars-modified-tick)) (lsp--apply-text-edits edits))))))))
+
+(defun lsp--set-document-link-timer ()
+  (lsp--cancel-document-link-timer)
+  (when (and lsp-enable-links (lsp--capability "documentLinkProvider"))
+    (setq-local lsp--links-idle-timer (run-with-idle-timer
+                                       lsp-links-check-internal nil
+                                       #'lsp--update-document-links
+                                       (current-buffer)))))
+
+(defun lsp--cancel-document-link-timer ()
+  (when lsp--links-idle-timer
+    (cancel-timer lsp--links-idle-timer)
+    (setq-local lsp--links-idle-timer nil)))
+
+(defun lsp--update-document-links (&optional buffer)
+  (when (or (not buffer) (eq (current-buffer) buffer))
+    (cl-assert (lsp--capability "documentLinkProvider"))
+    (let ((buffer (current-buffer)))
+      (lsp-request-async "textDocument/documentLink"
+                         `(:textDocument ,(lsp--text-document-identifier))
+                         (lambda (links)
+                           (seq-do (lambda (overlay)
+                                     (delete-overlay overlay))
+                                   lsp--link-overlays)
+                           (seq-do
+                            (lambda (link)
+                              (with-current-buffer buffer
+                                (-let* (((&hash "range") link)
+                                        (start (lsp--position-to-point
+                                                (gethash "start" range)))
+                                        (end (lsp--position-to-point
+                                              (gethash "end" range)))
+                                        (button (make-button start end 'action
+                                                             (lsp--document-link-keymap link))))
+                                  (push button lsp--link-overlays))))
+                            links))
+                         :mode 'alive))
+    (cancel-timer lsp--links-idle-timer)
+    (setq-local lsp--links-idle-timer nil)))
+
+(defun lsp--document-link-handle-target (url)
+  (let* ((parsed-url (url-generic-parse-url (url-unhex-string url)))
+         (type (url-type parsed-url))
+         (file (decode-coding-string (url-filename parsed-url)
+                                     locale-coding-system)))
+    (pcase type
+      ("file" (if (and (eq system-type 'windows-nt) (eq (elt file 0) ?\/)
+                       (substring file 1))
+                  (find-file (lsp--fix-path-casing
+                              (concat (-some 'lsp--workspace-host-root
+                                             (lsp-workspaces))
+                                      file)))
+                (find-file file)))
+      ((or "http" "https") (browse-url url))
+      (type (if-let ((handler (lsp--get-uri-handler type)))
+                (funcall handler url)
+              (signal 'lsp-file-scheme-not-supported (list url)))))))
+
+(defun lsp--document-link-keymap (link)
+  (-let (((&hash "target") link))
+    (if target
+          (lambda (_)
+            (interactive)
+            (lsp--document-link-handle-target target))
+        (lambda (_)
+          (interactive)
+          (when (lsp--ht-get (lsp--capability "documentLinkProvider")
+                             "resolveProvider")
+            (lsp-request-async
+             "documentLink/resolve"
+             link
+             (-lambda ((&hash "target"))
+               (lsp--document-link-handle-target target))))))))
 
 (defun lsp-buffer-language ()
   "Get language corresponding current buffer."

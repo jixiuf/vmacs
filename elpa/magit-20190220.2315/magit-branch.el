@@ -206,8 +206,8 @@ has to be used to view and change branch related variables."
   :man-page "git-branch"
   ["Variables"
    :if (lambda ()
-         magit-branch-popup-show-variables
-         (oref transient--prefix scope))
+         (and magit-branch-popup-show-variables
+              (oref transient--prefix scope)))
    ("d" magit-branch.<branch>.description)
    ("u" magit-branch.<branch>.merge/remote)
    ("r" magit-branch.<branch>.rebase)
@@ -673,7 +673,7 @@ the remote."
               (remote (magit-get-push-remote new)))
           (when (and old-target
                      (not new-target)
-                     (magit-y-or-n-p (format "Also rename %S to %S on %S"
+                     (magit-y-or-n-p (format "Also rename %S to %S on \"%s\""
                                              old new remote)))
             ;; Rename on (i.e. within) the remote, but only if the
             ;; destination ref doesn't exist yet.  If that ref already

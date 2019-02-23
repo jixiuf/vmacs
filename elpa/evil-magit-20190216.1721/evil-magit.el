@@ -4,7 +4,7 @@
 
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Package-Requires: ((evil "1.2.3") (magit "2.6.0") (magit-popup "2.12.5"))
-;; Package-Version: 20190215.1738
+;; Package-Version: 20190216.1721
 ;; Homepage: https://github.com/justbur/evil-magit
 ;; Version: 0.4.1
 
@@ -50,7 +50,6 @@
 
 (require 'evil)
 (require 'magit)
-(require 'magit-popup) ; FIXME only temporary
 
 (defcustom evil-magit-use-y-for-yank t
   "When non nil, replace \"y\" for `magit-show-refs-popup' with
@@ -151,9 +150,7 @@ should be a string suitable for `kbd'."
   '(git-popup-mode
     magit-blame-mode
     magit-blame-read-only-mode
-    magit-file-mode
-    magit-popup-mode
-    magit-popup-sequence-mode)
+    magit-file-mode)
   "Modes whose evil states are unchanged")
 
 (defvar evil-magit-ignored-modes
@@ -296,6 +293,7 @@ moment.")
        (,states magit-mode-map "'"     magit-submodule                "o")
        (,states magit-mode-map "\""    magit-subtree                  "O")
        (,states magit-mode-map "="     magit-diff-less-context        "-")
+       (,states magit-mode-map "@"     forge-dispatch)
        (,states magit-mode-map "j"     evil-next-visual-line)
        (,states magit-mode-map "k"     evil-previous-visual-line)
        (,states magit-mode-map "gg"    evil-goto-first-line)
@@ -571,6 +569,10 @@ evil-magit affects.")
   (unless evil-magit-popup-keys-changed
     (dolist (change evil-magit-popup-changes)
       (apply #'evil-magit-change-popup-key change))
+    (with-eval-after-load 'forge
+      (transient-remove-suffix 'magit-dispatch 'forge-dispatch)
+      (transient-append-suffix 'magit-dispatch "!"
+        '("@" "Forge" forge-dispatch)))
     (setq evil-magit-popup-keys-changed t)))
 
 (defun evil-magit-revert-popups ()
@@ -578,8 +580,10 @@ evil-magit affects.")
   (put 'magit-dispatch 'transient--layout evil-magit-dispatch-popup-backup)
   (when evil-magit-popup-keys-changed
     (dolist (change evil-magit-popup-changes)
-      (evil-magit-change-popup-key (nth 0 change) (nth 1 change)
-                                   (nth 3 change) (nth 2 change)))
+      (evil-magit-change-popup-key
+       (nth 0 change) (nth 2 change) (nth 1 change)))
+    (with-eval-after-load 'forge
+      (transient-suffix-put 'magit-dispatch "@" :key "'"))
     (setq evil-magit-popup-keys-changed nil)))
 
 ;;;###autoload
@@ -638,18 +642,6 @@ using `evil-magit-toggle-text-mode'"
          (evil-change-state evil-magit-state))
         (t
          (user-error "evil-magit-toggle-text-mode unexpected state"))))
-
-;; TODO
-;; ;; Make room for forge popup when loaded
-;; (eval-after-load 'forge
-;;   '(progn
-;;      (evil-magit-define-key evil-magit-state 'magit-mode-map "p" 'magit-pull-popup)
-;;      (evil-magit-define-key evil-magit-state 'magit-mode-map "P" 'magit-push-popup)
-;;      (evil-magit-define-key evil-magit-state 'magit-mode-map "F" 'forge-dispatch)
-;;      (magit-change-popup-key 'magit-dispatch-popup :actions ?p ?P)
-;;      (magit-remove-popup-key 'magit-dispatch-popup :actions ?F)
-;;      (magit-define-popup-action 'magit-dispatch-popup ?p "Pulling" 'magit-pull-popup ?P t)
-;;      (magit-define-popup-action 'magit-dispatch-popup ?F "Forge" 'forge-dispatch ?f)))
 
 ;;; evil-magit.el ends soon
 (provide 'evil-magit)

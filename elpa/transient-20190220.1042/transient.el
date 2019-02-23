@@ -812,9 +812,7 @@ PREFIX is a prefix command, a symbol.
 LOC is a command, a key vector or a key description
   (a string as returned by `key-description')."
   (declare (indent defun))
-  (when-let ((mem (transient--layout-member prefix loc)))
-    (setcar mem (cadr mem))
-    (setcdr mem (cddr mem))))
+  (transient--layout-member prefix loc 'remove))
 
 (defun transient-get-suffix (prefix loc)
   "Return the suffix at LOC from PREFIX.
@@ -836,7 +834,7 @@ PROP has to be a keyword.  What keywords and values
     (setf (nth 2 elt)
           (plist-put (nth 2 elt) prop value))))
 
-(defun transient--layout-member (prefix loc)
+(defun transient--layout-member (prefix loc &optional remove)
   (if-let ((layout (get prefix 'transient--layout)))
       (cl-labels
           ((key (loc)
@@ -854,9 +852,13 @@ PROP has to be a keyword.  What keywords and values
                   (if (vectorp (car (aref layout 3)))
                       (--any (mem it loc)
                              (aref layout 3))
-                    (cl-member-if (lambda (suffix)
-                                    (mem suffix loc))
-                                  (aref layout 3))))
+                    (let* ((list (aref layout 3))
+                           (cons (cl-member-if (lambda (suffix) (mem suffix loc))
+                                               list)))
+                      (if remove
+                          (prog1 nil
+                            (aset layout 3 (delq (car cons) list)))
+                        cons))))
                  ((and (listp layout)
                        (if (symbolp loc)
                            (eq (plist-get (nth 2 layout) :command) loc)
@@ -960,7 +962,7 @@ probably use this instead:
 
 Given a suffix specified by ARG, this function returns the
 respective command or a symbol that represents it.  It could
-therefore be considere the inverse of `transient-suffix-object'.
+therefore be considered the inverse of `transient-suffix-object'.
 
 Unlike that function it is only intended for internal use though,
 and it is more complicated to describe because of some internal
@@ -990,13 +992,13 @@ then this function always returns a symbol that is, or merely
 represents that command.
 
 The reason that there are \"symbols that merely represent a
-command\" is that by avoiding to binding a symbol as a command we
-can prevent it from being offered as a completion candidates for
+command\" is that by avoiding binding a symbol as a command we
+can prevent it from being offered as a completion candidate for
 `execute-extended-command'.  That is useful for infix arguments,
-which usually do not work corretly unless called from a
+which usually do not work correctly unless called from a
 transient.  Unfortunately this only works for infix arguments
-that are defined inline in the defintion of of a transient prefix
-command; explicitly defined infix arguments continue to polute
+that are defined inline in the definition of a transient prefix
+command; explicitly defined infix arguments continue to pollute
 the command namespace.  It would be better if all this were made
 unnecessary by a `execute-extended-command-ignore' symbol property
 but unfortunately that does not exist (yet?)."
@@ -2152,9 +2154,9 @@ have a history of their own.")
                               transient-history-prev
                               transient-history-next
                               transient-quit-one
-                              transient-toggle-common)))
-                 (list (propertize (kbd (oref suffix key))
-                                   'face 'transient-key)))))
+                              transient-toggle-common
+                              transient-set-level)))
+                 (list (propertize (oref suffix key) 'face 'transient-key)))))
         transient--suffixes)
        #'string<)
       (propertize "|" 'face 'transient-unreachable-key)))))
@@ -2177,7 +2179,8 @@ have a history of their own.")
             (insert ?\n))))
       (when (or transient--helpp transient--editp)
         (transient--insert-help))
-      (let ((lv-force-update t))
+      (let ((lv-force-update t)
+            (lv-use-separator t))
         (lv-message "%s" (buffer-string))))))
 
 (cl-defgeneric transient--insert-group (group)

@@ -92,9 +92,9 @@ abstractions to extend Magit itself or implement a separate extension.
 
    A few of the low-level features used by Magit have been factored out
 into separate libraries/packages, so that they can be used by other
-packages, without having to depend on Magit.  These libraries are
-described in separate manuals, see *note (with-editor)Top:: and *note
-(magit-popup)Top::.
+packages, without having to depend on Magit.  See *note
+(with-editor)Top:: for information about ‘with-editor’.  ‘transient’
+doesn’t have a manual yet.
 
    If you are trying to find an unused key that you can bind to a
 command provided by your own Magit extension, then checkout
@@ -1409,8 +1409,7 @@ Appendix C Keystroke Index
                                                               (line 128)
 * C-c C-b:                               Log Buffer.          (line  19)
 * C-c C-b <1>:                           Refreshing Diffs.    (line  90)
-* C-c C-c:                               Popup Buffers and Prefix Commands.
-                                                              (line  20)
+* C-c C-c:                               Transient Commands.  (line  16)
 * C-c C-c <1>:                           Select from Log.     (line  20)
 * C-c C-c <2>:                           Editing Commit Messages.
                                                               (line  19)
@@ -1950,8 +1949,7 @@ Appendix D Command Index
                                                               (line  57)
 * magit-diff-working-tree:               Diffing.             (line  43)
 * magit-discard:                         Applying.            (line  40)
-* magit-dispatch-popup:                  Popup Buffers and Prefix Commands.
-                                                              (line  20)
+* magit-dispatch-popup:                  Transient Commands.  (line  16)
 * magit-ediff-compare:                   Ediffing.            (line  26)
 * magit-ediff-dwim:                      Ediffing.            (line   9)
 * magit-ediff-popup:                     Ediffing.            (line  21)
@@ -2655,8 +2653,7 @@ Appendix F Variable Index
 * magit-unstage-committed:               Staging and Unstaging.
                                                               (line  56)
 * magit-update-other-window-delay:       Section Movement.    (line  89)
-* magit-use-sticky-arguments:            Popup Buffers and Prefix Commands.
-                                                              (line  36)
+* magit-use-sticky-arguments:            Transient Commands.  (line  32)
 * magit-visit-ref-behavior:              References Buffer.   (line 177)
 * magit-wip-after-apply-mode:            Legacy Wip Modes.    (line  19)
 * magit-wip-after-apply-mode-lighter:    Legacy Wip Modes.    (line  59)
