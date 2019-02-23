@@ -21,7 +21,7 @@
 ;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
  evil-ex-search-highlight-all t
  evil-ex-search-persistent-highlight nil
- evil-toggle-key "<f16>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
+ evil-toggle-key "<f15>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
  evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
  evil-want-C-w-delete nil
  evil-want-abbrev-expand-on-insert-exit nil

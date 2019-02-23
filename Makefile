@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
-.PHONY: eshell
+.PHONY: eshell lib
 EMACSCMD ?= emacs
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
-compile:
+compile:lib
 	cd ./bin/&&go build ./rgwrapper.go
 	@echo "delete *.elc 以避免有问题的elc文件影响编译"
 	@rm -rf *.elc
@@ -38,6 +38,8 @@ dump: clean update-autoload-cookie
 	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
 	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
 
+lib:
+	find $(PWD)/lib -exec ln -fs {} /usr/local/lib/ \;
 
 eshell:
 	./bin/zsh-to-eshell-alias.sh

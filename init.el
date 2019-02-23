@@ -50,7 +50,6 @@
 (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
 (require 'conf-buffer)
 
-(when (eq system-type 'darwin) (require 'conf-evil-input-method))
 
 
 (eval-after-load 'ibuffer '(require 'conf-ibuffer)) ;绑定在space l 上，用于列出当前打开的哪些文件
@@ -99,6 +98,7 @@
   (run-with-idle-timer 10 t 'vmacs-idle-timer) ;idle 300=5*60s
   (require 'conf-tmp nil t)
   (require 'conf-vterm)
+  (when (eq system-type 'darwin) (require 'conf-evil-input-method))
   (when (eq system-type 'darwin) (exec-path-from-shell-initialize)))
 
 
