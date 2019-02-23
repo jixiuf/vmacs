@@ -160,12 +160,12 @@
 
 ;; (setq display-line-numbers-current-absolute t)
 (defun vmacs-change-line-number-abs()
-  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode tsmterm-mode ))
+  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode tsmterm-mode magit-status-mode ))
       (setq display-line-numbers nil)
     (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
-  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode tsmterm-mode))
+  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode tsmterm-mode magit-status-mode))
       (setq display-line-numbers nil)
     (setq display-line-numbers 'visual)))
 
