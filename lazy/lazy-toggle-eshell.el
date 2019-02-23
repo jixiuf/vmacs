@@ -27,7 +27,7 @@
   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
       (if ignore-scratch
           nil
-        (string-match-p "\\*scratch.*" (buffer-name)))))
+        (string-match-p "\\*scratch-.*" (buffer-name)))))
 
 
 ;;;###autoload

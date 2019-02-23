@@ -77,11 +77,11 @@
                     (background-mode . dark)
                     )
                    (ns ;; if frame created on mac
-                    ;; (alpha . 80)
                     ;; (height . 50)
                     ;; (width . 140)
                     ;; (left . 160)
                     ;; (top . 80)
+                    (alpha . 85)
                     (foreground-color . "#eeeeec")
                     (background-color . "#202020") ;;
                     (background-mode . dark)

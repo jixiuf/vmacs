@@ -82,12 +82,12 @@ when toggle off input method, switch to evil-normal-state if current state is ev
 ;; https://github.com/rime/squirrel/wiki/如何实现mac下删除默认的英文输入法（只保留一个Squirrel)
 ;; https://raw.githubusercontent.com/jixiuf/dotfiles/master/mac/com.apple.HIToolbox.plist
 
-(defun disable-input-method-hook()
-  ;; (start-process "squirrel-input-method-disable-chinese" nil "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" "-s" "ascii_mode" "--clear")
-  (when (and (equal system-type 'darwin)
-             (member evil-previous-state '(insert emacs))
-             (file-exists-p "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" )) ;mac 上squirrel与输入法相关
-    (call-process  "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" nil nil nil "-s" "ascii_mode" )))
+;; (defun disable-input-method-hook()
+;;   ;; (start-process "squirrel-input-method-disable-chinese" nil "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" "-s" "ascii_mode" "--clear")
+;;   (when (and (equal system-type 'darwin)
+;;              (member evil-previous-state '(insert emacs))
+;;              (file-exists-p "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" )) ;mac 上squirrel与输入法相关
+;;     (call-process  "/Library/Input Methods/Squirrel.app/Contents/MacOS/squirrel_client" nil nil nil "-s" "ascii_mode" )))
 
 ;; ;; (defadvice keyboard-quit (before disable-input-method activate)
 ;; ;;   "disable-input-method-hook."

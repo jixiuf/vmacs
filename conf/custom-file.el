@@ -6,8 +6,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(awesome-tab-selected ((t (:inherit awesome-tab-default :foreground "green3" :overline "yellow" :underline "yellow" :weight ultra-bold :width semi-expanded))))
- '(awesome-tab-separator ((t (:inherit awesome-tab-default :box (:line-width 2 :color "yellow" :style pressed-button) :height 0.1))))
+ '(awesome-tab-default ((t (:background "#202020" :foreground "#202020" :box nil :overline nil :height 1.1))))
+ '(awesome-tab-selected ((t (:background "gray70" :foreground "black" :box nil :overline nil :height 1.1))))
+ '(awesome-tab-separator ((t (:background "#202020" :foreground "#202020" :height 0.1))))
+ '(awesome-tab-unselected ((t (:background "gray30" :foreground "gray80" :box nil :overline nil :height 1.1))))
  '(bm-face ((t (:background "#272728"))))
  '(buffers-tab ((t (:background "#0C1021" :foreground "#F8F8F8"))))
  '(company-scrollbar-bg ((t (:background "RoyalBlue4"))))
@@ -79,7 +81,7 @@
  '(font-lock-variable-name-face ((t (:foreground "#40E0D0"))))
  '(font-lock-warning-face ((t (:foreground "Pink"))))
  '(gui-element ((t (:background "#D4D0C8" :foreground "black"))))
- '(header-line ((t (:background "gray30" :distant-foreground "gray" :inverse-video nil))))
+ '(header-line ((t (:background "gray30" :foreground "gray"))))
  '(helm-buffer-directory ((t (:background "Blue4" :foreground "gray"))))
  '(helm-ff-directory ((t (:background "Blue4" :foreground "gray"))))
  '(helm-grep-file ((t (:foreground "cyan1" :underline t))))
@@ -180,6 +182,7 @@
    ["#202020" "#ff8272" "#b4fa72" "#fefdc2" "#a5d5fe" "#ff8ffd" "#d0d1fe" "#f1f1f1"])
  '(auto-save-visited-interval 15)
  '(auto-save-visited-mode t)
+ '(awesome-tab-background-color "#202020")
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
@@ -195,7 +198,7 @@
  '(menu-bar-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(pyim lv evil ivy lsp-ui company-lsp bind-map elisp-def pcmpl-git projectile go-eldoc company-go eglot company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-magit flycheck git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(powerline pyim lv evil ivy lsp-ui company-lsp bind-map elisp-def pcmpl-git projectile go-eldoc company-go eglot company-posframe dockerfile-mode helm-core git-timemachine json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace evil-magit flycheck git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")

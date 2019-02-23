@@ -3,6 +3,8 @@
 (global-set-key  (kbd "s-C-M-n") 'awesome-tab-forward)
 (global-set-key  (kbd "s-p") 'awesome-tab-backward)
 (global-set-key  (kbd "s-C-M-p") 'awesome-tab-backward)
+(define-key evil-normal-state-map (kbd "gh") 'awesome-tab-move-current-tab-to-left)
+(define-key evil-normal-state-map (kbd "gl") 'awesome-tab-move-current-tab-to-right)
 
 (vmacs-leader "e" 'awesome-tab-build-ivy-source)
 ;; 只为eshell-mode term-mode 启用awesome-tab
@@ -16,8 +18,7 @@
     Other buffer group by `projectile-project-p' with project name."
   (list
    (cond
-    ((or (member (buffer-name) '("*scratch*") )
-         (string-match-p "\\*scratch.*" (buffer-name))
+    ((or (string-match-p "\\*scratch-.*" (buffer-name))
          (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
          )
      "Term")
@@ -57,8 +58,8 @@ only show eshell-mode term-mode and shell-mode."
        ((member (buffer-name) '("*Messages*"  "*Org Agenda*" "*Compile-Log*"
                                 "*Ediff Control Panel*"))
         (setq show nil))
-       ((member major-mode '(compilation-mode))
-        (setq show nil))
+       ;; ((member major-mode '(compilation-mode))
+       ;;  (setq show nil))
        ((string-match boring-window-bof-name-regexp (buffer-name))
         (setq show nil))
        (t t))
@@ -73,8 +74,18 @@ only show eshell-mode term-mode and shell-mode."
 
 (setq awesome-tab-inhibit-functions '(vmacs-awesome-tab-inhibit-function))
 
+(defun aweome-tab-make-frame-hook(&optional f) ;emacsclient 打开的窗口相关的设置
+  (with-selected-frame (or f (selected-frame))
+    (setq awesome-tab-style-left (powerline-wave-right 'awesome-tab-default nil awesome-tab-height))
+    (setq awesome-tab-style-right (powerline-wave-left nil 'awesome-tab-default awesome-tab-height)))
+  (awesome-tab-mode -1)
+  (awesome-tab-mode t))
+(add-hook 'after-make-frame-functions 'aweome-tab-make-frame-hook)
 
 (awesome-tab-mode t)
+;; (add-hook 'server-after-make-frame-hook 'aweome-tab-make-frame-hook)
+(add-hook 'after-make-frame-functions 'aweome-tab-make-frame-hook)
+
 (provide 'conf-awesome-tab)
 
 ;; Local Variables:
