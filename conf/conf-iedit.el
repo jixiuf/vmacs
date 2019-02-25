@@ -2,12 +2,17 @@
 (setq-default iedit-toggle-key-default nil)
 (global-set-key (kbd "C-;") 'evil-iedit-state/iedit-mode)
 (require 'evil-iedit-state)
+(define-key evil-iedit-state-map (kbd "C-;")  'evil-iedit-state/quit-iedit-mode)
+
+(define-key evil-iedit-state-map "t"   'iedit-show/hide-unmatched-lines)
+
 (define-key evil-iedit-state-map  (kbd "gU") 'iedit-upcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "gu") 'iedit-downcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "mf") 'iedit-restrict-function)
 (define-key evil-iedit-state-map  (kbd "ml") 'iedit-restrict-current-line)
 (define-key evil-iedit-state-map  (kbd "zc") 'iedit-toggle-case-sensitive)
 (define-key evil-iedit-state-map  (kbd "zb") 'iedit-toggle-buffering)
+(define-key evil-iedit-state-map "#"   nil)
 (define-key evil-iedit-state-map  (kbd "N") 'iedit-number-occurrences)
 (define-key evil-iedit-state-map  (kbd "SPC") 'iedit-blank-occurrences)
 
