@@ -147,6 +147,13 @@
 (define-key ivy-occur-mode-map (kbd "r") 'ivy-occur-revert-buffer)
 (define-key ivy-occur-grep-mode-map (kbd "r") 'ivy-occur-revert-buffer)
 (define-key ivy-occur-grep-mode-map (kbd "g") nil)
+(defun vmacs-ivy-occur-hook()
+  (message "wwwwwww")
+  (evil-define-key 'normal 'local "/" 'hide-lines-not-matching)
+  (evil-define-key 'normal 'local "z" 'hide-lines-matching)
+  )
+(add-hook 'ivy-occur-mode-hook 'vmacs-ivy-occur-hook)
+(add-hook 'ivy-occur-grep-mode-hook 'vmacs-ivy-occur-hook)
 
 
 
