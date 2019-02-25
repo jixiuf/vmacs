@@ -282,22 +282,9 @@
 
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 
-(setq-default iedit-toggle-key-default (kbd "C-;"))
-(autoload 'iedit-mode-from-isearch "iedit" "enable iedit-mode when in isearch mode")
-
-(define-key evil-normal-state-map "s;" 'iedit-mode)
-;; (with-eval-after-load 'iedit
-;;   (define-key iedit-mode-keymap (kbd "M-;") 'iedit-toggle-selection))
-
-
-(define-key global-map iedit-toggle-key-default 'iedit-mode)
-;; (define-key global-map (kbd "C-[ [ 1 f") 'iedit-mode) ;iterm map C-; to this
-(define-key isearch-mode-map iedit-toggle-key-default 'iedit-mode-from-isearch)
-
 (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
 ;; (with-eval-after-load 'elisp-mode
 ;;   (define-key emacs-lisp-mode-map (kbd "C-x C-e") 'eval-print-last-sexp))
-
 
 
 ;; (global-set-key "\M-n"  'vmacs-forward-4-line)
