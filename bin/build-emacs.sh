@@ -4,6 +4,7 @@ sudo mkdir -p /usr/local/emacs
 sudo chown ${USER}:admin  /usr/local/emacs
 echo ${prefix}
 export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-sed/bin
+./autogen.sh
 ./configure \
 --disable-silent-rules \
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
