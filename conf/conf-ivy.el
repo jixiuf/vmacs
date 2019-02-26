@@ -143,17 +143,62 @@
 (define-key ivy-occur-grep-mode-map (kbd "n") 'evil-search-next)
 (define-key ivy-occur-grep-mode-map (kbd "p") 'evil-search-previous)
 (define-key ivy-occur-mode-map (kbd "g") nil)
+(define-key ivy-occur-mode-map (kbd "SPC") nil)
+(define-key ivy-occur-grep-mode-map (kbd "SPC") nil)
 
-(define-key ivy-occur-mode-map (kbd "r") 'ivy-occur-revert-buffer)
-(define-key ivy-occur-grep-mode-map (kbd "r") 'ivy-occur-revert-buffer)
+(define-key ivy-occur-mode-map (kbd "r") nil)
+(define-key ivy-occur-grep-mode-map (kbd "r") nil)
 (define-key ivy-occur-grep-mode-map (kbd "g") nil)
-(defun vmacs-ivy-occur-hook()
-  (message "wwwwwww")
-  (evil-define-key 'normal 'local "/" 'hide-lines-not-matching)
-  (evil-define-key 'normal 'local "z" 'hide-lines-matching)
-  )
-(add-hook 'ivy-occur-mode-hook 'vmacs-ivy-occur-hook)
-(add-hook 'ivy-occur-grep-mode-hook 'vmacs-ivy-occur-hook)
+(define-key ivy-occur-grep-mode-map (kbd "gr") 'ivy-occur-revert-buffer)
+(define-key ivy-occur-grep-mode-map (kbd "z") 'ivy-occur-hide-lines-matching)
+(define-key ivy-occur-grep-mode-map (kbd "/") 'ivy-occur-hide-lines-not-matching)
+;; (defun vmacs-ivy-occur-hook()
+;;   (evil-define-key 'normal 'local "/" 'ivy-occur-hide-lines-not-matching)
+;;   (evil-define-key 'normal 'local "z" 'ivy-occur-hide-lines-matching)
+;;   )
+;; (add-hook 'ivy-occur-mode-hook 'vmacs-ivy-occur-hook)
+;; (add-hook 'ivy-occur-grep-mode-hook 'vmacs-ivy-occur-hook)
+
+;;;###autoload
+(defun ivy-occur-hide-lines-not-matching (search-text)
+  "Hide lines that don't match the specified regexp."
+  (interactive "MHide lines not matched by regexp: ")
+  (set (make-local-variable 'line-move-ignore-invisible) t)
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 4)
+    (let ((inhibit-read-only t)
+          (start-position (point))
+          (pos (re-search-forward search-text nil t)))
+      (while pos
+        (beginning-of-line)
+        (delete-region start-position (point))
+        (forward-line 1)
+        (setq start-position (point))
+        (if (eq (point) (point-max))
+            (setq pos nil)
+          (setq pos (re-search-forward search-text nil t))))
+              (delete-region start-position (point-max) ))))
+
+;;;###autoload
+(defun ivy-occur-hide-lines-matching  (search-text)
+  "Hide lines matching the specified regexp."
+  (interactive "MHide lines matching regexp: ")
+  (set (make-local-variable 'line-move-ignore-invisible) t)
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 4)
+    (let ((inhibit-read-only t)
+          (pos (re-search-forward search-text nil t))
+          start-position)
+      (while pos
+        (beginning-of-line)
+        (setq start-position (point))
+        (end-of-line)
+        (delete-region start-position (+ 1 (point)))
+        (if (eq (point) (point-max))
+            (setq pos nil)
+          (setq pos (re-search-forward search-text nil t)))))))
 
 
 

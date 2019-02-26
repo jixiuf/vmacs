@@ -5,6 +5,7 @@
 (define-key evil-iedit-state-map (kbd "C-;")  'evil-iedit-state/quit-iedit-mode)
 
 (define-key evil-iedit-state-map "t"   'iedit-show/hide-unmatched-lines)
+(define-key evil-iedit-state-map "s"   nil)
 
 (define-key evil-iedit-state-map  (kbd "gU") 'iedit-upcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "gu") 'iedit-downcase-occurrences)
