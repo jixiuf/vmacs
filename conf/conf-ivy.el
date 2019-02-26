@@ -209,6 +209,7 @@
   (define-key counsel-ag-map (kbd "C-o") 'vmacs-counsel-rg-select-directory)
   (define-key counsel-ag-map (kbd "C-;") 'vmacs-counsel-ag-toggle-git-root)
   (define-key counsel-ag-map (kbd "C-h") 'vmacs-counsel-ag-up-directory)
+  (define-key counsel-ag-map (kbd "!") #'(lambda()(interactive)(insert "\\!")))
   (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
   (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
 
