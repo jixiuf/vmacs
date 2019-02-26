@@ -48,6 +48,21 @@
 
 (add-to-list 'golden-ratio-inhibit-functions 'vmacs-evil-window-cmd-p)
 
+(setq pop-up-windows nil)                    ; display-buffer: avoid splitting
+;; (setq even-window-sizes nil)               ; display-buffer: avoid resizing
+
+;; ;; fix window splitting behavior when possible
+;; (setq display-buffer-alist
+;;       '(("\\*cider-repl .*"
+;;          (display-buffer-reuse-window display-buffer-in-side-window)
+;;          (reusable-frames . visible)
+;;          (side . bottom)
+;;          (window-height . 0.2))
+;;         ("\\*compilation\\*"
+;;          (display-buffer-reuse-window display-buffer-same-window))
+;;         ;; default
+;;         (".*"
+;;          (display-buffer-same-window))))
 
 ;; (defun vmacs-helm-alive-p ()
 ;;   (if (boundp 'helm-alive-p)
