@@ -24,17 +24,17 @@
      "Term")
     ;; ((memq major-mode '(org-mode  diary-mode novel-mode))
     ;;  "OrgMode")
-    ((or (and (string-equal "*" (substring (buffer-name) 0 1))
-              (vmacs-show-tabbar-p))
-         (memq major-mode '(magit-process-mode
-                            magit-status-mode
-                            magit-diff-mode
-                            magit-log-mode
-                            magit-file-mode
-                            magit-blob-mode
-                            magit-blame-mode
-                            )))
-     "Emacs")
+    ;; ((or (and (string-equal "*" (substring (buffer-name) 0 1))
+    ;;           (vmacs-show-tabbar-p))
+    ;;      (memq major-mode '(magit-process-mode
+    ;;                         magit-status-mode
+    ;;                         magit-diff-mode
+    ;;                         magit-log-mode
+    ;;                         magit-file-mode
+    ;;                         magit-blob-mode
+    ;;                         magit-blame-mode
+    ;;                         )))
+    ;;  "Emacs")
     ((not (vmacs-show-tabbar-p)) nil)
     (t "Common")
     ))
