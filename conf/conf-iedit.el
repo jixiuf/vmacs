@@ -7,6 +7,7 @@
 (define-key evil-iedit-state-map "t"   'iedit-show/hide-unmatched-lines)
 (define-key evil-iedit-state-map "s"   nil)
 
+(define-key evil-iedit-state-map [backspace] nil)
 (define-key evil-iedit-state-map  (kbd "gU") 'iedit-upcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "gu") 'iedit-downcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "mf") 'iedit-restrict-function)
@@ -15,7 +16,6 @@
 (define-key evil-iedit-state-map  (kbd "zb") 'iedit-toggle-buffering)
 (define-key evil-iedit-state-map "#"   nil)
 (define-key evil-iedit-state-map  (kbd "N") 'iedit-number-occurrences)
-(define-key evil-iedit-state-map  (kbd "SPC") 'iedit-blank-occurrences)
 
 ;; (autoload 'iedit-mode-from-isearch "iedit" "enable iedit-mode when in isearch mode")
 
