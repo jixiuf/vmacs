@@ -48,7 +48,7 @@
 
 (add-to-list 'golden-ratio-inhibit-functions 'vmacs-evil-window-cmd-p)
 
-(setq pop-up-windows nil)                    ; display-buffer: avoid splitting
+;; (setq pop-up-windows t)                    ; display-buffer: avoid splitting
 ;; (setq even-window-sizes nil)               ; display-buffer: avoid resizing
 
 ;; ;; fix window splitting behavior when possible
