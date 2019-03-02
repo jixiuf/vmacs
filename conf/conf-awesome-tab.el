@@ -6,8 +6,9 @@
 (global-set-key  (kbd "s-C-M-p") 'awesome-tab-backward)
 (define-key evil-normal-state-map (kbd "gh") 'awesome-tab-move-current-tab-to-left)
 (define-key evil-normal-state-map (kbd "gl") 'awesome-tab-move-current-tab-to-right)
+;; (vmacs-leader "e" 'awesome-tab-build-ivy-source)
+(vmacs-leader "e" 'awesome-tab-forward-group)
 
-(vmacs-leader "e" 'awesome-tab-build-ivy-source)
 ;; 只为eshell-mode term-mode 启用awesome-tab
 
 (setq awesome-tab-buffer-groups-function 'vmacs-awesome-tab-buffer-groups)
@@ -23,10 +24,19 @@
          (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
          )
      "Term")
+    ((string-match-p (rx (or
+                          "\*Helm"
+                          "\*helm"
+                          "\*tramp"
+                          "\*Completions\*"
+                          "\*sdcv\*"
+                          "\*Messages\*"
+                          "\*Ido Completions\*"
+                          ))
+                     (buffer-name))
+     "Emacs")
     ((not (vmacs-show-tabbar-p)) nil)
-    (t "Common")
-    ))
-  )
+    (t "Common"))))
 
 (defun vmacs-awesome-tab-buffer-list ()
   "Return the list of buffers to show in tabs.
