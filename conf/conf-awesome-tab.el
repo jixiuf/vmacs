@@ -23,19 +23,6 @@
          (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
          )
      "Term")
-    ;; ((memq major-mode '(org-mode  diary-mode novel-mode))
-    ;;  "OrgMode")
-    ;; ((or (and (string-equal "*" (substring (buffer-name) 0 1))
-    ;;           (vmacs-show-tabbar-p))
-    ;;      (memq major-mode '(magit-process-mode
-    ;;                         magit-status-mode
-    ;;                         magit-diff-mode
-    ;;                         magit-log-mode
-    ;;                         magit-file-mode
-    ;;                         magit-blob-mode
-    ;;                         magit-blame-mode
-    ;;                         )))
-    ;;  "Emacs")
     ((not (vmacs-show-tabbar-p)) nil)
     (t "Common")
     ))
@@ -56,18 +43,16 @@ only show eshell-mode term-mode and shell-mode."
       (cond
        ((char-equal ?\  (aref (buffer-name) 0))
         (setq show nil))
-       ((member (buffer-name) '("*Messages*"  "*Org Agenda*" "*Compile-Log*"
-                                "*Ediff Control Panel*"))
-        (setq show nil))
-       ;; ((member major-mode '(compilation-mode))
-       ;;  (setq show nil))
-       ((string-match boring-window-bof-name-regexp (buffer-name))
+       ((member (buffer-name) '("*Ediff Control Panel*"
+                                "\*Flycheck error messages\*"
+                                "\*Gofmt Errors\*"))
         (setq show nil))
        (t t))
       (unless show
         ;; (kill-local-variable 'header-line-format)
         (setq header-line-format nil)
-        (when redisplay (redisplay t)))
+        ;; (when redisplay (redisplay t))
+        )
       show)))
 
 (defun vmacs-awesome-tab-inhibit-function()
