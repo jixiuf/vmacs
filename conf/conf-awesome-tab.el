@@ -1,4 +1,5 @@
 (setq awesome-tab-cycle-scope 'tabs)
+(setq awesometab-hide-tabs-hooks   nil)
 (global-set-key  (kbd "s-n") 'awesome-tab-forward)
 (global-set-key  (kbd "s-C-M-n") 'awesome-tab-forward)
 (global-set-key  (kbd "s-p") 'awesome-tab-backward)
