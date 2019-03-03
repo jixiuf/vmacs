@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 1.7
-;; Last-Updated: 2019-02-23 21:14:53
+;; Version: 2.2
+;; Last-Updated: 2019-03-03 15:10:36
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -85,6 +85,11 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2019/03/03
+;;      * Automatically adsorb tabs after switching tabs, making switch tabs quickly.
+;;      * Fix many typo errors.
+;;      * Add `awesome-tab-adjust-buffer-order-function'.
 ;;
 ;; 2019/02/23
 ;;      * Significantly optimize the performance of switching tab by avoiding excessive calls `project-current'.
@@ -179,11 +184,9 @@ the group name uses the name of this variable."
   :group 'awesome-tab
   :type 'string)
 
-(defvar awesome-tab-inhibit-functions '(awesome-tab-default-inhibit-function)
-  "List of functions to be called before displaying the tab bar.
-Those functions are called one by one, with no arguments, until one of
-them returns a non-nil value, and thus, prevents to display the tab
-bar.")
+(defvar awesome-tab-hide-tab-function 'awesome-tab-hide-tab
+  "Function to hide tab.
+This fucntion accepet tab name, tab will hide if this function return ni.")
 
 (defvar awesome-tab-current-tabset-function nil
   "Function called with no argument to obtain the current tab set.
@@ -499,27 +502,19 @@ current cached copy."
 ;;; Faces
 ;;
 (defface awesome-tab-default
-  '(
-    (t
-     :background "black" :foreground "black"
-     :overline nil :box nil
-     :height 1.1
-     ))
+  '((t
+     (:background "black" :foreground "black")))
   "Default face used in the tab bar."
   :group 'awesome-tab)
 
 (defface awesome-tab-unselected
   '((t
-     (:background "#3D3C3D" :foreground "grey50"
-                  :overline nil :box nil
-                  :height 1.1)))
+     (:background "#3D3C3D" :foreground "grey50")))
   "Face used for unselected tabs."
   :group 'awesome-tab)
 
 (defface awesome-tab-selected
-  '((t (:background "#31343E" :foreground "white"
-                    :overline nil :box nil
-                    :height 1.1)))
+  '((t (:background "#31343E" :foreground "white")))
   "Face used for the selected tab."
   :group 'awesome-tab)
 
@@ -528,14 +523,6 @@ current cached copy."
      :underline t
      ))
   "Face used to highlight a tab during mouse-overs."
-  :group 'awesome-tab)
-
-(defface awesome-tab-separator
-  '((t
-     :background "black" :foreground "black"
-     :height 0.1
-     ))
-  "Face used for separators between tabs."
   :group 'awesome-tab)
 
 (defface awesome-tab-button
@@ -558,17 +545,6 @@ By default, use the background color specified for the
 background color of the `default' face otherwise."
   :group 'awesome-tab
   :type 'face)
-
-(defsubst awesome-tab-background-color ()
-  "Return the background color of the tab bar."
-  (or awesome-tab-background-color
-      (let* ((face 'awesome-tab-default)
-             (color (face-background face)))
-        (while (null color)
-          (or (facep (setq face (face-attribute face :inherit)))
-              (setq face 'default))
-          (setq color (face-background face)))
-        color)))
 
 ;;; Buttons and separator look and feel
 ;;
@@ -596,22 +572,6 @@ list of image specifications.
 If IMAGE is non-nil, try to use that image, else use STRING.
 If only the ENABLED-BUTTON image is provided, a DISABLED-BUTTON image
 is derived from it.")
-
-;;; Home button
-;;
-(defvar awesome-tab-home-button-value nil
-  "Value of the home button.")
-
-(defcustom awesome-tab-home-button
-  (quote (("") ""))
-  "The home button.
-The variable `awesome-tab-button-widget' gives details on this widget."
-  :group 'awesome-tab
-  :type awesome-tab-button-widget
-  :set '(lambda (variable value)
-          (custom-set-default variable value)
-          ;; Schedule refresh of button value.
-          (setq awesome-tab-home-button-value nil)))
 
 ;;; Scroll left button
 ;;
@@ -647,32 +607,6 @@ The variable `awesome-tab-button-widget' gives details on this widget."
 
 ;;; Separator
 ;;
-(defconst awesome-tab-separator-widget
-  '(cons (choice (string)
-                 (number :tag "Space width" 0.2))
-         (repeat :tag "Image"
-                 :extra-offset 2
-                 (restricted-sexp :tag "Spec"
-                                  :match-alternatives (listp))))
-  "Widget for editing a tab bar separator.
-A separator is specified as a pair (STRING-OR-WIDTH . IMAGE) where
-STRING-OR-WIDTH is a string value or a space width, and IMAGE a list
-of image specifications.
-If IMAGE is non-nil, try to use that image, else use STRING-OR-WIDTH.
-The value (\"\"), or (0) hide separators.")
-
-(defvar awesome-tab-separator-value nil
-  "Value of the separator used between tabs.")
-
-(defcustom awesome-tab-separator (list 0.2)
-  "Separator used between tabs.
-The variable `awesome-tab-separator-widget' gives details on this widget."
-  :group 'awesome-tab
-  :type awesome-tab-separator-widget
-  :set '(lambda (variable value)
-          (custom-set-default variable value)
-          ;; Schedule refresh of separator value.
-          (setq awesome-tab-separator-value nil)))
 
 (defvar awesome-tab-height 22)
 (defvar awesome-tab-style-left (powerline-wave-right 'awesome-tab-default nil awesome-tab-height))
@@ -866,36 +800,10 @@ element."
                       'face 'awesome-tab-button
                       'pointer 'arrow)))))
 
-(defun awesome-tab-line-separator ()
-  "Return the display representation of a tab bar separator.
-That is, a propertized string used as an `header-line-format' template
-element."
-  (let ((image (awesome-tab-find-image (cdr awesome-tab-separator))))
-    ;; Cache the separator display value in variable
-    ;; `awesome-tab-separator-value'.
-    (setq awesome-tab-separator-value
-          (cond
-           (image
-            (propertize " "
-                        'face 'awesome-tab-separator
-                        'pointer 'arrow
-                        'display (awesome-tab-normalize-image image)))
-           ((numberp (car awesome-tab-separator))
-            (propertize " "
-                        'face 'awesome-tab-separator
-                        'pointer 'arrow
-                        'display (list 'space
-                                       :width (car awesome-tab-separator))))
-           ((propertize (or (car awesome-tab-separator) " ")
-                        'face 'awesome-tab-separator
-                        'pointer 'arrow))))
-    ))
-
 (defsubst awesome-tab-line-buttons (tabset)
   "Return a list of propertized strings for tab bar buttons.
 TABSET is the tab set used to choose the appropriate buttons."
   (list
-   (cdr awesome-tab-home-button-value)
    (if (> (awesome-tab-start tabset) 0)
        (car awesome-tab-scroll-left-button-value)
      (cdr awesome-tab-scroll-left-button-value))
@@ -903,7 +811,7 @@ TABSET is the tab set used to choose the appropriate buttons."
           (1- (length (awesome-tab-tabs tabset))))
        (car awesome-tab-scroll-right-button-value)
      (cdr awesome-tab-scroll-right-button-value))
-   awesome-tab-separator-value))
+   ))
 
 (defsubst awesome-tab-line-tab (tab)
   "Return the display representation of tab TAB.
@@ -921,19 +829,15 @@ Call `awesome-tab-tab-label-function' to obtain a label for TAB."
                      'awesome-tab-selected
                    'awesome-tab-unselected)
            'pointer 'hand)
-          awesome-tab-separator-value))
+          ))
 
 (defun awesome-tab-line-format (tabset)
   "Return the `header-line-format' value to display TABSET."
   (let* ((sel (awesome-tab-selected-tab tabset))
          (tabs (awesome-tab-view tabset))
-         (padcolor (awesome-tab-background-color))
+         (padcolor awesome-tab-background-color)
          atsel elts)
     ;; Initialize buttons and separator values.
-    (or awesome-tab-separator-value
-        (awesome-tab-line-separator))
-    (or awesome-tab-home-button-value
-        (awesome-tab-line-button 'home))
     (or awesome-tab-scroll-left-button-value
         (awesome-tab-line-button 'scroll-left))
     (or awesome-tab-scroll-right-button-value
@@ -988,10 +892,9 @@ Call `awesome-tab-tab-label-function' to obtain a label for TAB."
 
 (defun awesome-tab-line ()
   "Return the header line templates that represent the tab bar.
-Inhibit display of the tab bar in current window if any of the
-`awesome-tab-inhibit-functions' return non-nil."
+Inhibit display of the tab bar in current window `awesome-tab-hide-tab-function' return nil."
   (cond
-   ((run-hook-with-args-until-success 'awesome-tab-inhibit-functions)
+   ((not (funcall awesome-tab-hide-tab-function (current-buffer)))
     ;; Don't show the tab bar.
     (setq header-line-format nil))
    ((awesome-tab-current-tabset t)
@@ -1001,16 +904,6 @@ Inhibit display of the tab bar in current window if any of the
 
 (defconst awesome-tab-header-line-format '(:eval (awesome-tab-line))
   "The tab bar header line format.")
-
-(defun awesome-tab-default-inhibit-function ()
-  "Inhibit display of the tab bar in specified windows.
-That is dedicated windows, and `checkdoc' status windows."
-  (or (window-dedicated-p (selected-window))
-      (member (buffer-name)
-              (list " *Checkdoc Status*"
-                    (if (boundp 'ispell-choices-buffer)
-                        ispell-choices-buffer
-                      "*Choices*")))))
 
 ;;; Cyclic navigation through tabs
 ;;
@@ -1262,19 +1155,6 @@ Returns non-nil if the new state is enabled.
   "Display buffers in the tab bar."
   :group 'awesome-tab)
 
-(defcustom awesome-tab-buffer-home-button (quote (("") ""))
-  "The home button displayed when showing buffer tabs.
-The enabled button value is displayed when showing tabs for groups of
-buffers, and the disabled button value is displayed when showing
-buffer tabs.
-The variable `awesome-tab-button-widget' gives details on this widget."
-  :group 'awesome-tab-buffer
-  :type awesome-tab-button-widget
-  :set '(lambda (variable value)
-          (custom-set-default variable value)
-          ;; Schedule refresh of button value.
-          (setq awesome-tab-home-button-value nil)))
-
 (defvar awesome-tab-buffer-list-function 'awesome-tab-buffer-list
   "Function that returns the list of buffers to show in tabs.
 That function is called with no arguments and must return a list of
@@ -1294,7 +1174,7 @@ group.  Notice that it is better that a buffer belongs to one group.")
 Exclude buffers whose name starts with a space, when they are not
 visiting a file.  The current buffer is always included."
   (awesome-tab-filter
-   'awesome-tab-hide-tab-function
+   awesome-tab-hide-tab-function
    (delq nil
          (mapcar #'(lambda (b)
                      (cond
@@ -1373,9 +1253,7 @@ Return the the first group where the current buffer is."
 
 (defsubst awesome-tab-buffer-show-groups (flag)
   "Set display of tabs for groups of buffers to FLAG."
-  (setq awesome-tab--buffer-show-groups flag
-        ;; Redisplay the home button.
-        awesome-tab-home-button-value nil))
+  (setq awesome-tab--buffer-show-groups flag))
 
 (defun awesome-tab-buffer-tabs ()
   "Return the buffers to display on the tab bar, in a tab set."
@@ -1395,23 +1273,6 @@ by the variable `awesome-tab-button-label'.
 When NAME is 'home, return a different ENABLED button if showing tabs
 or groups.  Call the function `awesome-tab-button-label' otherwise."
   (let ((lab (awesome-tab-button-label name)))
-    (when (eq name 'home)
-      (let* ((btn awesome-tab-buffer-home-button)
-             (on  (awesome-tab-find-image (cdar btn)))
-             (off (awesome-tab-find-image (cddr btn))))
-        ;; When `awesome-tab-buffer-home-button' does not provide a value,
-        ;; default to the enabled value of `awesome-tab-home-button'.
-        (if on
-            (awesome-tab-normalize-image on 1)
-          (setq on (get-text-property 0 'display (car lab))))
-        (if off
-            (awesome-tab-normalize-image off 1)
-          (setq off (get-text-property 0 'display (car lab))))
-        (setcar lab
-                (if awesome-tab--buffer-show-groups
-                    (propertize (or (caar btn) (car lab)) 'display on)
-                  (propertize (or (cadr btn) (car lab)) 'display off)))
-        ))
     lab))
 
 (defun awesome-tab-buffer-tab-label (tab)
@@ -1454,7 +1315,7 @@ first."
                (setq found t)
              (setq sibling (car bl)))
            (setq bl (cdr bl)))
-         (when (and (setq sibling (or (car bl) sibling))
+         (when (and (setq sibling (or sibling (car bl) ))
                     (buffer-live-p sibling))
            ;; Move sibling buffer in front of the buffer list.
            (save-current-buffer
@@ -1785,16 +1646,90 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
            (awesome-tab-get-groups)
            :action #'awesome-tab-switch-group))))
 
-(defun awesome-tab-hide-tab-function (x)
+(defun awesome-tab-hide-tab (x)
   (let ((name (format "%s" x)))
     (and
+     ;; Current window is not dedicated window.
+     (not (window-dedicated-p (selected-window)))
+
+     ;; Buffer name not match below blacklist.
      (not (string-prefix-p "*epc" name))
      (not (string-prefix-p "*helm" name))
      (not (string-prefix-p "*Compile-Log*" name))
      (not (string-prefix-p "*lsp" name))
+
+     ;; Is not magit buffer.
      (not (and (string-prefix-p "magit" name)
                (not (file-name-extension name))))
      )))
+
+
+(defvar awesome-tab-last-focus-buffer nil
+  "The last focus buffer.")
+
+(defvar awesome-tab-last-focus-buffer-group nil
+  "The group name of last focus buffer.")
+
+(defun awesome-tab-remove-nth-element (nth list)
+  (if (zerop nth) (cdr list)
+    (let ((last (nthcdr (1- nth) list)))
+      (setcdr last (cddr last))
+      list)))
+
+(defun awesome-tab-insert-after (list aft-el el)
+  "Insert EL after AFT-EL in LIST."
+  (push el (cdr (member aft-el list)))
+  list)
+
+(defun awesome-tab-insert-before (list bef-el el)
+  "Insert EL before BEF-EL in LIST."
+  (nreverse (awesome-tab-insert-after (nreverse list) bef-el el)))
+
+(defvar awesome-tab-adjust-buffer-order-function 'awesome-tab-adjust-buffer-order
+  "Function to adjust buffer order after switch tab.
+Default is `awesome-tab-adjust-buffer-order', you can write your own rule.")
+
+(defun awesome-tab-adjust-buffer-order ()
+  "Put the two buffers switched to the adjacent position after current buffer changed."
+  ;; Just continue when buffer changed.
+  (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
+             (not (minibufferp)))
+    (let* ((current (current-buffer))
+           (previous awesome-tab-last-focus-buffer)
+           (current-group (first (funcall awesome-tab-buffer-groups-function))))
+      ;; Record last focus buffer.
+      (setq awesome-tab-last-focus-buffer current)
+
+      ;; Just continue if two buffers are in same group.
+      (when (eq current-group awesome-tab-last-focus-buffer-group)
+        (let* ((bufset (awesome-tab-get-tabset current-group))
+               (current-group-tabs (awesome-tab-tabs bufset))
+               (current-group-buffers (mapcar 'car current-group-tabs))
+               (current-buffer-index (cl-position current current-group-buffers))
+               (previous-buffer-index (cl-position previous current-group-buffers)))
+
+          ;; If the two tabs are not adjacent, swap the positions of the two tabs.
+          (when (and current-buffer-index
+                     previous-buffer-index
+                     (> (abs (- current-buffer-index previous-buffer-index)) 1))
+            (let* ((copy-group-tabs (copy-list current-group-tabs))
+                   (previous-tab (nth previous-buffer-index copy-group-tabs))
+                   (current-tab (nth current-buffer-index copy-group-tabs))
+                   (base-group-tabs (awesome-tab-remove-nth-element previous-buffer-index copy-group-tabs))
+                   (new-group-tabs
+                    (if (> current-buffer-index previous-buffer-index)
+                        (awesome-tab-insert-before base-group-tabs current-tab previous-tab)
+                      (awesome-tab-insert-after base-group-tabs current-tab previous-tab))))
+              (set bufset new-group-tabs)
+              (awesome-tab-set-template bufset nil)
+              (awesome-tab-display-update)
+              ))))
+
+      ;; Update the group name of the last access tab.
+      (setq awesome-tab-last-focus-buffer-group current-group)
+      )))
+
+(add-hook 'post-command-hook awesome-tab-adjust-buffer-order-function)
 
 (provide 'awesome-tab)
 

@@ -21,8 +21,7 @@
   (list
    (cond
     ((or (string-match-p "\\*scratch-.*" (buffer-name))
-         (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
-         )
+         (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode))
      "Term")
     ((string-match-p (rx (or
                           "\*Helm"
@@ -38,14 +37,13 @@
     ((not (vmacs-show-tabbar-p)) nil)
     (t "Common"))))
 
-(defun vmacs-awesome-tab-buffer-list ()
-  "Return the list of buffers to show in tabs.
-only show eshell-mode term-mode and shell-mode."
-  (awesome-tab-filter
-   #'vmacs-show-tabbar-p
-   (buffer-list)))
-
-(setq awesome-tab-buffer-list-function 'vmacs-awesome-tab-buffer-list)
+;; (defun vmacs-awesome-tab-buffer-list ()
+;;   "Return the list of buffers to show in tabs.
+;; only show eshell-mode term-mode and shell-mode."
+;;   (awesome-tab-filter
+;;    #'vmacs-show-tabbar-p
+;;    (buffer-list)))
+;; (setq awesome-tab-buffer-list-function 'vmacs-awesome-tab-buffer-list)
 
 (defun vmacs-show-tabbar-p(&optional buf redisplay)
   (let ((show t))
@@ -61,14 +59,53 @@ only show eshell-mode term-mode and shell-mode."
       (unless show
         ;; (kill-local-variable 'header-line-format)
         (setq header-line-format nil)
-        ;; (when redisplay (redisplay t))
+        (when redisplay (redisplay t))
         )
       show)))
 
-(defun vmacs-awesome-tab-inhibit-function()
-  (not (vmacs-show-tabbar-p (current-buffer) t)))
+(defun vmacs-hide-tab-p(buf)
+  (vmacs-show-tabbar-p buf t))
 
-(setq awesome-tab-inhibit-functions '(vmacs-awesome-tab-inhibit-function))
+(setq awesome-tab-hide-tab-function #'vmacs-hide-tab-p)
+
+(defun vmacs-awesome-buffer-order ()
+  "Put the two buffers switched to the adjacent position after current buffer changed."
+  ;; Just continue when buffer changed.
+  (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
+             (not (minibufferp)))
+    (let* ((current (current-buffer))
+           (previous awesome-tab-last-focus-buffer)
+           (current-group (first (funcall awesome-tab-buffer-groups-function))))
+      ;; Record last focus buffer.
+      (setq awesome-tab-last-focus-buffer current)
+
+      ;; Just continue if two buffers are in same group.
+      (when (eq current-group awesome-tab-last-focus-buffer-group)
+        (let* ((bufset (awesome-tab-get-tabset current-group))
+               (current-group-tabs (awesome-tab-tabs bufset))
+               (current-group-buffers (mapcar 'car current-group-tabs))
+               (current-buffer-index (cl-position current current-group-buffers))
+               (previous-buffer-index (cl-position previous current-group-buffers)))
+
+          ;; If the two tabs are not adjacent, swap the positions of the two tabs.
+          (when (and current-buffer-index
+                     previous-buffer-index
+                     (> (abs (- current-buffer-index previous-buffer-index)) 1))
+            (let* ((copy-group-tabs (copy-list current-group-tabs))
+                   (previous-tab (nth previous-buffer-index copy-group-tabs))
+                   (current-tab (nth current-buffer-index copy-group-tabs))
+                   (base-group-tabs (awesome-tab-remove-nth-element current-buffer-index copy-group-tabs))
+                   (new-group-tabs (awesome-tab-insert-after base-group-tabs previous-tab current-tab)))
+              (set bufset new-group-tabs)
+              (awesome-tab-set-template bufset nil)
+              (awesome-tab-display-update)
+              ))))
+
+      ;; Update the group name of the last access tab.
+      (setq awesome-tab-last-focus-buffer-group current-group)
+      )))
+
+(setq awesome-tab-adjust-buffer-order-function #'vmacs-awesome-buffer-order)
 
 (defun aweome-tab-make-frame-hook(&optional f) ;emacsclient 打开的窗口相关的设置
   (with-selected-frame (or f (selected-frame))
