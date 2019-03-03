@@ -26,6 +26,12 @@
 (defadvice evil-ex-search-stop-session(after clean-yank-work activate)
   (setq evil-ex-search-yank-point nil))
 
+(defadvice evil-ex-search(after highlight-matched activate)
+  (unless evil-ex-search-persistent-highlight
+    (sit-for 0.1)
+    (evil-ex-delete-hl 'evil-ex-search)))
+
+
 
 (provide 'conf-evil-search)
 
