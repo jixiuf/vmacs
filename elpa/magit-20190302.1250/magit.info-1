@@ -31,7 +31,7 @@ to perform almost all of their daily version control tasks directly from
 within Emacs.  While many fine Git clients exist, only Magit and Git
 itself deserve to be called porcelains.
 
-This manual is for Magit version 2.90.1 (v2.90.1-259-g0d59db318+1).
+This manual is for Magit version 2.90.1 (v2.90.1-275-g3e73ff19d+1).
 
      Copyright (C) 2015-2019 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -4246,7 +4246,7 @@ transient using the default binding.
 
    Note that not all of the following suffixes are available at all
 times.  For example if ‘magit-blame-mode’ is not enabled, then the
-command whose purpose is to turn of that mode would not be of any use
+command whose purpose is to turn off that mode would not be of any use
 and therefore isn’t available.
 
 ‘C-c M-g b’     (‘magit-blame-addition’)

@@ -600,6 +600,8 @@ history element.
 
 ;;;### (autoloads nil "magit-diff" "magit-diff.el" (0 0 0 0))
 ;;; Generated autoloads from magit-diff.el
+ (autoload 'magit-diff "magit-diff" nil t)
+ (autoload 'magit-diff-refresh "magit-diff" nil t)
 
 (autoload 'magit-diff-dwim "magit-diff" "\
 Show changes for the thing at point.
@@ -1283,6 +1285,8 @@ beginning of the line.
 
 ;;;### (autoloads nil "magit-log" "magit-log.el" (0 0 0 0))
 ;;; Generated autoloads from magit-log.el
+ (autoload 'magit-log "magit-log" nil t)
+ (autoload 'magit-log-refresh "magit-log" nil t)
 
 (autoload 'magit-log-current "magit-log" "\
 Show log for the current branch.

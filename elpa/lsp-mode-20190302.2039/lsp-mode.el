@@ -35,6 +35,7 @@
 (require 'cl-lib)
 (require 'compile)
 (require 'dash)
+(require 'dash-functional)
 (require 'em-glob)
 (require 'f)
 (require 'filenotify)
@@ -384,7 +385,6 @@ If set to `:none' neither of two will be enabled."
   :group 'lsp-mode)
 
 (defvar-local lsp--flymake-report-fn nil)
-(defvar-local lsp--flymake-report-pending nil)
 
 (defvar lsp-language-id-configuration '((java-mode . "java")
                                         (python-mode . "python")
@@ -525,6 +525,11 @@ must be used for handling a particular message.")
 (cl-defgeneric lsp-execute-command (server command arguments)
   "Ask SERVER to execute COMMAND with ARGUMENTS.")
 
+;; define seq-first for older emacs
+(defun seq-first (sequence)
+  "Return the first element of SEQUENCE."
+  (seq-elt sequence 0))
+
 (defun lsp--info (format &rest args)
   "Display lsp info message with FORMAT with ARGS."
   (message "%s :: %s" (propertize "LSP" 'face 'success) (apply #'format format args)))
@@ -592,36 +597,47 @@ FORMAT and ARGS i the same as for `message'."
   "Merge RESULTS by filtering the empty hash-tables and merging the lists.
 METHOD is the executed method so the results could be merged
 depending on it."
-  (pcase  (-filter 'identity results)
+  (pcase  (seq-remove #'null results)
     (`() ())
     ;; only one result - simply return it
     (`(,fst) fst)
     ;; multiple results merge it based on stragegy
     (results
      (pcase method
-       ("textDocument/hover" (let ((results (--filter (not (hash-table-empty-p it)) results)))
+       ("textDocument/hover" (let ((results (seq-filter
+                                             (-compose #'not #'hash-table-empty-p)
+                                             results)))
                                (if (not (cdr results))
                                    (car results)
                                  (let ((merged (make-hash-table :test 'equal)))
-                                   (--each results
-                                     (let ((to-add (gethash "contents" it)))
-                                       (puthash "contents" (append (if (and (sequencep to-add)
-                                                                            (not (stringp to-add)))
-                                                                       to-add
-                                                                     (list to-add))
-                                                                   (gethash "contents" merged))
-                                                merged)))
+                                   (seq-each
+                                    (lambda (it)
+                                      (let ((to-add (gethash "contents" it)))
+                                        (puthash "contents"
+                                                 (append
+                                                  (if (and (sequencep to-add)
+                                                           (not (stringp to-add)))
+                                                      to-add
+                                                    (list to-add))
+                                                  (gethash "contents" merged))
+                                                 merged)))
+                                    results)
                                    merged))))
        ("textDocument/completion"
         (ht
          ;; any incomplete
-         ("isIncomplete" (--some? (and (ht? it) (gethash "isIncomplete" it))
-                                  results))
-         ("items" (apply 'append (--map (if (ht? it) (gethash "items" it) it) results)))))
-       (_ (apply 'append (--map (if (or (listp it) (vectorp it))
-                                    it
-                                  (list it))
-                                results)))))))
+         ("isIncomplete" (seq-some
+                          (-andfn #'ht? (-partial 'gethash "isIncomplete"))
+                          results))
+         ("items" (apply 'append (seq-map
+                                  (lambda (it)
+                                    (if (ht? it) (gethash "items" it) it))
+                                  results)))))
+       (_ (apply 'append (seq-map (lambda (it)
+                                    (if (seqp it)
+                                        it
+                                      (list it)))
+                                  results)))))))
 (defun lsp--spinner-start ()
   "Start spinner indication."
   (condition-case _err (spinner-start 'progress-bar-filled) (error)))
@@ -946,10 +962,10 @@ PARAMS - the data sent from WORKSPACE."
   "Display a message request to the user and send the user's selection back to the server."
   (let* ((type (gethash "type" params))
          (message (lsp--propertize (gethash "message" params) type))
-         (choices (mapcar (lambda (choice) (gethash "title" choice))
-                          (gethash "actions" params))))
+         (choices (seq-map (-partial 'gethash "title")
+                           (gethash "actions" params))))
     (if choices
-        (completing-read (concat message " ") choices nil t)
+        (completing-read (concat message " ") (seq-into choices 'list) nil t)
       (lsp-log message))))
 
 (defun lsp-diagnostics ()
@@ -1010,7 +1026,7 @@ WORKSPACE is the workspace that contains the diagnostics."
 
     (if diagnostics
         (when (or lsp-report-if-no-buffer buffer)
-          (puthash file (mapcar #'lsp--make-diag diagnostics) workspace-diagnostics))
+          (puthash file (seq-map #'lsp--make-diag diagnostics) workspace-diagnostics))
       (remhash file workspace-diagnostics))
 
     (when buffer
@@ -1030,14 +1046,22 @@ WORKSPACE is the workspace that contains the diagnostics."
 
   (defun lsp--flymake-after-diagnostics ()
     "Handler for `lsp-after-diagnostics-hook'"
-    (when lsp--flymake-report-fn
-      (lsp--flymake-backend lsp--flymake-report-fn)
-      (remove-hook 'lsp-after-diagnostics-hook 'lsp--flymake-after-diagnostics t)))
+    (cond
+     ((and lsp--flymake-report-fn flymake-mode)
+      (lsp--flymake-update-diagnostics))
+     ((not flymake-mode)
+      (setq lsp--flymake-report-fn nil))))
 
   (defun lsp--flymake-backend (report-fn &rest _args)
     "Flymake backend."
-    (setq lsp--flymake-report-fn report-fn)
-    (funcall report-fn
+    (let ((first-run (null lsp--flymake-report-fn)))
+      (setq lsp--flymake-report-fn report-fn)
+      (when first-run
+        (lsp--flymake-update-diagnostics))))
+
+  (defun lsp--flymake-update-diagnostics ()
+    "Report new diagnostics to flymake."
+    (funcall lsp--flymake-report-fn
              (-some->> (lsp-diagnostics)
                        (gethash buffer-file-name)
                        (--map (-let* (((&hash "message" "severity" "range") (lsp-diagnostic-original it))
@@ -1052,8 +1076,12 @@ WORKSPACE is the workspace that contains the diagnostics."
                                                          (case severity
                                                            (1 :error)
                                                            (2 :warning)
-                                                           (_ :note))
-                                                         message)))))))
+                                                           (t :note))
+                                                         message))))
+             ;; This :region keyword forces flymake to delete old diagnostics in
+             ;; case the buffer hasn't changed since the last call to the report
+             ;; function. See https://github.com/joaotavora/eglot/issues/159
+             :region (cons (point-min) (point-max)))))
 
 (defun lsp--ht-get (tbl &rest keys)
   "Get nested KEYS in TBL."
@@ -1192,7 +1220,7 @@ version."
   (puthash backend (cons version lenses) lsp--lens-data)
 
   (-let [backend-data (->> lsp--lens-data ht-values (-filter #'cl-rest))]
-    (when (-all? (-lambda ((version))
+    (when (seq-every-p (-lambda ((version))
                    (eq version lsp--cur-version))
                  backend-data)
       ;; display the data only when the backends have reported data for the
@@ -1203,17 +1231,19 @@ version."
   "Display lenses in the buffer."
   (interactive)
   (->> (lsp-request "textDocument/codeLens"
-                    `(:textDocument (:uri ,(lsp--path-to-uri buffer-file-name))))
-       (--map (if (gethash "command" it)
-                  it
-                (lsp-request "codeLens/resolve" it)))
+                    `(:textDocument (:uri
+                                     ,(lsp--path-to-uri buffer-file-name))))
+       (seq-map (lambda (it)
+                  (if (gethash "command" it)
+                      it
+                    (lsp-request "codeLens/resolve" it))))
        lsp--lens-display))
 
 (defun lsp-lens-hide ()
   "Delete all lenses."
   (interactive)
   (let ((scroll-preserve-screen-position t))
-    (mapc 'delete-overlay lsp--lens-overlays)
+    (seq-do 'delete-overlay lsp--lens-overlays)
     (setq-local lsp--lens-overlays nil)))
 
 (defun lsp--lens-backend-not-loaded? (lens)
@@ -1237,17 +1267,20 @@ TICK is the buffer modified tick. If it does not match
 updates must be discarded..
 CALLBACK - the callback for the lenses.
 FILE-VERSION - the version of the file."
-  (--each (-filter #'lsp--lens-backend-not-loaded? lenses)
-    (with-lsp-workspace (gethash "workspace" it)
+  (seq-each
+   (lambda (it)
+     (with-lsp-workspace
+      (gethash "workspace" it)
       (puthash "pending" t it)
       (remhash "workspace" it)
       (lsp-request-async "codeLens/resolve" it
                          (lambda (lens)
                            (remhash "pending" it)
                            (puthash "command" (gethash "command" lens) it)
-                           (when (-all? #'lsp--lens-backend-present? lenses)
+                           (when (seq-every-p #'lsp--lens-backend-present? lenses)
                              (funcall callback lenses file-version)))
-                         :mode 'tick))))
+                         :mode 'tick)))
+    (seq-filter #'lsp--lens-backend-not-loaded? lenses)))
 
 (defun lsp-lens-backend (modified? callback)
   "Lenses backend using `textDocument/codeLens'.
@@ -1738,7 +1771,7 @@ disappearing, unset all the variables related to it."
   `(
     :workspace (:workspaceEdit (
                                 :documentChanges t
-                                :resourceOperations ("create" "rename" "delete"))
+                                :resourceOperations ["create" "rename" "delete"])
                                :applyEdit t
                                :symbol (:symbolKind (:valueSet ,(apply 'vector (number-sequence 1 26))))
                                :executeCommand (:dynamicRegistration :json-false)
@@ -1756,7 +1789,8 @@ disappearing, unset all the variables related to it."
                    :codeAction (:dynamicRegistration t)
                    :completion (:completionItem (:snippetSupport ,(if lsp-enable-snippet t :json-false)))
                    :signatureHelp (:signatureInformation (:parameterInformation (:labelOffsetSupport t)))
-                   :documentLink (:dynamicRegistration t))))
+                   :documentLink (:dynamicRegistration t)
+                   :hover (:contentFormat ["plaintext" "markdown"]))))
 
 (defun lsp--server-register-capability (reg)
   "Register capability REG."
@@ -1988,14 +2022,16 @@ interface Range {
 
 (defun lsp--check-document-changes-version (document-changes)
   "Verify that DOCUMENT-CHANGES have the proper version."
-  (unless (--every?
-           (or
-            (not (gethash "textDocument" it))
-            (let* ((ident (gethash "textDocument" it))
-                   (filename (lsp--uri-to-path (gethash "uri" ident)))
-                   (version (gethash "version" ident)))
-              (with-current-buffer (find-file-noselect filename)
-                (or (null version) (zerop version) (equal version (lsp--cur-file-version))))))
+  (unless (seq-every-p
+           (lambda (it)
+             (or
+              (not (gethash "textDocument" it))
+              (let* ((ident (gethash "textDocument" it))
+                     (filename (lsp--uri-to-path (gethash "uri" ident)))
+                     (version (gethash "version" ident)))
+                (with-current-buffer (find-file-noselect filename)
+                  (or (null version) (zerop version)
+                      (equal version lsp--cur-version))))))
            document-changes)
     (error "Document changes cannot be applied")))
 
@@ -2070,8 +2106,9 @@ interface TextDocumentEdit {
   ;; We reverse the initial list and sort stably to make sure the order among
   ;; edits with the same position is preserved.
   (atomic-change-group
-    (mapc #'lsp--apply-text-edit
-          (sort (nreverse edits) #'lsp--text-edit-sort-predicate))))
+    (seq-each #'lsp--apply-text-edit
+              (seq-sort #'lsp--text-edit-sort-predicate
+                        (nreverse edits)))))
 
 (defun lsp--apply-text-edit (text-edit)
   "Apply the edits described in the TextEdit object in TEXT-EDIT."
@@ -2374,7 +2411,7 @@ if it's closing the last buffer in the workspace."
             `(:textDocument ,(lsp--versioned-text-document-identifier))))
          (when (and (not lsp-keep-workspace-alive)
                     (not keep-workspace-alive)
-                    (hash-table-empty-p old-buffers))
+                    (not (lsp--workspace-buffers lsp--cur-workspace)))
            (setf (lsp--workspace-shutdown-action lsp--cur-workspace) 'shutdown)
            (lsp--shutdown-workspace)))))))
 
@@ -2479,10 +2516,9 @@ https://microsoft.github.io/language-server-protocol/specification#textDocument_
             (let* ((resp (lsp-request "textDocument/completion"
                                       (lsp--text-document-position-params)))
                    (items (cond
-                           ((null resp) nil)
-                           ((hash-table-p resp) (gethash "items" resp nil))
-                           ((sequencep resp) resp))))
-              (seq-map #'lsp--make-completion-item items))))
+                           ((seqp resp) resp)
+                           ((hash-table-p resp) (gethash "items" resp nil)))))
+              (seq-into (seq-map #'lsp--make-completion-item items) 'list))))
        :annotation-function #'lsp--annotate))))
 
 (defun lsp--sort-string (c)
@@ -2531,7 +2567,7 @@ https://microsoft.github.io/language-server-protocol/specification#textDocument_
 
 (defun lsp--locations-to-xref-items (locations)
   "Return a list of `xref-item' from Location[] or LocationLink[]."
-  (when locations
+  (unless (seq-empty-p locations)
     (cl-labels ((get-xrefs-in-file
                  (file-locs location-link)
                  (let* ((filename (car file-locs))
@@ -2549,11 +2585,17 @@ https://microsoft.github.io/language-server-protocol/specification#textDocument_
                          (insert-file-contents-literally filename)
                          (mapcar fn (cdr file-locs))))))))
       (apply #'append
-             (if (gethash "uri" (car locations))
-                 (--map (get-xrefs-in-file it nil)
-                        (--group-by (lsp--uri-to-path (gethash "uri" it)) locations))
-               (--map (get-xrefs-in-file it t)
-                      (--group-by (lsp--uri-to-path (gethash "targetUri" it)) locations)))))))
+             (if (gethash "uri" (seq-first locations))
+                 (seq-map
+                  (-rpartial #'get-xrefs-in-file nil)
+                  (seq-group-by
+                   (-compose #'lsp--uri-to-path (-partial 'gethash "uri"))
+                   locations))
+               (seq-map
+                (-rpartial #'get-xrefs-in-file t)
+                (seq-group-by
+                 (-compose #'lsp--uri-to-path (-partial 'gethash "targetUri"))
+                 locations)))))))
 
 (defun lsp--make-reference-params (&optional td-position include-declaration)
   "Make a ReferenceParam object.
@@ -2663,8 +2705,11 @@ RENDER-ALL - nil if only the signature should be rendered."
       #'lsp--render-element
       (if render-all
           contents
-        (--filter (and (hash-table-p it) (lsp-get-renderer (gethash "language" it)))
-                  contents)))
+        ;; Only render contents that have an available renderer.
+        (seq-filter
+         (-andfn 'hash-table-p
+                 (-compose #'lsp-get-renderer (-partial 'gethash "language")))
+         contents)))
      "\n")))
 
 (defvar-local lsp--hover-saved-bounds nil)
@@ -2678,13 +2723,15 @@ RENDER-ALL - nil if only the signature should be rendered."
                        "signatures") signature-help)
                (signature (seq-elt signatures (or active-signature-index 0)))
                (result (lsp--fontlock-with-mode (gethash "label" signature) major-mode)))
-    (-when-let* ((selected-param-label (-some->> (gethash "parameters" signature)
-                                                 (nth active-parameter)
-                                                 (gethash "label")))
+    (-when-let* (((&hash "parameters" parameters) signature)
+                 (param (seq-elt parameters active-parameter))
+                 (selected-param-label (-some->> param (gethash "label")))
                  (start (if (stringp selected-param-label)
                             (s-index-of selected-param-label result)
-                          (car selected-param-label)))
-                 (end (if (stringp selected-param-label) (+ start (length selected-param-label)) (cadr selected-param-label))))
+                          (seq-first selected-param-label)))
+                 (end (if (stringp selected-param-label)
+                          (+ start (length selected-param-label))
+                        (seq-last selected-param-label))))
       (add-face-text-property start end 'eldoc-highlight-function-argument nil result))
     result))
 
@@ -2735,10 +2782,14 @@ RENDER-ALL - nil if only the signature should be rendered."
 (defun lsp--select-action (actions)
   "Select an action to execute from ACTIONS."
   (cond
-   ((not actions) (user-error "No actions to select from"))
-   ((and (not (cdr actions)) lsp-auto-execute-action) (car actions))
-   (t (lsp--completing-read "Select code action: " actions
-                            (-lambda ((&hash "title" "command")) (or title command)) nil t))))
+   ((seq-empty-p actions) (user-error "No actions to select from"))
+   ((and (eq (seq-length actions) 1) lsp-auto-execute-action)
+    (seq-first actions))
+   (t (lsp--completing-read "Select code action: "
+                            (seq-into actions 'list)
+                            (-lambda ((&hash "title" "command"))
+                              (or title command))
+                            nil t))))
 
 (defun lsp--find-action-handler (command)
   "Find action handler for particular COMMAND."
@@ -2850,7 +2901,7 @@ A reference is highlighted only if it is visible in a window."
   (lambda (highlights)
     (with-current-buffer buf
       (lsp--remove-cur-overlays)
-      (when (and highlights (/= (length highlights) 0))
+      (when (/= (seq-length highlights) 0)
         (let* ((windows-on-buffer (get-buffer-window-list nil nil 'visible))
                (overlays (lsp--workspace-highlight-overlays lsp--cur-workspace))
                (buf-overlays (gethash (current-buffer) overlays))
@@ -2954,7 +3005,7 @@ A reference is highlighted only if it is visible in a window."
 (cl-defmethod xref-backend-identifier-completion-table ((_backend (eql xref-lsp)))
   (let ((json-false :json-false)
         (symbols (lsp--get-document-symbols)))
-    (seq-map #'lsp--symbol-info-to-identifier (-filter 'identity symbols))))
+    (seq-map #'lsp--symbol-info-to-identifier (seq-remove 'null symbols))))
 
 (cl-defmethod xref-backend-definitions ((_backend (eql xref-lsp)) identifier)
   (let* ((maybeparams (get-text-property 0 'def-params identifier))
@@ -2978,8 +3029,8 @@ A reference is highlighted only if it is visible in a window."
     (lsp--locations-to-xref-items refs)))
 
 (cl-defmethod xref-backend-apropos ((_backend (eql xref-lsp)) pattern)
-  (mapcar #'lsp--symbol-information-to-xref
-          (lsp-request "workspace/symbol" `(:query ,pattern))))
+  (seq-map #'lsp--symbol-information-to-xref
+           (lsp-request "workspace/symbol" `(:query ,pattern))))
 
 (defun lsp--get-symbol-to-rename ()
   "Get synbol at point."

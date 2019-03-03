@@ -277,6 +277,7 @@ CURRENT is non-nil when the point is on the symbol."
             (overlay-put ov 'current current)
             (overlay-put ov 'after-string final-string)
             (overlay-put ov 'window (get-buffer-window))
+            (overlay-put ov 'kind 'info)
             (push ov lsp-ui-sideline--ovs)))))))
 
 (defun lsp-ui-sideline--toggle-current (ov current)
@@ -321,6 +322,7 @@ CURRENT is non-nil when the point is on the symbol."
                (ov (and pos-ov (make-overlay pos-ov pos-ov))))
           (when pos-ov
             (overlay-put ov 'after-string string)
+            (overlay-put ov 'kind 'diagnotics)
             (push ov lsp-ui-sideline--ovs)))))))
 
 (defvar-local lsp-ui-sideline--code-actions nil)
@@ -341,6 +343,11 @@ CURRENT is non-nil when the point is on the symbol."
 (defun lsp-ui-sideline--code-actions (actions)
   "Show code ACTIONS."
   (setq lsp-ui-sideline--code-actions actions)
+  (dolist (ov lsp-ui-sideline--ovs)
+    (when (eq (overlay-get ov 'kind) 'actions)
+      (setq lsp-ui-sideline--occupied-lines
+            (delq (overlay-get ov 'position) lsp-ui-sideline--occupied-lines))
+      (delete-overlay ov)))
   (seq-doseq (action actions)
     (-let* ((title (->> (gethash "title" action)
                         (replace-regexp-in-string "[\n\t ]+" " ")
@@ -362,6 +369,8 @@ CURRENT is non-nil when the point is on the symbol."
             (ov (and pos-ov (make-overlay pos-ov pos-ov))))
       (when pos-ov
         (overlay-put ov 'after-string string)
+        (overlay-put ov 'kind 'actions)
+        (overlay-put ov 'position pos-ov)
         (push ov lsp-ui-sideline--ovs)))))
 
 (defun lsp-ui-sideline--calculate-tag()
@@ -417,13 +426,21 @@ to the language server."
                 ;; Skip strings and comments
                 (when (and symbol (not in-string) outside-comment)
                   (push (list symbol tag bounds (lsp--position (1- line-widen) (- (point) bol))) symbols))))
-            (dolist (entry symbols)
-              (-let [(symbol tag bounds position) entry]
+            (--each-indexed symbols
+              (-let (((symbol tag bounds position) it)
+                     (index it-index))
                 (lsp--send-request-async
                  (lsp--make-request
                   "textDocument/hover"
                   (list :textDocument doc-id :position position))
-                 (lambda (info) (if info (lsp-ui-sideline--push-info symbol tag bounds info))))))))))))
+                 (lambda (info)
+                   (when (eq index 0)
+                     (setq lsp-ui-sideline--occupied-lines
+                           (--remove (> it (point)) lsp-ui-sideline--occupied-lines))
+                     (dolist (ov lsp-ui-sideline--ovs)
+                       (when (eq (overlay-get ov 'kind) 'info)
+                         (delete-overlay ov))))
+                   (when info (lsp-ui-sideline--push-info symbol tag bounds info))))))))))))
 
 (defun lsp-ui-sideline--stop-p ()
   "Return non-nil if the sideline should not be display."
@@ -469,8 +486,18 @@ This does not toggle display of flycheck diagnostics or code actions."
 
 (defun lsp-ui-sideline--diagnostics-changed ()
   "Handler for flycheck notifications."
+  (lsp-ui-sideline--delete-ov)
   (setq lsp-ui-sideline--tag nil)
   (lsp-ui-sideline))
+
+(defun lsp-ui-sideline--erase (&rest _)
+  (when (bound-and-true-p lsp-ui-sideline-mode)
+    (ignore-errors
+      (lsp-ui-sideline--delete-ov)
+      (setq lsp-ui-sideline--tag nil))))
+
+(defvar lsp-ui-sideline-cmd-erase
+  '(kill-region))
 
 (define-minor-mode lsp-ui-sideline-mode
   "Minor mode for showing information of current line."
@@ -481,6 +508,8 @@ This does not toggle display of flycheck diagnostics or code actions."
     (add-hook 'post-command-hook 'lsp-ui-sideline nil t)
     (advice-add 'company-pseudo-tooltip-frontend :before 'lsp-ui-sideline--hide-before-company)
     (add-hook 'lsp-after-diagnostics-hook 'lsp-ui-sideline--diagnostics-changed nil t)
+    (dolist (cmd lsp-ui-sideline-cmd-erase)
+      (advice-add cmd :before 'lsp-ui-sideline--erase))
     (when lsp-ui-sideline-show-diagnostics
       (setq-local flycheck-display-errors-function nil)))
    (t
@@ -489,6 +518,8 @@ This does not toggle display of flycheck diagnostics or code actions."
     (lsp-ui-sideline--delete-ov)
     (remove-hook 'lsp-after-diagnostics-hook 'lsp-ui-sideline--diagnostics-changed)
     (remove-hook 'post-command-hook 'lsp-ui-sideline t)
+    (dolist (cmd lsp-ui-sideline-cmd-erase)
+      (advice-remove cmd 'lsp-ui-sideline--erase))
     (when lsp-ui-sideline-show-diagnostics
       (kill-local-variable 'flycheck-display-errors-function)))))
 
