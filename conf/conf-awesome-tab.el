@@ -70,41 +70,47 @@
 
 (defun vmacs-awesome-buffer-order ()
   "Put the two buffers switched to the adjacent position after current buffer changed."
-  ;; Just continue when buffer changed.
-  (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
-             (buffer-live-p awesome-tab-last-focus-buffer)
-             (not (minibufferp)))
-    (let* ((current (current-buffer))
-           (previous awesome-tab-last-focus-buffer)
-           (current-group (first (funcall awesome-tab-buffer-groups-function))))
-      ;; Record last focus buffer.
-      (setq awesome-tab-last-focus-buffer current)
+  ;; Don't trigger by awesome-tab command, it's annoying.
+  ;; This feature should trigger by search plugins, such as ibuffer, helm or ivy.
+  (unless (or (string-prefix-p "awesome-tab" (format "%s" this-command))
+              (string-equal "ignore" (format "%s" this-command))) ;鼠标点击的时候有时坐产生一个ignore事件，
+    ;; Just continue when buffer changed.
+    (unless (buffer-live-p awesome-tab-last-focus-buffer)
+      (setq awesome-tab-last-focus-buffer (current-buffer)))
+    (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
+               (buffer-live-p awesome-tab-last-focus-buffer)
+               (not (minibufferp)))
+      (let* ((current (current-buffer))
+             (previous awesome-tab-last-focus-buffer)
+             (current-group (first (funcall awesome-tab-buffer-groups-function))))
+        ;; Record last focus buffer.
+        (setq awesome-tab-last-focus-buffer current)
 
-      ;; Just continue if two buffers are in same group.
-      (when (eq current-group awesome-tab-last-focus-buffer-group)
-        (let* ((bufset (awesome-tab-get-tabset current-group))
-               (current-group-tabs (awesome-tab-tabs bufset))
-               (current-group-buffers (mapcar 'car current-group-tabs))
-               (current-buffer-index (cl-position current current-group-buffers))
-               (previous-buffer-index (cl-position previous current-group-buffers)))
+        ;; Just continue if two buffers are in same group.
+        (when (eq current-group awesome-tab-last-focus-buffer-group)
+          (let* ((bufset (awesome-tab-get-tabset current-group))
+                 (current-group-tabs (awesome-tab-tabs bufset))
+                 (current-group-buffers (mapcar 'car current-group-tabs))
+                 (current-buffer-index (cl-position current current-group-buffers))
+                 (previous-buffer-index (cl-position previous current-group-buffers)))
 
-          ;; If the two tabs are not adjacent, swap the positions of the two tabs.
-          (when (and current-buffer-index
-                     previous-buffer-index
-                     (> (abs (- current-buffer-index previous-buffer-index)) 1))
-            (let* ((copy-group-tabs (copy-list current-group-tabs))
-                   (previous-tab (nth previous-buffer-index copy-group-tabs))
-                   (current-tab (nth current-buffer-index copy-group-tabs))
-                   (base-group-tabs (awesome-tab-remove-nth-element current-buffer-index copy-group-tabs))
-                   (new-group-tabs (awesome-tab-insert-after base-group-tabs previous-tab current-tab)))
-              (set bufset new-group-tabs)
-              (awesome-tab-set-template bufset nil)
-              (awesome-tab-display-update)
-              ))))
+            ;; If the two tabs are not adjacent, swap the positions of the two tabs.
+            (when (and current-buffer-index
+                       previous-buffer-index
+                       (> (abs (- current-buffer-index previous-buffer-index)) 1))
+              (let* ((copy-group-tabs (copy-list current-group-tabs))
+                     (previous-tab (nth previous-buffer-index copy-group-tabs))
+                     (current-tab (nth current-buffer-index copy-group-tabs))
+                     (base-group-tabs (awesome-tab-remove-nth-element current-buffer-index copy-group-tabs))
+                     (new-group-tabs (awesome-tab-insert-after base-group-tabs previous-tab current-tab)))
+                (set bufset new-group-tabs)
+                (awesome-tab-set-template bufset nil)
+                (awesome-tab-display-update)
+                ))))
 
-      ;; Update the group name of the last access tab.
-      (setq awesome-tab-last-focus-buffer-group current-group)
-      )))
+        ;; Update the group name of the last access tab.
+        (setq awesome-tab-last-focus-buffer-group current-group)
+        ))))
 
 (setq awesome-tab-adjust-buffer-order-function #'vmacs-awesome-buffer-order)
 
@@ -115,41 +121,51 @@
   (awesome-tab-mode -1)
   (awesome-tab-mode t))
 (add-hook 'after-make-frame-functions 'aweome-tab-make-frame-hook)
+;; (add-hook 'server-after-make-frame-hook 'aweome-tab-make-frame-hook)
 
 
 (awesome-tab-mode t)
-(defun vmacs-awesome-tab-buffer-track-killed ()
-  "Hook run just before actually killing a buffer.
-In Awesome-Tab mode, try to switch to a buffer in the current tab bar,
-after the current buffer has been killed.  Try first the buffer in tab
-after the current one, then the buffer in tab before.  On success, put
-the sibling buffer in front of the buffer list, so it will be selected
-first."
-  (and (eq header-line-format awesome-tab-header-line-format)
-       (eq awesome-tab-current-tabset-function 'awesome-tab-buffer-tabs)
-       (eq (current-buffer) (window-buffer (selected-window)))
-       (let ((bl (awesome-tab-tab-values (awesome-tab-current-tabset)))
-             (b  (current-buffer))
-             found sibling)
-         (while (and bl (not found))
-           (if (eq b (car bl))
-               (setq found t)
-             (setq sibling (car bl)))
-           (setq bl (cdr bl)))
-         (when (and (setq sibling (or sibling (car bl) ))
-                    (buffer-live-p sibling))
-           ;; Move sibling buffer in front of the buffer list.
-           (save-current-buffer
-             (switch-to-buffer sibling))))))
 
+;; 默认选中前一个tab
+;; (defun vmacs-awesome-tab-buffer-track-killed ()
+;;   "Hook run just before actually killing a buffer.
+;; In Awesome-Tab mode, try to switch to a buffer in the current tab bar,
+;; after the current buffer has been killed.  Try first the buffer in tab
+;; after the current one, then the buffer in tab before.  On success, put
+;; the sibling buffer in front of the buffer list, so it will be selected
+;; first."
+;;   (and (eq header-line-format awesome-tab-header-line-format)
+;;        (eq awesome-tab-current-tabset-function 'awesome-tab-buffer-tabs)
+;;        (eq (current-buffer) (window-buffer (selected-window)))
+;;        (let ((bl (awesome-tab-tab-values (awesome-tab-current-tabset)))
+;;              (b  (current-buffer))
+;;              found sibling)
+;;          (while (and bl (not found))
+;;            (if (eq b (car bl))
+;;                (setq found t)
+;;              (setq sibling (car bl)))
+;;            (setq bl (cdr bl)))
+;;          (when (and (setq sibling (or sibling (car bl) ))
+;;                     (buffer-live-p sibling))
+;;            ;; Move sibling buffer in front of the buffer list.
+;;            (save-current-buffer
+;;              (switch-to-buffer sibling))))))
+
+;; 直接去除自动选下一个tab的hook,让它默认
 (remove-hook 'kill-buffer-hook 'awesome-tab-buffer-track-killed)
-(add-hook 'kill-buffer-hook 'vmacs-awesome-tab-buffer-track-killed)
+;; (add-hook 'kill-buffer-hook 'vmacs-awesome-tab-buffer-track-killed)
 
 
-
-;; (add-hook 'server-after-make-frame-hook 'aweome-tab-make-frame-hook)
-(add-hook 'after-make-frame-functions 'aweome-tab-make-frame-hook)
-
+(defun vmacs=awesome-tab-buffer-select-tab (event tab)
+  "On mouse EVENT, select TAB."
+  (let ((mouse-button (event-basic-type event))
+        (buffer (awesome-tab-tab-value tab)))
+    ;; 不区分鼠标1 2 3 键，始终都是切换到buffer
+    (switch-to-buffer buffer)
+    ;; Don't show groups.
+    (awesome-tab-buffer-show-groups nil)
+    ))
+(setq awesome-tab-select-tab-function #'vmacs=awesome-tab-buffer-select-tab)
 (provide 'conf-awesome-tab)
 
 ;; Local Variables:

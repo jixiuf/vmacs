@@ -1315,7 +1315,7 @@ first."
                (setq found t)
              (setq sibling (car bl)))
            (setq bl (cdr bl)))
-         (when (and (setq sibling (or sibling (car bl) ))
+         (when (and (setq sibling (or (car bl) sibling))
                     (buffer-live-p sibling))
            ;; Move sibling buffer in front of the buffer list.
            (save-current-buffer
