@@ -181,7 +181,7 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#202020" "#ff8272" "#b4fa72" "#fefdc2" "#a5d5fe" "#ff8ffd" "#d0d1fe" "#f1f1f1"])
- '(auto-save-visited-interval 15)
+ '(auto-save-visited-interval 30)
  '(auto-save-visited-mode t)
  '(awesome-tab-background-color "#202020")
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
