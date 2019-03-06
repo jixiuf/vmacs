@@ -125,31 +125,30 @@
 
 
 
-;; 默认选中前一个tab
-(defun vmacs-awesome-tab-buffer-track-killed ()
-  "Hook run just before actually killing a buffer.
-In Awesome-Tab mode, try to switch to a buffer in the current tab bar,
-after the current buffer has been killed.  Try first the buffer in tab
-after the current one, then the buffer in tab before.  On success, put
-the sibling buffer in front of the buffer list, so it will be selected
-first."
-  (and (eq header-line-format awesome-tab-header-line-format)
-       (eq awesome-tab-current-tabset-function 'awesome-tab-buffer-tabs)
-       (eq (current-buffer) (window-buffer (selected-window)))
-       (let ((bl (awesome-tab-tab-values (awesome-tab-current-tabset)))
-             (b  (current-buffer))
-             found sibling)
-         (while (and bl (not found))
-           (if (eq b (car bl))
-               (setq found t)
-             (setq sibling (car bl)))
-           (setq bl (cdr bl)))
-         (when (and (setq sibling (or sibling (car bl) ))
-                    (buffer-live-p sibling))
-           ;; Move sibling buffer in front of the buffer list.
-           (save-current-buffer
-             (switch-to-buffer sibling))))))
-
+;; ;; 默认选中前一个tab
+;; (defun vmacs-awesome-tab-buffer-track-killed ()
+;;   "Hook run just before actually killing a buffer.
+;; In Awesome-Tab mode, try to switch to a buffer in the current tab bar,
+;; after the current buffer has been killed.  Try first the buffer in tab
+;; after the current one, then the buffer in tab before.  On success, put
+;; the sibling buffer in front of the buffer list, so it will be selected
+;; first."
+;;   (and (eq header-line-format awesome-tab-header-line-format)
+;;        (eq awesome-tab-current-tabset-function 'awesome-tab-buffer-tabs)
+;;        (eq (current-buffer) (window-buffer (selected-window)))
+;;        (let ((bl (awesome-tab-tab-values (awesome-tab-current-tabset)))
+;;              (b  (current-buffer))
+;;              found sibling)
+;;          (while (and bl (not found))
+;;            (if (eq b (car bl))
+;;                (setq found t)
+;;              (setq sibling (car bl)))
+;;            (setq bl (cdr bl)))
+;;          (when (and (setq sibling (or sibling (car bl) ))
+;;                     (buffer-live-p sibling))
+;;            ;; Move sibling buffer in front of the buffer list.
+;;            (save-current-buffer
+;;              (switch-to-buffer sibling))))))
 
 
 (defun vmacs-awesome-tab-buffer-select-tab (event tab)
@@ -165,7 +164,8 @@ first."
   (setq awesome-tab-select-tab-function #'vmacs-awesome-tab-buffer-select-tab)
   ;; 直接去除自动选下一个tab的hook,让它默认
   (remove-hook 'kill-buffer-hook 'awesome-tab-buffer-track-killed)
-  (add-hook 'kill-buffer-hook 'vmacs-awesome-tab-buffer-track-killed))
+  ;; (add-hook 'kill-buffer-hook 'vmacs-awesome-tab-buffer-track-killed)
+  )
 
 (add-hook 'awesome-tab-mode-hook #'vmacs-awesometab-hook)
 

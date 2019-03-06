@@ -190,6 +190,8 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(electric-pair-mode t)
+ '(flycheck-check-syntax-automatically '(save mode-enabled))
+ '(flycheck-idle-change-delay 1)
  '(global-auto-revert-mode t)
  '(helm-minibuffer-history-key "C-r")
  '(magit-commit-ask-to-stage t)
