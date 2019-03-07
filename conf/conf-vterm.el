@@ -127,8 +127,7 @@
                        vterm-pwd))))
       ;; (message "pwd=%s,user=%s,host=%s,cmd=%s d=%s"
       ;;          vterm-pwd vterm-user vterm-host vterm-cmd (or default-directory ""))
-      (rename-buffer (vmacs-eshell--generate-buffer-name "vterm " (or vterm-cmd "") vterm-pwd ) t)
-      )))
+      (rename-buffer (vmacs-eshell--generate-buffer-name "" "" vterm-pwd ) t))))
 
 (add-hook 'vterm-set-title-functions 'vterm-vterm-set-title-hook)
 

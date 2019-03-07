@@ -123,7 +123,7 @@
          (dir-tokens (split-string pwd "[/|\\]" t " ")))
     (when (> (length dir-tokens) 2)
       (setq pwd (mapconcat  'identity (last dir-tokens 2)  "/")))
-    (format "%s%s(%s)"  prefix (or cmd "") pwd)))
+    (format "%s%s%s"  prefix (or cmd "") pwd)))
 
 (defun vmacs-kill-buffer-hook()
   (when (vmacs-term-mode-p)
