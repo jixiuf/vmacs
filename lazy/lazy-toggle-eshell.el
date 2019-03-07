@@ -23,6 +23,8 @@
     (vmacs-eshell-new))
    ((string-equal vmacs-eshell-default-term "term")
     (vmacs-term-new))))
+
+;;;###autoload
 (defun vmacs-term-mode-p(&optional ignore-scratch)
   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
       (if ignore-scratch

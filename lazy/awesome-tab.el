@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2018, Andy Stewart, all rights reserved.
 ;; Created: 2018-09-17 22:14:34
-;; Version: 2.2
-;; Last-Updated: 2019-03-03 15:10:36
+;; Version: 2.3
+;; Last-Updated: 2019-03-03 21:01:30
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/awesome-tab.el
 ;; Keywords:
@@ -15,7 +15,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `powerline'
+;; `powerline' `cl'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -82,14 +82,19 @@
 ;; `awesome-tab-background-color'
 ;; `awesome-tab-selected'
 ;; `awesome-tab-unselected'
+;; `awesome-tab-label-fixed-length'
 ;;
 
 ;;; Change log:
+;;
+;; 2019/03/07
+;;      * Add `cl' dependence.
 ;;
 ;; 2019/03/03
 ;;      * Automatically adsorb tabs after switching tabs, making switch tabs quickly.
 ;;      * Fix many typo errors.
 ;;      * Add `awesome-tab-adjust-buffer-order-function'.
+;;      * Don't trigger by awesome-tab command, it's annoying.
 ;;
 ;; 2019/02/23
 ;;      * Significantly optimize the performance of switching tab by avoiding excessive calls `project-current'.
@@ -145,6 +150,7 @@
 ;;
 
 ;;; Require
+(require 'cl)
 (require 'powerline)
 
 ;;; Code:
@@ -183,6 +189,11 @@ visible."
 the group name uses the name of this variable."
   :group 'awesome-tab
   :type 'string)
+
+(defcustom awesome-tab-label-fixed-length 0
+  "Fixed length of label. Set to 0 if dynamic."
+  :group 'awesome-tab
+  :type 'int)
 
 (defvar awesome-tab-hide-tab-function 'awesome-tab-hide-tab
   "Function to hide tab.
@@ -271,6 +282,21 @@ room."
               w (+ w (char-width (aref str n)))))
       (concat (substring str 0 i) el (substring str n)))
      )))
+
+;; Copied from s.el
+(defun awesome-tab-truncate-string (len s &optional ellipsis)
+  "If S is longer than LEN, cut it down and add ELLIPSIS to the end.
+
+The resulting string, including ellipsis, will be LEN characters
+long.
+
+When not specified, ELLIPSIS defaults to ‘...’."
+  (declare (pure t) (side-effect-free t))
+  (unless ellipsis
+    (setq ellipsis "..."))
+  (if (> (length s) len)
+      (format "%s%s" (substring s 0 (- len (length ellipsis))) ellipsis)
+    (concat s (make-string (- len (length s)) ? ))))
 
 ;;; Tab and tab set
 ;;
@@ -894,7 +920,7 @@ Call `awesome-tab-tab-label-function' to obtain a label for TAB."
   "Return the header line templates that represent the tab bar.
 Inhibit display of the tab bar in current window `awesome-tab-hide-tab-function' return nil."
   (cond
-   ((not (funcall awesome-tab-hide-tab-function (current-buffer)))
+   ((funcall awesome-tab-hide-tab-function (current-buffer))
     ;; Don't show the tab bar.
     (setq header-line-format nil))
    ((awesome-tab-current-tabset t)
@@ -1169,11 +1195,15 @@ group.  Notice that it is better that a buffer belongs to one group.")
   (delq nil
         (mapcar (lambda (x) (and (funcall condp x) x)) lst)))
 
+(defun awesome-tab-filter-out (condp lst)
+  (delq nil
+        (mapcar (lambda (x) (if (funcall condp x) nil x)) lst)))
+
 (defun awesome-tab-buffer-list ()
   "Return the list of buffers to show in tabs.
 Exclude buffers whose name starts with a space, when they are not
 visiting a file.  The current buffer is always included."
-  (awesome-tab-filter
+  (awesome-tab-filter-out
    awesome-tab-hide-tab-function
    (delq nil
          (mapcar #'(lambda (b)
@@ -1279,7 +1309,11 @@ or groups.  Call the function `awesome-tab-button-label' otherwise."
   "Return a label for TAB.
 That is, a string used to represent it on the tab bar."
   (powerline-render (list awesome-tab-style-left
-                          (format " %s  " (car tab))
+                          (format " %s "
+                                  (let ((bufname (buffer-name (car tab))))
+                                    (if (> awesome-tab-label-fixed-length 0)
+                                        (awesome-tab-truncate-string  awesome-tab-label-fixed-length bufname)
+                                      bufname)))
                           awesome-tab-style-right)))
 
 (defun awesome-tab-buffer-select-tab (event tab)
@@ -1648,21 +1682,20 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
 
 (defun awesome-tab-hide-tab (x)
   (let ((name (format "%s" x)))
-    (and
+    (or
      ;; Current window is not dedicated window.
-     (not (window-dedicated-p (selected-window)))
+     (window-dedicated-p (selected-window))
 
      ;; Buffer name not match below blacklist.
-     (not (string-prefix-p "*epc" name))
-     (not (string-prefix-p "*helm" name))
-     (not (string-prefix-p "*Compile-Log*" name))
-     (not (string-prefix-p "*lsp" name))
+     (string-prefix-p "*epc" name)
+     (string-prefix-p "*helm" name)
+     (string-prefix-p "*Compile-Log*" name)
+     (string-prefix-p "*lsp" name)
 
      ;; Is not magit buffer.
-     (not (and (string-prefix-p "magit" name)
-               (not (file-name-extension name))))
+     (and (string-prefix-p "magit" name)
+          (not (file-name-extension name)))
      )))
-
 
 (defvar awesome-tab-last-focus-buffer nil
   "The last focus buffer.")
@@ -1691,43 +1724,46 @@ Default is `awesome-tab-adjust-buffer-order', you can write your own rule.")
 
 (defun awesome-tab-adjust-buffer-order ()
   "Put the two buffers switched to the adjacent position after current buffer changed."
-  ;; Just continue when buffer changed.
-  (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
-             (not (minibufferp)))
-    (let* ((current (current-buffer))
-           (previous awesome-tab-last-focus-buffer)
-           (current-group (first (funcall awesome-tab-buffer-groups-function))))
-      ;; Record last focus buffer.
-      (setq awesome-tab-last-focus-buffer current)
+  ;; Don't trigger by awesome-tab command, it's annoying.
+  ;; This feature should trigger by search plugins, such as ibuffer, helm or ivy.
+  (unless (string-prefix-p "awesome-tab" (format "%s" this-command))
+    ;; Just continue when buffer changed.
+    (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
+               (not (minibufferp)))
+      (let* ((current (current-buffer))
+             (previous awesome-tab-last-focus-buffer)
+             (current-group (first (funcall awesome-tab-buffer-groups-function))))
+        ;; Record last focus buffer.
+        (setq awesome-tab-last-focus-buffer current)
 
-      ;; Just continue if two buffers are in same group.
-      (when (eq current-group awesome-tab-last-focus-buffer-group)
-        (let* ((bufset (awesome-tab-get-tabset current-group))
-               (current-group-tabs (awesome-tab-tabs bufset))
-               (current-group-buffers (mapcar 'car current-group-tabs))
-               (current-buffer-index (cl-position current current-group-buffers))
-               (previous-buffer-index (cl-position previous current-group-buffers)))
+        ;; Just continue if two buffers are in same group.
+        (when (eq current-group awesome-tab-last-focus-buffer-group)
+          (let* ((bufset (awesome-tab-get-tabset current-group))
+                 (current-group-tabs (awesome-tab-tabs bufset))
+                 (current-group-buffers (mapcar 'car current-group-tabs))
+                 (current-buffer-index (cl-position current current-group-buffers))
+                 (previous-buffer-index (cl-position previous current-group-buffers)))
 
-          ;; If the two tabs are not adjacent, swap the positions of the two tabs.
-          (when (and current-buffer-index
-                     previous-buffer-index
-                     (> (abs (- current-buffer-index previous-buffer-index)) 1))
-            (let* ((copy-group-tabs (copy-list current-group-tabs))
-                   (previous-tab (nth previous-buffer-index copy-group-tabs))
-                   (current-tab (nth current-buffer-index copy-group-tabs))
-                   (base-group-tabs (awesome-tab-remove-nth-element previous-buffer-index copy-group-tabs))
-                   (new-group-tabs
-                    (if (> current-buffer-index previous-buffer-index)
-                        (awesome-tab-insert-before base-group-tabs current-tab previous-tab)
-                      (awesome-tab-insert-after base-group-tabs current-tab previous-tab))))
-              (set bufset new-group-tabs)
-              (awesome-tab-set-template bufset nil)
-              (awesome-tab-display-update)
-              ))))
+            ;; If the two tabs are not adjacent, swap the positions of the two tabs.
+            (when (and current-buffer-index
+                       previous-buffer-index
+                       (> (abs (- current-buffer-index previous-buffer-index)) 1))
+              (let* ((copy-group-tabs (copy-list current-group-tabs))
+                     (previous-tab (nth previous-buffer-index copy-group-tabs))
+                     (current-tab (nth current-buffer-index copy-group-tabs))
+                     (base-group-tabs (awesome-tab-remove-nth-element previous-buffer-index copy-group-tabs))
+                     (new-group-tabs
+                      (if (> current-buffer-index previous-buffer-index)
+                          (awesome-tab-insert-before base-group-tabs current-tab previous-tab)
+                        (awesome-tab-insert-after base-group-tabs current-tab previous-tab))))
+                (set bufset new-group-tabs)
+                (awesome-tab-set-template bufset nil)
+                (awesome-tab-display-update)
+                ))))
 
-      ;; Update the group name of the last access tab.
-      (setq awesome-tab-last-focus-buffer-group current-group)
-      )))
+        ;; Update the group name of the last access tab.
+        (setq awesome-tab-last-focus-buffer-group current-group)
+        ))))
 
 (add-hook 'post-command-hook awesome-tab-adjust-buffer-order-function)
 
