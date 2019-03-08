@@ -1,7 +1,7 @@
 ;;; company-lsp.el --- Company completion backend for lsp-mode.  -*- lexical-binding: t -*-
 
 ;; Version: 2.1.0
-;; Package-Version: 20190301.2002
+;; Package-Version: 20190306.1647
 ;; Package-Requires: ((emacs "25.1") (lsp-mode "6.0") (company "0.9.0") (s "1.2.0") (dash "2.11.0"))
 ;; URL: https://github.com/tigersoldier/company-lsp
 
@@ -50,15 +50,51 @@ sorted or filtered as the server would for cached completion
 results.
 
 When set to t, company-mode caches the completion. It won't send
-incremental completion requests to the server.
+incremental completion requests to the server. Candidates are
+filtered on client side.
 
-When set to nil, results are not cached at all. The candidates
-are always sorted and filtered by the server. Use this option if
+When set to nil, results are not cached at all. Each incremental
+completion will send requests to the server. Use this option if
 the server handles caching for incremental completion or
-sorting/matching provided by the server is critical."
+sorting/matching provided by the server is critical. If
+`company-lsp-filter-candidates' is non-nil for the language
+server, returned candidates are filtered by company-lsp.
+Otherwise candidates are not filtered."
   :type '(choice (const :tag "Respect server response" auto)
                  (const :tag "Always cache" t)
                  (const :tag "Never cache" nil))
+  :group 'company-lsp)
+
+(defcustom company-lsp-filter-candidates '((bingo . nil)
+                                           (ccls . nil)
+                                           (cquery . nil)
+                                           (javacomp . nil)
+                                           (jdtls . nil)
+                                           (pyls . nil)
+                                           (rls . nil)
+                                           (t . t))
+  "Whether or not to filter completion candidates returned by server.
+
+Some servers return unfiltered candidates while others do
+server-side filtering. This option controls whether or not to
+filter candidates on client-side when
+`company-lsp-cache-candidates' is nil for the current server. This
+option doesn't change the filtering behavior when
+`company-lsp-cache-candidates' is set to auto or t.
+
+Value can be t, nil, or an alist. When set
+to t, always filter candidates regardless of the current language
+server. When set to candidates are never filtered.
+
+When set to an alist, the key is either a symbol of the server-id
+defined by the LSP client for the server, or t that matches other
+servers. The value is a boolean."
+  :type '(choice (const :tag "Always filter" t)
+                 (const :tag "Never filter" nil)
+                 (alist :tag "Depends on language server"
+                        :key-type (choice (const :tag "Other servers" t)
+                                          (symbol :tag "Server ID"))
+                        :value-type boolean))
   :group 'company-lsp)
 
 (defcustom company-lsp-async t
@@ -89,6 +125,21 @@ This is useful in cases such as 'std' is completed as 'std::' in C++."
 
 (declare-function yas-expand-snippet "ext:yasnippet.el")
 
+(defun company-lsp--get-config (config server-id)
+  "Get the CONFIG value for SERVER-ID.
+
+If CONFIG is a list in the form of (server-id . value), return
+the value of key SERVER-ID. When there is no value of key
+SERVER-ID, return the value of key t if it's present, or return
+nil otherwise.
+
+If CONFIG is not a list, return it directly."
+  (if (listp config)
+      (if-let (server-config (assq server-id config))
+          (cdr server-config)
+        (alist-get t config))
+    config))
+
 (defvar company-lsp--snippet-functions '(("rust" . company-lsp--rust-completion-snippet))
   "Alist of functions to insert our snippets for each language.")
 
@@ -97,6 +148,10 @@ This is useful in cases such as 'std' is completed as 'std::' in C++."
 
 PREFIX is the prefix string.
 COMPLETION is a cache-item created by `company-lsp--cache-item-new'.")
+
+(defvar-local company-lsp--last-request-id nil
+  "The last request ID for completion sent to the language
+  server. nil means no outstanding requests.")
 
 (defun company-lsp--trigger-characters ()
   "Return a list of completion trigger characters specified by server."
@@ -243,10 +298,18 @@ CANDIDATE is a string returned by `company-lsp--make-candidate'."
       (delete-region (- (point) (length candidate)) (point))
       (insert prefix)
       (let* ((range (gethash "range" text-edit))
-             (start-point (lsp--position-to-point (gethash "start" range)))
              (new-text-length (length insert-text)))
+        ;; No that the text edit start may not be equal to prefix/label start.
+        ;; For example jdtls can insert "java.util.List" for "java.uti". The
+        ;; prefix start is before "uti", while the text edit start is before
+        ;; "java".
+        ;;
+        ;; We need to adjust `start' to be the text edit start, because the
+        ;; snippet expansion below will replace text between `start' and point
+        ;; with insert-text again.
+        (setq start (lsp--position-to-point (gethash "start" range)))
         (lsp--apply-text-edit text-edit)
-        (goto-char (+ start-point new-text-length))))
+        (goto-char (+ start new-text-length))))
      ((and insert-text (not (eq insert-text-format 2)))
       (cl-assert (string-equal (buffer-substring-no-properties start (point)) label))
       (goto-char start)
@@ -308,7 +371,11 @@ Return a list of strings as the completion candidates."
                       ((sequencep response) response)))
          (candidates (mapcar (lambda (item)
                                (company-lsp--make-candidate item prefix))
-                             (lsp--sort-completions items))))
+                             (lsp--sort-completions items)))
+         (server-id (lsp--client-server-id (lsp--workspace-client lsp--cur-workspace)))
+         (should-filter (or (eq company-lsp-cache-candidates t)
+                            (and (null company-lsp-cache-candidates)
+                                 (company-lsp--get-config company-lsp-filter-candidates server-id)))))
     (when (null company-lsp--completion-cache)
       (add-hook 'company-completion-cancelled-hook #'company-lsp--cleanup-cache nil t)
       (add-hook 'company-completion-finished-hook #'company-lsp--cleanup-cache nil t))
@@ -316,13 +383,36 @@ Return a list of strings as the completion candidates."
       ;; Only cache candidates on auto mode. If it's t company caches the
       ;; candidates for us.
       (company-lsp--cache-put prefix (company-lsp--cache-item-new candidates incomplete)))
-    candidates))
+    (if should-filter
+        (company-lsp--filter-candidates candidates prefix)
+      candidates)))
+
+(defun company-lsp--filter-candidates (candidates prefix)
+  "Filters CANDIDATES by PREFIX.
+
+CANDIDATES are a list of strings of candidate labels created by
+`company-lsp--make-candidate'.
+
+Returns a new list of candidates."
+  ;; TODO: Allow customizing matching functions to support fuzzy matching.
+  ;; Consider supporting company-flx out of box.
+  (all-completions prefix candidates))
 
 (defun company-lsp--cleanup-cache (_)
   "Clean up completion cache and company hooks."
   (setq company-lsp--completion-cache nil)
   (remove-hook 'company-completion-finished-hook #'company-lsp--cleanup-cache t)
   (remove-hook 'company-completion-cancelled-hook #'company-lsp--cleanup-cache t))
+
+(defun company-lsp--cancel-outstanding-request ()
+  "Cancels outstanding completion requests.
+
+A cancel command with `company-lsp--last-request-id' will be sent
+to the server. `company-lsp--last-request-id' is reset to nil
+after cancellation."
+  (when company-lsp--last-request-id
+    (lsp--cancel-request company-lsp--last-request-id)
+    (setq company-lsp--last-request-id nil)))
 
 (defun company-lsp--cache-put (prefix candidates)
   "Set cache for PREFIX to be CANDIDATES.
@@ -347,10 +437,8 @@ Return a cache item if cache for PREFIX exists. Otherwise return nil."
                                 company-lsp--completion-cache)))
           (if (company-lsp--cache-item-incomplete-p previous-cache)
               (cl-return nil)
-            ;; TODO: Allow customizing matching functions to support fuzzy matching.
-            ;; Consider supporting company-flx out of box.
             (let* ((previous-candidates (company-lsp--cache-item-candidates previous-cache))
-                   (new-candidates (all-completions prefix previous-candidates))
+                   (new-candidates (company-lsp--filter-candidates previous-candidates prefix))
                    (new-cache (company-lsp--cache-item-new new-candidates nil)))
               (company-lsp--cache-put prefix new-cache)
               (cl-return new-cache))))))))
@@ -401,10 +489,15 @@ Return a list of strings as completion candidates."
 PREFIX is the prefix string for completion.
 CALLBACK is a function that takes a list of strings as completion candidates."
   (let ((req (lsp--make-request "textDocument/completion"
-                                (lsp--text-document-position-params))))
-    (lsp--send-request-async req
-                             (lambda (resp)
-                               (funcall callback (company-lsp--on-completion resp prefix))))))
+                                (lsp--text-document-position-params)))
+        body)
+    (company-lsp--cancel-outstanding-request)
+    (setq body
+          (lsp--send-request-async req
+                                   (lambda (resp)
+                                     (setq company-lsp--last-request-id nil)
+                                     (funcall callback (company-lsp--on-completion resp prefix)))))
+    (setq company-lsp--last-request-id (plist-get body :id))))
 
 (defun company-lsp--compute-match (candidate)
   "Compute the matched parts of CANDIDATE.

@@ -36,7 +36,7 @@
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
 ;; (setq counsel-rg-base-command  "rg -S --no-heading --line-number --search-zip --color never %s .")
-(setq counsel-rg-base-command  "~/.emacs.d/bin/rgwrapper -z %s ")
+(setq counsel-rg-base-command  "rg -S --no-heading --line-number --color never  %s ." )
 
 
 (setq magit-completing-read-function 'ivy-completing-read)
@@ -209,7 +209,6 @@
   (define-key counsel-ag-map (kbd "C-o") 'vmacs-counsel-rg-select-directory)
   (define-key counsel-ag-map (kbd "C-;") 'vmacs-counsel-ag-toggle-git-root)
   (define-key counsel-ag-map (kbd "C-h") 'vmacs-counsel-ag-up-directory)
-  (define-key counsel-ag-map (kbd "!") #'(lambda()(interactive)(insert "\\!")))
   (define-key counsel-git-grep-map (kbd "C-h") 'counsel-up-directory)
   (define-key counsel-git-grep-map (kbd "C-l") 'counsel-up-directory)
 
