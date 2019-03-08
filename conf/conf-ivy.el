@@ -36,7 +36,7 @@
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
 ;; (setq counsel-rg-base-command  "rg -S --no-heading --line-number --search-zip --color never %s .")
-(setq counsel-rg-base-command  "rg -S --no-heading --line-number --color never  %s ." )
+(setq counsel-rg-base-command  "rg -S --no-heading --line-number --color never  -z %s ." )
 
 
 (setq magit-completing-read-function 'ivy-completing-read)
