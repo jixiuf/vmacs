@@ -128,9 +128,9 @@
       ;; (message "pwd=%s,user=%s,host=%s,cmd=%s d=%s"
       ;;          vterm-pwd vterm-user vterm-host vterm-cmd (or default-directory ""))
       (rename-buffer (vmacs-generate-dir-name "" vterm-cmd vterm-pwd
-                                              awesome-tab-label-fixed-length ) t))))
+                                              (- awesome-tab-label-fixed-length
+                                                 (length vterm-cmd) 1)) t))))
 
-;;;###autoload
 (defun vmacs-generate-dir-name(prefix cmd dir &optional max-dir-len)
   (let* ((cmd (car (split-string cmd "[ |\t]" t " ")))
          (pwd (abbreviate-file-name dir))
@@ -138,6 +138,7 @@
     (when (> (length dir-tokens) 2)
       (setq pwd (mapconcat  'identity (last dir-tokens 2)  "/")))
     (when (and max-dir-len
+               (> max-dir-len 0)
                (> (length pwd) max-dir-len))
       (setq pwd (substring pwd (- (length pwd) max-dir-len))))
     (string-trim (format "%s%s %s"  prefix (or cmd "") pwd))))
