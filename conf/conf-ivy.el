@@ -8,7 +8,8 @@
 (setq ivy-use-virtual-buffers t)
 ;; (setq ffap-machine-p-local 'accept)
 ;; (setq ffap-machine-p-unknown'accept)
-(setq ffap-machine-p-known 'accept)
+(setq counsel-find-file-at-point t)
+(setq ffap-machine-p-known 'accept)     ;起用counsel-find-file-at-point时 ，有平会莫名其妙地ping，此处禁用ping
 (setq counsel-find-file-at-point t)
 (setq counsel-preselect-current-file t)
 (setq ivy-initial-inputs-alist nil)
@@ -42,7 +43,6 @@
 
 
 (setq magit-completing-read-function 'ivy-completing-read)
-(setq counsel-find-file-at-point t)
 (setq ivy-ignore-buffers
        (list
         "\*EGLOT"
