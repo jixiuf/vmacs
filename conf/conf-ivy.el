@@ -23,16 +23,18 @@
 (setq counsel-git-grep-skip-counting-lines t)
 ;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
 
-(setq ivy-re-builders-alist '((swiper . ivy--regex-plus) ;
-                              (ivy-switch-buffer . ivy--regex-plus)
-                              (counsel-ag . ivy--regex-plus)
-                              (counsel-rg . ivy--regex-plus)
-                              (counsel-git . ivy--regex-plus)
-                              (counsel-git-grep . ivy--regex-plus)
-                              (counsel-grep-or-swiper . ivy--regex-plus)
-                              (read-file-name-internal . ivy--regex-plus)
-                              (counsel--M-x . ivy--regex-plus)
-                              (t . ivy--regex-plus)))
+
+;; ivy-re-builders-alist 如果想搜索空格 就连续两个空格代表一个空格即可
+;; (setq ivy-re-builders-alist '((swiper . ivy--regex-plus) ;
+;;                               (ivy-switch-buffer . ivy--regex-plus)
+;;                               (counsel-ag . ivy--regex-plus)
+;;                               (counsel-rg . ivy--regex-plus)
+;;                               (counsel-git . ivy--regex-plus)
+;;                               (counsel-git-grep . ivy--regex-plus)
+;;                               (counsel-grep-or-swiper . ivy--regex-plus)
+;;                               (read-file-name-internal . ivy--regex-plus)
+;;                               (counsel--M-x . ivy--regex-plus)
+;;                               (t . ivy--regex-plus)))
 
 (setq counsel-git-grep-cmd-default "git --no-pager grep --full-name -n --no-color -i -e '%s'|cut -c -300") ;trunc long line
 ;; (setq counsel-rg-base-command  "rg -S --no-heading --line-number --search-zip --color never %s .")
