@@ -52,17 +52,20 @@
 ;; (setq even-window-sizes nil)               ; display-buffer: avoid resizing
 
 ;; ;; fix window splitting behavior when possible
-;; (setq display-buffer-alist
-;;       '(("\\*cider-repl .*"
-;;          (display-buffer-reuse-window display-buffer-in-side-window)
-;;          (reusable-frames . visible)
-;;          (side . bottom)
-;;          (window-height . 0.2))
-;;         ("\\*compilation\\*"
-;;          (display-buffer-reuse-window display-buffer-same-window))
-;;         ;; default
-;;         (".*"
-;;          (display-buffer-same-window))))
+;; https://emacs-china.org/t/display-buffer-alist/8162/4
+(setq display-buffer-alist
+      '(
+        ;; ("\\*cider-repl .*"
+        ;;  (display-buffer-reuse-window display-buffer-in-side-window)
+        ;;  (reusable-frames . visible)
+        ;;  (side . bottom)
+        ;;  (window-height . 0.2)
+        ;;  )
+        ("\\*ivy-occur.*"
+         (display-buffer-reuse-window display-buffer-same-window))
+        ;; default
+        ;; (".*" (display-buffer-pop-up-window))
+        ))
 
 ;; (defun vmacs-helm-alive-p ()
 ;;   (if (boundp 'helm-alive-p)
