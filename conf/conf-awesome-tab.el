@@ -1,5 +1,6 @@
-(setq awesome-tab-cycle-scope 'tabs)
-(setq awesometab-hide-tabs-hooks   nil)
+(setq-default awesome-tab-cycle-scope 'tabs)
+(setq-default awesometab-hide-tabs-hooks   nil)
+(setq-default awesome-tab-style "zigzag")
 (global-set-key  (kbd "s-n") 'awesome-tab-forward)
 (global-set-key  (kbd "s-C-M-n") 'awesome-tab-forward)
 (global-set-key  (kbd "s-p") 'awesome-tab-backward)
@@ -114,15 +115,6 @@
 
 (setq awesome-tab-adjust-buffer-order-function #'vmacs-awesome-buffer-order)
 
-(defun aweome-tab-make-frame-hook(&optional f) ;emacsclient 打开的窗口相关的设置
-  (with-selected-frame (or f (selected-frame))
-    (setq awesome-tab-style-left (powerline-wave-right 'awesome-tab-default nil awesome-tab-height))
-    (setq awesome-tab-style-right (powerline-wave-left nil 'awesome-tab-default awesome-tab-height)))
-  (awesome-tab-mode -1)
-  (awesome-tab-mode t))
-(add-hook 'after-make-frame-functions 'aweome-tab-make-frame-hook)
-;; (add-hook 'server-after-make-frame-hook 'aweome-tab-make-frame-hook)
-
 
 
 ;; term 分组下 默认选中前一个tab
@@ -153,17 +145,7 @@ first."
                (switch-to-buffer sibling)))))))
 
 
-(defun vmacs-awesome-tab-buffer-select-tab (event tab)
-  "On mouse EVENT, select TAB."
-  (let ((mouse-button (event-basic-type event))
-        (buffer (awesome-tab-tab-value tab)))
-    ;; 不区分鼠标1 2 3 键，始终都是切换到buffer
-    (switch-to-buffer buffer)
-    ;; Don't show groups.
-    (awesome-tab-buffer-show-groups nil)
-    ))
 (defun vmacs-awesometab-hook()
-  (setq awesome-tab-select-tab-function #'vmacs-awesome-tab-buffer-select-tab)
   ;; 直接去除自动选下一个tab的hook,让它默认
   (remove-hook 'kill-buffer-hook 'awesome-tab-buffer-track-killed)
   (add-hook 'kill-buffer-hook 'vmacs-awesome-tab-buffer-track-killed)
