@@ -92,41 +92,51 @@
 (defvar vterm-cmd "")
 (make-variable-buffer-local 'vterm-cmd)
 
+
 ;; # http://zsh.sourceforge.net/Doc/Release/Functions.html
 ;; # 刚打开shell时，也执行一次更新title
+;; for zsh
+
 ;; lastcmd=""
-;; print -Pn "\e]0;%~@${USER}@${HOSTNAME}@${lastcmd}\a" #set title path@user@host@cmd
+;; print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path
 ;; preexec () {
-;;     lastcmd="$1"
+;;     cmd="$1"
+;;     tokens=(${(s/ /)cmd}) # split by space
+;;     lastcmd=$tokens[1]
 ;;     # # 标题栏、任务栏样式
 ;;     # 在执行命令前执行，所以此时打印的pwd可能不准,故还需要在chpwd里，刚更新一次
-;;     print -Pn "\e]0;%~@${USER}@${HOSTNAME}@${lastcmd}\a" #set title path@user@host@cmd
+;;     print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path
 ;; }
 ;; chpwd() {
 ;;     # ESC]0;stringBEL — Set icon name and window title to string
 ;;     # ESC]1;stringBEL — Set icon name to string
 ;;     # ESC]2;stringBEL — Set window title to string
-;;     print -Pn "\e]0;%~@${USER}@${HOSTNAME}@${lastcmd}\a" #set title path@user@host  chpwd里取不到当前cmd
+;;     print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path  chpwd里取不到当前cmd
 ;; }
-(defun vterm-vterm-set-title-hook (title)
-  ;; (message "%s" title)
-  (let ((tokens (split-string title "@" )))
-    (when (equal 4 (length tokens))
-      (setq vterm-pwd (nth 0 tokens))
-      (setq vterm-user (nth 1 tokens))
-      (setq vterm-host (nth 2 tokens))
-      (when (and (nth 3 tokens)
-                 (not (string-empty-p (or (nth 3 tokens) ""))))
-        (setq vterm-cmd (nth 3 tokens)))
-      (setq default-directory
+(defun vterm-vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
+  (let* ((tokens (split-string title ":" ))
+         dir)
+    (when (equal 2 (length tokens))
+      (setq vterm-pwd (string-trim-left (nth 1 tokens)))
+      (setq tokens (split-string (nth 0 tokens) "@" ))
+      (when (>  (length tokens) 1)
+        (setq vterm-user (nth 0 tokens))
+        (setq vterm-host (nth 1 tokens))
+        (when (and (nth 2 tokens)
+                   (not (string-empty-p (or (nth 2 tokens) ""))))
+          (setq vterm-cmd (nth 2 tokens))))
+
+      (setq dir
 	        (file-name-as-directory
 	         (if (and (string= vterm-host (system-name))
                       (string= vterm-user (user-real-login-name)))
 		         (expand-file-name vterm-pwd)
                (concat "/-:" vterm-user "@" vterm-host ":"
                        vterm-pwd))))
+      (when (file-directory-p dir)
+        (cd-absolute dir))
       ;; (message "pwd=%s,user=%s,host=%s,cmd=%s d=%s"
-      ;;          vterm-pwd vterm-user vterm-host vterm-cmd (or default-directory ""))
+      ;;          vterm-pwd vterm-user vterm-host vterm-cmd dir)
       (rename-buffer (vmacs-generate-dir-name "" vterm-cmd vterm-pwd
                                               (- awesome-tab-label-fixed-length
                                                  (length vterm-cmd) 1)) t))))
