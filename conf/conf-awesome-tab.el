@@ -1,4 +1,5 @@
 (setq-default awesome-tab-cycle-scope 'tabs)
+(setq-default awesome-tab-display-sticky-function-name nil)
 (setq-default awesometab-hide-tabs-hooks   nil)
 (setq-default awesome-tab-style "zigzag")
 (global-set-key  (kbd "s-n") 'awesome-tab-forward)
