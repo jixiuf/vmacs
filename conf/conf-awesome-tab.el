@@ -154,7 +154,7 @@ first."
 (add-hook 'awesome-tab-mode-hook #'vmacs-awesometab-hook)
 
 
-(setq awesome-tab-label-fixed-length 20)
+(setq awesome-tab-label-fixed-length 30)
 ;; Copied from s.el
 (defadvice awesome-tab-truncate-string (around vmacs-tab activate)
   "If S is longer than LEN, cut it down and add ELLIPSIS to the end.
