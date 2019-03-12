@@ -113,7 +113,7 @@
 ;;     # ESC]2;stringBEL — Set window title to string
 ;;     print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path  chpwd里取不到当前cmd
 ;; }
-(defun vterm-vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
+(defun vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
   (let* ((tokens (split-string title ":" ))
          dir)
     (when (equal 2 (length tokens))
@@ -133,7 +133,7 @@
 		         (expand-file-name vterm-pwd)
                (concat "/-:" vterm-user "@" vterm-host ":"
                        vterm-pwd))))
-      (when (file-directory-p dir)
+      (when (ignore-errors (file-directory-p dir))
         (cd-absolute dir))
       ;; (message "title=%s\n pwd=%s\n user=%s\nhost=%s\ncmd=%s\n dir=%s\n"
       ;;          title vterm-pwd vterm-user vterm-host vterm-cmd dir)
@@ -153,7 +153,7 @@
       (setq pwd (substring pwd (- (length pwd) max-dir-len))))
     (string-trim (format "%s%s %s"  prefix (or cmd "") pwd))))
 
-(add-hook 'vterm-set-title-functions 'vterm-vterm-set-title-hook)
+(add-hook 'vterm-set-title-functions 'vterm-set-title-hook)
 
 
 
