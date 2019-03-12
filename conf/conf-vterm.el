@@ -135,8 +135,8 @@
                        vterm-pwd))))
       (when (file-directory-p dir)
         (cd-absolute dir))
-      ;; (message "pwd=%s,user=%s,host=%s,cmd=%s d=%s"
-      ;;          vterm-pwd vterm-user vterm-host vterm-cmd dir)
+      ;; (message "title=%s\n pwd=%s\n user=%s\nhost=%s\ncmd=%s\n dir=%s\n"
+      ;;          title vterm-pwd vterm-user vterm-host vterm-cmd dir)
       (rename-buffer (vmacs-generate-dir-name "" vterm-cmd vterm-pwd
                                               (- awesome-tab-label-fixed-length
                                                  (length vterm-cmd) 1)) t))))
