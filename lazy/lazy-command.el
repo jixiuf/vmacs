@@ -657,14 +657,14 @@ end tell" (expand-file-name default-directory))))
          helm-case-fold-search nil ;nil=case sensitive
          case-fold-search nil ;nil=case sensitive
          ivy-case-fold-search-default  nil
-         counsel-rg-base-command  "rg -s --no-heading --line-number --color never %s ."
+         ;; counsel-rg-base-command  "rg -s --no-heading --line-number --color never  -z %s ."
          evil-ex-search-case 'sensitive)
 
         (message "case sensitive"))
     (setq
      ivy-case-fold-search-default  'always
      helm-case-fold-search t ;nil=case sensitive
-     counsel-rg-base-command  "rg -i --no-heading --line-number --color never %s ."
+     ;; counsel-rg-base-command  "rg -i --no-heading --line-number --color never  -z %s ."
      case-fold-search t ;nil=case sensitive
      evil-ex-search-case 'insensitive)
     (message "case insensitive")))

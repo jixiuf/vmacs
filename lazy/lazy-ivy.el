@@ -102,6 +102,16 @@
                  (concat "rg in " (abbreviate-file-name default-directory)))))
 
 ;;;###autoload
+(defun vmacs-counsel-toggle-case-senstive (&optional arg)
+  (interactive)
+  (cond
+   ((string-match " -i " counsel-ag-command )
+    (setq counsel-ag-command (replace-match " -s " t t counsel-ag-command 0)))
+   ((string-match " -s " counsel-ag-command )
+    (setq counsel-ag-command (replace-match " -i " t t counsel-ag-command 0))))
+  (counsel-ag-function ivy-text))
+
+;;;###autoload
 (defun vmacs-counsel-ag-up-directory ()
   "Go to the parent directory."
   (interactive)
