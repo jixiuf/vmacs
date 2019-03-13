@@ -62,10 +62,7 @@
   ;; (eglot-ensure)
   (setq company-backends `(( company-go company-capf company-yasnippet company-files )
                            company-dabbrev
-
-
-                           company-dabbrev-code
-                           ))
+                           company-dabbrev-code))
 
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
@@ -75,7 +72,7 @@
 
   (setq require-final-newline nil)
   (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
-  (flycheck-mode 1)
+  ;; (flycheck-mode 1)
   ;; (local-set-key (kbd "C-c C-a") 'go-imports-insert-import)
   ;; (local-set-key (kbd "C-c C-r") 'go-imports-reload-packages-list)
   (local-set-key (kbd "C-c i") 'go-goto-imports)
