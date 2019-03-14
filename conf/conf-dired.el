@@ -103,6 +103,7 @@
  dired-recursive-deletes 'always       ;always表示不加询问
  dired-dwim-target t                   ;Dired试着猜处默认的目标目录
  ivy-dired-history-max 200
+ dired-listing-switches "-alh"
  )
 
 ;; (if (equal system-type 'gnu/linux)
