@@ -47,7 +47,7 @@
  version-control t    ; 多次备份
  ;; 备份文件统一放在 ~/.emacs.d/cache/backup_files,避免每个目录生成一些临时文件
  pulse-iterations 3
- large-file-warning-threshold nil       ;打开大文件时不必警告
+ large-file-warning-threshold (* 1024 1024 50)       ;打开大文件时不必警告
 
  ;;find-file-visit-truename t
 
