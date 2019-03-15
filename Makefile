@@ -45,6 +45,7 @@ eshell:
 	./bin/zsh-to-eshell-alias.sh
 deps:
 	curl https://raw.githubusercontent.com/manateelazycat/awesome-tab/master/awesome-tab.el >./lazy/awesome-tab.el
+	curl https://raw.githubusercontent.com/akermu/emacs-libvterm/master/vterm.el> ./lazy/vterm.el
 
 rime:
 	rm -rf ~/.emacs.d/cache/rime/
