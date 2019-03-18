@@ -130,6 +130,7 @@
     			      :font "Menlo 20"
     			      :fontset "fontset-largemac")
 
+  (evil-define-key 'normal 'local (kbd "gw") 'novel-fill)
   (local-set-key [(tab)]       'smart-tab)
   (local-set-key (kbd "TAB")   'smart-tab))
 

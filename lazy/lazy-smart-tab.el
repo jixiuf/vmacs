@@ -31,7 +31,7 @@
     (minibuffer-local-map minibuffer-complete)
     (org-mode org-cycle)
     (Info-mode Info-next-reference)
-    (novel-mode novel-fill)
+    (novel-mode org-cycle)
     (text-mode novel-fill)
     (help-mode forward-button)
     (nxml-mode nxml-complete)
