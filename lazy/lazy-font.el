@@ -34,83 +34,62 @@
 ;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
 ;; (set-frame-font "fontset-mymac" )
 
+
+(create-fontset-from-fontset-spec
+ (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-bigmac"
+         ",han:PingFang SC:size=20"
+         ",symbol:PingFang SC:size=20"
+         ",cjk-misc:PingFang SC:size=20"
+         ",bopomofo:PingFang SC:size=20"
+         ",kana:Hiragino Sans:size=20"
+         ",hangul:Apple SD Gothic Neo:size=23"
+         ",latin:Menlo"))
+
 ;;;###autoload
 (defun create-frame-font-big-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
   (interactive)
   (set-face-attribute
-   'default nil :font "Menlo 16")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 20)))
+   'default nil
+   :font
+   "Menlo 16"
+   :fontset "fontset-bigmac"))
 
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 20))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 23)))
-
+(create-fontset-from-fontset-spec
+    (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-largemac"
+            ",han:PingFang SC:size=24"
+            ",symbol:PingFang SC:size=24"
+            ",cjk-misc:PingFang SC:size=24"
+            ",bopomofo:PingFang SC:size=24"
+            ",kana:Hiragino Sans:size=24"
+            ",hangul:Apple SD Gothic Neo:size=26"
+            ",latin:Menlo"))
 
 ;;;###autoload
 (defun create-frame-font-large-mac()          ;emacs 若直接启动 启动时调用此函数似乎无效
   (interactive)
   (set-face-attribute
-   'default nil :font "Menlo 20")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 24)))
+   'default nil
+   :font "Menlo 20"
+   :fontset "fontset-largemac")
+  )
 
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 24))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 24)))
+(create-fontset-from-fontset-spec
+    (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
+            ",han:PingFang SC:size=16"
+            ",symbol:PingFang SC:size=16"
+            ",cjk-misc:PingFang SC:size=16"
+            ",bopomofo:PingFang SC:size=16"
+            ",kana:Hiragino Sans:size=16"
+            ",hangul:Apple SD Gothic Neo:size=18"
+            ",latin:Menlo"))
 
 ;;;###autoload
 (defun create-frame-font-mac()
   (interactive)
   (set-face-attribute
-   'default nil :font "Menlo 14")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 16)))
-
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 16))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 18)))
-
-;; ;; 单独设置一个 fontset, 避免被影响
-;; ;; 核心思想就是挑选配对的中文和英文字体，然后分别设置期大小，
-;; ;; 让一个汉字的宽度正好是两个英文字符的宽度。
-;; (setq fontset-orgtable
-;;       (create-fontset-from-ascii-font "Menlo 16"))
-;; (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-;;   (set-fontset-font fontset-orgtable
-;;                     charset
-;;                     (font-spec :family "PingFang SC" :size 20)))
-
-;; (set-fontset-font fontset-orgtable
-;;                   'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-;;                   (font-spec :family "Hiragino Sans" :size 20))
-;; (set-fontset-font fontset-orgtable
-;;                   'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-;;                   (font-spec :family "Apple SD Gothic Neo" :size 23))
-;; ;; (add-hook 'org-mode-hook
-;; ;; 	  '(lambda ()
-;; ;; 	     (set-face-attribute 'org-table nil
-;; ;; 				 :font "Menlo 16"
-;; ;; 				 :fontset fontset-orgtable)))
-
+   'default nil
+   :font "Menlo 14"
+   :fontset "fontset-mac"))
 
 ;;;###autoload
 (defun create-frame-font-w32()          ;emacs 若直接启动 启动时调用此函数似乎无效
@@ -128,41 +107,43 @@
   (set-fontset-font (frame-parameter nil 'font)
                     'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
                     (font-spec :family "GulimChe" :size 16)))
+
+(create-fontset-from-fontset-spec
+    (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-middlemac"
+            ",han:PingFang SC:size=18"
+            ",symbol:PingFang SC:size=18"
+            ",cjk-misc:PingFang SC:size=18"
+            ",bopomofo:PingFang SC:size=18"
+            ",kana:Hiragino Sans:size=16"
+            ",hangul:Apple SD Gothic Neo:size=21"
+            ",latin:Menlo"))
+
 ;;;###autoload
 (defun create-frame-font-middle-mac()
   (interactive)
   (set-face-attribute
-   'default nil :font "Menlo 15")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 18)))
+   'default nil
+   :font "Menlo 15"
+   :fontset "fontset-middlemac"
+   ))
 
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 18))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 21)))
-
+(create-fontset-from-fontset-spec
+    (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-smallmac"
+            ",han:PingFang SC:size=16"
+            ",symbol:PingFang SC:size=16"
+            ",cjk-misc:PingFang SC:size=16"
+            ",bopomofo:PingFang SC:size=16"
+            ",kana:Hiragino Sans:size=16"
+            ",hangul:Apple SD Gothic Neo:size=18"
+            ",latin:Menlo"))
 ;;;###autoload
 (defun create-frame-font-small-mac()
   (interactive)
   (set-face-attribute
-   'default nil :font "Menlo 13")
-  ;; Chinese Font
-  (dolist (charset '( han symbol cjk-misc bopomofo)) ;script 可以通过C-uC-x=查看当前光标下的字的信息
-    (set-fontset-font (frame-parameter nil 'font)
-                      charset
-                      (font-spec :family "PingFang SC" :size 16)))
-
-  (set-fontset-font (frame-parameter nil 'font)
-                    'kana                 ;script ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ
-                    (font-spec :family "Hiragino Sans" :size 16))
-  (set-fontset-font (frame-parameter nil 'font)
-                    'hangul               ;script 까까까까까까까까까까까까까까까까까까까까
-                    (font-spec :family "Apple SD Gothic Neo" :size 18)))
+   'default nil
+   :font "Menlo 13"
+   :fontset "fontset-smallmac"
+   ))
 
 (provide 'lazy-font)
 

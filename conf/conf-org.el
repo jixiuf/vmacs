@@ -121,7 +121,15 @@
 
 (defun vmacs-novel-mode-hook()
   (vmacs-org-mode-hook)
-  (create-frame-font-large-mac)
+  ;; (create-frame-font-large-mac)
+  ;; 不起作用
+  (set-face-attribute 'org-table nil
+				      :font "Menlo 20"
+				      :fontset "fontset-largemac")
+  (set-face-attribute 'org-default nil
+    			      :font "Menlo 20"
+    			      :fontset "fontset-largemac")
+
   (local-set-key [(tab)]       'smart-tab)
   (local-set-key (kbd "TAB")   'smart-tab))
 
