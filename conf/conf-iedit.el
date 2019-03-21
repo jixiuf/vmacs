@@ -1,33 +1,50 @@
 ;;; Code:
 (setq-default iedit-toggle-key-default nil)
-(global-set-key (kbd "C-;") 'evil-iedit-state/iedit-mode)
-(require 'evil-iedit-state)
-(define-key evil-iedit-state-map (kbd "C-;")  'evil-iedit-state/quit-iedit-mode)
+(global-set-key (kbd "C-;") 'evil-iedit-state-iedit-mode)
+(evil-define-state iedit
+  "`iedit state' interfacing iedit mode."
+  :tag " <E> "
+  :enable (normal)
+  :cursor box
+  :message "-- IEDIT --"
+  ;; force iedit mode
+  (if (evil-replace-state-p) (call-interactively 'iedit-mode)))
+(set-keymap-parent  evil-iedit-state-map evil-normal-state-map)
+
+
+(defun evil-iedit-state-iedit-mode (&optional arg)
+  "Start `iedit-mode'."
+  (interactive "P")
+  (if (fboundp 'ahs-clear) (ahs-clear))
+  (iedit-mode arg)
+  (evil-iedit-state))
+;; (require 'evil-iedit-state)
+(define-key evil-iedit-state-map (kbd "C-;")  'evil-iedit-state-quit-iedit-mode)
+(define-key evil-iedit-state-map (kbd "C-g")  'evil-iedit-state-quit-iedit-mode)
+
+(defun evil-iedit-state-quit-iedit-mode ()
+  "Quit iedit-mode and return set state `evil-iedit-state-default-state'."
+  (interactive)
+  (iedit-done)
+  (evil-normal-state))
+
 
 (define-key evil-iedit-state-map "t"   'iedit-show/hide-unmatched-lines)
-(define-key evil-iedit-state-map "s"   nil)
 
-(define-key evil-iedit-state-map [backspace] nil)
+(define-key evil-iedit-state-map "gg"  'iedit-goto-first-occurrence)
+(define-key evil-iedit-state-map "G"   'iedit-goto-last-occurrence)
+
+(define-key evil-iedit-state-map "n"   'iedit-next-occurrence)
+(define-key evil-iedit-state-map "N"   'iedit-prev-occurrence)
+(define-key evil-iedit-state-map (kbd "TAB") 'iedit-toggle-selection)
+(define-key evil-iedit-state-map [tab]       'iedit-toggle-selection)
 (define-key evil-iedit-state-map  (kbd "gU") 'iedit-upcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "gu") 'iedit-downcase-occurrences)
 (define-key evil-iedit-state-map  (kbd "mf") 'iedit-restrict-function)
 (define-key evil-iedit-state-map  (kbd "ml") 'iedit-restrict-current-line)
 (define-key evil-iedit-state-map  (kbd "zc") 'iedit-toggle-case-sensitive)
 (define-key evil-iedit-state-map  (kbd "zb") 'iedit-toggle-buffering)
-(define-key evil-iedit-state-map "#"   nil)
-(define-key evil-iedit-state-map  (kbd "N") 'iedit-number-occurrences)
-
-;; (autoload 'iedit-mode-from-isearch "iedit" "enable iedit-mode when in isearch mode")
-
-;; (define-key evil-normal-state-map "s;" 'iedit-mode)
-;; (with-eval-after-load 'iedit
-;;   (define-key iedit-mode-keymap (kbd "M-;") 'iedit-toggle-selection))
-
-
-;; (define-key global-map iedit-toggle-key-default 'iedit-mode)
-;; (define-key global-map (kbd "C-[ [ 1 f") 'iedit-mode) ;iterm map C-; to this
-;; (define-key isearch-mode-map iedit-toggle-key-default 'iedit-mode-from-isearch)
-
+;; (define-key evil-iedit-state-map  (kbd "N") 'iedit-number-occurrences)
 
 (provide 'conf-iedit)
 
