@@ -193,21 +193,22 @@
 ;;wgrep
 ;; (add-hook 'grep-setup-hook 'grep-mode-fun)
 (setq-default wgrep-auto-save-buffer t
-              wgrep-enable-key "i"
+              ;; wgrep-enable-key "i"
               wgrep-change-readonly-file t)
 (with-eval-after-load 'wgrep
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes))
 
-;; (defun enable-wgrep-when-entry-insert()
-;;   (when (member major-mode '(ivy-occur-mode helm-grep-mode))
-;;     (wgrep-change-to-wgrep-mode)))
+(defun enable-wgrep-when-entry-insert()
+  (when (derived-mode-p 'ivy-occur-mode
+                        'ivy-occur-grep-mode 'helm-grep-mode)
+    (wgrep-change-to-wgrep-mode)))
+(add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
 
 ;; (defun disable-wgrep-when-exit-insert()
-;;   (when (member major-mode '(ivy-occur-mode helm-grep-mode))
+;;   (when (derived-mode-p '(ivy-occur-mode ivy-occur-grep-mode helm-grep-mode))
 ;;     (wgrep-abort-changes)))
 ;; (autoload 'wgrep-change-to-wgrep-mode "wgrep" "enable wgrep" nil)
 ;; (autoload 'wgrep-abort-changes "wgrep" "disable wgrep" nil)
-;; (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
 ;; (add-hook 'evil-insert-state-exit-hook 'disable-wgrep-when-exit-insert)
 
 (setq-default
