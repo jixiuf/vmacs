@@ -146,6 +146,8 @@
 ;; (define-key ivy-minibuffer-map (kbd "C-[ [ 1 f") 'ivy-avy) ; ;iterm map C-; to this
 (define-key ivy-occur-grep-mode-map (kbd "n") 'evil-search-next)
 (define-key ivy-occur-grep-mode-map (kbd "p") 'evil-search-previous)
+(define-key ivy-occur-grep-mode-map (kbd "j") nil)
+(define-key ivy-occur-grep-mode-map (kbd "k") nil)
 (define-key ivy-occur-mode-map (kbd "g") nil)
 (define-key ivy-occur-mode-map (kbd "SPC") nil)
 (define-key ivy-occur-grep-mode-map (kbd "SPC") nil)
