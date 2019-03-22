@@ -44,7 +44,7 @@
 (define-key evil-iedit-state-map  (kbd "ml") 'iedit-restrict-current-line)
 (define-key evil-iedit-state-map  (kbd "zc") 'iedit-toggle-case-sensitive)
 (define-key evil-iedit-state-map  (kbd "zb") 'iedit-toggle-buffering)
-;; (define-key evil-iedit-state-map  (kbd "N") 'iedit-number-occurrences)
+(define-key evil-iedit-state-map  (kbd "C－x r n") 'iedit-number-occurrences)
 
 (provide 'conf-iedit)
 
