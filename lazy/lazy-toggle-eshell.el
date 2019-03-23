@@ -70,17 +70,42 @@
     (set-window-configuration vmacs-window-configration)))
 
 ;;;###autoload
-(defun vmacs-eshell-term-show(&optional ignore-scratch)
+(defun vmacs-eshell-term-show(&optional  ignore-scratch make-cd)
   (interactive)
-  (let ((shell-buffer (vmacs-eshell--recent-buffer ignore-scratch)))
+  (let* ((shell-buffer (vmacs-eshell--recent-buffer ignore-scratch make-cd))
+         (dir (and make-cd
+                   (or list-buffers-directory default-directory)))
+         cd-cmd cur-host term-dir)
+    (when make-cd
+      (if (ignore-errors (file-remote-p default-directory))
+          (with-parsed-tramp-file-name (or list-buffers-directory default-directory) nil
+            (setq cur-host host)
+            (setq dir localname))
+        (setq cur-host (system-name)))
+      (setq cd-cmd (concat " cd " (shell-quote-argument dir)))
+      )
+
+
+
     (if shell-buffer                 ;存在eshell，直接切到这个 eshell buffer
         (progn
           (unless (vmacs-term-mode-p ignore-scratch)
-            (setq vmacs-window-configration (current-window-configuration))
-            )
+            (setq vmacs-window-configration (current-window-configuration)))
           (pop-to-buffer shell-buffer)
-          (delete-other-windows)
-          )
+          (with-current-buffer shell-buffer
+            (when (equal major-mode 'vterm-mode)
+              (if (ignore-errors (file-remote-p default-directory))
+                  (with-parsed-tramp-file-name default-directory nil
+                    (setq vterm-dir localname))
+                (setq vterm-dir default-directory))
+
+              (when (and (not (equal vterm-dir dir))
+                         (equal vterm-host cur-host))
+                (vterm-send-key "u" nil nil t)
+                (vterm-send-string cd-cmd t)
+                (vterm-send-return))))
+
+          (delete-other-windows))
       ;; 不存在已打开的eshell buffer
       (vmacs-eshell-term-new )))
   (evil-insert-state))
@@ -94,15 +119,33 @@
    (t                                   ; ;当前不在eshell中
     (vmacs-eshell-term-show ignore-scratch))))
 
+;;;###autoload
+(defun vmacs-eshell-term-toggle-cd(&optional ignore-scratch)
+  (interactive "P")
+  (cond
+   ((vmacs-term-mode-p)
+    (vmacs-eshell-term-hide))
+   (t                                   ; ;当前不在eshell中
+    (vmacs-eshell-term-show ignore-scratch t))))
+
 ;; 返回最近打开过的eshell term mode的buffer
-(defun vmacs-eshell--recent-buffer(&optional ignore-scratch)
+(defun vmacs-eshell--recent-buffer(&optional ignore-scratch check-vterm-accept-cmd-p)
   (let ((shell-buffer ))
     (dolist (buf (buffer-list))
       (with-current-buffer buf
         (when (vmacs-term-mode-p ignore-scratch)
-          (unless shell-buffer
-                 (setq shell-buffer buf)))))
+          (cond
+           ((and (equal major-mode 'vterm-mode)
+                 check-vterm-accept-cmd-p)
+            (goto-char (point-at-bol))
+            (when (vterm-skip-prompt)
+              (unless shell-buffer
+                (setq shell-buffer buf))))
+           (t
+            (unless shell-buffer
+              (setq shell-buffer buf)))))))
     shell-buffer))
+
 ;; 返回最近打开过的buffer,即，切换到eshell buffer之前的那个buffer
 (defun vmacs-eshell--recent-other-buffer()
   (let ((list (buffer-list))
