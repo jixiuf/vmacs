@@ -127,7 +127,7 @@ for different shell. "
 (define-key vterm-mode-map [tab]                       #'vterm--self-insert)
 (define-key vterm-mode-map [backspace]                 #'vterm--self-insert)
 (define-key vterm-mode-map [M-backspace]               #'vterm--self-insert)
-(define-key vterm-mode-map [return]                    #'vterm-send-return)
+(define-key vterm-mode-map [return]                    #'vterm--self-insert)
 (define-key vterm-mode-map [left]                      #'vterm--self-insert)
 (define-key vterm-mode-map [right]                     #'vterm--self-insert)
 (define-key vterm-mode-map [up]                        #'vterm--self-insert)
@@ -185,11 +185,6 @@ for different shell. "
   "Sends C-_ to the libvterm"
   (interactive)
   (vterm-send-key "_" nil nil t))
-
-(defun vterm-send-return ()
-  "Sends C-m to the libvterm."
-  (interactive)
-  (term-send-raw-string "\C-m"))
 
 (defun vterm-yank ()
   "Implementation of `yank' (paste) in vterm."

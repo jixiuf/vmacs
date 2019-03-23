@@ -8,6 +8,7 @@
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y" ))
 (require 'vterm)
+(require 'vterm-toggle)
 (defun vterm-undo()
   (interactive)
   (vterm-send-key "_" nil nil t))
@@ -262,5 +263,28 @@ Take the current line, and discard any initial text matching
           (delete-region (point) (match-end 0))
           (forward-line))
         (evil-yank (point-min) (point-max) type register yank-handler)))))
+
+(defun vmacs-kill-buffer-hook()
+  (when (funcall vterm-toggle-vterm-buffer-p-function)
+    (let ((proc (get-buffer-process (current-buffer))))
+      (when (process-live-p proc)
+        (when (derived-mode-p 'term-mode)
+          (term-send-raw-string "\^C")
+          (term-send-raw-string "\^D")
+          (term-send-raw-string "\^\\"))
+        (when (derived-mode-p 'vterm-mode)
+          (vterm-send-ctrl-c))
+        (kill-process proc)))))
+
+(add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
+
+(setq vterm-toggle-vterm-buffer-p-function 'vmacs-term-mode-p)
+;; (setq vterm-toggle-vterm-buffer-p-function 'vterm-toggle--default-vterm-mode-p)
+(defun vmacs-term-mode-p(&optional ignore-scratch)
+  (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+      (if ignore-scratch
+          nil
+        (string-match-p "\\*scratch-.*" (buffer-name)))))
+
 
 (provide 'conf-vterm)
