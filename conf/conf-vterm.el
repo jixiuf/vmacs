@@ -278,6 +278,15 @@ Take the current line, and discard any initial text matching
 
 (add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
 
+(defun vterm-toggle-after-ssh-login (user host port localdir)
+  (when (member host '("BJ-DEV-GO" "dev.com"))
+    (vterm-send-string "zsh" t)
+    (vterm-send-key "<return>" nil nil nil)
+    (vterm-send-string "j;clear" t)
+    (vterm-send-key "<return>" nil nil nil)))
+
+(add-hook 'vterm-toggle-after-ssh-login-function 'vterm-toggle-after-ssh-login)
+
 (setq vterm-toggle-vterm-buffer-p-function 'vmacs-term-mode-p)
 ;; (setq vterm-toggle-vterm-buffer-p-function 'vterm-toggle--default-vterm-mode-p)
 (defun vmacs-term-mode-p(&optional ignore-scratch)
