@@ -206,7 +206,7 @@ they are in `bind-map-set-keys'."
 (global-set-key [f3] 'cd-iterm2)
 
 (global-set-key [f2] 'vterm-toggle)
-(global-set-key [C-f2] 'vterm-toggle)
+(global-set-key [C-f2] 'vmacs-vterm-toggle-cd)
 (global-set-key (kbd "s-,") 'vterm-toggle)
 (global-set-key  (kbd "s-t") 'vmacs-vterm-toggle-cd)
 
