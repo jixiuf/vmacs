@@ -6,6 +6,8 @@
 (global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
 (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
 (vmacs-leader "4" 'toggle-split-window)
+(global-set-key  (kbd "C-M-s-\\") #'toggle-split-window)
+(vmacs-leader "4" 'toggle-split-window)
 (vmacs-leader "1" 'delete-other-windows) ;只保留当前窗口
 (vmacs-leader "0" 'delete-window)        ;删除当前窗口
 
