@@ -147,7 +147,7 @@
         (cd-absolute dir))
       ;; (message "title=%s\n pwd=%s\n user=%s\nhost=%s\ncmd=%s\n dir=%s\n"
       ;;          title vterm-pwd vterm-user vterm-host vterm-cmd dir)
-      (rename-buffer (vmacs-generate-dir-name "" vterm-cmd vterm-pwd
+      (rename-buffer (vmacs-generate-dir-name "term" vterm-cmd vterm-pwd
                                               (- awesome-tab-label-fixed-length
                                                  (length vterm-cmd) 1)) t))))
 

@@ -57,17 +57,34 @@
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4
 (setq display-buffer-alist
       '(
-        ;; ("\\*cider-repl .*"
-        ;;  (display-buffer-reuse-window display-buffer-in-side-window)
-        ;;  (reusable-frames . visible)
-        ;;  (side . bottom)
-        ;;  (window-height . 0.2)
-        ;;  )
+        ("^v?term.*"
+         (display-buffer-use-some-window)
+         ;; (inhibit-same-window . t)
+         ;; (reusable-frames . nil)
+         (side . top)
+         ;; (window-height . 1)
+         )
         ("\\*ivy-occur.*"
-         (display-buffer-reuse-window display-buffer-same-window))
+         (display-buffer-same-window ))
         ;; default
         ;; (".*" (display-buffer-pop-up-window))
         ))
+
+;; 左右分屏
+(defun vmacs-display-buffer-pop-up-horizontally (buffer alist)
+  "A `display-buffer' ACTION forcing a vertical window split.
+    See `split-window-sensibly' and `display-buffer-pop-up-window'."
+  (let ((split-width-threshold 0)
+        (split-height-threshold nil))
+    (display-buffer-pop-up-window buffer alist)))
+
+;; 上下分屏
+(defun vmacs-display-buffer-pop-up-vertically (buffer alist)
+  "A `display-buffer' ACTION forcing a vertical window split.
+    See `split-window-sensibly' and `display-buffer-pop-up-window'."
+  (let ((split-width-threshold 0)
+        (split-height-threshold nil))
+    (display-buffer-pop-up-window buffer alist)))
 
 ;; (defun vmacs-helm-alive-p ()
 ;;   (if (boundp 'helm-alive-p)
