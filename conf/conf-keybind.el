@@ -203,11 +203,12 @@ they are in `bind-map-set-keys'."
 ;; (global-set-key (kbd "<f3>") 'vmacs-shell-toggle)
 ;; (global-set-key (kbd "C-<f3>") 'vmacs-eshell-term-toggle)
 ;; (global-set-key  (kbd "s-C-M-d") 'vmacs-shell-toggle)
-(global-set-key (kbd "<f3>") 'cd-iterm2)
-(global-set-key (kbd "s-,") 'vterm-toggle)
+(global-set-key [f3] 'cd-iterm2)
+
 (global-set-key [f2] 'vterm-toggle)
-(global-set-key [C-f2] 'vterm-toggle-cd)
-(global-set-key  (kbd "s-t") 'vterm-toggle-cd)
+(global-set-key [C-f2] 'vterm-toggle)
+(global-set-key (kbd "s-,") 'vterm-toggle)
+(global-set-key  (kbd "s-t") 'vmacs-vterm-toggle-cd)
 
 
 ;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到

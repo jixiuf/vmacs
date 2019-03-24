@@ -19,13 +19,25 @@
   (vterm-send-key "e" nil nil t))
 
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
-(define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
 (define-key vterm-mode-map [(control return)]   #'vterm-compile)
+(define-key vterm-mode-map [f2]   nil)
+(define-key vterm-mode-map [f3]   nil)
+;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
+
+(defun vmacs-vterm-toggle-cd(&optional args)
+  (interactive "P")
+  (cond
+   ((equal (prefix-numeric-value args) 1)
+    (vterm-toggle-cd))
+   ((equal (prefix-numeric-value args) 4)
+    (vterm))
+   ((equal (prefix-numeric-value args) 16)
+    (vterm-other-window))))
 
 
 (defun vterm-compile ()
