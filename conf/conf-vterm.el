@@ -9,9 +9,7 @@
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y" ))
 (require 'vterm)
 (require 'vterm-toggle)
-(defun vterm-undo()
-  (interactive)
-  (vterm-send-key "_" nil nil t))
+
 
 
 (defun vterm-send-ctrl-x-ctrl-e ()
@@ -22,7 +20,6 @@
 
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "s-t")   #'vterm)
-(define-key vterm-mode-map (kbd "C-/")   #'vterm-undo)
 (define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
@@ -41,7 +38,7 @@
   "vterm ctrl-g"
   (interactive)
   (if (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
-           (save-excursion (not (search-forward-regexp vterm-prompt-regexp nil t))))
+           (save-excursion (not (search-forward-regexp vterm-toggle-prompt-regexp nil t))))
       (progn
         (unless (evil-insert-state-p)
           (evil-insert-state))
@@ -156,19 +153,6 @@
 
 (add-hook 'vterm-set-title-functions 'vterm-set-title-hook)
 
-
-
-(defvar  vterm-prompt-regexp "^[a-zA-Z0-9_-]+@[^#$%\n]*[#$%] *")
-
-(defun vterm-skip-prompt ()
-  "Skip past the text matching regexp `vterm-prompt-regexp'.
-If this takes us past the end of the current line, don't skip at all."
-  (let ((eol (line-end-position)))
-    (when (and (looking-at vterm-prompt-regexp)
-	           (<= (match-end 0) eol))
-      (goto-char (match-end 0)))))
-
-
 (defun vterm-get-line( &optional skip-prompt)
   (save-excursion
     (let ((start (point-at-bol))
@@ -191,7 +175,7 @@ If this takes us past the end of the current line, don't skip at all."
       (with-temp-buffer
         (insert text)
         (goto-char (point-min))
-        (when (looking-at vterm-prompt-regexp)
+        (when (looking-at vterm-toggle-prompt-regexp)
           (delete-region (point) (match-end 0)))
         (while  (search-forward-regexp "\n" nil t )
           (replace-match ""))
@@ -259,7 +243,7 @@ Take the current line, and discard any initial text matching
               (forward-char 1)            ;goto next bol
               (setq pt (point)))))
         (goto-char (point-min))
-        (while (looking-at vterm-prompt-regexp)
+        (while (looking-at vterm-toggle-prompt-regexp)
           (delete-region (point) (match-end 0))
           (forward-line))
         (evil-yank (point-min) (point-max) type register yank-handler)))))
