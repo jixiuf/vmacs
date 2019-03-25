@@ -58,10 +58,10 @@
 (setq display-buffer-alist
       '(
         ("^v?term.*"
-         (display-buffer-use-some-window)
+         (display-buffer-pop-up-window)
          ;; (inhibit-same-window . t)
          ;; (reusable-frames . nil)
-         (side . top)
+         (side . bottom)
          ;; (window-height . 1)
          )
         ("\\*ivy-occur.*"
