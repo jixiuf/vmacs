@@ -102,7 +102,7 @@ for different shell. "
   (setq-local scroll-conservatively 101)
   (setq-local scroll-margin 0)
 
-  (add-hook 'window-size-change-functions #'vterm--window-size-change t t)
+  (add-hook 'window-size-change-functions #'vterm--window-size-change-function t t)
   (let ((process-environment (append '("TERM=xterm"
                                        "INSIDE_EMACS=vterm"
                                        "LINES"
@@ -266,19 +266,24 @@ Then triggers a redraw from the module."
     (run-hook-with-args 'vterm-exit-functions
                         (if (buffer-live-p buf) buf nil))))
 
-(defun vterm--window-size-change (frame)
+(defun vterm--window-size-change-function (frame-or-window)
   "Callback triggered by a size change of the FRAME.
 
 Feeds the size change to the virtual terminal."
-  (dolist (window (window-list frame))
-    (with-current-buffer (window-buffer window)
-      (when (and (processp vterm--process)
-                 (process-live-p vterm--process))
-        (let ((height (window-body-height window))
-              (width (window-body-width window))
-              (inhibit-read-only t))
-          (set-process-window-size vterm--process height width)
-          (vterm--set-size vterm--term height width))))))
+  (if (windowp frame-or-window)
+      (vterm--window-size-change frame-or-window)
+    (dolist (window (window-list frame-or-window))
+      (vterm--window-size-change window))))
+
+(defun vterm--window-size-change (window)
+  (with-current-buffer (window-buffer window)
+    (when (and (processp vterm--process)
+               (process-live-p vterm--process))
+      (let ((height (window-body-height window))
+            (width (window-body-width window))
+            (inhibit-read-only t))
+        (set-process-window-size vterm--process height width)
+        (vterm--set-size vterm--term height width)))))
 
 (defun vterm--delete-lines (line-num count &optional delete-whole-line)
   "Delete COUNT lines from LINE-NUM.
