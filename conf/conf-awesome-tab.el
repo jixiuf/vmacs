@@ -28,6 +28,10 @@
     ((string-match-p (rx (or
                           "\*Helm"
                           "\*helm"
+                          "\*Flymake log\*"
+                          "\*gopls::stderr\*"
+                          "\*gopls\*"
+                          "\*lsp-log\*"
                           "\*tramp"
                           "\*Completions\*"
                           "\*sdcv\*"

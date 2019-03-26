@@ -53,13 +53,18 @@
 ;;                                                       "stdio" "--logfile" "/tmp/lspserver-go.log"
 ;;                                                       "--trace"
 ;;                                                       "--pprof" ":6060" ))
-;; (lsp-register-client
-;;    (make-lsp-client :new-connection (lsp-stdio-connection "gopls")
-;;                     :major-modes '(go-mode)
-;;                     :server-id 'gopls))
-
 (require 'lsp-clients)
-(setq lsp-clients-go-server "gopls")
+;; go get -u golang.org/x/tools/cmd/gopls
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection "gopls")
+                  :major-modes '(go-mode)
+                  :priority 0
+                  :initialization-options 'lsp-clients-go--make-init-options
+                  :server-id 'gopls
+                  :library-folders-fn (lambda (_workspace)
+                                        lsp-clients-go-library-directories)))
+
+;; (setq lsp-clients-go-server "gopls")
 ;; (setq lsp-clients-go-diagnostics-enabled nil)
 ;; (require 'eglot)
 (defun vmacs-go-mode-hook()
