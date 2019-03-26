@@ -53,14 +53,22 @@
 ;;                                                       "stdio" "--logfile" "/tmp/lspserver-go.log"
 ;;                                                       "--trace"
 ;;                                                       "--pprof" ":6060" ))
+;; (lsp-register-client
+;;    (make-lsp-client :new-connection (lsp-stdio-connection "gopls")
+;;                     :major-modes '(go-mode)
+;;                     :server-id 'gopls))
 
+(require 'lsp-clients)
+(setq lsp-clients-go-server "gopls")
+;; (setq lsp-clients-go-diagnostics-enabled nil)
 ;; (require 'eglot)
 (defun vmacs-go-mode-hook()
-  (require 'go-eldoc) ;; Don't need to require, if you install by package.el
-  (go-eldoc-setup)                    ;autoloaded
+  ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
+  ;; (go-eldoc-setup)                    ;autoloaded
+  (lsp)
   ;; github.com/syohex/emacs-go-eldoc
   ;; (eglot-ensure)
-  (setq company-backends `(( company-go company-capf company-yasnippet company-files )
+  (setq company-backends `(( company-lsp company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
 
