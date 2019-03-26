@@ -28,6 +28,11 @@
 (define-key vterm-mode-map [f2]   nil)
 (define-key vterm-mode-map [f3]   nil)
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
+(define-key vterm-mode-map [return] #'vterm-send-return)
+(defun vterm-send-return ()
+  "Sends C-m to the libvterm."
+  (interactive)
+   (process-send-string vterm--process "\C-m"))
 
 (defun vmacs-vterm-toggle-cd(&optional args)
   (interactive "P")
