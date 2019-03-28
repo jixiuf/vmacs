@@ -139,11 +139,7 @@
 (define-key ivy-minibuffer-map (kbd "C-[ [ 1 m")  'ivy-done)
 (define-key ivy-minibuffer-map (kbd "C-[ [ 1 m")  'ivy-done)
 (define-key ivy-minibuffer-map (kbd "<escape>") 'minibuffer-keyboard-quit)
-;; (define-key ivy-minibuffer-map (kbd "SPC") 'ignore) ;
-;; (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-delete-char)
 
-;; (define-key ivy-minibuffer-map (kbd "C-;") 'ivy-avy)
-;; (define-key ivy-minibuffer-map (kbd "C-[ [ 1 f") 'ivy-avy) ; ;iterm map C-; to this
 (define-key ivy-occur-grep-mode-map (kbd "n") 'evil-search-next)
 (define-key ivy-occur-grep-mode-map (kbd "p") 'evil-search-previous)
 (define-key ivy-occur-grep-mode-map (kbd "j") nil)
@@ -158,12 +154,6 @@
 (define-key ivy-occur-grep-mode-map (kbd "gr") 'ivy-occur-revert-buffer)
 (define-key ivy-occur-grep-mode-map (kbd "z") 'ivy-occur-hide-lines-matching)
 (define-key ivy-occur-grep-mode-map (kbd "/") 'ivy-occur-hide-lines-not-matching)
-;; (defun vmacs-ivy-occur-hook()
-;;   (evil-define-key 'normal 'local "/" 'ivy-occur-hide-lines-not-matching)
-;;   (evil-define-key 'normal 'local "z" 'ivy-occur-hide-lines-matching)
-;;   )
-;; (add-hook 'ivy-occur-mode-hook 'vmacs-ivy-occur-hook)
-;; (add-hook 'ivy-occur-grep-mode-hook 'vmacs-ivy-occur-hook)
 
 ;;;###autoload
 (defun ivy-occur-hide-lines-not-matching (search-text)
@@ -243,70 +233,21 @@
       (counsel-yank-pop)
     (barf-if-buffer-read-only)
     ad-do-it))
+
 (defadvice ivy--virtual-buffers (around counsel-git activate)
   "Append git files as virtual buffer"
-  (let ((recentf-list recentf-list )list
+  (let ((recentf-list recentf-list )
         (default-directory default-directory)
-        counsel--git-dir)
+        list counsel--git-dir)
     (setq counsel--git-dir (locate-dominating-file default-directory ".git"))
     (when counsel--git-dir
       (setq counsel--git-dir (expand-file-name counsel--git-dir))
       (setq default-directory counsel--git-dir)
-      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"|head -n 3000" default-directory)) "\n" t))
+      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
       (setq recentf-list (append recentf-list list))
-      ;; (when (< (length list) 5000)
-      ;; (dolist (c list)
-      ;;   (setq c (expand-file-name c default-directory))
-      ;;   (add-to-list 'recentf-list c))
-      ;; )
       )
     ad-do-it))
 
-
-;; ;; 主要为了支持 foo bar !far 模式
-;; ;; 主要为了支持 foo bar !far 模式
-;; (defadvice counsel-ag-function (around support-multimatch (arg) activate)
-;;   "Grep in the current directory for STRING using BASE-CMD.
-;; If non-nil, append EXTRA-AG-ARGS to BASE-CMD."
-;;   (if (< (length (ad-get-arg 0)) 3)
-;;       (counsel-more-chars 3)
-;;     (let ((default-directory (ivy-state-directory ivy-last))
-;;           (regex (counsel-unquote-regex-parens
-;;                   (setq ivy--old-re
-;;                         (ivy--regex (ad-get-arg 0)))))
-;;           (param (with-temp-buffer
-;;                    (insert (shell-quote-argument (ad-get-arg 0)))
-;;                    (goto-char (point-min))
-;;                    (while (search-forward "\\ " nil t)
-;;                      (replace-match " " nil t))
-;;                    (buffer-string))))
-;;       (counsel--async-command
-;;        (format counsel-ag-command param)) nil)))
-
-
-;; (defvar noct--original-ivy-regex-function nil)
-
-;; (defun noct-ivy-space-switch-to-regex ()
-;;   (interactive)
-;;   (unless (eq ivy--regex-function 'ivy--regex-fuzzy)
-;;     (setq ivy--old-re nil)
-;;     (setq noct--original-ivy-regex-function ivy--regex-function)
-;;     (setq ivy--regex-function 'ivy--regex-fuzzy))
-;;   (self-insert-command 1))
-
-;; (define-key ivy-minibuffer-map (kbd "SPC") #'noct-ivy-space-switch-to-regex)
-
-;; (defun noct-ivy-maybe-reset-regex-function ()
-;;   (interactive)
-;;   (let ((input (replace-regexp-in-string "\n.*" "" (minibuffer-contents))))
-;;     (when (and noct--original-ivy-regex-function
-;;                (not (string-match " " input)))
-;;       (setq ivy--old-re nil)
-;;       (setq ivy--regex-function noct--original-ivy-regex-function)
-;;       (setq noct--original-ivy-regex-function nil))))
-
-;; (advice-add 'ivy-backward-delete-char :after #'noct-ivy-maybe-reset-regex-function)
-;; (advice-add 'ivy-delete-char :after #'noct-ivy-maybe-reset-regex-function)
 
 (provide 'conf-ivy)
 
