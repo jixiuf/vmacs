@@ -6,6 +6,8 @@
 (setq-default pyim-dcache-directory "~/.emacs.d/cache/pyim")
 
 (require 'pyim)
+(define-key pyim-mode-map "\C-v" 'pyim-page-next-page)
+(define-key pyim-mode-map "\M-v" 'pyim-page-previous-page)
 
 (setq default-input-method "pyim")
 (setq pyim-page-tooltip 'posframe)
