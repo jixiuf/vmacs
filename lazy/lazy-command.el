@@ -80,7 +80,7 @@ Move point to beginning-of-line ,if point was already at that position,
     (let ((pt (point)))
       (beginning-of-line)
       (when (equal pt (point-at-bol))
-      (vterm-skip-prompt))))
+      (vterm-toggle--skip-prompt))))
    ((derived-mode-p 'eshell-mode)
     (let ((oldpos (point)))
       (eshell-bol)
