@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20190327.2151
+;; Package-Version: 20190329.920
 ;; Version: 0.11.0
 ;; Package-Requires: ((emacs "24.3") (swiper "0.11.0"))
 ;; Keywords: convenience, matching, tools
@@ -1191,21 +1191,23 @@ Like `locate-dominating-file', but DIR defaults to
   (or (counsel--git-root)
       (error "Not in a Git repository")))
 
+(defun counsel-git-cands ()
+  (let ((default-directory (counsel-locate-git-root)))
+    (split-string
+     (shell-command-to-string counsel-git-cmd)
+     "\n"
+     t)))
+
 ;;;###autoload
 (defun counsel-git (&optional initial-input)
   "Find file in the current Git repository.
 INITIAL-INPUT can be given as the initial minibuffer input."
   (interactive)
   (counsel-require-program counsel-git-cmd)
-  (let* ((default-directory (counsel-locate-git-root))
-         (cands (split-string
-                 (shell-command-to-string counsel-git-cmd)
-                 "\n"
-                 t)))
-    (ivy-read "Find file: " cands
-              :initial-input initial-input
-              :action #'counsel-git-action
-              :caller 'counsel-git)))
+  (ivy-read "Find file: " (counsel-git-cands)
+            :initial-input initial-input
+            :action #'counsel-git-action
+            :caller 'counsel-git))
 
 (defun counsel-git-action (x)
   "Find file X in current Git repository."
@@ -1795,12 +1797,12 @@ Skip some dotfiles unless `ivy-text' requires them."
               (string-match re-str (directory-file-name x)))))))
     (if (or (null ivy-use-ignore)
             (null counsel-find-file-ignore-regexp)
-            (string-match "\\`\\." ivy-text))
+            (string-match-p "\\`\\." ivy-text))
         res
       (or (cl-remove-if
            (lambda (x)
              (and
-              (string-match counsel-find-file-ignore-regexp x)
+              (string-match-p counsel-find-file-ignore-regexp x)
               (not (member x ivy-extra-directories))))
            res)
           res))))
@@ -2396,7 +2398,7 @@ FZF-PROMPT, if non-nil, is passed as `ivy-read' prompt argument."
                         (message (cdr x)))
               :caller 'counsel-rpm)))
 
-(defcustom counsel-file-jump-args "* -type f -not -path '*/.git*'"
+(defcustom counsel-file-jump-args "-name '.git' -prune -o -type f -print | cut -c 3-"
   "Arguments for the `find-command' when using `counsel-file-jump'."
   :type 'string)
 
@@ -2427,14 +2429,14 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
               :keymap counsel-find-file-map
               :caller 'counsel-file-jump)))
 
-(defcustom counsel-dired-jump-args "* -type d -not -path '*/.git*'"
+(defcustom counsel-dired-jump-args "-name '.git' -prune -o -type d -print | cut -c 3-"
   "Arguments for the `find-command' when using `counsel-dired-jump'."
   :type 'string)
 
 ;;** `counsel-dired-jump'
 ;;;###autoload
 (defun counsel-dired-jump (&optional initial-input initial-directory)
-  "Jump to a directory (in dired) below the current directory.
+  "Jump to a directory (see `dired-jump') below the current directory.
 List all subdirectories within the current directory.
 INITIAL-INPUT can be given as the initial minibuffer input.
 INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
@@ -2442,15 +2444,18 @@ INITIAL-DIRECTORY, if non-nil, is used as the root directory for search."
    (list nil
          (when current-prefix-arg
            (read-directory-name "From directory: "))))
-  (counsel-require-program "find")
-  (let* ((default-directory (or initial-directory default-directory)))
-    (ivy-read "Directory: "
+  (counsel-require-program find-program)
+  (let ((default-directory (or initial-directory default-directory)))
+    (ivy-read "Find directory: "
               (split-string
                (shell-command-to-string
                 (concat find-program " " counsel-dired-jump-args))
                "\n" t)
+              :matcher #'counsel--find-file-matcher
               :initial-input initial-input
               :action (lambda (d) (dired-jump nil (expand-file-name d)))
+              :history 'file-name-history
+              :keymap counsel-find-file-map
               :caller 'counsel-dired-jump)))
 
 ;;* Grep
@@ -4472,11 +4477,6 @@ COUNT defaults to 1."
   (interactive "p")
   (setq ivy-completion-beg (point))
   (setq ivy-completion-end (point))
-  (unless (listp counsel--unicode-table)
-    (setq counsel--unicode-table
-          (sort
-           (all-completions "" counsel--unicode-table)
-           (ivy--sort-function 'counsel-unicode-char))))
   (ivy-read "Unicode name: " counsel--unicode-table
             :history 'counsel-unicode-char-history
             :sort t
