@@ -5,7 +5,7 @@
   (x-focus-frame nil)
   (let* ((payload (car (last event)))
          (type (car payload))
-         (fromname (cadr payload))
+         (fromname (nth 2 payload))
          (img-regexp "\\(gif\\|png\\|jp[e]?g\\)\\>")
          (destname fromname)
          img-dir
