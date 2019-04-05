@@ -12,3 +12,4 @@
 #+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil 
 #+LATEX_HEADER: \usepackage{fontspec}
 #+LATEX_HEADER: \setmainfont{PingFang SC}
+#+REVEAL_TRANS: None/Fade/Slide/Convex/Concave/Zoom
