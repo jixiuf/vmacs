@@ -1,4 +1,8 @@
 ;; org-mode 相关
+(require 'ox-reveal)
+(setq org-reveal-root (format "file://%sreveal.js-3.0.0" (expand-file-name user-emacs-directory)))
+(setq org-reveal-single-file t)
+
 (vmacs-leader "t" 'org-agenda)   ;列出todo list等
 (vmacs-leader "T" 'org-capture)  ;新加一个todo 条目等
 (with-eval-after-load 'org
