@@ -10,7 +10,7 @@
 ;;;;;;  (0 0 0 0))
 ;;; Generated autoloads from dired-filetype-face.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-filetype-face" '("document" "dired-filetype-" "deffiletype-" "link" "image" "video" "music" "execute" "plain" "program" "source" "com" "XML" "omit")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dired-filetype-face" '("XML" "com" "deffiletype-" "dired-filetype-" "document" "execute" "image" "link" "music" "omit" "plain" "program" "source" "video")))
 
 ;;;***
 

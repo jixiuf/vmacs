@@ -1,2 +1,2 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "protobuf-mode" "20170526.1650" "major mode for editing protocol buffers." 'nil :commit "0483feb6e09895f3c59d4597543ed63d6f05de59" :keywords '("google" "protobuf" "languages") :authors '(("Alexandre Vassalotti" . "alexandre@peadrop.com")) :maintainer '("Alexandre Vassalotti" . "alexandre@peadrop.com"))
+;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/protobuf-mode-20170526.1650/protobuf-mode.el  -*- no-byte-compile: t -*-
+(define-package "protobuf-mode" "20170526.1650" "major mode for editing protocol buffers." 'nil :commit "1065652bf9a8f8ef7f46380ba3390122d6d8bae1" :keywords '("google" "protobuf" "languages") :authors '(("Alexandre Vassalotti" . "alexandre@peadrop.com")) :maintainer '("Alexandre Vassalotti" . "alexandre@peadrop.com"))

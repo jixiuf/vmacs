@@ -27,6 +27,11 @@ or call the function `golden-ratio-mode'.")
 (autoload 'golden-ratio-mode "golden-ratio" "\
 Enable automatic window resizing with golden ratio.
 
+If called interactively, enable Golden-Ratio mode if ARG is positive, and
+disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it
+if ARG is `toggle'; disable the mode otherwise.
+
 \(fn &optional ARG)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "golden-ratio" '("golden-ratio-")))
