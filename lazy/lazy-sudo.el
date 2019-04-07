@@ -28,10 +28,10 @@
   (interactive "P")
   (let* ((old-pos (point))
          (fname (expand-file-name (or buffer-file-name dired-directory)) )
-         (local-hostname (get-localhost-name)))
+         (local-hostname (system-name)))
     (when fname
       (cond
-       ((tramp-remote-file-name-p fname local-hostname) ;打开远程文件
+       ((tramp-remote-file-name-p fname local-hostname ) ;打开远程文件
         (with-parsed-tramp-file-name fname nil
           (if (string-equal user "root")
               (let*((cache-username (gethash  (intern  host) toggle-with-sudo-history-host-user-alist))
@@ -46,7 +46,8 @@
               (if argv
                   (setq fname (concat "/" method ":" (read-string (concat "username:[" cache-username "]") "" nil cache-username) "@" host ":" localname))
                 (setq fname (concat "/" method ":" user "@" host "|sudo:" "root"  "@" host ":" localname))
-                (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist))))))
+                (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist))
+              (message "%s" fname)))))
 
        ((string-match (concat "^/sudo:.*@" (regexp-quote local-hostname)) fname) ;用sudo 打开了本机的文件
         (with-parsed-tramp-file-name fname nil (setq fname localname)))
@@ -59,18 +60,9 @@
         (find-alternate-file fname))
       (goto-char old-pos))))
 
-;;;###autoload
-(defun get-localhost-name()
-  (let* ((default-directory (expand-file-name "~"))
-         (hostname (shell-command-to-string "hostname" )))
-    (substring hostname  0 (string-match "$" hostname )))) ;trim \n
-
 
 (defun tramp-remote-file-name-p(filename local-hostname)
-  (and (or (string-match "/ssh:"  filename)
-           (string-match "/sshx:"  filename)
-           (string-match "/su:"  filename)
-           (string-match "/sudo:"  filename))
+  (and (file-remote-p filename)
        (not (string-match (concat (regexp-quote local-hostname) "[:\\|\\]")  filename))
        (not (string-match "localhost[:\\|\\]"  filename))
        (not (string-match (concat (regexp-quote "127.0.0.1") "[:\\|\\]")  filename))))
