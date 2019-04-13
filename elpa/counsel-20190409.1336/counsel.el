@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20190404.1601
+;; Package-Version: 20190409.1336
 ;; Version: 0.11.0
 ;; Package-Requires: ((emacs "24.3") (swiper "0.11.0"))
 ;; Keywords: convenience, matching, tools
@@ -1287,13 +1287,31 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 Typical value: '(recenter)."
   :type 'hook)
 
+(defcustom counsel-git-grep-cmd-function #'counsel-git-grep-cmd-function-default
+  "How a git-grep shell call is built from the input."
+  :type '(radio
+          (function-item counsel-git-grep-cmd-function-default)
+          (function-item counsel-git-grep-cmd-function-ignore-order)
+          (function :tag "Other")))
+
+(defun counsel-git-grep-cmd-function-default (str)
+  (format counsel-git-grep-cmd
+          (setq ivy--old-re (ivy--regex str t))))
+
+(defun counsel-git-grep-cmd-function-ignore-order (str)
+  (setq ivy--old-re (ivy--regex str t))
+  (let ((parts (split-string str " " t)))
+    (concat
+     "git --no-pager grep --full-name -n --no-color -i -e "
+     (mapconcat #'shell-quote-argument parts " --and -e "))))
+
 (defun counsel-git-grep-function (string)
   "Grep in the current Git repository for STRING."
   (or
    (ivy-more-chars)
-   (let ((cmd (format counsel-git-grep-cmd
-                      (setq ivy--old-re (ivy--regex string t)))))
-     (counsel--async-command cmd)
+   (progn
+     (counsel--async-command
+      (funcall counsel-git-grep-cmd-function string))
      nil)))
 
 (defun counsel-git-grep-action (x)
@@ -1351,7 +1369,9 @@ files in a project.")
        (setq cmd counsel-git-grep-cmd-default)))
     (cons proj cmd)))
 
-(defun counsel--call (&rest command)
+(define-obsolete-function-alias 'counsel--call 'counsel--command "0.11.0")
+
+(defun counsel--command (&rest command)
   "Synchronously call COMMAND and return its output as a string.
 COMMAND comprises the program name followed by its arguments, as
 in `make-process'.  Signal `file-error' and emit a warning if
@@ -2286,11 +2306,30 @@ string - the full shell command to run."
       (funcall counsel-locate-cmd input))
      '("" "working..."))))
 
+(defcustom counsel-locate-db-path "~/.local/mlocate.db"
+  "Location where to put the locatedb in case your home folder is encrypted."
+  :type 'file)
+
+(defun counsel--locate-updatedb ()
+  (when (file-exists-p "~/.Private")
+    (let ((db-fname (expand-file-name counsel-locate-db-path)))
+      (setenv "LOCATE_PATH" db-fname)
+      (when (or (not (file-exists-p db-fname))
+                (> (time-to-seconds
+                    (time-subtract
+                     (current-time)
+                     (nth 5 (file-attributes db-fname))))
+                   60))
+        (message "Updating %s..." db-fname)
+        (counsel--command
+         "updatedb" "-l" "0" "-o" db-fname "-U" (expand-file-name "~"))))))
+
 ;;;###autoload
 (defun counsel-locate (&optional initial-input)
   "Call the \"locate\" shell command.
 INITIAL-INPUT can be given as the initial minibuffer input."
   (interactive)
+  (counsel--locate-updatedb)
   (ivy-read "Locate: " #'counsel-locate-function
             :initial-input initial-input
             :dynamic-collection t
@@ -3089,19 +3128,17 @@ otherwise continue prompting for tags."
                 :action #'counsel-org-tag-action
                 :caller 'counsel-org-tag))))
 
+(defvar org-version)
+
 ;;;###autoload
 (defun counsel-org-tag-agenda ()
   "Set tags for the current agenda item."
   (interactive)
-  (let* ((cmd-sym (if (version< (org-version) "9.2")
-                      'org-set-tags
-                    'org-set-tags-command))
-         (store (symbol-function cmd-sym)))
-    (unwind-protect
-         (progn
-           (fset cmd-sym (symbol-function 'counsel-org-tag))
-           (org-agenda-set-tags nil nil))
-      (fset cmd-sym store))))
+  (cl-letf (((symbol-function (if (version< org-version "9.2")
+                                  'org-set-tags
+                                'org-set-tags-command))
+             #'counsel-org-tag))
+    (org-agenda-set-tags)))
 
 (define-obsolete-variable-alias 'counsel-org-goto-display-tags
     'counsel-org-headline-display-tags "0.10.0")
@@ -3232,8 +3269,6 @@ recognized:
 (defun counsel-org-goto-action (x)
   "Go to headline in candidate X."
   (org-goto-marker-or-bmk (cdr x)))
-
-(defvar org-version)
 
 (defun counsel--org-get-heading-args ()
   "Return list of arguments for `org-get-heading'.
@@ -4690,11 +4725,11 @@ selected color."
 
 (defun counsel-rhythmbox-toggle-shuffle (_song)
   "Toggle Rhythmbox shuffle setting."
-  (let* ((old-order (counsel--call "dconf" "read" "/org/gnome/rhythmbox/player/play-order"))
+  (let* ((old-order (counsel--command "dconf" "read" "/org/gnome/rhythmbox/player/play-order"))
          (new-order (if (string= old-order "'shuffle'")
                         "'linear'"
                       "'shuffle'")))
-    (counsel--call
+    (counsel--command
      "dconf"
      "write"
      "/org/gnome/rhythmbox/player/play-order"
@@ -5083,9 +5118,16 @@ The buffers are those opened during a session of `counsel-switch-buffer'."
       ((get-buffer current)
        (ivy-call))
       ((and virtual (file-exists-p (cdr virtual)))
-       (let ((buf (find-file-noselect (cdr virtual))))
-         (push buf counsel--switch-buffer-temporary-buffers)
-         (ivy-call)))
+       (let ((buf (ignore-errors
+                    ;; may not open due to `large-file-warning-threshold' etc.
+                    (find-file-noselect (cdr virtual)))))
+         (if buf
+             (progn
+               (push buf counsel--switch-buffer-temporary-buffers)
+               (ivy-call))
+           ;; clean up the minibuffer so that there's no delay before
+           ;; the Ivy candidates are displayed once again
+           (message ""))))
       (t
        (with-ivy-window
          (switch-to-buffer (ivy-state-buffer ivy-last)))))))

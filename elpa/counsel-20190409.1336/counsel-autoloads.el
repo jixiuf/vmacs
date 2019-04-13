@@ -10,45 +10,31 @@
 ;;; Generated autoloads from counsel.el
 
 (autoload 'counsel-el "counsel" "\
-Elisp completion at point.
-
-\(fn)" t nil)
+Elisp completion at point." t nil)
 
 (autoload 'counsel-cl "counsel" "\
-Common Lisp completion at point.
-
-\(fn)" t nil)
+Common Lisp completion at point." t nil)
 
 (autoload 'counsel-clj "counsel" "\
-Clojure completion at point.
-
-\(fn)" t nil)
+Clojure completion at point." t nil)
 
 (autoload 'counsel-company "counsel" "\
-Complete using `company-candidates'.
-
-\(fn)" t nil)
+Complete using `company-candidates'." t nil)
 
 (autoload 'counsel-irony "counsel" "\
-Inline C/C++ completion using Irony.
-
-\(fn)" t nil)
+Inline C/C++ completion using Irony." t nil)
 
 (autoload 'counsel-describe-variable "counsel" "\
 Forward to `describe-variable'.
 
 Variables declared using `defcustom' are highlighted according to
-`ivy-highlight-face'.
-
-\(fn)" t nil)
+`ivy-highlight-face'." t nil)
 
 (autoload 'counsel-describe-function "counsel" "\
 Forward to `describe-function'.
 
 Interactive functions (i.e., commands) are highlighted according
-to `ivy-highlight-face'.
-
-\(fn)" t nil)
+to `ivy-highlight-face'." t nil)
 
 (defface counsel-variable-documentation '((t :inherit font-lock-comment-face)) "\
 Face for displaying Lisp documentation." :group 'ivy-faces)
@@ -56,9 +42,7 @@ Face for displaying Lisp documentation." :group 'ivy-faces)
 (autoload 'counsel-apropos "counsel" "\
 Show all matching symbols.
 See `apropos' for further information on what is considered
-a symbol and how to search for them.
-
-\(fn)" t nil)
+a symbol and how to search for them." t nil)
 
 (autoload 'counsel-info-lookup-symbol "counsel" "\
 Forward SYMBOL to `info-lookup-symbol' with ivy completion.
@@ -76,22 +60,16 @@ when available, in that order of precedence.
 
 (autoload 'counsel-load-library "counsel" "\
 Load a selected the Emacs Lisp library.
-The libraries are offered from `load-path'.
-
-\(fn)" t nil)
+The libraries are offered from `load-path'." t nil)
 
 (autoload 'counsel-find-library "counsel" "\
 Visit a selected the Emacs Lisp library.
-The libraries are offered from `load-path'.
-
-\(fn)" t nil)
+The libraries are offered from `load-path'." t nil)
 
 (autoload 'counsel-load-theme "counsel" "\
 Forward to `load-theme'.
 Usable with `ivy-resume', `ivy-next-line-and-call' and
-`ivy-previous-line-and-call'.
-
-\(fn)" t nil)
+`ivy-previous-line-and-call'." t nil)
 
 (autoload 'counsel-descbinds "counsel" "\
 Show a list of all defined keys and their definitions.
@@ -103,9 +81,7 @@ BUFFER defaults to the current one.
 (autoload 'counsel-faces "counsel" "\
 Complete faces with preview.
 Actions are provided by default for describing or customizing the
-selected face.
-
-\(fn)" t nil)
+selected face." t nil)
 
 (autoload 'counsel-git "counsel" "\
 Find file in the current Git repository.
@@ -122,24 +98,16 @@ INITIAL-INPUT can be given as the initial minibuffer input.
 \(fn &optional CMD INITIAL-INPUT)" t nil)
 
 (autoload 'counsel-git-stash "counsel" "\
-Search through all available git stashes.
-
-\(fn)" t nil)
+Search through all available git stashes." t nil)
 
 (autoload 'counsel-git-change-worktree "counsel" "\
-Find the file corresponding to the current buffer on a different worktree.
-
-\(fn)" t nil)
+Find the file corresponding to the current buffer on a different worktree." t nil)
 
 (autoload 'counsel-git-checkout "counsel" "\
-Call the \"git checkout\" command.
-
-\(fn)" t nil)
+Call the \"git checkout\" command." t nil)
 
 (autoload 'counsel-git-log "counsel" "\
-Call the \"git log --grep\" shell command.
-
-\(fn)" t nil)
+Call the \"git log --grep\" shell command." t nil)
 
 (autoload 'counsel-find-file "counsel" "\
 Forward to `find-file'.
@@ -154,22 +122,16 @@ When INITIAL-INPUT is non-nil, use it in the minibuffer during completion.
 \(fn &optional INITIAL-INPUT)" t nil)
 
 (autoload 'counsel-recentf "counsel" "\
-Find a file on `recentf-list'.
-
-\(fn)" t nil)
+Find a file on `recentf-list'." t nil)
 
 (autoload 'counsel-bookmark "counsel" "\
-Forward to `bookmark-jump' or `bookmark-set' if bookmark doesn't exist.
-
-\(fn)" t nil)
+Forward to `bookmark-jump' or `bookmark-set' if bookmark doesn't exist." t nil)
 
 (autoload 'counsel-bookmarked-directory "counsel" "\
 Ivy interface for bookmarked directories.
 
 With a prefix argument, this command creates a new bookmark which points to the
-current value of `default-directory'.
-
-\(fn)" t nil)
+current value of `default-directory'." t nil)
 
 (autoload 'counsel-file-register "counsel" "\
 Search file in register.
@@ -177,9 +139,7 @@ Search file in register.
 You cannot use Emacs' normal register commands to create file
 registers.  Instead you must use the `set-register' function like
 so: `(set-register ?i \"/home/eric/.emacs.d/init.el\")'.  Now you
-can use `C-x r j i' to open that file.
-
-\(fn)" t nil)
+can use `C-x r j i' to open that file." t nil)
 
 (autoload 'counsel-locate "counsel" "\
 Call the \"locate\" shell command.
@@ -196,14 +156,10 @@ FZF-PROMPT, if non-nil, is passed as `ivy-read' prompt argument.
 \(fn &optional INITIAL-INPUT INITIAL-DIRECTORY FZF-PROMPT)" t nil)
 
 (autoload 'counsel-dpkg "counsel" "\
-Call the \"dpkg\" shell command.
-
-\(fn)" t nil)
+Call the \"dpkg\" shell command." t nil)
 
 (autoload 'counsel-rpm "counsel" "\
-Call the \"rpm\" shell command.
-
-\(fn)" t nil)
+Call the \"rpm\" shell command." t nil)
 
 (autoload 'counsel-file-jump "counsel" "\
 Jump to a file below the current directory.
@@ -271,47 +227,30 @@ When non-nil, INITIAL-INPUT is the initial search pattern.
 
 \(fn &optional INITIAL-INPUT)" t nil)
 
-(autoload 'counsel--org-get-tags "counsel" "\
-
-
-\(fn)" nil nil)
+(autoload 'counsel--org-get-tags "counsel" nil nil nil)
 
 (autoload 'counsel-org-tag-agenda "counsel" "\
-Set tags for the current agenda item.
-
-\(fn)" t nil)
+Set tags for the current agenda item." t nil)
 
 (defalias 'counsel-org-goto #'counsel-outline)
 
 (autoload 'counsel-org-goto-all "counsel" "\
-Go to a different location in any org file.
-
-\(fn)" t nil)
+Go to a different location in any org file." t nil)
 
 (autoload 'counsel-org-file "counsel" "\
-Browse all attachments for current Org file.
-
-\(fn)" t nil)
+Browse all attachments for current Org file." t nil)
 
 (autoload 'counsel-org-entity "counsel" "\
-Complete Org entities using Ivy.
-
-\(fn)" t nil)
+Complete Org entities using Ivy." t nil)
 
 (autoload 'counsel-org-capture "counsel" "\
-Capture something.
-
-\(fn)" t nil)
+Capture something." t nil)
 
 (autoload 'counsel-org-agenda-headlines "counsel" "\
-Choose from headers of `org-mode' files in the agenda.
-
-\(fn)" t nil)
+Choose from headers of `org-mode' files in the agenda." t nil)
 
 (autoload 'counsel-tmm "counsel" "\
-Text-mode emulation of looking and choosing from a menubar.
-
-\(fn)" t nil)
+Text-mode emulation of looking and choosing from a menubar." t nil)
 
 (autoload 'counsel-yank-pop "counsel" "\
 Ivy replacement for `yank-pop'.
@@ -326,51 +265,35 @@ Note: Duplicate elements of `kill-ring' are always deleted.
 \(fn &optional ARG)" t nil)
 
 (autoload 'counsel-imenu "counsel" "\
-Jump to a buffer position indexed by imenu.
-
-\(fn)" t nil)
+Jump to a buffer position indexed by imenu." t nil)
 
 (autoload 'counsel-list-processes "counsel" "\
 Offer completion for `process-list'.
 The default action deletes the selected process.
-An extra action allows to switch to the process buffer.
-
-\(fn)" t nil)
+An extra action allows to switch to the process buffer." t nil)
 
 (autoload 'counsel-expression-history "counsel" "\
 Select an element of `read-expression-history'.
-And insert it into the minibuffer.  Useful during `eval-expression'.
-
-\(fn)" t nil)
+And insert it into the minibuffer.  Useful during `eval-expression'." t nil)
 
 (make-obsolete 'counsel-expression-history 'counsel-minibuffer-history '"0.10.0 <2017-11-13 Mon>")
 
 (autoload 'counsel-shell-command-history "counsel" "\
-Browse shell command history.
-
-\(fn)" t nil)
+Browse shell command history." t nil)
 
 (make-obsolete 'counsel-shell-command-history 'counsel-minibuffer-history '"0.10.0 <2017-11-13 Mon>")
 
 (autoload 'counsel-minibuffer-history "counsel" "\
-Browse minibuffer history.
-
-\(fn)" t nil)
+Browse minibuffer history." t nil)
 
 (autoload 'counsel-esh-history "counsel" "\
-Browse Eshell history.
-
-\(fn)" t nil)
+Browse Eshell history." t nil)
 
 (autoload 'counsel-shell-history "counsel" "\
-Browse shell history.
-
-\(fn)" t nil)
+Browse shell history." t nil)
 
 (autoload 'counsel-outline "counsel" "\
-Jump to an outline heading with completion.
-
-\(fn)" t nil)
+Jump to an outline heading with completion." t nil)
 
 (autoload 'counsel-ibuffer "counsel" "\
 Use ibuffer to switch to another buffer.
@@ -379,9 +302,7 @@ NAME specifies the name of the buffer (defaults to \"*Ibuffer*\").
 \(fn &optional NAME)" t nil)
 
 (autoload 'counsel-switch-to-shell-buffer "counsel" "\
-Switch to a shell buffer, or create one.
-
-\(fn)" t nil)
+Switch to a shell buffer, or create one." t nil)
 
 (autoload 'counsel-unicode-char "counsel" "\
 Insert COUNT copies of a Unicode character at point.
@@ -393,17 +314,13 @@ COUNT defaults to 1.
 Show a list of all supported colors for a particular frame.
 
 You can insert or kill the name or hexadecimal RGB value of the
-selected color.
-
-\(fn)" t nil)
+selected color." t nil)
 
 (autoload 'counsel-colors-web "counsel" "\
 Show a list of all W3C web colors for use in CSS.
 
 You can insert or kill the name or hexadecimal RGB value of the
-selected color.
-
-\(fn)" t nil)
+selected color." t nil)
 
 (autoload 'counsel-rhythmbox "counsel" "\
 Choose a song from the Rhythmbox library to play or enqueue.
@@ -419,9 +336,7 @@ When ARG is non-nil, ignore NoDisplay property in *.desktop files.
 (autoload 'counsel-switch-buffer "counsel" "\
 Switch to another buffer.
 Display a preview of the selected ivy completion candidate buffer
-in the current window.
-
-\(fn)" t nil)
+in the current window." t nil)
 
 (autoload 'counsel-compile "counsel" "\
 Call `compile' completing with smart suggestions, optionally for DIR.
@@ -439,9 +354,7 @@ selecting one of these will enable it.
 Additional actions:\\<ivy-minibuffer-map>
 
   \\[ivy-dispatching-done] d: Go to minor mode definition
-  \\[ivy-dispatching-done] h: Describe minor mode
-
-\(fn)" t nil)
+  \\[ivy-dispatching-done] h: Describe minor mode" t nil)
 
 (defvar counsel-mode nil "\
 Non-nil if Counsel mode is enabled.
