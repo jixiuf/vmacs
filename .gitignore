@@ -14,7 +14,6 @@
 /eshell/history
 /eshell/lastdir
 /nohup.out
-/elpa/osx-dictionary-20171026.34/osx-dictionary-cli
 /bin/rgwrapper
 
 /conf/conf-tmp.el
@@ -22,3 +21,4 @@
 /elpa/archives/melpa/archive-contents
 /.lsp-session-v1
 /pyim/dcache/
+osx-dictionary-cli
