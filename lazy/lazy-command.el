@@ -79,8 +79,9 @@ Move point to beginning-of-line ,if point was already at that position,
    ((derived-mode-p 'vterm-mode)
     (let ((pt (point)))
       (beginning-of-line)
-      (when (equal pt (point-at-bol))
-      (vterm-toggle--skip-prompt))))
+      (vterm-toggle--skip-prompt)
+      (when (equal pt (point))
+        (beginning-of-line))))
    ((derived-mode-p 'eshell-mode)
     (let ((oldpos (point)))
       (eshell-bol)
@@ -91,10 +92,8 @@ Move point to beginning-of-line ,if point was already at that position,
     (let ((oldpos (point)))
       (beginning-of-line)
       (and (= oldpos (point))
-           (back-to-indentation) ))
-    )
-   )
-  )
+           (back-to-indentation) )))))
+
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
 ;; 一般绑在C-a上

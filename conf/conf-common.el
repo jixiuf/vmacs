@@ -73,6 +73,7 @@
  display-line-numbers 'absolute
  )
 
+;; path /Library/TeX/texbin
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
                               "xelatex -interaction nonstopmode %f"))
 ;; (with-eval-after-load 'org
