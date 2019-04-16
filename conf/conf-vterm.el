@@ -12,6 +12,18 @@
 (require 'vterm-toggle)
 
 
+(defun vterm-bol()
+  "Go to the beginning of line, then skip past the prompt, if any.
+The prompt skip is done by skipping text matching the regular expression
+`vterm-toggle-prompt-regexp', a buffer local variable."
+  (interactive)
+  (let ((pt (point)))
+    (beginning-of-line)
+    (vterm-toggle--skip-prompt)
+    (if (equal pt (point))
+        (beginning-of-line)
+      (vterm--self-insert))))
+
 
 (defun vterm-send-ctrl-x-ctrl-e ()
   "edit with editor"
@@ -19,17 +31,6 @@
   (vterm-send-key "x" nil nil t)
   (vterm-send-key "e" nil nil t))
 
-(define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
-(define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
-(define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
-(define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
-(define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
-(define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
-(define-key vterm-mode-map [(control return)]   #'vterm-compile)
-(define-key vterm-mode-map [f2]   nil)
-(define-key vterm-mode-map [f3]   nil)
-;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
-(define-key vterm-mode-map [return] #'vterm-send-return)
 (defun vterm-send-return ()
   "Sends C-m to the libvterm."
   (interactive)
@@ -76,8 +77,21 @@
   (forward-char -1))
 
 
+(define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
+(define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
+(define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
+(define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
+(define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
+(define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
+(define-key vterm-mode-map [(control return)]   #'vterm-compile)
+(define-key vterm-mode-map [f2]   nil)
+(define-key vterm-mode-map [f3]   nil)
+(define-key vterm-mode-map (kbd "C-a")   #'vterm-bol)
+;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
+(define-key vterm-mode-map [return] #'vterm-send-return)
 (defun vmacs-vterm-hook()
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
+  (evil-define-key 'motion 'local (kbd "C-a") 'vterm-bol)
   (evil-define-key 'normal 'local "y" 'evil-yank-join)
   (evil-define-key 'motion'local "y" 'evil-yank-join)
   (evil-define-key 'visual 'local "y" 'evil-yank-join)
@@ -213,7 +227,7 @@ Take the current line, and discard any initial text matching
           (end (point-at-eol))
           (width (window-body-width))
           text)
-      (while (and (<= width (string-width (buffer-substring-no-properties (point-at-eol) (point-at-bol) )))
+      (while (and (<= width (string-width (buffer-substring-no-properties  (point-at-bol)(point-at-eol) )))
                   (not (eobp)))
         (forward-line)
         (end-of-line)
@@ -225,12 +239,12 @@ Take the current line, and discard any initial text matching
         (while  (search-forward-regexp "\n" nil t )
           (replace-match ""))
         (kill-ring-save (point-min) (point-max)))))
-  (call-interactively 'vterm--self-insert))
+  (vterm-send-key "k" nil nil t))
 
 
 
-;; vterm内，会有原本是一行的内容，会硬折行为多行，
-;; 此时yank 的时候，自动将其join为一行
+;; ;; vterm内，会有原本是一行的内容，会硬折行为多行，
+;; ;; 此时yank 的时候，自动将其join为一行
 (evil-define-operator evil-yank-join (beg end type register yank-handler)
   "try join wrapped lines then yank."
   :move-point nil

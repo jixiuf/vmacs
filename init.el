@@ -24,7 +24,9 @@
 
 
 ;; 下面(package-initialize) 这行注释不要删
-;; (package-initialize)
+(when (<= emacs-major-version 26)
+  (package-initialize))
+
 (require 'conf-keybind)
 (require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
