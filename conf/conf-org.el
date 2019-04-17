@@ -1,7 +1,7 @@
 ;; org-mode 相关
-(require 'ox-reveal)
-(setq org-reveal-root (format "file://%sreveal.js-3.0.0" (expand-file-name user-emacs-directory)))
-(setq org-reveal-single-file t)
+(require 'ox-re-reveal)
+(setq org-re-reveal-root (format "file://%sreveal.js-3.0.0" (expand-file-name user-emacs-directory)))
+(setq org-re-reveal-single-file t)
 ;; C-cC-eRR
 
 (vmacs-leader "t" 'org-agenda)   ;列出todo list等
