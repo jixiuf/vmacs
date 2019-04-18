@@ -5,7 +5,7 @@
 
 (setq-default evil-magit-use-y-for-yank t)
 (setq-default
- magit-status-margin '(t age magit-log-margin-width t 18) ;magit-status 中的Recent commits列表有没有办法增加作者列
+ magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的Recent commits列表有没有办法增加作者列
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
  magit-diff-show-diffstat nil
@@ -83,6 +83,7 @@
 (evil-magit-define-key evil-magit-state 'magit-mode-map
                        "gw" 'toggle-diff-whitespace-eol)
 
+(evil-magit-define-key evil-magit-state 'magit-mode-map "gm"  'magit-toggle-margin)
 
 ;; (define-key magit-mode-map "\s" nil) ;space
 ;; (define-key magit-diff-mode-map "\s" nil) ;space
