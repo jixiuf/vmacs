@@ -7,6 +7,10 @@
 
 ;; ~/.emacs.d/conf/目录加到load-path中
 (add-to-list 'load-path (concat user-emacs-directory "conf/"))
+(defvar lazy-load-dir (concat user-emacs-directory "lazy"))
+(add-to-list 'load-path lazy-load-dir)
+
+(require 'conf-tmp-before nil t)
 (require 'conf-dump)
 
 (when (vmacs-not-dumping-p)

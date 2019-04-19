@@ -5,8 +5,6 @@
 ;; 如此 就可以做到在未真正用到这些函数之前，相应的文件不会被加载，以加快启动速度
 ;; 如果想重新生成.emacs.d/lisp/lazy-loaddefs.el,则只需要删除这个文件，重启emacs即可
 ;; 只需要加载.emacs.d/lisp/lazy-loaddefs.el,就可以于加载了放在lazy/目录下的所有el文件
-(defvar lazy-load-dir (concat user-emacs-directory "lazy"))
-(add-to-list 'load-path lazy-load-dir)
 (setq source-directory user-emacs-directory)
 (setq generated-autoload-file "lazy-loaddefs.el")
 (setq generated-autoload-file-path (expand-file-name (concat "lisp/" generated-autoload-file) source-directory))
