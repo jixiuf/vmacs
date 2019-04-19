@@ -10,8 +10,8 @@
 (defvar lazy-load-dir (concat user-emacs-directory "lazy"))
 (add-to-list 'load-path lazy-load-dir)
 
-(require 'conf-tmp-before nil t)
 (require 'conf-dump)
+(require 'conf-tmp-before nil t)
 
 (when (vmacs-not-dumping-p)
   ;; 如果当前不是在dumping的过程中，则尝试从load-path-back中恢复load-path
@@ -36,7 +36,6 @@
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 (require 'conf-space-tab)
 (require 'conf-compile)
-(require 'conf-version-control)         ;版本管理
 (require 'conf-package)                 ;make sure package are installed
 (require 'conf-auto-compile)          ;自动编译elisp文件,以加快elisp的加载速度
 
@@ -83,7 +82,6 @@
 (when (executable-find "gpg") (require 'conf-gpg))
 (require 'conf-tags)                    ;ctags gtags 相关，代码跳转
 (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
-(with-eval-after-load 'magit (require 'conf-magit))
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
 (with-eval-after-load 'css-mode (require 'conf-css))
 (with-eval-after-load 'js (require 'conf-program-js))
@@ -96,6 +94,8 @@
 (require 'conf-sql)
 
 (when (vmacs-not-dumping-p)
+  (with-eval-after-load 'magit (require 'conf-magit))
+  (require 'conf-version-control)         ;版本管理
   (global-undo-tree-mode t)
   (global-font-lock-mode)
   (transient-mark-mode 1)

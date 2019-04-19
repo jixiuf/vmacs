@@ -3,7 +3,8 @@
 
 (when (file-directory-p "~/repos/magit/lisp")
   (add-to-list 'load-path "~/repos/magit/lisp"))
-(require 'magit nil t)
+(when (vmacs-not-dumping-p)
+  (require 'magit nil t))
 
 (when (file-directory-p "~/repos/vterm-toggle")
   (add-to-list 'load-path "~/repos/vterm-toggle"))
