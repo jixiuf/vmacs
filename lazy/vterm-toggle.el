@@ -52,7 +52,8 @@
   :type 'symbolp)
 
 (defcustom vterm-toggle-prompt-regexp
-  "\\(?:^\\|\r\\)[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ].* *\\(^[\\[[0-9;]*[a-zA-Z] *\\)*"
+  (concat "\\(?:^\\|\r\\)"
+	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[a-zA-Z] *\\)*")
   "vterm prompt regexp. "
   :group 'vterm-toggle
   :type 'string)
@@ -162,7 +163,9 @@ for example
       (setq vterm-toggle-window-configration (current-window-configuration))
       (with-current-buffer (vterm-toggle--new)
         (when remote-p
-          (vterm-send-string (format "ssh %s@%s%s" cur-user cur-host cur-port) t)
+          (if cur-user
+              (vterm-send-string (format "ssh %s@%s%s" cur-user cur-host cur-port) t)
+            (vterm-send-string (format "ssh %s%s"  cur-host cur-port) t))
           (vterm-send-key "<return>" nil nil nil)
           (run-hook-with-args 'vterm-toggle-after-ssh-login-function
                               cur-user cur-host cur-port dir)
