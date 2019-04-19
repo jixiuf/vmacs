@@ -70,6 +70,8 @@
 (require 'subr-x)   ; string-trim
 (require 'url-parse)
 
+(defvar org-re-reveal-keys) ; Silence byte compiler
+
 (defun org-re-reveal-define-backend ()
   "Define the back-end for export as reveal.js presentation."
   (org-export-define-derived-backend 're-reveal 'html
@@ -251,7 +253,7 @@ slide's HTML code (containing the above escape sequences)."
                  (const :tag "Auto title slide" 'auto)
                  (string :tag "Custom title slide")))
 
-(defcustom org-re-reveal-transition "default"
+(defcustom org-re-reveal-transition "convex"
   "Reveal transistion style."
   :group 'org-export-re-reveal
   :type 'string)
@@ -924,7 +926,7 @@ overview: %s,
      ;; thems and transitions
      (format "
 theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-transition: Reveal.getQueryHash().transition || '%s', // default/cube/page/concave/zoom/linear/fade/none
+transition: Reveal.getQueryHash().transition || '%s', // see README of reveal.js for options
 transitionSpeed: '%s',\n"
              (plist-get info :reveal-trans)
              (plist-get info :reveal-speed))

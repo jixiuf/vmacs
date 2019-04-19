@@ -305,7 +305,9 @@ I use emacs-reveal to generate Open Educational Resources (OER):
 
     Available themes can be found in "css/theme/" in the reveal.js directory.
 
-    Available transitions are: default|cube|page|concave|zoom|linear|fade|none.
+    Available transitions can be found in the
+    [[https://github.com/hakimel/reveal.js/blob/master/README.md][README of reveal.js]].
+
 ** Set The Title Slide
    By default, org-re-reveal generates a title slide displaying the
    title, the author, the Email, the date and the time-stamp of the
