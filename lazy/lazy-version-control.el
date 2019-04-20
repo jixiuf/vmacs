@@ -89,13 +89,13 @@
   (interactive)
   (if (magit-svn-repos-p)
       (magit-run-git-async "svn" "dcommit" args)
-      (call-interactively 'magit-push-current-to-upstream)))
+      (call-interactively 'magit-push-current-to-pushremote)))
 ;;;###autoload
 (defun vmacs-magit-pull-default(&optional args  upstream)
   (interactive)
   (if (magit-svn-repos-p)
       (magit-run-git-async "svn" "rebase" args)
-    (call-interactively 'magit-pull-from-upstream)))
+    (call-interactively 'magit-pull-from-pushremote)))
 
 ;;;###autoload
 (defun vmacs-vc-next-action()
