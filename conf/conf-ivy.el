@@ -44,7 +44,7 @@
 (setq counsel-rg-base-command  "rg -S --no-heading --line-number --color never  -z %s ." )
 
 
-(setq magit-completing-read-function 'ivy-completing-read)
+;; (setq magit-completing-read-function 'ivy-completing-read)
 (setq ivy-ignore-buffers
        (list
         "\*EGLOT"
