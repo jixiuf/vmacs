@@ -1,7 +1,9 @@
 (eval-when-compile
   (require 'magit)
+  (require 'magit-libgit)
   (require 'magit-push)
-  (require 'evil-magit))
+  (require 'evil-magit)
+  )
 
 (setq-default evil-magit-use-y-for-yank t)
 (setq-default

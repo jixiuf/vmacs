@@ -22,3 +22,4 @@
 /.lsp-session-v1
 /pyim/dcache/
 osx-dictionary-cli
+/elpa/libgit-*/build/*
