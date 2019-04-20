@@ -108,7 +108,7 @@
       (call-interactively 'vmacs-magit-push-default))))
 
 (defun vmacs-magit-get-unpushed-count()
-  (--when-let (magit-get-upstream-branch nil t)
+  (--when-let (magit-get-push-branch)
     (car (magit-rev-diff-count "HEAD" it))))
 
 (provide 'lazy-version-control)
