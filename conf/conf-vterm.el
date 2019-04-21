@@ -111,6 +111,7 @@ The prompt skip is done by skipping text matching the regular expression
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map [return] #'vterm-send-return)
 (defun vmacs-vterm-hook()
+  (evil-define-key 'insert 'local [escape] 'vterm--self-insert)
   (evil-define-key 'motion'local (kbd "C-r") 'vmacs-vterm-self-insert)
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
   (evil-define-key 'motion 'local (kbd "C-a") 'vterm-bol)
