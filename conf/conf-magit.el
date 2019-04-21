@@ -119,6 +119,29 @@
       (unless  (get-buffer-process buf)
         (kill-buffer buf)))))
 
+(defadvice magit-blob-next (around kill-all-blob-after-quit activate)
+  "kill last viewed buffer"
+  (let ((prev-buffer (current-buffer)))
+    ad-do-it
+    (kill-buffer prev-buffer)
+    (unless magit-buffer-file-name
+      (user-error "magit timemachine: You have reached the end of time"))))
+
+(defadvice magit-blob-previous (around kill-all-blob-after-quit activate)
+  "kill last viewed buffer"
+  (let ((prev-buffer (current-buffer)))
+    ad-do-it
+    (unless (equal magit-buffer-file-name (buffer-file-name prev-buffer))
+      (kill-buffer prev-buffer))))
+
+(vmacs-leader "vm" 'vmacs-magit-blob-toggle) ;类似于time machine
+(define-key magit-blob-mode-map (kbd "M-n") 'magit-blob-next)
+(define-key magit-blob-mode-map (kbd "M-p") 'magit-blob-previous)
+(define-key magit-blob-mode-map (kbd "C-c C-c") 'vmacs-magit-blob-save)
+(define-key magit-blob-mode-map (kbd "s-w") 'vmacs-magit-blob-quit)
+(global-set-key (kbd "M-p") 'magit-blob-previous)
+(global-set-key (kbd "M-n") 'magit-blob-next)
+
 
 
 (provide 'conf-magit)

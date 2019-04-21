@@ -68,7 +68,6 @@
 (require 'org)
 (require 'org-agenda)
 
-(require 'git-timemachine)
 (require 'json-mode)
 (require 'iedit)
 (require 'go-imports)

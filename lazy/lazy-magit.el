@@ -1,5 +1,4 @@
 (eval-when-compile
-  (require 'git-timemachine)
   (require  'ediff)
   (require 'magit))
 ;;;###autoload
@@ -37,15 +36,44 @@
           (goto-char (point-min))
           (when (search-forward-regexp "git=\"\\(.*\\)\"" nil t)
             (replace-match (magit-rev-parse "--short" "HEAD") t t nil 1)
-            ))))
-    )
-  )
+            ))))))
+
+;; 浏览magit某个文件的历史版本时，调用此方法，等于恢复此文件的版本
+;; C-cC-c vmacs-smart-double-ctrl-c会调用vmacs-magit-blob-save
+;;;###autoload
+(defun vmacs-magit-blob-save()
+  (interactive)
+  (let ((file magit-buffer-file-name)
+        (blob-buf (current-buffer)))
+    (when file
+      (with-current-buffer (find-file file)
+        (widen)
+        (replace-buffer-contents  blob-buf))
+      (message "save blob to file %s" file))
+    (dolist (buf (buffer-list))         ;关闭此文件所有版本的blob buffer
+      (with-current-buffer buf
+        (when (equal magit-buffer-file-name file)
+          (kill-this-buffer))))))
 
 ;;;###autoload
-(defun vmacs-git-timemachine-save()
+(defun vmacs-magit-blob-quit()
   (interactive)
-  (write-file (expand-file-name git-timemachine-file git-timemachine-directory) nil)
-  (git-timemachine-quit)
-  )
+  (let ((file magit-buffer-file-name))
+    (unless file
+      (setq file (buffer-file-name)))
+    (when file
+      (dolist (buf (buffer-list))         ;关闭此文件所有版本的blob buffer
+        (with-current-buffer buf
+          (when (equal magit-buffer-file-name file)
+            (kill-this-buffer)))))))
+
+;;;###autoload
+(defun vmacs-magit-blob-toggle()
+  (interactive)
+  (if magit-buffer-file-name
+      (vmacs-magit-blob-quit)
+    (magit-blob-previous)
+    (message "magit timemachine ...")))
+
 
 (provide 'lazy-magit)

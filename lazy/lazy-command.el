@@ -367,6 +367,9 @@ Move point to end-of-line ,if point was already at that position,
        (let ((buf (current-buffer)))
          (call-interactively 'magit-mode-bury-buffer)
          (kill-buffer buf)))
+     (magit-buffer-file-name            ;访问文件历史版本的blob buffer
+      (vmacs-magit-blob-quit)
+      )
      ( (derived-mode-p 'org-agenda-mode)
        (dolist (f org-agenda-files)
          (kill-buffer (get-file-buffer f)))

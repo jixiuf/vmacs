@@ -24,22 +24,10 @@
 (vmacs-leader "vu" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader "vp" 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader "vs" 'magit-file-dispatch)
+(vmacs-leader "vb" 'magit-file-dispatch) ;space-vb[n/p] 查看此文件上/下一个版本
 (vmacs-leader "ve" 'magit-commit-extend)
 (vmacs-leader "va" 'magit-commit-amend)
 
-(vmacs-leader "vm" 'git-timemachine-toggle)
-(add-hook 'git-timemachine-mode-hook 'vmacs-git-timemachine-hook)
-(defun vmacs-git-timemachine-hook()
-  (define-key git-timemachine-mode-map (kbd "C-x C-s") 'vmacs-git-timemachine-save)
-  (define-key git-timemachine-mode-map (kbd "C-c C-c") 'vmacs-git-timemachine-save)
-  (evil-define-key 'normal 'local "a" 'vmacs-git-timemachine-save)
-  (evil-define-key 'normal 'local "n" 'git-timemachine-show-next-revision)
-  (evil-define-key 'normal 'local "p" 'git-timemachine-show-previous-revision)
-  (evil-define-key 'normal 'local "t" 'git-timemachine-show-revision-fuzzy)
-  (evil-define-key 'normal 'local "q" 'git-timemachine-quit)
-  (evil-define-key 'normal 'local "b" 'git-timemachine-blame)
-  (evil-define-key 'normal 'local "w" 'git-timemachine-kill-abbreviated-revision)
-  (evil-define-key 'normal 'local "@" 'git-timemachine-kill-revision))
 
 
 

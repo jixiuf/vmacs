@@ -129,34 +129,23 @@
 (add-to-list 'evil-overriding-maps '(term-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(term-raw-map . nil))
 (add-to-list 'evil-overriding-maps '(calc-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(git-timemachine-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(magit-blob-mode-map . nil)) ;n p 浏览文件历史版本
+(add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
 ;; (add-to-list 'evil-overriding-maps '(magit-popup-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(xref--xref-buffer-mode-map . nil))
 
-
-
-
-;; 更新 evil-overriding-maps ,因为org-agenda-mode-map 变量初始为空keymap,在org-agenda-mode内才往里添加绑定
 (evil-set-custom-state-maps 'evil-overriding-maps
                             'evil-pending-overriding-maps
                             'override-state
                             'evil-make-overriding-map
                             evil-overriding-maps)
 
-(with-eval-after-load 'org-agenda
-  (add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
-  (evil-set-custom-state-maps 'evil-overriding-maps
-                              'evil-pending-overriding-maps
-                              'override-state
-                              'evil-make-overriding-map
-                              evil-overriding-maps))
+;; evil-normalize-keymaps forces an update of all Evil keymaps
+(add-hook 'magit-blob-mode-hook #'evil-normalize-keymaps)
+;; 更新 evil-overriding-maps ,因为org-agenda-mode-map 变量初始为空keymap,在org-agenda-mode内才往里添加绑定
+(add-hook 'org-agenda-mode-hook #'evil-normalize-keymaps)
 
-;; (evil-update-pending-maps)
 
-;; (require 'evil-leader)
-;; (global-evil-leader-mode)
-;; (evil-leader/set-leader "<SPC>")
-;; (setq-default evil-magit-state 'normal)
 
 ;; (setq display-line-numbers-current-absolute t)
 (defun vmacs-change-line-number-abs()

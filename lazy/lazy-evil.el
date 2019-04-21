@@ -148,9 +148,13 @@ if not,it will call `evil-use-register' which default bind on `\"' "
 ;;;###autoload
 (defun vmacs-smart-double-ctrl-c()
   (interactive)
-  (when (string-match-p "*Org Src" (buffer-name))
+  (cond
+   ((string-match-p "*Org Src" (buffer-name))
     (require 'org-src)
-    (call-interactively 'org-edit-src-exit)))
+    (call-interactively 'org-edit-src-exit)
+    )
+   (magit-blob-mode
+    (vmacs-magit-blob-save))))
 
 
 ;; (defvar evil-ex-search-move-back-one-char nil)
