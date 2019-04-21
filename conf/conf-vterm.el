@@ -86,7 +86,7 @@ The prompt skip is done by skipping text matching the regular expression
 
 
 (add-hook 'evil-insert-state-entry-hook 'vmacs-enable-disable-output)
-(add-hook 'evil-normal-state-entry-hook 'vmacs-vterm-disable-output)
+;; (add-hook 'evil-normal-state-entry-hook 'vmacs-vterm-disable-output)
 
 
 (defun vterm-eob()
@@ -107,6 +107,7 @@ The prompt skip is done by skipping text matching the regular expression
 (define-key vterm-mode-map (kbd "C-a")   #'vterm-bol)
 ;; C－s 停止滚屏 C-q恢复滚屏
 (define-key vterm-mode-map (kbd "C-s")   #'vterm-disable-output)
+(define-key vterm-mode-map (kbd "s-s")   #'vterm-disable-output)
 
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map [return] #'vterm-send-return)
