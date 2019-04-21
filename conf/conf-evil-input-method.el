@@ -2,6 +2,7 @@
 ;; https://gitlab.com/liberime/liberime
 ;; https://emacs-china.org/t/pyim-rime/8277
 ;; https://github.com/tumashu/pyim/issues/190
+;; RIME_PATH=~/repos/squirrel/librime/ make liberime
 
 (setq-default pyim-dcache-directory "~/.emacs.d/cache/pyim")
 
