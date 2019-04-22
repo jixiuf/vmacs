@@ -143,7 +143,7 @@ for different shell"
   (setq-local scroll-margin 0)
 
   (add-hook 'window-size-change-functions #'vterm--window-size-change-function t t)
-  (let ((process-environment (append '("TERM=xterm"
+  (let ((process-environment (append '("TERM=xterm-256color"
                                        "INSIDE_EMACS=vterm"
                                        "LINES"
                                        "COLUMNS")
