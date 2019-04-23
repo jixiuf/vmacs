@@ -165,6 +165,8 @@
  '(underline ((nil (:underline nil))))
  '(vhl/default-face ((t (:background "DarkSlateGray"))))
  '(vmacs-scroll-highlight-line-face ((t (:background "cadetblue4" :foreground "white" :weight bold))))
+ '(vterm-color-black ((t (:inherit term-color-black :background "#616161" :foreground "#616161"))))
+ '(vterm-color-default ((t (:background "#1f1f1f" :foreground "#eeeeeb"))))
  '(warning ((t (:foreground "Salmon" :weight bold))))
  '(web-mode-html-tag-bracket-face ((t (:inherit web-mode-html-tag-face))))
  '(window-divider ((t (:foreground "gray"))))
@@ -180,7 +182,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
-   ["#202020" "#ff8272" "#b4fa72" "#fefdc2" "#a5d5fe" "#ff8ffd" "#d0d1fe" "#f1f1f1"])
+   ["#616161" "#ff8272" "#b4fa72" "#fefdc2" "#a5d5fe" "#ff8ffd" "#d0d1fe" "#f1f1f1"])
  '(auto-save-visited-interval 30)
  '(auto-save-visited-mode t)
  '(awesome-tab-background-color "#202020")
@@ -201,10 +203,11 @@
  '(menu-bar-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(transient org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def pcmpl-git company-go company-posframe dockerfile-mode  json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(magit-libgit org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def pcmpl-git company-go company-posframe dockerfile-mode json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm erlang ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
-   '((projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
+   '((git-commit-major-mode . git-commit-elisp-text-mode)
+     (projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
      (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
      (projectile-project-compilation-cmd . "bear make")
      (projectile-project-run-cmd . "make run")
