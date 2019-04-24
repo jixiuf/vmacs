@@ -56,8 +56,9 @@ The prompt skip is done by skipping text matching the regular expression
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
   (interactive)
-  (if (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
-           (save-excursion (not (search-forward-regexp vterm-toggle-prompt-regexp nil t))))
+  (if (or (save-excursion (goto-char (point-at-bol))(search-forward-regexp "filter»" nil t))
+          (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
+               (save-excursion (not (search-forward-regexp vterm-toggle-prompt-regexp nil t)))))
       (call-interactively 'vmacs-vterm-self-insert)
     (if (equal last-command 'keyboard-quit)
         (call-interactively 'vmacs-vterm-self-insert)
