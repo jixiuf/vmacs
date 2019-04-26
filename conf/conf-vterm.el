@@ -8,6 +8,10 @@
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y" ))
 (setq-default vterm-max-scrollback 10000)
+(setq vterm-toggle-prompt-regexp
+  (concat "\\(?:^\\|\r\\)"
+	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
+
 (require 'vterm)
 (require 'vterm-toggle)
 
