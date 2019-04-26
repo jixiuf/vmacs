@@ -196,6 +196,9 @@
  '(flycheck-idle-change-delay 1)
  '(global-auto-revert-mode t)
  '(helm-minibuffer-history-key "C-r")
+ '(lsp-auto-guess-root t)
+ '(lsp-enable-symbol-highlighting nil)
+ '(lsp-restart 'auto-restart)
  '(magit-commit-ask-to-stage t)
  '(magit-no-confirm
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
