@@ -42,8 +42,11 @@
          (helm-gtags-find-tag-and-symbol)))
       (go-mode
        ;;(xref-find-definitions (xref-backend-identifier-at-point (xref-find-backend)))
-       (call-interactively 'godef-jump)
-       )
+       (let ((output (godef-jump (point))))
+         (when (string= "godef: no identifier found" output)
+           (bm-bookmark-remove)
+           ;; (lsp-find-declaration)
+           )))
       (python-mode
        (call-interactively 'lsp-find-definition)
        )

@@ -95,6 +95,7 @@
 (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
 (define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
 (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
+(define-key evil-motion-state-map "gi" 'lsp-find-implementation)
 
 ;; (vmacs-leader "wge" 'helm-gtags-update-tags)
 ;; (vmacs-leader "wgr" 'helm-gtags-find-rtag)
@@ -106,7 +107,13 @@
   (interactive)
   (if current-prefix-arg
       (call-interactively 'xref-find-references)
-    (xref-find-references (xref-backend-identifier-at-point (xref-find-backend)))))
+    (condition-case nil
+        (lsp-find-references)
+      (error
+       (condition-case nil
+           (lsp-find-references)
+         (error
+          (helm-gtags-find-rtag)))))))
 
 
 (with-eval-after-load 'xref
