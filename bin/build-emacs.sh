@@ -1,9 +1,16 @@
 #!/bin/sh
 prefix=/usr/local/emacs
-sudo mkdir -p /usr/local/emacs
-sudo chown ${USER}:admin  /usr/local/emacs
+if [ ! -d /usr/local/emacs ]; then
+    sudo mkdir -p /usr/local/emacs ;
+    sudo chown ${USER}:admin  /usr/local/emacs;
+fi
 echo ${prefix}
 export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-sed/bin
+export PATH="/usr/local/opt/openssl/bin:$PATH"
+export PATH="/usr/local/opt/texinfo/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/openssl/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl/include"
+export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 ./autogen.sh
 ./configure \
 --disable-silent-rules \
@@ -15,6 +22,7 @@ export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-sed/b
 --without-imagemagick \
 --with-modules \
 --with-ns \
+--with-file-notification=yes \
 --without-xml2 \
 --disable-ns-self-contained
 make
