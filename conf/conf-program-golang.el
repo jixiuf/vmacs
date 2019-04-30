@@ -54,16 +54,9 @@
 ;;                                                       "--trace"
 ;;                                                       "--pprof" ":6060" ))
 (require 'lsp-clients)
-;; go get -u golang.org/x/tools/cmd/gopls
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-stdio-connection "gopls")
-                  :major-modes '(go-mode)
-                  :priority 0
-                  :initialization-options 'lsp-clients-go--make-init-options
-                  :server-id 'gopls
-                  :library-folders-fn (lambda (_workspace)
-                                        lsp-clients-go-library-directories)))
+(setq lsp-enable-snippet nil)
 
+;; go get -u golang.org/x/tools/cmd/gopls
 ;; (setq lsp-clients-go-server "gopls")
 ;; (setq lsp-clients-go-diagnostics-enabled nil)
 ;; (require 'eglot)
