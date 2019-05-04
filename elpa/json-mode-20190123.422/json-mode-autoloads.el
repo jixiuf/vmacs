@@ -56,6 +56,10 @@ Beautify / pretty-print the active region (or the entire buffer if no active reg
 
 ;;;***
 
+;;;### (autoloads nil nil ("json-mode-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t

@@ -28,7 +28,7 @@
 
 
 ;; 下面(package-initialize) 这行注释不要删
-(when (<= emacs-major-version 26)
+(when (<= emacs-major-version 27)
   (package-initialize))
 
 (require 'conf-keybind)

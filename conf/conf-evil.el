@@ -131,7 +131,6 @@
 (add-to-list 'evil-overriding-maps '(calc-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(magit-blob-mode-map . nil)) ;n p 浏览文件历史版本
 (add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
-;; (add-to-list 'evil-overriding-maps '(magit-popup-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(xref--xref-buffer-mode-map . nil))
 
 (evil-set-custom-state-maps 'evil-overriding-maps
