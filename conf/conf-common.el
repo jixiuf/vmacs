@@ -194,7 +194,7 @@
 ;;wgrep
 ;; (add-hook 'grep-setup-hook 'grep-mode-fun)
 (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
-              wgrep-too-many-file-length 200
+              wgrep-too-many-file-length 1
               ;; wgrep-enable-key "i"
               wgrep-change-readonly-file t)
 
