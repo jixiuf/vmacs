@@ -200,23 +200,27 @@
 
 (defun vmacs-wgrep-finish-edit()
   (interactive)
-  (call-interactively #'wgrep-finish-edit)
-  (let ((count 0))
-    (dolist (b (buffer-list))
-      (with-current-buffer b
-        (when (buffer-file-name)
-          (let ((ovs (wgrep-file-overlays)))
-            (when (and ovs (buffer-modified-p))
-              (basic-save-buffer)
-              (kill-this-buffer)
-              (setq count (1+ count)))))))
-    (cond
-     ((= count 0)
-      (message "No buffer has been saved."))
-     ((= count 1)
-      (message "Buffer has been saved."))
-     (t
-      (message "%d buffers have been saved." count)))))
+  (if  current-prefix-arg
+      (let ((wgrep-auto-save-buffer t))
+        (call-interactively #'wgrep-finish-edit)
+        )
+    (call-interactively #'wgrep-finish-edit)
+    (let ((count 0))
+      (dolist (b (buffer-list))
+        (with-current-buffer b
+          (when (buffer-file-name)
+            (let ((ovs (wgrep-file-overlays)))
+              (when (and ovs (buffer-modified-p))
+                (basic-save-buffer)
+                (kill-this-buffer)
+                (setq count (1+ count)))))))
+      (cond
+       ((= count 0)
+        (message "No buffer has been saved."))
+       ((= count 1)
+        (message "Buffer has been saved."))
+       (t
+        (message "%d buffers have been saved." count))))))
 
 (with-eval-after-load 'wgrep
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
