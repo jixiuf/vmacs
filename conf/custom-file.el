@@ -194,6 +194,7 @@
  '(auto-save-visited-mode t)
  '(awesome-tab-background-color "#202020")
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
+ '(blink-cursor-blinks 0)
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(column-number-mode nil)
