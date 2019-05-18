@@ -46,7 +46,8 @@
 
 
 (defun vmacs-evil-window-cmd-p ()
-  (string-prefix-p "evil-window-" (symbol-name last-command)))
+  (when (symbolp last-command)
+    (string-prefix-p "evil-window-" (symbol-name last-command))))
 
 (add-to-list 'golden-ratio-inhibit-functions 'vmacs-evil-window-cmd-p)
 
