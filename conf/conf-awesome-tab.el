@@ -34,6 +34,7 @@
                           "\*lsp-log\*"
                           "\*tramp"
                           "\*Completions\*"
+                          "magit-"
                           "\*sdcv\*"
                           "\*Messages\*"
                           "\*Ido Completions\*"
