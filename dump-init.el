@@ -140,7 +140,7 @@
 (require 'lazy-evil)
 (require 'lazy-command)
 (require 'compile-dwim)
-(require 'helm-gtags)
+;; (require 'helm-gtags)
 (require 'lazy-buffer)
 (require 'lazy-camelize)
 (require 'lazy-dired-sort)

@@ -35,67 +35,67 @@
 ;;   (add-hook 'helm-etags-plus-after-jump-hook '(lambda()(bm-bookmark-remove)))
 ;;   )
 
-(with-eval-after-load 'helm-gtags
-  ;; (add-hook 'helm-for-files-preferred-list 'helm-source-gtags-files t)
-  (add-hook 'helm-gtags-goto-line-before-hook '(lambda()(bm-bookmark-add nil nil t)))
-  (add-hook 'helm-gtags-quit-or-no-candidates-hook 'bm-bookmark-remove) ;如果根本没跳转， 则没有必要在当行行加bookmark
-  (add-hook 'helm-gtags-goto-line-after-hook 'bm-bookmark-remove) ;after jump 如果本行有bookmark ,remove it
+;; (with-eval-after-load 'helm-gtags
+;;   ;; (add-hook 'helm-for-files-preferred-list 'helm-source-gtags-files t)
+;;   (add-hook 'helm-gtags-goto-line-before-hook '(lambda()(bm-bookmark-add nil nil t)))
+;;   (add-hook 'helm-gtags-quit-or-no-candidates-hook 'bm-bookmark-remove) ;如果根本没跳转， 则没有必要在当行行加bookmark
+;;   (add-hook 'helm-gtags-goto-line-after-hook 'bm-bookmark-remove) ;after jump 如果本行有bookmark ,remove it
 
-  )
+;;   )
 
-;;; Enable helm-gtags-mode
-(add-hook 'c-mode-hook 'helm-gtags-mode)
-(add-hook 'c++-mode-hook 'helm-gtags-mode)
-(add-hook 'asm-mode-hook 'helm-gtags-mode)
-(add-hook 'java-mode-hook 'helm-gtags-mode)
+;; ;;; Enable helm-gtags-mode
+;; (add-hook 'c-mode-hook 'helm-gtags-mode)
+;; (add-hook 'c++-mode-hook 'helm-gtags-mode)
+;; (add-hook 'asm-mode-hook 'helm-gtags-mode)
+;; (add-hook 'java-mode-hook 'helm-gtags-mode)
 
-(add-hook 'python-mode-hook 'helm-gtags-mode)
-;; brew install global --with-exuberant-ctags --with-pygments
-;;  pip install pygments
-;; cp /usr/local/Cellar/global/6.3.2/share/gtags/gtags.conf /usr/local/etc/
-;; sed -i -e "s/pygments-parser\.la/pygments-parser.so/g" gtags.conf
-;; sed -i -e "s?#\!/usr/bin/python?#\!/usr/bin/env python?g" /usr/local/Cellar/global/6.3.2/share/gtags/script/pygments_parser.py
-;; test
-;; gtags --gtagsconf=/usr/local/etc/gtags.conf --gtagslabel=pygments --debug
-;; 如何让gtags 支持 python  golang ruby 等语言，
-;; (add-hook 'go-mode-hook 'helm-gtags-mode)
+;; (add-hook 'python-mode-hook 'helm-gtags-mode)
+;; ;; brew install global --with-exuberant-ctags --with-pygments
+;; ;;  pip install pygments
+;; ;; cp /usr/local/Cellar/global/6.3.2/share/gtags/gtags.conf /usr/local/etc/
+;; ;; sed -i -e "s/pygments-parser\.la/pygments-parser.so/g" gtags.conf
+;; ;; sed -i -e "s?#\!/usr/bin/python?#\!/usr/bin/env python?g" /usr/local/Cellar/global/6.3.2/share/gtags/script/pygments_parser.py
+;; ;; test
+;; ;; gtags --gtagsconf=/usr/local/etc/gtags.conf --gtagslabel=pygments --debug
+;; ;; 如何让gtags 支持 python  golang ruby 等语言，
+;; ;; (add-hook 'go-mode-hook 'helm-gtags-mode)
 
-;; customize
-;; (setq-default helm-gtags-path-style 'absolute)
-;; (setq-default helm-gtags-debug t)
-;; (setq debug-on-error t)
-;; (setq-default helm-gtags-ignore-case t)
-;; (setq helm-gtags-read-only t)
-(setq-default helm-gtags-auto-update t)
+;; ;; customize
+;; ;; (setq-default helm-gtags-path-style 'absolute)
+;; ;; (setq-default helm-gtags-debug t)
+;; ;; (setq debug-on-error t)
+;; ;; (setq-default helm-gtags-ignore-case t)
+;; ;; (setq helm-gtags-read-only t)
+;; (setq-default helm-gtags-auto-update t)
 
-;; (setq helm-gtags-tag-location-alist
-;;       '(
-;;         ;; (c-mode  "/usr/include/" "/usr/kernel/")
-;;         (c++-mode  "/Volumes/data/repos/opencd/opencv-2.4.6.1/")))
+;; ;; (setq helm-gtags-tag-location-alist
+;; ;;       '(
+;; ;;         ;; (c-mode  "/usr/include/" "/usr/kernel/")
+;; ;;         (c++-mode  "/Volumes/data/repos/opencd/opencv-2.4.6.1/")))
 
-;; (global-set-key "\C-wE" 'helm-gtags-update-tags)
-;; (global-set-key "\M-*" 'helm-gtags-show-stack)
+;; ;; (global-set-key "\C-wE" 'helm-gtags-update-tags)
+;; ;; (global-set-key "\M-*" 'helm-gtags-show-stack)
 
-(defun vmacs-helm-gtags-mode-hook()
-  ;; (local-set-key (kbd "M-.") 'helm-gtags-find-tag-and-symbol)
-  ;; (local-set-key (kbd "M-t") 'helm-gtags-find-tag)
-  ;; (local-set-key (kbd "M-s") 'helm-gtags-find-symbol)
-  (local-set-key [(control return)] 'helm-gtags-complete)
-  (local-set-key (kbd "C-[ [ 1 c") (key-binding [(control return)])))   ; iterm map to ctrl-return
+;; (defun vmacs-helm-gtags-mode-hook()
+;;   ;; (local-set-key (kbd "M-.") 'helm-gtags-find-tag-and-symbol)
+;;   ;; (local-set-key (kbd "M-t") 'helm-gtags-find-tag)
+;;   ;; (local-set-key (kbd "M-s") 'helm-gtags-find-symbol)
+;;   (local-set-key [(control return)] 'helm-gtags-complete)
+;;   (local-set-key (kbd "C-[ [ 1 c") (key-binding [(control return)])))   ; iterm map to ctrl-return
 
-;; key bindings
-(add-hook 'helm-gtags-mode-hook 'vmacs-helm-gtags-mode-hook)
-;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
-(define-key global-map "\M-." 'goto-definition)
+;; ;; key bindings
+;; (add-hook 'helm-gtags-mode-hook 'vmacs-helm-gtags-mode-hook)
+;; ;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
+;; (define-key global-map "\M-." 'goto-definition)
 
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 (define-key evil-motion-state-map "gr" 'vmacs-xref-find-references)
 (define-key evil-motion-state-map "gd" 'goto-definition)
 (define-key evil-motion-state-map "gD" 'lsp-find-definition)
-(define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
-(define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
-(define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
+;; (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
+;; (define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
+;; (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
 (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
 (define-key evil-motion-state-map "gR" 'lsp-rename)
 
@@ -109,14 +109,12 @@
   (interactive)
   (if current-prefix-arg
       (call-interactively 'xref-find-references)
-    (condition-case nil
-        (lsp-find-references)
-      (error
-       (condition-case nil
-           (lsp-find-references)
-         (error
-          (helm-gtags-find-rtag)))))))
-
+    (lsp-find-references)
+    ))
+;; (condition-case nil
+;;     (lsp-find-references)
+;;   (error
+;;    ))
 
 (with-eval-after-load 'xref
   ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)

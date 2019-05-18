@@ -79,28 +79,3 @@ vmacs则尽量将功能移到space上减少小指的使用
 相关配置
 https://github.com/jixiuf/vmacs/blob/master/conf/conf-company-mode.el
 [[file:doc/company-c.png]]
-** helm-gtags
-   依赖的外部命令:GNU global
-   #+BEGIN_SRC sh
-     brew install global #on mac
-     yum install global # centos
-   #+END_SRC
-
-   [[file:doc/helm-gtags-c.gif]]
-
-   使用的helm-gtags 为我fork的https://github.com/jixiuf/emacs-helm-gtags
-   以方便利用第三方的跳转功能为https://github.com/joodland/bm 来实现代码来回跳转
-
-   关键代码
-   #+BEGIN_SRC emacs-lisp
-   (helm-gtags-set-GTAGSLIBPATH-alist "/path/to/your/project/" '("/usr/include" ))
-   ; 在/usr/include 下运行gtags 命令 生成TAGS相关文件
-   (define-key evil-motion-state-map "gd" 'goto-definition) ;跳转到函数定义处
-   (evil-leader/set-key "," 'bm-previous)  ;space, 回到上一个书签,用于函数跳转后的跳回
-   #+END_SRC
-   相关配置
-   https://github.com/jixiuf/vmacs/blob/master/conf/conf-tags.el
-
-   https://github.com/jixiuf/vmacs/blob/master/conf/conf-bm.el
-
-   https://github.com/jixiuf/vmacs/blob/master/lazy/lazy-goto-definition.el

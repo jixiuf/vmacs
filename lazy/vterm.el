@@ -128,88 +128,6 @@ for different shell"
 (defvar-local vterm--term nil
   "Pointer to Term.")
 
-(defface vterm-color-default
-  `((t :inherit default))
-  "Default background and foreground of the console."
-  :group 'vterm)
-
-
-(defface vterm-color-black
-  `((t :foreground ,(aref ansi-color-names-vector 0)
-       :background ,(aref ansi-color-names-vector 0)))
-  "Face used to render black color code."
-  :group 'vterm)
-
-(defface vterm-color-red
-  `((t :foreground ,(aref ansi-color-names-vector 1)
-       :background ,(aref ansi-color-names-vector 1)))
-  "Face used to render red color code."
-  :group 'vterm)
-
-
-(defface vterm-color-green
-  `((t :foreground ,(aref ansi-color-names-vector 2)
-       :background ,(aref ansi-color-names-vector 2)))
-  "Face used to render green color code."
-  :group 'vterm)
-
-(defface vterm-color-yellow
-  `((t :foreground ,(aref ansi-color-names-vector 3)
-       :background ,(aref ansi-color-names-vector 3)))
-  "Face used to render yellow color code."
-  :group 'vterm)
-
-(defface vterm-color-blue
-  `((t :foreground ,(aref ansi-color-names-vector 4)
-       :background ,(aref ansi-color-names-vector 4)))
-  "Face used to render blue color code."
-  :group 'vterm)
-
-(defface vterm-color-magenta
-  `((t :foreground ,(aref ansi-color-names-vector 5)
-       :background ,(aref ansi-color-names-vector 5)))
-  "Face used to render magenta color code."
-  :group 'vterm)
-
-(defface vterm-color-cyan
-  `((t :foreground ,(aref ansi-color-names-vector 6)
-       :background ,(aref ansi-color-names-vector 6)))
-  "Face used to render cyan color code."
-  :group 'vterm)
-
-(defface vterm-color-white
-  `((t :foreground ,(aref ansi-color-names-vector 7)
-       :background ,(aref ansi-color-names-vector 7)))
-  "Face used to render white color code."
-  :group 'vterm)
-
-(defvar vterm-color-palette
-  [vterm-color-black
-   vterm-color-red
-   vterm-color-green
-   vterm-color-yellow
-   vterm-color-blue
-   vterm-color-magenta
-   vterm-color-cyan
-   vterm-color-white]
-  "Color palette for the foreground and background.")
-
-(defun vterm--get-color(index)
-  (cond
-   ((and (>= index 0)(< index 8 ))
-    (face-foreground
-     (elt vterm-color-palette index)
-     nil 'default))
-   ((and (>= index 8 )(< index 16 ))
-    (face-background
-     (elt vterm-color-palette (% index 8))
-     nil 'default))
-   ( (= index -1)               ;-1 foreground
-     (face-foreground 'vterm-color-default nil 'default))
-   (t                                   ;-2 background
-    (face-background 'vterm-color-default nil 'default))))
-
-
 (defvar-local vterm--process nil
   "Shell process of current term.")
 
@@ -224,8 +142,10 @@ for different shell"
   (setq-local scroll-conservatively 101)
   (setq-local scroll-margin 0)
 
-  (add-hook 'window-size-change-functions #'vterm--window-size-change-function t t)
-  (let ((process-environment (append '("TERM=xterm-256color"
+  (if (version< emacs-version "27")
+      (add-hook 'window-size-change-functions #'vterm--window-size-change-26 t t)
+    (add-hook 'window-size-change-functions #'vterm--window-size-change t t))
+  (let ((process-environment (append '("TERM=xterm"
                                        "INSIDE_EMACS=vterm"
                                        "LINES"
                                        "COLUMNS")
@@ -391,21 +311,19 @@ Argument EVENT process event."
   (let ((buf (process-buffer process)))
     (run-hook-with-args 'vterm-exit-functions
                         (if (buffer-live-p buf) buf nil))))
-(defun vterm--window-size-change-function (frame-or-window)
+
+(defun vterm--window-size-change-26 (frame)
   "Callback triggered by a size change of the FRAME.
 
-Feeds the size change to the virtual terminal.
-Argument FRAME-OR-WINDOW frame or window."
-  (if (windowp frame-or-window)
-      (vterm--window-size-change frame-or-window)
-    (dolist (window (window-list frame-or-window))
-      (vterm--window-size-change window))))
+This is only used, when variable `emacs-version' < 27. Calls
+`vterm--window-size-change' for every window of FRAME."
+  (dolist (window (window-list frame))
+    (vterm--window-size-change window)))
 
 (defun vterm--window-size-change (window)
-  "Callback triggered by a size change of the widnwo.
+  "Callback triggered by a size change of the WINDOW.
 
-Feeds the size change to the virtual terminal.
-Argument WINDOW the window."
+Feeds the size change to the virtual terminal."
   (with-current-buffer (window-buffer window)
     (when (and (processp vterm--process)
                (process-live-p vterm--process))

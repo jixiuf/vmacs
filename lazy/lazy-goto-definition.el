@@ -20,22 +20,22 @@
        (elisp-def-mode 1)
        (call-interactively 'elisp-def))
       ;; (erlang-mode (erl-find-source-under-point))
-      (c++-mode
-       (if (string-match "[ ]*#[ \t]*include[ \t]+[\"<]\\(.*\\)[\">]" line)
-           ;; for c++-mode ,in current line contains #include ,then try to open the include file using helm-gtags
-           (helm-gtags-find-files (match-string 1 line))
-         (helm-gtags-find-tag-and-symbol)))
-      (c-mode
-       (if (string-match "[ ]*#[ \t]*include[ \t]+[\"<]\\(.*\\)[\">]" line)
-           ;; for c-mode ,in current line contains #include ,then try to open the include file using helm-gtags
-           (helm-gtags-find-files (match-string 1 line))
-         (helm-gtags-find-tag-and-symbol)))
-      (lua-mode
-       (call-interactively 'helm-gtags-find-tag-and-symbol)
-       )
-      (csharp-mode
-       (call-interactively 'helm-gtags-find-tag-and-symbol)
-       )
+      ;; (c++-mode
+      ;;  (if (string-match "[ ]*#[ \t]*include[ \t]+[\"<]\\(.*\\)[\">]" line)
+      ;;      ;; for c++-mode ,in current line contains #include ,then try to open the include file using helm-gtags
+      ;;      (helm-gtags-find-files (match-string 1 line))
+      ;;    (helm-gtags-find-tag-and-symbol)))
+      ;; (c-mode
+      ;;  (if (string-match "[ ]*#[ \t]*include[ \t]+[\"<]\\(.*\\)[\">]" line)
+      ;;      ;; for c-mode ,in current line contains #include ,then try to open the include file using helm-gtags
+      ;;      (helm-gtags-find-files (match-string 1 line))
+      ;;    (helm-gtags-find-tag-and-symbol)))
+      ;; (lua-mode
+      ;;  (call-interactively 'helm-gtags-find-tag-and-symbol)
+      ;;  )
+      ;; (csharp-mode
+      ;;  (call-interactively 'helm-gtags-find-tag-and-symbol)
+      ;;  )
       (js-mode
        (if (functionp 'tern-find-definition)
            (call-interactively 'tern-find-definition)
@@ -48,7 +48,7 @@
        (condition-case nil (lsp-find-definition)
          (error (bm-bookmark-remove))))
       (otherwise
-       (helm-gtags-find-tag-and-symbol))))
+       (lsp-find-definition))))
   (setq this-command 'goto-definition))
 
 
