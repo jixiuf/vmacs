@@ -96,28 +96,20 @@
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
-  (define-key magit-status-mode-map "q" #'ignore)
+  ;; (define-key magit-status-mode-map "q" #'ignore)
   (let ((dir (magit-toplevel)))
     (unless (file-remote-p dir)
       (add-to-list 'magit-repository-directories (list dir 0)))))
 
-(define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
-(vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
-(vmacs-leader-for-major-mode  'magit-revision-mode "k" 'magit-mode-bury-buffer)
-(vmacs-leader-for-major-mode  'magit-log-mode "k" 'magit-mode-bury-buffer)
+;; (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
+;; (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
+;; (vmacs-leader-for-major-mode  'magit-revision-mode "k" 'magit-mode-bury-buffer)
+;; (vmacs-leader-for-major-mode  'magit-log-mode "k" 'magit-mode-bury-buffer)
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
 (add-hook 'magit-post-refresh-hook 'vmacs-update-repo-revision)
 
-(defun vmacs-magit-kill-buffers ()
-  "Restore window configuration and kill all Magit buffers."
-  (interactive)
-  (let ((buffers (magit-mode-get-buffers)))
-    (magit-restore-window-configuration)
-    (dolist (buf buffers)
-      (unless  (get-buffer-process buf)
-        (kill-buffer buf)))))
 
 (defadvice magit-blob-next (around kill-all-blob-after-quit activate)
   "kill last viewed buffer"
