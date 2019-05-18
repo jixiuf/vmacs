@@ -33,7 +33,7 @@
   ;; (prettify-symbols-mode)
   (lsp)
 
-  (flycheck-mode)
+  ;; (flycheck-mode)
 
   ;; pip install isort
   ;; auto import module at point
