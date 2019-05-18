@@ -348,6 +348,9 @@ Call `compile' completing with smart suggestions, optionally for DIR.
 
 \(fn &optional DIR)" t nil)
 
+(autoload 'counsel-compile-env "counsel" "\
+Update `counsel-compile-env' interactively." t nil)
+
 (autoload 'counsel-minor "counsel" "\
 Enable or disable minor mode.
 
