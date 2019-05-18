@@ -49,9 +49,8 @@
  evil-emacs-state-cursor  '("gray" box)
  evil-normal-state-cursor '("green" box)
  evil-visual-state-cursor '("cyan" hbar)
- evil-insert-state-cursor '("orange" bar)
+ evil-insert-state-cursor '("orange" (bar . 3))
  evil-motion-state-cursor '("red" box))
-
 
 
 (require 'evil)
