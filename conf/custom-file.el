@@ -284,7 +284,6 @@
  '(tramp-syntax 'default nil (tramp))
  '(transient-history-file "~/.emacs.d/cache/transient/history.el")
  '(transient-levels-file "~/.emacs.d/cache/transient/levels.el")
- '(transient-values-file "~/.emacs.d/cache/transient/values.el")
  '(uniquify-buffer-name-style 'forward nil (uniquify))
  '(warning-suppress-types '((yasnippet backquote-change)))
  '(window-divider-default-bottom-width 1)
