@@ -44,8 +44,10 @@
 ;;   )
 
 ;; ;;; Enable helm-gtags-mode
-;; (add-hook 'c-mode-hook 'helm-gtags-mode)
-;; (add-hook 'c++-mode-hook 'helm-gtags-mode)
+(require 'ccls)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+(add-hook 'objc-mode-hook 'lsp)
 ;; (add-hook 'asm-mode-hook 'helm-gtags-mode)
 ;; (add-hook 'java-mode-hook 'helm-gtags-mode)
 

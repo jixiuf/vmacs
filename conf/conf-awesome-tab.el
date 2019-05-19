@@ -33,6 +33,8 @@
                           "\*gopls\*"
                           "\*lsp-log\*"
                           "\*tramp"
+                          "\*ccls"
+                          "\*vc"
                           "\*Completions\*"
                           "magit-"
                           "\*sdcv\*"
