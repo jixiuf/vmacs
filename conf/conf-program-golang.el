@@ -54,7 +54,7 @@
 ;;                                                       "--trace"
 ;;                                                       "--pprof" ":6060" ))
 (require 'lsp-clients)
-(setq lsp-enable-snippet nil)
+(setq lsp-enable-snippet t)
 
 ;; go get -u golang.org/x/tools/cmd/gopls
 ;; (setq lsp-clients-go-server "gopls")
