@@ -211,7 +211,6 @@
  '(magit-no-confirm
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
- '(menu-bar-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
    '(ccls exec-path-from-shell dockerfile-mode ivy lsp-mode magit web-mode yasnippet pyim magit-libgit org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def pcmpl-git company-go company-posframe json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock applescript-mode bm erlang ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift wgrep yaml-mode))

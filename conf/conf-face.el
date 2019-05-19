@@ -41,7 +41,7 @@
 (defun  emacs-daemon-after-make-frame-hook(&optional f) ;emacsclient 打开的窗口相关的设置
   (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
   (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-  (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+  ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     ;;(kill-buffer "*scratch*" )
     (when (window-system)
