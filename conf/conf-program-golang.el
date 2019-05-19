@@ -1,21 +1,6 @@
 ;; https://github.com/saibing/bingo/wiki/Install
 
-;; # (-u flag for "update")
-;; go get -u github.com/nsf/gocode
-;; gocode set
-;; gocode set autobuild true
-;; windows
-;; go get -u -ldflags -H=windowsgui github.com/nsf/gocode
-;; go get -u github.com/dougm/goflymake
-;; go get -u -v github.com/9fans/go/...
-;; mv $GOPATH/src/github.com/9fans $GOPATH/src/9fans.net
 ;; go get github.com/rogpeppe/godef
-
-;; if [ ! -d $GOPATH/src/golang.org/x/tools ]; then
-;;     cd $GOPATH/src/golang.org/x;git clone  https://github.com/golang/tools.git;cd -
-;; else
-;;     cd $GOPATH/src/golang.org/x/tools;git pull;cd -
-;; fi
 ;; go install golang.org/x/tools/cmd/goimports
 (let ((gopath (getenv "GOPATH")))
   (when
@@ -61,11 +46,8 @@
 ;; (setq lsp-clients-go-diagnostics-enabled nil)
 ;; (require 'eglot)
 (defun vmacs-go-mode-hook()
-  ;; (require 'go-eldoc) ;; Don't need to require, if you install by package.el
   ;; (go-eldoc-setup)                    ;autoloaded
   (lsp)
-  ;; github.com/syohex/emacs-go-eldoc
-  ;; (eglot-ensure)
   (setq company-backends `(( company-lsp company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
