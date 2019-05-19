@@ -54,6 +54,9 @@
   (define-key company-active-map (kbd "M-s") #'company-search-candidates)
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous)
+  (define-key company-search-map (kbd "C-n") 'company-select-next)
+  (define-key company-search-map (kbd "C-p") 'company-select-previous)
+
   (define-key company-active-map [tab] 'vmacs-company-complete-common-or-selection)
   (define-key company-active-map (kbd "TAB") 'vmacs-company-complete-common-or-selection)
   ;; (define-key company-active-map [return]  'vmacs-company-complete-common-or-selection)
