@@ -1,5 +1,8 @@
 ;; https://github.com/saibing/bingo/wiki/Install
 
+;; https://github.com/saibing/tools
+;; go get -u golang.org/x/tools/cmd/gopls
+
 ;; go get github.com/rogpeppe/godef
 ;; go install golang.org/x/tools/cmd/goimports
 (let ((gopath (getenv "GOPATH")))
@@ -16,32 +19,9 @@
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (setq company-go-show-annotation t)
 
-;; (defun vmacs-go-format()
-;;   (when (eq major-mode 'go-mode)
-;;     (gofmt-before-save)
-;;     (save-mark-and-excursion
-;;       (goto-char (point-min))
-;;       (while  (search-forward-regexp "}\nfunc")
-;;         (replace-match "}\n\nfunc")))
-;;     )
-;;   )
-
-;; ;; 启用 company-lsp 补全后端
-;; (push 'company-lsp company-backends)
-;; ;; 各种设置, 避免 lsp-mode 花式报错.
-;; (setq lsp-enable-eldoc nil) ;we will got error "Wrong type argument: sequencep" from `eldoc-message' if `lsp-enable-eldoc' is non-nil
-;; (setq lsp-message-project-root-warning t) ;avoid popup warning buffer if lsp can't found root directory (such as edit simple *.py file)
-;; (setq create-lockfiles nil) ;we will got error "Error from the Language Server: FileNotFoundError" if `create-lockfiles' is non-nil
-;; ;; 避免 eglot 在 minibuffer 各种弹帮助文档, 弹得我眼睛疼.
-;; (setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
-;; (setf (cdr (assoc 'go-mode  eglot-server-programs)) '("bingo" "--mode"
-;;                                                       "stdio" "--logfile" "/tmp/lspserver-go.log"
-;;                                                       "--trace"
-;;                                                       "--pprof" ":6060" ))
 (require 'lsp-clients)
 ;; (setq lsp-enable-snippet t)
 ;; (setq lsp-clients-go-func-snippet-enabled t)
-;; go get -u golang.org/x/tools/cmd/gopls
 ;; (setq lsp-clients-go-server "gopls")
 ;; (setq lsp-clients-go-diagnostics-enabled nil)
 ;; (require 'eglot)
@@ -90,6 +70,28 @@
               go-imports-find-packages-pl-path))nil)))
 
 (run-with-idle-timer (* 60 5) t 'vmacs-auto-build-package)
+;; (defun vmacs-go-format()
+;;   (when (eq major-mode 'go-mode)
+;;     (gofmt-before-save)
+;;     (save-mark-and-excursion
+;;       (goto-char (point-min))
+;;       (while  (search-forward-regexp "}\nfunc")
+;;         (replace-match "}\n\nfunc")))
+;;     )
+;;   )
+
+;; ;; 启用 company-lsp 补全后端
+;; (push 'company-lsp company-backends)
+;; ;; 各种设置, 避免 lsp-mode 花式报错.
+;; (setq lsp-enable-eldoc nil) ;we will got error "Wrong type argument: sequencep" from `eldoc-message' if `lsp-enable-eldoc' is non-nil
+;; (setq lsp-message-project-root-warning t) ;avoid popup warning buffer if lsp can't found root directory (such as edit simple *.py file)
+;; (setq create-lockfiles nil) ;we will got error "Error from the Language Server: FileNotFoundError" if `create-lockfiles' is non-nil
+;; ;; 避免 eglot 在 minibuffer 各种弹帮助文档, 弹得我眼睛疼.
+;; (setq eglot-ignored-server-capabilites '(:hoverProvider)) ;disable show help document in minibuffer
+;; (setf (cdr (assoc 'go-mode  eglot-server-programs)) '("bingo" "--mode"
+;;                                                       "stdio" "--logfile" "/tmp/lspserver-go.log"
+;;                                                       "--trace"
+;;                                                       "--pprof" ":6060" ))
 
 (provide 'conf-program-golang)
 
