@@ -4,9 +4,18 @@
 (require 'bm)
 (setq-default
  bm-recenter nil                        ;跳转到书签处时，是否将其调整到屏幕中心
- bm-highlight-style 'bm-highlight-line-and-fringe ;书签以何种形式展示
+ bm-highlight-style 'bm-highlight-only-fringe ;书签以何种形式展示
  bm-cycle-all-buffers t                           ;书签跳转时，是在当前buffer间跳转还是在所有buffer间跳转
  bm-in-lifo-order t)                              ;是否按照书签的添加顺序进行跳转（默认是从上到下按位置顺序跳转）
+
+(defun vmacs-bm-fringe(&optional frame)
+  (with-selected-frame frame
+    (when (fboundp 'define-fringe-bitmap)
+      (define-fringe-bitmap 'bm-marker-left   [#x00 #x00 #xFC #xFE #x0F #xFE #xFC #x00])
+      (define-fringe-bitmap 'bm-marker-right  [#x00 #x00 #x3F #x7F #xF0 #x7F #x3F #x00]))))
+
+(add-hook 'after-make-frame-functions 'vmacs-bm-fringe)
+
 ;; (setq-default bm-buffer-persistence t)
 ;; (setq-default bm-restore-repository-on-load t)
 ;; (require 'bm)
