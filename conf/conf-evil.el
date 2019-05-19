@@ -31,7 +31,7 @@
  evil-want-fine-undo t                  ;undo更细化,否则从N->I->N 中所有的修改作为一个undo
  evil-symbol-word-search t              ;# search for symbol not word
  evil-flash-delay 0.5                   ;default 2
- evil-ex-search-case 'sensitive
+ evil-ex-search-case 'smart
  ;; C-e ,到行尾时,光标的位置是在最后一个字符后,还是在字符上
  evil-move-cursor-back nil)
 
