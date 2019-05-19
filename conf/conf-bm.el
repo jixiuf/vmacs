@@ -60,6 +60,18 @@
   (bm-bookmark-remove)
   ad-do-it)
 
+(add-hook 'post-command-hook  'vmacs-auto-remove-bm)
+(defun vmacs-auto-remove-bm()
+  (when (and (symbolp this-command)
+             (member this-command
+                     '(evil-previous-line
+                       evil-forward-char
+                       evil-backward-char
+                       next-line
+                       previous-line
+                       evil-next-line)))
+    (bm-bookmark-remove)))
+
 ;; 在光标处手动添加一个书签
 (define-key evil-normal-state-map "mm" 'bm-toggle) ;evil-set-marker
 
