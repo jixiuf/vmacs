@@ -1,7 +1,7 @@
 (with-eval-after-load 'compile
   (setq-default
    compilation-ask-about-save nil         ;编译之前自动保存buffer
-   compilation-auto-jump-to-first-error t ;编译完成后自动跳到第一个error处
+   compilation-auto-jump-to-first-error nil ;编译完成后自动跳到第一个error处
    compilation-disable-input nil
    compilation-scroll-output t
    compilation-read-command nil;默认emacs提供M-x:compile 用于编译，编译前 不提示用户输入命令
