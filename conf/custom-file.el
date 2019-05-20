@@ -213,7 +213,7 @@
  '(magit-save-repository-buffers 'dontask)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(ccls exec-path-from-shell dockerfile-mode ivy lsp-mode magit web-mode yasnippet pyim magit-libgit org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def pcmpl-git company-go company-posframe json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock applescript-mode bm erlang ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift wgrep yaml-mode))
+   '(ccls exec-path-from-shell dockerfile-mode ivy lsp-mode magit web-mode yasnippet pyim magit-libgit org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock applescript-mode bm erlang ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift wgrep yaml-mode))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((git-commit-major-mode . git-commit-elisp-text-mode)

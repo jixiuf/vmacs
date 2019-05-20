@@ -10,9 +10,7 @@
 ;;; Generated autoloads from pyim.el
 
 (autoload 'pyim-convert-string-at-point "pyim" "\
-将光标前的用户输入的字符串转换为中文.
-
-\(fn)" t nil)
+将光标前的用户输入的字符串转换为中文." t nil)
 
 (defvar pyim-isearch-mode nil "\
 Non-nil if Pyim-Isearch mode is enabled.
@@ -26,6 +24,11 @@ or call the function `pyim-isearch-mode'.")
 
 (autoload 'pyim-isearch-mode "pyim" "\
 这个 mode 为 isearch 添加拼音搜索功能.
+
+If called interactively, enable Pyim-Isearch mode if ARG is positive, and
+disable it if ARG is zero or negative.  If called from Lisp,
+also enable the mode if ARG is omitted or nil, and toggle it
+if ARG is `toggle'; disable the mode otherwise.
 
 \(fn &optional ARG)" t nil)
 
@@ -60,9 +63,7 @@ pyim 词库管理器。
 2. 删除词库。
 3. 向上和向下移动词库。
 4. 保存词库设置。
-5. 重启输入法。
-
-\(fn)" t nil)
+5. 重启输入法。" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pyim" '("pyim-")))
 

@@ -1,4 +1,4 @@
-(define-package "pyim" "20190501.806" "A Chinese input method support quanpin, shuangpin, wubi and cangjie."
+(define-package "pyim" "20190519.1929" "A Chinese input method support quanpin, shuangpin, wubi and cangjie."
   '((emacs "24.4")
     (popup "0.1")
     (async "1.6")
