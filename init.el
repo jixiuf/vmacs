@@ -102,7 +102,7 @@
   (save-place-mode t)
   (savehist-mode 1)
   (recentf-mode 1)
-  (run-with-idle-timer 60*5 t 'vmacs-idle-timer) ;idle 300=5*60s
+  (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
   (require 'conf-tmp nil t)
   (require 'conf-vterm)
   (when (eq system-type 'darwin) (require 'conf-evil-input-method))
