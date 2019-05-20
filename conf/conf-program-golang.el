@@ -28,6 +28,7 @@
 (defun vmacs-go-mode-hook()
   ;; (go-eldoc-setup)                    ;autoloaded
   (lsp)
+  (flymake-mode -1)
   (setq company-backends `(( company-lsp company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
