@@ -132,15 +132,12 @@
 (require 'company-tng)
 (require 'company-xcode)
 (require 'company-yasnippet)
-(require 'company-jedi)
-;; (require 'eglot)
 (require 'company-go)
 
 
 (require 'lazy-evil)
 (require 'lazy-command)
 (require 'compile-dwim)
-;; (require 'helm-gtags)
 (require 'lazy-buffer)
 (require 'lazy-camelize)
 (require 'lazy-dired-sort)
@@ -148,7 +145,6 @@
 (require 'lazy-font)
 (require 'lazy-golang)
 (require 'lazy-goto-definition)
-;; (require 'lazy-helm)
 (require 'lazy-ivy)
 (require 'lazy-json)
 (require 'lazy-minibuffer)

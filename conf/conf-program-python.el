@@ -1,7 +1,7 @@
-;; pip install ‘python-language-server[all]’
 
 ;; brew install pyenv-virtualenv
 ;; pyenv install 2.7.13
+;; pip install 'python-language-server[all]'
 
 ;; create
 ;; pyenv virtualenv 2.7.10 env-2.7.10
@@ -21,27 +21,13 @@
 ;; C-c. goto def
 ;; C-tab complete
 ;;  C-c , jedi:goto-definition-pop-marker s
-;; C-c/ helm-jedi-related-names  Find related names of the object at point using helm interface.
 
 (message "conf-program-python is loaded")
 (defun vmacs-python-mode-hook ()
-  ;; (when (fboundp 'jedi:setup) (jedi:setup))
-  (make-local-variable 'company-backends)
-  ;; (add-to-list 'company-backends 'company-jedi)
-
-  ;; (push '("lambda" . #x1d77a) prettify-symbols-alist) ;lambda 入
-  ;; (prettify-symbols-mode)
-  (lsp)
-
-  ;; (flycheck-mode)
-
-  ;; pip install isort
-  ;; auto import module at point
-  ;; (define-key python-mode-map (kbd "C-c i") 'python-auto-import)
-
-  ;; gd 到函数定义处 space, 回到原处
-  ;; evil-mode gd goto-definition 会调用jedi:goto-definition
-  )
+  (unless (executable-find "pyls")
+    (find-file "~/.emacs.d/conf/conf-program-python.el")
+    (message "pyls not found,try setup python now"))
+  (lsp))
 (add-hook 'python-mode-hook 'vmacs-python-mode-hook)
 
 
