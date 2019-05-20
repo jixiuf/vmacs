@@ -4,10 +4,18 @@
 ;; pip install 'python-language-server[all]'
 
 ;; create
-;; pyenv virtualenv 2.7.10 env-2.7.10
+;; pyenv virtualenv 3.6.3 env-3.6.3
 ;; list
 ;; pyenv virtualenvs
-;; pyenv activate env-name  # 激活虚拟环境
+
+;; .zshrc
+;; if which pyenv-virtualenv-init > /dev/null; then
+;;     export PYENV_VIRTUALENV_DISABLE_PROMPT=1;
+;;     eval "$(pyenv init -)";
+;;     eval "$(pyenv virtualenv-init -)";
+;;     pyenv activate env-3.6.3  ;
+;; fi
+
 ;; pyenv deactivate #退出虚拟环境，回到系统环境
 
 ;; pyenv commands
