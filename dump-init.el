@@ -91,7 +91,7 @@
 
 ;; (require 'crontab-mode)
 (require 'dockerfile-mode)
-(require 'erlang)
+;; (require 'erlang)
 (require 'ethan-wspace)
 ;; (require 'flycheck)
 (require 'git-commit)

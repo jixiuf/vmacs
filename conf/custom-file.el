@@ -194,7 +194,6 @@
  '(auto-save-visited-mode t)
  '(awesome-tab-background-color "#202020")
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
- '(blink-cursor-blinks 0)
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(column-number-mode nil)
@@ -211,9 +210,10 @@
  '(magit-no-confirm
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
+ '(menu-bar-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(ccls exec-path-from-shell dockerfile-mode ivy lsp-mode magit web-mode yasnippet pyim magit-libgit org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock applescript-mode bm erlang ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift wgrep yaml-mode))
+   '(magit-libgit org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def  company-go company-posframe dockerfile-mode json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode company-jedi dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((git-commit-major-mode . git-commit-elisp-text-mode)
@@ -284,11 +284,10 @@
  '(tramp-syntax 'default nil (tramp))
  '(transient-history-file "~/.emacs.d/cache/transient/history.el")
  '(transient-levels-file "~/.emacs.d/cache/transient/levels.el")
+ '(transient-values-file "~/.emacs.d/cache/transient/values.el")
  '(uniquify-buffer-name-style 'forward nil (uniquify))
  '(warning-suppress-types '((yasnippet backquote-change)))
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places 'bottom-only)
  '(window-divider-default-right-width 1)
- '(window-divider-mode t)
- '(xref-after-jump-hook '(recenter))
- '(xref-after-return-hook nil))
+ '(window-divider-mode t))
