@@ -13,18 +13,18 @@
       (emacs-lisp-mode
        (elisp-def-mode 1)
        (condition-case nil (call-interactively 'elisp-def)
-         (error (bm-bookmark-remove)))))
-    (lisp-interaction-mode
-     (elisp-def-mode 1)
-     (condition-case nil (call-interactively 'elisp-def)
-       (error (bm-bookmark-remove))))
-    (js-mode
-     (if (functionp 'tern-find-definition)
-         (call-interactively 'tern-find-definition)
-       (lsp-find-definition)))
-    (otherwise
-     (condition-case nil (lsp-find-definition)
-       (error (bm-bookmark-remove))))))
+         (error (bm-bookmark-remove))))
+      (lisp-interaction-mode
+       (elisp-def-mode 1)
+       (condition-case nil (call-interactively 'elisp-def)
+         (error (bm-bookmark-remove))))
+      (js-mode
+       (if (functionp 'tern-find-definition)
+           (call-interactively 'tern-find-definition)
+         (lsp-find-definition)))
+      (otherwise
+       (condition-case nil (lsp-find-definition)
+         (error (bm-bookmark-remove))))))
 
   (setq this-command 'goto-definition))
 
