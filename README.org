@@ -79,3 +79,6 @@ vmacs则尽量将功能移到space上减少小指的使用
 相关配置
 https://github.com/jixiuf/vmacs/blob/master/conf/conf-company-mode.el
 [[file:doc/company-c.png]]
+* github.com 找出丢失的commit
+https://api.github.com/repos/jixiuf/vmacs/events
+https://api.github.com/repos/jixiuf/vmacs/commits/be863594db2d75d4ac4c0dfe9bd5c9c03ec2f03f
