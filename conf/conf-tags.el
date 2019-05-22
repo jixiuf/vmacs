@@ -90,7 +90,7 @@
 ;; ;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
 ;; (define-key global-map "\M-." 'goto-definition)
 
-
+(setq lsp-print-performance t)
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 (define-key evil-motion-state-map "gr" 'vmacs-xref-find-references)
 (define-key evil-motion-state-map "gd" 'goto-definition)
