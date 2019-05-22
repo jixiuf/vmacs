@@ -290,4 +290,5 @@
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places 'bottom-only)
  '(window-divider-default-right-width 1)
- '(window-divider-mode t))
+ '(window-divider-mode t)
+ '(xref-after-jump-hook '(recenter)))
