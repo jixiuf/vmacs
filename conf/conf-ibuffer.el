@@ -41,7 +41,6 @@
          ("Helm"  (or (name . "^\\*helm\\|^\\*ac-mode-")))
          ("Woman"  (name . "^\\*WoMan.*\\*$"))
          ("Compile"  (name . "^*.*compil[ea].*$"))
-         ("Gtalk"  (or (name . "^\\*.*jabber") (name . "*fsm-debug*")))
          ("ERC"  (mode . erc-mode))
          ("Custom"  (mode . Custom-mode))
          ("Shell"  (mode . shell-mode))
@@ -59,21 +58,12 @@
             ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
             (ibuffer-switch-to-saved-filter-groups "Default")))
 
-(defun donot-show-helm-buf(buf)
-  "do not show *helm* buffer"
-  (and (string-match "^\\*helm\\|^\\*ac-mode-"
-                     (buffer-name buf))
-       (null buffer-file-name)))
-
-(defun donot-show-distel-buf(buf)
-  "do not show erlang distel buf"
-  (and (string-match "\\*reg group-leader\\*\\|\\*trace emacs@jf\\\\\\.org\\*"
-                     (buffer-name buf))
-       (null buffer-file-name)))
-
-(add-to-list 'ibuffer-maybe-show-predicates 'donot-show-distel-buf)
-
-(add-to-list 'ibuffer-maybe-show-predicates 'donot-show-helm-buf)
+;; (defun donot-show-helm-buf(buf)
+;;   "do not show *helm* buffer"
+;;   (and (string-match "^\\*helm\\|^\\*ac-mode-"
+;;                      (buffer-name buf))
+;;        (null buffer-file-name)))
+;; (add-to-list 'ibuffer-maybe-show-predicates 'donot-show-helm-buf)
 ;;toggle 显示上面的 Hidden分组里的内容
 (defun ibuffer-toggle-maybe-show()
   (interactive)
