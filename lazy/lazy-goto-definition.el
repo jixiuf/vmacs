@@ -22,6 +22,10 @@
        (if (functionp 'tern-find-definition)
            (call-interactively 'tern-find-definition)
          (lsp-find-definition)))
+      (go-mode
+       (condition-case nil (lsp-find-definition)
+         (error (call-interactively 'godef-jump)))
+       )
       (otherwise
        (condition-case nil (lsp-find-definition)
          (error (bm-bookmark-remove))))))
