@@ -43,16 +43,17 @@
          ("Compile"  (name . "^*.*compil[ea].*$"))
          ("ERC"  (mode . erc-mode))
          ("Custom"  (mode . Custom-mode))
-         ("Shell"  (mode . shell-mode))
          ("Mail" (or (mode . mew-summary-mode) (mode . mew-draft-mode)(mode . mew-message-mode)))
          ("VC"  (or (name . "magit-") (name . "^\\*vc")(mode . diff-mode) (mode . vc-dir-mode)))
          ("Magit "  (name . "magit:"))
          ("Emacs"  (name . "^\\*.*$"))
          ("Dired"  (mode . dired-mode))
+         ("Shell"  (or (mode . shell-mode) (mode . vterm-mode)))
          ("Go"  (mode . go-mode))
          ("Python"  (mode . python-mode))
          ("EL"  (mode . emacs-lisp-mode))
          )))
+
 (add-hook 'ibuffer-mode-hook
           (lambda ()
             ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
