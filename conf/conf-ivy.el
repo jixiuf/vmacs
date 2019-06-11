@@ -239,12 +239,12 @@
   (let ((recentf-list recentf-list )
         (default-directory default-directory)
         list counsel--git-dir)
-    (setq counsel--git-dir (counsel--git-root))
-    (when counsel--git-dir
-      (setq default-directory counsel--git-dir)
-      (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
-      (setq recentf-list (append recentf-list list))
-      )
+    (unless (file-remote-p default-directory)
+      (setq counsel--git-dir (counsel--git-root))
+      (when counsel--git-dir
+        (setq default-directory counsel--git-dir)
+        (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
+        (setq recentf-list (append recentf-list list))))
     ad-do-it))
 
 
