@@ -1,0 +1,2 @@
+;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/ethan-wspace-20190522.1448/ethan-wspace.el  -*- no-byte-compile: t -*-
+(define-package "ethan-wspace" "20190522.1448" "whitespace customizations for emacs" 'nil :commit "0f110fc26b829093c352e8dc9e50ba51a4e483ac" :keywords '("whitespace" "tab" "newline" "trailing" "clean") :authors '(("Ethan Glasser-Camp" . "ethan@betacantrips.com")) :maintainer '("Ethan Glasser-Camp" . "ethan@betacantrips.com"))
