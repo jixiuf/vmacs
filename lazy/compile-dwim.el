@@ -432,7 +432,7 @@ end tell"))
 
 (defun compile-go-test-current()
   (interactive)
-  (setq compile-command (concat "go test -v -test.run "  (nth 0 (split-string (which-function) "("))))
+  (setq compile-command (concat "go test -v -test.run "  (go--function-name)))
   (call-interactively 'compile))
 
 
