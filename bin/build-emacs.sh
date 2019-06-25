@@ -17,6 +17,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
 --prefix=${prefix} \
 --with-gnutls \
+--with-xwidgets \
 --without-x \
 --without-dbus \
 --without-imagemagick \
