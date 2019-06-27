@@ -14,6 +14,10 @@
 (setq pyim-page-tooltip 'posframe)
 ;; 选词框显示5个候选词
 (setq pyim-page-length 5)
+;; (setq pyim-punctuation-translate-p 'auto)
+(add-to-list 'pyim-punctuation-dict '("\\" "、"))
+
+
 ;; (setq pyim-page-style 'one-line)
 
 ;; (liberime-get-schema-list)
