@@ -56,13 +56,14 @@
 ;; make compile
 
 
+(require 'conf-evil-clipboard)
+
 (when (vmacs-not-dumping-p)
 
   (require 'conf-keybind)
   (require 'conf-evil)
-  (require 'conf-evil-clipboard)
+(require 'conf-evil-visual)       ;跟选中区域相关的配置
   ;; mac 上处理evil-mode 与中文输入法
-  (require 'conf-evil-visual)       ;跟选中区域相关的配置
   (require 'conf-evil-symbol)       ;对symbol 的操作
   (require 'conf-evil-window)       ;窗口
   (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理

@@ -30,7 +30,7 @@
 ;; ". 里面存最近insert 的内容
 ;; "_ 类似于/dev/null 是个无底洞
 ;; evil-use-register 默认绑定在" 双引号上,让;也具有evil-use-register的功能
-(define-key evil-motion-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
+;; (define-key evil-motion-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
 ;; (define-key evil-normal-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
 ;; (define-key evil-visual-state-map ";" 'evil-repeat-find-char-or-evil-use-register)
 ;; [;;yy]==["+yy] 将此行copy到clipboard
