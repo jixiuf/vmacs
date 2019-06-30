@@ -4,7 +4,7 @@
 ;; 如果你想用yasnippet带的snippet
 
 ;; (require 'yasnippet) ;;
-(autoload 'yas-global-mode "yasnippet")
+;; (autoload 'yas-global-mode "yasnippet")
 (require 'yasnippet)
 ;; batch 模式下不启用yas
 (if (and noninteractive (not (vmacs-dumping-p)))

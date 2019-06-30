@@ -56,53 +56,55 @@
 ;; make compile
 
 
+
+(require 'conf-keybind)
+(require 'conf-evil)
+(require 'conf-evil-visual)       ;跟选中区域相关的配置
+;; mac 上处理evil-mode 与中文输入法
+(require 'conf-evil-symbol)       ;对symbol 的操作
+(require 'conf-evil-window)       ;窗口
 (require 'conf-evil-clipboard)
+(require 'conf-bm)              ; 可视化书签功能与跳转功能
+
+(when (eq system-type 'darwin) (require 'conf-macos))
+(when (eq system-type 'windows-nt) (require 'conf-w32))
+(require 'conf-iedit)
+(require 'conf-common)
+(require 'conf-org)
+
+(require 'conf-yasnippet)               ;模版系统
+(require 'conf-yas-auto-insert)         ;利用yasnipet模版,在新建文件时,自动在文件中插入相应的模版
+(require 'conf-buffer)
+(require 'conf-compile)
+(require 'conf-version-control)         ;版本管理
+(with-eval-after-load 'cc-mode (require 'conf-program-objc))
+(with-eval-after-load 'js (require 'conf-program-js))
 
 (when (vmacs-not-dumping-p)
-
-  (require 'conf-keybind)
-  (require 'conf-evil)
-(require 'conf-evil-visual)       ;跟选中区域相关的配置
-  ;; mac 上处理evil-mode 与中文输入法
-  (require 'conf-evil-symbol)       ;对symbol 的操作
-  (require 'conf-evil-window)       ;窗口
   (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
-  (require 'conf-buffer)
-  (require 'conf-compile)
 
 
 
-  (require 'conf-bm)              ; 可视化书签功能与跳转功能
   ;; (require 'conf-helm)            ;
   (require 'conf-ivy)
   ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
   ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
 
-  (when (eq system-type 'darwin) (require 'conf-macos))
-  (when (eq system-type 'windows-nt) (require 'conf-w32))
 
 
   ;; 一般性的配置在conf/conf-common.el中
-  (require 'conf-common)
-  (require 'conf-iedit)
-  (require 'conf-org)
   (require 'conf-awesome-tab)
   ;; (with-eval-after-load 'eshell (require 'conf-eshell)) ;
   ;; (with-eval-after-load 'term (require 'conf-term)) ;
 
-  (require 'conf-yasnippet)               ;模版系统
-  (require 'conf-yas-auto-insert)         ;利用yasnipet模版,在新建文件时,自动在文件中插入相应的模版
   ;; gpg 自动加密解密文件相关
   (require 'conf-tags)                    ;ctags gtags 相关，代码跳转
-  (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
+  ;; (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
   (require 'conf-company-mode)            ;补全
   (with-eval-after-load 'go-mode (require 'conf-program-golang))
   (with-eval-after-load 'python (require 'conf-program-python))
-  (with-eval-after-load 'cc-mode (require 'conf-program-objc))
-  (with-eval-after-load 'js (require 'conf-program-js))
 
   (with-eval-after-load 'magit (require 'conf-magit))
-  (require 'conf-version-control)         ;版本管理
   (global-undo-tree-mode t)
   (global-font-lock-mode)
   (transient-mark-mode 1)

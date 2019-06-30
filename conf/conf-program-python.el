@@ -30,7 +30,6 @@
 ;; C-tab complete
 ;;  C-c , jedi:goto-definition-pop-marker s
 
-(message "conf-program-python is loaded")
 (defun vmacs-python-mode-hook ()
   (unless (executable-find "pyls")
     (find-file "~/.emacs.d/conf/conf-program-python.el")
