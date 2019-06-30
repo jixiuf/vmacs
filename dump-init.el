@@ -104,6 +104,7 @@
 
 ;; (require 'lazy-evil)
 ;; (require 'lazy-command)
+(require 'conf-dired-dump)
 (require 'compile-dwim)
 (require 'lazy-buffer)
 (require 'lazy-camelize)
