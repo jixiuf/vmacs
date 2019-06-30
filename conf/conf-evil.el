@@ -14,56 +14,11 @@
 ;; (evil-set-command-property #'evil-find-char-to-backward :jump nil)
 
 
-(setq-default
- ;; evil-search-module 'isearch        ;可以用C-w yank word
- evil-disable-insert-state-bindings t
- evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
-;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
- evil-ex-search-highlight-all t
- evil-ex-search-persistent-highlight nil
- evil-toggle-key "<f15>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
- evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
- evil-want-C-w-delete nil
- evil-want-abbrev-expand-on-insert-exit nil
- evil-want-C-i-jump nil
- evil-cross-lines t
- evil-default-state 'normal
- evil-want-fine-undo t                  ;undo更细化,否则从N->I->N 中所有的修改作为一个undo
- evil-symbol-word-search t              ;# search for symbol not word
- evil-flash-delay 0.5                   ;default 2
- evil-ex-search-case 'smart
- ;; C-e ,到行尾时,光标的位置是在最后一个字符后,还是在字符上
- evil-move-cursor-back nil)
-
-(setq-default
- evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
- evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
- evil-insert-state-tag (propertize "I" 'face '((:background "red")))
- evil-motion-state-tag (propertize "M" 'face '((:background "blue")))
- evil-visual-state-tag (propertize "V" 'face '((:background "grey80" :foreground "cyan")))
- evil-operator-state-tag (propertize "O" 'face '((:background "purple"))))
-
-;; (setq evil-highlight-closing-paren-at-point-states nil)
-(setq-default
- evil-default-cursor '(t "white")
- evil-emacs-state-cursor  '("gray" box)
- evil-normal-state-cursor '("green" box)
- evil-visual-state-cursor '("cyan" hbar)
- evil-insert-state-cursor '("orange" (bar . 3))
- evil-motion-state-cursor '("red" box))
-
 
 (require 'evil)
 ;; minor-mode
 ;; 设置一些mode的初始state
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
-(setq-default evil-buffer-regexps
-              '(("**testing snippet:" . insert)
-                ("*compile*" . normal)
-                ;; ("*Org Src" . insert)
-                ("*Org Export Dispatcher*" . insert)
-                ("*Async Shell Command*" . normal)
-                ("^ \\*load\\*")))
 ;; 设置一些mode的初始state
 (evil-set-initial-state 'vterm-mode 'insert)
 (evil-set-initial-state 'bm-show-mode 'insert)
@@ -87,17 +42,6 @@
 (evil-set-initial-state 'calc-mode 'normal)
 ;; (evil-set-initial-state 'term-mode 'normal)
 ;; (evil-set-initial-state 'eshell-mode 'normal)
-(defun vmacs-calc-hook()
-  (require 'calc-bin)
-  ;; 默认calc 的移位移位操作是接32位的， 可以bw(calc-word-size) 来改成64位
-  (calc-word-size 64)
-  (define-key calc-mode-map (kbd "j") 'evil-next-line)
-  (define-key calc-mode-map (kbd "k") 'evil-previous-line)
-  (define-key calc-mode-map (kbd "SPC") nil)
-  (define-key calc-mode-map (kbd "y") 'evil-yank))
-
-(add-hook 'calc-mode-hook 'vmacs-calc-hook)
-
 
 ;; 把所有emacs state  的mode 都转成insert mode
 (dolist (mode evil-emacs-state-modes)
@@ -387,29 +331,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; (define-key evil-ex-completion-map (kbd "H-m") 'exit-minibuffer)
 (define-key evil-ex-completion-map (kbd "<C-m>") 'exit-minibuffer)
 
-;; (), {}, [], <>, '', "", ` `, or “” by default
-;; 不论是何种 ，都会将最近的配对进行操作
-(setq-default evil-textobj-anyblock-blocks
-              '(("(" . ")")
-                ("{" . "}")
-                ("\\[" . "\\]")
-                ("<" . ">")
-                ("'" . "'")
-                ("\"" . "\"")
-                ("`" . "`")
-                ("“" . "”")
-                ("［" . "］")           ;全角
-                ("（" . "）")           ;全角
-                ("{" . "}")             ;全角
-                ))
-(add-hook 'lisp-mode-hook
-          (lambda ()
-            (setq-local evil-textobj-anyblock-blocks
-                        '(("(" . ")")
-                          ("{" . "}")
-                          ("\\[" . "\\]")
-                          ("\"" . "\"")))))
-
 ;; dib dab绑定
 (define-key evil-inner-text-objects-map "b" 'evil-textobj-anyblock-inner-block)
 (define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
@@ -438,8 +359,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader "zd" 'sdcv-to-buffer)
 
 (vmacs-leader "s" 'evil-write-all)
-(global-set-key (kbd "C-x C-s") 'evil-write-all)
-(global-set-key (kbd "C-x s") 'evil-write-all)
 
 ;; (vmacs-leader "S" 'save-buffer)
 ;; (vmacs-leader "j" 'open-line-or-new-line-dep-pos)
