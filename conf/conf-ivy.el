@@ -87,6 +87,8 @@
 (define-key ivy-switch-buffer-map (kbd "M-k") 'ivy-switch-buffer-kill)
 (define-key ivy-switch-buffer-map (kbd "s-k") 'ivy-switch-buffer-kill)
 (define-key ivy-switch-buffer-map (kbd "C-M-s-k") 'ivy-switch-buffer-kill)
+(define-key ivy-switch-buffer-map [C-M-s-268632075] 'ivy-switch-buffer-kill)
+
 
 ;; (vmacs-leader "<lwindow>" 'ivy-switch-buffer) ;for windows
 
@@ -119,6 +121,8 @@
 (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
 (global-set-key (kbd "s-i") 'counsel-git)   ;cmd-i
 (global-set-key (kbd "C-s-M-i") 'counsel-git)   ;hyper-i
+(global-set-key [C-M-s-268632073]  #'counsel-git) ;mac
+
 
 (define-key ivy-minibuffer-map (kbd "<C-i>") 'vmacs-ivy-dropto-counsel-git)
 (define-key ivy-minibuffer-map (kbd "C-c c") 'vmacs-counsel-toggle-case-senstive)

@@ -272,6 +272,8 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "s-o") 'other-window)
 (global-set-key  (kbd "s-C-M-o") 'other-window)
 
+(global-set-key  [C-M-s-268632079] 'other-window)
+
 ;; (global-set-key  (kbd "s-n") 'vmacs-split-window-or-other-window)
 ;; (global-set-key  (kbd "s-C-M-n") 'vmacs-split-window-or-other-window)
 ;; (global-set-key  (kbd "s-p") 'vmacs-split-window-or-prev-window)
