@@ -129,6 +129,7 @@
          ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
          ("\\.go.txt$" . go-mode)
+         ("go.mod" . gomod-mode)
          ("\\.yaws$" . nxml-mode)
          ("\\.html$"  . web-mode)
          ("\\.htm$"   . web-mode)
@@ -157,6 +158,7 @@
          ("\\.mm$" . objc-mode)
          )
        auto-mode-alist))
+
 (add-to-list 'magic-mode-alist
              `(,(lambda ()
                   (and buffer-file-name

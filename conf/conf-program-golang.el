@@ -71,6 +71,18 @@
               go-imports-find-packages-pl-path))nil)))
 
 (run-with-idle-timer (* 60 5) t 'vmacs-auto-build-package)
+
+;;;###autoload
+(define-derived-mode gomod-mode prog-mode "gomod"
+  "This is a mode intended to editing go.mod "
+  (set (make-local-variable 'paragraph-start) (concat "$\\|" page-delimiter))
+  (set (make-local-variable 'paragraph-separate) paragraph-start)
+  (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
+  (set (make-local-variable 'comment-start) "//")
+  (set (make-local-variable 'comment-end) "")
+  ;; (set (make-local-variable 'comment-start-skip) "/+[ \t]*")
+  (set (make-local-variable 'parse-sexp-ignore-comments) t))
+
 ;; (defun vmacs-go-format()
 ;;   (when (eq major-mode 'go-mode)
 ;;     (gofmt-before-save)
