@@ -28,14 +28,13 @@
 (require 'vmacs-theme)
 (load-theme 'vmacs)
 
-(require 'conf-dired-dump)
-(require 'conf-evil-dump)
-
 
 
 ;; 下面(package-initialize) 这行注释不要删
 (when (< emacs-major-version 27) (package-initialize))
 (require 'conf-package)
+(require 'conf-dired-dump)
+(require 'conf-evil-dump)
 
 (require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
