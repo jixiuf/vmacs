@@ -100,6 +100,7 @@ The prompt skip is done by skipping text matching the regular expression
   (forward-char -1))
 
 
+(define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
