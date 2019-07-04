@@ -39,13 +39,6 @@
 ;; (require 'vterm)
 ;; ```
 
-;; If you want to have the module compiled, wrap the call to `require` as follows:
-
-;; ```
-;; (add-to-list 'load-path "path/to/emacs-libvterm")
-;; (let (vterm-install)
-;;   (require 'vterm))
-;; ```
 
 ;;; Code:
 
@@ -61,20 +54,22 @@
   (let ((default-directory (file-name-directory (locate-library "vterm"))))
     (unless (file-executable-p (concat default-directory "vterm-module.so" ))
       (let* ((buffer (get-buffer-create vterm-install-buffer-name))
-             (status (call-process "sh" nil buffer t "-c"
+             status)
+        (pop-to-buffer vterm-install-buffer-name)
+        (setq status (call-process "sh" nil buffer t "-c"
                                    "mkdir -p build;                             \
                                     cd build;                                   \
                                     cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..; \
-                                    make")))
+                                    make") )
         (if (eq status 0)
             (message "Compilation of emacs-libvterm module succeeded")
-          (pop-to-buffer vterm-install-buffer-name)
           (error "Compilation of emacs-libvterm module failed!"))))))
 
-(when (boundp 'vterm-install)
-  (vterm-module-compile))
 
-(require 'vterm-module)
+(unless (require 'vterm-module nil t)
+  (vterm-module-compile)
+  (require 'vterm-module))
+
 (require 'subr-x)
 (require 'cl-lib)
 (require 'color)
@@ -125,6 +120,105 @@ for different shell"
   :type 'hook
   :group 'vterm)
 
+(defface vterm-color-default
+  `((t :inherit default))
+  "The default normal color and bright color.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-black
+  `((t :foreground ,(aref ansi-color-names-vector 0)
+       :background ,(aref ansi-color-names-vector 0)))
+  "Face used to render black color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-red
+  `((t :foreground ,(aref ansi-color-names-vector 1)
+       :background ,(aref ansi-color-names-vector 1)))
+  "Face used to render red color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-green
+  `((t :foreground ,(aref ansi-color-names-vector 2)
+       :background ,(aref ansi-color-names-vector 2)))
+  "Face used to render green color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-yellow
+  `((t :foreground ,(aref ansi-color-names-vector 3)
+       :background ,(aref ansi-color-names-vector 3)))
+  "Face used to render yellow color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-blue
+  `((t :foreground ,(aref ansi-color-names-vector 4)
+       :background ,(aref ansi-color-names-vector 4)))
+  "Face used to render blue color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-magenta
+  `((t :foreground ,(aref ansi-color-names-vector 5)
+       :background ,(aref ansi-color-names-vector 5)))
+  "Face used to render magenta color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-cyan
+  `((t :foreground ,(aref ansi-color-names-vector 6)
+       :background ,(aref ansi-color-names-vector 6)))
+  "Face used to render cyan color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defface vterm-color-white
+  `((t :foreground ,(aref ansi-color-names-vector 7)
+       :background ,(aref ansi-color-names-vector 7)))
+  "Face used to render white color code.
+the foreground color are used for normal color,
+and background color are used for bright color. "
+  :group 'vterm)
+
+(defvar vterm-color-palette
+  [vterm-color-black
+   vterm-color-red
+   vterm-color-green
+   vterm-color-yellow
+   vterm-color-blue
+   vterm-color-magenta
+   vterm-color-cyan
+   vterm-color-white]
+  "Color palette for the foreground and background.")
+
+(defun vterm--get-color(index)
+  "Get color by index from `vterm-color-palette'.
+Argument INDEX index of color."
+  (cond
+   ((and (>= index 0)(< index 8 ))
+    (face-foreground
+     (elt vterm-color-palette index)
+     nil 'default))
+   ((and (>= index 8 )(< index 16 ))
+    (face-background
+     (elt vterm-color-palette (% index 8))
+     nil 'default))
+   ( (= index -1)               ;-1 foreground
+     (face-foreground 'vterm-color-default nil 'default))
+   (t                                   ;-2 background
+    (face-background 'vterm-color-default nil 'default))))
+
 (defvar-local vterm--term nil
   "Pointer to Term.")
 
@@ -145,7 +239,7 @@ for different shell"
   (if (version< emacs-version "27")
       (add-hook 'window-size-change-functions #'vterm--window-size-change-26 t t)
     (add-hook 'window-size-change-functions #'vterm--window-size-change t t))
-  (let ((process-environment (append '("TERM=xterm"
+  (let ((process-environment (append '("TERM=xterm-256color"
                                        "INSIDE_EMACS=vterm"
                                        "LINES"
                                        "COLUMNS")
@@ -169,7 +263,7 @@ for different shell"
 (define-key vterm-mode-map [tab]                       #'vterm--self-insert)
 (define-key vterm-mode-map [backspace]                 #'vterm--self-insert)
 (define-key vterm-mode-map [M-backspace]               #'vterm--self-insert)
-(define-key vterm-mode-map [return]                    #'vterm--self-insert)
+(define-key vterm-mode-map [return]                    #'vterm-send-return)
 (define-key vterm-mode-map [left]                      #'vterm--self-insert)
 (define-key vterm-mode-map [right]                     #'vterm--self-insert)
 (define-key vterm-mode-map [up]                        #'vterm--self-insert)
@@ -227,6 +321,11 @@ for different shell"
   "Sends `C-_' to the libvterm."
   (interactive)
   (vterm-send-key "_" nil nil t))
+
+(defun vterm-send-return ()
+  "Sends C-m to the libvterm."
+  (interactive)
+   (process-send-string vterm--process "\C-m"))
 
 (defun vterm-yank ()
   "Implementation of `yank' (paste) in vterm."
@@ -300,10 +399,12 @@ Argument BUFFER the terminal buffer."
 
 Then triggers a redraw from the module."
   (let ((inhibit-redisplay t)
-        (inhibit-read-only t))
-    (with-current-buffer (process-buffer process)
-      (vterm--write-input vterm--term input)
-      (vterm--update vterm--term))))
+        (inhibit-read-only t)
+        (buf (process-buffer process)))
+    (when (buffer-live-p buf)
+      (with-current-buffer  buf
+        (vterm--write-input vterm--term input)
+        (vterm--update vterm--term)))))
 
 (defun vterm--sentinel (process event)
   "Sentinel of vterm PROCESS.

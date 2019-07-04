@@ -1,8 +1,8 @@
-;;; vterm-toggle.el --- Toggle to and from the vterm buffer
+;;; vterm-toggle.el --- toggles between the vterm buffer and whatever buffer you are editing.
 
 ;; Author: jixiuf  jixiuf@qq.com
 ;; Keywords: vterm terminals
-;; Version: 0.0.1
+;; Version: 0.0.2
 ;; URL: https://github.com/jixiuf/vterm-toggle
 ;; Package-Requires: ((emacs "25.1") (vterm "0.0.1"))
 
@@ -41,15 +41,14 @@
 (require 'vterm)
 (require 'evil nil  t)
 
-
-(defvar vterm-toggle-window-configration nil)
-
 (defcustom vterm-toggle-evil-state-when-enter 'insert
-  "Default evil state for vterm buffer."
+  "Evil state for vterm buffer when swith to vterm buffer.
+nil means don't switch states when toggling"
   :group 'vterm-toggle
   :type 'symbolp)
 (defcustom vterm-toggle-evil-state-when-leave 'normal
-  "Default evil state for vterm buffer."
+  "Default evil state for vterm buffer when leave.
+nil means don't switch states when toggling"
   :group 'vterm-toggle
   :type 'symbolp)
 
@@ -78,13 +77,14 @@
 `vterm-toggle-after-ssh-login-function' should be a symbol, a hook variable.
 The value of HOOK may be nil, a function, or a list of functions.
 for example
-\(defun `vterm-toggle-after-ssh-login' (user host port localdir)
+   (defun vterm-toggle-after-ssh-login (user host port localdir)
     (when (equal host \"my-host\")
         (vterm-send-string \"zsh\" t)
         (vterm-send-key \"<return>\" nil nil nil)))"
   :group 'vterm-toggle
   :type 'hook)
 
+(defvar vterm-toggle--window-configration nil)
 (defvar vterm-toggle--vterm-dedicated-buffer nil)
 (defvar vterm-toggle--vterm-buffer-p-function 'vterm-toggle--default-vterm-mode-p
   "Function to check whether a buffer is vterm-buffer mode.")
@@ -100,7 +100,9 @@ Optional argument ARGS optional args."
 (defun vterm-toggle--switch-evil-state (state)
   "Switch to `evil-state'.
 Argument STATE Emacs state."
-  (when (featurep 'evil)
+  (when (and state
+             (featurep 'evil)
+             (bound-and-true-p evil-local-mode))
     (funcall (intern (format "evil-%S-state" state)))))
 
 ;;;###autoload
@@ -134,8 +136,8 @@ Optional argument ARGS ."
       (when (funcall vterm-toggle--vterm-buffer-p-function args)
         (vterm-toggle--switch-evil-state vterm-toggle-evil-state-when-leave)
         (bury-buffer))))
-  (when vterm-toggle-window-configration
-    (set-window-configuration vterm-toggle-window-configration))
+  (when vterm-toggle--window-configration
+    (set-window-configuration vterm-toggle--window-configration))
   (when (funcall vterm-toggle--vterm-buffer-p-function args)
     (switch-to-buffer (vterm-toggle--recent-other-buffer))))
 
@@ -146,11 +148,11 @@ Optional argument ARGS optional args."
   (interactive)
   (let* ((shell-buffer (vterm-toggle--get-buffer make-cd args))
          (dir (and make-cd
-                   (expand-file-name (or list-buffers-directory default-directory))))
+                   (expand-file-name default-directory)))
          cd-cmd cur-host vterm-dir vterm-host cur-user cur-port remote-p)
     (when make-cd
-      (if (ignore-errors (file-remote-p (or list-buffers-directory default-directory)))
-          (with-parsed-tramp-file-name (or list-buffers-directory default-directory) nil
+      (if (ignore-errors (file-remote-p dir))
+          (with-parsed-tramp-file-name dir nil
             (setq remote-p t)
             (setq cur-host host)
             (setq cur-user user)
@@ -161,7 +163,7 @@ Optional argument ARGS optional args."
     (if shell-buffer
         (progn
           (unless (funcall vterm-toggle--vterm-buffer-p-function args)
-            (setq vterm-toggle-window-configration (current-window-configuration)))
+            (setq vterm-toggle--window-configration (current-window-configuration)))
           (pop-to-buffer shell-buffer)
           (with-current-buffer shell-buffer
             (when (derived-mode-p 'vterm-mode)
@@ -179,7 +181,7 @@ Optional argument ARGS optional args."
             (vterm-toggle--switch-evil-state vterm-toggle-evil-state-when-enter))
           (when vterm-toggle-fullscreen-p
             (delete-other-windows)))
-      (setq vterm-toggle-window-configration (current-window-configuration))
+      (setq vterm-toggle--window-configration (current-window-configuration))
       (with-current-buffer (vterm-toggle--new)
         (when remote-p
           (if cur-user
@@ -197,7 +199,7 @@ Optional argument ARGS optional args."
 (defun vterm-toggle--new()
   "New vterm buffer."
   (if vterm-toggle-fullscreen-p
-    (vterm)
+      (vterm)
     (vterm-other-window)))
 
 (defun vterm-toggle--skip-prompt ()
@@ -240,7 +242,6 @@ Optional argument ARGS optional args."
         (with-parsed-tramp-file-name default-directory nil
           (setq buffer-host host))
       (setq buffer-host (system-name)))
-
     (dolist (buf (buffer-list))
       (with-current-buffer buf
         (when (funcall vterm-toggle--vterm-buffer-p-function args)
@@ -281,15 +282,15 @@ Optional argument ARGS optional args."
     (setq vterm-toggle--buffer-list
 	      (delq (current-buffer) vterm-toggle--buffer-list))
     (when (and vterm-toggle-reset-window-configration-after-exit
-               vterm-toggle-window-configration)
-      (set-window-configuration vterm-toggle-window-configration))))
+               vterm-toggle--window-configration)
+      (set-window-configuration vterm-toggle--window-configration))))
 
 (add-hook 'kill-buffer-hook 'vterm-toggle--exit-hook)
 ;; (add-hook 'vterm-exit-functions #'vterm-toggle--exit-hook)
 
 (defun vterm-toggle--mode-hook()
-  "Hook form `'vterm-mode-hook'."
-    (add-to-list 'vterm-toggle--buffer-list (current-buffer)))
+  "Hook for `vterm-mode-hook'."
+  (add-to-list 'vterm-toggle--buffer-list (current-buffer)))
 (add-hook 'vterm-mode-hook 'vterm-toggle--mode-hook)
 
 (defun vterm-toggle--switch (direction offset)
