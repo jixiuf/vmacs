@@ -42,6 +42,7 @@
 (require 'ffap)
 (require 'ivy-overlay)
 (require 'colir)
+(require 'ring)
 
 ;;* Customization
 (defgroup ivy nil
@@ -2728,6 +2729,7 @@ tries to ensure that it does not change depending on the number of candidates."
   (setq-local mwheel-scroll-up-function 'ivy-next-line)
   (setq-local mwheel-scroll-down-function 'ivy-previous-line)
   (setq-local completion-show-inline-help nil)
+  (setq-local line-spacing nil)
   (setq-local minibuffer-default-add-function
               (lambda ()
                 (list ivy--default)))
@@ -3339,6 +3341,9 @@ before substring matches."
 When the amount of matching candidates exceeds this limit, then
 no sorting is done.")
 
+(defvar ivy--recompute-index-inhibit nil
+  "When non-nil, `ivy--recompute-index' is a no-op.")
+
 (defun ivy--recompute-index (name re-str cands)
   "Recompute index of selected candidate matching NAME.
 RE-STR is the regexp, CANDS are the current candidates."
@@ -3349,7 +3354,8 @@ RE-STR is the regexp, CANDS are the current candidates."
         (preselect (ivy-state-preselect ivy-last))
         (current (ivy-state-current ivy-last))
         (empty (string= name "")))
-    (unless (memq this-command '(ivy-resume ivy-partial-or-done))
+    (unless (or (memq this-command '(ivy-resume ivy-partial-or-done))
+                ivy--recompute-index-inhibit)
       (ivy-set-index
        (if (or (string= name "")
                (and (> (length cands) 10000) (eq func #'ivy-recompute-index-zero)))
@@ -4049,27 +4055,34 @@ BUFFER may be a string or nil."
                         (cdr (assoc buffer ivy--virtual-buffers))
                         recentf-list))))
 
+(defun ivy--kill-current-candidate ()
+  (setf (ivy-state-preselect ivy-last) ivy--index)
+  (setq ivy--old-re nil)
+  (setq ivy--all-candidates (delete (ivy-state-current ivy-last) ivy--all-candidates))
+  (let ((ivy--recompute-index-inhibit t))
+    (ivy--exhibit)))
+
 (defun ivy--kill-buffer-action (buffer)
   "Kill BUFFER."
   (ivy--kill-buffer-or-virtual buffer)
   (unless (buffer-live-p (ivy-state-buffer ivy-last))
     (setf (ivy-state-buffer ivy-last)
           (with-ivy-window (current-buffer))))
-  (setf (ivy-state-preselect ivy-last) ivy--index)
-  (setq ivy--old-re nil)
-  (setq ivy--all-candidates (delete buffer ivy--all-candidates))
-  (ivy--exhibit))
+  (ivy--kill-current-candidate))
 
 (defvar ivy-switch-buffer-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-k") 'ivy-switch-buffer-kill)
+    (define-key map (kbd "C-k") 'ivy-switch-buffer-kill)
     map))
 
 (defun ivy-switch-buffer-kill ()
-  "Kill the current buffer in `ivy-switch-buffer'."
+  "When at end-of-line, kill the current buffer in `ivy-switch-buffer'.
+Otherwise, forward to `ivy-kill-line'."
   (interactive)
-  (let ((bn (ivy-state-current ivy-last)))
-    (ivy--kill-buffer-action bn)))
+  (if (not (eolp))
+      (ivy-kill-line)
+    (ivy--kill-buffer-action
+     (ivy-state-current ivy-last))))
 
 (ivy-set-actions
  'ivy-switch-buffer
@@ -4321,21 +4334,70 @@ This list can be rotated with `ivy-rotate-preferred-builders'."
       (setq ivy--regex-function 'ivy--regex-plus)
     (setq ivy--regex-function 'ivy--regex-fuzzy)))
 
+(defvar ivy--reverse-i-search-symbol nil
+  "Store the history symbol.")
+
+(defun ivy-reverse-i-search-kill ()
+  "Remove the current item from history"
+  (interactive)
+  (if (not (eolp))
+      (ivy-kill-line)
+    (let ((current (ivy-state-current ivy-last)))
+      (if (symbolp ivy--reverse-i-search-symbol)
+          (set
+           ivy--reverse-i-search-symbol
+           (delete current (symbol-value ivy--reverse-i-search-symbol)))
+        (ring-remove
+         ivy--reverse-i-search-symbol
+         (ring-member ivy--reverse-i-search-symbol (ivy-state-current ivy-last)))))
+    (ivy--kill-current-candidate)))
+
+(defvar ivy-reverse-i-search-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-k") 'ivy-reverse-i-search-kill)
+    map))
+
+(defun ivy-history-contents (sym-or-ring)
+  "Copy contents of SYM-OR-RING.
+A copy is necessary so that we don't clobber any string attributes.
+Also set `ivy--reverse-i-search-symbol' to SYM-OR-RING."
+  (setq ivy--reverse-i-search-symbol sym-or-ring)
+  (cond ((symbolp sym-or-ring)
+         (delete-dups
+          (copy-sequence (symbol-value sym-or-ring))))
+        ((ring-p sym-or-ring)
+         (delete-dups
+          (when (> (ring-size sym-or-ring) 0)
+            (ring-elements sym-or-ring))))
+        (t
+         (error "Expected a symbol or a ring: %S" sym-or-ring))))
+
 (defun ivy-reverse-i-search ()
   "Enter a recursive `ivy-read' session using the current history.
-The selected history element will be inserted into the minibuffer."
+The selected history element will be inserted into the minibuffer.
+\\<ivy-reverse-i-search-map>
+You can also delete an emement from history with \\[ivy-reverse-i-search-kill]."
   (interactive)
-  (let ((enable-recursive-minibuffers t)
-        (history (symbol-value (ivy-state-history ivy-last)))
-        (old-last ivy-last))
-    (ivy-read "Reverse-i-search: "
-              (delete-dups (copy-sequence history))
-              :action (lambda (x)
-                        (ivy--reset-state
-                         (setq ivy-last old-last))
-                        (delete-minibuffer-contents)
-                        (insert (substring-no-properties x))
-                        (ivy--cd-maybe)))))
+  (cond
+    ((= (minibuffer-depth) 0)
+     (user-error
+      "This command is intended to be called with \"C-r\" from `ivy-read'."))
+    ;; don't recur
+    ((and (> (minibuffer-depth) 1)
+          (eq (ivy-state-caller ivy-last) 'ivy-reverse-i-search)))
+    (t
+     (let ((enable-recursive-minibuffers t)
+           (old-last ivy-last))
+       (ivy-read "Reverse-i-search: "
+                 (ivy-history-contents (ivy-state-history ivy-last))
+                 :keymap ivy-reverse-i-search-map
+                 :action (lambda (x)
+                           (ivy--reset-state
+                            (setq ivy-last old-last))
+                           (delete-minibuffer-contents)
+                           (insert (substring-no-properties x))
+                           (ivy--cd-maybe))
+                 :caller 'ivy-reverse-i-search)))))
 
 (defun ivy-restrict-to-matches ()
   "Restrict candidates to current input and erase input."
@@ -4607,12 +4669,16 @@ EVENT gives the mouse position."
     ((swiper swiper-isearch counsel-git-grep counsel-grep counsel-ag counsel-rg)
      (let ((window (ivy-state-window ivy-occur-last))
            (buffer (ivy-state-buffer ivy-occur-last)))
-       (when (and (or (not (window-live-p window))
-                      (equal window (selected-window)))
-                  (buffer-live-p buffer))
-         (save-selected-window
-           (setf (ivy-state-window ivy-occur-last)
-                 (display-buffer buffer))))))
+       (if (not (buffer-live-p buffer))
+           (error "Buffer was killed")
+         (cond ((or (not (window-live-p window))
+                    (equal window (selected-window)))
+                (save-selected-window
+                  (setf (ivy-state-window ivy-occur-last)
+                        (display-buffer buffer))))
+               ((not (equal (window-buffer window) buffer))
+                (with-selected-window window
+                  (switch-to-buffer buffer)))))))
 
     ((counsel-describe-function counsel-describe-variable)
      (setf (ivy-state-window ivy-occur-last)

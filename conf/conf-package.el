@@ -2,8 +2,13 @@
 (require 'package)
 ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;; mirror
-(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
-                         ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+  (setq package-archives
+        '(("melpa-cn" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
+          ("org-cn"   . "http://mirrors.cloud.tencent.com/elpa/org/")
+          ("gnu-cn"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")))
+
+;; (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
+;;                          ("melpa" . "http://elpa.emacs-china.org/melpa/")))
 
 ;; (add-to-list 'package-archives '("melpa" . "http://www.mirrorservice.org/sites/melpa.org/packages/"))
 

@@ -1,24 +1,44 @@
 
 ;; brew install pyenv-virtualenv
-;; pyenv install 2.7.13
-;; pip install 'python-language-server[all]'
 
-;; create
-;; pyenv virtualenv 3.6.3 env-3.6.3
-;; list
-;; pyenv virtualenvs
+;; brew install zlib
+;; brew install sqlite
+;; export LDFLAGS="${LDFLAGS} -L/usr/local/opt/zlib/lib"
+;; export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/zlib/include"
+;; export LDFLAGS="${LDFLAGS} -L/usr/local/opt/sqlite/lib"
+;; export CPPFLAGS="${CPPFLAGS} -I/usr/local/opt/sqlite/include"
+;; export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/zlib/lib/pkgconfig"
+;; export PKG_CONFIG_PATH="${PKG_CONFIG_PATH} /usr/local/opt/sqlite/lib/pkgconfig"
+;; pyenv install 3.6.8
+;; pyenv virtualenv 3.6.8 env-3.6.8 #create
+;; ;;pyenv virtualenvs # list
 
 ;; .zshrc
 ;; if which pyenv-virtualenv-init > /dev/null; then
 ;;     export PYENV_VIRTUALENV_DISABLE_PROMPT=1;
 ;;     eval "$(pyenv init -)";
 ;;     eval "$(pyenv virtualenv-init -)";
-;;     pyenv activate env-3.6.3  ;
+;;     pyenv activate env-3.6.8    2>/dev/null;
 ;; fi
+
+
+
+;; https://github.com/microsoft/python-language-server/blob/master/CONTRIBUTING.md
+;; download dotnet https://dotnet.microsoft.com/learn/dotnet/hello-world-tutorial/intro
+
+;; cd ~/repos
+;; git clone https://github.com/Microsoft/python-language-server.git
+;; cd ~/repos/python-language-server/src/LanguageServer/Impl
+;; dotnet publish -c Release -r osx-x64
+
+
+
 
 ;; pyenv deactivate #退出虚拟环境，回到系统环境
 
 ;; pyenv commands
+
+;; pip install 'python-language-server[all]'
 
 ;; pip install jedi epc argparse
 ;; argparse (for Python 2.6)
@@ -29,11 +49,16 @@
 ;; C-c. goto def
 ;; C-tab complete
 ;;  C-c , jedi:goto-definition-pop-marker s
+(setq lsp-python-ms-dir
+      (expand-file-name "~/repos/python-language-server/output/bin/Release"))
+(setq lsp-python-ms-executable
+      (expand-file-name "osx-x64/publish/Microsoft.Python.LanguageServer" lsp-python-ms-dir))
 
 (defun vmacs-python-mode-hook ()
-  (unless (executable-find "pyls")
-    (find-file "~/.emacs.d/conf/conf-program-python.el")
-    (message "pyls not found,try setup python now"))
+  ;; (unless (executable-find "pyls")
+  ;;   (find-file "~/.emacs.d/conf/conf-program-python.el")
+  ;;   (message "pyls not found,try setup python now"))
+  (require 'lsp-python-ms)
   (lsp))
 (add-hook 'python-mode-hook 'vmacs-python-mode-hook)
 

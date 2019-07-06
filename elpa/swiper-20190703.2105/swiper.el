@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20190627.1944
+;; Package-Version: 20190703.2105
 ;; Version: 0.11.0
 ;; Package-Requires: ((emacs "24.1") (ivy "0.11.0"))
 ;; Keywords: matching
@@ -680,6 +680,7 @@ When capture groups are present in the input, print them instead of lines."
               (bound-and-true-p reveal-mode))
     (reveal-mode -1))
   (lazy-highlight-cleanup t)
+  (setq isearch-opened-overlays nil)
   (when (bound-and-true-p evil-mode)
     (evil-set-jump)))
 
@@ -811,16 +812,14 @@ Matched candidates should have `swiper-invocation-face'."
   ;; force cleanup unless it's :unwind
   (lazy-highlight-cleanup
    (if (eq ivy-exit 'done) lazy-highlight-cleanup t))
-  (save-excursion
-    (goto-char (point-min))
-    (isearch-clean-overlays))
   (when (timerp swiper--isearch-highlight-timer)
     (cancel-timer swiper--isearch-highlight-timer)
     (setq swiper--isearch-highlight-timer nil)))
 
 (defun swiper--add-cursor-overlay (wnd)
-  (let ((ov (make-overlay (point) (if (eolp) (point) (1+ (point))))))
-    (if (eolp)
+  (let* ((special (or (eolp) (looking-at "\t")))
+         (ov (make-overlay (point) (if special (point) (1+ (point))))))
+    (if special
         (overlay-put ov 'after-string (propertize " " 'face 'ivy-cursor))
       (overlay-put ov 'face 'ivy-cursor))
     (overlay-put ov 'window wnd)
@@ -1339,8 +1338,7 @@ that we search only for one character."
                (setq x (get-text-property 0 'point x))))
       (with-ivy-window
         (goto-char x)
-        (isearch-range-invisible (line-beginning-position)
-                                 (line-end-position))
+        (isearch-range-invisible (point) (1+ (point)))
         (unless (eq ivy-exit 'done)
           (swiper--cleanup)
           (swiper--delayed-add-overlays)
@@ -1507,6 +1505,7 @@ When not running `swiper-isearch' already, start it."
           (point))
       (unless (or res swiper-stay-on-quit)
         (goto-char swiper--opoint))
+      (isearch-clean-overlays)
       (unless (or res (string= ivy-text ""))
         (cl-pushnew ivy-text swiper-history)))))
 

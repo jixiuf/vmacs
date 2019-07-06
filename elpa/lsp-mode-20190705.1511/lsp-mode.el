@@ -2455,7 +2455,8 @@ in that particular folder."
   (interactive
    (list (read-directory-name "Select folder to add: "
                               (or (lsp--suggest-project-root) default-directory) nil t)))
-  (push project-root (lsp-session-folders (lsp-session)))
+  (cl-pushnew (f-canonical project-root)
+              (lsp-session-folders (lsp-session)) :test 'equal)
   (lsp--persist-session (lsp-session)))
 
 (defun lsp-workspace-folders-remove (project-root)
@@ -3417,7 +3418,11 @@ Stolen from `org-copy-visible'."
     (while (re-search-forward "^[-]+$" nil t)
       (replace-match ""))
 
-    (gfm-view-mode)
+    ;; markdown-mode v2.3 does not yet provide gfm-view-mode
+    (if (fboundp 'gfm-view-mode)
+	(gfm-view-mode)
+      (gfm-mode))
+
     (lsp--setup-markdown major-mode)))
 
 (defun lsp--fontlock-with-mode (str mode)
@@ -4478,11 +4483,11 @@ Return a nested alist keyed by symbol names. e.g.
 
 (defun lsp-server-present? (final-command)
   "Check whether FINAL-COMMAND is present."
-  ;; executable-find only gained support for remote checks after 26.1 release
+  ;; executable-find only gained support for remote checks after 27 release
   (or (and (cond
             ((not (file-remote-p default-directory))
              (executable-find (cl-first final-command)))
-            ((not (version<= emacs-version "26.2"))
+            ((version<= "27.0" emacs-version)
              (with-no-warnings (executable-find (cl-first final-command) (file-remote-p default-directory))))
             (t))
            (prog1 t
