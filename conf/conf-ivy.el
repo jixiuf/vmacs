@@ -22,19 +22,6 @@
 (setq ivy-height 25)
 (setq ivy-fixed-height-minibuffer t)
 (setq counsel-git-grep-skip-counting-lines t)
-
-(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
-;; (setq ivy-posframe-display-functions-alist
-;;       '((swiper          . ivy-posframe-display-at-point)
-;;         (complete-symbol . ivy-posframe-display-at-point)
-;;         (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
-;;         (t               . ivy-posframe-display)))
-(setq ivy-posframe-parameters
-      '((left-fringe . 8)
-        (alpha . 85)
-        (right-fringe . 8)))
-
-(ivy-posframe-mode 1)
 ;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
 
 
@@ -264,6 +251,30 @@
         (setq recentf-list (append recentf-list list))))
     ad-do-it))
 
+
+
+(defun posframe-poshandler-frame-left-center (info)
+  "Posframe's position handler.
+Get a position which let posframe stay onto its
+parent-frame's center.  The structure of INFO can
+be found in docstring of `posframe-show'."
+  (cons  0
+         (/ (- (plist-get info :parent-frame-height)
+              (plist-get info :posframe-height))
+           2)))
+;; 注要是为了避免窗口大小变更导致输入框乱动
+(defun ivy-posframe-display-at-frame-left-center (str)
+  (ivy-posframe--display str #'posframe-poshandler-frame-left-center))
+
+(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-left-center)))
+;; (setq ivy-posframe-display-functions-alist
+;;       '((counsel-rg     . ivy-posframe-display-at-window-bottom-left) ;ivy-posframe-display-at-point
+;;         (t               . ivy-posframe-display-at-frame-left-center)))
+(setq ivy-posframe-parameters
+      '((left-fringe . 40)
+        (alpha . 85)))
+
+(ivy-posframe-mode 1)
 
 (provide 'conf-ivy)
 
