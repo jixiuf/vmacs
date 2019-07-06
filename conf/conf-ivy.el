@@ -22,6 +22,19 @@
 (setq ivy-height 25)
 (setq ivy-fixed-height-minibuffer t)
 (setq counsel-git-grep-skip-counting-lines t)
+
+(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
+;; (setq ivy-posframe-display-functions-alist
+;;       '((swiper          . ivy-posframe-display-at-point)
+;;         (complete-symbol . ivy-posframe-display-at-point)
+;;         (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+;;         (t               . ivy-posframe-display)))
+(setq ivy-posframe-parameters
+      '((left-fringe . 8)
+        (alpha . 85)
+        (right-fringe . 8)))
+
+(ivy-posframe-mode 1)
 ;; (defun ivy--regex-both (str) (if(string-match ".*? .*?" str) (ivy--regex-plus str) (ivy--regex-fuzzy str)))
 
 
