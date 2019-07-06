@@ -97,8 +97,10 @@
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
   ;; (define-key magit-status-mode-map "q" #'ignore)
-  (let ((dir (magit-toplevel)))
+  (let ((dir (abbreviate-file-name (directory-file-name (file-truename (magit-toplevel))))))
+    (message dir)
     (unless (file-remote-p dir)
+      (delete (list dir 0) magit-repository-directories)
       (add-to-list 'magit-repository-directories (list dir 0)))))
 
 ;; (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)

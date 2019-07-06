@@ -17,7 +17,7 @@
 (setq ivy-wrap t)
 (setq ivy-count-format "")
 ;; (setq ivy-count-format "%d/%d ")
-;; (setq ivy-virtual-abbreviate 'full) ; Show the full virtual file paths
+(setq ivy-virtual-abbreviate 'abbreviate) ; not only show buffer name,but path
 ;; (setq ivy-add-newline-after-prompt nil)
 (setq ivy-height 25)
 (setq ivy-fixed-height-minibuffer t)
@@ -237,18 +237,35 @@
       (counsel-yank-pop)
     (barf-if-buffer-read-only)
     ad-do-it))
-
+(defvar git-repos-files-cache (make-hash-table :test 'equal))
 (defadvice ivy--virtual-buffers (around counsel-git activate)
   "Append git files as virtual buffer"
-  (let ((recentf-list recentf-list )
+  (let ((recentf-list recentf-list)
         (default-directory default-directory)
+        (magit-repos (mapcar 'car magit-repository-directories))
         list counsel--git-dir)
     (unless (file-remote-p default-directory)
       (setq counsel--git-dir (counsel--git-root))
       (when counsel--git-dir
+        (setq counsel--git-dir (abbreviate-file-name (directory-file-name (file-truename counsel--git-dir))))
         (setq default-directory counsel--git-dir)
-        (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
+        (setq list (gethash counsel--git-dir  git-repos-files-cache))
+        (when (or (not list) current-prefix-arg) ;prefix则会刷新缓存
+          (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
+          (puthash counsel--git-dir list git-repos-files-cache))
+
         (setq recentf-list (append recentf-list list))))
+    (dotimes (n 3 magit-repos)
+      (let ((magit-repo (nth  n magit-repos)))
+        (when magit-repo
+          (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
+          (unless (string-equal magit-repo counsel--git-dir)
+            (setq default-directory magit-repo)
+            (setq list (gethash magit-repo  git-repos-files-cache))
+            (when (or (not list) current-prefix-arg)
+              (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t)))
+            (setq recentf-list (append recentf-list list))
+            ))))
     ad-do-it))
 
 
