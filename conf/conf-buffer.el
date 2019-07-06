@@ -71,8 +71,13 @@
 
 
 (defadvice keyboard-quit (before bury-boring-windows activate)
+  (let ((win (active-minibuffer-window)))
+    (when (windowp win)
+      (switch-to-buffer (window-buffer win))))
+
   (when (equal last-command 'keyboard-quit)
     (bury-boring-windows )))
+
 
 (provide 'conf-buffer)
 
