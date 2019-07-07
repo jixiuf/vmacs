@@ -17,7 +17,8 @@
 (setq ivy-wrap t)
 (setq ivy-count-format "")
 ;; (setq ivy-count-format "%d/%d ")
-(setq ivy-virtual-abbreviate 'abbreviate) ; not only show buffer name,but path
+(setq ivy-virtual-abbreviate 'full) ; not only show buffer name,but path
+;; (setq ivy-virtual-abbreviate 'abbreviate) ; not only show buffer name,but path
 ;; (setq ivy-add-newline-after-prompt nil)
 (setq ivy-height 25)
 (setq ivy-fixed-height-minibuffer t)
@@ -46,26 +47,16 @@
 
 ;; (setq magit-completing-read-function 'ivy-completing-read)
 (setq ivy-ignore-buffers
-       (list
-        "\*EGLOT"
-           "\\` "
-           "\*Helm"
-           "\*helm"
-           "\*vc-diff\*"
-           "\*magit-"
-           "\*vc-"
-           "*Backtrace*"
-           "*Package-Lint*"
-           ;; "todo.txt"
-           "\*vc*"
-           "*Completions*"
-           "\*vc-change-log\*"
-           "\*VC-log\*"
-           "\*Async Shell Command\*"
-           "\*Shell Command Output\*"
-           "\*sdcv\*"
-           ;; "\*Messages\*"
-           "\*Ido Completions\*"))
+      (list
+       "\\` " "\*Helm" "\*helm"
+       "\*vc-diff\*" "\*magit-" "\*vc-" "\*vc*"
+       "*Backtrace*" "*Package-Lint*" "\*Completions\*" "\*Compile-Log\*"
+       "\*vc-change-log\*" "\*VC-log\*"
+       "\*Async Shell Command\*" "\*Shell Command Output\*"
+       "\*lsp" "\*ccls" "\*gopls" "\*bingo" "\*mspyls" "\*EGLOT"
+       "\*sdcv\*" "\*tramp"  "\*Gofmt Errors\*"
+       "\*Ido Completions\*" "\*Flycheck " "\*Flymake"
+       "magit-process" "magit-diff" "magit-stash"))
 
 ;; (setq enable-recursive-minibuffers t)
 ;; (global-set-key "\C-s" 'swiper)
@@ -78,26 +69,14 @@
 (global-set-key (kbd "<f1> u") 'counsel-unicode-char)
 (global-set-key (kbd "<f1> b") 'counsel-descbinds)
 
-;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history) ;M-:
-;; windows 上将space映射成windows键，而单按时仍然发送空格键，便是在空格键前会发射lwindow键，
-;; (defun vmacs-space()
-;;   (interactive)
-;;   (unless (string= ivy-text "")
-;;     (insert " ")))
-(define-key ivy-switch-buffer-map (kbd "M-k") 'ivy-switch-buffer-kill)
-(define-key ivy-switch-buffer-map (kbd "s-k") 'ivy-switch-buffer-kill)
-(define-key ivy-switch-buffer-map (kbd "C-M-s-k") 'ivy-switch-buffer-kill)
-(define-key ivy-switch-buffer-map [C-M-s-268632075] 'ivy-switch-buffer-kill)
-
 
 ;; (vmacs-leader "<lwindow>" 'ivy-switch-buffer) ;for windows
 
-(vmacs-leader "SPC" 'ivy-switch-buffer)
+(vmacs-leader "SPC" 'vmacs-switch-buffer)
 (vmacs-leader "ff" 'counsel-find-file)
 (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
 (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
 (vmacs-leader "fl" 'counsel-locate)
-(vmacs-leader "fg" 'counsel-git)
 (vmacs-leader "g" 'vmacs-counsel-rg)
 (vmacs-leader "fp" 'vmacs-counsel-git-grep-region-or-symbol)
 
@@ -125,6 +104,7 @@
 
 
 (define-key ivy-minibuffer-map (kbd "<C-i>") 'vmacs-ivy-dropto-counsel-git)
+(define-key ivy-minibuffer-map (kbd "<C-M-s-i>") 'vmacs-ivy-dropto-counsel-git)
 (define-key ivy-minibuffer-map (kbd "C-c c") 'vmacs-counsel-toggle-case-senstive)
 (define-key ivy-minibuffer-map (kbd "C-t") 'vmacs-counsel-toggle-case-senstive)
 
@@ -217,10 +197,6 @@
   (define-key counsel-find-file-map (kbd "<RET>")      'ivy-alt-done))
 
 (ivy-add-actions 'counsel-find-file `(( ,(kbd "C-o") find-file-other-window "other window")))
-(ivy-add-actions 'ivy-switch-buffer `(( ,(kbd "C-o") ivy--switch-buffer-other-window-action "other window")))
-(ivy-add-actions 'counsel-find-file '(("d" vmacs-ivy-dired "dired")))
-(ivy-add-actions 'ivy-switch-buffer '(("d" vmacs-ivy-swithc-buffer-open-dired "dired")))
-(ivy-add-actions 'counsel-git '(("d" vmacs-ivy-dired "dired")))
 (ivy-add-actions 'counsel-git `((,(kbd "C-o") find-file-other-window "other window")))
 
 ;; From browse-kill-ring.el
@@ -235,40 +211,7 @@
   (interactive "p")
   (if (not (eq last-command 'yank))
       (counsel-yank-pop)
-    (barf-if-buffer-read-only)
     ad-do-it))
-(defvar git-repos-files-cache (make-hash-table :test 'equal))
-(defadvice ivy--virtual-buffers (around counsel-git activate)
-  "Append git files as virtual buffer"
-  (let ((recentf-list recentf-list)
-        (default-directory default-directory)
-        (magit-repos (mapcar 'car magit-repository-directories))
-        list counsel--git-dir)
-    (unless (file-remote-p default-directory)
-      (setq counsel--git-dir (counsel--git-root))
-      (when counsel--git-dir
-        (setq counsel--git-dir (abbreviate-file-name (directory-file-name (file-truename counsel--git-dir))))
-        (setq default-directory counsel--git-dir)
-        (setq list (gethash counsel--git-dir  git-repos-files-cache))
-        (when (or (not list) current-prefix-arg) ;prefix则会刷新缓存
-          (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
-          (puthash counsel--git-dir list git-repos-files-cache))
-
-        (setq recentf-list (append recentf-list list))))
-    (dotimes (n 3 magit-repos)
-      (let ((magit-repo (nth  n magit-repos)))
-        (when magit-repo
-          (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
-          (unless (string-equal magit-repo counsel--git-dir)
-            (setq default-directory magit-repo)
-            (setq list (gethash magit-repo  git-repos-files-cache))
-            (when (or (not list) current-prefix-arg)
-              (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v /snippets/|sed \"s|^|%s/|g\"" default-directory)) "\n" t)))
-            (setq recentf-list (append recentf-list list))
-            ))))
-    ad-do-it))
-
-
 
 (defun posframe-poshandler-frame-left-center (info)
   "Posframe's position handler.

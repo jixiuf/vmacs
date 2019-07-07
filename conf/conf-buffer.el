@@ -1,5 +1,6 @@
 ;;ctrl-g ctrl-g 两次ctrl-关闭一些临时buffer
-(eval-when-compile (require 'cl-macs))
+(eval-when-compile (require 'cl-macs) (require 'cl-seq))
+
 ;; bury-boring-windows with `C-gC-g'
 
 (vmacs-leader "d" 'vmacs-prev-buffer)
@@ -30,31 +31,14 @@
   '(help-mode compilation-mode log-view-mode log-edit-mode
               org-agenda-mode magit-revision-mode ibuffer-mode))
 
-(setq-default boring-window-bof-name-regexp
-  (rx (or
-       "\*Helm"
-       "\*helm"
-       "\*vc-diff\*"
-       "\magit-"
-       "\*vc-"
-       "todo.txt"
-       "\*vc*"
-       "\*tramp"
-       "\*Completions\*"
-       "\*Compile-Log\*"
-       "\*vc-change-log\*"
-       "\*VC-log\*"
-       "\*Async Shell Command\*"
-       "\*Shell Command Output\*"
-       "\*Flycheck error messages\*"
-       "\*Gofmt Errors\*"
-       "\*sdcv\*"
-       "\*Messages\*"
-       "magit-process"
-       "magit-diff"
-       "magit-stash"
-       "\*Ido Completions\*")))
 
+(defun vmacs-filter(buf ignore-buffers)
+  (cl-find-if
+   (lambda (f-or-r)
+     (if (functionp f-or-r)
+         (funcall f-or-r buf)
+       (string-match-p f-or-r buf)))
+   ignore-buffers))
 
 (defun bury-boring-windows(&optional bury-cur-win-if-boring)
   "close boring *Help* windows with `C-g'"
@@ -63,7 +47,7 @@
     (dolist (win opened-windows)
       (with-current-buffer (window-buffer win)
         (when (or (memq  major-mode boring-window-modes)
-                  (string-match boring-window-bof-name-regexp (buffer-name)))
+                  (vmacs-filter (buffer-name) ivy-ignore-buffers))
           (when (and (>  (length (window-list)) 1)
                      (or bury-cur-win-if-boring
                          (not (equal cur-buf-win win)))

@@ -26,25 +26,25 @@
       (call-interactively 'ivy-call)
     (call-interactively 'forward-char)))
 
-;;;###autoload
-(defun vmacs-ivy-swithc-buffer-open-dired(&optional buffer)
-  (interactive)
-  (if (zerop (length buffer))
-      (dired ivy-text)
-    (let ((virtual (assoc buffer ivy--virtual-buffers)))
-      (if (and virtual
-               (not (get-buffer buffer)))
-          (dired (file-name-directory (cdr virtual)))
-        (with-current-buffer buffer (dired default-directory))))))
+;; ;;;###autoload
+;; (defun vmacs-ivy-swithc-buffer-open-dired(&optional buffer)
+;;   (interactive)
+;;   (if (zerop (length buffer))
+;;       (dired ivy-text)
+;;     (let ((virtual (assoc buffer ivy--virtual-buffers)))
+;;       (if (and virtual
+;;                (not (get-buffer buffer)))
+;;           (dired (file-name-directory (cdr virtual)))
+;;         (with-current-buffer buffer (dired default-directory))))))
 
-;;;###autoload
-(defun vmacs-ivy-dired(&optional buf)
-  (interactive)
-  (if ivy--directory
-      (ivy-quit-and-run
-       (dired ivy--directory))
-    (user-error
-     "Not completing files currently")))
+;; ;;;###autoload
+;; (defun vmacs-ivy-dired(&optional buf)
+;;   (interactive)
+;;   (if ivy--directory
+;;       (ivy-quit-and-run
+;;        (dired ivy--directory))
+;;     (user-error
+;;      "Not completing files currently")))
 
 (require 'counsel)
 
