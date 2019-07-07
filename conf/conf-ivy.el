@@ -212,10 +212,11 @@
   (if (not (eq last-command 'yank))
       (counsel-yank-pop)
     ad-do-it))
+(delete '(counsel-yank-pop . 5) ivy-height-alist)
 
 (setq ivy-posframe-display-functions-alist
       '(
-        (counsel-rg     . ivy-posframe-display-at-window-bottom-left) ;ivy-posframe-display-at-point
+        ;; (counsel-rg     . ivy-posframe-display-at-window-bottom-left) ;ivy-posframe-display-at-point
         (counsel-yank-pop     . nil)
         (t               . ivy-posframe-display-at-window-center)))
 (setq ivy-posframe-parameters

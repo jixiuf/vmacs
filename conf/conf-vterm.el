@@ -99,7 +99,16 @@ The prompt skip is done by skipping text matching the regular expression
   (goto-char (point-max))
   (forward-char -1))
 
+(defun vterm-yank-pop(&optional args)
+  (interactive "p")
+  (let ((inhibit-read-only t)
+        (yank-undo-function #'(lambda(start end ) (vterm-undo))))
+    (cl-letf (((symbol-function 'insert-for-yank)
+               #'(lambda(str) (vterm-send-string str t))))
+      (call-interactively 'yank-pop))))
 
+
+(define-key vterm-mode-map (kbd "M-y")   #'vterm-yank-pop)
 (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
