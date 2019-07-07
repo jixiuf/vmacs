@@ -3,7 +3,7 @@
     ;; (define-key map (kbd "C-k") 'ivy-switch-buffer-kill)
     (define-key map (kbd "s-o") 'vmacs-switch-buffer-other-window)
     (define-key map (kbd "C-M-s-o") 'vmacs-switch-buffer-other-window)
-    (define-key map (kbd "C-d") 'vmacs-switch-buffer-dired)
+    (define-key map (kbd "C-d") 'vmacs-switch-buffer-ctrl-d)
     (define-key map (kbd "C-M-s-i") 'vmacs-ivy-dropto-counsel-git)
     (define-key map (kbd "s-n") 'ivy-next-line)
     (define-key map (kbd "C-M-s-n") 'ivy-next-line)
@@ -103,7 +103,7 @@
           (puthash counsel--git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
-    (dotimes (n 5 magit-repos)
+    (dotimes (n 10 magit-repos)
       (let ((magit-repo (nth  n magit-repos)))
         (when magit-repo
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
@@ -116,26 +116,27 @@
             (setq result-list (append result-list list))))))
     result-list))
 
-
-;;;###autoload
-(defun vmacs-switch-buffer-dired(&optional arg)
+(defun vmacs-switch-buffer-ctrl-d(&optional arg)
   (interactive "P")
   (if (eolp)
       (ivy-quit-and-run
         (let ((x (nth ivy--index (ivy-state-collection ivy-last) )))
-          (cond
-           ((bufferp x)
-            (with-current-buffer x (dired default-directory)))
-           ((and (stringp x) (file-exists-p x))
-            (dired (file-name-directory x)))
-           ((listp x)
-            (let ((buf-of-file (cdr x)))
-              (cond
-               ((bufferp buf-of-file)
-                (with-current-buffer buf-of-file (dired default-directory)))
-               ((and (stringp buf-of-file) (file-exists-p buf-of-file))
-                (dired (file-name-directory buf-of-file)))))))))
+          (vmacs-switch-buffer-dired x)))
     (call-interactively 'delete-char)))
+
+(defun vmacs-switch-buffer-dired(&optional x)
+  (cond
+   ((bufferp x)
+    (with-current-buffer x (dired default-directory)))
+   ((and (stringp x) (file-exists-p x))
+    (dired (file-name-directory x)))
+   ((listp x)
+    (let ((buf-of-file (cdr x)))
+      (cond
+       ((bufferp buf-of-file)
+        (with-current-buffer buf-of-file (dired default-directory)))
+       ((and (stringp buf-of-file) (file-exists-p buf-of-file))
+        (dired (file-name-directory buf-of-file))))))))
 
 
 (defun vmacs-switch-buffer-other-window()

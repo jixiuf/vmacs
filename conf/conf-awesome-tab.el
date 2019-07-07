@@ -30,6 +30,7 @@
                           "\*helm"
                           "\*Flymake log\*"
                           "\*Help\*"
+                          "\*Ibuffer\*"
                           "\*gopls::stderr\*"
                           "\*gopls\*"
                           "\*sdcv\*"

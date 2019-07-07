@@ -213,26 +213,25 @@
       (counsel-yank-pop)
     ad-do-it))
 
-(defun posframe-poshandler-frame-left-center (info)
-  "Posframe's position handler.
-Get a position which let posframe stay onto its
-parent-frame's center.  The structure of INFO can
-be found in docstring of `posframe-show'."
-  (cons  0
-         (/ (- (plist-get info :parent-frame-height)
-              (plist-get info :posframe-height))
-           2)))
-;; 注要是为了避免窗口大小变更导致输入框乱动
-(defun ivy-posframe-display-at-frame-left-center (str)
-  (ivy-posframe--display str #'posframe-poshandler-frame-left-center))
-
-(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-left-center)))
-;; (setq ivy-posframe-display-functions-alist
-;;       '((counsel-rg     . ivy-posframe-display-at-window-bottom-left) ;ivy-posframe-display-at-point
-;;         (t               . ivy-posframe-display-at-frame-left-center)))
+(setq ivy-posframe-display-functions-alist
+      '(
+        (counsel-rg     . ivy-posframe-display-at-window-bottom-left) ;ivy-posframe-display-at-point
+        (counsel-yank-pop     . nil)
+        (t               . ivy-posframe-display-at-window-center)))
 (setq ivy-posframe-parameters
-      '((left-fringe . 40)
-        (alpha . 85)))
+      '((left-fringe . 5)
+        (alpha . 82)))
+
+
+(defun vmacs-ivy-posframe-get-size ()
+  "The default functon used by `ivy-posframe-size-function'."
+  (list
+   :height (min (- (frame-height) 4) (+ ivy-height 1))
+   :width (min (round (- (frame-width) 12)) 130)
+   :min-height (or ivy-posframe-min-height (+ ivy-height 1))
+   :min-width (or ivy-posframe-min-width (round (* (frame-width) 0.62)))))
+
+(setq ivy-posframe-size-function #'vmacs-ivy-posframe-get-size)
 
 (ivy-posframe-mode 1)
 

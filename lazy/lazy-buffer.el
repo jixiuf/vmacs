@@ -7,7 +7,7 @@
     (cl-loop until found do
              (previous-buffer)
              (unless (or (memq  major-mode boring-window-modes)
-                         (string-match boring-window-bof-name-regexp (buffer-name)))
+                         (vmacs-filter (buffer-name) ivy-ignore-buffers ))
                (setq found t))
              (when (string= (buffer-name) buf-name)
                (previous-buffer)
@@ -22,7 +22,8 @@
     (cl-loop until found do
              (next-buffer)
              (unless (or (memq  major-mode boring-window-modes)
-                         (string-match boring-window-bof-name-regexp (buffer-name)))
+                         (vmacs-filter (buffer-name) ivy-ignore-buffers )
+                         )
                (setq found t))
              (when (string= (buffer-name) buf-name)
                (next-buffer)

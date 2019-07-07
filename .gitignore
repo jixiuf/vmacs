@@ -26,3 +26,5 @@ osx-dictionary-cli
 /elpa/archives/gnu-cn/archive-contents
 /elpa/archives/melpa-cn/archive-contents
 /elpa/archives/org-cn/archive-contents
+/go.mod
+/go.sum
