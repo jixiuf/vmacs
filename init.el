@@ -26,7 +26,6 @@
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (require 'custom-file)
 (require 'vmacs-theme)
-(load-theme 'vmacs)
 
 
 
@@ -114,7 +113,8 @@
   (require 'conf-tmp nil t)
   (require 'conf-vterm)
   (when (eq system-type 'darwin) (require 'conf-evil-input-method))
-  (when (eq system-type 'darwin) (exec-path-from-shell-initialize)))
+  (when (eq system-type 'darwin) (exec-path-from-shell-initialize))
+  (load-theme 'vmacs))
 
 
 ;; Local Variables:

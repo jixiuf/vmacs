@@ -6,7 +6,7 @@
 ;; make
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (eval-when-compile (require 'evil))
-(setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y" ))
+(setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
 (setq-default vterm-max-scrollback 50000)
 (setq vterm-toggle-prompt-regexp
   (concat "\\(?:^\\|\r\\)"
@@ -99,16 +99,6 @@ The prompt skip is done by skipping text matching the regular expression
   (goto-char (point-max))
   (forward-char -1))
 
-(defun vterm-yank-pop(&optional args)
-  (interactive "p")
-  (let ((inhibit-read-only t)
-        (yank-undo-function #'(lambda(start end ) (vterm-undo))))
-    (cl-letf (((symbol-function 'insert-for-yank)
-               #'(lambda(str) (vterm-send-string str t))))
-      (call-interactively 'yank-pop))))
-
-
-(define-key vterm-mode-map (kbd "M-y")   #'vterm-yank-pop)
 (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
