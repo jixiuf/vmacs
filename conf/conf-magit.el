@@ -100,8 +100,8 @@
   (let ((dir (abbreviate-file-name (directory-file-name (file-truename (magit-toplevel))))))
     (message dir)
     (unless (file-remote-p dir)
-      (delete (list dir 0) magit-repository-directories)
-      (add-to-list 'magit-repository-directories (list dir 0)))))
+      (delete (cons dir 0) magit-repository-directories)
+      (add-to-list 'magit-repository-directories (cons dir 0)))))
 
 ;; (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
 ;; (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
