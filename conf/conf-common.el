@@ -45,6 +45,7 @@
  kept-new-versions 10   ; 保留最近的6个备份文件
  kept-old-versions 10   ; 保留最早的2个备份文件
  version-control t    ; 多次备份
+ vc-make-backup-files t
  ;; 备份文件统一放在 ~/.emacs.d/cache/backup_files,避免每个目录生成一些临时文件
  pulse-iterations 3
  large-file-warning-threshold (* 1024 1024 50)       ;打开大文件时不必警告
