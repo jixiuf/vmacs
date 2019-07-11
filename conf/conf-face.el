@@ -51,8 +51,8 @@
       (set-frame-position f 40 50)
       (set-frame-size f 138 50)
       (set-frame-parameter f 'alpha 85)
-      (set-frame-parameter f 'foreground-color "#eeeeec")
-      (set-frame-parameter f 'background-color "#202020")
+      ;; (set-frame-parameter f 'foreground-color "#eeeeec")
+      ;; (set-frame-parameter f 'background-color "#202020")
       (set-frame-parameter f 'background-mode 'dark)
       (raise-frame))))
 
@@ -72,8 +72,8 @@
                     (width . 140)
                     (left . 160)
                     (top . 80)
-                    (foreground-color . "#eeeeec")
-                    (background-color . "#202020") ;;
+                    ;; (foreground-color . "#eeeeec")
+                    ;; (background-color . "#202020") ;;
                     (background-mode . dark)
                     )
                    (ns ;; if frame created on mac
@@ -82,8 +82,8 @@
                     ;; (left . 160)
                     ;; (top . 80)
                     (alpha . 85)
-                    (foreground-color . "#eeeeec")
-                    (background-color . "#202020") ;;
+                    ;; (foreground-color . "#eeeeec")
+                    ;; (background-color . "#202020") ;;
                     (background-mode . dark)
                     )
                    (w32
