@@ -33,7 +33,14 @@
 
 (defun vmacs-switch-buffer--list()
   "Return list of buffer-related lines in Ibuffer as strings."
-  (let ((oldbuf (get-buffer "*Ibuffer*")))
+  (let ((oldbuf (get-buffer "*Ibuffer*"))
+        (ibuffer-formats
+         '(((name 40 40 :left :elide) " " ;buffer-name 宽度30 靠左
+                 (mode 10 10 :left :elide)
+                 " "
+                 (filename-and-process 10 70 :left  :elide))
+           ))
+        )
     (unless oldbuf
       ;; Avoid messing with the user's precious window/frame configuration.
       (save-window-excursion
