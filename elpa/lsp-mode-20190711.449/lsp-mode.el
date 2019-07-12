@@ -473,6 +473,11 @@ The hook is called with two params: the signature information and hover data."
   :type 'hook
   :group 'lsp-mode)
 
+(defcustom lsp-before-apply-edits-hook nil
+  "Hooks to run before applying edits."
+  :type 'hook
+  :group 'lsp-mode)
+
 (defgroup lsp-imenu nil
   "Imenu."
   :group 'lsp-mode
@@ -2251,7 +2256,10 @@ If NO-MERGE is non-nil, don't merge the results but return alist workspace->resu
 (defun lsp--shutdown-workspace ()
   "Shut down the language server process for ‘lsp--cur-workspace’."
   (with-demoted-errors "LSP error: %S"
-    (lsp-request "shutdown" nil)
+    (let ((lsp-response-timeout 0.5))
+      (condition-case _err
+          (lsp-request "shutdown" nil)
+        (error (lsp--error "Timeout while sending shutdown request."))))
     (lsp-notify "exit" nil))
   (lsp--uninitialize-workspace))
 
@@ -2525,9 +2533,7 @@ in that particular folder."
   nil nil nil
   (cond
    (lsp--managed-mode
-    (when (and lsp-enable-indentation
-               (lsp--capability "documentRangeFormattingProvider"))
-      (setq-local indent-region-function #'lsp-format-region))
+
 
     (add-function :before-until (local 'eldoc-documentation-function) #'lsp-eldoc-function)
     (eldoc-mode 1)
@@ -2583,6 +2589,11 @@ in that particular folder."
                                       (alist-get kind lsp--sync-methods))))
   (when (and lsp-auto-configure (lsp--capability "documentSymbolProvider"))
     (lsp-enable-imenu))
+
+  (when (and lsp-auto-configure
+             lsp-enable-indentation
+             (lsp--capability "documentRangeFormattingProvider"))
+    (setq-local indent-region-function #'lsp-format-region))
 
   (run-hooks 'lsp-after-open-hook)
   (lsp--set-document-link-timer))
@@ -2747,27 +2758,79 @@ interface TextDocumentEdit {
                                (gethash "end" (gethash "range" e2)))
       (lsp--position-compare  start1 start2))))
 
-(defun lsp--apply-text-edits (edits)
-  "Apply the edits described in the TextEdit[] object in EDITS."
+(defun lsp--apply-text-edit (text-edit)
+  "Apply the edits described in the TextEdit object in TEXT-EDIT."
   ;; We sort text edits so as to apply edits that modify latter parts of the
   ;; document first. Furthermore, because the LSP spec dictates that:
   ;; "If multiple inserts have the same position, the order in the array
   ;; defines which edit to apply first."
   ;; We reverse the initial list and sort stably to make sure the order among
   ;; edits with the same position is preserved.
-  (atomic-change-group
-    (seq-each #'lsp--apply-text-edit
-              (seq-sort #'lsp--text-edit-sort-predicate
-                        (nreverse edits)))))
-
-(defun lsp--apply-text-edit (text-edit)
-  "Apply the edits described in the TextEdit object in TEXT-EDIT."
   (-let* (((&hash "newText" "range") text-edit)
           ((start . end) (lsp--range-to-region range)))
     (save-excursion
       (goto-char start)
       (delete-region start end)
       (insert newText))))
+
+(defun lsp--apply-text-edit-replace-buffer-contents (text-edit)
+  "Apply the edits described in the TextEdit object in TEXT-EDIT.
+The method uses `replace-buffer-contents'."
+  (-let* (((&hash "newText" "range") text-edit)
+          (source (current-buffer))
+          ((beg . end) (lsp--range-to-region range)))
+    (with-temp-buffer
+      (insert newText)
+      (let ((temp (current-buffer)))
+        (with-current-buffer source
+          (save-excursion
+            (save-restriction
+              (narrow-to-region beg end)
+
+              ;; On emacs versions < 26.2,
+              ;; `replace-buffer-contents' is buggy - it calls
+              ;; change functions with invalid arguments - so we
+              ;; manually call the change functions here.
+              ;;
+              ;; See emacs bugs #32237, #32278:
+              ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=32237
+              ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=32278
+              (let ((inhibit-modification-hooks t)
+                    (length (- end beg)))
+                (run-hook-with-args 'before-change-functions
+                                    beg end)
+                (with-no-warnings (replace-buffer-contents temp))
+                (run-hook-with-args 'after-change-functions
+                                    beg (+ beg (length newText))
+                                    length)))))))))
+
+(defun lsp--apply-text-edits (edits)
+  "Apply the edits described in the TextEdit[] object.
+This method is used if we do not have `buffer-replace-content'."
+  (unless (seq-empty-p edits)
+    (atomic-change-group
+      (run-hooks 'lsp-before-apply-edits-hook)
+      (let* ((change-group (when (functionp 'undo-amalgamate-change-group)
+                             (prepare-change-group)))
+             (howmany (length edits))
+             (reporter (make-progress-reporter
+                        (lsp--info "Applying %s edits to `%s'..."
+                                   howmany (current-buffer))
+                        0 howmany))
+             (done 0)
+             (apply-edit (if (functionp 'replace-buffer-contents)
+                             'lsp--apply-text-edit-replace-buffer-contents
+                           'lsp--apply-text-edit)))
+        (unwind-protect
+            (->> edits
+                 (nreverse)
+                 (seq-sort #'lsp--text-edit-sort-predicate)
+                 (mapc (lambda (edit)
+                         (progress-reporter-update reporter (cl-incf done))
+                         (funcall apply-edit edit))))
+          (when (functionp 'undo-amalgamate-change-group)
+            (with-no-warnings (undo-amalgamate-change-group change-group)))
+          (progress-reporter-done reporter))))))
 
 (defun lsp--capability (cap &optional capabilities)
   "Get the value of capability CAP.  If CAPABILITIES is non-nil, use them instead."
@@ -3420,7 +3483,7 @@ Stolen from `org-copy-visible'."
 
     ;; markdown-mode v2.3 does not yet provide gfm-view-mode
     (if (fboundp 'gfm-view-mode)
-	(gfm-view-mode)
+        (gfm-view-mode)
       (gfm-mode))
 
     (lsp--setup-markdown major-mode)))
@@ -3650,8 +3713,7 @@ If ACTION is not set it will be selected from `lsp-code-actions'."
 (defun lsp-format-region (s e)
   "Ask the server to format the region, or if none is selected, the current line."
   (interactive "r")
-  (unless (or (lsp--capability "documentFormattingProvider")
-              (lsp--capability "documentRangeFormattingProvider")
+  (unless (or (lsp--capability "documentRangeFormattingProvider")
               (lsp--registered-capability "textDocument/rangeFormatting"))
     (signal 'lsp-capability-not-supported (list "documentFormattingProvider")))
   (let ((edits (lsp-request "textDocument/rangeFormatting"
@@ -3664,13 +3726,8 @@ If ACTION is not set it will be selected from `lsp-code-actions'."
   (lsp-execute-code-action-by-kind "source.organizeImports"))
 
 (defun lsp--apply-formatting (edits)
-  (let ((point (point))
-        (w-start (window-start)))
-    (let ((lsp--server-sync-method 'full))
-      (lsp--apply-text-edits edits))
-    (goto-char point)
-    (goto-char (line-beginning-position))
-    (set-window-start (selected-window) w-start)))
+  (let ((lsp--server-sync-method 'full))
+    (lsp--apply-text-edits edits)))
 
 (defun lsp--make-document-range-formatting-params (start end)
   "Make DocumentRangeFormattingParams for selected region.
@@ -4137,7 +4194,7 @@ WORKSPACE is the active workspace."
     (if content-length
         (string-to-number content-length)
 
-      ;; This usually means either the server our our parser is
+      ;; This usually means either the server or our parser is
       ;; screwed up with a previous Content-Length
       (error "No Content-Length header"))))
 
@@ -5269,7 +5326,7 @@ such."
               (lsp--ensure-lsp-servers session clients project-root ignore-multi-folder))
           (lsp--warn "%s not in project or it is blacklisted." (buffer-name))
           nil)
-      (lsp--warn "No LSP server for %s." major-mode)
+      (lsp--warn "No LSP server for %s(check *lsp-log*)." major-mode)
       nil)))
 
 (defun lsp-shutdown-workspace ()
@@ -5295,6 +5352,16 @@ such."
   (lsp--warn "Stopping %s" (lsp--workspace-print workspace))
   (setf (lsp--workspace-shutdown-action workspace) 'shutdown)
   (with-lsp-workspace workspace (lsp--shutdown-workspace)))
+
+(defun lsp-disconnect ()
+  "Disconnect the buffer from the language server."
+  (interactive)
+  (with-no-warnings (when (functionp 'lsp-ui-mode) (lsp-ui-mode -1)))
+  (lsp--text-document-did-close t)
+  (lsp--managed-mode -1)
+  (lsp-mode -1)
+  (setq-local lsp--buffer-workspaces nil)
+  (lsp--info "Disconnected"))
 
 (defun lsp-restart-workspace ()
   (interactive)

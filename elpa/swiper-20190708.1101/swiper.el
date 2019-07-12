@@ -4,7 +4,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/swiper
-;; Package-Version: 20190703.2105
+;; Package-Version: 20190708.1101
 ;; Version: 0.11.0
 ;; Package-Requires: ((emacs "24.1") (ivy "0.11.0"))
 ;; Keywords: matching
@@ -710,7 +710,12 @@ line numbers.  For the buffer, use `ivy--regex' instead."
                         (setq ivy--subexps 1))
                     (format "^ %s" re))))
                ((eq (bound-and-true-p search-default-mode) 'char-fold-to-regexp)
-                (mapconcat #'char-fold-to-regexp (ivy--split str) ".*"))
+                (let ((subs (ivy--split str)))
+                  (setq ivy--subexps (length subs))
+                  (mapconcat
+                   (lambda (s) (format "\\(%s\\)" (char-fold-to-regexp s)))
+                   subs
+                   ".*?")))
                (t
                 (funcall re-builder str)))))
     re))
@@ -853,16 +858,19 @@ the face, window and priority of the overlay."
   (or (display-graphic-p)
       (not recenter-redisplay)))
 
+(defun swiper--positive-regexps (str)
+  (let ((regexp-or-regexps
+         (funcall ivy--regex-function str)))
+    (if (listp regexp-or-regexps)
+        (mapcar #'car (cl-remove-if-not #'cdr regexp-or-regexps))
+      (list regexp-or-regexps))))
+
 (defun swiper--update-input-ivy ()
   "Called when `ivy' input is updated."
   (with-ivy-window
     (swiper--cleanup)
     (when (> (length (ivy-state-current ivy-last)) 0)
-      (let* ((regexp-or-regexps (funcall ivy--regex-function ivy-text))
-             (regexps
-              (if (listp regexp-or-regexps)
-                  (mapcar #'car (cl-remove-if-not #'cdr regexp-or-regexps))
-                (list regexp-or-regexps))))
+      (let ((regexps (swiper--positive-regexps ivy-text)))
         (dolist (re regexps)
           (let* ((re (replace-regexp-in-string
                       "    " "\t"
@@ -1329,7 +1337,8 @@ that we search only for one character."
              (lambda ()
                (with-ivy-window
                  (swiper--add-overlays (ivy--regex ivy-text))))))
-    (swiper--add-overlays (ivy--regex ivy-text))))
+    (dolist (re (swiper--positive-regexps ivy-text))
+      (swiper--add-overlays re))))
 
 (defun swiper-isearch-action (x)
   "Move to X for `swiper-isearch'."

@@ -1723,12 +1723,12 @@ commit or stash at point, then prompt for a commit."
 (defvar magit-diff-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map magit-mode-map)
-    (define-key map "\C-c\C-d" 'magit-diff-while-committing)
-    (define-key map "\C-c\C-b" 'magit-go-backward)
-    (define-key map "\C-c\C-f" 'magit-go-forward)
-    (define-key map "\s" 'scroll-up)
-    (define-key map "\d" 'scroll-down)
-    (define-key map "j" 'magit-jump-to-diffstat-or-diff)
+    (define-key map (kbd "C-c C-d") 'magit-diff-while-committing)
+    (define-key map (kbd "C-c C-b") 'magit-go-backward)
+    (define-key map (kbd "C-c C-f") 'magit-go-forward)
+    (define-key map (kbd "SPC") 'scroll-up)
+    (define-key map (kbd "DEL") 'scroll-down)
+    (define-key map (kbd "j")   'magit-jump-to-diffstat-or-diff)
     (define-key map [remap write-file] 'magit-patch-save)
     map)
   "Keymap for `magit-diff-mode'.")
@@ -1926,9 +1926,13 @@ section or a child thereof."
           (while (looking-at "^[-0-9]+\t[-0-9]+\t\\(.+\\)$")
             (push (magit-decode-git-path
                    (let ((f (match-string 1)))
-                     (if (string-match " => " f)
-                         (substring f (match-end 0))
-                       f)))
+                     (cond
+                      ((string-match "\\`\\([^{]+\\){\\(.+\\) => \\(.+\\)}\\'" f)
+                       (concat (match-string 1 f)
+                               (match-string 3 f)))
+                      ((string-match " => " f)
+                       (substring f (match-end 0)))
+                      (t f))))
                   files)
             (magit-delete-line))
           (setq files (nreverse files))
@@ -2664,16 +2668,14 @@ actually a `diff' but a `diffstat' section."
 
 (defun magit-diff-use-hunk-region-p ()
   (and (region-active-p)
-       (not (and (if (version< emacs-version "25.1")
-                     (eq this-command 'mouse-drag-region)
-                   ;; TODO implement this from first principals
-                   ;; currently it's trial-and-error
-                   (or (eq this-command 'mouse-drag-region)
-                       (eq last-command 'mouse-drag-region)
-                       ;; When another window was previously
-                       ;; selected then the last-command is
-                       ;; some byte-code function.
-                       (byte-code-function-p last-command)))
+       ;; TODO implement this from first principals
+       ;; currently it's trial-and-error
+       (not (and (or (eq this-command 'mouse-drag-region)
+                     (eq last-command 'mouse-drag-region)
+                     ;; When another window was previously
+                     ;; selected then the last-command is
+                     ;; some byte-code function.
+                     (byte-code-function-p last-command))
                  (eq (region-end) (region-beginning))))))
 
 ;;; Diff Highlight

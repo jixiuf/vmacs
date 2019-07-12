@@ -31,7 +31,7 @@ to perform almost all of their daily version control tasks directly from
 within Emacs.  While many fine Git clients exist, only Magit and Git
 itself deserve to be called porcelains.
 
-This manual is for Magit version 2.90.1 (v2.90.1-681-g251d86909+1).
+This manual is for Magit version 2.90.1 (v2.90.1-696-g2dd1e5a94+1).
 
      Copyright (C) 2015-2019 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -3630,7 +3630,7 @@ Files and Blobs from a Diff:: for more information and the key bindings.
      section.  Otherwise, jump to the diffstat section or a child
      thereof.
 
-   The next two commands are not specific to Magit-Diff mdoe (or and
+   The next two commands are not specific to Magit-Diff mode (or and
 Magit buffer for that matter), but it might be worth pointing out that
 they are available here too.
 
@@ -3797,7 +3797,7 @@ File: magit.info,  Node: Revision Buffer,  Prev: Diff Options,  Up: Diffing
      insert both images.  If ‘author’ or ‘committer’, then insert only
      the respective image.
 
-     If you have customized the option ‘magit-revision-header-format’
+     If you have customized the option ‘magit-revision-headers-format’
      and want to insert the images then you might also have to specify
      where to do so.  In that case the value has to be a cons-cell of
      two regular expressions.  The car specifies where to insert the

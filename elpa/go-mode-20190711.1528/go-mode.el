@@ -8,7 +8,7 @@
 
 ;; Author: The go-mode Authors
 ;; Version: 1.5.0
-;; Package-Version: 20181012.329
+;; Package-Version: 20190711.1528
 ;; Keywords: languages go
 ;; URL: https://github.com/dominikh/go-mode.el
 ;;
@@ -1383,7 +1383,8 @@ If IGNORE-CASE is non-nil, the comparison is case-insensitive."
         (dolist (file files)
           (unless (member file '("." ".."))
             (let ((file (concat dir "/" file)))
-              (if (file-directory-p file)
+              (if (and (file-directory-p file)
+                       (not (file-symlink-p file)))
                   (setq dirs (append (cons file
                                            (go--directory-dirs file))
                                      dirs))))))
@@ -1445,7 +1446,7 @@ they will be removed completely."
     (let ((cur-buffer (current-buffer)) flymake-state lines)
       (when (boundp 'flymake-mode)
         (setq flymake-state flymake-mode)
-        (flymake-mode-off))
+        (flymake-mode -1))
       (save-some-buffers nil (lambda () (equal cur-buffer (current-buffer))))
       (if (buffer-modified-p)
           (message "Cannot operate on unsaved buffer")
@@ -1457,7 +1458,7 @@ they will be removed completely."
               (comment-region (line-beginning-position) (line-end-position))
             (go--delete-whole-line)))
         (message "Removed %d imports" (length lines)))
-      (if flymake-state (flymake-mode-on)))))
+      (if flymake-state (flymake-mode 1)))))
 
 (defun godef--find-file-line-column (specifier other-window)
   "Given a file name in the format of `filename:line:column',

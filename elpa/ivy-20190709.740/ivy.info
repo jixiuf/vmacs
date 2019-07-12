@@ -1279,9 +1279,29 @@ File: ivy.info,  Node: Using TRAMP,  Up: File Name Completion
 7.1.1 Using TRAMP
 -----------------
 
-From any directory, with the empty input, inputting ‘/ssh:’ and pressing
-‘C-j’ (or ‘RET’, which is the same thing) completes for host and user
-names.
+‘~’ (tilde)
+...........
+
+     Move to the home directory.  Either the local or the remote one,
+     depending on the current directory.  The boolean option
+     ‘ivy-magic-tilde’ decides whether the binding to do this is ‘~’ or
+     ‘~/’.
+
+‘//’ (double slash)
+...................
+
+     Move to the root directory.  Either the local or the remote one,
+     depending on the current directory.  Here, you can also select a
+     TRAMP connection method, such as ‘ssh’ or ‘scpx’.
+
+‘/ RET’
+.......
+
+     Move the the local root directory.
+
+   From any directory, with the empty input, inputting ‘/ssh:’ and
+pressing ‘C-j’ (or ‘RET’, which is the same thing) completes for host
+and user names.
 
    For ‘/ssh:user@’ input, completes the domain name.
 
@@ -1771,12 +1791,15 @@ Keystroke Index
 * Menu:
 
 * /:                                     File Name Completion. (line 35)
+* / RET:                                 Using TRAMP.          (line 24)
 * //:                                    File Name Completion. (line 25)
+* // <1>:                                Using TRAMP.          (line 17)
 * <:                                     Hydra in the minibuffer.
                                                                (line 50)
 * >:                                     Hydra in the minibuffer.
                                                                (line 45)
 * ~:                                     File Name Completion. (line 30)
+* ~ <1>:                                 Using TRAMP.          (line  9)
 * a:                                     Hydra in the minibuffer.
                                                                (line 65)
 * a <1>:                                 Saving the current completion session to a buffer.
@@ -1888,16 +1911,16 @@ Node: Packages37972
 Node: Commands38937
 Node: File Name Completion39122
 Node: Using TRAMP40918
-Node: Buffer Name Completion41795
-Node: Counsel commands42410
-Node: API43057
-Node: Required arguments for ivy-read43655
-Node: Optional arguments for ivy-read44174
-Node: Example - counsel-describe-function47600
-Node: Example - counsel-locate50843
-Node: Example - ivy-read-with-extra-properties54593
-Node: Variable Index55801
-Node: Keystroke Index62848
+Node: Buffer Name Completion42365
+Node: Counsel commands42980
+Node: API43627
+Node: Required arguments for ivy-read44225
+Node: Optional arguments for ivy-read44744
+Node: Example - counsel-describe-function48170
+Node: Example - counsel-locate51413
+Node: Example - ivy-read-with-extra-properties55163
+Node: Variable Index56371
+Node: Keystroke Index63418
 
 End Tag Table
 

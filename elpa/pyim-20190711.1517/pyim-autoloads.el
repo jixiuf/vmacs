@@ -69,10 +69,33 @@ pyim 词库管理器。
 
 ;;;***
 
+;;;### (autoloads nil "pyim-common" "pyim-common.el" (0 0 0 0))
+;;; Generated autoloads from pyim-common.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pyim-common" '("pyim-")))
+
+;;;***
+
 ;;;### (autoloads nil "pyim-devtools" "pyim-devtools.el" (0 0 0 0))
 ;;; Generated autoloads from pyim-devtools.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pyim-devtools" '("pyim-website-repository-directory")))
+
+;;;***
+
+;;;### (autoloads nil "pyim-dhashcache" "pyim-dhashcache.el" (0 0
+;;;;;;  0 0))
+;;; Generated autoloads from pyim-dhashcache.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pyim-dhashcache" '("pyim-dhashcache-")))
+
+;;;***
+
+;;;### (autoloads nil "pyim-dregcache" "pyim-dregcache.el" (0 0 0
+;;;;;;  0))
+;;; Generated autoloads from pyim-dregcache.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "pyim-dregcache" '("pyim-dregcache-")))
 
 ;;;***
 
