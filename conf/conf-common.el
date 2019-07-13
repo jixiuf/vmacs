@@ -74,6 +74,8 @@
  display-line-numbers 'absolute
  fill-column 100
  )
+(when (featurep 'display-fill-column-indicator)
+  (global-display-fill-column-indicator-mode))
 
 ;; path /Library/TeX/texbin
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
