@@ -59,9 +59,11 @@
 ;; 有了下面的功能当evil-mode在某个地方设置标记时，同时在那里加一个可视化书签
 ;; 则利用可视化书签的跳转功能就可以进行前后跳转
 (defadvice evil-set-jump (around evil-jump activate)
-  (unless (string-match "bm-.*" (symbol-name this-command))
-    (bm-bookmark-add nil nil t))
-  ad-do-it)
+  (when (symbolp this-command)
+    (unless (string-match "bm-.*" (symbol-name this-command))
+      (bm-bookmark-add nil nil t))
+    ad-do-it)
+  )
 ;; isearch 搜索的时候也会进行大范围的光标移动，会在原处加书签，
 ;; 当取消搜索时,光标后回到原处，则将此处的书签去掉
 (defadvice isearch-cancel(around evil-jump-remomve activate)
