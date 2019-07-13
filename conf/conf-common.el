@@ -74,6 +74,7 @@
  display-line-numbers 'absolute
  fill-column 100
  )
+(require 'display-fill-column-indicator nil t)
 (when (featurep 'display-fill-column-indicator)
   (global-display-fill-column-indicator-mode))
 
