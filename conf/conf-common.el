@@ -72,6 +72,7 @@
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否wrap显示
  display-line-numbers 'absolute
+ fill-column 100
  )
 
 ;; path /Library/TeX/texbin
