@@ -198,7 +198,7 @@ The prompt skip is done by skipping text matching the regular expression
       ;; (message "title=%s\n pwd=%s\n user=%s\nhost=%s\ncmd=%s\n dir=%s\n"
       ;;          title vterm-pwd vterm-user vterm-host vterm-cmd dir)
       (rename-buffer (vmacs-generate-dir-name "term " vterm-cmd vterm-pwd
-                                              (- awesome-tab-label-fixed-length
+                                              (- centaur-tabs-label-fixed-length
                                                  (length vterm-cmd) 1)) t))))
 
 (defun vmacs-generate-dir-name(prefix cmd dir &optional max-dir-len)

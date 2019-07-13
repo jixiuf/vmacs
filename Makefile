@@ -43,7 +43,7 @@ lib:
 eshell:
 	./bin/zsh-to-eshell-alias.sh
 deps:
-	curl https://raw.githubusercontent.com/manateelazycat/awesome-tab/master/awesome-tab.el >./lazy/awesome-tab.el
+# curl https://raw.githubusercontent.com/manateelazycat/awesome-tab/master/awesome-tab.el >./lazy/awesome-tab.el
 	curl https://raw.githubusercontent.com/akermu/emacs-libvterm/master/vterm.el> ./lazy/vterm.el
 	curl https://raw.githubusercontent.com/jixiuf/vterm-toggle/master/vterm-toggle.el> ./lazy/vterm-toggle.el
 # curl https://raw.githubusercontent.com/yjwen/org-reveal/master/ox-reveal.el >./lazy/ox-reveal.el

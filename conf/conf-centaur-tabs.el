@@ -1,23 +1,23 @@
-(setq-default awesome-tab-cycle-scope 'tabs)
-(setq-default awesome-tab-display-sticky-function-name nil)
-(setq-default awesometab-hide-tabs-hooks   nil)
-(setq-default awesome-tab-style "zigzag")
-(global-set-key  (kbd "s-n") 'awesome-tab-forward)
-(global-set-key  (kbd "s-C-M-n") 'awesome-tab-forward)
-(global-set-key  (kbd "s-p") 'awesome-tab-backward)
-(global-set-key  (kbd "s-C-M-p") 'awesome-tab-backward)
-(define-key evil-normal-state-map (kbd "gh") 'awesome-tab-move-current-tab-to-left)
-(define-key evil-normal-state-map (kbd "gl") 'awesome-tab-move-current-tab-to-right)
-;; (vmacs-leader "e" 'awesome-tab-build-ivy-source)
-(vmacs-leader "e" 'awesome-tab-forward-group)
+(setq-default centaur-tabs-cycle-scope 'tabs)
+(setq-default centaur-tabs-display-sticky-function-name nil)
+(setq-default centaur-tabs-hide-tabs-hooks   nil)
+(setq-default centaur-tabs-style "zigzag")
+(global-set-key  (kbd "s-n") 'centaur-tabs-forward)
+(global-set-key  (kbd "s-C-M-n") 'centaur-tabs-forward)
+(global-set-key  (kbd "s-p") 'centaur-tabs-backward)
+(global-set-key  (kbd "s-C-M-p") 'centaur-tabs-backward)
+(define-key evil-normal-state-map (kbd "gh") 'centaur-tabs-move-current-tab-to-left)
+(define-key evil-normal-state-map (kbd "gl") 'centaur-tabs-move-current-tab-to-right)
+;; (vmacs-leader "e" 'centaur-tabs-build-ivy-source)
+(vmacs-leader "e" 'centaur-tabs-forward-group)
 
-;; 只为eshell-mode term-mode 启用awesome-tab
+;; 只为eshell-mode term-mode 启用centaur-tabs
 
-(setq awesome-tab-buffer-groups-function 'vmacs-awesome-tab-buffer-groups)
+(setq centaur-tabs-buffer-groups-function 'vmacs-centaur-tabs-buffer-groups)
 
-(defun vmacs-awesome-tab-buffer-groups ()
-  "`awesome-tab-buffer-groups' control buffers' group rules.
-    Group awesome-tab with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
+(defun vmacs-centaur-tabs-buffer-groups ()
+  "`centaur-tabs-buffer-groups' control buffers' group rules.
+    Group centaur-tabs with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
     All buffer name start with * will group to \"Emacs\".
     Other buffer group by `projectile-project-p' with project name."
   (list
@@ -56,13 +56,13 @@
     ((not (vmacs-show-tabbar-p)) nil)
     (t "Common"))))
 
-;; (defun vmacs-awesome-tab-buffer-list ()
+;; (defun vmacs-centaur-tabs-buffer-list ()
 ;;   "Return the list of buffers to show in tabs.
 ;; only show eshell-mode term-mode and shell-mode."
-;;   (awesome-tab-filter
+;;   (centaur-tabs-filter
 ;;    #'vmacs-show-tabbar-p
 ;;    (buffer-list)))
-;; (setq awesome-tab-buffer-list-function 'vmacs-awesome-tab-buffer-list)
+;; (setq centaur-tabs-buffer-list-function 'vmacs-centaur-tabs-buffer-list)
 
 (defun vmacs-show-tabbar-p(&optional buf redisplay)
   (let ((show t))
@@ -85,30 +85,30 @@
 (defun vmacs-hide-tab-p(buf)
   (not (vmacs-show-tabbar-p buf t)))
 
-(setq awesome-tab-hide-tab-function #'vmacs-hide-tab-p)
+(setq centaur-tabs-hide-tab-function #'vmacs-hide-tab-p)
 
 (defun vmacs-awesome-buffer-order ()
   "Put the two buffers switched to the adjacent position after current buffer changed."
-  ;; Don't trigger by awesome-tab command, it's annoying.
+  ;; Don't trigger by centaur-tabs command, it's annoying.
   ;; This feature should trigger by search plugins, such as ibuffer, helm or ivy.
-  (unless (or (string-prefix-p "awesome-tab" (format "%s" this-command))
+  (unless (or (string-prefix-p "centaur-tabs" (format "%s" this-command))
               (string-equal "ignore" (format "%s" this-command))) ;鼠标点击的时候有时坐产生一个ignore事件，
     ;; Just continue when buffer changed.
-    (unless (buffer-live-p awesome-tab-last-focus-buffer)
-      (setq awesome-tab-last-focus-buffer (current-buffer)))
-    (when (and (not (eq (current-buffer) awesome-tab-last-focus-buffer))
-               (buffer-live-p awesome-tab-last-focus-buffer)
+    (unless (buffer-live-p centaur-tabs-last-focus-buffer)
+      (setq centaur-tabs-last-focus-buffer (current-buffer)))
+    (when (and (not (eq (current-buffer) centaur-tabs-last-focus-buffer))
+               (buffer-live-p centaur-tabs-last-focus-buffer)
                (not (minibufferp)))
       (let* ((current (current-buffer))
-             (previous awesome-tab-last-focus-buffer)
-             (current-group (first (funcall awesome-tab-buffer-groups-function))))
+             (previous centaur-tabs-last-focus-buffer)
+             (current-group (first (funcall centaur-tabs-buffer-groups-function))))
         ;; Record last focus buffer.
-        (setq awesome-tab-last-focus-buffer current)
+        (setq centaur-tabs-last-focus-buffer current)
 
         ;; Just continue if two buffers are in same group.
-        (when (eq current-group awesome-tab-last-focus-buffer-group)
-          (let* ((bufset (awesome-tab-get-tabset current-group))
-                 (current-group-tabs (awesome-tab-tabs bufset))
+        (when (eq current-group centaur-tabs-last-focus-buffer-group)
+          (let* ((bufset (centaur-tabs-get-tabset current-group))
+                 (current-group-tabs (centaur-tabs-tabs bufset))
                  (current-group-buffers (mapcar 'car current-group-tabs))
                  (current-buffer-index (cl-position current current-group-buffers))
                  (previous-buffer-index (cl-position previous current-group-buffers)))
@@ -120,23 +120,23 @@
               (let* ((copy-group-tabs (copy-list current-group-tabs))
                      (previous-tab (nth previous-buffer-index copy-group-tabs))
                      (current-tab (nth current-buffer-index copy-group-tabs))
-                     (base-group-tabs (awesome-tab-remove-nth-element current-buffer-index copy-group-tabs))
-                     (new-group-tabs (awesome-tab-insert-after base-group-tabs previous-tab current-tab)))
+                     (base-group-tabs (centaur-tabs-remove-nth-element current-buffer-index copy-group-tabs))
+                     (new-group-tabs (centaur-tabs-insert-after base-group-tabs previous-tab current-tab)))
                 (set bufset new-group-tabs)
-                (awesome-tab-set-template bufset nil)
-                (awesome-tab-display-update)
+                (centaur-tabs-set-template bufset nil)
+                (centaur-tabs-display-update)
                 ))))
 
         ;; Update the group name of the last access tab.
-        (setq awesome-tab-last-focus-buffer-group current-group)
+        (setq centaur-tabs-last-focus-buffer-group current-group)
         ))))
 
-(setq awesome-tab-adjust-buffer-order-function #'vmacs-awesome-buffer-order)
+(add-hook 'post-command-hook #'vmacs-awesome-buffer-order)
 
 
 
 ;; term 分组下 默认选中前一个tab
-(defun vmacs-awesome-tab-buffer-track-killed ()
+(defun vmacs-centaur-tabs-buffer-track-killed ()
   "Hook run just before actually killing a buffer.
 In Awesome-Tab mode, try to switch to a buffer in the current tab bar,
 after the current buffer has been killed.  Try first the buffer in tab
@@ -145,10 +145,10 @@ the sibling buffer in front of the buffer list, so it will be selected
 first."
   (when (or (string-match-p "\\*scratch-.*" (buffer-name))
             (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode))
-    (and (eq header-line-format awesome-tab-header-line-format)
-         (eq awesome-tab-current-tabset-function 'awesome-tab-buffer-tabs)
+    (and (eq header-line-format centaur-tabs-header-line-format)
+         (eq centaur-tabs-current-tabset-function 'centaur-tabs-buffer-tabs)
          (eq (current-buffer) (window-buffer (selected-window)))
-         (let ((bl (awesome-tab-tab-values (awesome-tab-current-tabset)))
+         (let ((bl (centaur-tabs-tab-values (centaur-tabs-current-tabset)))
                (b  (current-buffer))
                found sibling)
            (while (and bl (not found))
@@ -165,16 +165,16 @@ first."
 
 (defun vmacs-awesometab-hook()
   ;; 直接去除自动选下一个tab的hook,让它默认
-  (remove-hook 'kill-buffer-hook 'awesome-tab-buffer-track-killed)
-  (add-hook 'kill-buffer-hook 'vmacs-awesome-tab-buffer-track-killed)
+  (remove-hook 'kill-buffer-hook 'centaur-tabs-buffer-track-killed)
+  (add-hook 'kill-buffer-hook 'vmacs-centaur-tabs-buffer-track-killed)
   )
 
-(add-hook 'awesome-tab-mode-hook #'vmacs-awesometab-hook)
+(add-hook 'centaur-tabs-mode-hook #'vmacs-awesometab-hook)
 
 
-(setq awesome-tab-label-fixed-length 30)
+(setq centaur-tabs-label-fixed-length 30)
 ;; Copied from s.el
-(defadvice awesome-tab-truncate-string (around vmacs-tab activate)
+(defadvice centaur-tabs-truncate-string (around vmacs-tab activate)
   "If S is longer than LEN, cut it down and add ELLIPSIS to the end.
 
 The resulting string, including ellipsis, will be LEN characters
@@ -188,13 +188,13 @@ When not specified, ELLIPSIS defaults to ‘...’."
             (format "%s%s" (substring s 0 (- len (length ellipsis))) ellipsis)
           s)))
 
-(awesome-tab-mode t)
+(centaur-tabs-mode t)
 
 
-(provide 'conf-awesome-tab)
+(provide 'conf-centaur-tabs)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
 
-;;; conf-awesome-tab.el ends here.
+;;; conf-centaur-tabs.el ends here.

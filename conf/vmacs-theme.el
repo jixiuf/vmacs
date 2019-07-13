@@ -3,10 +3,10 @@
 (custom-theme-set-faces
  'vmacs
  '(default ((t (:background "#202020" :foreground "#eeeeec" ))))
- '(awesome-tab-default ((t (:background "#202020" :foreground "#202020" :box nil :overline nil :height 1.1))))
- '(awesome-tab-selected ((t (:background "gray70" :foreground "black" :box nil :overline nil :height 1.1))))
- '(awesome-tab-separator ((t (:background "#202020" :foreground "#202020" :height 0.1))))
- '(awesome-tab-unselected ((t (:background "gray30" :foreground "gray80" :box nil :overline nil :height 1.1))))
+ '(centaur-tabs-default ((t (:background "#202020" :foreground "#202020" :box nil :overline nil :height 1.1))))
+ '(centaur-tabs-selected ((t (:background "gray70" :foreground "black" :box nil :overline nil :height 1.1))))
+ '(centaur-tabs-separator ((t (:background "#202020" :foreground "#202020" :height 0.1))))
+ '(centaur-tabs-unselected ((t (:background "gray30" :foreground "gray80" :box nil :overline nil :height 1.1))))
  '(bm-face ((t (:background "#272728"))))
  '(buffers-tab ((t (:background "#0C1021" :foreground "#F8F8F8"))))
  '(company-scrollbar-bg ((t (:background "RoyalBlue4"))))
