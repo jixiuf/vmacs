@@ -13,8 +13,8 @@
  inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭scratch消息提示
  initial-major-mode 'emacs-lisp-mode ;scratch init mode
- ;; initial-buffer-choice t                ;默认打开scratch buffer
- initial-buffer-choice "~/"
+ initial-buffer-choice t                ;默认打开scratch buffer
+ ;; initial-buffer-choice "~/"
 
 
  use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
