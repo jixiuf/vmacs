@@ -77,6 +77,7 @@
 (require 'display-fill-column-indicator nil t)
 (when (featurep 'display-fill-column-indicator)
   (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
+(when (boundp 'global-so-long-mode) (global-so-long-mode))
 
 ;; path /Library/TeX/texbin
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
