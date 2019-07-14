@@ -22,13 +22,13 @@
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
 ;; recognize some things as functions
-(font-lock-add-keywords 'emacs-lisp-mode
-                        '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\||define-key\\|global-set-key\\)\\>" .
-                           font-lock-function-name-face)))
-;; recognize some things as constants
-(font-lock-add-keywords 'emacs-lisp-mode
-                        '(("\\<\\(nil\\|\\t\\)\\_>" .
-                           font-lock-constant-face)))
+;; (font-lock-add-keywords 'emacs-lisp-mode
+;;                         '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\||define-key\\|global-set-key\\)\\>" .
+;;                            font-lock-function-name-face)))
+;; ;; recognize some things as constants
+;; (font-lock-add-keywords 'emacs-lisp-mode
+;;                         '(("\\<\\(nil\\|\\t\\)\\_>" .
+;;                            font-lock-constant-face)))
 
 (when (and (equal system-type 'darwin) (window-system))
   (add-hook 'after-init-hook 'create-frame-font-mac))
@@ -44,7 +44,9 @@
   ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     ;;(kill-buffer "*scratch*" )
-    (when (window-system)
+    (if (not (window-system))
+        (ivy-posframe-mode -1)
+
       (when (equal system-type 'darwin) (create-frame-font-mac))
       (when (equal system-type 'windows-nt) (create-frame-font-w32))
       (window-divider-mode t)

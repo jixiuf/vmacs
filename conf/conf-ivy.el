@@ -234,7 +234,7 @@
 
 (setq ivy-posframe-size-function #'vmacs-ivy-posframe-get-size)
 
-(ivy-posframe-mode 1)
+(when (window-system) (ivy-posframe-mode 1))
 
 (provide 'conf-ivy)
 
