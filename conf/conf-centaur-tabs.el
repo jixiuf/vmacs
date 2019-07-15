@@ -1,3 +1,4 @@
+(require 'centaur-tabs)
 (setq-default centaur-tabs-cycle-scope 'tabs)
 (setq-default centaur-tabs-display-sticky-function-name nil)
 (setq-default centaur-tabs-hide-tabs-hooks   nil)
@@ -91,51 +92,51 @@
   "Put the two buffers switched to the adjacent position after current buffer changed."
   ;; Don't trigger by centaur-tabs command, it's annoying.
   ;; This feature should trigger by search plugins, such as ibuffer, helm or ivy.
-  (when (symbolp this-command)
-    (unless (or (string-prefix-p "centaur-tabs" (format "%s" this-command))
-                (string-prefix-p "mouse-drag-header-line" (format "%s" this-command))
-                (string-equal "ignore" (format "%s" this-command))) ;鼠标点击的时候有时坐产生一个ignore事件，
-      ;; Just continue when buffer changed.
-      (unless (buffer-live-p centaur-tabs-last-focus-buffer)
-        (setq centaur-tabs-last-focus-buffer (current-buffer)))
-      (when (and (not (eq (current-buffer) centaur-tabs-last-focus-buffer))
-                 (buffer-live-p centaur-tabs-last-focus-buffer)
-                 (not (minibufferp)))
-        (let* ((current (current-buffer))
-               (previous centaur-tabs-last-focus-buffer)
-               (current-group (first (funcall centaur-tabs-buffer-groups-function))))
-          ;; Record last focus buffer.
-          (setq centaur-tabs-last-focus-buffer current)
+  (when  (and (symbolp this-command)
+              (not (string-prefix-p "centaur-tabs" (format "%s" this-command)))
+              (not (equal 'mouse-drag-header-line this-command)))
+    ;; Just continue when buffer changed.
+    (unless (buffer-live-p centaur-tabs-last-focus-buffer)
+      (setq centaur-tabs-last-focus-buffer (current-buffer)))
+    (when (and (not (eq (current-buffer) centaur-tabs-last-focus-buffer))
+               (buffer-live-p centaur-tabs-last-focus-buffer)
+               (not (minibufferp)))
+      (let* ((current (current-buffer))
+             (previous centaur-tabs-last-focus-buffer)
+             (current-group (first (funcall centaur-tabs-buffer-groups-function))))
+        ;; Record last focus buffer.
+        (setq centaur-tabs-last-focus-buffer current)
 
-          ;; Just continue if two buffers are in same group.
-          (when (eq current-group centaur-tabs-last-focus-buffer-group)
-            (let* ((bufset (centaur-tabs-get-tabset current-group))
-                   (current-group-tabs (centaur-tabs-tabs bufset))
-                   (current-group-buffers (mapcar 'car current-group-tabs))
-                   (current-buffer-index (cl-position current current-group-buffers))
-                   (previous-buffer-index (cl-position previous current-group-buffers)))
+        ;; Just continue if two buffers are in same group.
+        (when (eq current-group centaur-tabs-last-focus-buffer-group)
+          (let* ((bufset (centaur-tabs-get-tabset current-group))
+                 (current-group-tabs (centaur-tabs-tabs bufset))
+                 (current-group-buffers (mapcar 'car current-group-tabs))
+                 (current-buffer-index (cl-position current current-group-buffers))
+                 (previous-buffer-index (cl-position previous current-group-buffers)))
 
-              ;; If the two tabs are not adjacent, swap the positions of the two tabs.
-              (when (and current-buffer-index
-                         previous-buffer-index
-                         (> (abs (- current-buffer-index previous-buffer-index)) 1))
-                (let* ((copy-group-tabs (copy-list current-group-tabs))
-                       (previous-tab (nth previous-buffer-index copy-group-tabs))
-                       (current-tab (nth current-buffer-index copy-group-tabs))
-                       (base-group-tabs (centaur-tabs-remove-nth-element current-buffer-index copy-group-tabs))
-                       (new-group-tabs (centaur-tabs-insert-after base-group-tabs previous-tab current-tab)))
-                  (set bufset new-group-tabs)
-                  (centaur-tabs-set-template bufset nil)
-                  (centaur-tabs-display-update)
-                  ))))
+            ;; If the two tabs are not adjacent, swap the positions of the two tabs.
+            (when (and current-buffer-index
+                       previous-buffer-index
+                       (> (abs (- current-buffer-index previous-buffer-index)) 1))
+              (let* ((copy-group-tabs (copy-list current-group-tabs))
+                     (previous-tab (nth previous-buffer-index copy-group-tabs))
+                     (current-tab (nth current-buffer-index copy-group-tabs))
+                     (base-group-tabs (centaur-tabs-remove-nth-element current-buffer-index copy-group-tabs))
+                     (new-group-tabs (centaur-tabs-insert-before base-group-tabs previous-tab current-tab)))
+                (set bufset new-group-tabs)
+                (centaur-tabs-set-template bufset nil)
+                (centaur-tabs-display-update)
+                ))))
 
-          ;; Update the group name of the last access tab.
-          (setq centaur-tabs-last-focus-buffer-group current-group)
-          )))
-    )
+        ;; Update the group name of the last access tab.
+        (setq centaur-tabs-last-focus-buffer-group current-group)
+        )))
   )
 
-(add-hook 'post-command-hook #'vmacs-awesome-buffer-order)
+(setq centaur-tabs-adjust-buffer-order-function 'vmacs-awesome-buffer-order)
+;; (add-hook 'post-command-hook #'vmacs-awesome-buffer-order)
+(centaur-tabs-enable-buffer-reordering)
 
 
 
