@@ -4,6 +4,7 @@
  'vmacs
  '(fill-column-indicator ((t (:inherit shadow :stipple nil :foreground "gray35" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal))))
  '(default ((t (:background "#202020" :foreground "#eeeeec" ))))
+ '(centaur-tabs-selected-modified ((t (:background "honeydew4" :foreground "white"))))
  '(centaur-tabs-default ((t (:background "#202020" :foreground "#202020" :box nil :overline nil :height 1.1))))
  '(centaur-tabs-selected ((t (:background "gray70" :foreground "black" :box nil :overline nil :height 1.1))))
  '(centaur-tabs-separator ((t (:background "#202020" :foreground "#202020" :height 0.1))))
