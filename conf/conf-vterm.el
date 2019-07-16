@@ -311,7 +311,7 @@ Take the current line, and discard any initial text matching
         (evil-yank (point-min) (point-max) type register yank-handler)))))
 
 (defun vmacs-kill-buffer-hook()
-  (when (funcall vterm-toggle-vterm-buffer-p-function)
+  (when (funcall vterm-toggle--vterm-buffer-p-function)
     (let ((proc (get-buffer-process (current-buffer))))
       (when (process-live-p proc)
         (when (derived-mode-p 'term-mode)
@@ -333,8 +333,7 @@ Take the current line, and discard any initial text matching
 
 (add-hook 'vterm-toggle-after-ssh-login-function 'vterm-toggle-after-ssh-login)
 
-(setq vterm-toggle-vterm-buffer-p-function 'vmacs-term-mode-p)
-;; (setq vterm-toggle-vterm-buffer-p-function 'vterm-toggle--default-vterm-mode-p)
+(setq vterm-toggle--vterm-buffer-p-function 'vmacs-term-mode-p)
 (defun vmacs-term-mode-p(&optional ignore-scratch)
   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
       (if ignore-scratch
