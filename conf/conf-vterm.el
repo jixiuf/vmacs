@@ -193,13 +193,17 @@ The prompt skip is done by skipping text matching the regular expression
 		         (expand-file-name vterm-pwd)
                (concat "/-:" vterm-user "@" vterm-host ":"
                        vterm-pwd))))
-      (when (ignore-errors (file-directory-p dir))
-        (cd-absolute dir))
       ;; (message "title=%s\n pwd=%s\n user=%s\nhost=%s\ncmd=%s\n dir=%s\n"
       ;;          title vterm-pwd vterm-user vterm-host vterm-cmd dir)
-      (rename-buffer (vmacs-generate-dir-name "term " vterm-cmd vterm-pwd
-                                              (- centaur-tabs-label-fixed-length
-                                                 (length vterm-cmd) 1)) t))))
+
+      (condition-case nil
+          (progn
+            (when (file-directory-p dir) (cd-absolute dir))
+            (rename-buffer (vmacs-generate-dir-name "term " vterm-cmd vterm-pwd
+                                                    (- centaur-tabs-label-fixed-length
+                                                       (length vterm-cmd) 1)) t))
+        (error nil))
+      )))
 
 (defun vmacs-generate-dir-name(prefix cmd dir &optional max-dir-len)
   (let* ((cmd (car (split-string cmd "[ |\t]" t " ")))
