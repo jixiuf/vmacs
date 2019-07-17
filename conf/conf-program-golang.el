@@ -29,7 +29,7 @@
   ;; (go-eldoc-setup)                    ;autoloaded
   (lsp)
   (flymake-mode -1)
-  (setq company-backends `(( company-lsp company-yasnippet company-files )
+  (setq company-backends `(( company-tabnine company-lsp company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
 
@@ -70,7 +70,7 @@
       (format "perl %s ~/go |cut -d '\"' -f 4|grep -v vendor|sort|uniq|sed 's/^/go install /g'|sh"
               go-imports-find-packages-pl-path))nil)))
 
-(run-with-idle-timer (* 60 5) t 'vmacs-auto-build-package)
+(run-with-idle-timer (* 20 60) t 'vmacs-auto-build-package)
 
 ;;;###autoload
 (define-derived-mode gomod-mode prog-mode "gomod"
