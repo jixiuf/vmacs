@@ -65,6 +65,9 @@
 ;; (transient-append-suffix 'magit-fetch "f"
 ;;      '("f" "Full from pushremote" magit-pull))
 
+(transient-insert-suffix 'magit-revert "o"
+  '("_" "Revert no commit" magit-revert-no-commit))
+
 
 
 (transient-suffix-put 'magit-push "p" :key "v")
