@@ -14,6 +14,8 @@
 
 (require 'vterm)
 (require 'vterm-toggle)
+(add-hook 'vterm-toggle-show-hook #'evil-insert-state)
+(add-hook 'vterm-toggle-hide-hook #'evil-normal-state)
 
 
 (defun vterm-bol()
