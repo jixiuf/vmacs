@@ -37,11 +37,6 @@ The prompt skip is done by skipping text matching the regular expression
   (vterm-send-key "x" nil nil t)
   (vterm-send-key "e" nil nil t))
 
-(defun vterm-send-return ()
-  "Sends C-m to the libvterm."
-  (interactive)
-   (process-send-string vterm--process "\C-m"))
-
 (defun vmacs-vterm-toggle-cd(&optional args)
   (interactive "P")
   (cond
