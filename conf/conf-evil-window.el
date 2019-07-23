@@ -16,6 +16,7 @@
 (golden-ratio-mode 1)
 ;; Work with ediff and helm
 (add-to-list 'golden-ratio-exclude-modes "ediff-mode")
+(add-to-list 'golden-ratio-exclude-modes 'vterm-mode)
 ;; (add-to-list 'golden-ratio-exclude-modes "magit-mode")
 (add-to-list 'golden-ratio-exclude-modes "magit-key-mode")
 (setq golden-ratio-adjust-factor 0.91)
