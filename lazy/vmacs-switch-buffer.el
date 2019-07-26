@@ -112,7 +112,7 @@
         (setq result-list (append result-list list))))
     (dotimes (n 10 magit-repos)
       (let ((magit-repo (nth  n magit-repos)))
-        (when magit-repo
+        (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
           (unless (string-equal magit-repo counsel--git-dir)
             (setq default-directory magit-repo)
