@@ -40,6 +40,7 @@
 (evil-set-initial-state 'grep-mode 'normal)
 (evil-set-initial-state 'Info-mode 'motion)
 (evil-set-initial-state 'calc-mode 'normal)
+(evil-set-initial-state 'snails-mode 'insert)
 ;; (evil-set-initial-state 'term-mode 'normal)
 ;; (evil-set-initial-state 'eshell-mode 'normal)
 
@@ -75,6 +76,7 @@
 (add-to-list 'evil-overriding-maps '(magit-blob-mode-map . nil)) ;n p 浏览文件历史版本
 (add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(xref--xref-buffer-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(snails-mode-map . nil))
 
 (evil-set-custom-state-maps 'evil-overriding-maps
                             'evil-pending-overriding-maps
