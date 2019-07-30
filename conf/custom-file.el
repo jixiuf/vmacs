@@ -23,7 +23,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("4cd18f0ee92079a3edf5d87e7ad4d17c69dde4e36ecf6ea13f011dd65f239c30" "c22c3795ab46e04c156c860e76c1b5ad826be8a5ef7f0bf17db19f7643d44a0a"))
+   '("4eb91832611e5f6425993acc79f38e51fbb7ae616ad43711a4896bfd3cc11dcd" "4cd18f0ee92079a3edf5d87e7ad4d17c69dde4e36ecf6ea13f011dd65f239c30" "c22c3795ab46e04c156c860e76c1b5ad826be8a5ef7f0bf17db19f7643d44a0a"))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
@@ -50,61 +50,61 @@
      (projectile-project-compilation-cmd . "bear make")
      (projectile-project-run-cmd . "make run")
      (eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (unless
-               (featurep 'package-build)
-             (let
-                 ((load-path
-                   (cons "../package-build" load-path)))
-               (require 'package-build)))
-           (package-build-minor-mode)
-           (set
-            (make-local-variable 'package-build-working-dir)
-            (expand-file-name "../working/"))
-           (set
-            (make-local-variable 'package-build-archive-dir)
-            (expand-file-name "../packages/"))
-           (set
-            (make-local-variable 'package-build-recipes-dir)
-            default-directory))
+	   (and
+	    (buffer-file-name)
+	    (file-regular-p
+	     (buffer-file-name))
+	    (string-match-p "^[^.]"
+			    (buffer-file-name)))
+	   (unless
+	       (featurep 'package-build)
+	     (let
+		 ((load-path
+		   (cons "../package-build" load-path)))
+	       (require 'package-build)))
+	   (package-build-minor-mode)
+	   (set
+	    (make-local-variable 'package-build-working-dir)
+	    (expand-file-name "../working/"))
+	   (set
+	    (make-local-variable 'package-build-archive-dir)
+	    (expand-file-name "../packages/"))
+	   (set
+	    (make-local-variable 'package-build-recipes-dir)
+	    default-directory))
      (eval progn
-           (setq jedi:environment-root
-                 (expand-file-name "./virtual/"
-                                   (locate-dominating-file default-directory "Makefile")))
-           (setq jedi:server-args
-                 `("--virtual-env" ,(expand-file-name "./virtual/"
-                                                      (locate-dominating-file default-directory "Makefile"))
-                   "--virtual-env" ,(expand-file-name "~/python/")
-                   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path" ,(expand-file-name
-                                                                                                              (expand-file-name "./src/"
-                                                                                                                                (locate-dominating-file default-directory "Makefile")))
-                   "--sys-path" ,(expand-file-name
-                                  (expand-file-name "./src/db"
-                                                    (locate-dominating-file default-directory "Makefile")))
-                   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" "."))
-           (setq exec-path
-                 (delete-dups
-                  (cons
-                   (expand-file-name "./virtual/bin/"
-                                     (locate-dominating-file default-directory "Makefile"))
-                   exec-path)))
-           (setenv "PATH"
-                   (concat
-                    (expand-file-name "./virtual/bin/"
-                                      (locate-dominating-file default-directory "Makefile"))
-                    ":"
-                    (getenv "PATH")))
-           (setenv "PYTHONPATH"
-                   (expand-file-name "./src/"
-                                     (locate-dominating-file default-directory "Makefile")))
-           (setenv "PYTHONPATH"
-                   (expand-file-name "./db/"
-                                     (locate-dominating-file default-directory "Makefile"))))))
+	   (setq jedi:environment-root
+		 (expand-file-name "./virtual/"
+				   (locate-dominating-file default-directory "Makefile")))
+	   (setq jedi:server-args
+		 `("--virtual-env" ,(expand-file-name "./virtual/"
+						      (locate-dominating-file default-directory "Makefile"))
+		   "--virtual-env" ,(expand-file-name "~/python/")
+		   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path" ,(expand-file-name
+													      (expand-file-name "./src/"
+																(locate-dominating-file default-directory "Makefile")))
+		   "--sys-path" ,(expand-file-name
+				  (expand-file-name "./src/db"
+						    (locate-dominating-file default-directory "Makefile")))
+		   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" "."))
+	   (setq exec-path
+		 (delete-dups
+		  (cons
+		   (expand-file-name "./virtual/bin/"
+				     (locate-dominating-file default-directory "Makefile"))
+		   exec-path)))
+	   (setenv "PATH"
+		   (concat
+		    (expand-file-name "./virtual/bin/"
+				      (locate-dominating-file default-directory "Makefile"))
+		    ":"
+		    (getenv "PATH")))
+	   (setenv "PYTHONPATH"
+		   (expand-file-name "./src/"
+				     (locate-dominating-file default-directory "Makefile")))
+	   (setenv "PYTHONPATH"
+		   (expand-file-name "./db/"
+				     (locate-dominating-file default-directory "Makefile"))))))
  '(save-place-file "~/.emacs.d/cache/place")
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)

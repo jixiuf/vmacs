@@ -1,2 +1,2 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "magit-libgit" "20190419.1545" "Libgit functionality" '((emacs "26.1") (magit "0") (libgit "0")) :commit "196f95a28cafef675230f0069915a42f0d983504" :keywords '("git" "tools" "vc") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/magit/magit")
+;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/magit-libgit-20190419.1545/magit-libgit.el  -*- no-byte-compile: t -*-
+(define-package "magit-libgit" "20190419.1545" "Libgit functionality" '((emacs "26.1") (magit "0") (libgit "0")) :commit "995c1d8a79c53e69f79b17b2b4cd5298a1380be7" :keywords '("git" "tools" "vc") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/magit/magit")

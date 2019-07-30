@@ -23,8 +23,13 @@
 /pyim/dcache/
 osx-dictionary-cli
 /elpa/libgit-*/build/*
+!/elpa/libgit-*/build/libegit2.so
+/elpa/libgit-*/src/*
+/elpa/libgit-*/libgit2/*
 /elpa/archives/gnu-cn/archive-contents
 /elpa/archives/melpa-cn/archive-contents
 /elpa/archives/org-cn/archive-contents
 /go.mod
 /go.sum
+/elpa/libgit-20190728.701/CMakeLists.txt
+/elpa/libgit-20190728.701/Makefile
