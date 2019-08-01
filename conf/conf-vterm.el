@@ -73,22 +73,25 @@ The prompt skip is done by skipping text matching the regular expression
     (evil-insert-state))
   (call-interactively 'vterm--self-insert))
 
-(defun vterm-disable-output ()
-  (interactive)
-  (unless (evil-normal-state-p)
-    (evil-normal-state))
-  (vterm-send-key "s" nil nil t))
-
 (defun vmacs-vterm-disable-output()
   (when (member major-mode '(vterm-mode))
-    (vterm-send-key "s" nil nil t)))
-(defun vmacs-enable-disable-output()
+    (vterm-copy-mode 1)))
+(defun vmacs-vterm-enable-output()
   (when (member major-mode '(vterm-mode))
-    (vterm-send-key "q" nil nil t)))
+    (vterm-copy-mode -1)))
+
+(defun vmacs-vterm-copy-mode-hook()
+  (if vterm-copy-mode
+      (unless (evil-normal-state-p)
+        (evil-normal-state))
+    (unless (evil-insert-state-p)
+      (evil-insert-state))))
+
+(add-hook 'vterm-copy-mode-hook #'vmacs-vterm-copy-mode-hook)
 
 
-(add-hook 'evil-insert-state-entry-hook 'vmacs-enable-disable-output)
-;; (add-hook 'evil-normal-state-entry-hook 'vmacs-vterm-disable-output)
+(add-hook 'evil-insert-state-entry-hook 'vmacs-vterm-enable-output)
+(add-hook 'evil-normal-state-entry-hook 'vmacs-vterm-disable-output)
 
 
 (defun vterm-eob()
@@ -98,7 +101,6 @@ The prompt skip is done by skipping text matching the regular expression
 
 (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
-(define-key vterm-mode-map (kbd "M-.")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
@@ -108,8 +110,8 @@ The prompt skip is done by skipping text matching the regular expression
 (define-key vterm-mode-map [f3]   nil)
 (define-key vterm-mode-map (kbd "C-a")   #'vterm-bol)
 ;; C－s 停止滚屏 C-q恢复滚屏
-(define-key vterm-mode-map (kbd "C-s")   #'vterm-disable-output)
-(define-key vterm-mode-map (kbd "s-s")   #'vterm-disable-output)
+(define-key vterm-mode-map (kbd "C-s")   #'vterm-copy-mode)
+(define-key vterm-mode-map (kbd "C-q")   #'vterm-copy-mode)
 
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (defun vmacs-vterm-hook()
