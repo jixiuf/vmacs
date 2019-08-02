@@ -15,7 +15,7 @@
 (require 'vterm)
 (require 'vterm-toggle)
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
-(add-hook 'vterm-toggle-hide-hook #'evil-normal-state)
+(add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
 
 
 (defun vterm-bol()
@@ -97,7 +97,7 @@ The prompt skip is done by skipping text matching the regular expression
 (defun vterm-eob()
   (interactive)
   (goto-char (point-max))
-  (forward-char -1))
+  (skip-chars-backward "\n[:space:]"))
 
 (define-key vterm-mode-map (kbd "s-t")   #'vterm)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
