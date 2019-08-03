@@ -112,8 +112,8 @@ The prompt skip is done by skipping text matching the regular expression
 ;; C－s 停止滚屏 C-q恢复滚屏
 (define-key vterm-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-mode-map (kbd "C-q")   #'vterm-copy-mode)
-(define-key vterm-copy-map (kbd "C-s")   #'vterm-copy-mode)
-(define-key vterm-copy-map (kbd "C-c C-c")   #'vterm-send-ctrl-c)
+(define-key vterm-copy-mode-map (kbd "C-s")   #'vterm-copy-mode)
+(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-ctrl-c)
 
 
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
