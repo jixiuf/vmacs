@@ -131,7 +131,7 @@ The prompt skip is done by skipping text matching the regular expression
   (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob)
-
+  (compilation-shell-minor-mode)
   (let ((p (get-buffer-process (current-buffer))))
     (when p
       (set-process-query-on-exit-flag p nil))))
@@ -143,67 +143,11 @@ The prompt skip is done by skipping text matching the regular expression
 (add-hook 'vterm-exit-functions #'vmacs-auto-exit)
 
 
-(defvar vterm-user "")
-(make-variable-buffer-local 'vterm-user)
-(defvar vterm-host "")
-(make-variable-buffer-local 'vterm-host)
-(defvar vterm-pwd "")
-(make-variable-buffer-local 'vterm-pwd)
-(defvar vterm-cmd "")
-(make-variable-buffer-local 'vterm-cmd)
-
-
-;; # http://zsh.sourceforge.net/Doc/Release/Functions.html
-;; # 刚打开shell时，也执行一次更新title
-;; for zsh
-
-;; lastcmd=""
-;; print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path
-;; preexec () {
-;;     cmd="$1"
-;;     tokens=(${(s/ /)cmd}) # split by space
-;;     lastcmd=$tokens[1]
-;;     # # 标题栏、任务栏样式
-;;     # 在执行命令前执行，所以此时打印的pwd可能不准,故还需要在chpwd里，刚更新一次
-;;     print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path
-;; }
-;; chpwd() {
-;;     # ESC]0;stringBEL — Set icon name and window title to string
-;;     # ESC]1;stringBEL — Set icon name to string
-;;     # ESC]2;stringBEL — Set window title to string
-;;     print -Pn "\e]2;${USER}@${HOSTNAME}@${lastcmd}:%~\a" #set title user@host@cmd:path  chpwd里取不到当前cmd
-;; }
 (defun vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
-  (let* ((tokens (split-string title ":" ))
-         dir)
-    (when (equal 2 (length tokens))
-      (setq vterm-pwd (string-trim-left (nth 1 tokens)))
-      (setq tokens (split-string (nth 0 tokens) "@" ))
-      (when (>  (length tokens) 1)
-        (setq vterm-user (nth 0 tokens))
-        (setq vterm-host (nth 1 tokens))
-        (when (and (nth 2 tokens)
-                   (not (string-empty-p (or (nth 2 tokens) ""))))
-          (setq vterm-cmd (nth 2 tokens))))
+  (rename-buffer (vmacs-generate-dir-name "term " "" title
+                                          (- centaur-tabs-label-fixed-length 1 5)) t))
 
-      (setq dir
-	        (file-name-as-directory
-	         (if (and (string= vterm-host (system-name))
-                      (string= vterm-user (user-real-login-name)))
-		         (expand-file-name vterm-pwd)
-               (concat "/-:" vterm-user "@" vterm-host ":"
-                       vterm-pwd))))
-      ;; (message "title=%s\n pwd=%s\n user=%s\nhost=%s\ncmd=%s\n dir=%s\n"
-      ;;          title vterm-pwd vterm-user vterm-host vterm-cmd dir)
-
-      (condition-case nil
-          (progn
-            (when (file-directory-p dir) (cd-absolute dir))
-            (rename-buffer (vmacs-generate-dir-name "term " vterm-cmd vterm-pwd
-                                                    (- centaur-tabs-label-fixed-length
-                                                       (length vterm-cmd) 1)) t))
-        (error nil))
-      )))
+(add-hook 'vterm-set-title-functions 'vterm-set-title-hook)
 
 (defun vmacs-generate-dir-name(prefix cmd dir &optional max-dir-len)
   (let* ((cmd (car (split-string cmd "[ |\t]" t " ")))
@@ -217,7 +161,6 @@ The prompt skip is done by skipping text matching the regular expression
       (setq pwd (substring pwd (- (length pwd) max-dir-len))))
     (string-trim (format "%s%s %s"  prefix (or cmd "") pwd))))
 
-(add-hook 'vterm-set-title-functions 'vterm-set-title-hook)
 
 (defun vterm-get-line( &optional skip-prompt)
   (save-excursion
