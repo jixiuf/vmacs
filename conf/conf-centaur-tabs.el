@@ -51,7 +51,9 @@
                           "\*Calc "
                           "\*Flycheck error messages\*"
                           "\*Gofmt Errors\*"
+                          "\*Ediff"
                           "\*sdcv\*"
+                          "\*osx-dictionary\*"
                           "\*Messages\*"
                           "\*Ido Completions\*"
                           ))
