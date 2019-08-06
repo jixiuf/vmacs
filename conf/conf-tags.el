@@ -26,6 +26,7 @@
 ;;   (setq-default ctags-update-command (expand-file-name  "binw32/ctags.exe" user-emacs-directory)))
 ;; (add-hook 'csharp-mode-hook  'turn-on-ctags-auto-update-mode)
 
+(setq lsp-enable-indentation nil)
 
 (autoload 'bm-bookmark-add "bm" "add bookmark")
 (autoload 'bm-bookmark-remove "bm" "remove bookmark")

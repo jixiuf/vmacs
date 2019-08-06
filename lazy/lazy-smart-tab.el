@@ -71,8 +71,11 @@
                       (looking-back "]" (point-at-bol))        ;前面是] 也不适全补全
                       ))))
     (if (and mark-active )
-        (indent-region (region-beginning) (region-end))
-
+        (if (locate-dominating-file default-directory ".clang-format")
+            (progn
+              (call-interactively #'clang-format-region)
+              (deactivate-mark))
+          (indent-region (region-beginning) (region-end)))
       (if (or indent-tabs-mode
               (or (member major-mode smart-tab-mode-for-indent-tab-mode)))
           (call-interactively 'indent-for-tab-command)

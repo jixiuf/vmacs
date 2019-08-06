@@ -47,6 +47,8 @@
                           "magit-"
                           "\*Async Shell Command\*"
                           "\*Shell Command Output\*"
+                          "\*Calculator\*"
+                          "\*Calc "
                           "\*Flycheck error messages\*"
                           "\*Gofmt Errors\*"
                           "\*sdcv\*"
