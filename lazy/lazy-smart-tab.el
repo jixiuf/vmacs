@@ -71,7 +71,9 @@
                       (looking-back "]" (point-at-bol))        ;前面是] 也不适全补全
                       ))))
     (if (and mark-active )
-        (if (locate-dominating-file default-directory ".clang-format")
+        (if (and (locate-dominating-file default-directory ".clang-format")
+                 (member major-mode '(c-mode c++-mode))
+                 )
             (progn
               (call-interactively #'clang-format-region)
               (deactivate-mark))

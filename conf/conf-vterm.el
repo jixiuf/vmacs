@@ -114,6 +114,8 @@ The prompt skip is done by skipping text matching the regular expression
 (define-key vterm-mode-map (kbd "C-q")   #'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-ctrl-c)
+(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-ctrl-c)
+(define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
 
 
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm)
