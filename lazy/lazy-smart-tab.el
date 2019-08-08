@@ -10,6 +10,8 @@
   (require 'cc-mode)
   (require 'hippie-exp))
 
+(require 'clang-format)
+
 (declare-function novel-fill "lazy-novel-mode")
 (defun term-complete-tab()
   (interactive)
