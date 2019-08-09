@@ -18,18 +18,6 @@
 (add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
 
 
-(defun vterm-bol()
-  "Go to the beginning of line, then skip past the prompt, if any.
-The prompt skip is done by skipping text matching the regular expression
-`vterm-toggle-prompt-regexp', a buffer local variable."
-  (interactive)
-  (let ((pt (point)))
-    (beginning-of-line)
-    (vterm-toggle--skip-prompt)
-    (if (equal pt (point))
-        (beginning-of-line)
-      (vterm--self-insert))))
-
 
 (defun vterm-send-ctrl-x-ctrl-e ()
   "edit with editor"
@@ -108,7 +96,6 @@ The prompt skip is done by skipping text matching the regular expression
 (define-key vterm-mode-map [(control return)]   #'vterm-compile)
 (define-key vterm-mode-map [f2]   nil)
 (define-key vterm-mode-map [f3]   nil)
-;; (define-key vterm-mode-map (kbd "C-a")   #'vterm-bol)
 ;; C－s 停止滚屏 C-q恢复滚屏
 (define-key vterm-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-mode-map (kbd "C-q")   #'vterm-copy-mode)
@@ -123,7 +110,6 @@ The prompt skip is done by skipping text matching the regular expression
   (evil-define-key 'insert 'local [escape] 'vterm--self-insert)
   (evil-define-key 'motion'local (kbd "C-r") 'vmacs-vterm-self-insert)
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
-  (evil-define-key 'motion 'local (kbd "C-a") 'vterm-bol)
   (evil-define-key 'normal 'local "y" 'evil-yank-join)
   (evil-define-key 'motion'local "y" 'evil-yank-join)
   (evil-define-key 'visual 'local "y" 'evil-yank-join)
