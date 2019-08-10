@@ -193,8 +193,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-ex-completion-map (kbd "M-n")  'next-history-element)
 
 ;; (define-key evil-insert-state-map [escape] 'evil-normal-state)
-(define-key evil-insert-state-map (kbd "C-g") 'vmacs-evil-normal-state)
-(define-key evil-insert-state-map [escape] 'vmacs-evil-normal-state)
+;; (define-key evil-insert-state-map (kbd "C-g") 'vmacs-evil-normal-state)
+;; (define-key evil-insert-state-map [escape] 'vmacs-evil-normal-state)
 
 ;; (define-key evil-normal-state-map "/" 'helm-swoop)
 
