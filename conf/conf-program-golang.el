@@ -29,7 +29,7 @@
   ;; (go-eldoc-setup)                    ;autoloaded
   (lsp)
   (flymake-mode -1)
-  (setq company-backends `(( company-tabnine company-lsp company-yasnippet company-files )
+  (setq company-backends `((company-lsp company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
 
