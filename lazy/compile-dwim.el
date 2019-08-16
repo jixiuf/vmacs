@@ -313,12 +313,12 @@ that alist."
 (defun compile-dwim-compile (force &optional sentinel)
   (interactive "P")
   (if (not (buffer-file-name))
-      (call-interactively 'compile)
+      (call-interactively 'vterm-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'compile))
           match exe spec cancel)
       (if (null cmds)
-          (call-interactively 'compile)
+          (call-interactively 'vterm-compile)
         (setq match (assoc (car cmds) compile-dwim-alist))
         (when (and (not force)
                    (setq exe (compile-dwim-conf 'exe match)))
@@ -339,7 +339,7 @@ that alist."
                         compile-history (nconc cmds compile-history))
                   (if sentinel
                       (add-hook 'compilation-finish-functions sentinel))
-                  (call-interactively 'compile)
+                  (call-interactively 'vterm-compile)
                   (add-to-list 'compile-dwim-cache
                                (cons 'compile compile-command)))
               (eval cmds)
@@ -352,16 +352,22 @@ that alist."
     (set-buffer compile-dwim-run-buffer)
     (compile-dwim-run)))
 
+(defun vterm-compile ()
+  (interactive)
+  (with-current-buffer (vterm-toggle-show)
+    (vterm-send-string compile-command t)
+    (vterm-send-return)))
+
 ;;;###autoload
 (defun compile-dwim-run ()
   (interactive)
   (if (not (buffer-file-name))
-      (call-interactively 'compile)
+      (call-interactively 'vterm-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'run))
           match exe spec cancel)
       (if (null cmds)
-          (call-interactively 'compile)
+          (call-interactively 'vterm-compile)
         (setq match (assoc (car cmds) compile-dwim-alist))
         (when (setq exe (compile-dwim-conf 'exe match))
           (setq spec (compile-dwim-spec (car match))
@@ -381,7 +387,7 @@ that alist."
                 (progn
                   (setq compile-command (car cmds)
                         compile-history (nconc cmds compile-history))
-                  (call-interactively 'compile)
+                  (call-interactively 'vterm-compile)
                   (add-to-list 'compile-dwim-cache
                                (cons 'run compile-command)))
               (eval cmds))))))))
@@ -405,7 +411,7 @@ if found return the directory or nil"
     (when project-root
       (setq default-directory project-root)
       (setq compile-command (concat "make --directory=" project-root)))
-    (call-interactively 'compile)))
+    (call-interactively 'vterm-compile)))
 
 ;; http://eastmanreference.com/complete-list-of-applescript-key-codes/
 ;; 15 =R
@@ -433,7 +439,7 @@ end tell"))
 (defun compile-go-test-current()
   (interactive)
   (setq compile-command (concat "go test -v -test.run "  (go--function-name t)))
-  (call-interactively 'compile))
+  (call-interactively 'vterm-compile))
 
 
 (provide 'compile-dwim)
