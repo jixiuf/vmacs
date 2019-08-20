@@ -354,7 +354,7 @@ that alist."
 
 (defun vterm-compile ()
   (interactive)
-  (with-current-buffer (vterm-toggle-show)
+  (with-current-buffer (vterm-toggle-cd)
     (vterm-send-string compile-command t)
     (vterm-send-return)))
 
