@@ -184,26 +184,26 @@ Take the current line, and discard any initial text matching
 `term-prompt-regexp'."
   (vterm-get-line t))
 
-(defun vterm-kill-line()
-  (interactive)
-  (save-excursion
-    (let ((pos (point))
-          (end (point-at-eol))
-          (width (window-body-width))
-          text)
-      (while (and (<= width (string-width (buffer-substring-no-properties  (point-at-bol)(point-at-eol) )))
-                  (not (eobp)))
-        (forward-line)
-        (end-of-line)
-        (setq end (point-at-eol)))
-      (setq text (buffer-substring pos end))
-      (with-temp-buffer
-        (insert text)
-        (goto-char (point-min))
-        (while  (search-forward-regexp "\n" nil t )
-          (replace-match ""))
-        (kill-ring-save (point-min) (point-max)))))
-  (vterm-send-key "k" nil nil t))
+;; (defun vterm-kill-line()
+;;   (interactive)
+;;   (save-excursion
+;;     (let ((pos (point))
+;;           (end (point-at-eol))
+;;           (width (window-body-width))
+;;           text)
+;;       (while (and (<= width (string-width (buffer-substring-no-properties  (point-at-bol)(point-at-eol) )))
+;;                   (not (eobp)))
+;;         (forward-line)
+;;         (end-of-line)
+;;         (setq end (point-at-eol)))
+;;       (setq text (buffer-substring pos end))
+;;       (with-temp-buffer
+;;         (insert text)
+;;         (goto-char (point-min))
+;;         (while  (search-forward-regexp "\n" nil t )
+;;           (replace-match ""))
+;;         (kill-ring-save (point-min) (point-max)))))
+;;   (vterm-send-key "k" nil nil t))
 
 
 
