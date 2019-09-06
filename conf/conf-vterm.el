@@ -88,6 +88,10 @@
 (define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
 (define-key vterm-mode-map [f2]   nil)
 (define-key vterm-mode-map [f3]   nil)
+
+(define-key vterm-mode-map (kbd "C-.")   #'vterm-reset-cursor-point)
+(define-key vterm-copy-mode-map (kbd "C-.")   #'vterm-reset-cursor-point)
+
 ;; C－s 停止滚屏 C-q恢复滚屏
 (define-key vterm-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-mode-map (kbd "C-q")   #'vterm-copy-mode)
