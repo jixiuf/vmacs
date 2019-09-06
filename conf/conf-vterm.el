@@ -35,13 +35,6 @@
    ((equal (prefix-numeric-value args) 16)
     (vterm-other-window))))
 
-
-(defun vterm-compile ()
-  (interactive)
-  (vterm-send-key "a" nil nil t)
-  (vterm-send-string "c ")
-  (vterm-send-key "<return>" nil nil nil))
-
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
   (interactive)
@@ -93,7 +86,6 @@
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
-(define-key vterm-mode-map [(control return)]   #'vterm-compile)
 (define-key vterm-mode-map [f2]   nil)
 (define-key vterm-mode-map [f3]   nil)
 ;; C－s 停止滚屏 C-q恢复滚屏
@@ -119,6 +111,7 @@
   (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob)
+  (compilation-shell-minor-mode 1)
   (let ((p (get-buffer-process (current-buffer))))
     (when p
       (set-process-query-on-exit-flag p nil))))
