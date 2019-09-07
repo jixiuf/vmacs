@@ -7,7 +7,7 @@
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
-(setq-default vterm-max-scrollback 50000)
+(setq-default vterm-max-scrollback 100)
 ;; (setq vterm-toggle-prompt-regexp
 ;;   (concat "\\(?:^\\|\r\\)"
 ;; 	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
@@ -85,7 +85,6 @@
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
-(define-key vterm-mode-map (kbd "C-k")   #'vterm-kill-line)
 (define-key vterm-mode-map [f2]   nil)
 (define-key vterm-mode-map [f3]   nil)
 
