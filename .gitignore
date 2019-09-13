@@ -33,3 +33,4 @@ osx-dictionary-cli
 /go.sum
 /elpa/libgit-20190728.701/CMakeLists.txt
 /elpa/libgit-20190728.701/Makefile
+/forge-database.sqlite
