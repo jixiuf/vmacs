@@ -3,5 +3,5 @@
 # key: f
 # --
 
-${1:Field}    ${2:int64}    \`${3:form:"${1:$(un-camelcase-string yas/text)}" } ${4:json:"${1:$(un-camelcase-string yas/text)}"} ${5:toml:"${1:$(un-camelcase-string yas/text)}"} ${6:yaml:"${1:$(un-camelcase-string yas/text)}"} \`
+${1:Field}    ${2:int64}    \`${3:form:"${1:$(un-camelcase-string yas/text)}" } ${4:json:"${1:$(un-camelcase-string yas/text)}"} ${5:toml:"${1:$(un-camelcase-string yas/text)}"} ${6:yaml:"${1:$(un-camelcase-string yas/text)}"} ${7:comment:"${1:$(un-camelcase-string yas/text)}"}\`
 $0
