@@ -40,7 +40,7 @@
   (interactive)
   (if (or (save-excursion (goto-char (point-at-bol))(search-forward-regexp "filter»" nil t))
           (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
-               (save-excursion (not (search-forward-regexp vterm-toggle-prompt-regexp nil t)))))
+               (save-excursion (not (vterm-next-prompt)))))
       (call-interactively 'vmacs-vterm-self-insert)
     (if (equal last-command 'keyboard-quit)
         (call-interactively 'vmacs-vterm-self-insert)
