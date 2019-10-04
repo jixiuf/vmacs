@@ -6,6 +6,7 @@
 
 (vmacs-leader "t" 'org-agenda)   ;列出todo list等
 (vmacs-leader "T" 'org-capture)  ;新加一个todo 条目等
+(define-key evil-normal-state-map "mt" 'org-capture)
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
