@@ -15,16 +15,21 @@ source ${wordingdir}/emacs-env
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
 --prefix=${prefix} \
 --with-gnutls \
---with-xwidgets \
 --without-x \
 --without-dbus \
 --without-imagemagick \
 --with-modules \
 --with-ns \
---with-file-notification=yes \
---without-xml2 \
+--with-xml2 \
 --disable-ns-self-contained
 make
+function catch_errors() {
+    echo "script aborted, because of errors";
+    exit $?;
+}
+
+trap catch_errors ERR;
+
 make install
 rm -rf ${prefix}/Emacs.app
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
