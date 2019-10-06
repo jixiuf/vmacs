@@ -37,10 +37,10 @@
  org-agenda-inhibit-startup t
  org-agenda-scheduled-leaders (quote ("计划任务:" "计划任务(第%2d次激活): "))
  org-agenda-window-setup (quote current-window)
- org-clock-string "计时:"
- org-closed-string "已关闭:"
- org-deadline-string "最后期限:"
- org-scheduled-string "计划任务:"
+ ;; org-clock-string "计时:"
+ ;; org-closed-string "已关闭:"
+ ;; org-deadline-string "DEADLINE:"
+ ;; org-scheduled-string "SCHEDULED:"
  org-time-stamp-formats  '("<%Y-%m-%d 周%u>" . "<%Y-%m-%d 周%u %H:%M>")
  org-agenda-files  (list (expand-file-name "todo.txt" dropbox-dir))
  org-deadline-warning-days 5;;最后期限到达前5天即给出警告
@@ -59,9 +59,9 @@
                      (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
                      (sequence "|" "CANCELED(c)"))
  org-capture-templates `(("t" "Todo" entry (file+headline ,(expand-file-name "todo.txt" dropbox-dir) "Tasks")
-                          "* TODO %? 创建于:%T\n  %i\n")
+                          "* TODO %? :%T\n  %i\n")
                          ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt" dropbox-dir) "Info")
-                          "* Info %? 创建于:%T\n  %i\n")
+                          "* Info %? :%T\n  %i\n")
                          ("n" "Note" item (file ,org-default-notes-file)
                           " %? "))
  org-agenda-custom-commands '(("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file)
@@ -107,7 +107,9 @@
  )
 ;; How to automatically save all org files after marking a repeating item as DONE in the org agenda?
 (add-hook 'org-trigger-hook 'save-buffer)
-(org-defkey org-agenda-mode-map "m"        nil)
+(with-eval-after-load 'org-agenda
+  (org-defkey org-agenda-mode-map "m"        nil))
+
 
 ;;;###autoload
 (define-derived-mode novel-mode org-mode "Novel"

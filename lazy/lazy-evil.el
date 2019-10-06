@@ -153,6 +153,12 @@ if not,it will call `evil-use-register' which default bind on `\"' "
     (require 'org-src)
     (call-interactively 'org-edit-src-exit)
     )
+   ((string-match-p "*Org Agenda" (buffer-name))
+    (call-interactively 'org-agenda-set-tags)
+    )
+   ((derived-mode-p  org-mode)
+    (call-interactively 'org-ctrl-c-ctrl-c)
+    )
    (magit-blob-mode
     (vmacs-magit-blob-save))))
 
