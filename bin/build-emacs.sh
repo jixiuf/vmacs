@@ -1,5 +1,8 @@
 #!/bin/sh
 wordingdir=`dirname $0`
+# instead usr/include
+# sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+
 
 prefix=/usr/local/emacs
 if [ ! -d /usr/local/emacs ]; then
