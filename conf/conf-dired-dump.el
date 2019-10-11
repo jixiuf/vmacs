@@ -163,15 +163,10 @@
 (with-eval-after-load 'dired-x
   (add-hook 'dired-mode-hook 'dired-omit-mode);;M-o toggle 是否显示忽略的文件
   ;; 默认这些后缀的文件 不显示，M-o后才显示
-  (setq dired-omit-files (concat dired-omit-files "\\|^.*~$\\|^#.*#$\\|^\\.git$\\|^\\.svn$"))
-  (setq dired-omit-extensions '("CVS/" ".o"  ".bin" ".lbin" "beam" "pyc"
-                                ".fasl" ".ufsl" ".a" ".ln" ".blg"
-                                ".bbl" ".elc" ".lof" ".glo" ".idx"
-                                ".lot" ".fmt" ".tfm" ".class" ".fas" ".lib" ".x86f"
-                                ".sparcf" ".lo" ".la" ".toc"  ".aux" ".cp" ".fn" ".ky" ".pg"
-                                ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs"
-                                ".idx" ".lof" ".lot" ".glo" ".blg" ".bbl" ".cp" ".cps" ".fn" ".fns" ".ky"
-                                ".kys" ".pg" ".pgs" ".tp" ".tps" ".vr" ".vrs"))
+  (setq dired-omit-files (concat dired-omit-files "\\|^.*~$\\|^#.*#$\\|^\\.svn$\\|.DS_Store\\|.go-imports-packages.el\\|\\.ccls-cache"))
+  (setq dired-omit-extensions
+        (append dired-omit-extensions (list ".beam" ".swp"  "CVS/")))
+
   )
 ;;in dired mode ,C-s works like "M-s f C-s" ,only search filename in dired buffer
 ;; (setq dired-isearch-filenames t )
