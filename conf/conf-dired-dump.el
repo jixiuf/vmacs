@@ -163,7 +163,7 @@
 (with-eval-after-load 'dired-x
   (add-hook 'dired-mode-hook 'dired-omit-mode);;M-o toggle 是否显示忽略的文件
   ;; 默认这些后缀的文件 不显示，M-o后才显示
-  (setq dired-omit-files (concat dired-omit-files "\\|^\\..+$\\|^.*~$\\|^#.*#$\\|^\\.git$\\|^\\.svn$"))
+  (setq dired-omit-files (concat dired-omit-files "\\|^.*~$\\|^#.*#$\\|^\\.git$\\|^\\.svn$"))
   (setq dired-omit-extensions '("CVS/" ".o"  ".bin" ".lbin" "beam" "pyc"
                                 ".fasl" ".ufsl" ".a" ".ln" ".blg"
                                 ".bbl" ".elc" ".lof" ".glo" ".idx"
