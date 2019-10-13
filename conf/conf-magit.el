@@ -17,11 +17,15 @@
  magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace-eol to toggle
  magit-section-highlight-hook nil       ;不必hightlight,光标移动的时候，默认会显示当前section区域
  magit-section-unhighlight-hook nil)                         ;
-
 (define-key magit-mode-map (kbd "C-w") nil)
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
 (defun vmacs-magit-status-list()
   (interactive)
+  ;; Magit supports some WIP modes where it will automatically create WIP refs
+  ;; just before a potentially destructive action in a repository
+  ;; 避免不小心删掉未提交的代码
+  ;; https://magit.vc/manual/magit/Wip-Modes.html
+  (magit-wip-mode 1)                    ; magit-wip-log
   (let (list)
     (dolist (ele magit-repository-directories)
       (when (file-exists-p (car ele))
