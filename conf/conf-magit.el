@@ -21,11 +21,6 @@
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
 (defun vmacs-magit-status-list()
   (interactive)
-  ;; Magit supports some WIP modes where it will automatically create WIP refs
-  ;; just before a potentially destructive action in a repository
-  ;; 避免不小心删掉未提交的代码
-  ;; https://magit.vc/manual/magit/Wip-Modes.html
-  (magit-wip-mode 1)                    ; magit-wip-log
   (let (list)
     (dolist (ele magit-repository-directories)
       (when (file-exists-p (car ele))
@@ -104,6 +99,11 @@
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
   ;; (define-key magit-status-mode-map "q" #'ignore)
+  ;; Magit supports some WIP modes where it will automatically create WIP refs
+  ;; just before a potentially destructive action in a repository
+  ;; 避免不小心删掉未提交的代码
+  ;; https://magit.vc/manual/magit/Wip-Modes.html
+  (magit-wip-mode 1)                    ; magit-wip-log
   (let ((dir (abbreviate-file-name (directory-file-name (file-truename (magit-toplevel))))))
     (message dir)
     (unless (file-remote-p dir)
