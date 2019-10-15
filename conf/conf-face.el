@@ -1,3 +1,28 @@
+;; 如果配置好了， 下面20个汉字与40个英文字母应该等长
+;;  这个工具不错 https://blindwith.science/2019/07/443.html/
+;; here are 20 hanzi and 40 english chars, see if they are the same width
+;;
+;; ;; 1l0oOLiI
+;; aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
+;; 你你你你你你你你你你你你你你你你你你你你|
+;; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,|
+;; 。。。。。。。。。。。。。。。。。。。。|
+;; 1111111111111111111111111111111111111111|
+;; 東東東東東東東東東東東東東東東東東東東東|
+;; ここここここここここここここここここここ|
+;; ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
+;; 까까까까까까까까까까까까까까까까까까까까|
+
+;; (create-frame-font-middle-mac)
+;; (create-fontset-from-fontset-spec
+;;    "-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-fontset-mymac,
+;;  ascii:-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1,
+;; han:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
+;; cjk-misc:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
+;; kana:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
+;; hangul:-*-Apple SD Gothic Neo-normal-normal-normal-*-16-*-*-*-p-0-iso10646-1")
+;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
+;; (set-frame-font "fontset-mymac" )
 
 (defface font-lock-todo-face nil
   "Font Lock mode face used to highlight TODO."
@@ -21,20 +46,6 @@
 (font-lock-add-keywords 'emacs-lisp-mode
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
-;; recognize some things as functions
-;; (font-lock-add-keywords 'emacs-lisp-mode
-;;                         '(("\\<\\(autoload\\|setq-default\\|\\|setq-local\\|setq\\|add-hook\\||define-key\\|global-set-key\\)\\>" .
-;;                            font-lock-function-name-face)))
-;; ;; recognize some things as constants
-;; (font-lock-add-keywords 'emacs-lisp-mode
-;;                         '(("\\<\\(nil\\|\\t\\)\\_>" .
-;;                            font-lock-constant-face)))
-
-(when (and (equal system-type 'darwin) (window-system))
-  (add-hook 'after-init-hook 'create-frame-font-mac))
-
-(when (and (equal system-type 'windows-nt) (window-system))
-  (add-hook 'after-init-hook 'create-frame-font-w32))
 
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
 ;; (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
@@ -49,14 +60,14 @@
       (ivy-posframe-mode -1))
 
     (when (window-system)
-      (when (equal system-type 'darwin) (create-frame-font-mac))
-      (when (equal system-type 'windows-nt) (create-frame-font-w32))
+      ;; (when (equal system-type 'darwin) (create-frame-font-mac))
+      ;; (when (equal system-type 'windows-nt) (create-frame-font-w32))
       (window-divider-mode t)
       (set-frame-position f 40 45)
       (set-frame-size f 138 43)
       (set-frame-parameter f 'alpha 85)
       ;; (set-frame-parameter f 'foreground-color "#eeeeec")
-      ;; (set-frame-parameter f 'background-color "#202020")
+      (set-frame-parameter f 'font "Inconsolata-18")
       (set-frame-parameter f 'background-mode 'dark)
       (raise-frame))))
 
@@ -78,6 +89,7 @@
                     (top . 80)
                     ;; (foreground-color . "#eeeeec")
                     ;; (background-color . "#202020") ;;
+                    (font . "Inconsolata-18")
                     (background-mode . dark)
                     )
                    (ns ;; if frame created on mac
@@ -86,6 +98,7 @@
                     ;; (left . 160)
                     ;; (top . 80)
                     (alpha . 85)
+                    (font . "Inconsolata-18")
                     ;; (foreground-color . "#eeeeec")
                     ;; (background-color . "#202020") ;;
                     (background-mode . dark)
