@@ -13,6 +13,7 @@
 ;; 如果配置好了， 下面20个汉字与40个英文字母应该等长
 ;; here are 20 hanzi and 40 english chars, see if they are the same width
 ;;
+;; ;; 1l0oOLiI
 ;; aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
 ;; 你你你你你你你你你你你你你你你你你你你你|
 ;; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,|
