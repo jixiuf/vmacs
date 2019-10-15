@@ -30,8 +30,8 @@
 ;;  ascii:-apple-Menlo-medium-normal-normal-*-12-*-*-*-m-0-iso10646-1,
 ;; han:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
 ;; cjk-misc:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
-;; Kana:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1")
-
+;; kana:-*-PingFang SC-normal-normal-normal-*-14-*-*-*-p-0-iso10646-1,
+;; hangul:-*-Apple SD Gothic Neo-normal-normal-normal-*-16-*-*-*-p-0-iso10646-1")
 ;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
 ;; (set-frame-font "fontset-mymac" )
 
