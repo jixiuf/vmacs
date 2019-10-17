@@ -27,7 +27,7 @@
 ;; (require 'eglot)
 (defun vmacs-go-mode-hook()
   ;; (go-eldoc-setup)                    ;autoloaded
-  (lsp)
+  (lsp-deferred)
   (flymake-mode -1)
   (setq company-backends `((company-lsp company-yasnippet company-files )
                            company-dabbrev
@@ -72,16 +72,6 @@
 
 ;; (run-with-idle-timer (* 20 60) t 'vmacs-auto-build-package)
 
-;;;###autoload
-(define-derived-mode gomod-mode prog-mode "gomod"
-  "This is a mode intended to editing go.mod "
-  (set (make-local-variable 'paragraph-start) (concat "$\\|" page-delimiter))
-  (set (make-local-variable 'paragraph-separate) paragraph-start)
-  (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
-  (set (make-local-variable 'comment-start) "//")
-  (set (make-local-variable 'comment-end) "")
-  ;; (set (make-local-variable 'comment-start-skip) "/+[ \t]*")
-  (set (make-local-variable 'parse-sexp-ignore-comments) t))
 
 ;; (defun vmacs-go-format()
 ;;   (when (eq major-mode 'go-mode)
