@@ -1,0 +1,2 @@
+;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/go-mode-20191016.1834/go-mode.el  -*- no-byte-compile: t -*-
+(define-package "go-mode" "20191016.1834" "Major mode for the Go programming language" 'nil :commit "f9174b22aee956dd9a1a875b46bdadb281a912cb" :keywords '("languages" "go") :authors '(("The go-mode Authors")) :maintainer '("The go-mode Authors") :url "https://github.com/dominikh/go-mode.el")
