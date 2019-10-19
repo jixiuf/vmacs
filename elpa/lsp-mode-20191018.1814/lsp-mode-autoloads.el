@@ -51,6 +51,11 @@
 ;;;### (autoloads nil "lsp-fsharp" "lsp-fsharp.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-fsharp.el
 
+(autoload 'lsp-fsharp--workspace-load "lsp-fsharp" "\
+Load all of the provided PROJECTS.
+
+\(fn PROJECTS)" nil nil)
+
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-fsharp" '("lsp-fsharp-")))
 
 ;;;***

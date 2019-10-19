@@ -8,7 +8,7 @@
 
 ;; Author: The go-mode Authors
 ;; Version: 1.5.0
-;; Package-Version: 20191016.1834
+;; Package-Version: 20191018.2048
 ;; Keywords: languages go
 ;; URL: https://github.com/dominikh/go-mode.el
 ;;
@@ -422,6 +422,14 @@ For mode=set, all covered lines will have this weight."
       ,@(mapcar (lambda (x) `(,x font-lock-type-face))
                 (number-sequence 1 go--font-lock-func-param-num-groups)))
 
+     (go--match-interface
+      ,@(mapcar (lambda (x) `(,x font-lock-type-face))
+                (number-sequence 1 go--font-lock-func-param-num-groups)))
+
+     (go--match-type-switch-case
+      ,@(mapcar (lambda (x) `(,x font-lock-type-face))
+                (number-sequence 1 go--font-lock-func-param-num-groups)))
+
      ;; Fontify types in e.g. "var foo string".
      (go--match-ident-type-pair 1 font-lock-type-face)
 
@@ -439,14 +447,16 @@ For mode=set, all covered lines will have this weight."
      ("\\(`[^`]*`\\)" 1 font-lock-multiline) ;; raw string literal, needed for font-lock-syntactic-keywords
      (,(concat "\\_<type\\_>[[:space:]]+\\([^[:space:](]+\\)") 1 font-lock-type-face) ;; types
      (,(concat "\\_<type\\_>[[:space:]]+" go-identifier-regexp "[[:space:]]*" go-type-name-regexp) 1 font-lock-type-face) ;; types
-     (,(concat "[^[:word:][:multibyte:]]\\[\\([[:digit:]]+\\|\\.\\.\\.\\)?\\]" go-type-name-regexp) 2 font-lock-type-face) ;; Arrays/slices
-     (,(concat "\\(" go-identifier-regexp "\\)" "{") 1 font-lock-type-face)
+
+     ;; Arrays/slices: []<type> | [123]<type> | [some.Const]<type> | [someConst]<type> | [...]<type>
+     (,(concat "\\[\\(?:[[:digit:]]+\\|" go-qualified-identifier-regexp "\\|" go-identifier-regexp "\\|\\.\\.\\.\\)?\\]" go-type-name-regexp) 1 font-lock-type-face)
+
+     (,(concat go-type-name-regexp "{") 1 font-lock-type-face)
      (,(concat "\\_<map\\_>\\[[^]]+\\]" go-type-name-regexp) 1 font-lock-type-face) ;; map value type
      (,(concat "\\_<map\\_>\\[" go-type-name-regexp) 1 font-lock-type-face) ;; map key type
      (,(concat "\\_<chan\\_>[[:space:]]*\\(?:<-[[:space:]]*\\)?" go-type-name-regexp) 1 font-lock-type-face) ;; channel type
      (,(concat "\\_<\\(?:new\\|make\\)\\_>\\(?:[[:space:]]\\|)\\)*(" go-type-name-regexp) 1 font-lock-type-face) ;; new/make type
-     ;; TODO do we actually need this one or isn't it just a function call?
-     (,(concat "\\.\\s *(" go-type-name-regexp) 1 font-lock-type-face) ;; Type conversion
+     (,(concat "\\.\\s *(" go-type-name-regexp) 1 font-lock-type-face) ;; Type assertion
      ;; Like the original go-mode this also marks compound literal
      ;; fields. There, it was marked as to fix, but I grew quite
      ;; accustomed to it, so it'll stay for now.
@@ -620,7 +630,7 @@ case keyword. It returns nil for the case line itself."
                 (go--forward-line -1)))
 
         (and
-         (looking-at go--case-regexp)
+         (looking-at-p go--case-regexp)
          ;; we weren't in case list if first line ended in colon
          ;; and the "case" line ended in colon
          (not (and saw-colon (looking-at ".*:[[:space:]]*$"))))))))
@@ -634,8 +644,8 @@ case keyword. It returns nil for the case line itself."
      (eq (char-after) ?{)
 
      ;; "struct" appears before opening curly
-     (backward-word)
-     (looking-at "struct[[:space:]]"))))
+     (skip-syntax-backward " ")
+     (looking-back "struct" (- (point) 6)))))
 
 (defun go--in-composite-literal-p ()
   "Return non-nil if point is in a composite literal."
@@ -647,16 +657,43 @@ case keyword. It returns nil for the case line itself."
      (eq (char-after) ?{)
 
      (or
-      ;; Curly is preceded by non space (e.g. "Foo|{").
-      (not (looking-back "[[:space:]]" (1- (point))))
+      ;; Curly is preceded by non space (e.g. "Foo{"), definitely
+      ;; composite literal.
+      (zerop (skip-syntax-backward " "))
 
-      (and
-       (progn (skip-syntax-backward " ") t)
+      ;; Curly preceded by comma or semicolon. This is a composite
+      ;; literal with implicit type name.
+      (looking-back "[,:]" (1- (point)))
 
-       ;; Curly looks like a composite literal with implicit type
-       ;; name. In particular, the curly is the first character on the
-       ;; line or the previous character is a comma or colon.
-       (or (bolp) (looking-back "[,:]" (1- (point)))))))))
+      ;; If we made it to the beginning of line we are either a naked
+      ;; block or a composite literal with implict type name. If we
+      ;; are the latter, we must be contained in another composite
+      ;; literal.
+      (and (bolp) (go--in-composite-literal-p))))))
+
+(defun go--in-interface-p ()
+  "Return non-nil if point is inside an interface definition."
+  (save-excursion
+    (and
+     ;; inside curlies
+     (go-goto-opening-parenthesis)
+     (eq (char-after) ?{)
+
+     ;; "interface" appears before opening curly
+     (skip-syntax-backward " ")
+     (looking-back "interface" (- (point) 9)))))
+
+(defun go--in-type-switch-p ()
+  "Return non-nil if point is inside a type switch statement."
+  (save-excursion
+    (and
+     ;; inside curlies
+     (go-goto-opening-parenthesis)
+     (eq (char-after) ?{)
+
+     ;; ".(type)" appears before opening curly
+     (progn (skip-syntax-backward " ") t)
+     (looking-back "\\.(type)" (- (point) 7)))))
 
 (defun go--fill-prefix ()
   "Return fill prefix for following comment paragraph."
@@ -1268,6 +1305,69 @@ of last search.  Return t if search succeeded."
         (when regions
           (set-match-data (go--make-match-data regions))
           t)))))
+
+(defun go--match-interface (end)
+  "Search for function signatures in interface declarations.
+
+Interface items are function signatures without the \"func\"
+keyword. To find them, we search for lines that look like
+\"\\s*\\w+(\" and are enclosed in an \"interface { }\"
+declaration. Return non-nil if search succeeds."
+  (let (type-names found-match)
+    (while (and
+            (not found-match)
+
+            ;; Search for the beginning of a function name as it shows
+            ;; up in an interface (e.g. "foo(").
+            (re-search-forward (concat "\\_<" go-identifier-regexp "(") end t))
+      (let ((search-end (match-end 0)))
+        ;; Move back to before the "foo(".
+        (goto-char (match-beginning 0))
+
+        ;; Make sure we are in an interface declaration.
+        (when (go--in-interface-p)
+          ;; Invoke the normal "func" signature search.
+          (setq type-names (go--filter-match-data (go--match-func-type-names end) end))
+
+          (when type-names
+            (set-match-data (go--make-match-data type-names))
+            (setq found-match t)))
+
+        ;; Reset point to the end of the search. If we have no match
+        ;; yet we need to continue to make progress as we search. If
+        ;; we found a match, we need to reset the point since the
+        ;; function signature itself may contain another interface
+        ;; declaration.
+        (goto-char search-end)))
+
+    found-match))
+
+(defun go--match-type-switch-case (end)
+  "Search for \"case\" clauses of type switch statements.
+
+In type switch statements, each case contains one or more type
+names. Here we find the next case clause and turn its items into
+the corresponding match data. Return non-nil if search succeeds."
+  (let (found-match)
+    (while (and
+            (not found-match)
+
+            ;; Search for "case" statements.
+            (re-search-forward "^[[:space:]]*case " end t))
+
+      ;; Make sure we are in a type switch statement.
+      (when (go--in-type-switch-p)
+        (let (type-names)
+          ;; Loop over each comma separated item in the case.
+          (while (looking-at (concat "[[:space:]\n]*" go-type-name-regexp "[[:space:]]*,?"))
+            (setq type-names (nconc type-names (list (match-beginning 1) (match-end 1))))
+            (goto-char (match-end 0)))
+
+          (setq type-names (go--filter-match-data type-names end))
+          (when type-names
+            (set-match-data (go--make-match-data type-names))
+            (setq found-match t)))))
+    found-match))
 
 (defun go--match-ident-type-pair (end)
   "Search for identifier + type-name pairs.

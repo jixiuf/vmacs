@@ -1,4 +1,4 @@
-(define-package "forge" "20191015.1203" "Access Git forges from Magit."
+(define-package "forge" "20191017.1801" "Access Git forges from Magit."
   '((emacs "25.1")
     (closql "1.0.0")
     (dash "2.14.1")
