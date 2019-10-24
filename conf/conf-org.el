@@ -110,7 +110,8 @@
 (with-eval-after-load 'org-agenda
   (org-defkey org-agenda-mode-map "m"        nil))
 
-
+;; C-c C-e export to github markdown
+(eval-after-load "ox" '(require 'ox-gfm nil t))
 ;;;###autoload
 (define-derived-mode novel-mode org-mode "Novel"
   "novel mode")
