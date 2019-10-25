@@ -1,2 +1,0 @@
-;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/lsp-python-ms-20191017.534/lsp-python-ms.el  -*- no-byte-compile: t -*-
-(define-package "lsp-python-ms" "20191017.534" "lsp-mode client for Microsoft python-language-server" '((cl-lib "0.6.1") (lsp-mode "6.0") (python "0.26.1") (json "1.4") (emacs "24.4")) :commit "7c568cab921b3a6bd8d8dd0ab357d9096cfdd248" :keywords '("languages" "tools") :authors '(("Charl Botha")) :maintainer '("Andrew Christianson, Vincent Zhang") :url "https://github.com/andrew-christianson/lsp-python-ms")
