@@ -67,11 +67,14 @@
          (side . bottom)
          ;; (window-height . 1)
          )
+        ("\\*Annotate .*"
+         (display-buffer-same-window ))
         ("\\*ivy-occur.*"
          (display-buffer-same-window ))
         ;; default
         ;; (".*" (display-buffer-pop-up-window))
-        ))
+        )
+      )
 
 ;; 左右分屏
 (defun vmacs-display-buffer-pop-up-horizontally (buffer alist)
