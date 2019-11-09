@@ -33,6 +33,7 @@
  evil-flash-delay 0.5                   ;default 2
  evil-ex-search-case 'sensitive
  ;; C-e ,到行尾时,光标的位置是在最后一个字符后,还是在字符上
+ evil-move-beyond-eol  t
  evil-move-cursor-back nil)
 
 (setq-default
