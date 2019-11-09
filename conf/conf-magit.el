@@ -153,7 +153,7 @@
       (unless  (get-buffer-process buf)
         (kill-buffer buf)))))
 
-
+  (magit-add-section-hook 'magit-status-sections-hook 'magit-insert-assume-unchanged-files nil t)
 
 (provide 'conf-magit)
 
