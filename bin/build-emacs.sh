@@ -25,7 +25,11 @@ source ${wordingdir}/emacs-env
 --with-ns \
 --with-xml2 \
 --disable-ns-self-contained
-make
+./configure -C
+# cd lisp;make autoload
+# git clean -fdx
+make || make bootstrap||git clean -fdx&&make bootstrap
+ echo more info see INSTALL.REPO when compile error
 function catch_errors() {
     echo "script aborted, because of errors";
     exit $?;
