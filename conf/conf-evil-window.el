@@ -99,12 +99,11 @@
 ;; (add-to-list 'golden-ratio-inhibit-functions 'vmacs-helm-alive-p)
 
 ;; q kill buffer,C-uq bury
-(defun my-quit-window (&optional quit-argument)
-  (when (eq this-command 'quit-window)
-    (setf (car quit-argument) (if current-prefix-arg
-                                  nil t)))
-  quit-argument)
-(advice-add 'quit-window :filter-args 'my-quit-window)
+
+(defun vmacs-quit-and-kill-window ()
+  "Kill buffer and its window on quitting"
+  (local-set-key (kbd "q") 'kill-buffer-and-window))
+(add-hook 'special-mode-hook 'vmacs-quit-and-kill-window)
 
 (provide 'conf-evil-window)
 
