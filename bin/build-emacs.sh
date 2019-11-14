@@ -25,7 +25,7 @@ source ${wordingdir}/emacs-env
 --with-ns \
 --with-xml2 \
 --disable-ns-self-contained
-./configure -C
+# ./configure -C
 # cd lisp;make autoload
 # git clean -fdx
 make || make bootstrap||git clean -fdx&&make bootstrap
