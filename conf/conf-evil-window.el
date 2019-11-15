@@ -102,7 +102,7 @@
 
 (defun vmacs-quit-and-kill-window ()
   "Kill buffer and its window on quitting"
-  (local-set-key (kbd "q") 'kill-buffer-and-window))
+  (local-set-key (kbd "q") 'vmacs-kill-buffer-dwim))
 (add-hook 'special-mode-hook 'vmacs-quit-and-kill-window)
 
 (provide 'conf-evil-window)
