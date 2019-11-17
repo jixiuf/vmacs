@@ -241,4 +241,11 @@
         (goto-char (point-min))
         (evil-yank (point-min) (point-max) type register yank-handler)))))
 
+(defun vterm-open-other-window (path)
+  (if-let* ((buf (find-file-noselect path)))
+      (pop-to-buffer buf )
+    (message "Failed to open file: %s" path)))
+
+(push (list "vterm-open-other-window" 'vterm-open-other-window) vterm-eval-cmds)
+
 (provide 'conf-vterm)
