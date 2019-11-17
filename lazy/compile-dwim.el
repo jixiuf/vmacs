@@ -359,6 +359,7 @@ that alist."
         (vterm-toggle--vterm-dedicated-buffer vterm-compile-dedidated-buffer))
     (with-current-buffer (vterm-toggle-cd)
       (setq vterm-compile-dedidated-buffer (current-buffer))
+      (rename-buffer "term compile")
       (compilation-shell-minor-mode 1)
       (vterm-send-string compile-command t)
       (vterm-send-return))

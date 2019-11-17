@@ -128,8 +128,9 @@
 
 
 (defun vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
-  (rename-buffer (vmacs-generate-dir-name "term " "" title
-                                          (- centaur-tabs-label-fixed-length 1 5)) t))
+  (unless (string-equal "term compile" (buffer-name))
+    (rename-buffer (vmacs-generate-dir-name "term " "" title
+                                            (- centaur-tabs-label-fixed-length 1 5)) t)))
 
 (add-hook 'vterm-set-title-functions 'vterm-set-title-hook)
 
