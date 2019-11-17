@@ -116,7 +116,6 @@
   (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob)
-  (compilation-shell-minor-mode 1)
   (let ((p (get-buffer-process (current-buffer))))
     (when p
       (set-process-query-on-exit-flag p nil))))

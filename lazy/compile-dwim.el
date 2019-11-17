@@ -352,11 +352,18 @@ that alist."
     (set-buffer compile-dwim-run-buffer)
     (compile-dwim-run)))
 
+(defvar vterm-compile-dedidated-buffer nil)
 (defun vterm-compile ()
   (interactive)
-  (with-current-buffer (vterm-toggle-cd)
-    (vterm-send-string compile-command t)
-    (vterm-send-return)))
+  (let ((vterm-toggle-use-dedicated-buffer t)
+        (vterm-toggle--vterm-dedicated-buffer vterm-compile-dedidated-buffer))
+    (with-current-buffer (vterm-toggle-cd)
+      (setq vterm-compile-dedidated-buffer (current-buffer))
+      (compilation-shell-minor-mode 1)
+      (vterm-send-string compile-command t)
+      (vterm-send-return))
+    )
+  )
 
 ;;;###autoload
 (defun compile-dwim-run ()
