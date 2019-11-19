@@ -47,3 +47,5 @@ exec ${prefix}/Emacs.app/Contents/MacOS/Emacs "\$@"
 EOS
 
 chmod 755 ${prefix}/bin/emacs
+
+make -C ~/.emacs.d dump
