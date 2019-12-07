@@ -121,7 +121,7 @@
       (set-process-query-on-exit-flag p nil))))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
-(defun vmacs-auto-exit(buf)
+(defun vmacs-auto-exit(buf event)
   (when buf (kill-buffer buf)))
 
 (add-hook 'vterm-exit-functions #'vmacs-auto-exit)
