@@ -362,10 +362,11 @@ Move point to end-of-line ,if point was already at that position,
      ((equal major-mode 'magit-status-mode)
       (magit-mode-bury-buffer 16))
      ( (derived-mode-p 'magit-mode)
-       (magit-mode-bury-buffer 4))
-     ;; (magit-buffer-file-name            ;访问文件历史版本的blob buffer
-     ;;  (vmacs-magit-blob-quit)
-     ;;  )
+       (let ((process (magit-section-value-if 'process)))
+         (if (and process
+                  (eq (process-status process) 'run))
+             (magit-mode-bury-buffer)
+           (magit-mode-bury-buffer 4))))
      ( (derived-mode-p 'org-agenda-mode)
        (dolist (f org-agenda-files)
          (kill-buffer (get-file-buffer f)))
