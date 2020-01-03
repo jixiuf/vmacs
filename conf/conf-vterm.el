@@ -7,7 +7,7 @@
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
-(setq-default vterm-max-scrollback 1000)
+(setq-default vterm-max-scrollback (- 1000 50))
 ;; (setq vterm-toggle-prompt-regexp
 ;;   (concat "\\(?:^\\|\r\\)"
 ;; 	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
