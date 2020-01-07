@@ -1,6 +1,6 @@
 (eval-when-compile
   (require 'magit)
-  (require 'magit-libgit)
+  ;; (require 'magit-libgit)
   (require 'magit-push)
   (require 'evil-magit)
   )

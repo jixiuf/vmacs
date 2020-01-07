@@ -1,2 +1,0 @@
-;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/ivy-posframe-20191103.135/ivy-posframe.el  -*- no-byte-compile: t -*-
-(define-package "ivy-posframe" "20191103.135" "Using posframe to show Ivy" '((emacs "26.0") (posframe "0.1.0") (ivy "0.11.0")) :commit "ad83ce53a49ea693f7350ea79ef635f3f71743db" :keywords '("abbrev" "convenience" "matching" "ivy") :authors '(("Feng Shu")) :maintainer '("Feng Shu" . "tumashu@163.com") :url "https://github.com/tumashu/ivy-posframe")
