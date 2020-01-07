@@ -39,8 +39,9 @@
   "vterm ctrl-g"
   (interactive)
   (if (or (save-excursion (goto-char (point-at-bol))(search-forward-regexp "filter»" nil t))
-          (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
-               (save-excursion (not (vterm-next-prompt)))))
+          ;; (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
+          ;;      (save-excursion (not (vterm-next-prompt))))
+          )
       (if (equal last-command 'vterm-ctrl-g)
           (evil-normal-state)
         (call-interactively 'vmacs-vterm-self-insert))
