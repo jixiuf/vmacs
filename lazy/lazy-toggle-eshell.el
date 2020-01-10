@@ -177,7 +177,7 @@
 ;;           (term-send-raw-string "\^D")
 ;;           (term-send-raw-string "\^\\"))
 ;;         (when (derived-mode-p 'vterm-mode)
-;;           (vterm-send-ctrl-c))
+;;           (vterm-send-C-c))
 ;;         (kill-process proc)))))
 
 ;; (add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
