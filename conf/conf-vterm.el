@@ -100,8 +100,8 @@
 
 (define-key vterm-mode-map (kbd "C-q")   #'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "C-s")   #'vterm-copy-mode)
-(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-ctrl-c)
-(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-ctrl-c)
+(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
+(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
 
 
