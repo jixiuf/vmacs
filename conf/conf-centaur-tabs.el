@@ -29,6 +29,7 @@
      "Term")
     ((string-match-p (rx (or
                           "\*Helm"
+                          "\*company-documentation\*"
                           "\*helm"
                           "\*Flymake log\*"
                           "\*Help\*"
