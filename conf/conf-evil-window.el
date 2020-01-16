@@ -60,11 +60,13 @@
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4
 (setq display-buffer-alist
       '(
-        ("^v?term.*"
-         (display-buffer-pop-up-window)
+        ((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
+         ;; "^v?term.*"
+         ;; (display-buffer-pop-up-window)
+          (display-buffer-reuse-window display-buffer-at-bottom)
          ;; (inhibit-same-window . t)
          ;; (reusable-frames . nil)
-         (side . bottom)
+         ;; (side . bottom)
          ;; (window-height . 1)
          )
         ("\\*Annotate .*"
