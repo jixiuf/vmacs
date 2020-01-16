@@ -4,6 +4,7 @@
 
 
 (setq-default company-lsp-cache-candidates 'auto)
+(add-to-list 'lsp-file-watch-ignored "[/\\\\]\\vendor$")
 
 ;; 调整默认backends
 (setq-default company-backends
