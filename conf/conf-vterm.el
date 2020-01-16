@@ -16,6 +16,7 @@
 (require 'vterm-toggle)
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
 (add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
+(setq vterm-toggle-fullscreen-p t)
 
 
 
@@ -30,10 +31,11 @@
   (cond
    ((equal (prefix-numeric-value args) 1)
     (vterm-toggle-cd))
-   ((equal (prefix-numeric-value args) 4)
-    (vterm))
    ((equal (prefix-numeric-value args) 16)
-    (vterm-other-window))))
+    (vterm))
+   ((equal (prefix-numeric-value args) 4)
+    (let ((vterm-toggle-fullscreen-p nil))
+      (vterm-toggle-cd)))))
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
