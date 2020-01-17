@@ -18,7 +18,9 @@
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (setq company-go-show-annotation t)
-
+(lsp-register-custom-settings
+ '(("gopls.completeUnimported" t t)
+   ("gopls.staticcheck" t t)))
 (require 'lsp-clients)
 ;; (setq lsp-enable-snippet t)
 ;; (setq lsp-clients-go-func-snippet-enabled t)
