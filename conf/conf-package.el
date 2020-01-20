@@ -39,6 +39,7 @@ Return a list of installed packages or nil for every skipped package."
 
 ;; 为evil-mode 的gg 让位
 (define-key package-menu-mode-map "g" nil)
+(define-key package-menu-mode-map "/" nil)
 ;; 为evil-mode 的n让位
 (define-key tabulated-list-mode-map "n" nil)
 (define-key tabulated-list-mode-map "0" nil)
