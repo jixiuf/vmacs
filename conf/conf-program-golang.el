@@ -41,7 +41,7 @@
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t)
 
-  (add-hook 'after-save-hook 'auto-go-install t t)
+  ;; (add-hook 'after-save-hook 'auto-go-install t t)
 
 
   (setq require-final-newline nil)
@@ -54,15 +54,15 @@
   (local-set-key (kbd "C-c g") 'golang-setter-getter))
 
 
-(defun auto-go-install()
-  (when (equal major-mode 'go-mode)
-    (unless (get-buffer-process  " *go-install*")
-      (set-process-query-on-exit-flag
-       (start-process-shell-command
-        "go-install-generate-shell" " *go-install*"
-        (format "go install"))nil))
-    )
-  )
+;; (defun auto-go-install()
+;;   (when (equal major-mode 'go-mode)
+;;     (unless (get-buffer-process  " *go-install*")
+;;       (set-process-query-on-exit-flag
+;;        (start-process-shell-command
+;;         "go-install-generate-shell" " *go-install*"
+;;         (format "go install"))nil))
+;;     )
+;;   )
 
 (defun vmacs-auto-build-package()
   (interactive)
