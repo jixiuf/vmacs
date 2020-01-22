@@ -20,7 +20,8 @@
 (setq company-go-show-annotation t)
 (lsp-register-custom-settings
  '(("gopls.completeUnimported" t t)
-   ("gopls.staticcheck" t t)))
+   ;; ("gopls.staticcheck" t t)
+   ))
 (require 'lsp-clients)
 ;; (setq lsp-enable-snippet t)
 ;; (setq lsp-clients-go-func-snippet-enabled t)
@@ -64,16 +65,16 @@
 ;;     )
 ;;   )
 
-(defun vmacs-auto-build-package()
-  (interactive)
-  (require 'go-imports)
-  (go-imports-reload-packages-list)
-  (unless (get-buffer-process  " *go-install*")
-    (set-process-query-on-exit-flag
-     (start-process-shell-command
-      "go-install-generate-shell" " *go-install*"
-      (format "perl %s ~/go |cut -d '\"' -f 4|grep -v vendor|sort|uniq|sed 's/^/go install /g'|sh"
-              go-imports-find-packages-pl-path))nil)))
+;; (defun vmacs-auto-build-package()
+;;   (interactive)
+;;   (require 'go-imports)
+;;   (go-imports-reload-packages-list)
+;;   (unless (get-buffer-process  " *go-install*")
+;;     (set-process-query-on-exit-flag
+;;      (start-process-shell-command
+;;       "go-install-generate-shell" " *go-install*"
+;;       (format "perl %s ~/go |cut -d '\"' -f 4|grep -v vendor|sort|uniq|sed 's/^/go install /g'|sh"
+;;               go-imports-find-packages-pl-path))nil)))
 
 ;; (run-with-idle-timer (* 20 60) t 'vmacs-auto-build-package)
 
