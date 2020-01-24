@@ -1146,10 +1146,6 @@ in visualizer."
 (defconst undo-tree-visualizer-buffer-name " *undo-tree*")
 (defconst undo-tree-diff-buffer-name "*undo-tree Diff*")
 
-;; install history-auto-save hooks
-(add-hook 'write-file-functions 'undo-tree-save-history-from-hook)
-(add-hook 'kill-buffer-hook 'undo-tree-save-history-from-hook)
-(add-hook 'find-file-hook 'undo-tree-load-history-from-hook)
 
 
 
@@ -3406,6 +3402,10 @@ Note this will overwrite any existing undo history."
   'undo-tree-load-history-hook 'undo-tree-load-history-from-hook
   "`undo-tree-load-history-hook' is obsolete since undo-tree
  version 0.6.6. Use `undo-tree-load-history-from-hook' instead.")
+;; install history-auto-save hooks
+(add-hook 'write-file-functions 'undo-tree-save-history-from-hook)
+(add-hook 'kill-buffer-hook 'undo-tree-save-history-from-hook)
+(add-hook 'find-file-hook 'undo-tree-load-history-from-hook)
 
 
 
