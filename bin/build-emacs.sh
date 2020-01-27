@@ -20,6 +20,7 @@ source ${wordingdir}/emacs-env
 --with-gnutls \
 --without-x \
 --without-dbus \
+--with-xwidgets \
 --without-imagemagick \
 --with-modules \
 --with-ns \
