@@ -14,11 +14,10 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#616161" "#ff8272" "#b4fa72" "#fefdc2" "#a5d5fe" "#ff8ffd" "#d0d1fe" "#f1f1f1"])
+ '(auto-save-file-name-transforms '((".*" "~/.emacs.d/cache/backup_files/" t)))
  '(auto-save-visited-interval 15)
  '(auto-save-visited-mode t)
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
- '(auto-save-file-name-transforms '((".*" "~/.emacs.d/cache/backup_files/" t)))
-
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(centaur-tab-background-color "#202020")
@@ -42,7 +41,7 @@
  '(magit-save-repository-buffers 'dontask)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(docker-tramp ox-gfm forge clang-format centaur-tabs 0blayout ivy-posframe lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe dockerfile-mode json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs 0blayout ivy-posframe lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe dockerfile-mode json-mode iedit go-imports osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((flycheck-disabled-checkers emacs-lisp-checkdoc)

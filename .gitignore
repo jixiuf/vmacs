@@ -24,6 +24,7 @@
 osx-dictionary-cli
 /elpa/libgit-*/build/*
 !/elpa/libgit-*/build/libegit2.so
+!/elpa/libgit-*/build/libegit2.dylib
 /elpa/libgit-*/src/*
 /elpa/libgit-*/libgit2/*
 /elpa/archives/gnu-cn/archive-contents

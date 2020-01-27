@@ -1,0 +1,2 @@
+;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/magit-libgit-20200102.2204/magit-libgit.el  -*- no-byte-compile: t -*-
+(define-package "magit-libgit" "20200102.2204" "Libgit functionality" '((emacs "26.1") (magit "0") (libgit "0")) :commit "e5e475c61ce568a7e20ed8f795fa343a93632871" :keywords '("git" "tools" "vc") :authors '(("Jonas Bernoulli" . "jonas@bernoul.li")) :maintainer '("Jonas Bernoulli" . "jonas@bernoul.li") :url "https://github.com/magit/magit")
