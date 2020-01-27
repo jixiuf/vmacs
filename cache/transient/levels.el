@@ -1,6 +1,4 @@
-((magit-gitignore
-  (t . 7))
- (magit-log
-  (magit-log-merged . 7))
+((magit-pull
+  (transient:magit-pull:--autostash . 1))
  (magit-push
   (t . 5)))

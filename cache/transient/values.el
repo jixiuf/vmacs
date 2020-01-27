@@ -1,2 +1,2 @@
-((magit-gitignore)
+((magit-pull)
  (magit-push "--force-with-lease"))
