@@ -189,11 +189,8 @@
 (add-hook 'vterm-toggle-after-remote-login-function 'vterm-toggle-after-ssh-login)
 
 ;; (setq vterm-toggle--vterm-buffer-p-function 'vmacs-term-mode-p)
-;; (defun vmacs-term-mode-p(&optional ignore-scratch)
-;;   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
-;;       (if ignore-scratch
-;;           nil
-;;         (string-match-p "\\*scratch-.*" (buffer-name)))))
+(defun vmacs-term-mode-p()
+  (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)))
 
 
 
