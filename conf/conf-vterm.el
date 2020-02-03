@@ -7,7 +7,8 @@
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
-(setq-default vterm-max-scrollback (- 5000 51))
+(setq-default vterm-max-scrollback (- 20000 40))
+(setq-default vterm-kill-buffer-on-exit t)
 ;; (setq vterm-toggle-prompt-regexp
 ;;   (concat "\\(?:^\\|\r\\)"
 ;; 	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
@@ -36,6 +37,17 @@
    ((equal (prefix-numeric-value args) 4)
     (let ((vterm-toggle-fullscreen-p nil))
       (vterm-toggle-cd)))))
+
+(defun vmacs-vterm-toggle(&optional args)
+  (interactive "P")
+  (cond
+   ((equal (prefix-numeric-value args) 1)
+    (vterm-toggle))
+   ((equal (prefix-numeric-value args) 16)
+    (vterm))
+   ((equal (prefix-numeric-value args) 4)
+    (let ((vterm-toggle-fullscreen-p nil))
+      (vterm-toggle)))))
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
@@ -126,11 +138,6 @@
       (set-process-query-on-exit-flag p nil))))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
-(defun vmacs-auto-exit(buf event)
-  (when buf (kill-buffer buf)))
-
-(add-hook 'vterm-exit-functions #'vmacs-auto-exit)
-
 
 (defun vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
   (unless (string-equal "term compile" (buffer-name))
@@ -181,12 +188,12 @@
 
 (add-hook 'vterm-toggle-after-remote-login-function 'vterm-toggle-after-ssh-login)
 
-(setq vterm-toggle--vterm-buffer-p-function 'vmacs-term-mode-p)
-(defun vmacs-term-mode-p(&optional ignore-scratch)
-  (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
-      (if ignore-scratch
-          nil
-        (string-match-p "\\*scratch-.*" (buffer-name)))))
+;; (setq vterm-toggle--vterm-buffer-p-function 'vmacs-term-mode-p)
+;; (defun vmacs-term-mode-p(&optional ignore-scratch)
+;;   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)
+;;       (if ignore-scratch
+;;           nil
+;;         (string-match-p "\\*scratch-.*" (buffer-name)))))
 
 
 

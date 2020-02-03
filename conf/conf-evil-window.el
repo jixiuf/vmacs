@@ -62,8 +62,13 @@
       '(
         ((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
          ;; "^v?term.*"
-         ;; (display-buffer-pop-up-window)
-          (display-buffer-reuse-window display-buffer-at-bottom)
+         (display-buffer-reuse-window )
+         (inhibit-same-window . t)
+         ;; (display-buffer-reuse-window display-buffer-in-direction)
+         ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+         ;; (direction . bottom)
+         ;; (window-height . 0.3)
+         ;; (display-buffer-reuse-window display-buffer-at-bottom)
          ;; (inhibit-same-window . t)
          ;; (reusable-frames . nil)
          ;; (side . bottom)
