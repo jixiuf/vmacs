@@ -97,7 +97,7 @@
   (goto-char (point-max))
   (skip-chars-backward "\n[:space:]"))
 
-(define-key vterm-mode-map (kbd "s-t")   #'vterm)
+(define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-show)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
@@ -188,8 +188,8 @@
 
 (add-hook 'vterm-toggle-after-remote-login-function 'vterm-toggle-after-ssh-login)
 
-;; (setq vterm-toggle--vterm-buffer-p-function 'vmacs-term-mode-p)
-(defun vmacs-term-mode-p()
+(setq vterm-toggle--vterm-buffer-p-function 'vmacs-term-mode-p)
+(defun vmacs-term-mode-p(&optional args)
   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)))
 
 
