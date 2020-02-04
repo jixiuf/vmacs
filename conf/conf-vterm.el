@@ -9,6 +9,7 @@
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
 (setq-default vterm-max-scrollback (- 20000 40))
 (setq-default vterm-kill-buffer-on-exit t)
+(setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
 ;; (setq vterm-toggle-prompt-regexp
 ;;   (concat "\\(?:^\\|\r\\)"
 ;; 	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
