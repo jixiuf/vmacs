@@ -22,6 +22,8 @@
 /.lsp-session-v1
 /pyim/dcache/
 osx-dictionary-cli
+/elpa/vterm-*/build/*
+!/elpa/vterm-*/vterm-module.so
 /elpa/libgit-*/build/*
 !/elpa/libgit-*/build/libegit2.so
 !/elpa/libgit-*/build/libegit2.dylib
