@@ -17,6 +17,7 @@
 (require 'vterm)
 (require 'vterm-toggle)
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
+;; (add-hook 'vterm-toggle-hide-hook #'(lambda()(compilation-shell-minor-mode -1)))
 (add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
 (setq vterm-toggle-fullscreen-p t)
 

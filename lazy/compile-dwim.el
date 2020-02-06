@@ -355,11 +355,11 @@ that alist."
 (defun vterm-compile ()
   (interactive)
   (with-current-buffer (vterm-toggle-cd)
-    (compilation-shell-minor-mode -1)
+    ;; (compilation-shell-minor-mode -1)
     (vterm-clear-scrollback)
     (vterm-send-C-u)
-    (compilation-shell-minor-mode 1)
     (vterm-send-string compile-command t)
+    (compilation-shell-minor-mode 1)
     (vterm-send-return)))
 
 ;; (defun vterm-compile ()

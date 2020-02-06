@@ -101,7 +101,7 @@
  '(ivy-posframe ((t (:inherit default :background "gray10"))))
  '(lazy-highlight ((t (:background "ivory4"))))
  '(line-number ((t (:foreground "DarkGoldenrod2"))))
- '(line-number-current-line ((t (:foreground "green"))))
+ '(line-number-current-line ((t (:inherit line-number :foreground "green"))))
  '(link ((t (:foreground "cyan" :underline t))))
  '(linum ((t (:inherit (shadow default) :foreground "green"))))
  '(linum-relative-current-face ((t (:inherit linum :foreground "#FBDE2D" :weight bold))))
