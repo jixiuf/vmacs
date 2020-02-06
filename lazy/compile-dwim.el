@@ -1,4 +1,61 @@
-check-tools t
+;;; compile-dwim.el --- Automatic generate compile-command
+
+;; Copyright (C) 2007 Free Software Foundation, Inc.
+;;
+;; Author: Ye Wenbin <wenbinye@gmail.com>
+;; Maintainer: Ye Wenbin <wenbinye@gmail.com>
+;; Created: 8 Dec 2007
+;; Version: 0.01
+;; Keywords: tools
+;;
+;; This file is part of PDE (Perl Development Environment).
+;; But it is useful for generic programming.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Features:
+;; 1. Smart compile and run command for associated mode.
+;; 2. File timestamp check both compiling and runing
+;; 3. Easy for customization
+
+;;; Dependencies:
+;;; no extra libraries is required
+
+;;; Installation:
+;; Put this file into your load-path and the following into your ~/.emacs:
+;;   (require 'compile-dwim)
+
+;;; See also:
+;; smart-compile.el by Seiji Zenitani <zenitani@mac.com>
+;; smart-compile+.el by William XWL <william.xwl@gmail.com>
+
+;;; Code:
+
+(eval-when-compile
+  (require 'cl))
+(require 'format-spec)
+(require 'compile)
+(require 'which-func)
+
+
+(defgroup compile-dwim nil
+  "Automatic generate compile-command"
+  :group 'tools
+  :group 'pde)
+
+(defcustom compile-dwim-check-tools t
   "Whether checking makefile or ant or else."
   :type 'boolean
   :group 'compile-dwim)
@@ -295,10 +352,13 @@ that alist."
     (set-buffer compile-dwim-run-buffer)
     (compile-dwim-run)))
 
-(defvar vterm-compile-dedidated-buffer nil)
 (defun vterm-compile ()
   (interactive)
   (with-current-buffer (vterm-toggle-cd)
+    (compilation-shell-minor-mode -1)
+    (vterm-clear-scrollback)
+    (vterm-send-C-u)
+    (compilation-shell-minor-mode 1)
     (vterm-send-string compile-command t)
     (vterm-send-return)))
 
