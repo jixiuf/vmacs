@@ -359,8 +359,9 @@ that alist."
     (vterm-clear-scrollback)
     (vterm-send-C-u)
     (vterm-send-string compile-command t)
+    (vterm-send-return)
     (compilation-shell-minor-mode 1)
-    (vterm-send-return)))
+    ))
 
 ;; (defun vterm-compile ()
 ;;   (interactive)
