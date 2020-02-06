@@ -16,6 +16,7 @@
 
 (require 'vterm)
 (require 'vterm-toggle)
+
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
 ;; (add-hook 'vterm-toggle-hide-hook #'(lambda()(compilation-shell-minor-mode -1)))
 (add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
@@ -118,6 +119,7 @@
 (define-key vterm-copy-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
+(define-key vterm-mode-map (kbd "C-c C-k")   #'compilation-shell-minor-mode)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
 
 

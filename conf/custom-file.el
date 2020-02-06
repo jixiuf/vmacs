@@ -24,7 +24,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("bd5b90f699a4dc01cb4349fc1c7c679482a4806bb8c49579fbf2de6166ba55fe" "4eb91832611e5f6425993acc79f38e51fbb7ae616ad43711a4896bfd3cc11dcd" "4cd18f0ee92079a3edf5d87e7ad4d17c69dde4e36ecf6ea13f011dd65f239c30" "c22c3795ab46e04c156c860e76c1b5ad826be8a5ef7f0bf17db19f7643d44a0a"))
+   '("97187549f0155edd0a7b8956dbb77423c6214720bb7769ce4843f780d86466a1"))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
@@ -41,7 +41,7 @@
  '(magit-save-repository-buffers 'dontask)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(vterm vterm-toggle magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs ivy-posframe lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe dockerfile-mode json-mode iedit osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs ivy-posframe lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe dockerfile-mode json-mode iedit osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((flycheck-disabled-checkers emacs-lisp-checkdoc)
