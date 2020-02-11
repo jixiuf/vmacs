@@ -23,11 +23,11 @@
 (setq vterm-toggle-fullscreen-p t)
 
 
-(defun vterm-clear ()
-  "clear screen."
-  (interactive)
-  (vterm-clear-scrollback)
-  (vterm-send-C-l))
+;; (defun vterm-clear ()
+;;   "clear screen."
+;;   (interactive)
+;;   (vterm-clear-scrollback)
+;;   (vterm-send-C-l))
 
 (defun vterm-send-ctrl-x-ctrl-e ()
   "edit with editor"
@@ -105,7 +105,7 @@
   (goto-char (point-max))
   (skip-chars-backward "\n[:space:]"))
 
-(define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-show)
+(define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-cd-show)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
@@ -124,7 +124,7 @@
 (define-key vterm-copy-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
-(define-key vterm-mode-map (kbd "C-l")   #'vterm-clear)
+;; (define-key vterm-mode-map (kbd "C-l")   #'vterm-clear)
 (define-key vterm-mode-map (kbd "C-c C-k")   #'compilation-shell-minor-mode)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
 
