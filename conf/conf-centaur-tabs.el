@@ -24,8 +24,7 @@
     Other buffer group by `projectile-project-p' with project name."
   (list
    (cond
-    ((or (string-match-p "\\*scratch-.*" (buffer-name))
-         (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode))
+    ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
      "Term")
     ((string-match-p (rx (or
                           "\*Helm"
