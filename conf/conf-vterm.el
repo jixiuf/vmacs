@@ -128,9 +128,9 @@
   (evil-define-key 'insert 'local [escape] 'vterm--self-insert)
   (evil-define-key 'motion'local (kbd "C-r") 'vmacs-vterm-self-insert)
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
-  (evil-define-key 'normal 'local "y" 'evil-yank-join)
-  (evil-define-key 'motion'local "y" 'evil-yank-join)
-  (evil-define-key 'visual 'local "y" 'evil-yank-join)
+  ;; (evil-define-key 'normal 'local "y" 'evil-yank-join)
+  ;; (evil-define-key 'motion'local "y" 'evil-yank-join)
+  ;; (evil-define-key 'visual 'local "y" 'evil-yank-join)
   (evil-define-key 'normal 'local (kbd "C-p") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-n") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-r") 'vmacs-vterm-self-insert)
@@ -198,64 +198,64 @@
 
 
 
-(defun vterm-get-line ()
-  (save-excursion
-    (let ((start (point-at-bol))
-          (end (point-at-eol))
-          (width (- (window-body-width) (vterm--get-margin-width)))
-          text)
-      (while (and (<= width (- (point-at-eol) (point-at-bol)))
-                  (not (eobp)))
-        (forward-line)
-        (end-of-line)
-        (setq end (point-at-eol)))
-      (goto-char start)
-      (forward-line -1)
-      (while (and (<= width (string-width (buffer-substring-no-properties (point-at-eol) (point-at-bol) )))
-                  (not (bobp)))
-        (setq start (point-at-bol))
-        (forward-line -1)
-        (beginning-of-line))
-      (setq text (buffer-substring start end))
-      (with-temp-buffer
-        (insert text)
-        (goto-char (point-min))
-        (while  (search-forward-regexp "\n" nil t )
-          (replace-match ""))
-        (buffer-string)))))
-;; ;; vterm内，会有原本是一行的内容，会硬折行为多行，
-;; ;; 此时yank 的时候，自动将其join为一行
-(evil-define-operator evil-yank-join (beg end type register yank-handler)
-  "try join wrapped lines then yank."
-  :move-point nil
-  :repeat nil
-  (interactive "<R><x><y>")
-  (if current-prefix-arg
-      (evil-yank beg end type register yank-handler)
-    (let ((text (buffer-substring beg end))
-          (width (- (window-body-width) (vterm--get-margin-width)))
-          break pt)
-      (when (and (equal type 'line)
-                 (equal (line-number-at-pos beg)
-                        (line-number-at-pos (1- end))))
-        (setq text (vterm-get-line)))
-      (with-temp-buffer
-        (insert text)
-        (goto-char (point-min))
-        (setq pt (point))
-        (while (not break)
-          (end-of-line)
-          (if (eobp)
-              (setq break t)
-            (if (and (<= width (string-width (buffer-substring-no-properties pt (point))))
-                     (looking-at-p "\n"))
-                (progn
-                  (delete-char 1)         ;delete \n
-                  (setq pt (point)))
-              (forward-char 1)            ;goto next bol
-              (setq pt (point)))))
-        (goto-char (point-min))
-        (evil-yank (point-min) (point-max) type register yank-handler)))))
+;; (defun vterm-get-line ()
+;;   (save-excursion
+;;     (let ((start (point-at-bol))
+;;           (end (point-at-eol))
+;;           (width (- (window-body-width) (vterm--get-margin-width)))
+;;           text)
+;;       (while (and (<= width (- (point-at-eol) (point-at-bol)))
+;;                   (not (eobp)))
+;;         (forward-line)
+;;         (end-of-line)
+;;         (setq end (point-at-eol)))
+;;       (goto-char start)
+;;       (forward-line -1)
+;;       (while (and (<= width (string-width (buffer-substring-no-properties (point-at-eol) (point-at-bol) )))
+;;                   (not (bobp)))
+;;         (setq start (point-at-bol))
+;;         (forward-line -1)
+;;         (beginning-of-line))
+;;       (setq text (buffer-substring start end))
+;;       (with-temp-buffer
+;;         (insert text)
+;;         (goto-char (point-min))
+;;         (while  (search-forward-regexp "\n" nil t )
+;;           (replace-match ""))
+;;         (buffer-string)))))
+;; ;; ;; vterm内，会有原本是一行的内容，会硬折行为多行，
+;; ;; ;; 此时yank 的时候，自动将其join为一行
+;; (evil-define-operator evil-yank-join (beg end type register yank-handler)
+;;   "try join wrapped lines then yank."
+;;   :move-point nil
+;;   :repeat nil
+;;   (interactive "<R><x><y>")
+;;   (if current-prefix-arg
+;;       (evil-yank beg end type register yank-handler)
+;;     (let ((text (buffer-substring beg end))
+;;           (width (- (window-body-width) (vterm--get-margin-width)))
+;;           break pt)
+;;       (when (and (equal type 'line)
+;;                  (equal (line-number-at-pos beg)
+;;                         (line-number-at-pos (1- end))))
+;;         (setq text (vterm-get-line)))
+;;       (with-temp-buffer
+;;         (insert text)
+;;         (goto-char (point-min))
+;;         (setq pt (point))
+;;         (while (not break)
+;;           (end-of-line)
+;;           (if (eobp)
+;;               (setq break t)
+;;             (if (and (<= width (string-width (buffer-substring-no-properties pt (point))))
+;;                      (looking-at-p "\n"))
+;;                 (progn
+;;                   (delete-char 1)         ;delete \n
+;;                   (setq pt (point)))
+;;               (forward-char 1)            ;goto next bol
+;;               (setq pt (point)))))
+;;         (goto-char (point-min))
+;;         (evil-yank (point-min) (point-max) type register yank-handler)))))
 
 (defun vterm-open-other-window (path)
   (if-let* ((buf (find-file-noselect path)))
