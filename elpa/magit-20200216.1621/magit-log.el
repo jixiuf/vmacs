@@ -357,7 +357,7 @@ the upstream isn't ahead of the current branch) show."
      ((and (memq use-buffer-args '(always selected))
            (when-let ((buffer (magit-get-mode-buffer
                                mode nil
-                               (or (eq use-buffer-args 'selected) 'all))))
+                               (eq use-buffer-args 'selected))))
              (setq args  (buffer-local-value 'magit-buffer-log-args buffer))
              (setq files (buffer-local-value 'magit-buffer-log-files buffer))
              t)))
@@ -938,9 +938,10 @@ Type \\[magit-reset] to reset `HEAD' to the commit at point.
         (unless (magit-file-tracked-p (car files))
           (setq args (cons "--full-history" args)))
       (setq args (remove "--follow" args)))
-    (when (--any-p (string-match-p
-                    (concat "^" (regexp-opt magit-log-remove-graph-args)) it)
-                   args)
+    (when (and (car magit-log-remove-graph-args)
+               (--any-p (string-match-p
+                         (concat "^" (regexp-opt magit-log-remove-graph-args)) it)
+                        args))
       (setq args (remove "--graph" args)))
     (unless (member "--graph" args)
       (setq args (remove "--color" args)))
@@ -1109,6 +1110,8 @@ Do not add this to a hook variable."
   (when (eq style 'cherry)
     (reverse-region (point-min) (point-max)))
   (let ((magit-log-count 0))
+    (when (looking-at "^\\.\\.\\.")
+      (magit-delete-line))
     (magit-wash-sequence (apply-partially 'magit-log-wash-rev style
                                           (magit-abbrev-length)))
     (if (derived-mode-p 'magit-log-mode 'magit-reflog-mode)
@@ -1256,7 +1259,7 @@ Do not add this to a hook variable."
                 (forward-line -1)
                 (looking-at "[-_/|\\*o<>. ]*"))
               (setq graph (match-string 0))
-              (unless (string-match-p "[/\\]" graph)
+              (unless (string-match-p "[/\\.]" graph)
                 (insert graph ?\n))))))))
   t)
 

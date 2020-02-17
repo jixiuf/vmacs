@@ -235,9 +235,11 @@ and Buffer Arguments'."
   :package-version '(magit . "3.0.0")
   :group 'magit-buffers
   :group 'magit-commands
-  :type '(choice (const :tag "always use args from buffer" always)
-                 (const :tag "use args from buffer if it is current" current)
-                 (const :tag "never use args from buffer" never)))
+  :type '(choice
+          (const :tag "always use args from buffer" always)
+          (const :tag "use args from buffer if displayed in frame" selected)
+          (const :tag "use args from buffer if it is current" current)
+          (const :tag "never use args from buffer" never)))
 
 (defcustom magit-direct-use-buffer-arguments 'selected
   "Whether certain commands reuse arguments active in relevant buffer.
@@ -264,9 +266,11 @@ and Buffer Arguments'."
   :package-version '(magit . "3.0.0")
   :group 'magit-buffers
   :group 'magit-commands
-  :type '(choice (const :tag "always use args from buffer" always)
-                 (const :tag "use args from buffer if it is current" current)
-                 (const :tag "never use args from buffer" never)))
+  :type '(choice
+          (const :tag "always use args from buffer" always)
+          (const :tag "use args from buffer if displayed in frame" selected)
+          (const :tag "use args from buffer if it is current" current)
+          (const :tag "never use args from buffer" never)))
 
 (defcustom magit-region-highlight-hook '(magit-diff-update-hunk-region)
   "Functions used to highlight the region.
@@ -540,6 +544,10 @@ Magit is documented in info node `(magit)'."
 (put 'magit-buffer-refname 'permanent-local t)
 (put 'magit-buffer-revision 'permanent-local t)
 (put 'magit-buffer-revision-hash 'permanent-local t)
+
+;; `magit-status' re-enables mode function but its refresher
+;; function does not reinstate this.
+(put 'magit-buffer-diff-files-suspended 'permanent-local t)
 
 (defvar-local magit-refresh-args nil
   "Obsolete.  Possibly the arguments used to refresh the current buffer.
