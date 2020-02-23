@@ -4,7 +4,7 @@ wordingdir=`dirname $0`
 # sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
 
 
-export PATH=/usr/local/opt/gcc/bin:$PATH
+# export PATH=/usr/local/opt/gcc/bin:$PATH
 prefix=/usr/local/emacs
 if [ ! -d /usr/local/emacs ]; then
     sudo mkdir -p /usr/local/emacs ;
@@ -14,6 +14,7 @@ echo ${prefix}
 # echo ${wordingdir}/emacs-env
 source ${wordingdir}/emacs-env
 ./autogen.sh
+# CC=/usr/local/opt/gcc/bin/gcc-9 \
 ./configure \
 --disable-silent-rules \
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
@@ -22,12 +23,12 @@ source ${wordingdir}/emacs-env
 --with-gnutls \
 --without-x \
 --without-dbus \
---with-xwidgets \
 --without-imagemagick \
 --with-modules \
 --with-ns \
 --with-xml2 \
 --disable-ns-self-contained
+# --with-xwidgets \
 # ./configure -C
 # cd lisp;make autoload
 # git clean -fdx
