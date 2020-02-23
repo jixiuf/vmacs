@@ -17,6 +17,7 @@ source ${wordingdir}/emacs-env
 --disable-silent-rules \
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
 --prefix=${prefix} \
+--with-nativecomp \
 --with-gnutls \
 --without-x \
 --without-dbus \
@@ -29,7 +30,7 @@ source ${wordingdir}/emacs-env
 # ./configure -C
 # cd lisp;make autoload
 # git clean -fdx
-make || make bootstrap||git clean -fdx&&make bootstrap
+make -J4 || make bootstrap -J4||git clean -fdx&&make bootstrap -J4
  echo more info see INSTALL.REPO when compile error
 function catch_errors() {
     echo "script aborted, because of errors";
