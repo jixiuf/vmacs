@@ -4,6 +4,7 @@ wordingdir=`dirname $0`
 # sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
 
 
+export PATH=/usr/local/opt/gcc/bin:$PATH
 prefix=/usr/local/emacs
 if [ ! -d /usr/local/emacs ]; then
     sudo mkdir -p /usr/local/emacs ;
@@ -30,8 +31,8 @@ source ${wordingdir}/emacs-env
 # ./configure -C
 # cd lisp;make autoload
 # git clean -fdx
-make -J4 || make bootstrap -J4||git clean -fdx&&make bootstrap -J4
- echo more info see INSTALL.REPO when compile error
+make -j 4 || make bootstrap -j 4||git clean -fdx&&make bootstrap -j 4
+echo more info see INSTALL.REPO when compile error
 function catch_errors() {
     echo "script aborted, because of errors";
     exit $?;
