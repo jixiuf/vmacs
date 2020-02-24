@@ -38,7 +38,7 @@
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
   ;; (add-hook 'before-save-hook 'gofmt-before-save t t)
-  ;; (add-hook 'before-save-hook #'lsp-organize-imports t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t)
   ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
   ;; (add-hook 'after-save-hook 'auto-go-install t t)
   (setq require-final-newline nil)
