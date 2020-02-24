@@ -21,22 +21,22 @@
   (message "toggle diff show whitespace at end of line"))
 ;; (setq-default magit-log-format-graph-function 'magit-log-format-unicode-graph)
 
-;;;###autoload
-(defun vmacs-update-repo-revision()
-  (when  (or (string-prefix-p "magit-commit" (symbol-name last-command))
-             (string-prefix-p "magit-commit" (symbol-name this-command))
-             (string-prefix-p "with-editor-finish" (symbol-name this-command))
-             (string-prefix-p "with-editor-finish" (symbol-name last-command))
-             )
-    (let* (( repos (magit-toplevel))
-           (config-file (expand-file-name "config.online.toml" repos)))
-      (when (and repos (file-exists-p config-file)
-                 (equal "master" (magit-get-current-branch)))
-        (with-current-buffer (find-file-noselect config-file)
-          (goto-char (point-min))
-          (when (search-forward-regexp "git=\"\\(.*\\)\"" nil t)
-            (replace-match (magit-rev-parse "--short" "HEAD") t t nil 1)
-            ))))))
+;; ;;;###autoload
+;; (defun vmacs-update-repo-revision()
+;;   (when  (or (string-prefix-p "magit-commit" (symbol-name last-command))
+;;              (string-prefix-p "magit-commit" (symbol-name this-command))
+;;              (string-prefix-p "with-editor-finish" (symbol-name this-command))
+;;              (string-prefix-p "with-editor-finish" (symbol-name last-command))
+;;              )
+;;     (let* (( repos (magit-toplevel))
+;;            (config-file (expand-file-name "config.online.toml" repos)))
+;;       (when (and repos (file-exists-p config-file)
+;;                  (equal "master" (magit-get-current-branch)))
+;;         (with-current-buffer (find-file-noselect config-file)
+;;           (goto-char (point-min))
+;;           (when (search-forward-regexp "git=\"\\(.*\\)\"" nil t)
+;;             (replace-match (magit-rev-parse "--short" "HEAD") t t nil 1)
+;;             ))))))
 
 ;; 浏览magit某个文件的历史版本时，调用此方法，等于恢复此文件的版本
 ;; C-cC-c vmacs-smart-double-ctrl-c会调用vmacs-magit-blob-save

@@ -117,7 +117,7 @@
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
-(add-hook 'magit-post-refresh-hook 'vmacs-update-repo-revision)
+;; (add-hook 'magit-post-refresh-hook 'vmacs-update-repo-revision)
 
 
 (defadvice magit-blob-next (around kill-all-blob-after-quit activate)
