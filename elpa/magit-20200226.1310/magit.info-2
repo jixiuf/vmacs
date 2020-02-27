@@ -770,6 +770,15 @@ using ‘magit-revision-mode’ takes considerably more time than looking at
 the same commit in ‘magit-diff-mode’, then consider setting
 ‘magit-revision-insert-related-refs’ to ‘nil’.
 
+   When you are often confronted with diffs that contain deleted files,
+then you might want to enable the ‘--irreversible-delete’ argument.  If
+you do that then diffs still show that a file was deleted but without
+also showing the complete deleted content of the file.  This argument is
+not available by default, see *note (transient)Enabling and Disabling
+Suffixes::.  Once you have done that you should enable it and save that
+setting, see *note (transient)Saving Values::.  You should do this in
+both the diff (‘d’) and the diff refresh (‘D’) transient popups.
+
 Refs Buffer Performance
 .......................
 

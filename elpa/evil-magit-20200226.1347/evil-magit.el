@@ -4,7 +4,7 @@
 
 ;; Author: Justin Burkett <justin@burkett.cc>
 ;; Package-Requires: ((evil "1.2.3") (magit "2.6.0"))
-;; Package-Version: 20200207.1437
+;; Package-Version: 20200226.1347
 ;; Homepage: https://github.com/justbur/evil-magit
 ;; Version: 0.4.1
 
@@ -53,8 +53,9 @@
 
 (defcustom evil-magit-use-y-for-yank t
   "When non nil, replace \"y\" for `magit-show-refs-popup' with
-\"yy\" for `evil-yank-line', `ys' `magit-copy-section-value',
-\"yb\" for `magit-copy-buffer-revision' and \"yr\" for
+\"yy\" for `evil-magit-yank-whole-line', `ys'
+`magit-copy-section-value', \"yb\" for
+`magit-copy-buffer-revision' and \"yr\" for
 `magit-show-refs-popup'. This keeps \"y\" for
 `magit-show-refs-popup' in the help
 popup (`magit-dispatch-popup'). Default is t."
@@ -362,7 +363,7 @@ moment.")
            (,states magit-mode-map "V"    evil-visual-line)
            (,states magit-mode-map "C-w"  evil-window-map)
            (,states magit-mode-map "y")
-           (,states magit-mode-map "yy"   evil-yank-line)
+           (,states magit-mode-map "yy"   evil-magit-yank-whole-line)
            (,states magit-mode-map "yr"   magit-show-refs            "y")
            (,states magit-mode-map "ys"   magit-copy-section-value   "C-w")
            (,states magit-mode-map "yb"   magit-copy-buffer-revision "M-w")
@@ -669,6 +670,14 @@ using `evil-magit-toggle-text-mode'"
          (evil-change-state evil-magit-state))
         (t
          (user-error "evil-magit-toggle-text-mode unexpected state"))))
+
+(evil-define-operator evil-magit-yank-whole-line
+  (beg end type register yank-handler)
+  "Yank whole line."
+  :motion evil-line-or-visual-line
+  (interactive "<R><x>")
+  (debug)
+  (evil-yank beg end type register yank-handler))
 
 ;;; evil-magit.el ends soon
 (provide 'evil-magit)

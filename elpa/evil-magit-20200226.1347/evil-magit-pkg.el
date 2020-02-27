@@ -1,0 +1,2 @@
+;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/evil-magit-20200226.1347/evil-magit.el  -*- no-byte-compile: t -*-
+(define-package "evil-magit" "20200226.1347" "evil-based key bindings for magit" '((evil "1.2.3") (magit "2.6.0")) :commit "ba0e59248f8d7f59de811ed2e1f2c565dd7da1ca" :authors '(("Justin Burkett" . "justin@burkett.cc")) :maintainer '("Justin Burkett" . "justin@burkett.cc") :url "https://github.com/justbur/evil-magit")
