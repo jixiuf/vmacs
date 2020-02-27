@@ -38,8 +38,8 @@
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
   ;; (add-hook 'before-save-hook 'gofmt-before-save t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t)
-  ;; (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
+  (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
   ;; (add-hook 'after-save-hook 'auto-go-install t t)
   (setq require-final-newline nil)
   (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
@@ -50,17 +50,17 @@
   ;; (local-set-key (kbd "C-c C-a") 'go-import-add)
   (local-set-key (kbd "C-c g") 'golang-setter-getter))
 
-(defun vmacs-auto-gofmt()
-  (let ((gitdir (magit-toplevel)))
-    (when gitdir
-      (setq gitdir (file-name-nondirectory (directory-file-name gitdir)))
-      (set-process-query-on-exit-flag
-       (start-process-shell-command
-        "gofmt" " *vmacs-gofmt*"
-        "gofmt -l -w  $(git ls-files -m --exclude-standard -o | grep .go |grep -v /vendor/)")
-       nil))))
+;; (defun vmacs-auto-gofmt()
+;;   (let ((gitdir (magit-toplevel)))
+;;     (when gitdir
+;;       (setq gitdir (file-name-nondirectory (directory-file-name gitdir)))
+;;       (set-process-query-on-exit-flag
+;;        (start-process-shell-command
+;;         "gofmt" " *vmacs-gofmt*"
+;;         (format "%s -l -w  $(git ls-files -m --exclude-standard -o | grep .go |grep -v /vendor/)" gofmt-command))
+;;        nil))))
 
-(add-hook 'magit-pre-refresh-hook #'vmacs-auto-gofmt)
+;; (add-hook 'magit-pre-refresh-hook #'vmacs-auto-gofmt)
 
 
 ;; (defun auto-go-install()
