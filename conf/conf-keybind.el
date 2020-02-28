@@ -301,8 +301,7 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "s-2") 'vmacs-split-window-vertically)
 (global-set-key  (kbd "s-C-M-3") 'vmacs-split-window-horizontally) ;hyper-2
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
-
-
+(with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 
 (provide 'conf-keybind)
 
