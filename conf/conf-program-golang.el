@@ -22,7 +22,7 @@
 (require 'lsp-clients)
 (defun vmacs-go-mode-hook()
   (lsp-deferred)
-  (flymake-mode -1)
+  ;; (flymake-mode -1)
   (setq company-backends `((company-lsp company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
