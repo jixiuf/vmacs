@@ -265,7 +265,7 @@ If USERNAME is non-nil, then make a request on behalf of that
   `github.user' for \"api.github.com\", or `github.HOST.user' if
   connecting to a Github Enterprise instance.
 
-Each package that uses `ghub' should use its own token. If AUTH
+Each package that uses `ghub' should use its own token.  If AUTH
   is nil, then the generic `ghub' token is used instead.  This
   is only acceptable for personal utilities.  A packages that
   is distributed to other users should always use this argument
@@ -379,7 +379,8 @@ called after the next request has finished.  Use the function
   (and (assq 'next (ghub-response-link-relations req))
        (or (ghub--retrieve nil req) t)))
 
-(cl-defun ghub-wait (resource &optional duration &key username auth host)
+(cl-defun ghub-wait (resource &optional duration
+                              &key username auth host forge)
   "Busy-wait up to DURATION seconds for RESOURCE to become available.
 
 DURATION specifies how many seconds to wait at most.  It defaults
@@ -393,14 +394,17 @@ See `ghub-request' for information about the other arguments."
     (setq duration 64))
   (with-local-quit
     (let ((total 0))
-      (while (not (ghub-get resource nil
-                            :noerror t
-                            :username username
-                            :auth auth
-                            :host host))
+      (while (not (ghub-request "GET" resource nil
+                                :noerror t
+                                :username username
+                                :auth auth
+                                :host host
+                                :forge forge))
         (message "Waited (%3ss of %ss) for %s..." total duration resource)
         (if (= total duration)
-            (error "Github is taking too long to create %s" resource)
+            (error "%s is taking too long to create %s"
+                   (if forge (capitalize (symbol-name forge)) "Github")
+                   resource)
           (if (> total 0)
               (let ((wait (min total (- duration total))))
                 (sit-for wait)
@@ -443,7 +447,7 @@ Signal an error if the id cannot be determined."
   (let ((fn (cl-case forge
               ((nil ghub github) 'ghub--repository-id)
               (gitlab            'glab-repository-id)
-              (gittea            'gtea-repository-id)
+              (gitea             'gtea-repository-id)
               (gogs              'gogs-repository-id)
               (bitbucket         'buck-repository-id)
               (t (intern (format "%s-repository-id" forge))))))

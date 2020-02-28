@@ -55,7 +55,7 @@ for a repository using the command `forge-add-pullreq-refspec'."
     ("l p" "pull-requests" forge-list-pullreqs)
     ("l n" "notifications" forge-list-notifications)
     ("l r" "repositories"  forge-list-repositories)
-    (7 "l a" "awaiting review"     forge-list-requested-pullreqs)
+    (7 "l a" "awaiting review"     forge-list-requested-reviews)
     (7 "o i" "owned issues"        forge-list-owned-issues)
     (7 "o p" "owned pull-requests" forge-list-owned-pullreqs)
     (7 "o r" "owned repositories"  forge-list-owned-repositories)]
@@ -749,7 +749,8 @@ information."
 (defun forge-fork (fork remote)
   "Fork the current repository to FORK and add it as a REMOTE.
 If the fork already exists, then that isn't an error; the remote
-is added anyway.  Currently this only support Github.com."
+is added anyway.  Currently this only supports github.com and
+gitlab.com."
   (interactive
    (let ((fork (magit-completing-read "Fork to"
                                       (mapcar #'car forge-owned-accounts))))
@@ -762,7 +763,8 @@ is added anyway.  Currently this only support Github.com."
     (forge--fork-repository repo fork)
     (magit-remote-add remote
                       (magit-clone--name-to-url
-                       (concat fork "/" (oref repo name)))
+                       (concat (substring (oref repo githost) nil -4) ":"
+                               fork "/" (oref repo name)))
                       (list "--fetch"))))
 
 ;;; Misc

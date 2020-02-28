@@ -1,5 +1,5 @@
 ;;; lv.el --- Other echo area
-;; Package-Version: 20200122.1200
+;; Package-Version: 20200227.1301
 
 ;; Copyright (C) 2015  Free Software Foundation, Inc.
 
@@ -82,6 +82,7 @@ Only the background color is significant."
         (if (setq buf (get-buffer " *LV*"))
             (switch-to-buffer buf 'norecord)
           (switch-to-buffer " *LV*" 'norecord)
+          (fundamental-mode)
           (set-window-hscroll lv-wnd 0)
           (setq window-size-fixed t)
           (setq mode-line-format nil)

@@ -139,7 +139,8 @@ information.
 (autoload 'forge-fork "forge-commands" "\
 Fork the current repository to FORK and add it as a REMOTE.
 If the fork already exists, then that isn't an error; the remote
-is added anyway.  Currently this only support Github.com.
+is added anyway.  Currently this only supports github.com and
+gitlab.com.
 
 \(fn FORK REMOTE)" t nil)
 
@@ -282,7 +283,7 @@ List them in a separate buffer.
 
 \(fn ID)" t nil)
 
-(autoload 'forge-list-requested-pullreqs "forge-list" "\
+(autoload 'forge-list-requested-reviews "forge-list" "\
 List pull-requests of the current repository that are awaiting your review.
 List them in a separate buffer.
 

@@ -4,7 +4,7 @@
 ;; Copyright 2011-2020 François-Xavier Bois
 
 ;; Version: 16.0.26
-;; Package-Version: 20200225.2201
+;; Package-Version: 20200227.906
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -910,7 +910,7 @@ Must be used in conjunction with web-mode-enable-block-face."
 (defvar web-mode-engine-file-regexps
   '(("angular"          . "\\.component.html\\'")
     ("archibus"         . "\\.axvw\\'")
-    ;;("artanis"          . "\\.tpl\\'") // conflict with smarty, see below
+    ("artanis"          . "\\.html\\.tpl\\'")
     ("asp"              . "\\.asp\\'")
     ("aspx"             . "\\.as[cp]x\\'")
     ("blade"            . "\\.blade\\.php\\'")
