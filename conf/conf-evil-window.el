@@ -74,6 +74,8 @@
          ;; (side . bottom)
          ;; (window-height . 1)
          )
+        ("\\*rg\\*"
+         (display-buffer-same-window ))
         ("\\*Annotate .*"
          (display-buffer-same-window ))
         ("\\*ivy-occur.*"

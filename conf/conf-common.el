@@ -234,7 +234,7 @@
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit))
 
 (defun enable-wgrep-when-entry-insert()
-  (when (derived-mode-p 'ivy-occur-mode
+  (when (derived-mode-p 'ivy-occur-mode 'rg-mode
                         'ivy-occur-grep-mode 'helm-grep-mode)
     (wgrep-change-to-wgrep-mode)))
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
