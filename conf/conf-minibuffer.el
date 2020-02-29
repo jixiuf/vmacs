@@ -45,6 +45,7 @@
 (setq max-mini-window-height 0.5)
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
+(setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)

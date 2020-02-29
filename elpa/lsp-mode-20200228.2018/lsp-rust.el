@@ -321,51 +321,61 @@ PARAMS progress report notification data."
 (defcustom lsp-rust-analyzer-server-command '("rust-analyzer")
   "Command to start rust-analyzer."
   :type '(repeat string)
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2"))
 
 (defcustom lsp-rust-analyzer-server-display-inlay-hints nil
   "Show inlay hints."
   :type 'boolean
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2"))
 
 (defcustom lsp-rust-analyzer-max-inlay-hint-length nil
   "Max inlay hint length."
   :type 'integer
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-lru-capacity nil
   "LRU capacity."
   :type 'integer
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-cargo-watch-enable t
   "Enable Cargo watch."
   :type 'boolean
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-cargo-watch-command "check"
   "Cargo watch command."
   :type 'string
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-cargo-watch-args []
   "Cargo watch args."
   :type 'lsp-string-vector
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-cargo-all-targets nil
   "Cargo watch all targets or not."
   :type 'boolean
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-use-client-watching t
   "Use client watching"
   :type 'boolean
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-exclude-globs []
   "Exclude globs"
   :type 'lsp-string-vector
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-enabled-feature-flags ["completion.insertion.add-call-parenthesis"
@@ -373,11 +383,13 @@ PARAMS progress report notification data."
                                                     "notifications.workspace-loaded"]
   "Feature flags to set."
   :type 'lsp-string-vector
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defcustom lsp-rust-analyzer-macro-expansion-method 'lsp-rust-analyzer-macro-expansion-default
   "Use a different function if you want formatted macro expansion results and syntax highlighting."
   :type 'function
+  :group 'lsp-rust
   :package-version '(lsp-mode . "6.2.2"))
 
 (defun lsp-rust-analyzer--make-init-options ()
@@ -507,7 +519,6 @@ PARAMS progress report notification data."
 
 (defvar-local lsp-rust-analyzer-inlay-hints-timer nil)
 
-;; TODO: we should update only if the current buffer has changed
 (defun lsp-rust-analyzer-update-inlay-hints (buffer)
   (if (and (lsp-rust-analyzer-initialized?)
            (eq buffer (current-buffer)))
@@ -549,12 +560,12 @@ PARAMS progress report notification data."
   (cond
    (lsp-rust-analyzer-inlay-hints-mode
     (lsp-rust-analyzer-update-inlay-hints (current-buffer))
-    (add-hook 'lsp-after-initialize-hook #'lsp-rust-analyzer-inlay-hints-change-handler nil t)
-    (add-hook 'after-change-functions #'lsp-rust-analyzer-inlay-hints-change-handler nil t))
+    (add-hook 'lsp-on-idle-hook #'lsp-rust-analyzer-inlay-hints-change-handler nil t)
+    (add-hook 'lsp-on-change-hook #'lsp-rust-analyzer-inlay-hints-change-handler nil t))
    (t
     (remove-overlays (point-min) (point-max) 'lsp-rust-analyzer-inlay-hint t)
-    (remove-hook 'lsp-after-initialize-hook #'lsp-rust-analyzer-inlay-hints-change-handler t)
-    (remove-hook 'after-change-functions #'lsp-rust-analyzer-inlay-hints-change-handler t))))
+    (remove-hook 'lsp-on-idle-hook #'lsp-rust-analyzer-inlay-hints-change-handler t)
+    (remove-hook 'lsp-on-change-hook #'lsp-rust-analyzer-inlay-hints-change-handler t))))
 
 ;; activate `lsp-rust-analyzer-inlay-hints-mode'
 (when lsp-rust-analyzer-server-display-inlay-hints

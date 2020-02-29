@@ -57,14 +57,7 @@
   (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
   ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
-    ;;(kill-buffer "*scratch*" )
-    (if (window-system)
-        (ivy-posframe-mode 1)
-      (ivy-posframe-mode -1))
-
     (when (window-system)
-      ;; (when (equal system-type 'darwin) (create-frame-font-mac))
-      ;; (when (equal system-type 'windows-nt) (create-frame-font-w32))
       (window-divider-mode t)
       (set-frame-position f 40 45)
       (set-frame-size f 138 43)

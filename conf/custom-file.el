@@ -24,7 +24,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("2d894292b30792acfa425c141960ea09c5b51eae43cf8efa3b27ba38858534e9"))
+   '("2d894292b30792acfa425c141960ea09c5b51eae43cf8efa3b27ba38858534e9" "3cdfeeda652e80e053ac3939ee55ddf3cd2a6158a4df5b74b3a265ca9036fbe9" "0877a1167991f2d766626b626507ec5e63d1dc4947b84667afac336072b7e0ae"))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
@@ -41,7 +41,7 @@
  '(magit-save-repository-buffers 'dontask)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(rg magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs ivy-posframe lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe dockerfile-mode json-mode iedit osx-dictionary dired-narrow smex ivy-dired-history counsel flx magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(rg magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link lv evil company-lsp bind-map elisp-def company-go company-posframe dockerfile-mode json-mode iedit osx-dictionary dired-narrow smex flx magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell applescript-mode bm ethan-wspace git-commit go-mode golden-ratio goto-chg logstash-conf lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((flycheck-disabled-checkers emacs-lisp-checkdoc)

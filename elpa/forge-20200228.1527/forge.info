@@ -26,7 +26,7 @@ Forge User and Developer Manual
 Forge allows you to work with Git forges, such as Github and Gitlab,
 from the comfort of Magit and the rest of Emacs.
 
-This manual is for Forge version 0.1.0 (v0.1.0-300-ga38c14ec+1).
+This manual is for Forge version 0.1.0 (v0.1.0-302-gd51ef706+1).
 
      Copyright (C) 2018-2020 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -917,7 +917,7 @@ File: forge.info,  Node: Miscellaneous,  Prev: Working with Topics,  Up: Usage
      has to be created first by forking it to an account the user has
      access to.
 
-     Currently this only support Github.com.
+     Currently this only supports Github and Gitlab.
 
    • Key ’ a, forge-add-repository
 
@@ -1007,8 +1007,8 @@ Node: Listing Topics and Notifications26583
 Node: Creating Topics30543
 Node: Editing Topics and Posts31104
 Node: Miscellaneous34468
-Node: FAQ36789
-Node: Is it possible to create a single pull-request without pulling everything?36965
+Node: FAQ36797
+Node: Is it possible to create a single pull-request without pulling everything?36973
 
 End Tag Table
 

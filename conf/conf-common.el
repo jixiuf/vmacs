@@ -68,7 +68,9 @@
  recentf-max-saved-items 300
  ring-bell-function 'ignore
 
- savehist-additional-variables '(ivy-dired-history-variable helm-dired-history-variable magit-repository-directories mew-passwd-alist kill-ring sqlserver-connection-info mysql-connection-4-complete sql-server sql-database sql-user)
+ savehist-additional-variables '(vmacs-dired-history  magit-repository-directories  kill-ring
+                                                      sqlserver-connection-info mysql-connection-4-complete
+                                                      sql-server sql-database sql-user)
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否wrap显示
  display-line-numbers 'absolute

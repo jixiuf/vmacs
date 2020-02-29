@@ -1,11 +1,13 @@
 (require 'recentf)
+(require 'magit)
 ;;;###autoload
 (defun vmacs-switch-buffer ()
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
   (let* ((completion-styles '(flex))
-         (icomplete-compute-delay .3)
+         (icomplete-compute-delay 0)    ;do not delay
+         (icomplete-delay-completions-threshold 1000000)
          (icomplete-separator "\n")
          (files (vmacs-switch-buffer--cands))
          (buf-or-file (completing-read "Switch to:" files nil t)))
@@ -49,23 +51,23 @@ The user's $HOME directory is abbreviated as a tilde."
   (let (result-list
         (default-directory default-directory)
         (magit-repos (mapcar 'car magit-repository-directories))
-        list counsel--git-dir)
+        list git-dir)
     (unless (file-remote-p default-directory)
-      (setq counsel--git-dir (counsel--git-root))
-      (when counsel--git-dir
-        (setq counsel--git-dir (abbreviate-file-name (directory-file-name (file-truename counsel--git-dir))))
-        (setq default-directory counsel--git-dir)
-        (setq list (gethash counsel--git-dir  git-repos-files-cache))
+      (setq git-dir (magit-toplevel))
+      (when git-dir
+        (setq git-dir (abbreviate-file-name (directory-file-name (file-truename git-dir))))
+        (setq default-directory git-dir)
+        (setq list (gethash git-dir  git-repos-files-cache))
         (when (or (not list) current-prefix-arg) ;prefix则会刷新缓存
           (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
-          (puthash counsel--git-dir list git-repos-files-cache))
+          (puthash git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
     (dotimes (n 5 magit-repos)
       (let ((magit-repo (nth  n magit-repos)))
         (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
-          (unless (string-equal magit-repo counsel--git-dir)
+          (unless (string-equal magit-repo git-dir)
             (setq default-directory magit-repo)
             (setq list (gethash magit-repo  git-repos-files-cache))
             (when (or (not list) current-prefix-arg)

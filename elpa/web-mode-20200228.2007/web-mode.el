@@ -4,7 +4,7 @@
 ;; Copyright 2011-2020 François-Xavier Bois
 
 ;; Version: 16.0.26
-;; Package-Version: 20200227.906
+;; Package-Version: 20200228.2007
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -5078,7 +5078,7 @@ another auto-completion with different ac-sources (e.g. ac-php)")
   (when (and name-beg name-end web-mode-engine-attr-regexp)
     (let (name)
       (setq name (buffer-substring-no-properties name-beg (1+ name-end)))
-      (message "%S" name)
+      ;;(message "%S" name)
       (cond
        ((string-match-p "^data[-]" name)
         (setq flags (logior flags 1))

@@ -139,8 +139,7 @@ information.
 (autoload 'forge-fork "forge-commands" "\
 Fork the current repository to FORK and add it as a REMOTE.
 If the fork already exists, then that isn't an error; the remote
-is added anyway.  Currently this only supports github.com and
-gitlab.com.
+is added anyway.  Currently this only supports Github and Gitlab.
 
 \(fn FORK REMOTE)" t nil)
 
