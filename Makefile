@@ -45,8 +45,8 @@ eshell:
 deps:
 	git submodule update
 # curl https://raw.githubusercontent.com/manateelazycat/awesome-tab/master/awesome-tab.el >./lazy/awesome-tab.el
-	# curl https://raw.githubusercontent.com/akermu/emacs-libvterm/master/vterm.el> ./lazy/vterm.el
-	# curl https://raw.githubusercontent.com/jixiuf/vterm-toggle/master/vterm-toggle.el> ./lazy/vterm-toggle.el
+# curl https://raw.githubusercontent.com/akermu/emacs-libvterm/master/vterm.el> ./lazy/vterm.el
+# curl https://raw.githubusercontent.com/jixiuf/vterm-toggle/master/vterm-toggle.el> ./lazy/vterm-toggle.el
 # curl https://raw.githubusercontent.com/yjwen/org-reveal/master/ox-reveal.el >./lazy/ox-reveal.el
 # curl https://raw.githubusercontent.com/magit/libegit2/master/libgit.el > ./lazy/libgit.el
 
