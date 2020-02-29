@@ -45,6 +45,7 @@
  kept-new-versions 10   ; 保留最近的6个备份文件
  kept-old-versions 10   ; 保留最早的2个备份文件
  version-control t    ; 多次备份
+ ;; create-lockfiles nil
  vc-make-backup-files t
  ;; 备份文件统一放在 ~/.emacs.d/cache/backup_files,避免每个目录生成一些临时文件
  pulse-iterations 3
@@ -67,10 +68,7 @@
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
  recentf-max-saved-items 300
  ring-bell-function 'ignore
-
- savehist-additional-variables '(vmacs-dired-history  magit-repository-directories  kill-ring
-                                                      sqlserver-connection-info mysql-connection-4-complete
-                                                      sql-server sql-database sql-user)
+ savehist-additional-variables '(vmacs-dired-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否wrap显示
  display-line-numbers 'absolute
