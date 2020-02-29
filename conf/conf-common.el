@@ -246,14 +246,6 @@
 ;; (autoload 'wgrep-abort-changes "wgrep" "disable wgrep" nil)
 ;; (add-hook 'evil-insert-state-exit-hook 'disable-wgrep-when-exit-insert)
 
-(setq-default
- enable-recursive-minibuffers t        ;在minibuffer 中也可以再次使用minibuffer
- history-delete-duplicates t          ;minibuffer 删除重复历史
- minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)) ;;;;minibuffer prompt 只读，且不允许光标进入其中
- resize-mini-windows t
- read-buffer-completion-ignore-case t
- read-file-name-completion-ignore-case t
- completion-cycle-threshold 8)
 ;; (add-hook 'minibuffer-setup-hook 'minibuf-define-key-func )
 
 

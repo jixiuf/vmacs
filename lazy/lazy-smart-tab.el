@@ -64,6 +64,8 @@
   (cond
    ;; (looking-at "\\_>") at end of symbol
    ;; (looking-at "\\>") at end of word
+   ((minibufferp)
+    (call-interactively 'minibuffer-complete))
    ((and (not buffer-read-only)
          (not (member major-mode '(term-mode org-mode json-mode novel-mode Custom-mode Info-mode text-mode)))
          (or (looking-back "^[ \t]*" (point-at-bol))        ;at bol 在行首 不适合补全

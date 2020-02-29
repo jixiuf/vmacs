@@ -212,11 +212,6 @@ they are in `bind-map-set-keys'."
 (global-set-key (kbd "s-C-M-d") 'vmacs-vterm-toggle)
 (global-set-key  (kbd "s-t") 'vmacs-vterm-toggle-cd)
 
-
-;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
-(define-key minibuffer-local-completion-map (kbd "C-l") 'minibuffer-up-parent-dir)
-(define-key minibuffer-local-map (kbd "C-l") 'minibuffer-up-parent-dir)
-
 (global-set-key [(tab)]       'smart-tab)
 (global-set-key (kbd "TAB")   'smart-tab)
 ;; (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
@@ -243,20 +238,6 @@ they are in `bind-map-set-keys'."
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
 
-(define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
-(define-key minibuffer-local-completion-map (kbd "<C-m>") 'exit-minibuffer)
-(define-key minibuffer-local-must-match-map (kbd "<C-m>") 'exit-minibuffer)
-(define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
-(define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
-
-;; (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-(autoload 'minibuffer-keyboard-quit "delsel" "" t nil)
-;; (define-key minibuffer-local-map [escape]  'minibuffer-keyboard-quit)
-(define-key minibuffer-local-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-ns-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-completion-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-must-match-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-isearch-map [escape] 'abort-recursive-edit)
 
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 

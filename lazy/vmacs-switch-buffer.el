@@ -1,93 +1,44 @@
-(defvar  vmacs-switch-buffer-map
-  (let ((map (make-sparse-keymap)))
-    ;; (define-key map (kbd "C-k") 'ivy-switch-buffer-kill)
-    (define-key map (kbd "s-o") 'vmacs-switch-buffer-other-window)
-    (define-key map (kbd "C-M-s-o") 'vmacs-switch-buffer-other-window)
-    (define-key map (kbd "C-d") 'vmacs-switch-buffer-ctrl-d)
-    (define-key map (kbd "C-M-s-i") 'vmacs-ivy-dropto-counsel-git)
-    (define-key map (kbd "s-n") 'ivy-next-line)
-    (define-key map (kbd "C-M-s-n") 'ivy-next-line)
-    (define-key map (kbd "C-M-s-p") 'ivy-previous-line)
-    (define-key map (kbd "s-p") 'ivy-previous-line)
-    map))
-
-
+(require 'recentf)
 ;;;###autoload
-(defun vmacs-switch-buffer()
-  "Switch to another buffer."
+(defun vmacs-switch-buffer ()
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (let ((this-command 'vmacs-switch-buffer))
-    (ivy-read "Switch to Buffer or File: " (vmacs-switch-buffer--cands)
-              :keymap vmacs-switch-buffer-map
-              :action #'vmacs-switch-buffer-action
-              :caller #'vmacs-switch-buffer
-              )))
+  (let* ((completion-styles '(flex))
+         (icomplete-compute-delay .3)
+         (icomplete-separator "\n")
+         (files (vmacs-switch-buffer--cands))
+         (buf-or-file (completing-read "Switch to:" files nil t)))
+    (if-let ((buf (get-buffer buf-or-file)))
+        (pop-to-buffer-same-window buf)
+      (find-file buf-or-file))))
 
 (defun vmacs-switch-buffer--cands()
-  (let ((bufs (vmacs-switch-buffer--list))
+  (let ((bufs (vmacs-buffers))
         (recentf (vmacs-recentf))
-        (views (ivy-source-views))
-        (gitfiles (vmacs-git-files))
-        )
-    (append bufs recentf views gitfiles)))
+        (gitfiles (vmacs-git-files)))
+    (append bufs recentf  gitfiles)))
 
-(defun vmacs-switch-buffer--list()
-  "Return list of buffer-related lines in Ibuffer as strings."
-  (let ((oldbuf (get-buffer "*Ibuffer*"))
-        (ibuffer-formats
-         '(((name 40 40 :left :elide) " " ;buffer-name 宽度30 靠左
-                 (mode 10 10 :left :elide)
-                 " "
-                 (filename-and-process 10 70 :left  :elide))
-           ))
-        )
-    (unless oldbuf
-      ;; Avoid messing with the user's precious window/frame configuration.
-      (save-window-excursion
-        (let ((display-buffer-overriding-action
-               '(display-buffer-same-window (inhibit-same-window . nil))))
-          (ibuffer nil "*Ibuffer*" nil t))))
-    (with-current-buffer "*Ibuffer*"
-      (when oldbuf
-        ;; Forcibly update possibly stale existing buffer.
-        (ibuffer-update nil t))
-      (goto-char (point-min))
-      (let ((ibuffer-movement-cycle nil)
-            entries)
-        (while (not (eobp))
-          (ibuffer-forward-line 1 t)
-          (let ((buf (ibuffer-current-buffer)))
-            ;; We are only interested in buffers we can actually visit.
-            ;; This filters out headings and other unusable entries.
-            (when (buffer-live-p buf)
-              (unless (vmacs-filter (buffer-name buf) ivy-ignore-buffers)
-                (push (cons (buffer-substring-no-properties
-                             (line-beginning-position)
-                             (line-end-position))
-                            buf)
-                      entries)))))
-        (nreverse entries)))))
+(setq vmacs-ignore-buffers
+      (list
+       "\\` " "\*Helm" "\*helm"
+       "\*vc-diff\*" "\*magit-" "\*vc-" "\*vc*"
+       "*Backtrace*" "*Package-Lint*" "\*Completions\*" "\*Compile-Log\*"
+       "\*vc-change-log\*" "\*VC-log\*"
+       "\*Async Shell Command\*" "\*Shell Command Output\*"
+       "\*lsp" "\*ccls" "\*gopls" "\*bingo" "\*mspyls" "\*EGLOT"
+       "\*sdcv\*" "\*tramp"  "\*Gofmt Errors\*"
+       "\*Ido Completions\*" "\*Flycheck " "\*Flymake"
+       "magit-process" "magit-diff" "magit-stash"))
 
-(defun vmacs-switch-buffer-action(x)
-  (let ((view (assoc x ivy-views)))
-    (cond
-     (view
-      (delete-other-windows)
-      (let (;; silence "Directory has changed on disk"
-            (inhibit-message t))
-        (ivy-set-view-recur (cadr view))))
-     ((bufferp x)
-      (switch-to-buffer x))
-     ((and (stringp x) (file-exists-p x))
-      (find-file x))
-     ((listp x)
-      (let ((buf-of-file (cdr x)))
-        (cond
-         ((bufferp buf-of-file)
-          (switch-to-buffer buf-of-file))
-         ((and (stringp buf-of-file) (file-exists-p buf-of-file))
-          (find-file buf-of-file))))))))
-
+(defun vmacs-buffers()
+  (cl-remove-if
+   (lambda (buf)
+     (cl-find-if
+      (lambda (f-or-r) (string-match-p f-or-r buf))
+      vmacs-ignore-buffers))
+   (mapcar (lambda(buf) (propertize (buffer-name buf) 'face 'shadow) )
+           (buffer-list))))
 
 (defun vmacs-recentf ()
   (mapcar #'abbreviate-file-name recentf-list ))
@@ -110,7 +61,7 @@
           (puthash counsel--git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
-    (dotimes (n 10 magit-repos)
+    (dotimes (n 5 magit-repos)
       (let ((magit-repo (nth  n magit-repos)))
         (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
@@ -122,48 +73,3 @@
               (puthash magit-repo list git-repos-files-cache))
             (setq result-list (append result-list list))))))
     result-list))
-
-(defun vmacs-switch-buffer-ctrl-d(&optional arg)
-  (interactive "P")
-  (if (eolp)
-      (ivy-quit-and-run
-        (let ((x (nth ivy--index (ivy-state-collection ivy-last) )))
-          (vmacs-switch-buffer-dired x)))
-    (call-interactively 'delete-char)))
-
-(defun vmacs-switch-buffer-dired(&optional x)
-  (cond
-   ((bufferp x)
-    (with-current-buffer x (dired default-directory)))
-   ((and (stringp x) (file-exists-p x))
-    (dired (file-name-directory x)))
-   ((listp x)
-    (let ((buf-of-file (cdr x)))
-      (cond
-       ((bufferp buf-of-file)
-        (with-current-buffer buf-of-file (dired default-directory)))
-       ((and (stringp buf-of-file) (file-exists-p buf-of-file))
-        (dired (file-name-directory buf-of-file))))))))
-
-
-(defun vmacs-switch-buffer-other-window()
-  (interactive)
-  (ivy-quit-and-run
-    (let ((x (nth ivy--index (ivy-state-collection ivy-last) )))
-      (cond
-       ((bufferp x)
-        (switch-to-buffer-other-window x))
-       ((and (stringp x) (file-exists-p x))
-        (find-file-other-window x))
-       ((listp x)
-        (let ((buf-of-file (cdr x)))
-          (cond
-           ((bufferp buf-of-file)
-            (switch-to-buffer-other-window buf-of-file))
-           ((and (stringp buf-of-file) (file-exists-p buf-of-file))
-            (find-file-other-window buf-of-file)))))))
-    )
-  )
-;; (ivy-set-sources 'vmacs-switch-buffer
-;;                  '((original-source) (ivy-source-views)
-;;                    (vmacs-recentf) (vmacs-git-files)))
