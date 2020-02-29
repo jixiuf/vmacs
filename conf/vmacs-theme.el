@@ -22,7 +22,7 @@
  '(completions-first-difference ((t (:inherit default :foreground "yellow" :weight extra-bold ))))
  '(selectrum-primary-highlight ((t (:inherit completions-common-part :weight bold))))
  '(selectrum-secondary-highlight ((t (:inherit selectrum-primary-highlight :foreground "gold1" :underline t))))
- '(selectrum-current-candidate ((t (:foreground "green"))))
+ '(selectrum-current-candidate ((t (:inherit highlight :foreground "green"))))
  '(cursor ((t (:background "tomato"))))
  '(custom-comment-tag ((t (:inherit default))))
  '(custom-face-tag ((t (:inherit default))))
