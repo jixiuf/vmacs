@@ -81,6 +81,17 @@ The user's $HOME directory is abbreviated as a tilde."
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 
+;; enable icomplete-mode and disable selectrum-mode
+;; (macroexpand '(with-icomplete (message "ss")))
+(defmacro with-icomplete-mode (&rest body)
+  `(let ((icomplete-mode icomplete-mode)
+         (selectrum (bound-and-true-p selectrum-mode)))
+     (unless icomplete-mode (icomplete-mode 1))
+     (when selectrum (selectrum-mode -1))
+     ,@body
+     (unless icomplete-mode (icomplete-mode -1))
+     (when selectrum (selectrum-mode 1))))
+
 ;; yank-pop icomplete 支持， selectrum-mode 有问题，故临时关selectrum-mode雇用icomplete
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
   "If last action was not a yank, run `browse-kill-ring' instead."
@@ -92,20 +103,12 @@ The user's $HOME directory is abbreviated as a tilde."
   ;; ad-do-it
   (interactive "p")
   (if (not (eq last-command 'yank))
-      (let ((icomplete-separator
-             (concat "\n" (propertize "......" 'face 'shadow) "\n "))
-            (icomplete-mode icomplete-mode)
-            (selectrum (bound-and-true-p selectrum-mode)))
-        (unless icomplete-mode (icomplete-mode 1))
-        (when selectrum
-          (selectrum-mode -1))
-        (insert
-         (completing-read "Yank from kill ring: " kill-ring nil t))
-        (unless icomplete-mode (icomplete-mode -1))
-        (when selectrum
-          (selectrum-mode 1)))
+      (with-icomplete-mode
+       (let ((icomplete-separator
+              (concat "\n" (propertize "......" 'face 'shadow) "\n ")))
+         (insert
+          (completing-read "Yank from kill ring: " kill-ring nil t))  ))
     ad-do-it))
-
 
  (when (file-directory-p "~/.emacs.d/submodule/prescient")
    (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
