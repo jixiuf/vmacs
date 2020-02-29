@@ -171,7 +171,7 @@
 ;;in dired mode ,C-s works like "M-s f C-s" ,only search filename in dired buffer
 ;; (setq dired-isearch-filenames t )
 ;;不知道出什么原因,如果delete-by-moving-to-trash 设成t ,emacs --daemon 会启动失败
-;; (setq delete-by-moving-to-trash nil);;using trash
+;; (setq delete-by-moving-to-trash t);;using trash
 ;; 如果buffer中有一个路径如/home/jixiuf/,光标移动到其上C-u C-x C-f,会以此路径默认路径
 ;; Make sure our binding preference is invoked.
 ;;(setq dired-x-hands-off-my-keys nil) (dired-x-bind-find-file)
@@ -189,10 +189,6 @@
   (when (eobp)
     (forward-line -1)
     (setq ad-return-value(dired-move-to-filename))))
-
-;; (define-key dired-mode-map (kbd "M-<") 'dired-beginning-of-buffer)
-;; (define-key dired-mode-map (kbd "M->") ' dired-end-of-buffer)
-;; 默认dird 的r 修改了, 不是 wdired-change-to-wdired-mode,现在改回
 
 ;; 把目录加入到load-path中，或load el文件
 (define-key dired-mode-map "L" 'dired-add-to-load-path-or-load-it)
@@ -218,13 +214,6 @@
 ;; 4. s n 按照文件名称的字母顺序排序。
 ;; 5. s C-s 原来的s 功能 ,C=u s C-s 可手动编辑ls 的命令
 (require 'lazy-dired-sort)
-
-
-;; 启用vmacs-dired-single 没有必要对a RET进行特殊处理了
-;; (put 'dired-find-alternate-file 'disabled nil)
-;; (define-key dired-mode-map  (kbd "a") 'dired-find-file) ;
-;; (define-key dired-mode-map  (kbd "RET") 'dired-find-alternate-file) ;
-;; (define-key dired-mode-map "\C-m" 'dired-find-alternate-file)
 (require 'vmacs-dired-single)           ;确保只有一个dired buffer的存在
 
 
