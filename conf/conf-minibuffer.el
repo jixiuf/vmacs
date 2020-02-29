@@ -48,6 +48,7 @@
 (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'vmacs-find-file))))
 (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'vmacs-find-file))))
 (vmacs-leader "ff" 'vmacs-find-file)
+(vmacs-leader "f." 'ffap)
 (vmacs-leader "SPC" 'vmacs-switch-buffer)
 
 (defun vmacs-find-file ()
