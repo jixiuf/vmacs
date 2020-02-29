@@ -17,31 +17,48 @@
                 (buffer (styles initials basic))
                 (info-menu (styles basic))))
 ;; (setq read-answer-short t)
-(define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
-(define-key minibuffer-local-completion-map (kbd "<C-m>") 'exit-minibuffer)
-(define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command)
-(define-key minibuffer-local-must-match-map (kbd "<C-m>") 'exit-minibuffer)
-(define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
-(define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
 
-;; (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-;; (autoload 'minibuffer-keyboard-quit "delsel" "" t nil)
-;; (define-key minibuffer-local-map [escape]  'minibuffer-keyboard-quit)
-(define-key minibuffer-local-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-ns-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-completion-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-must-match-map [escape] 'abort-recursive-edit)
-(define-key minibuffer-local-isearch-map [escape] 'abort-recursive-edit)
-;; 在minibuffer用C-l用于回到上层目录，通常在打开文件时用的到
-(define-key minibuffer-local-completion-map (kbd "C-l") 'icomplete-fido-backward-updir)
+(defun vmacs-minibuffer-hook()
+  (local-set-key (kbd "<C-m>") 'exit-minibuffer)
+  (local-set-key (kbd "C-l") 'backward-kill-word)
+  (local-set-key [escape] 'abort-recursive-edit)
+  (local-set-key (kbd "SPC") 'self-insert-command)
+  (local-set-key (kbd "TAB") 'minibuffer-complete) ;tab
+  (local-set-key (kbd "<tab>") 'minibuffer-complete) ;tab
+  ;; (define-key minibuffer-local-must-match-map (kbd "<C-m>") 'exit-minibuffer)
+  ;; (define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
+  ;; (define-key minibuffer-local-completion-map (kbd "<C-m>") 'exit-minibuffer)
+  (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command)
+  (define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
+  (define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
 
-(define-key minibuffer-local-map (kbd "C-l") 'icomplete-fido-backward-updir)
-(define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete) ;tab
+  ;; (autoload 'minibuffer-keyboard-quit "delsel" "" t nil)
+  ;; (define-key minibuffer-local-map [escape]  'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete))
+
+(add-hook 'minibuffer-setup-hook #'vmacs-minibuffer-hook)
 
 (file-name-shadow-mode 1)
 (minibuffer-depth-indicate-mode 1)                   ;显示minibuffer深度
 ;; (minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏
-;; (setq icomplete-prospects-height 20)
+(require 'icomplete)
+(vmacs-leader ";" 'execute-extended-command)
+(vmacs-leader "；" 'execute-extended-command)
+(vmacs-leader "wi" 'imenu)
+(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'vmacs-find-file))))
+(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'vmacs-find-file))))
+(vmacs-leader "ff" 'vmacs-find-file)
+(vmacs-leader "SPC" 'vmacs-switch-buffer)
+
+(defun vmacs-find-file ()
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
+  (interactive)
+  (let* ((icomplete-separator " . "))
+    (call-interactively #'find-file)))
+
+
+(setq icomplete-prospects-height 20)
 (setq max-mini-window-height 0.5)
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
@@ -53,7 +70,7 @@
 (setq icomplete-with-completion-tables t)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
-(icomplete-mode 1)
+;; (icomplete-mode 1)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-s") #'icomplete-forward-completions)
@@ -62,15 +79,8 @@
 (define-key icomplete-minibuffer-map (kbd "C-m") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
-(vmacs-leader ";" 'execute-extended-command)
-(vmacs-leader "；" 'execute-extended-command)
-(vmacs-leader "wi" 'imenu)
-(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
-(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-(vmacs-leader "ff" 'find-file)
-(vmacs-leader "SPC" 'vmacs-switch-buffer)
 
-
+;; yank-pop icomplete 支持， selectrum-mode 有问题，故临时关selectrum-mode雇用icomplete
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
   "If last action was not a yank, run `browse-kill-ring' instead."
   ;; yank-pop has an (interactive "*p") form which does not allow
@@ -82,9 +92,35 @@
   (interactive "p")
   (if (not (eq last-command 'yank))
       (let ((icomplete-separator
-             (concat "\n" (propertize "......" 'face 'shadow) "\n ")))
+             (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+            (icomplete-mode icomplete-mode)
+            (selectrum (bound-and-true-p selectrum-mode)))
+        (unless icomplete-mode (icomplete-mode 1))
+        (when selectrum
+          (selectrum-mode -1))
         (insert
-         (completing-read "Yank from kill ring: " kill-ring nil t)))
+         (completing-read "Yank from kill ring: " kill-ring nil t))
+        (unless icomplete-mode (icomplete-mode -1))
+        (when selectrum
+          (selectrum-mode 1)))
     ad-do-it))
+
+
+ (when (file-directory-p "~/.emacs.d/submodule/prescient")
+   (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
+ (when (file-directory-p "~/.emacs.d/submodule/selectrum")
+   (add-to-list 'load-path "~/.emacs.d/submodule/selectrum"))
+
+(require 'selectrum)
+(require 'selectrum-prescient)
+(setq selectrum-num-candidates-displayed 30)
+(add-to-list 'selectrum-minibuffer-bindings '("C-e" . selectrum-insert-current-candidate) )
+
+(setq prescient-filter-method  '(literal fuzzy initialism))
+(selectrum-mode 1)
+(selectrum-prescient-mode 1)       ; to make sorting and filtering more intelligent
+;; to save your command history on disk, so the sorting gets more
+;; intelligent over time
+(prescient-persist-mode 1)
 
 (provide 'conf-minibuffer)

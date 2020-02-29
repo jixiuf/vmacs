@@ -1,0 +1,6 @@
+[submodule "submodule/selectrum"]
+	path = submodule/selectrum
+	url = https://github.com/raxod502/selectrum.git
+[submodule "submodule/prescient"]
+	path = submodule/prescient
+	url = https://github.com/raxod502/prescient.el.git

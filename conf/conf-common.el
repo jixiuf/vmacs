@@ -246,9 +246,6 @@
 ;; (autoload 'wgrep-abort-changes "wgrep" "disable wgrep" nil)
 ;; (add-hook 'evil-insert-state-exit-hook 'disable-wgrep-when-exit-insert)
 
-;; (add-hook 'minibuffer-setup-hook 'minibuf-define-key-func )
-
-
 ;; (setq-default hippie-expand-try-functions-list
 ;;               '(
 ;;                 yas-hippie-try-expand

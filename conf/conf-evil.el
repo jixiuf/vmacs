@@ -67,6 +67,7 @@
 (add-to-list 'evil-overriding-maps '(package-menu-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-completion-map . nil))
+(add-to-list 'evil-overriding-maps '(minibuffer-inactive-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-must-match-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-isearch-map . nil))
 (add-to-list 'evil-overriding-maps '(minibuffer-local-ns-map . nil))

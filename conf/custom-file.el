@@ -24,7 +24,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("2d894292b30792acfa425c141960ea09c5b51eae43cf8efa3b27ba38858534e9" "3cdfeeda652e80e053ac3939ee55ddf3cd2a6158a4df5b74b3a265ca9036fbe9" "0877a1167991f2d766626b626507ec5e63d1dc4947b84667afac336072b7e0ae"))
+   '("6685b34d7154a65096afd962e46b9ea9eae8094628d38a8548431e87836a27ef" ))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
@@ -49,6 +49,7 @@
      (projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
      (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
      (projectile-project-compilation-cmd . "bear make")
+     (compile-command . "make lint")
      (projectile-project-run-cmd . "make run")
      (eval when
            (and
