@@ -158,9 +158,20 @@ Argument DIR directory."
 Argument STRING string.
 Argument PRED pred.
 Argument ACTION action."
-  (let ((cands vmacs-dired-history))
+  (let ((cands vmacs-dired-history)
+        (eles (vmacs-dired-history--old-read-file-name-internal
+               string pred action))
+        )
     (append cands
-            (vmacs-dired-history--old-read-file-name-internal string pred action))))
+            (if (and eles
+                     (listp eles)
+                     (stringp (car eles)))
+                (mapcar (lambda(e)
+                          (if (stringp e )
+                              (abbreviate-file-name (expand-file-name e))
+                            e))
+                        eles)
+              eles))))
 
 
 (provide 'vmacs-dired-history)
