@@ -19,6 +19,8 @@
 
 ;; c toggle case
 (defun vmacs-rg-hook()
+  (setq-local scroll-conservatively 101)
+  (setq-local scroll-margin 0)
   (define-key rg-mode-map "g" nil)
   (define-key rg-mode-map "e" nil)
   (define-key rg-mode-map "i" nil)
@@ -26,8 +28,7 @@
   (define-key rg-mode-map (kbd "z") 'rg-occur-hide-lines-matching)
   (define-key rg-mode-map (kbd "/") 'rg-occur-hide-lines-not-matching)
 
-  (evil-define-key 'normal 'local "gr" 'rg-recompile)
-  )
+  (evil-define-key 'normal 'local "gr" 'rg-recompile))
 
 (add-hook 'rg-mode-hook #'vmacs-rg-hook)
 
