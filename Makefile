@@ -29,7 +29,7 @@ clean:
 	@rm -rf *.elc
 clean-elpa:
 	find elpa -name "*.elc" -exec rm {} \;
-dump: clean update-autoload-cookie
+dump: clean update-autoload-cookie deps
 # @ln -sf  `pwd`/post-receive .git/hooks/
 # @ln -sf  `pwd`/pre-push .git/hooks/ #
 	@-pkill  -f dump-emacs-portable
