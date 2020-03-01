@@ -1,6 +1,8 @@
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
-(require 'magit)
+(declare-function magit-toplevel "magit")
+
+;; (require 'magit)
 ;;;###autoload
 (defun vmacs-switch-buffer ()
   "Open `recent-list' item in a new buffer.
