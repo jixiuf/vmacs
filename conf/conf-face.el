@@ -58,14 +58,14 @@
   ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     (when (window-system)
+      (set-frame-parameter f 'font "Sarasa Mono CL-18")
+      (set-frame-parameter f 'background-mode 'dark)
+      (set-frame-parameter f 'alpha 85)
       (unless (equal 'only (frame-parameter (selected-frame) 'minibuffer))
         (window-divider-mode t)
         (set-frame-position f 40 45)
         (set-frame-size f 138 43)
-        (set-frame-parameter f 'alpha 85)
         ;; (set-frame-parameter f 'foreground-color "#eeeeec")
-        (set-frame-parameter f 'font "Sarasa Mono CL-18")
-        (set-frame-parameter f 'background-mode 'dark)
         (raise-frame)))))
 
 (add-hook 'after-make-frame-functions 'emacs-daemon-after-make-frame-hook)
@@ -90,10 +90,6 @@
                     (background-mode . dark)
                     )
                    (ns ;; if frame created on mac
-                    ;; (height . 50)
-                    ;; (width . 140)
-                    ;; (left . 160)
-                    ;; (top . 80)
                     (alpha . 85)
                     (font . "Sarasa Mono CL-18")
                     ;; (foreground-color . "#eeeeec")
@@ -114,6 +110,9 @@
                    (nil ;; if on term
                     (background-mode . dark)
                     ))))
+(setq-default mode-line-format nil)
+(setq mode-line-format nil)
+
 ;;
 ;; (setq-default undo-tree-mode-lighter " Ü") ;undo
 ;; (setq-default helm-completion-mode-string " H")
@@ -148,12 +147,6 @@
 
 ;; (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 ;; ;; 然后将mode-line 的face header调成0.1，变成一条线
-(setq-default mode-line-format nil)
-(setq mode-line-format nil)
-
-
-
-
 (provide 'conf-face)
 
 ;; Local Variables:
