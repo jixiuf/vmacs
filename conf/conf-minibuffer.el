@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (setq enable-recursive-minibuffers t)        ;在minibuffer 中也可以再次使用minibuffer
 (setq history-delete-duplicates t)          ;minibuffer 删除重复历史
 (setq minibuffer-prompt-properties;minibuffer prompt 只读，且不允许光标进入其中
@@ -81,41 +82,33 @@ The user's $HOME directory is abbreviated as a tilde."
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 
-;; enable icomplete-mode and disable selectrum-mode
-;; (macroexpand '(with-icomplete (message "ss")))
-(defmacro with-icomplete-mode (&rest body)
-  `(let ((icomplete-mode icomplete-mode)
-         (selectrum (bound-and-true-p selectrum-mode)))
-     (unless icomplete-mode (icomplete-mode 1))
-     (when selectrum (selectrum-mode -1))
-     ,@body
-     (unless icomplete-mode (icomplete-mode -1))
-     (when selectrum (selectrum-mode 1))))
+;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
+(defmacro with-mode-on (mode &rest body)
+  (declare (indent defun)
+           (doc-string 3))
+  (macroexp-let2 nil mode-p mode
+    `(progn
+       (unless ,mode-p (,mode 1))
+       ,@body
+       (unless ,mode-p (,mode -1)))))
 
-;; yank-pop icomplete 支持， selectrum-mode 有问题，故临时关selectrum-mode雇用icomplete
-(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
-  "If last action was not a yank, run `browse-kill-ring' instead."
-  ;; yank-pop has an (interactive "*p") form which does not allow
-  ;; it to run in a read-only buffer. We want browse-kill-ring to
-  ;; be allowed to run in a read only buffer, so we change the
-  ;; interactive form here. In that case, we need to
-  ;; barf-if-buffer-read-only if we're going to call yank-pop with
-  ;; ad-do-it
-  (interactive "p")
-  (if (not (eq last-command 'yank))
-      (with-icomplete-mode
-       (let ((icomplete-separator
-              (concat "\n" (propertize "......" 'face 'shadow) "\n ")))
-         (insert
-          (completing-read "Yank from kill ring: " kill-ring nil t))  ))
-    ad-do-it))
+;; (macroexpand '(with-mode-off icomplete-mode (message "ss")))
+(defmacro with-mode-off (mode &rest body)
+  (declare (indent defun)
+           (doc-string 3))
+  (macroexp-let2 nil mode-p mode
+    `(progn
+       (when ,mode-p (,mode -1))
+       ,@body
+       (when ,mode-p (,mode 1)))))
+
 
  (when (file-directory-p "~/.emacs.d/submodule/prescient")
    (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
  (when (file-directory-p "~/.emacs.d/submodule/selectrum")
    (add-to-list 'load-path "~/.emacs.d/submodule/selectrum"))
- (when (file-directory-p "~/.emacs.d/submodule/emacs-maple-minibuffer")
-   (add-to-list 'load-path "~/.emacs.d/submodule/emacs-maple-minibuffer"))
+ (when (file-directory-p "~/.emacs.d/submodule/mini-frame")
+   (add-to-list 'load-path "~/.emacs.d/submodule/mini-frame"))
 
 (require 'selectrum)
 (require 'selectrum-prescient)
@@ -129,11 +122,39 @@ The user's $HOME directory is abbreviated as a tilde."
 ;; intelligent over time
 (prescient-persist-mode 1)
 
-;; 将minibuffer放到单独的frame
-(setq maple-minibuffer:position-type 'frame-top-center)
-;; (setq maple-minibuffer:height 20)
-;; (setq maple-minibuffer:width 50)
-(require 'maple-minibuffer)
-(maple-minibuffer-mode 1)
+(require 'mini-frame)
+(setq mini-frame-show-parameters '((top . 0.2) (width . 0.7) (left . 0.2) (height . 0.8)))
+(add-to-list 'mini-frame-ignore-commands 'yank)
+(mini-frame-mode 1)
+
+;; yank-pop icomplete 支持， selectrum-mode 有问题，故临时关selectrum-mode雇用icomplete
+(defun icomplete-mode-yank-pop ()
+  (with-mode-off mini-frame-mode
+    (with-mode-off selectrum-mode
+      (with-mode-on icomplete-mode
+        (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+               ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
+               (completion-table
+                (lambda (string pred action)
+                  (if (eq action 'metadata)
+                      '(metadata (display-sort-function . identity)
+                                 (cycle-sort-function . identity))
+                    (complete-with-action
+                     action kill-ring string pred)))))
+          (insert
+           (completing-read "Yank from kill ring: " completion-table nil t)))))))
+
+(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
+  "If last action was not a yank, run `browse-kill-ring' instead."
+  ;; yank-pop has an (interactive "*p") form which does not allow
+  ;; it to run in a read-only buffer. We want browse-kill-ring to
+  ;; be allowed to run in a read only buffer, so we change the
+  ;; interactive form here. In that case, we need to
+  ;; barf-if-buffer-read-only if we're going to call yank-pop with
+  ;; ad-do-it
+  (interactive "p")
+  (if (not (eq last-command 'yank))
+      (icomplete-mode-yank-pop)
+    ad-do-it))
 
 (provide 'conf-minibuffer)

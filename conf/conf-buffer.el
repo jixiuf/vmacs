@@ -25,42 +25,14 @@
 ;; (with-eval-after-load 'dired (define-key dired-mode-map "q" 'vmacs-prev-buffer))
 (define-key evil-normal-state-map "Q" 'kill-buffer-and-window)
 
-
-
-(defvar boring-window-modes
-  '(help-mode compilation-mode log-view-mode log-edit-mode
-              org-agenda-mode magit-revision-mode ibuffer-mode))
-
-
-(defun vmacs-filter(buf ignore-buffers)
-  (cl-find-if
-   (lambda (f-or-r)
-     (if (functionp f-or-r)
-         (funcall f-or-r buf)
-       (string-match-p f-or-r buf)))
-   ignore-buffers))
-
-(defun bury-boring-windows(&optional bury-cur-win-if-boring)
-  "close boring *Help* windows with `C-g'"
-  (let ((opened-windows (window-list))
-        (cur-buf-win (get-buffer-window)))
-    (dolist (win opened-windows)
-      (with-current-buffer (window-buffer win)
-        (when (or (memq  major-mode boring-window-modes)
-                  (vmacs-filter (buffer-name) ivy-ignore-buffers))
-          (when (and (>  (length (window-list)) 1)
-                     (or bury-cur-win-if-boring
-                         (not (equal cur-buf-win win)))
-                     (delete-window win))))))))
-
-
 (defadvice keyboard-quit (before bury-boring-windows activate)
   (let ((win (active-minibuffer-window)))
     (when (windowp win)
       (switch-to-buffer (window-buffer win))))
 
   (when (equal last-command 'keyboard-quit)
-    (bury-boring-windows )))
+    (require 'lazy-buffer)
+    (bury-boring-windows)))
 
 
 (provide 'conf-buffer)

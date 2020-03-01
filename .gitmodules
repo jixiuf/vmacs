@@ -4,6 +4,6 @@
 [submodule "submodule/prescient"]
 	path = submodule/prescient
 	url = https://github.com/raxod502/prescient.el.git
-[submodule "submodule/emacs-maple-minibuffer"]
-	path = submodule/emacs-maple-minibuffer
-	url = https://github.com/honmaple/emacs-maple-minibuffer.git
+[submodule "submodule/mini-frame"]
+	path = submodule/mini-frame
+	url = https://github.com/muffinmad/emacs-mini-frame.git
