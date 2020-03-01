@@ -44,7 +44,7 @@
 (with-eval-after-load 'css-mode (require 'conf-css))
 (with-eval-after-load 'lua (require 'conf-program-lua))
 (require 'conf-face)
-(when (executable-find "gpg") (require 'conf-gpg))
+;; (when (executable-find "gpg") (require 'conf-gpg))
 (require 'conf-sql)
 
 ;; 如果你想重新编译，去掉这行前面的注释重新启动

@@ -58,14 +58,15 @@
   ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
   (with-selected-frame f
     (when (window-system)
-      (window-divider-mode t)
-      (set-frame-position f 40 45)
-      (set-frame-size f 138 43)
-      (set-frame-parameter f 'alpha 85)
-      ;; (set-frame-parameter f 'foreground-color "#eeeeec")
-      (set-frame-parameter f 'font "Sarasa Mono CL-18")
-      (set-frame-parameter f 'background-mode 'dark)
-      (raise-frame))))
+      (unless (equal 'only (frame-parameter (selected-frame) 'minibuffer))
+        (window-divider-mode t)
+        (set-frame-position f 40 45)
+        (set-frame-size f 138 43)
+        (set-frame-parameter f 'alpha 85)
+        ;; (set-frame-parameter f 'foreground-color "#eeeeec")
+        (set-frame-parameter f 'font "Sarasa Mono CL-18")
+        (set-frame-parameter f 'background-mode 'dark)
+        (raise-frame)))))
 
 (add-hook 'after-make-frame-functions 'emacs-daemon-after-make-frame-hook)
 ;; emacs-daemon-after-make-frame-hook

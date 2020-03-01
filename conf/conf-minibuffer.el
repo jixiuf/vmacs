@@ -114,6 +114,8 @@ The user's $HOME directory is abbreviated as a tilde."
    (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
  (when (file-directory-p "~/.emacs.d/submodule/selectrum")
    (add-to-list 'load-path "~/.emacs.d/submodule/selectrum"))
+ (when (file-directory-p "~/.emacs.d/submodule/emacs-maple-minibuffer")
+   (add-to-list 'load-path "~/.emacs.d/submodule/emacs-maple-minibuffer"))
 
 (require 'selectrum)
 (require 'selectrum-prescient)
@@ -126,5 +128,12 @@ The user's $HOME directory is abbreviated as a tilde."
 ;; to save your command history on disk, so the sorting gets more
 ;; intelligent over time
 (prescient-persist-mode 1)
+
+;; 将minibuffer放到单独的frame
+(setq maple-minibuffer:position-type 'frame-top-center)
+;; (setq maple-minibuffer:height 20)
+;; (setq maple-minibuffer:width 50)
+(require 'maple-minibuffer)
+(maple-minibuffer-mode 1)
 
 (provide 'conf-minibuffer)
