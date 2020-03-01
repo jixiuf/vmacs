@@ -17,6 +17,7 @@
               '((file (styles initials basic))
                 (buffer (styles initials basic))
                 (info-menu (styles basic))))
+(setq max-mini-window-height 20)        ;selectrum-num-candidates-displayed 受影响
 ;; (setq read-answer-short t)
 
 (defun vmacs-minibuffer-hook()
@@ -61,7 +62,6 @@ The user's $HOME directory is abbreviated as a tilde."
 
 
 (setq icomplete-prospects-height 20)
-(setq max-mini-window-height 0.5)
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
 (setq icomplete-delay-completions-threshold 2000)
@@ -82,25 +82,44 @@ The user's $HOME directory is abbreviated as a tilde."
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 
-;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
-(defmacro with-mode-on (mode &rest body)
-  (declare (indent defun)
-           (doc-string 3))
-  (macroexp-let2 nil mode-p mode
-    `(progn
-       (unless ,mode-p (,mode 1))
-       ,@body
-       (unless ,mode-p (,mode -1)))))
 
-;; (macroexpand '(with-mode-off icomplete-mode (message "ss")))
-(defmacro with-mode-off (mode &rest body)
-  (declare (indent defun)
-           (doc-string 3))
-  (macroexp-let2 nil mode-p mode
-    `(progn
-       (when ,mode-p (,mode -1))
-       ,@body
-       (when ,mode-p (,mode 1)))))
+;; (defun icomplete-mode-yank-pop ()
+;;   (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+;;          ;; (minibuffer-local-map minibuffer-local-map)
+;;          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
+;;          (completion-table
+;;           (lambda (string pred action)
+;;             (if (eq action 'metadata)
+;;                 '(metadata (display-sort-function . identity)
+;;                            (cycle-sort-function . identity))
+;;               (complete-with-action
+;;                action kill-ring string pred)))))
+;;     ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
+;;     ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
+;;     ;; (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
+;;     (insert
+;;      (completing-read "Yank from kill ring: " completion-table nil t))))
+
+;; this macro works
+;; ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
+;; (defmacro with-mode-on (mode &rest body)
+;;   (declare (indent defun)
+;;            (doc-string 3))
+;;   (macroexp-let2 nil mode-p mode
+;;     `(progn
+;;        (unless ,mode-p (,mode 1))
+;;        ,@body
+;;        (unless ,mode-p (,mode -1)))))
+
+;; ;; (macroexpand '(with-mode-off icomplete-mode (message "ss")))
+;; (defmacro with-mode-off (mode &rest body)
+;;   (declare (indent defun)
+;;            (doc-string 3))
+;;   (macroexp-let2 nil mode-p mode
+;;     `(progn
+;;        (when ,mode-p (,mode -1))
+;;        ,@body
+;;        (when ,mode-p (,mode 1)))))
 
 
  (when (file-directory-p "~/.emacs.d/submodule/prescient")
@@ -112,7 +131,7 @@ The user's $HOME directory is abbreviated as a tilde."
 
 (require 'selectrum)
 (require 'selectrum-prescient)
-(setq selectrum-num-candidates-displayed 20)
+(setq selectrum-num-candidates-displayed (1+ max-mini-window-height))
 (add-to-list 'selectrum-minibuffer-bindings '("C-e" . selectrum-insert-current-candidate) )
 
 (setq prescient-filter-method  '(literal fuzzy initialism))
@@ -132,25 +151,10 @@ The user's $HOME directory is abbreviated as a tilde."
 (mini-frame-mode 1)
 
 ;; yank-pop icomplete 支持， selectrum-mode 有问题，故临时关selectrum-mode雇用icomplete
-(defun icomplete-mode-yank-pop ()
-  (with-mode-off mini-frame-mode
-    (with-mode-off selectrum-mode
-      (with-mode-on icomplete-mode
-        (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
-               (minibuffer-local-map minibuffer-local-map)
-               ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
-               (completion-table
-                (lambda (string pred action)
-                  (if (eq action 'metadata)
-                      '(metadata (display-sort-function . identity)
-                                 (cycle-sort-function . identity))
-                    (complete-with-action
-                     action kill-ring string pred)))))
-          ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
-          ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
-          (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
-          (insert
-           (completing-read "Yank from kill ring: " completion-table nil t)))))))
+(defun selectrum-mode-yank-pop ()
+  (let* ((selectrum-should-sort-p nil))
+    (insert
+     (completing-read "Yank from kill ring: " kill-ring nil t))))
 
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
   "If last action was not a yank, run `browse-kill-ring' instead."
@@ -162,7 +166,7 @@ The user's $HOME directory is abbreviated as a tilde."
   ;; ad-do-it
   (interactive "p")
   (if (not (eq last-command 'yank))
-      (icomplete-mode-yank-pop)
+      (selectrum-mode-yank-pop)         ;icomplete-mode-yank-pop
     ad-do-it))
 
 (provide 'conf-minibuffer)
