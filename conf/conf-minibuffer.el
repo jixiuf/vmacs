@@ -112,7 +112,7 @@ The user's $HOME directory is abbreviated as a tilde."
 
 (require 'selectrum)
 (require 'selectrum-prescient)
-(setq selectrum-num-candidates-displayed 30)
+(setq selectrum-num-candidates-displayed 20)
 (add-to-list 'selectrum-minibuffer-bindings '("C-e" . selectrum-insert-current-candidate) )
 
 (setq prescient-filter-method  '(literal fuzzy initialism))
@@ -122,8 +122,12 @@ The user's $HOME directory is abbreviated as a tilde."
 ;; intelligent over time
 (prescient-persist-mode 1)
 
+;; 把minibuffer 搬到一个特定的frame上
 (require 'mini-frame)
-(setq mini-frame-show-parameters '((top . 0.2) (width . 0.7) (left . 0.2) (height . 0.8)))
+(setq mini-frame-show-parameters
+      '((top . 0.2) (width . 0.7) (left . 0.3) (height . 0.8)
+        (font . "Sarasa Mono CL-20")(alpha . 80)(background-color . "#202020") ))
+
 (add-to-list 'mini-frame-ignore-commands 'yank)
 (mini-frame-mode 1)
 
