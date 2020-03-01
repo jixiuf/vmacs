@@ -1,6 +1,7 @@
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
 (declare-function magit-toplevel "magit")
+(autoload 'magit-toplevel "magit" "magit toplevel " nil)
 
 ;; (require 'magit)
 ;;;###autoload

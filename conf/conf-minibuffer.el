@@ -133,6 +133,7 @@ The user's $HOME directory is abbreviated as a tilde."
     (with-mode-off selectrum-mode
       (with-mode-on icomplete-mode
         (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+               (minibuffer-local-map minibuffer-local-map)
                ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
                (completion-table
                 (lambda (string pred action)
@@ -141,6 +142,9 @@ The user's $HOME directory is abbreviated as a tilde."
                                  (cycle-sort-function . identity))
                     (complete-with-action
                      action kill-ring string pred)))))
+          ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
+          ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
+          (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
           (insert
            (completing-read "Yank from kill ring: " completion-table nil t)))))))
 
