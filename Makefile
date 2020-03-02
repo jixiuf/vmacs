@@ -2,6 +2,14 @@
 .PHONY: eshell lib
 EMACSCMD ?= emacs
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
+dump: clean update-autoload-cookie deps
+# @ln -sf  `pwd`/post-receive .git/hooks/
+# @ln -sf  `pwd`/pre-push .git/hooks/ #
+	@-pkill  -f dump-emacs-portable
+	@mkdir -p ~/.emacs.d/cache/dump/
+	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
+	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
+
 compile:lib
 	@echo "delete *.elc 以避免有问题的elc文件影响编译"
 	@rm -rf *.elc
@@ -30,13 +38,6 @@ clean:
 	@rm -rf *.elc
 clean-elpa:
 	find elpa -name "*.elc" -exec rm {} \;
-dump: clean update-autoload-cookie deps
-# @ln -sf  `pwd`/post-receive .git/hooks/
-# @ln -sf  `pwd`/pre-push .git/hooks/ #
-	@-pkill  -f dump-emacs-portable
-	@mkdir -p ~/.emacs.d/cache/dump/
-	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
-	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
 
 lib:
 	find $(PWD)/lib -exec ln -fs {} /usr/local/lib/ \;
