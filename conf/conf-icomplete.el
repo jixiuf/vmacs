@@ -27,21 +27,36 @@
 
 
 (defun icomplete-mode-yank-pop ()
-  (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
-         ;; (minibuffer-local-map minibuffer-local-map)
-         ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
-         (completion-table
-          (lambda (string pred action)
-            (if (eq action 'metadata)
-                '(metadata (display-sort-function . identity)
-                           (cycle-sort-function . identity))
-              (complete-with-action
-               action kill-ring string pred)))))
-    ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
-    ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
-    ;; (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
-    (insert
-     (completing-read "Yank from kill ring: " completion-table nil t))))
+  (with-mode-off selectrum-mode
+    (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+           (minibuffer-local-map minibuffer-local-map)
+           ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
+           (completion-table
+            (lambda (string pred action)
+              (if (eq action 'metadata)
+                  '(metadata (display-sort-function . identity)
+                             (cycle-sort-function . identity))
+                (complete-with-action
+                 action kill-ring string pred)))))
+      ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
+      ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
+      (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
+      (insert
+       (completing-read "Yank from kill ring: " completion-table nil t)))))
+
+
+(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
+  "If last action was not a yank, run `browse-kill-ring' instead."
+  ;; yank-pop has an (interactive "*p") form which does not allow
+  ;; it to run in a read-only buffer. We want browse-kill-ring to
+  ;; be allowed to run in a read only buffer, so we change the
+  ;; interactive form here. In that case, we need to
+  ;; barf-if-buffer-read-only if we're going to call yank-pop with
+  ;; ad-do-it
+  (interactive "p")
+  (if (not (eq last-command 'yank))
+      (icomplete-mode-yank-pop)
+    ad-do-it))
 
 ;; this macro works
 ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
