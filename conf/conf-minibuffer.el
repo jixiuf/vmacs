@@ -10,6 +10,7 @@
 ;; (setq completion-flex-nospace t)              ;default t
 (setq completion-pcm-complete-word-inserts-delimiters t) ;partial-completion in completion-styles
 ;; (setq completion-pcm-word-delimiters "-_./:| ")
+(setq completion-auto-help nil)         ;不主动弹出 *Completions*
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
 (setq max-mini-window-height 15)        ;selectrum-num-candidates-displayed 受影响
