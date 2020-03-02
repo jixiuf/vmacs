@@ -9,17 +9,15 @@
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (let* ((completion-styles '(prescient flex)) ;flex
-         (icomplete-compute-delay 0)    ;do not delay
+  (let* ((icomplete-compute-delay 0)    ;do not delay
          (icomplete-delay-completions-threshold 1000000)
-         (icomplete-separator "\n")
+         ;; (completion-styles '(basic)) ;flex
          (files (vmacs-switch-buffer--cands))
          (buf-or-file (completing-read "Open: " files nil t)))
     (unless (string-blank-p buf-or-file)
       (if-let ((buf (get-buffer buf-or-file)))
           (pop-to-buffer-same-window buf)
-        (when (file-exists-p buf-or-file)
-          (find-file buf-or-file))))))
+        (find-file buf-or-file)))))
 
 (defun vmacs-switch-buffer--cands()
   (let ((bufs (vmacs-buffers))
