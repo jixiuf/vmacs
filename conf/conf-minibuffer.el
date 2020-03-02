@@ -60,7 +60,7 @@
 ;; (setq mini-frame-ignore-commands nil)
 (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
 (setq mini-frame-show-parameters
-      '((top . 0.2) (width . 0.7) (left . 0.3)
+      '((top . 0.4) (width . 0.7) (left . 0.3)
         (min-height .  2)
         (height . 10)
         (minibuffer-exit . t)
