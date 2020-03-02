@@ -6,11 +6,11 @@
 ;; (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 ;; (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 ;; (vmacs-leader "ff" 'find-file)
-(setq completion-styles '(partial-completion substring initials prescient flex))
-(setq completion-category-overrides ;支持哪些stypes见completion-styles-alist
-      '((file (styles initials basic))
-        (buffer (styles initials basic))
-        (info-menu (styles basic))))
+(setq completion-styles '(basic substring initials prescient flex))
+;; (setq completion-category-overrides ;支持哪些stypes见completion-styles-alist
+;;       '((file (styles initials basic))
+;;         (buffer (styles initials basic))
+;;         (info-menu (styles basic))))
 
 (setq icomplete-prospects-height 20)
 (setq icomplete-delay-completions-threshold 0)
