@@ -97,6 +97,37 @@
 
 (global-set-key (kbd "C-x C-s") 'evil-write-all)
 (global-set-key (kbd "C-x s") 'evil-write-all)
+;; (define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
+
+(defun vmacs-leader-after-init-hook(&optional frame)
+  (vmacs-leader-for-map magit-mode-map 'magit)
+  (vmacs-leader-for-map magit-diff-mode-map 'magit)
+  (vmacs-leader-for-map magit-stash-mode-map 'magit)
+  (vmacs-leader-for-map log-view-mode-map 'magit)
+  (vmacs-leader-for-map tabulated-list-mode-map 'tabulated-list)
+  (vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
+  (vmacs-leader-for-map dired-mode-map 'dired)
+  (vmacs-leader-for-map custom-mode-map 'cus-edit)
+
+  ;; (vmacs-leader-for-map ivy-occur-grep-mode-map 'ivy)
+  (vmacs-leader-for-map calc-mode-map 'calc)
+  (vmacs-leader-for-map Info-mode-map 'info)
+  (define-key-lazy Info-mode-map "g" nil 'info)
+  (define-key-lazy Info-mode-map "n" nil 'info)
+  (vmacs-leader-for-map grep-mode-map 'grep)
+  (vmacs-leader-for-map help-mode-map 'help-mode)
+  (vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
+  (vmacs-leader-for-map ert-results-mode-map 'ert)
+  (vmacs-leader-for-map compilation-mode-map 'compile)
+  (vmacs-leader-for-map debugger-mode-map 'debug)
+  (vmacs-leader-for '(diff-mode debugger-mode) '(insert))
+  )
+;; emacs27 daemonp 启动的时候 after-init-hook会有问题
+(unless (daemonp)
+  (add-hook 'after-init-hook 'vmacs-leader-after-init-hook))
+(add-hook 'after-make-frame-functions 'vmacs-leader-after-init-hook)
+
+
 (provide 'conf-evil-dump)
 
 ;; Local Variables:

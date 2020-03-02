@@ -2,6 +2,7 @@
 .PHONY: eshell lib
 EMACSCMD ?= emacs
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
+EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init-base.el
 dump: clean update-autoload-cookie deps
 # @ln -sf  `pwd`/post-receive .git/hooks/
 # @ln -sf  `pwd`/pre-push .git/hooks/ #
@@ -10,6 +11,8 @@ dump: clean update-autoload-cookie deps
 	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
 	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
 
+base:
+	$(EMACS_BASE) --eval "(load-theme 'vmacs)"
 compile:lib
 	@echo "delete *.elc 以避免有问题的elc文件影响编译"
 	@rm -rf *.elc

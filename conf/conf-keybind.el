@@ -88,6 +88,15 @@ they are in `bind-map-set-keys'."
             (setq key (pop bindings) )))))))
 
 
+;;;###autoload
+(defmacro define-key-lazy (mode-map key cmd  feature &optional state)
+  "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
+  (if state
+      `(eval-after-load ,feature '(evil-define-key ,state ,mode-map ,key ,cmd))
+    `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd))))
+
+(defmacro vmacs-leader-for-map (map feature)
+  `(define-key-lazy ,map ,(kbd "SPC") vmacs-leader-map ,feature '(normal motion visual)))
 
 ;; 目前未验证是否可用
 ;; state 可以为nil 表示normal 模式
@@ -111,68 +120,6 @@ they are in `bind-map-set-keys'."
             (setq def (pop bindings))
             (define-key (symbol-value map) (kbd key) def)
             (setq key (pop bindings) )))))))
-
-;; (define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
-;;;###autoload
-(defmacro define-key-lazy (mode-map key cmd  feature &optional state)
-  "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
-  (if state
-      `(eval-after-load ,feature '(evil-define-key ,state ,mode-map ,key ,cmd))
-      `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd))))
-
-
-(defmacro vmacs-leader-for-map (map feature)
-  `(define-key-lazy ,map ,(kbd "SPC") vmacs-leader-map ,feature '(normal motion visual)))
-
-(defun vmacs-leader-after-init-hook(&optional frame)
-  (vmacs-leader-for-map magit-mode-map 'magit)
-  (vmacs-leader-for-map magit-diff-mode-map 'magit)
-  (vmacs-leader-for-map magit-stash-mode-map 'magit)
-  (vmacs-leader-for-map log-view-mode-map 'magit)
-  (vmacs-leader-for-map tabulated-list-mode-map 'tabulated-list)
-  (vmacs-leader-for-map org-agenda-mode-map 'org-agenda)
-  (vmacs-leader-for-map dired-mode-map 'dired)
-  (vmacs-leader-for-map custom-mode-map 'cus-edit)
-
-  (vmacs-leader-for-map ivy-occur-grep-mode-map 'ivy)
-  (vmacs-leader-for-map calc-mode-map 'calc)
-  (vmacs-leader-for-map Info-mode-map 'info)
-  (define-key-lazy Info-mode-map "g" nil 'info)
-  (define-key-lazy Info-mode-map "n" nil 'info)
-  (vmacs-leader-for-map grep-mode-map 'grep)
-  (vmacs-leader-for-map help-mode-map 'help-mode)
-  (vmacs-leader-for-map ibuffer-mode-map 'ibuffer)
-  (vmacs-leader-for-map ert-results-mode-map 'ert)
-  (vmacs-leader-for-map compilation-mode-map 'compile)
-  (vmacs-leader-for-map debugger-mode-map 'debug)
-  (vmacs-leader-for '(diff-mode debugger-mode) '(insert))
-  )
-;; emacs27 daemonp 启动的时候 after-init-hook会有问题
-(unless (daemonp)
-  (add-hook 'after-init-hook 'vmacs-leader-after-init-hook))
-(add-hook 'after-make-frame-functions 'vmacs-leader-after-init-hook)
-
-
-
-;; ;; 为这些默认空格被占用的mode也起用leader mode
-;; (vmacs-leader-for-major-mode
-;;  '(magit-mode
-;;    magit-status-mode magit-process-mode
-;;    magit-diff-mode
-;;    magit-log-mode
-;;    magit-blame-mode
-;;    magit-reflog-mode
-;;    magit-branch-mode
-;;    org-agenda-mode
-;;    vc-git-log-view-mode
-;;    vc-svn-log-view-mode
-;;    dired-mode message-mode ibuffer-mode
-;;    ivy-occur-grep-mode
-;;    calc-mode
-;;    Info-mode
-;;    ivy-occur-mode gre-mode helm-mode help-mode))
-
-
 
 ;; iterm2下实同一些 终端下本没有的按键
 ;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在mac上的安装及一些相应配置/#orgheadline15
@@ -236,8 +183,6 @@ they are in `bind-map-set-keys'."
   (isearch-printing-char ?\!))
 (global-set-key (kbd "C-1")   #'(lambda() (interactive)(insert "!")))
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
-
-
 
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 
