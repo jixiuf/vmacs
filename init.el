@@ -21,21 +21,23 @@
   (when (boundp 'load-path-backup)
     (setq load-path load-path-backup)))
 
+;; 下面(package-initialize) 这行注释不要删
+(when (< emacs-major-version 27) (package-initialize))
+(require 'conf-package)
+(require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
+(require 'conf-minibuffer)
+(require 'conf-icomplete)
+(require 'conf-keybind)
+
 
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (require 'custom-file)
 (require 'vmacs-theme)
 
-
-
-;; 下面(package-initialize) 这行注释不要删
-(when (< emacs-major-version 27) (package-initialize))
-(require 'conf-package)
 (require 'conf-dired-dump)
 (require 'conf-evil-dump)
 
-(require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 (require 'conf-space-tab)
 (require 'conf-auto-compile)          ;自动编译elisp文件,以加快elisp的加载速度
@@ -55,7 +57,6 @@
 
 
 
-(require 'conf-keybind)
 (require 'conf-evil)
 (require 'conf-evil-visual)       ;跟选中区域相关的配置
 ;; mac 上处理evil-mode 与中文输入法
@@ -85,8 +86,6 @@
 
   ;; (require 'conf-helm)            ;
   ;; (require 'conf-ivy)
-  (require 'conf-minibuffer)
-  (require 'conf-icomplete)
 
   (require 'conf-rg)
   ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
