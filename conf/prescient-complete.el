@@ -3,6 +3,7 @@
   (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
 
 (require 'prescient)
+(setq prescient-filter-method  '(literal fuzzy initialism))
 
 (defun completion-prescient-completion (string table predicate point
                                                &optional all-p)

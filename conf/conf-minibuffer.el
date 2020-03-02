@@ -32,7 +32,8 @@
 
   ;; (autoload 'minibuffer-keyboard-quit "delsel" "" t nil)
   ;; (define-key minibuffer-local-map [escape]  'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete))
+  (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
+  )
 
 (add-hook 'minibuffer-setup-hook #'vmacs-minibuffer-hook)
 
@@ -55,19 +56,21 @@
 
 ;; ;; 把minibuffer 搬到一个特定的frame上
 (require 'mini-frame)
+(setq mini-frame-max-height 20)
 (setq mini-frame-show-parameters
       '((top . 0.2) (width . 0.7) (left . 0.3)
-        (min-height .  3)
-        (height . 0.8)
+        (min-height .  5)
+        (height . 0.5)
         ;; (minibuffer-exit . t)
         (font . "Sarasa Mono CL-20")
         (alpha . 100)
-        (left-fringe . 10 )
+        ;; (left-fringe . 10 )
         ;; (cursor-color . "Yellow")
-        ;; (border-color . "green")
-        ;; (background-mode 'light)
-        ;; (foreground-color . "#202020") ;;
-        (background-color . "#202020") ))
+        (border-color . "green")
+        (background-mode 'light)
+        (foreground-color . "#202020") ;;
+        (background-color . "dark cyan")
+        ))
 
 
 ;; (add-to-list 'mini-frame-ignore-commands 'yank)

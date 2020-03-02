@@ -9,7 +9,7 @@
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (let* ((completion-styles '(prescient )) ;flex
+  (let* ((completion-styles '(prescient flex)) ;flex
          (icomplete-compute-delay 0)    ;do not delay
          (icomplete-delay-completions-threshold 1000000)
          (icomplete-separator "\n")
