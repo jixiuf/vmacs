@@ -1463,17 +1463,19 @@ PARAMS - the data sent from WORKSPACE."
         (completing-read (concat message " ") (seq-into choices 'list) nil t)
       (lsp-log message))))
 
-(defun lsp-diagnostics ()
+(defun lsp-diagnostics (&optional current-workspace?)
   "Return the diagnostics from all workspaces."
   (let ((result (make-hash-table :test 'equal)))
-    (-> (lsp-session)
-        (lsp--session-workspaces)
-        (--each (maphash
-                 (lambda (file-name diagnostics)
-                   (puthash file-name
-                            (append (gethash file-name result) diagnostics)
-                            result))
-                 (lsp--workspace-diagnostics it))))
+    (mapc (lambda (workspace)
+            (maphash
+             (lambda (file-name diagnostics)
+               (puthash file-name
+                        (append (gethash file-name result) diagnostics)
+                        result))
+             (lsp--workspace-diagnostics workspace)))
+          (if current-workspace?
+              (lsp-workspaces)
+            (lsp--session-workspaces (lsp-session))))
     result))
 
 (cl-defstruct lsp-diagnostic
@@ -1488,6 +1490,61 @@ PARAMS - the data sent from WORKSPACE."
   (message nil) ;; diagnostics message
   (original nil))
 
+
+;; diagnostic modeline
+(defun lsp--severity-code->severity (severity-code)
+  (cl-case severity-code
+    (1 'error)
+    (2 'warning)
+    (3 'info)
+    (4 'hint)))
+
+(defcustom lsp-diagnostics-modeline-scope :workspace
+  "The scope "
+  :group 'lsp-mode
+  :type '(choice (const :tag "File" :file)
+                 (const :tag "Current workspace" :workspace)
+                 (const :tag "All" :global))
+  :package-version '(lsp-mode . "6.3"))
+
+(defun lsp--diagnostics-modeline-statistics ()
+  "Caculate diagnostics statistics based on `lsp-diagnostics-modeline-scope'"
+  (let ((diagnostics (cond
+                      ((equal :file lsp-diagnostics-modeline-scope)
+                       (lsp--get-buffer-diagnostics))
+                      (t (->> (eq :workspace lsp-diagnostics-modeline-scope)
+                              (lsp-diagnostics)
+                              (ht-values)
+                              (-flatten))))))
+    (->> diagnostics
+         (-group-by #'lsp-diagnostic-severity)
+         (-sort (-lambda ((left) (right))
+                  (> right left)))
+         (-map (-juxt (-compose #'lsp--severity-code->severity #'cl-first)
+                      (-compose #'length #'cl-rest)))
+         (-map (-lambda ((code count))
+                 (propertize (format "%s" count)
+                             'face (cl-case code
+                                     ('error 'error)
+                                     ('warning 'warning)
+                                     ('info 'success)
+                                     ('hint 'success)))))
+         (s-join "/")
+         (format "%s"))))
+
+(define-minor-mode lsp-diagnostics-modeline-mode
+  "Toggle diagnostics modeline."
+  :group 'lsp-mode
+  :global nil
+  :lighter ""
+  (let ((status '(t (:eval (concat " " (lsp--diagnostics-modeline-statistics) " ")))))
+    (setq-local global-mode-string
+                (cond ((and lsp-diagnostics-modeline-mode
+                            (not (-contains? global-mode-string status)))
+                       (cons status global-mode-string))
+                      (t (remove status global-mode-string))))))
+
+
 (defun lsp--make-diag (diag)
   "Make a `lsp-diagnostic' from DIAG."
   (-let* (((&hash "message" "code" "source" "severity"
@@ -1509,7 +1566,6 @@ PARAMS - the data sent from WORKSPACE."
 (defalias 'lsp--buffer-for-file (if (eq system-type 'windows-nt)
                                     #'find-buffer-visiting
                                   #'get-file-buffer))
-
 
 (defun lsp--on-diagnostics (workspace params)
   "Callback for textDocument/publishDiagnostics.
@@ -2171,6 +2227,7 @@ BINDINGS is a list of (key def cond)."
       "gh" lsp-treemacs-call-hierarchy (and (lsp-feature? "callHierarchy/incomingCalls")
                                             (fboundp 'lsp-treemacs-call-hierarchy))
       "ga" xref-find-apropos (lsp-feature? "workspace/symbol")
+      "ge" lsp-treemacs-errors-list (fboundp 'lsp-treemacs-errors-list)
 
       ;; help
       "hh" lsp-describe-thing-at-point (lsp-feature? "textDocument/hover")
@@ -2246,6 +2303,7 @@ BINDINGS is a list of (key def cond)."
      "g h" "call hierarchy"
      "g a" "find symbol in workspace"
      "g A" "find symbol in all workspaces"
+     "g e" "show errors"
 
      "h"   "help"
      "h h" "describe symbol at point"
@@ -2885,7 +2943,10 @@ disappearing, unset all the variables related to it."
                                          `((dynamicRegistration . t)
                                            (rangeLimit . ,lsp-folding-range-limit)
                                            (lineFoldingOnly . ,(or lsp-folding-line-folding-only :json-false)))))
-                      (callHierarchy . ((dynamicRegistration . :json-false)))))
+                      (callHierarchy . ((dynamicRegistration . :json-false)))
+                      (publishDiagnostics . ((relatedInformation . t)
+	                                           (tagSupport . ((valueSet . [1 2])))
+	                                           (versionSupport . t)))))
      (window . ((workDoneProgress . t))))
    custom-capabilities))
 
@@ -3661,12 +3722,14 @@ Added to `after-change-functions'."
          (lambda (workspace)
            (pcase (or lsp-document-sync-method
                       (lsp--workspace-sync-method workspace))
-             (1 (cl-pushnew (list workspace
-                                  (current-buffer)
-                                  (lsp--versioned-text-document-identifier)
-                                  (lsp--full-change-event))
-                            lsp--delayed-requests
-                            :test 'equal))
+             (1
+              (cl-pushnew (list workspace
+                                (current-buffer)
+                                (lsp--versioned-text-document-identifier)
+                                (lsp--full-change-event))
+                          lsp--delayed-requests
+                          :test (-lambda ((_ left) (_ right))
+                                  (equal left right))))
              (2
               (with-lsp-workspace workspace
                 (lsp-notify
@@ -7130,6 +7193,7 @@ This avoids overloading the server with many files when starting Emacs."
 (declare-function flycheck-define-generic-checker
                   "ext:flycheck" (symbol docstring &rest properties))
 (declare-function flycheck-error-message "ext:flycheck" (err))
+(declare-function flycheck-define-error-level "ext:flycheck" (level &rest properties))
 (declare-function flycheck-mode "ext:flycheck")
 (declare-function flycheck-checker-supports-major-mode-p "ext:flycheck")
 (declare-function flycheck-error-new "ext:flycheck")
@@ -7147,14 +7211,35 @@ reported according to `flycheck-check-syntax-automatically'."
   :type 'boolean
   :group 'lsp-mode)
 
+(defun lsp--get-buffer-diagnostics ()
+  (or (gethash (lsp--fix-path-casing buffer-file-name)
+               (lsp-diagnostics))
+      (gethash (lsp--fix-path-casing (file-truename buffer-file-name))
+               (lsp-diagnostics))))
+
+(defun lsp--flycheck-calculate-level (diag)
+  (let ((level (pcase (lsp-diagnostic-severity diag)
+                 (1 'error)
+                 (2 'warning)
+                 (3 'info)
+                 (4 'info)))
+        ;; materialize only first tag.
+        (tags (->> diag
+                   (lsp-diagnostic-original)
+                   (gethash "tags")
+                   (-map (lambda (tag)
+                           (pcase tag
+                             (1 'unnecessary)
+                             (2 'deprecated)))))))
+    (if tags
+        (lsp--flycheck-level level tags)
+      level)))
+
 (defun lsp--flycheck-start (checker callback)
   "Start an LSP syntax check with CHECKER.
 
 CALLBACK is the status callback passed by Flycheck."
-  (->> (or (gethash (lsp--fix-path-casing buffer-file-name)
-                    (lsp-diagnostics))
-           (gethash (lsp--fix-path-casing (file-truename buffer-file-name))
-                    (lsp-diagnostics)))
+  (->> (lsp--get-buffer-diagnostics)
        (-map (-lambda (diag)
                (flycheck-error-new
                 :buffer (current-buffer)
@@ -7163,10 +7248,7 @@ CALLBACK is the status callback passed by Flycheck."
                 :line (1+ (lsp-diagnostic-line diag))
                 :column (1+ (lsp-diagnostic-column diag))
                 :message (lsp-diagnostic-message diag)
-                :level (pcase (lsp-diagnostic-severity diag)
-                         (1 'error)
-                         (2 'warning)
-                         (_ 'info))
+                :level (lsp--flycheck-calculate-level diag)
                 :id (lsp-diagnostic-code diag)
                 :end-column (-> diag
                                 lsp-diagnostic-range
@@ -7207,9 +7289,46 @@ reporting or we are in save-mode and the buffer is not modified."
 
 (declare-function lsp-cpp-flycheck-clang-tidy-error-explainer "lsp-cpp")
 
+(defvar lsp-diagnostics-attributes
+  `((unnecessary :background "dim gray")
+    (deprecated  :strike-through t) )
+  "List containing (tag attributes) where tag is the LSP
+  diagnostic tag and attributes is a `plist' containing face
+  attributes which will be applied on top the flycheck face for
+  that error level.")
+
+(defun lsp--flycheck-level (flycheck-level tags)
+  "Generate flycheck level from the original FLYCHECK-LEVEL (e.
+g. `error', `warning') and list of LSP TAGS."
+  (let ((name (format "lsp-flycheck-%s-%s"
+                      flycheck-level
+                      (mapconcat #'symbol-name tags "-"))))
+    (or (intern-soft name)
+        (let* ((face (--doto (intern (format "lsp-%s-face" name))
+                       (copy-face (-> flycheck-level
+                                      (get 'flycheck-overlay-category)
+                                      (get 'face))
+                                  it)
+                       (mapc (lambda (tag)
+                               (apply #'set-face-attribute it nil
+                                      (cl-rest (assoc tag lsp-diagnostics-attributes))))
+                             tags)))
+               (category (--doto (intern (format "lsp-%s-category" name))
+                           (setf (get it 'face) face
+                                 (get it 'priority) 100)))
+               (new-level (intern name)))
+          (flycheck-define-error-level new-level
+            :severity (get flycheck-level 'flycheck-error-severity)
+            :compilation-level (get flycheck-level 'flycheck-compilation-level)
+            :overlay-category category
+            :fringe-bitmap (get flycheck-level 'flycheck-fringe-bitmap-double-arrow)
+            :fringe-face (get flycheck-level 'flycheck-fringe-face)
+            :error-list-face face)
+          new-level))))
+
 (with-eval-after-load 'flycheck
   (flycheck-define-generic-checker 'lsp
-   "A syntax checker using the Language Server Protocol (LSP)
+    "A syntax checker using the Language Server Protocol (LSP)
 provided by lsp-mode.
 See https://github.com/emacs-lsp/lsp-mode."
     :start #'lsp--flycheck-start

@@ -5,7 +5,7 @@
 ;; Filename: centaur-tabs.el
 ;; Description: Provide an out of box configuration to use highly customizable tabs.
 ;; URL: https://github.com/ema2159/centaur-tabs
-;; Package-Version: 20200214.1651
+;; Package-Version: 20200301.2221
 ;; Author: Emmanuel Bustos <ema2159@gmail.com>
 ;; Maintainer: Emmanuel Bustos <ema2159@gmail.com>
 ;; Created: 2019-21-19 22:14:34
@@ -925,23 +925,24 @@ element."
       ;; At this point the selected tab is the last elt in ELTS.
       ;; Scroll TABSET and ELTS until the selected tab becomes
       ;; visible.
-      (with-temp-buffer
-	(let ((truncate-partial-width-windows nil)
-	      (inhibit-modification-hooks t)
-	      deactivate-mark ;; Prevent deactivation of the mark!
-	      start)
-	  (setq truncate-lines nil
-		buffer-undo-list t)
-	  (setq start (point))
-	  (while (and (cdr elts) ;; Always show the selected tab!
-		      (progn
-			(delete-region start (point-max))
-			(goto-char (point-max))
-			(apply #'insert elts)
-			(goto-char (point-min))
-			(> (vertical-motion 1) 0)))
-	    (centaur-tabs-scroll tabset 1)
-	    (setq elts (cdr elts)))))
+      (let (buffer-list-update-hook)
+	(with-temp-buffer
+	  (let ((truncate-partial-width-windows nil)
+		(inhibit-modification-hooks t)
+		deactivate-mark ;; Prevent deactivation of the mark!
+		start)
+	    (setq truncate-lines nil
+		  buffer-undo-list t)
+	    (setq start (point))
+	    (while (and (cdr elts) ;; Always show the selected tab!
+			(progn
+			  (delete-region start (point-max))
+			  (goto-char (point-max))
+			  (apply #'insert elts)
+			  (goto-char (point-min))
+			  (> (vertical-motion 1) 0)))
+	      (centaur-tabs-scroll tabset 1)
+	      (setq elts (cdr elts))))))
       (setq elts (nreverse elts))
       (setq centaur-tabs--track-selected nil))
     ;; Format remaining tabs.

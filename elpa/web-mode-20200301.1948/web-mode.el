@@ -3,8 +3,8 @@
 
 ;; Copyright 2011-2020 François-Xavier Bois
 
-;; Version: 16.0.26
-;; Package-Version: 20200228.2007
+;; Version: 16.0.29
+;; Package-Version: 20200301.1948
 ;; Author: François-Xavier Bois <fxbois AT Google Mail Service>
 ;; Maintainer: François-Xavier Bois
 ;; Package-Requires: ((emacs "23.1"))
@@ -25,7 +25,7 @@
 
 ;;---- CONSTS ------------------------------------------------------------------
 
-(defconst web-mode-version "16.0.26"
+(defconst web-mode-version "16.0.29"
   "Web Mode version.")
 
 ;;---- GROUPS ------------------------------------------------------------------
@@ -260,7 +260,8 @@ See web-mode-block-face."
   "Auto-quoting style."
   :group 'web-mode
   :type '(choice (const :tag "Auto-quotes with double quote" 1)
-                 (const :tag "Auto-quotes with single quote" 2)))
+                 (const :tag "Auto-quotes with single quote" 2)
+                 (const :tag "Auto-quotes with paren (for jsx)" 3)))
 
 (defcustom web-mode-extra-expanders '()
   "A list of additional expanders."
@@ -5072,8 +5073,8 @@ another auto-completion with different ac-sources (e.g. ac-php)")
     tag-flags))
 
 (defun web-mode-attr-scan (state char name-beg name-end val-beg flags equal-offset)
-  (message "point(%S) state(%S) c(%c) name-beg(%S) name-end(%S) val-beg(%S) flags(%S) equal-offset(%S)"
-           (point) state char name-beg name-end val-beg flags equal-offset)
+  ;;(message "point(%S) state(%S) c(%c) name-beg(%S) name-end(%S) val-beg(%S) flags(%S) equal-offset(%S)"
+  ;;         (point) state char name-beg name-end val-beg flags equal-offset)
   (when (null flags) (setq flags 0))
   (when (and name-beg name-end web-mode-engine-attr-regexp)
     (let (name)
@@ -7924,12 +7925,14 @@ another auto-completion with different ac-sources (e.g. ac-php)")
                )
           (when debug (message "I190(%S) attr-indent" pos))
           (cond
-           ((and (get-text-property pos 'tag-attr)
+           ((and (not (get-text-property pos 'tag-attr-beg))
+                 (get-text-property pos 'tag-attr)
                  (get-text-property (1- pos) 'tag-attr)
                  (web-mode-attribute-beginning)
                  (not (string-match-p "^/?>" curr-line))
-                 ;;(progn (message "%S" pos) t)
+                 ;;(progn (message "pos=%S point=%S" pos (point)) t)
                  )
+
             (cond
              ((eq (logand (get-text-property (point) 'tag-attr-beg) 8) 8)
               (setq offset nil))
@@ -7939,11 +7942,12 @@ another auto-completion with different ac-sources (e.g. ac-php)")
              (web-mode-attr-value-indent-offset
               (setq offset (+ (current-column) web-mode-attr-value-indent-offset)))
              ((web-mode-dom-rsf "=[ ]*[\"']?" pos)
+              ;;(message "%S" (point))
               (setq offset (current-column)))
              (t
               (setq offset (+ (current-column) web-mode-markup-indent-offset)))
              ) ;cond
-            )
+            ) ;and
            ((not (web-mode-tag-beginning))
             (message "** error ** unable to jump to tag beg"))
            ((string-match-p "^/?>" curr-line)
@@ -8025,14 +8029,6 @@ another auto-completion with different ac-sources (e.g. ac-php)")
           (when debug (message "I212(%S) expressionengine" pos))
           (setq offset (+ reg-col (or web-mode-attr-indent-offset web-mode-code-indent-offset))))
 
-         ((member language '("mako" "web2py"))
-          (when debug (message "I220(%S) mako" pos))
-          (setq offset (web-mode-python-indentation pos
-                                                    curr-line
-                                                    reg-col
-                                                    curr-indentation
-                                                    reg-beg)))
-
          ((string= language "asp")
           (when debug (message "I230(%S) asp" pos))
           (setq offset (web-mode-asp-indentation pos
@@ -8081,6 +8077,14 @@ another auto-completion with different ac-sources (e.g. ac-php)")
              ) ;cond
             ) ;let
           )
+
+         ((member language '("mako" "web2py"))
+          (when debug (message "I254(%S) python (mako/web2py)" pos))
+          (setq offset (web-mode-python-indentation pos
+                                                    curr-line
+                                                    reg-col
+                                                    curr-indentation
+                                                    reg-beg)))
 
          ((member language '("erb" "ruby"))
           (when debug (message "I260(%S) erb" pos))
@@ -8804,26 +8808,37 @@ another auto-completion with different ac-sources (e.g. ac-php)")
 
 (defun web-mode-python-indentation (pos line initial-column language-offset limit)
   (unless limit (setq limit nil))
-  (let (h out prev-line prev-indentation ctx)
-    (setq h (web-mode-previous-line pos limit))
-    (setq out initial-column)
-    (when h
-      (setq prev-line (car h))
-      (setq prev-indentation (cdr h))
-      (cond
-       ((string-match-p "^\\(pass\\|else\\|elif\\|when\\|except\\)" line)
-        (setq out (- prev-indentation language-offset))
-        )
-       ((string-match-p "\\(if\\|else\\|elif\\|for\\|while\\|try\\|except\\)" prev-line)
-        (setq out (+ prev-indentation language-offset))
-        )
-       (t
-        (setq out prev-indentation)
-        )
-       ) ;cond
-      ) ;when
-    ;;out
-    (if (< out initial-column) initial-column out)
+  (let (h offset prev-line prev-indentation ctx)
+    (setq ctx (web-mode-bracket-up pos "python" limit))
+    ;;(message "point-ctx=%S" ctx)
+    (if (plist-get ctx :pos)
+        (cond
+         ((web-mode-looking-at-p ".[ \t\n]+" (plist-get ctx :pos))
+          (setq offset (+ (plist-get ctx :indentation) language-offset)))
+         (t
+          (setq offset (1+ (plist-get ctx :column))))
+         )
+      ;; else
+      (setq h (web-mode-previous-line pos limit))
+      (setq offset initial-column)
+      (when h
+        (setq prev-line (car h))
+        (setq prev-indentation (cdr h))
+        (cond
+         ((string-match-p "^\\(pass\\|else\\|elif\\|when\\|except\\)" line)
+          (setq offset (- prev-indentation language-offset))
+          )
+         ((string-match-p "\\(if\\|else\\|elif\\|for\\|while\\|try\\|except\\)" prev-line)
+          (setq offset (+ prev-indentation language-offset))
+          )
+         (t
+          (setq offset prev-indentation)
+          )
+         ) ;cond
+        ) ;when
+      ) ;if
+    ;;offset
+    (if (< offset initial-column) initial-column offset)
     ))
 
 (defun web-mode-lisp-indentation (pos point-ctx)
