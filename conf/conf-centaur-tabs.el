@@ -42,7 +42,6 @@
                           "\*ccls"
                           "\*vc"
                           "\*xref"
-                          "\*Completions\*"
                           "\*Warnings*"
                           "magit-"
                           "\*Async Shell Command\*"
@@ -55,7 +54,6 @@
                           "\*sdcv\*"
                           "\*osx-dictionary\*"
                           "\*Messages\*"
-                          "\*Ido Completions\*"
                           ))
                      (buffer-name))
      "Emacs")
@@ -77,6 +75,8 @@
        ((char-equal ?\  (aref (buffer-name) 0))
         (setq show nil))
        ((member (buffer-name) '("*Ediff Control Panel*"
+                                "*Completions*"
+                                "*Ido Completions*"
                                 "\*Flycheck error messages\*"
                                 "\*Gofmt Errors\*"))
         (setq show nil))
