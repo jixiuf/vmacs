@@ -56,24 +56,25 @@
 
 ;; ;; 把minibuffer 搬到一个特定的frame上
 (require 'mini-frame)
-(setq mini-frame-max-height 20)
+(setq mini-frame-max-height max-mini-window-height)
+;; (setq mini-frame-ignore-commands nil)
+(add-to-list 'mini-frame-ignore-commands 'dired-narrow)
 (setq mini-frame-show-parameters
       '((top . 0.2) (width . 0.7) (left . 0.3)
-        (min-height .  5)
-        (height . 0.5)
+        (min-height .  1)
+        (height . 10)
         ;; (minibuffer-exit . t)
         (font . "Sarasa Mono CL-20")
         (alpha . 100)
         ;; (left-fringe . 10 )
         ;; (cursor-color . "Yellow")
         (border-color . "green")
-        (background-mode 'light)
-        (foreground-color . "#202020") ;;
-        (background-color . "dark cyan")
-        ))
+        ;; (background-mode 'light)
+        (background-mode 'dark)
+        (foreground-color . "black") ;;
+        (background-color . "DarkSlateGray4"))) ;
 
 
-;; (add-to-list 'mini-frame-ignore-commands 'yank)
 (mini-frame-mode 1)
 
 

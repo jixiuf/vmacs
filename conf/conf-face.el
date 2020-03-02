@@ -59,11 +59,11 @@
   (with-selected-frame f
     (when (window-system)
       (set-frame-parameter f 'font "Sarasa Mono CL-18")
-      (set-frame-parameter f 'background-mode 'dark)
       (set-frame-parameter f 'alpha 85)
       (when (equal 'only (frame-parameter f 'minibuffer))
         (set-face-background 'fringe "green" f))
       (unless (equal 'only (frame-parameter f 'minibuffer))
+        (set-frame-parameter f 'background-mode 'dark)
         (window-divider-mode t)
         (set-frame-position f 40 45)
         (set-frame-size f 138 43)

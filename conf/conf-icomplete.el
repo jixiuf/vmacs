@@ -46,8 +46,6 @@
                            (cycle-sort-function . identity))
               (complete-with-action
                action kill-ring string pred)))))
-    ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
-    ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
     (insert
      (completing-read "Yank from kill ring: " completion-table nil t))))
 
