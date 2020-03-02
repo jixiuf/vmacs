@@ -86,6 +86,7 @@
   ;; (require 'conf-helm)            ;
   ;; (require 'conf-ivy)
   (require 'conf-minibuffer)
+  (require 'conf-icomplete)
 
   (require 'conf-rg)
   ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置

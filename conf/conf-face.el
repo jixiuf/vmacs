@@ -61,6 +61,7 @@
       (set-frame-parameter f 'font "Sarasa Mono CL-18")
       (set-frame-parameter f 'background-mode 'dark)
       (set-frame-parameter f 'alpha 85)
+      ;; (set-face-background 'fringe "green" (selected-frame))
       (unless (equal 'only (frame-parameter (selected-frame) 'minibuffer))
         (window-divider-mode t)
         (set-frame-position f 40 45)

@@ -1,8 +1,15 @@
 ;;; Code:
 (require 'icomplete)
+(require 'prescient-complete)
+
 ;; (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 ;; (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 ;; (vmacs-leader "ff" 'find-file)
+(setq completion-styles '(partial-completion substring initials prescient flex))
+(setq completion-category-overrides ;支持哪些stypes见completion-styles-alist
+      '((file (styles initials basic))
+        (buffer (styles initials basic))
+        (info-menu (styles basic))))
 
 (setq icomplete-prospects-height 20)
 (setq icomplete-delay-completions-threshold 0)
@@ -15,7 +22,7 @@
 (setq icomplete-with-completion-tables t)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
-;; (icomplete-mode 1)
+(icomplete-mode 1)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-s") #'icomplete-forward-completions)
@@ -76,7 +83,7 @@
 (defmacro with-mode-off (mode &rest body)
   (declare (indent defun)
            (doc-string 3))
-  (macroexp-let2 nil mode-p mode
+  (macroexp-let2 nil mode-p `(bound-and-true-p ,mode)
     `(progn
        (when ,mode-p (,mode -1))
        ,@body
