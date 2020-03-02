@@ -19,6 +19,7 @@ compile:lib
 	make update-autoload-cookie
 update-autoload-cookie:
 	@echo "生成 lisp/update-autoload-cookie.el"
+	@-rm lisp/lazy-loaddefs.el
 	@$(BATCH) -l ./conf/conf-lazy-load.el
 compile-elpa:
 	$(BATCH) --eval '(byte-recompile-directory "./elpa/" 0)'
@@ -43,6 +44,7 @@ lib:
 eshell:
 	./bin/zsh-to-eshell-alias.sh
 deps:
+	git submodule init
 	git submodule update
 # curl https://raw.githubusercontent.com/manateelazycat/awesome-tab/master/awesome-tab.el >./lazy/awesome-tab.el
 # curl https://raw.githubusercontent.com/akermu/emacs-libvterm/master/vterm.el> ./lazy/vterm.el

@@ -43,83 +43,15 @@
 (file-name-shadow-mode 1)
 (minibuffer-depth-indicate-mode 1)                   ;显示minibuffer深度
 ;; (minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏
-(require 'icomplete)
 (vmacs-leader ";" 'execute-extended-command)
 (vmacs-leader "；" 'execute-extended-command)
 (vmacs-leader "wi" 'imenu)
-(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'vmacs-find-file))))
-(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'vmacs-find-file))))
-(vmacs-leader "ff" 'vmacs-find-file)
 (vmacs-leader "f." 'ffap)
 (vmacs-leader "SPC" 'vmacs-switch-buffer)
+(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
+(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(vmacs-leader "ff" 'find-file)
 
-(defun vmacs-find-file ()
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  (interactive)
-  (let* ((icomplete-separator " . "))
-    (call-interactively #'find-file)))
-
-
-(setq icomplete-prospects-height 20)
-(setq icomplete-delay-completions-threshold 0)
-(setq icomplete-max-delay-chars 0)
-(setq icomplete-delay-completions-threshold 2000)
-(setq icomplete-compute-delay 0)
-(setq icomplete-show-matches-on-no-input t)
-(setq icomplete-hide-common-prefix nil)
-(setq icomplete-separator "\n")
-(setq icomplete-with-completion-tables t)
-(setq icomplete-in-buffer t)
-(setq icomplete-tidy-shadowed-file-names t)
-;; (icomplete-mode 1)
-(define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-s") #'icomplete-forward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-r") #'icomplete-backward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-k") #'icomplete-fido-kill)
-(define-key icomplete-minibuffer-map (kbd "C-m") #'icomplete-fido-ret)
-(define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
-(define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
-
-
-;; (defun icomplete-mode-yank-pop ()
-;;   (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
-;;          ;; (minibuffer-local-map minibuffer-local-map)
-;;          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
-;;          (completion-table
-;;           (lambda (string pred action)
-;;             (if (eq action 'metadata)
-;;                 '(metadata (display-sort-function . identity)
-;;                            (cycle-sort-function . identity))
-;;               (complete-with-action
-;;                action kill-ring string pred)))))
-;;     ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
-;;     ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
-;;     ;; (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
-;;     (insert
-;;      (completing-read "Yank from kill ring: " completion-table nil t))))
-
-;; this macro works
-;; ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
-;; (defmacro with-mode-on (mode &rest body)
-;;   (declare (indent defun)
-;;            (doc-string 3))
-;;   (macroexp-let2 nil mode-p mode
-;;     `(progn
-;;        (unless ,mode-p (,mode 1))
-;;        ,@body
-;;        (unless ,mode-p (,mode -1)))))
-
-;; ;; (macroexpand '(with-mode-off icomplete-mode (message "ss")))
-;; (defmacro with-mode-off (mode &rest body)
-;;   (declare (indent defun)
-;;            (doc-string 3))
-;;   (macroexp-let2 nil mode-p mode
-;;     `(progn
-;;        (when ,mode-p (,mode -1))
-;;        ,@body
-;;        (when ,mode-p (,mode 1)))))
 
 
  (when (file-directory-p "~/.emacs.d/submodule/prescient")
@@ -129,9 +61,20 @@ The user's $HOME directory is abbreviated as a tilde."
  (when (file-directory-p "~/.emacs.d/submodule/mini-frame")
    (add-to-list 'load-path "~/.emacs.d/submodule/mini-frame"))
 
+;; 把minibuffer 搬到一个特定的frame上
+(require 'mini-frame)
+(setq mini-frame-show-parameters
+      '((top . 0.2) (width . 0.7) (left . 0.3) (height . 0.8)
+        (font . "Sarasa Mono CL-20")
+        (alpha . 100)
+        (background-color . "#202020") ))
+
+(add-to-list 'mini-frame-ignore-commands 'yank)
+(mini-frame-mode 1)
+
 (require 'selectrum)
 (require 'selectrum-prescient)
-(setq selectrum-num-candidates-displayed (1+ max-mini-window-height))
+(setq selectrum-num-candidates-displayed (1- max-mini-window-height))
 (add-to-list 'selectrum-minibuffer-bindings '("C-e" . selectrum-insert-current-candidate) )
 
 (setq prescient-filter-method  '(literal fuzzy initialism))
@@ -141,14 +84,6 @@ The user's $HOME directory is abbreviated as a tilde."
 ;; intelligent over time
 (prescient-persist-mode 1)
 
-;; 把minibuffer 搬到一个特定的frame上
-(require 'mini-frame)
-(setq mini-frame-show-parameters
-      '((top . 0.2) (width . 0.7) (left . 0.3) (height . 0.8)
-        (font . "Sarasa Mono CL-20")(alpha . 80)(background-color . "#202020") ))
-
-(add-to-list 'mini-frame-ignore-commands 'yank)
-(mini-frame-mode 1)
 
 ;; yank-pop icomplete 支持， selectrum-mode 有问题，故临时关selectrum-mode雇用icomplete
 (defun selectrum-mode-yank-pop ()
