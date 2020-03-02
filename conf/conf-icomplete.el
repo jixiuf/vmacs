@@ -34,6 +34,15 @@
 (define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
+(define-key icomplete-minibuffer-map (kbd "C-t") #'vmacs-icomplete-toggle-vertical)
+(defun vmacs-icomplete-toggle-vertical ()
+  "Toggle vertical view for `icomplete'."
+  (interactive)
+  (when (and (minibufferp)
+             (bound-and-true-p icomplete-mode))
+    (if (not (string= icomplete-separator "\n"))
+        (setq icomplete-separator "\n")
+      (setq icomplete-separator "  ⃝ "))))
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
