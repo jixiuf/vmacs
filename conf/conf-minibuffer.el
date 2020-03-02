@@ -12,7 +12,7 @@
 (setq completion-pcm-word-delimiters "-_./:| ")
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
-(setq max-mini-window-height 20)        ;selectrum-num-candidates-displayed 受影响
+(setq max-mini-window-height 15)        ;selectrum-num-candidates-displayed 受影响
 ;; (setq read-answer-short t)
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
@@ -61,18 +61,18 @@
 (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
 (setq mini-frame-show-parameters
       '((top . 0.2) (width . 0.7) (left . 0.3)
-        (min-height .  1)
+        (min-height .  2)
         (height . 10)
-        ;; (minibuffer-exit . t)
-        (font . "Sarasa Mono CL-20")
+        (minibuffer-exit . t)
+        (font . "Sarasa Mono CL-30")
         (alpha . 100)
-        ;; (left-fringe . 10 )
-        ;; (cursor-color . "Yellow")
-        (border-color . "green")
+        (left-fringe . 10 )
+        (cursor-color . "Yellow")
+        ;; (border-color . "green")
         ;; (background-mode 'light)
         (background-mode 'dark)
-        (foreground-color . "black") ;;
-        (background-color . "DarkSlateGray4"))) ;
+        (foreground-color . "#bbc2cf") ;;
+        (background-color . "#242730")))
 
 
 (mini-frame-mode 1)
