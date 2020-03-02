@@ -284,6 +284,15 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 
+(vmacs-leader ";" 'execute-extended-command)
+(vmacs-leader "；" 'execute-extended-command)
+(vmacs-leader "wi" 'imenu)
+(vmacs-leader "f." 'ffap)
+(vmacs-leader "SPC" 'vmacs-switch-buffer)
+(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
+(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(vmacs-leader "ff" 'find-file)
+
 (provide 'conf-keybind)
 
 ;; Local Variables:

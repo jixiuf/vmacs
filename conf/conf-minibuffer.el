@@ -41,14 +41,6 @@
 (file-name-shadow-mode 1)
 (minibuffer-depth-indicate-mode 1)                   ;显示minibuffer深度
 ;; (minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏
-(vmacs-leader ";" 'execute-extended-command)
-(vmacs-leader "；" 'execute-extended-command)
-(vmacs-leader "wi" 'imenu)
-(vmacs-leader "f." 'ffap)
-(vmacs-leader "SPC" 'vmacs-switch-buffer)
-(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
-(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-(vmacs-leader "ff" 'find-file)
 
 
 
