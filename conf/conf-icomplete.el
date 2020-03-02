@@ -12,7 +12,7 @@
 ;;         (buffer (styles initials basic))
 ;;         (info-menu (styles basic))))
 
-(setq icomplete-prospects-height 20)
+(setq icomplete-prospects-height max-mini-window-height)
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
 (setq icomplete-delay-completions-threshold 2000)
@@ -20,7 +20,7 @@
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
 (setq icomplete-separator "\n")
-(setq icomplete-with-completion-tables t)
+;; (setq icomplete-with-completion-tables t)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 (icomplete-mode 1)
