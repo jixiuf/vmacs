@@ -11,7 +11,7 @@
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-(setq icomplete-separator " . ")
+(setq icomplete-separator "\n")
 (setq icomplete-with-completion-tables t)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
@@ -22,27 +22,30 @@
 (define-key icomplete-minibuffer-map (kbd "C-r") #'icomplete-backward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-k") #'icomplete-fido-kill)
 (define-key icomplete-minibuffer-map (kbd "C-m") #'icomplete-fido-ret)
+(define-key icomplete-minibuffer-map (kbd "C-j") #'minibuffer-complete-and-exit)
+(define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 
-
 (defun icomplete-mode-yank-pop ()
-  (with-mode-off selectrum-mode
-    (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
-           (minibuffer-local-map minibuffer-local-map)
-           ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
-           (completion-table
-            (lambda (string pred action)
-              (if (eq action 'metadata)
-                  '(metadata (display-sort-function . identity)
-                             (cycle-sort-function . identity))
-                (complete-with-action
-                 action kill-ring string pred)))))
-      ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
-      ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
-      (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
-      (insert
-       (completing-read "Yank from kill ring: " completion-table nil t)))))
+  (interactive)
+  (with-mode-on icomplete-mode
+    (with-mode-off selectrum-mode
+      (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+             (minibuffer-local-map minibuffer-local-map)
+             ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
+             (completion-table
+              (lambda (string pred action)
+                (if (eq action 'metadata)
+                    '(metadata (display-sort-function . identity)
+                               (cycle-sort-function . identity))
+                  (complete-with-action
+                   action kill-ring string pred)))))
+        ;; 默认的C-g 会导致 with-mode-off with-mode-on后续的代码无法执行，无法恢复
+        ;; icomplete-mode  selectrum-mode mini-frame-mode到原值
+        (define-key minibuffer-local-map (kbd "C-g") 'exit-minibuffer)
+        (insert
+         (completing-read "Yank from kill ring: " completion-table nil t))))))
 
 
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
