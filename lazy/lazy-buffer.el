@@ -15,9 +15,10 @@ The user's $HOME directory is abbreviated as a tilde."
          (icomplete-separator "\n")
          (files (vmacs-switch-buffer--cands))
          (buf-or-file (completing-read "Open: " files nil t)))
-    (if-let ((buf (get-buffer buf-or-file)))
-        (pop-to-buffer-same-window buf)
-      (find-file buf-or-file))))
+    (unless (string-blank-p buf-or-file)
+      (if-let ((buf (get-buffer buf-or-file)))
+          (pop-to-buffer-same-window buf)
+        (find-file buf-or-file)))))
 
 (defun vmacs-switch-buffer--cands()
   (let ((bufs (vmacs-buffers))
