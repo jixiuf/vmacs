@@ -26,13 +26,14 @@
 (define-key evil-normal-state-map "Q" 'kill-buffer-and-window)
 
 (defadvice keyboard-quit (before bury-boring-windows activate)
-  (let ((win (active-minibuffer-window)))
-    (when (windowp win)
-      (switch-to-buffer (window-buffer win))))
-
   (when (equal last-command 'keyboard-quit)
     (require 'lazy-buffer)
-    (bury-boring-windows)))
+    (bury-boring-windows))
+  ;; (let ((win (active-minibuffer-window)))
+  ;;   (when (windowp win)
+  ;;     (switch-to-buffer (window-buffer win))))
+
+  )
 
 
 (provide 'conf-buffer)

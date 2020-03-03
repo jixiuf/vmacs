@@ -34,7 +34,7 @@
 (evil-set-initial-state 'vc-svn-log-view-mode 'normal)
 ;; (evil-set-initial-state 'erlang-shell-mode 'normal)
 (evil-set-initial-state 'org-agenda-mode 'normal)
-(evil-set-initial-state 'minibuffer-inactive-mode 'normal)
+(evil-set-initial-state 'minibuffer-inactive-mode 'insert)
 (evil-set-initial-state 'ivy-occur-mode 'normal)
 (evil-set-initial-state 'ivy-occur-grep-mode 'normal)
 (evil-set-initial-state 'grep-mode 'normal)

@@ -58,7 +58,7 @@
           (min-height .  2)
           (height . 10)
           (minibuffer-exit . t)
-          (font . "Sarasa Mono CL-24")
+          (font . "Sarasa Mono CL-22")
           (alpha . 100)
           (left-fringe . 10 )
           (cursor-color . "Yellow")
@@ -67,6 +67,7 @@
           (background-mode 'dark)
           (foreground-color . "#bbc2cf") ;;
           (background-color . "#242730")))
+
   (mini-frame-mode 1))
 
 

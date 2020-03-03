@@ -98,6 +98,7 @@ The user's $HOME directory is abbreviated as a tilde."
         (when (or (memq  major-mode boring-window-modes)
                   (vmacs-filter (buffer-name)))
           (when (and (>  (length (window-list)) 1)
+                     (not (minibufferp))
                      (or bury-cur-win-if-boring
                          (not (equal cur-buf-win win)))
                      (delete-window win))))))))
