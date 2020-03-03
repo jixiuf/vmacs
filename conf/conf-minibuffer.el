@@ -13,7 +13,7 @@
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
-(setq max-mini-window-height 15)        ;selectrum-num-candidates-displayed 受影响
+(setq max-mini-window-height 25)        ;selectrum-num-candidates-displayed 受影响
 ;; (setq read-answer-short t)
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
@@ -44,31 +44,30 @@
 
 
 
- (when (file-directory-p "~/.emacs.d/submodule/mini-frame")
-   (add-to-list 'load-path "~/.emacs.d/submodule/mini-frame"))
+;; (when (file-directory-p "~/.emacs.d/submodule/mini-frame")
+;;   (add-to-list 'load-path "~/.emacs.d/submodule/mini-frame"))
+;; ;; ;; 把minibuffer 搬到一个特定的frame上
+;; (when (require 'mini-frame nil t)
+;;   (setq mini-frame-resize-max-height max-mini-window-height)
+;;   (setq mini-frame-completions-focus 'minibuffer)
+;;   ;; (setq mini-frame-ignore-commands nil)
+;;   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
+;;   (setq mini-frame-show-parameters
+;;         '((top . 0.4) (width . 0.7) (left . 0.3)
+;;           (min-height .  2)
+;;           (height . 10)
+;;           (minibuffer-exit . t)
+;;           (font . "Sarasa Mono CL-22")
+;;           (alpha . 100)
+;;           (left-fringe . 10 )
+;;           (cursor-color . "Yellow")
+;;           ;; (border-color . "green")
+;;           ;; (background-mode 'light)
+;;           (background-mode 'dark)
+;;           (foreground-color . "#bbc2cf") ;;
+;;           (background-color . "#242730")))
 
-;; ;; 把minibuffer 搬到一个特定的frame上
-(when (require 'mini-frame nil t)
-  (setq mini-frame-resize-max-height max-mini-window-height)
-  (setq mini-frame-completions-focus 'minibuffer)
-  ;; (setq mini-frame-ignore-commands nil)
-  (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
-  (setq mini-frame-show-parameters
-        '((top . 0.4) (width . 0.7) (left . 0.3)
-          (min-height .  2)
-          (height . 10)
-          (minibuffer-exit . t)
-          (font . "Sarasa Mono CL-22")
-          (alpha . 100)
-          (left-fringe . 10 )
-          (cursor-color . "Yellow")
-          ;; (border-color . "green")
-          ;; (background-mode 'light)
-          (background-mode 'dark)
-          (foreground-color . "#bbc2cf") ;;
-          (background-color . "#242730")))
-
-  (mini-frame-mode 1))
+;;   (mini-frame-mode 1))
 
 
 (provide 'conf-minibuffer)
