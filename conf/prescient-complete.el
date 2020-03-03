@@ -34,16 +34,7 @@
              (equal infix (car candidates)))
         t)
        ((= (length candidates) 1)
-        ;; Avoid quirk of double / for filename completion. I don't
-        ;; know how this is *supposed* to be handled.
-        (when (and (> (length (car candidates)) 0)
-                   (> (length suffix) 0)
-                   (char-equal (aref (car candidates)
-                                     (1- (length (car candidates))))
-                               (aref suffix 0)))
-          (setq suffix (substring suffix 1)))
-        (cons (concat prefix (car candidates) suffix)
-              (length (concat prefix (car candidates)))))
+        (cons string point))
        ;; Do nothing, i.e leave string as it is.
        (t (cons string point))))))
 
