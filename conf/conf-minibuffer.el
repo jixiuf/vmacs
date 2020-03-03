@@ -50,6 +50,7 @@
 ;; ;; 把minibuffer 搬到一个特定的frame上
 (when (require 'mini-frame nil t)
   (setq mini-frame-resize-max-height max-mini-window-height)
+  (setq mini-frame-completions-focus 'minibuffer)
   ;; (setq mini-frame-ignore-commands nil)
   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
   (setq mini-frame-show-parameters
