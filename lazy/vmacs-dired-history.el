@@ -159,19 +159,21 @@ Argument STRING string.
 Argument PRED pred.
 Argument ACTION action."
   (let ((cands vmacs-dired-history)
-        (eles (vmacs-dired-history--old-read-file-name-internal
-               string pred action))
-        )
-    (append cands
-            (if (and eles
-                     (listp eles)
-                     (stringp (car eles)))
-                (mapcar (lambda(e)
-                          (if (stringp e )
-                              (abbreviate-file-name (expand-file-name e))
-                            e))
-                        eles)
-              eles))))
+        (origin-result (vmacs-dired-history--old-read-file-name-internal
+                        string pred action)))
+    (cond
+     ((eq action 'metadata) nil)
+     ((eq action 'lambda) origin-result)
+     ((eq (car-safe action) 'boundaries) origin-result)
+     ((not action) origin-result)
+     (t
+      (setq cands (prescient-filter string cands))
+      (append cands
+              (mapcar (lambda(e)
+                        (if (stringp e)
+                            (abbreviate-file-name (expand-file-name e))
+                          e))
+                      origin-result))))))
 
 
 (provide 'vmacs-dired-history)
