@@ -9,7 +9,7 @@
 (setq completion-cycle-threshold 3)
 ;; (setq completion-flex-nospace t)              ;default t
 (setq completion-pcm-complete-word-inserts-delimiters t) ;partial-completion in completion-styles
-(setq completion-pcm-word-delimiters "-_/:| ")
+;; (setq completion-pcm-word-delimiters "-_/:| ")
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
@@ -26,7 +26,7 @@
   (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
   (define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
   (define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
-  ;; (local-set-key (kbd "SPC") 'self-insert-command)
+  (local-set-key (kbd "SPC") 'self-insert-command)
   ;; (define-key minibuffer-local-must-match-map (kbd "<C-m>") 'exit-minibuffer)
   ;; (define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
   ;; (define-key minibuffer-local-completion-map (kbd "<C-m>") 'exit-minibuffer)
