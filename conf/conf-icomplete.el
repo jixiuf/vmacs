@@ -2,16 +2,8 @@
 (require 'icomplete)
 (require 'prescient-complete)
 
-
-;; (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
-;; (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-;; (vmacs-leader "ff" 'find-file)
 (setq completion-styles '(basic substring initials prescient flex))
 ;; (setq completion-category-overrides nil) ;支持哪些stypes见completion-styles-alist
-(setq completion-category-overrides ;支持哪些stypes见completion-styles-alist
-      '((file (styles (basic   prescient flex)))
-        (buffer (styles (basic substring initials prescient flex)))))
-
 (setq icomplete-prospects-height max-mini-window-height)
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
