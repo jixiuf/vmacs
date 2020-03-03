@@ -3,7 +3,11 @@
   (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
 
 (require 'prescient)
-(setq prescient-filter-method  '(literal regexp initialism ))
+(setq prescient-filter-method  '(literal regexp  fuzzy))
+;; to save your command history on disk, so the sorting gets more
+;; intelligent over time
+(prescient-persist-mode 1)
+
 
 (defun completion-prescient-completion (string table predicate point
                                                &optional all-p)
