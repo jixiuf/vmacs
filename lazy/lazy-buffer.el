@@ -11,7 +11,7 @@ The user's $HOME directory is abbreviated as a tilde."
   (interactive)
   (let* ((icomplete-compute-delay 0)    ;do not delay
          (icomplete-delay-completions-threshold 1000000)
-         ;; (completion-styles '(basic)) ;flex
+         (completion-styles '(prescient flex)) ;flex
          (files (vmacs-switch-buffer--cands))
          (buf-or-file (completing-read "Open: " files nil t)))
     (unless (string-blank-p buf-or-file)
