@@ -17,7 +17,15 @@
 ;; (setq read-answer-short t)
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
+(defface vmacs-minibuffer-font
+  `((t :inherit default :height 1.3))
+  "The default font for minibuffer buffer.
+Monospaced font whihc is fixed idth and height is recommended."
+  :group 'minibuffer)
+
 (defun vmacs-minibuffer-hook()
+  (set (make-local-variable 'buffer-face-mode-face) 'vmacs-minibuffer-font)
+  (buffer-face-mode t)
   (local-set-key (kbd "<C-m>") 'exit-minibuffer)
   (local-set-key (kbd "C-l") 'backward-kill-word)
   (local-set-key [escape] 'abort-recursive-edit)
