@@ -3,7 +3,13 @@
 (require 'prescient-complete)
 
 (setq completion-styles '(basic substring initials prescient flex))
-;; (setq completion-category-overrides nil) ;支持哪些stypes见completion-styles-alist
+(setq completion-category-overrides
+      '((file (styles . (basic substring prescient flex)))
+        (buffer (styles . (basic substring)))
+        (unicode-name (styles . (basic substring)))
+        (project-file (styles . (substring)))
+        (info-menu (styles . (basic substring)))))
+
 (setq icomplete-prospects-height max-mini-window-height)
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
