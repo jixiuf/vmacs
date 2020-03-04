@@ -11,7 +11,8 @@
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-(setq icomplete-separator " ⚫ ")
+(setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
+
 ;; (setq icomplete-with-completion-tables t)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
@@ -35,7 +36,7 @@
              (bound-and-true-p icomplete-mode))
     (if (not (string= icomplete-separator "\n"))
         (setq icomplete-separator "\n")
-      (setq icomplete-separator " ⚫ "))))
+      (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1"))))))
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
