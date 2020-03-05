@@ -10,7 +10,8 @@
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
   (let* ((icomplete-compute-delay 0)    ;do not delay
-         (icomplete-separator " \n ")
+         (icomplete-separator "                                                             \n ")
+         (icomplete-prospects-height 8)
          (icomplete-delay-completions-threshold 1000000)
          (completion-styles '(basic flex prescient )) ;flex
          (files (vmacs-switch-buffer--cands))

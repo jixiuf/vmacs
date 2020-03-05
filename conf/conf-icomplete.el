@@ -10,18 +10,23 @@
         (project-file (styles . (substring)))
         (info-menu (styles . (basic substring)))))
 
-(setq icomplete-prospects-height max-mini-window-height)
+
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
 (setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-(setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
-
-;; (setq icomplete-with-completion-tables t)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
+
+(setq icomplete-prospects-height 8)
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
+(setq icomplete-separator "                                                            \n")
+;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
+;; (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
+
+;; (setq icomplete-with-completion-tables t)
 (icomplete-mode 1)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
@@ -35,6 +40,7 @@
 (define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-minibuffer-map (kbd "C-t") #'vmacs-icomplete-toggle-vertical)
+
 (defun vmacs-icomplete-toggle-vertical ()
   "Toggle vertical view for `icomplete'."
   (interactive)
