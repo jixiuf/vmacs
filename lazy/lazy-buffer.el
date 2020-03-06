@@ -9,22 +9,34 @@
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (let* ((icomplete-compute-delay 0)    ;do not delay
+  (vmacs-files "Open: " (vmacs-switch-buffer--cands)))
+
+;;;###autoload
+(defun vmacs-git-files ()
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
+  (interactive)
+  (vmacs-files "Git Files: " (vmacs--git-files)))
+
+(defmacro vmacs-files (prompt files )
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
+  `(let* ((icomplete-compute-delay 0)    ;do not delay
          (icomplete-separator "                                                             \n ")
          (icomplete-prospects-height 8)
          (icomplete-delay-completions-threshold 1000000)
          (completion-styles '(basic flex prescient )) ;flex
-         (files (vmacs-switch-buffer--cands))
-         (buf-or-file (completing-read "Open: " files nil t)))
+         (buf-or-file (completing-read ,prompt ,files nil t)))
     (unless (string-blank-p buf-or-file)
       (if-let ((buf (get-buffer buf-or-file)))
           (pop-to-buffer-same-window buf)
         (find-file buf-or-file)))))
 
+
 (defun vmacs-switch-buffer--cands()
   (let ((bufs (vmacs-buffers))
         (recentf (vmacs-recentf))
-        (gitfiles (vmacs-git-files)))
+        (gitfiles (vmacs--git-files)))
     (append bufs recentf  gitfiles)))
 
 
@@ -32,7 +44,7 @@ The user's $HOME directory is abbreviated as a tilde."
   (mapcar #'abbreviate-file-name recentf-list ))
 
 (defvar git-repos-files-cache (make-hash-table :test 'equal))
-(defun vmacs-git-files ()
+(defun vmacs--git-files (&optional n)
   "Append git files as virtual buffer"
   (let (result-list
         (default-directory default-directory)
@@ -49,7 +61,7 @@ The user's $HOME directory is abbreviated as a tilde."
           (puthash git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
-    (dotimes (n 5 magit-repos)
+    (dotimes (n (or n 5) magit-repos)
       (let ((magit-repo (nth  n magit-repos)))
         (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))

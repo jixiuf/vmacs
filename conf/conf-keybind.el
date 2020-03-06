@@ -237,6 +237,11 @@ they are in `bind-map-set-keys'."
 (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 (vmacs-leader "ff" 'find-file)
+(vmacs-leader "i" 'vmacs-git-files)
+(global-set-key (kbd "s-C-M-i")  'vmacs-git-files)
+
+
+
 
 (provide 'conf-keybind)
 
