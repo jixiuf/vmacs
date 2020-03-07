@@ -31,4 +31,5 @@
 
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
+(server-force-delete)
 (server-start)
