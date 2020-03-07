@@ -1,15 +1,12 @@
-;;; ivy-dired-history.el --- use ivy to open recent directories
+;;; vmacs-dired-history.el --- use vmacs to open recent directories
 
 ;; Author: 纪秀峰 <jixiuf@gmail.com>
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
 ;; Created:  2017-06-14
 ;; Version: 1.0
-;; X-URL:https://github.com/jixiuf/ivy-dired-history
-;; Package-Requires: ((ivy "0.9.0")(counsel "0.9.0")(cl-lib "0.5"))
+;; X-URL:https://github.com/jixiuf/vmacs-dired-history
+;; Package-Requires: ((vmacs "0.9.0")(counsel "0.9.0")(cl-lib "0.5"))
 ;;
-;; Features that might be required by this library:
-;;
-;; `ivy' `counsel'
 ;;
 ;;; This file is NOT part of GNU Emacs
 
@@ -32,7 +29,7 @@
 
 ;;; Commentary:
 ;;
-;; use `ivy' to open recent directories.
+;; use `vmacs' to open recent directories.
 
 ;; it is integrated with `dired-do-copy' and `dired-do-rename'.
 ;; when you press C (copy) or R (rename) , it is excellent to
@@ -65,16 +62,16 @@
 
 (defgroup vmacs-dired-history nil
   "dired history using Ivy"
-  :group 'ivy)
+  :group 'vmacs)
 
 
 (defcustom vmacs-dired-history-max 200
-  "Length of history for ivy-dired-history."
+  "Length of history for vmacs-dired-history."
   :type 'number
   :group 'vmacs-dired-history)
 
 (defcustom vmacs-dired-history-ignore-directory '("/")
-  "Length of history for ivy-dired-history."
+  "Length of history for vmacs-dired-history."
   :type '(repeat string)
   :group 'vmacs-dired-history)
 
@@ -116,7 +113,7 @@ Argument DIR directory."
 
 ;; integrating dired history feature into commands like
 ;; dired-do-copy and dired-do-rename.
-;;see https://github.com/jixiuf/ivy-dired-history/issues/6
+;;see https://github.com/jixiuf/vmacs-dired-history/issues/6
 (defadvice dired-mark-read-file-name(around vmacs-dired-history activate)
   "Wrapper ‘read-file-name’ with idv-dired-history-read-file-name."
   (cl-letf (((symbol-function 'read-file-name)
@@ -154,7 +151,7 @@ Argument DIR directory."
   "same as read-file-name-internal")
 
 (defun vmacs-dired-history---read-file-name (string pred action)
-  "Merge ivy-directory-history-variables with files in current directory.
+  "Merge vmacs-directory-history-variables with files in current directory.
 Argument STRING string.
 Argument PRED pred.
 Argument ACTION action."

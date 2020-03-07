@@ -15,5 +15,19 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(setq-default initial-frame-alist
+              '((alpha . 85)
+                (font . "Sarasa Mono CL-18")
+                (foreground-color . "#eeeeec")
+                (background-color . "#202020") ;;
+                (background-mode . dark)
+                (ns-appearance . dark)
+                (height . 43)
+                (width . 120)
+                ;; (left . 20)
+                ;; (top . 80)
+                ))
+(setq-default default-frame-alist initial-frame-alist)
 
-;; (setq package-enable-at-startup t)
+(setq-default mode-line-format nil)
+(setq mode-line-format nil)

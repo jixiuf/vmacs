@@ -1,8 +1,5 @@
 ;;; Code:
 
-;; 绑定之后，你访问过的dired都会被记录住，当你copy rename 及打开dired时，可以从这些
-;; 已访问的目录中筛选以方便快速访问
-(require 'vmacs-dired-history)
 
   (require 'dired-async nil t)
 (with-eval-after-load 'dired

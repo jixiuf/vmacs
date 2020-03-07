@@ -50,72 +50,7 @@
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
 
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
-;; (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(defun  emacs-daemon-after-make-frame-hook(&optional f) ;emacsclient 打开的窗口相关的设置
-  (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-  (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-  ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-  (with-selected-frame f
-    (when (window-system)
-      (set-frame-parameter f 'font "Sarasa Mono CL-18")
-      (set-frame-parameter f 'alpha 85)
-      (when (equal 'only (frame-parameter f 'minibuffer))
-        (set-face-background 'fringe "green" f))
-      (unless (equal 'only (frame-parameter f 'minibuffer))
-        (set-frame-parameter f 'background-mode 'dark)
-        (window-divider-mode t)
-        (set-frame-position f 40 45)
-        (set-frame-size f 138 43)
-        ;; (set-frame-parameter f 'foreground-color "#eeeeec")
-        (raise-frame)))))
 
-(add-hook 'after-make-frame-functions 'emacs-daemon-after-make-frame-hook)
-;; emacs-daemon-after-make-frame-hook
-
-(when  (and (not (daemonp))
-            (vmacs-not-dumping-p))
-  (setq-default window-system-default-frame-alist ;直接emacs命令打开的窗口相关设置,不要在这里设置字体，否则daemon 启动时字体有可能没创建好，会导致字体设置失败
-                '( (x ;; if frame created on x display
-                    (alpha . 80)
-                    (cursor-color . "green")
-                    )
-                   (mac ;; mac-port emacs
-                    (alpha . 85)
-                    (height . 43)
-                    (width . 140)
-                    (left . 160)
-                    (top . 80)
-                    ;; (foreground-color . "#eeeeec")
-                    ;; (background-color . "#202020") ;;
-                    (font . "Sarasa Mono CL-18")
-                    (background-mode . dark)
-                    )
-                   (ns ;; if frame created on mac
-                    (alpha . 85)
-                    (font . "Sarasa Mono CL-18")
-                    ;; (foreground-color . "#eeeeec")
-                    ;; (background-color . "#202020") ;;
-                    (background-mode . dark)
-                    )
-                   (w32
-                    (foreground-color . "#eeeeec")
-                    (background-color . "#202020") ;;
-                    (background-mode . dark)
-                    (alpha . 95)
-                    (cursor-color . "green")
-                    (height . 30)
-                    (width . 100)
-                    (left . 200)
-                    (top . 20)
-                    )
-                   (nil ;; if on term
-                    (background-mode . dark)
-                    ))))
-(setq-default mode-line-format nil)
-(setq mode-line-format nil)
-
-;;
 ;; (setq-default undo-tree-mode-lighter " Ü") ;undo
 ;; (setq-default helm-completion-mode-string " H")
 

@@ -57,6 +57,7 @@
 (require 'lazy-window)
 (require 'vmacs-dired-single)
 (require 'sqlparser-mysql-complete)
+(require 'vmacs-dired-history)
 
 
 (when (vmacs-dumping-p)
