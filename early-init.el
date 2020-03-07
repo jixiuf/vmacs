@@ -31,3 +31,4 @@
 
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
+(server-start)

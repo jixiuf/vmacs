@@ -56,7 +56,7 @@ fi
 #  if EMACSCLIENT is empty
 if [  -z $EMACSCLIENT ] && [ -x "~/bin/emacsclient"  ] && [ `~/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
     EMACSCLIENT="~/bin/emacsclient"
-    sh ~/.emacs.d/bin/emd
+    # sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
@@ -64,28 +64,28 @@ fi
 
 if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
     EMACSCLIENT="/usr/local/bin/emacsclient"
-    sh ~/.emacs.d/bin/emd
+    # sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
 
 if [  -z $EMACSCLIENT ] && [ -x "/usr/local/emacs/bin/emacsclient"  ] && [ `/usr/local/emacs/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
     EMACSCLIENT="/usr/local/emacs/bin/emacsclient"
-    sh ~/.emacs.d/bin/emd
+    # sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
 
 if [  -z $EMACSCLIENT ] && [ -x "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"  ]; then
     EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
-    sh ~/.emacs.d/bin/emd
+    # sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
 
 if [  -z $EMACSCLIENT ] && [ -x "/usr/bin/emacsclient"  ] && [ `/usr/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
     EMACSCLIENT="/usr/bin/emacsclient"
-    sh ~/.emacs.d/bin/emd
+    # sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
     exit
 fi
