@@ -88,6 +88,7 @@
   (require 'conf-vterm)
   (when (eq system-type 'darwin) (require 'conf-evil-input-method))
   (when (eq system-type 'darwin) (exec-path-from-shell-initialize))
+  (server-start)
   (load-theme 'vmacs))
 
 
