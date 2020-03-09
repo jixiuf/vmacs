@@ -232,11 +232,11 @@ they are in `bind-map-set-keys'."
 (vmacs-leader ";" 'execute-extended-command)
 (vmacs-leader "；" 'execute-extended-command)
 (vmacs-leader "wi" 'imenu)
-(vmacs-leader "f." 'ffap)
 (vmacs-leader "SPC" 'vmacs-switch-buffer)
 (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-(vmacs-leader "ff" 'find-file)
+(setq ffap-machine-p-known 'accept)  ; no pinging
+(vmacs-leader "ff" 'find-file-at-point)
 (vmacs-leader "i" 'vmacs-git-files)
 (global-set-key (kbd "s-C-M-i")  'vmacs-git-files)
 
