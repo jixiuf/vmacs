@@ -36,7 +36,7 @@
 (define-key icomplete-minibuffer-map (kbd "C-m") #'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
 ;; (define-key icomplete-minibuffer-map [(control return)]   #'exit-minibuffer)
-(define-key icomplete-minibuffer-map (kbd "C-j") #'exit-minibuffer) ;minibuffer-complete-and-exit
+(define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 (define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-minibuffer-map (kbd "C-t") #'vmacs-icomplete-toggle-vertical)
