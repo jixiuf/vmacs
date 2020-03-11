@@ -161,7 +161,8 @@ Argument ACTION action."
     (cond
      ((eq action 'metadata) nil)
      ((eq action 'lambda) origin-result)
-     ((eq (car-safe action) 'boundaries) origin-result)
+     ((eq (car-safe action) 'boundaries)
+       '(boundaries 0 . 0))
      ((not action) origin-result)
      (t
       (setq cands (prescient-filter string cands))
