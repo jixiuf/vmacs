@@ -8,6 +8,7 @@
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
 (setq-default vterm-max-scrollback (- 20000 40))
+(setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-kill-buffer-on-exit t)
 (setq-default vterm-clear-scrollback t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
