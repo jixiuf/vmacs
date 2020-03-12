@@ -14,7 +14,9 @@ echo ${prefix}
 # echo ${wordingdir}/emacs-env
 source ${wordingdir}/emacs-env
 ./autogen.sh
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/gcc/9
 # CC=/usr/local/opt/gcc/bin/gcc-9 \
+CC='clang' \
 ./configure \
 --disable-silent-rules \
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
@@ -27,7 +29,8 @@ source ${wordingdir}/emacs-env
 --with-modules \
 --with-ns \
 --with-xml2 \
---disable-ns-self-contained
+--disable-ns-self-contained \
+CC='clang'
 # --with-xwidgets \
 # ./configure -C
 # cd lisp;make autoload
