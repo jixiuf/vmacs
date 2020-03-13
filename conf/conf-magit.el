@@ -5,6 +5,7 @@
   (require 'evil-magit)
   )
 
+(setq magit-git-executable (executable-find "git"))
 (setq-default evil-magit-use-y-for-yank t)
 (setq-default
  magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的Recent commits列表有没有办法增加作者列
