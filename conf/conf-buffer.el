@@ -3,9 +3,9 @@
 
 ;; bury-boring-windows with `C-gC-g'
 
-(vmacs-leader "d" 'vmacs-prev-buffer)
-(vmacs-leader "u" 'vmacs-next-buffer)
-(global-set-key  (kbd "s-C-M-u") 'vmacs-next-buffer)
+(vmacs-leader "d" 'vmacs-next-buffer)
+(vmacs-leader "u" 'vmacs-prev-buffer)
+(global-set-key  (kbd "s-C-M-u") 'vmacs-prev-buffer)
 (vmacs-leader "q" 'kill-other-buffers) ;
 
 (vmacs-leader "fr" 'vmacs-undo-kill-buffer)

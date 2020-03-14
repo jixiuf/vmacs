@@ -100,6 +100,7 @@
   (goto-char (point-max))
   (skip-chars-backward "\n[:space:]"))
 
+(define-key vterm-mode-map (kbd "s-C-M-u") 'vmacs-vterm-toggle)
 (define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-cd-show)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)

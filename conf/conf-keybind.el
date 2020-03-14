@@ -155,8 +155,8 @@ they are in `bind-map-set-keys'."
 (global-set-key [f2] 'vmacs-vterm-toggle)
 (global-set-key [C-f2] 'vmacs-vterm-toggle-cd)
 (global-set-key (kbd "s-,") 'vmacs-vterm-toggle)
-(global-set-key (kbd "s-d") 'vmacs-vterm-toggle)
-(global-set-key (kbd "s-C-M-d") 'vmacs-vterm-toggle)
+;; (global-set-key (kbd "s-d") 'vmacs-vterm-toggle)
+;; (global-set-key (kbd "s-C-M-d") 'vmacs-vterm-toggle)
 (global-set-key  (kbd "s-t") 'vmacs-vterm-toggle-cd)
 
 (global-set-key [(tab)]       'smart-tab)
