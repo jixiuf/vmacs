@@ -11,18 +11,47 @@ if [ ! -d /usr/local/emacs ]; then
     sudo chown ${USER}:admin  /usr/local/emacs;
 fi
 echo ${prefix}
-# echo ${workingdir}/emacs-env
-# source ${workingdir}/emacs-env
-export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin:/usr/local/opt/gnu-sed/bin
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export PATH="/usr/local/opt/texinfo/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
-export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/gcc/9
 
+libs=(
+    /usr/local/opt/openssl@1.1
+    /usr/local/opt/texinfo
+    /usr/local/opt/gnu-sed
+    /usr/local/opt/gcc
+    /usr/local/opt/libxml2
+    # /usr/local/opt/giflib
+    /usr/local/opt/jpeg
+    /usr/local/opt/libtiff
+    /usr/local/opt/gnutls
+
+    # Required by gnutls
+    /usr/local/opt/nettle
+    /usr/local/opt/libtasn1
+    /usr/local/opt/p11-kit
+)
+CFLAGS=""
+LDFLAGS=""
+PKG_CONFIG_PATH=""
+for dir in "${libs[@]}"; do
+    CFLAGS="${CFLAGS}-I${dir}/include "
+    LDFLAGS="${LDFLAGS}-L${dir}/lib "
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}${dir}/lib/pkgconfig:"
+    PATH="${PATH}${dir}/bin:"
+done
+export CPPFLAGS="${CFLAGS}"
+export CFLAGS
+export LDFLAGS
+export PKG_CONFIG_PATH
+export PATH
+
+export LDFLAGS="${LDFLAGS}-L/usr/local/lib/gcc/9 "
+echo $LDFLAGS
+export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin
+
+git clean -fdx
 ./autogen.sh
-# CC=/usr/local/opt/gcc/bin/gcc-9 \
+# # CC=/usr/local/opt/gcc/bin/gcc-9 \
+# export CC="gcc-9"
+# export CPP="cpp-9"
 CC='clang' \
 ./configure \
 --disable-silent-rules \
@@ -36,13 +65,13 @@ CC='clang' \
 --with-modules \
 --with-ns \
 --with-xml2 \
---disable-ns-self-contained \
-CC='clang'
+--disable-ns-self-contained
 # --with-xwidgets \
 # ./configure -C
 # cd lisp;make autoload
 # git clean -fdx
-make -j 4 ||git clean -fdx&&make bootstrap -j 4
+# make bootstrap -j 4
+make -j 4
 echo more info see INSTALL.REPO when compile error
 function catch_errors() {
     echo "script aborted, because of errors";
