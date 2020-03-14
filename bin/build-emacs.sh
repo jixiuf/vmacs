@@ -72,6 +72,7 @@ CC='clang' \
 # git clean -fdx
 # make bootstrap -j 4
 make -j 4
+# make bootstrap BYTE_COMPILE_EXTRA_FLAGS='--eval "(setq comp-speed 0)"'
 echo more info see INSTALL.REPO when compile error
 function catch_errors() {
     echo "script aborted, because of errors";
