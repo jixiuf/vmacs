@@ -38,3 +38,4 @@ osx-dictionary-cli
 /elpa/libgit-20190728.701/Makefile
 /forge-database.sqlite
 /var/prescient-save.el
+*.eln

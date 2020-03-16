@@ -39,6 +39,7 @@ clean:
 	@rm -rf ./lazy/*.elc
 	@rm -rf ./conf/*.elc
 	@rm -rf *.elc
+	find elpa -name "*eln-x86_64-apple-darwin18.7.0-ecc4586396ba93a9" -exec rm  -rf {} \;
 clean-elpa:
 	find elpa -name "*.elc" -exec rm {} \;
 
