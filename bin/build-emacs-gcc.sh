@@ -5,10 +5,10 @@ workingdir=`dirname $0`
 
 
 # export PATH=/usr/local/opt/gcc/bin:$PATH
-prefix=/usr/local/emacsgcc
-if [ ! -d /usr/local/emacs ]; then
-    sudo mkdir -p /usr/local/emacs ;
-    sudo chown ${USER}:admin  /usr/local/emacs;
+prefix=/usr/local/gccemacs
+if [ ! -d $prefix ]; then
+    sudo mkdir -p $prefix ;
+    sudo chown ${USER}:admin  $prefix ;
 fi
 echo ${prefix}
 
