@@ -44,28 +44,29 @@ export PKG_CONFIG_PATH
 export PATH
 
 export LDFLAGS="${LDFLAGS}-L/usr/local/lib/gcc/9 "
-echo $LDFLAGS
 export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin
 
-git clean -fdx
-./autogen.sh
+if [ $# -gt 0  ]; then
+    git clean -fdx;
+    ./autogen.sh;
+    CC='clang' \
+    ./configure \
+    --disable-silent-rules \
+    --enable-locallisppath=/usr/local/share/emacs/site-lisp \
+    --prefix=${prefix} \
+    --with-nativecomp \
+    --with-gnutls \
+    --without-x \
+    --without-dbus \
+    --without-imagemagick \
+    --with-modules \
+    --with-ns \
+    --with-xml2 \
+    --disable-ns-self-contained;
+fi
 # # CC=/usr/local/opt/gcc/bin/gcc-9 \
 # export CC="gcc-9"
 # export CPP="cpp-9"
-CC='clang' \
-./configure \
---disable-silent-rules \
---enable-locallisppath=/usr/local/share/emacs/site-lisp \
---prefix=${prefix} \
---with-nativecomp \
---with-gnutls \
---without-x \
---without-dbus \
---without-imagemagick \
---with-modules \
---with-ns \
---with-xml2 \
---disable-ns-self-contained
 # --with-xwidgets \
 # ./configure -C
 # cd lisp;make autoload
