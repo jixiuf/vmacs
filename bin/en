@@ -12,9 +12,9 @@ function call_emacs(){
     # do not why pgrep doesnot work in Emacs/term.el
     # emacsDaemonCount=`pgrep -f "$EMACSCMD --daemon"|wc -l`
     if [ -f  ~/.emacs.d/cache/dump/emacs.pdump  ]; then
-        $EMACSCMD --dump-file  ~/.emacs.d/cache/dump/emacs.pdump $@
+        cd ~;$EMACSCMD --dump-file  ~/.emacs.d/cache/dump/emacs.pdump $@
     else
-        $EMACSCMD  $@
+        cd ~;$EMACSCMD  $@
     fi
 }
 
