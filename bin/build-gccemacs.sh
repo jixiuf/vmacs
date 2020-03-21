@@ -51,9 +51,9 @@ git clean -fdx
 ./autogen.sh
 # export CC="/usr/local/opt/gcc/bin/gcc-9"
 # export CPP="/usr/local/opt/gcc/bin/gcc-9"
-# CC='clang' \
-CPP='/usr/local/opt/gcc/bin/gcc-9' \
-CC='/usr/local/opt/gcc/bin/gcc-9' \
+# CPP='/usr/local/opt/gcc/bin/gcc-9' \
+# CC='/usr/local/opt/gcc/bin/gcc-9' \
+CC='clang' \
 ./configure \
 --disable-silent-rules \
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
@@ -64,9 +64,9 @@ CC='/usr/local/opt/gcc/bin/gcc-9' \
 --without-imagemagick \
 --with-modules \
 --with-xml2 \
---with-x \
---without-ns \
+--with-ns \
 --disable-ns-self-contained
+# --with-x \
 # --without-x \
 # --with-ns \
 # --with-xwidgets \
