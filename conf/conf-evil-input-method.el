@@ -16,13 +16,13 @@
 (add-to-list 'rime-translate-keybindings "C-v")
 (add-to-list 'rime-translate-keybindings  "M-v")
 
-(add-hook 'input-method-activate-hook 'vmacs-evil-input-method-activate t)
-(add-hook 'input-method-deactivate-hook 'vmacs-evil-input-method-deactive t)
+;; (add-hook 'input-method-activate-hook 'vmacs-evil-input-method-activate t)
+;; (add-hook 'input-method-deactivate-hook 'vmacs-evil-input-method-deactive t)
+;; (defun vmacs-evil-input-method-activate()
+;;   (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=Squirrel" ))
+;; (defun vmacs-evil-input-method-deactive()
+;;   (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=U.S." ))
 
-(defun vmacs-evil-input-method-activate()
-  (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=Squirrel" ))
-(defun vmacs-evil-input-method-deactive()
-  (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=U.S." ))
 ;; (global-set-key (kbd "C-\\") 'toggle-input-method)
 (global-set-key (kbd "<f16>") 'toggle-input-method)
 
