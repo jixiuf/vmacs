@@ -48,7 +48,7 @@ lib:
 	find $(PWD)/lib -name "*.so" -exec ln -fs {} /usr/local/lib/ \;
 	find $(PWD)/lib/include -exec ln -fs {} /usr/local/include \;
 	make -C submodule/emacs-rime lib
-	ln -s ~/.emacs.d/submodule/emacs-rime/{librime-emacs.so,librime-emacs.dylib}
+# ln -fs ~/.emacs.d/submodule/emacs-rime/{librime-emacs.so,librime-emacs.dylib}
 
 eshell:
 	./bin/zsh-to-eshell-alias.sh
