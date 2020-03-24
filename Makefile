@@ -69,5 +69,6 @@ rime:
 	ln -s -f "$$HOME/Library/Rime/default.custom.yaml" $$HOME/.emacs.d/cache/rime/default.custom.yaml
 	ln -s -f "$$HOME/Library/Rime/pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/cache/rime
 	ln -s -f "$$HOME/Library/Rime/wubi_pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/cache/rime
+	ln -s -f "$$HOME/Library/Rime/double_pinyin_flypy_jixiuf.schema.yaml" $$HOME/.emacs.d/cache/rime
 	ln -s -f "$$HOME/Library/Rime/"*.dict.yaml $$HOME/.emacs.d/cache/rime/
 	cp  -rf "$$HOME/Library/Rime/"*.userdb $$HOME/.emacs.d/cache/rime/
