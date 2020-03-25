@@ -60,9 +60,11 @@
                 '(metadata (display-sort-function . identity)
                            (cycle-sort-function . identity))
               (complete-with-action
-               action kill-ring string pred)))))
-    (insert
-     (completing-read "Yank from kill ring: " completion-table nil t))))
+               action kill-ring string pred))))
+         (selected (completing-read "Yank from kill ring: " completion-table nil t)))
+    (if (eq major-mode 'vterm-mode)
+        (vterm-send-string selected t)
+      (insert selected))))
 
 
 (defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
