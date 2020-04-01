@@ -126,6 +126,10 @@ Delete all posframe frames and buffers." t nil)
 
 ;;;***
 
+;;;### (autoloads nil nil ("posframe-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t
