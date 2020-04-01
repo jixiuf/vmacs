@@ -87,7 +87,7 @@
   (require 'conf-tmp nil t)
   (require 'conf-vterm)
   (when (eq system-type 'darwin) (require 'conf-evil-input-method))
-  (server-start)
+  (unless (server-running-p) (server-start))
   (load-theme 'vmacs))
 
 
