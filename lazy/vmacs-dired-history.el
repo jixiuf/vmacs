@@ -142,7 +142,9 @@ Argument DIR directory."
     (when dir (setq default-directory dir))
     (setq vmacs-dired-history--default-directory default-directory)
     (completing-read prompt 'vmacs-dired-history---read-file-name
-                     predicate mustmatch initial)))
+                     predicate mustmatch (abbreviate-file-name
+                                          (concat (or dir "")
+                                                  (or initial ""))))))
 
 
 (defalias 'vmacs-dired-history--old-read-file-name-internal
@@ -165,13 +167,21 @@ Argument ACTION action."
        '(boundaries 0 . 0))
      ((not action) origin-result)
      (t
-      (setq cands (prescient-filter string cands))
-      (append cands
+      (let*((tokens (split-string string "/"))
+           (last (car (last tokens)))
+           (last-2 (car (last tokens 2))))
+        (when (string-empty-p last)
+          (setq last last-2)
+          )
+        (setq cands (prescient-filter  last cands))
+        )
+      (append
               (mapcar (lambda(e)
                         (if (stringp e)
                             (abbreviate-file-name (expand-file-name e))
                           e))
-                      origin-result))))))
+                      origin-result)
+              cands)))))
 
 
 (provide 'vmacs-dired-history)
