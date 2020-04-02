@@ -20,9 +20,18 @@
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-(setq icomplete-prospects-height 7)
+(setq icomplete-prospects-height 20)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
-(setq icomplete-separator "                                                     \n")
+(setq icomplete-separator "\n")
+
+(defun icomplete-vertical-minibuffer-setup ()
+  "Setup minibuffer for a vertical icomplete session. Meant to be
+added to `icomplete-minibuffer-setup-hook'."
+  (setq truncate-lines t)
+  (enlarge-window (1- icomplete-prospects-height)))
+
+(add-hook 'icomplete-minibuffer-setup-hook #'icomplete-vertical-minibuffer-setup)
+
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
 ;; (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
 
@@ -39,16 +48,16 @@
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 (define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
-(define-key icomplete-minibuffer-map (kbd "C-t") #'vmacs-icomplete-toggle-vertical)
+;; (define-key icomplete-minibuffer-map (kbd "C-t") #'vmacs-icomplete-toggle-vertical)
 
-(defun vmacs-icomplete-toggle-vertical ()
-  "Toggle vertical view for `icomplete'."
-  (interactive)
-  (when (and (minibufferp)
-             (bound-and-true-p icomplete-mode))
-    (if (not (string= icomplete-separator "\n"))
-        (setq icomplete-separator "\n")
-      (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1"))))))
+;; (defun vmacs-icomplete-toggle-vertical ()
+;;   "Toggle vertical view for `icomplete'."
+;;   (interactive)
+;;   (when (and (minibufferp)
+;;              (bound-and-true-p icomplete-mode))
+;;     (if (not (string= icomplete-separator "\n"))
+;;         (setq icomplete-separator "\n")
+;;       (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1"))))))
 
 (defun icomplete-mode-yank-pop ()
   (interactive)

@@ -22,8 +22,8 @@ The user's $HOME directory is abbreviated as a tilde."
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   `(let* ((icomplete-compute-delay 0)    ;do not delay
-         (icomplete-separator "                                                             \n ")
-         (icomplete-prospects-height 8)
+         ;; (icomplete-separator "\n")
+         ;; (icomplete-prospects-height 8)
          (icomplete-delay-completions-threshold 1000000)
          (completion-styles '(basic flex prescient )) ;flex
          (buf-or-file (completing-read ,prompt ,files nil t)))
