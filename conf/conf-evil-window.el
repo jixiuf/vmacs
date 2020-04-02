@@ -63,7 +63,7 @@
         ((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
          ;; "^v?term.*"
          (display-buffer-reuse-window )
-         (inhibit-same-window . t)
+         ;; (inhibit-same-window . t)
          ;; (display-buffer-reuse-window display-buffer-in-direction)
          ;;display-buffer-in-direction/direction/dedicated is added in emacs27
          ;; (direction . bottom)

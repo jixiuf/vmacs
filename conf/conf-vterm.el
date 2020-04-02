@@ -30,28 +30,6 @@
   (vterm-send-key "x" nil nil t)
   (vterm-send-key "e" nil nil t))
 
-(defun vmacs-vterm-toggle-cd(&optional args)
-  (interactive "P")
-  (cond
-   ((equal (prefix-numeric-value args) 1)
-    (vterm-toggle-cd))
-   ((equal (prefix-numeric-value args) 16)
-    (vterm))
-   ((equal (prefix-numeric-value args) 4)
-    (let ((vterm-toggle-fullscreen-p nil))
-      (vterm-toggle-cd)))))
-
-(defun vmacs-vterm-toggle(&optional args)
-  (interactive "P")
-  (cond
-   ((equal (prefix-numeric-value args) 1)
-    (vterm-toggle))
-   ((equal (prefix-numeric-value args) 16)
-    (vterm))
-   ((equal (prefix-numeric-value args) 4)
-    (let ((vterm-toggle-fullscreen-p nil))
-      (vterm-toggle)))))
-
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
   (interactive)
@@ -100,8 +78,8 @@
   (goto-char (point-max))
   (skip-chars-backward "\n[:space:]"))
 
-(define-key vterm-mode-map (kbd "s-C-M-u") 'vmacs-vterm-toggle)
-(define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-cd-show)
+(define-key vterm-mode-map (kbd "s-C-M-u") 'vterm-toggle)
+;; (define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-cd-show)
 (define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
