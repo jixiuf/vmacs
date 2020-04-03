@@ -39,3 +39,4 @@ osx-dictionary-cli
 /forge-database.sqlite
 /var/prescient-save.el
 *.eln
+/rime/*

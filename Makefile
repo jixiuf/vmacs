@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-.PHONY: eshell lib
+.PHONY: eshell lib rime
 EMACSCMD ?= emacs
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init-base.el
@@ -63,12 +63,12 @@ deps:
 
 
 rime:
-	rm -rf ~/.emacs.d/cache/rime/
-	mkdir -p ~/.emacs.d/cache/rime
-	ln -s -f "$$HOME/Library/Rime/squirrel.custom.yaml" $$HOME/.emacs.d/cache/rime/squirrel.custom.yaml
-	ln -s -f "$$HOME/Library/Rime/default.custom.yaml" $$HOME/.emacs.d/cache/rime/default.custom.yaml
-	ln -s -f "$$HOME/Library/Rime/pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/cache/rime
-	ln -s -f "$$HOME/Library/Rime/wubi_pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/cache/rime
-	ln -s -f "$$HOME/Library/Rime/double_pinyin_flypy_jixiuf.schema.yaml" $$HOME/.emacs.d/cache/rime
-	ln -s -f "$$HOME/Library/Rime/"*.dict.yaml $$HOME/.emacs.d/cache/rime/
-	cp  -rf "$$HOME/Library/Rime/"*.userdb $$HOME/.emacs.d/cache/rime/
+	rm -rf ~/.emacs.d/rime/
+	mkdir -p ~/.emacs.d/rime
+	ln -s -f "$$HOME/Library/Rime/squirrel.custom.yaml" $$HOME/.emacs.d/rime/squirrel.custom.yaml
+	ln -s -f "$$HOME/Library/Rime/default.custom.yaml" $$HOME/.emacs.d/rime/default.custom.yaml
+	ln -s -f "$$HOME/Library/Rime/pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/rime
+	ln -s -f "$$HOME/Library/Rime/wubi_pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/rime
+	ln -s -f "$$HOME/Library/Rime/double_pinyin_flypy_jixiuf.schema.yaml" $$HOME/.emacs.d/rime
+	ln -s -f "$$HOME/Library/Rime/"*.dict.yaml $$HOME/.emacs.d/rime/
+	cp  -rf "$$HOME/Library/Rime/"*.userdb $$HOME/.emacs.d/rime/

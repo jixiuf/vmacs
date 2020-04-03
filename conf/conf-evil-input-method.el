@@ -3,7 +3,7 @@
 ;; https://gitlab.com/liberime/liberime
 ;; RIME_PATH=~/repos/squirrel/librime/ make liberime
 (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
-(setq rime-user-data-dir "~/.emacs.d/cache/rime")
+;; (setq rime-user-data-dir "~/.emacs.d/cache/rime")
 (setq default-input-method "rime")
 (setq rime-show-candidate 'posframe)
 (setq rime-disable-predicates
