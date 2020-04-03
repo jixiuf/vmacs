@@ -161,28 +161,74 @@ Argument ACTION action."
         (origin-result (vmacs-dired-history--old-read-file-name-internal
                         string pred action)))
     (cond
-     ((eq action 'metadata) nil)
+     ((eq action 'metadata)
+      '(metadata (display-sort-function . identity) ;disable sort
+                 (cycle-sort-function . identity)))
      ((eq action 'lambda) origin-result)
      ((eq (car-safe action) 'boundaries)
-       '(boundaries 0 . 0))
+      '(boundaries 0 . 0))
      ((not action) origin-result)
      (t
       (let*((tokens (split-string string "/"))
-           (last (car (last tokens)))
-           (last-2 (car (last tokens 2))))
-        (when (string-empty-p last)
-          (setq last last-2)
-          )
-        (setq cands (prescient-filter  last cands))
-        )
-      (append
-              (mapcar (lambda(e)
-                        (if (stringp e)
-                            (abbreviate-file-name (expand-file-name e))
-                          e))
-                      origin-result)
-              cands)))))
+            (last-token (car (last tokens)))
+            (last-token-2 (car (last tokens 2))))
+        (when (string-empty-p last-token) (setq last-token last-token-2))
+        (setq cands  (prescient-filter last-token cands))
+        (vmacs-dired-history--sort
+         last-token
+         (append
+          (mapcar (lambda(e)
+                    (if (stringp e)
+                        (abbreviate-file-name (expand-file-name e))
+                      e))
+                  origin-result)
+          cands)))))))
 
+
+(defun vmacs-dired-history--sort (name candidates)
+  "Re-sort candidates by NAME.
+CANDIDATES is a list of directories(with path) each match NAME.
+equal>prefix>substring>other."
+  (if (or (string-match "^\\^" name) (string= name ""))
+      candidates
+    (let* ((re-prefix (concat "^\\*" name))
+           (name-tokens (split-string name))
+           res-prefix
+           res-equal
+           res-substring
+           res-dirname-match-all-tokens
+           res-fullpath-match-all-tokens
+           res-fullpath-substring
+           res-noprefix
+           dirname)
+      (dolist (s candidates)
+        (setq dirname (file-name-nondirectory
+                       (directory-file-name
+                        (file-name-directory (expand-file-name s)))))
+        (cond
+         ((string= name dirname)
+          (push s res-equal))
+         ((string-match-p re-prefix dirname)
+          (push s res-prefix))
+         ((string-match-p name dirname)
+          (push s res-substring))
+         ((cl-every  (lambda(e) (string-match-p e dirname)) name-tokens)
+          (push s res-dirname-match-all-tokens))
+         ((cl-some  (lambda(dir) (cl-every  (lambda(e) (string-match-p e dir)) name-tokens))
+                    (split-string s "/" t ))
+          (push s res-fullpath-match-all-tokens))
+         ((string-match-p name (expand-file-name s))
+          (push s res-fullpath-substring))
+         (t
+          (push s res-noprefix))))
+      (nconc
+       (nreverse res-equal)
+       (nreverse res-prefix)
+       (nreverse res-substring)
+       (nreverse res-dirname-match-all-tokens)
+       (nreverse res-fullpath-match-all-tokens)
+       (nreverse res-fullpath-substring)
+       (nreverse res-noprefix)))))
 
 (provide 'vmacs-dired-history)
 
