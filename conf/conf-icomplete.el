@@ -41,6 +41,19 @@ added to `icomplete-minibuffer-setup-hook'."
 
 (add-hook 'icomplete-minibuffer-setup-hook #'icomplete-vertical-minibuffer-setup)
 
+;; 让第一个candidate不要显示在光标同一行，而是下一行
+(defun icomplete-vertical-format-completions (completions)
+  "Reformat COMPLETIONS for better aesthetics.
+To be used as filter return advice for `icomplete-completions'."
+  (save-match-data
+    (if (string-match "^\\((.*)\\|\\[.+\\]\\)?{\\(\\(?:.\\|\n\\)+\\)}"
+                      completions)
+        (format "%s \n%s"
+                (or (match-string 1 completions) "")
+                (match-string 2 completions))
+      completions)))
+(advice-add 'icomplete-completions :filter-return #'icomplete-vertical-format-completions)
+
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
 ;; (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
 
