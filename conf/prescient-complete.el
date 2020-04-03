@@ -1,14 +1,4 @@
 
-(when (file-directory-p "~/.emacs.d/submodule/prescient")
-  (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
-
-(require 'prescient)
-(setq prescient-filter-method  '(literal regexp  ))
-;; to save your command history on disk, so the sorting gets more
-;; intelligent over time
-(prescient-persist-mode 1)
-
-
 (defun completion-prescient-completion (string table predicate point
                                                &optional all-p)
   (let* ((beforepoint (substring string 0 point))
@@ -54,9 +44,8 @@
                "prescient completion"))
 
 (put 'prescient 'completion--adjust-metadata 'completion--prescient-adjust-metadata)
-(defun completion--prescient-adjust-metadata(metadata)
-  ;; (print  metadata)
-  )
+
+(defun completion--prescient-adjust-metadata(metadata))
 
 
 (provide 'prescient-complete)
