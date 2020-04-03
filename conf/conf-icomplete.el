@@ -32,6 +32,7 @@
 (setq icomplete-prospects-height 20)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
 (setq icomplete-separator "\n")
+;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
 
 (defun icomplete-vertical-minibuffer-setup ()
   "Setup minibuffer for a vertical icomplete session. Meant to be
@@ -54,9 +55,6 @@ To be used as filter return advice for `icomplete-completions'."
       completions)))
 (advice-add 'icomplete-completions :filter-return #'icomplete-vertical-format-completions)
 
-;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
-;; (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
-
 ;; (setq icomplete-with-completion-tables t)
 (icomplete-mode 1)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
@@ -70,20 +68,10 @@ To be used as filter return advice for `icomplete-completions'."
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 (define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
-;; (define-key icomplete-minibuffer-map (kbd "C-t") #'vmacs-icomplete-toggle-vertical)
-
-;; (defun vmacs-icomplete-toggle-vertical ()
-;;   "Toggle vertical view for `icomplete'."
-;;   (interactive)
-;;   (when (and (minibufferp)
-;;              (bound-and-true-p icomplete-mode))
-;;     (if (not (string= icomplete-separator "\n"))
-;;         (setq icomplete-separator "\n")
-;;       (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1"))))))
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
-  (let* ((icomplete-separator (concat "\n" (propertize "......" 'face 'shadow) "\n "))
+  (let* ((icomplete-separator (concat "\n" (propertize "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――" 'face 'shadow) "\n "))
          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
          (completion-table
           (lambda (string pred action)
