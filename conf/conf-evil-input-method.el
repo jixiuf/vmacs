@@ -25,7 +25,6 @@
 ;;   (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=U.S." ))
 
 ;; (global-set-key (kbd "C-\\") 'toggle-input-method)
-(global-set-key (kbd "<f16>") 'toggle-input-method)
 
 ;; ;; 输入法进入normal state时，关闭输入法的中文模式
 ;; (add-hook 'evil-motion-state-entry-hook 'disable-input-method-hook)
@@ -33,24 +32,19 @@
 (define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见isearch-pre-command-hook
 (global-set-key (kbd "<f18>") 'evil-insert-state) ;mac karabiner用来控制输入法
 (define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见isearch-pre-command-hook
-;; (defun evil-pyim ()
-;;   "when toggle on input method, switch to evil-insert-state if possible.
-;; when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
-;;   (interactive)
-;;   (if (not current-input-method)
-;;       (if (not (string= evil-state "insert"))
-;;           (evil-insert-state))
-;;     ;; (if (string= evil-state "insert")
-;;     ;;     (evil-normal-state))
-;;     )
-;;   (if(derived-mode-p 'vterm-mode)
-;;      (vmacs-evil-set-input-method)
-;;     (set-input-method "pyim")
-;;     (vmacs-evil-input-method-activate)
-;;      )
-
-;;   )
-
+(global-set-key (kbd "<f16>") 'vmacs-toggle-input-method)
+(defun vmacs-toggle-input-method ()
+  "when toggle on input method, switch to evil-insert-state if possible.
+when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
+  (interactive)
+  (if (not current-input-method)
+      (if (not (string= evil-state "insert"))
+          (evil-insert-state)
+        (call-interactively #'toggle-input-method)
+        )
+    (call-interactively #'toggle-input-method)
+    )
+  )
 ;; 结合 hammerspoon 实现按下shift 切换输入法时，当切换到中文中自动进入insert state
 ;; https://github.com/jixiuf/dotfiles/blob/master/mac/hammerspoon/init.lua
 ;; 当切换输入法到中文状态时的时候会回调到这里
