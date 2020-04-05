@@ -54,7 +54,7 @@ The user's $HOME directory is abbreviated as a tilde."
     (unless (file-remote-p default-directory)
       (setq git-dir (magit-toplevel))
       (when git-dir
-        (setq git-dir (abbreviate-file-name (directory-file-name (file-truename git-dir))))
+        (setq git-dir (abbreviate-file-name (file-truename (directory-file-name git-dir))))
         (setq default-directory git-dir)
         (setq list (gethash git-dir  git-repos-files-cache))
         (when (or (not list) current-prefix-arg) ;prefix则会刷新缓存

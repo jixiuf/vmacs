@@ -105,11 +105,11 @@
   ;; 避免不小心删掉未提交的代码
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
-  (let ((dir (abbreviate-file-name (directory-file-name (file-truename (magit-toplevel))))))
-    (message dir)
+  (let ((dir (abbreviate-file-name (file-truename (directory-file-name (magit-toplevel))))))
     (unless (file-remote-p dir)
       (delete (cons dir 0) magit-repository-directories)
-      (add-to-list 'magit-repository-directories (cons dir 0)))))
+      (add-to-list 'magit-repository-directories  (cons dir 0)))))
+
 
 ;; (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
 ;; (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
