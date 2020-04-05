@@ -151,7 +151,7 @@ Argument DIR directory."
   (completion-table-in-turn #'completion--embedded-envvar-table
                             #'completion--file-name-table)
   "same as read-file-name-internal")
-
+(defvar vmacs-dired-history---last-token "")
 (defun vmacs-dired-history---read-file-name (string pred action)
   "Merge vmacs-directory-history-variables with files in current directory.
 Argument STRING string.
@@ -167,6 +167,7 @@ Argument ACTION action."
     (when (string-empty-p last-token) (setq last-token last-token-2))
     (cond
      ((eq action 'metadata)
+      (setq vmacs-dired-history---last-token last-token)
       '(metadata (display-sort-function . identity) ;disable sort
                  (cycle-sort-function . identity)))
      ((eq action 'lambda) origin-result)
@@ -174,6 +175,7 @@ Argument ACTION action."
       '(boundaries 0 . 0))
      ((not action) origin-result)
      (t
+      (setq last-token vmacs-dired-history---last-token)
       (setq regexp (mapconcat #'(lambda(e) (if (char-equal ?\  e) ".*" (char-to-string e))) last-token ""))
       (setq cands (seq-filter (lambda (e) (string-match-p  regexp e)) cands))
 
