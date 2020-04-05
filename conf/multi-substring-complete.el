@@ -45,7 +45,7 @@ which is at the core of multisubstring logic.  The extra
                completion-multisubstring-all-completions
                "multi substring completion,split by space"))
 
-(put 'multisubstring 'completion--adjust-metadata 'completion--flex-adjust-metadata)
+;; (put 'multisubstring 'completion--adjust-metadata 'completion--flex-adjust-metadata)
 
 
 
