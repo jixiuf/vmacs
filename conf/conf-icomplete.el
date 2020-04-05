@@ -3,18 +3,19 @@
 (when (file-directory-p "~/.emacs.d/submodule/prescient")
   (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
 
-(require 'prescient)
-(setq prescient-filter-method  '(literal regexp))
-;; to save your command history on disk, so the sorting gets more
-;; intelligent over time
-(prescient-persist-mode 1)
+(require 'multi-substring-complete)
+;; (require 'prescient)
+;; (setq prescient-filter-method  '(literal regexp))
+;; ;; to save your command history on disk, so the sorting gets more
+;; ;; intelligent over time
+;; (prescient-persist-mode 1)
 
-(require 'prescient-complete)
+;; (require 'prescient-complete)
 
-(setq completion-styles '(basic substring initials prescient flex))
+(setq completion-styles '(multisubstring basic substring initials flex))
 (setq completion-category-overrides
-      '((file (styles . (basic substring prescient flex)))
-        (buffer (styles . (basic substring)))
+      '((file (styles . (multisubstring basic  substring flex)))
+        (buffer (styles . (multisubstring basic substring )))
         (unicode-name (styles . (basic substring)))
         (project-file (styles . (substring)))
         (info-menu (styles . (basic substring)))))
@@ -23,7 +24,7 @@
 (setq icomplete-delay-completions-threshold 0)
 (setq icomplete-max-delay-chars 0)
 (setq icomplete-delay-completions-threshold 2000)
-(setq icomplete-compute-delay 0)
+;; (setq icomplete-compute-delay .3)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
 (setq icomplete-in-buffer t)

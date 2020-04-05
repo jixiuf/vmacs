@@ -21,16 +21,17 @@ The user's $HOME directory is abbreviated as a tilde."
 (defmacro vmacs-files (prompt files )
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
-  `(let* ((icomplete-compute-delay 0)    ;do not delay
-         ;; (icomplete-separator "\n")
-         ;; (icomplete-prospects-height 8)
-         (icomplete-delay-completions-threshold 1000000)
-         (completion-styles '(basic flex prescient )) ;flex
-         (buf-or-file (completing-read ,prompt ,files nil t)))
-    (unless (string-blank-p buf-or-file)
-      (if-let ((buf (get-buffer buf-or-file)))
-          (pop-to-buffer-same-window buf)
-        (find-file buf-or-file)))))
+  `(let* (
+          ;; (icomplete-compute-delay 0)    ;do not delay
+          ;; (icomplete-separator "\n")
+          ;; (icomplete-prospects-height 8)
+          ;; (icomplete-delay-completions-threshold 1000000)
+          ;; (completion-styles '( prescient )) ;flex
+          (buf-or-file (completing-read ,prompt ,files nil t)))
+     (unless (string-blank-p buf-or-file)
+       (if-let ((buf (get-buffer buf-or-file)))
+           (pop-to-buffer-same-window buf)
+         (find-file buf-or-file)))))
 
 
 (defun vmacs-switch-buffer--cands()
@@ -61,7 +62,7 @@ The user's $HOME directory is abbreviated as a tilde."
           (puthash git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
-    (dotimes (n (or n 5) magit-repos)
+    (dotimes (n (or n 3) magit-repos)
       (let ((magit-repo (nth  n magit-repos)))
         (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
