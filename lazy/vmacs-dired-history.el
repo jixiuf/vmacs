@@ -157,9 +157,14 @@ Argument DIR directory."
 Argument STRING string.
 Argument PRED pred.
 Argument ACTION action."
-  (let ((cands vmacs-dired-history)
-        (origin-result (vmacs-dired-history--old-read-file-name-internal
-                        string pred action)))
+  (let* ((cands vmacs-dired-history)
+         (origin-result (vmacs-dired-history--old-read-file-name-internal
+                         string pred action))
+         (tokens (split-string string "/"))
+         (last-token (car (last tokens)))
+         (last-token-2 (car (last tokens 2)))
+         regexp)
+    (when (string-empty-p last-token) (setq last-token last-token-2))
     (cond
      ((eq action 'metadata)
       '(metadata (display-sort-function . identity) ;disable sort
@@ -169,20 +174,20 @@ Argument ACTION action."
       '(boundaries 0 . 0))
      ((not action) origin-result)
      (t
-      (let*((tokens (split-string string "/"))
-            (last-token (car (last tokens)))
-            (last-token-2 (car (last tokens 2))))
-        (when (string-empty-p last-token) (setq last-token last-token-2))
-        (setq cands  (prescient-filter last-token cands))
-        (vmacs-dired-history--sort
-         last-token
-         (append
-          (mapcar (lambda(e)
-                    (if (stringp e)
-                        (abbreviate-file-name (expand-file-name e))
-                      e))
-                  origin-result)
-          cands)))))))
+      (setq regexp (mapconcat #'(lambda(e) (if (char-equal ?\  e) ".*" (char-to-string e))) last-token ""))
+      (setq cands (seq-filter (lambda (e) (string-match-p  regexp e)) cands))
+
+      ;; (setq cands  (prescient-filter last-token cands))
+      (vmacs-dired-history--sort
+       last-token
+       (append
+        cands
+        (mapcar (lambda(e)
+                  (if (stringp e)
+                      (abbreviate-file-name (expand-file-name e))
+                    e))
+                origin-result)
+        ))))))
 
 
 (defun vmacs-dired-history--sort (name candidates)
