@@ -39,7 +39,7 @@
   "Setup minibuffer for a vertical icomplete session. Meant to be
 added to `icomplete-minibuffer-setup-hook'."
   (setq truncate-lines t)
-  (enlarge-window (1- icomplete-prospects-height)))
+   (enlarge-window (- icomplete-prospects-height (1- (window-height)))))
 
 (add-hook 'icomplete-minibuffer-setup-hook #'icomplete-vertical-minibuffer-setup)
 
