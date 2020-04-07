@@ -116,10 +116,8 @@ or end-of-line.
 Move point to end-of-line ,if point was already at end of line (ignore white space)
   move point to end of line .if `C-u', then move to end of line directly."
   (interactive "^P")
-  (if (and (string= major-mode "term-mode")
-           (equal (line-number-at-pos)
-                  (count-lines (point-min) (point-max))))
-      (term-send-raw)
+  (if (equal major-mode 'vterm-mode)
+      (vterm-end-of-line)
     (if arg (end-of-line)
       (let ((oldpos (point)) (new-pos)) (beginning-of-line) (if (re-search-forward "[ \t]*$" (point-at-eol) t 1) (setq new-pos  (match-beginning 0)) (setq new-pos (point-at-eol)))
            (when (= oldpos new-pos)
