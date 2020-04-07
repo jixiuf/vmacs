@@ -15,6 +15,11 @@
 (setq completion-show-help nil) ;*Completions* show help
 (setq max-mini-window-height 25)        ;selectrum-num-candidates-displayed 受影响
 ;; (setq read-answer-short t)
+(setq minibuffer-eldef-shorten-default t)
+(minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏
+(file-name-shadow-mode 1)
+(minibuffer-depth-indicate-mode 1)                   ;显示minibuffer深度
+
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
 (defface vmacs-minibuffer-font
@@ -46,9 +51,6 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (add-hook 'minibuffer-setup-hook #'vmacs-minibuffer-hook)
 
-(file-name-shadow-mode 1)
-(minibuffer-depth-indicate-mode 1)                   ;显示minibuffer深度
-;; (minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏
 
 
 
