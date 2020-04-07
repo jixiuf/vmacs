@@ -73,7 +73,7 @@ To be used as filter return advice for `icomplete-completions'."
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
-  (let* ((icomplete-separator (concat "\n" (propertize "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――" 'face 'shadow) "\n "))
+  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?- ) 'face 'shadow) "\n "))
          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
          (completion-table
           (lambda (string pred action)
