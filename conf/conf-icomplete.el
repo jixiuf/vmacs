@@ -1,9 +1,9 @@
 ;;; Code:
 (require 'icomplete)
-(when (file-directory-p "~/.emacs.d/submodule/prescient")
-  (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
 
 (require 'multi-substring-complete)
+;; (when (file-directory-p "~/.emacs.d/submodule/prescient")
+;;   (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
 ;; (require 'prescient)
 ;; (setq prescient-filter-method  '(literal regexp))
 ;; ;; to save your command history on disk, so the sorting gets more
@@ -73,7 +73,7 @@ To be used as filter return advice for `icomplete-completions'."
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
-  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?- ) 'face 'shadow) "\n "))
+  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'shadow) "\n "))
          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
          (completion-table
           (lambda (string pred action)
