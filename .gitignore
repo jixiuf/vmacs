@@ -19,6 +19,7 @@
 /conf/conf-tmp.el
 /elpa/archives/gnu/archive-contents
 /elpa/archives/melpa/archive-contents
+/elpa/archives/*
 /.lsp-session-v1
 /pyim/dcache/
 osx-dictionary-cli
