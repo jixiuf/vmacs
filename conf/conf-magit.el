@@ -4,6 +4,7 @@
   (require 'magit-push)
   (require 'evil-magit)
   )
+(autoload 'magit-dired-jump "magit-extras" "" t)
 
 (setq magit-git-executable (executable-find "git"))
 (setq-default evil-magit-use-y-for-yank t)
