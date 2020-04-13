@@ -12,7 +12,6 @@
   (setq-default gofmt-command (executable-find "gofmt")))
 (when (executable-find "goimports")
   (setq-default gofmt-command (executable-find "goimports")))
-(autoload 'go-mode "go-mode" nil t)
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (setq company-go-show-annotation t)
 (lsp-register-custom-settings
