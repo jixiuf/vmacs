@@ -135,6 +135,8 @@
          ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
          ("\\.go.txt$" . go-mode)
+         ("\\.go\\'" . go-mode)
+
          ("\\.yaws$" . nxml-mode)
          ("\\.html$"  . web-mode)
          ("\\.htm$"   . web-mode)

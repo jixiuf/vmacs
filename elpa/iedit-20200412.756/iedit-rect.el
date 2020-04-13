@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2010, 2011, 2012 Victor Ren
 
-;; Time-stamp: <2018-09-19 11:10:37 Victor Ren>
+;; Time-stamp: <2020-04-12 14:56:20 Victor Ren>
 ;; Author: Victor Ren <victorhge@gmail.com>
 ;; Keywords: occurrence region simultaneous rectangle refactoring
 ;; Version: 0.9.9.9
@@ -41,7 +41,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+;; (eval-when-compile (require 'cl-lib))
 (require 'rect) ;; kill-rectangle
 (require 'iedit-lib)
 

@@ -3,7 +3,7 @@
 
 ;; Copyright (C) 2010, 2011, 2012 Victor Ren
 
-;; Time-stamp: <2019-04-19 15:55:54 Victor Ren>
+;; Time-stamp: <2020-04-12 14:56:30 Victor Ren>
 ;; Author: Victor Ren <victorhge@gmail.com>
 ;; Keywords: occurrence region simultaneous rectangle refactoring
 ;; Version: 0.9.9.9
@@ -49,7 +49,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+;; (eval-when-compile (require 'cl-lib))
 
 (defgroup iedit nil
   "Edit multiple regions in the same way simultaneously.
@@ -223,12 +223,14 @@ occurrence.")
     map)
   "Default keymap used within occurrence overlays.")
 
+;; The declarations are to avoid compile errors if mc is unknown by Emacs.
+(declare-function mc/create-fake-cursor-at-point "ext:mutiple-cursors-core.el" nil)
+(declare-function multiple-cursors-mode "ext:mutiple-cursors-core.el")
+(defvar mc/cmds-to-run-once)
+
 (when (require 'multiple-cursors-core nil t)
-  ;; The declarations are to avoid compile errors if mc is unknown by Emacs. 
-  (declare-function mc/create-fake-cursor-at-point "mutiple-cursor-core.el" nil)
-  (declare-function multiple-cursors-mode "mutiple-cursor-core.el")
   (defun iedit-switch-to-mc-mode ()
-    "Switch to multiple-cursors-mode.  So that you can navigate
+    "Switch to `multiple-cursors-mode'.  So that you can navigate
 out of the occurrence and edit simultaneously with multiple
 cursors."
     (interactive "*")
@@ -237,14 +239,12 @@ cursors."
 	   (offset (- (point) (overlay-start ov)))
 	   (master (point)))
       (save-excursion
-	(dolist (occurrence iedit-occurrences-overlays)
+        (dolist (occurrence iedit-occurrences-overlays)
 	  (goto-char (+ (overlay-start occurrence) offset))
 	  (unless (= master (point))
-	    (mc/create-fake-cursor-at-point))
-	  ))
+	    (mc/create-fake-cursor-at-point))))
       (run-hooks 'iedit-aborting-hook)
-      (multiple-cursors-mode 1)
-      ))
+      (multiple-cursors-mode 1)))
   ;; `multiple-cursors-mode' runs `post-command-hook' function for all the
   ;; cursors. `post-command-hook' is setup in `iedit-switch-to-mc-mode' So the
   ;; function is executed after `iedit-switch-to-mc-mode'. It is not expected.
@@ -697,9 +697,9 @@ value of `iedit-occurrence-context-lines' is used for this time."
   (iedit-barf-if-buffering)
   (iedit-apply-on-occurrences 'downcase-region))
 
+;;; Don't downcase from-string to allow case freedom!
 (defun iedit-replace-occurrences(&optional to-string)
-  "Replace occurrences with STRING.
-This function preserves case."
+  "Replace occurrences with STRING."
   (interactive "*")
   (iedit-barf-if-buffering)
   (let* ((ov (iedit-find-current-occurrence-overlay))
@@ -707,19 +707,18 @@ This function preserves case."
          (from-string (buffer-substring-no-properties
                        (overlay-start ov)
                        (overlay-end ov)))
-         (from-string-lowercase (downcase from-string))
          (to-string (if (not to-string)
-                      (read-string "Replace with: "
-                                 nil nil
-                                 from-string
-                                 nil)
+			(read-string "Replace with: "
+				     nil nil
+				     from-string
+				     nil)
                       to-string)))
     (iedit-apply-on-occurrences
-     (lambda (beg end from-string-lowercase to-string)
+     (lambda (beg end from-string to-string)
        (goto-char beg)
-       (search-forward from-string-lowercase end)
-       (replace-match to-string nil))
-     from-string-lowercase to-string)
+       (search-forward from-string end)
+       (replace-match to-string t))
+     from-string to-string)
     (goto-char (+ (overlay-start ov) offset))))
 
 (defun iedit-blank-occurrences()

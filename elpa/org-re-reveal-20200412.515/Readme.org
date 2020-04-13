@@ -584,9 +584,15 @@ Whether anyone wants to use those package in isolation, is up to them.
 
 
 ** Slide Header/Footer
-   Specify slide header/footer by =#+REVEAL_SLIDE_HEADER:= and
-   =#+REVEAL_SLIDE_FOOTER:=. The option content will be put into
-   divisions of class =slide-header= and =slide-footer=, so you can
+   Specify a header/footer to be used on all slides by
+   =#+REVEAL_SLIDE_HEADER:= and =#+REVEAL_SLIDE_FOOTER:=.
+   Currently, one cannot define separate headers/footers for
+   individual slides.
+
+   The content will be put into ~div~ elements, defined by
+   ~org-re-reveal-slide-header-html~ and
+   ~org-re-reveal-slide-footer-html~, which set ~class~ attributes
+   to =slide-header= and =slide-footer=; thus, you can
    control their appearance in custom CSS file (see [[Extra Stylesheets]]).
    By default, header/footer content will only display on content
    slides. To show them additionally on the title and toc slide you can add
