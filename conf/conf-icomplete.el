@@ -26,11 +26,10 @@
 (setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
-(setq icomplete-hide-common-prefix nil)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-(setq icomplete-prospects-height 13)
+(setq icomplete-prospects-height 2)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
 (setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
@@ -38,8 +37,11 @@
 (defun icomplete-vertical-minibuffer-setup ()
   "Setup minibuffer for a vertical icomplete session. Meant to be
 added to `icomplete-minibuffer-setup-hook'."
-  (setq truncate-lines t)
-   (enlarge-window (- icomplete-prospects-height (1- (window-height)))))
+  (if (not (string-match-p "\n" icomplete-separator))
+      (setq truncate-lines nil)
+    (setq truncate-lines t)
+    (setq icomplete-hide-common-prefix nil)
+    (enlarge-window (- icomplete-prospects-height (1- (window-height))))))
 
 (add-hook 'icomplete-minibuffer-setup-hook #'icomplete-vertical-minibuffer-setup)
 
@@ -48,8 +50,9 @@ added to `icomplete-minibuffer-setup-hook'."
   "Reformat COMPLETIONS for better aesthetics.
 To be used as filter return advice for `icomplete-completions'."
   (save-match-data
-    (if (string-match "^\\((.*)\\|\\[.+\\]\\)?{\\(\\(?:.\\|\n\\)+\\)}"
-                      completions)
+    (if (and (string-match "^\\((.*)\\|\\[.+\\]\\)?{\\(\\(?:.\\|\n\\)+\\)}"
+                           completions)
+             (string-match-p "\n" icomplete-separator))
         (format "%s \n%s"
                 (or (match-string 1 completions) "")
                 (match-string 2 completions))
