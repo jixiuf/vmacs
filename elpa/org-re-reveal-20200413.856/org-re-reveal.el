@@ -3,9 +3,9 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Copyright (C) 2013-2018 Yujie Wen and contributors to org-reveal, see:
 ;;                         https://github.com/yjwen/org-reveal/commits/master
-;; Copyright (C) 2017-2020 Jens Lechtenbörger
 ;; Copyright (C) 2019      Naoya Yamashita <conao3@gmail.com>
 ;; Copyright (C) 2019      Ayush Goyal <perfectayush@gmail.com>
+;; SPDX-FileCopyrightText: 2017-2020 Jens Lechtenbörger
 
 ;; URL: https://gitlab.com/oer/org-re-reveal
 ;; Version: 2.12.1
@@ -537,7 +537,8 @@ By default, no attributes are assigned."
   :group 'org-export-re-reveal
   :type '(choice (const nil) string))
 
-(defcustom org-re-reveal-slide-header-html "<div class=\"slide-header\">%s</div>\n"
+(defcustom org-re-reveal-slide-header-html
+  "<div class=\"slide-header\">%s</div>\n"
   "HTML format string to construct slide footer."
   :group 'org-export-re-reveal
   :type 'string)
@@ -565,7 +566,8 @@ Footer is defined by `org-re-reveal-slide-footer'."
   :group 'org-export-re-reveal
   :type '(choice (const nil) string))
 
-(defcustom org-re-reveal-slide-footer-html "<div class=\"slide-footer\">%s</div>\n"
+(defcustom org-re-reveal-slide-footer-html
+  "<div class=\"slide-footer\">%s</div>\n"
   "HTML format string to construct slide footer.
 Must constain exactly one %-sequence \"%s\"."
   :group 'org-export-re-reveal

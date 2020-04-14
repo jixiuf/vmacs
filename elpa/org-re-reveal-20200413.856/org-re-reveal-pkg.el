@@ -1,4 +1,4 @@
-(define-package "org-re-reveal" "20200412.515" "Org export to reveal.js presentations"
+(define-package "org-re-reveal" "20200413.856" "Org export to reveal.js presentations"
   '((emacs "24.4")
     (org "8.3")
     (htmlize "1.34"))
