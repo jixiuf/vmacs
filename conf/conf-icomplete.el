@@ -29,7 +29,7 @@
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-(setq icomplete-prospects-height 2)
+(setq icomplete-prospects-height 5)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
 (setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
