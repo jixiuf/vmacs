@@ -1,5 +1,5 @@
 ;;; Code:
-(autoload 'iedit-mode "iedit-mode" nil t)
+(autoload 'iedit-mode "iedit" nil t)
 (setq-default iedit-toggle-key-default nil)
 (global-set-key (kbd "C-;") 'evil-iedit-state-iedit-mode)
 (evil-define-state iedit
