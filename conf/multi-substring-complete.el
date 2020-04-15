@@ -1,52 +1,50 @@
-;; modified based on flex completion-styles on emacs27
+;; https://github.com/oantolin/orderless
+(require 'cl-lib)
 ;;
-(defun completion-multisubstring--make-pattern (pattern)
-  "Convert PCM-style PATTERN into PCM-style multisubstring pattern.
+(defun orderless-highlight-match (regexp string)
+  (when (string-match regexp string)
+    (font-lock-prepend-text-property
+     (match-beginning 0)
+     (match-end 0)
+     'face 'completions-common-part
+     string)
+    t))
 
-This turns
-    (prefix \"foo bar\" point)
-into
-    (prefix \"f\"  \"o\"  \"o\" any \"b\" \"a\" \"r\" point)
-which is at the core of multisubstring logic.  The extra
-'any' is optimized away later on."
-  (mapcan (lambda (elem)
-            (if (stringp elem)
-                (mapcan (lambda (char)
-                          (if (char-equal ?\  char)
-                              (list 'any)
-                            (list (string char))))
-                        elem)
-              (list elem)))
-          pattern))
-
-(defun completion-multisubstring-try-completion (string table pred point)
-  "Try to multisubstring-complete STRING in TABLE given PRED and POINT."
-  (pcase-let ((`(,all ,pattern ,prefix ,suffix ,_carbounds)
-               (completion-substring--all-completions
-                string table pred point
-                #'completion-multisubstring--make-pattern)))
-    (if minibuffer-completing-file-name
+(defun orderless-all-completions (string table pred _point)
+  (save-match-data
+    (let* ((limit (car (completion-boundaries string table pred "")))
+           (prefix (substring string 0 limit))
+           (all (all-completions prefix table pred))
+           (regexps (split-string (substring string limit))))
+      (when minibuffer-completing-file-name
         (setq all (completion-pcm--filename-try-filter all)))
-    (completion-pcm--merge-try pattern all prefix suffix)))
+      (condition-case nil
+          (progn
+            (setq all
+                  (cl-loop for original in all
+                           for candidate = (copy-sequence original)
+                           when (cl-loop for regexp in regexps
+                                         always (orderless-highlight-match
+                                                 regexp candidate))
+                           collect candidate))
+            (when all (nconc all (length prefix))))
+        (invalid-regexp nil)))))
 
-(defun completion-multisubstring-all-completions (string table pred point)
-  "Get multisubstring-completions of STRING in TABLE, given PRED and POINT."
-  (pcase-let ((`(,all ,pattern ,prefix ,_suffix ,_carbounds)
-               (completion-substring--all-completions
-                string table pred point
-                #'completion-multisubstring--make-pattern)))
-    (when all
-      (nconc (completion-pcm--hilit-commonality pattern all)
-             (length prefix)))))
+(defun orderless-try-completion (string table pred point &optional _metadata)
+  (let* ((limit (car (completion-boundaries string table pred "")))
+         (prefix (substring string 0 limit))
+         (all (orderless-all-completions string table pred point)))
+    (cl-flet ((measured (string) (cons string (length string))))
+      (cond
+       ((null all) nil)
+       ((atom (cdr all)) (measured (concat prefix (car all))))
+       (t (measured string))))))
 
-(add-to-list 'completion-styles-alist
-             '(multisubstring
-               completion-multisubstring-try-completion
-               completion-multisubstring-all-completions
-               "multi substring completion,split by space"))
-
-;; (put 'multisubstring 'completion--adjust-metadata 'completion--flex-adjust-metadata)
-
+(cl-pushnew '(orderless
+              orderless-try-completion orderless-all-completions
+              "Completion of multiple regexps, in any order.")
+            completion-styles-alist
+            :test #'equal)
 
 
 (provide 'multi-substring-complete)

@@ -12,10 +12,10 @@
 
 ;; (require 'prescient-complete)
 
-(setq completion-styles '(multisubstring basic substring initials flex))
+(setq completion-styles '(orderless basic substring initials flex))
 (setq completion-category-overrides
-      '((file (styles . (multisubstring basic  substring flex)))
-        (buffer (styles . (multisubstring basic substring )))
+      '((file (styles . (orderless basic  substring flex)))
+        (buffer (styles . (orderless basic substring )))
         (unicode-name (styles . (basic substring)))
         (project-file (styles . (substring)))
         (info-menu (styles . (basic substring)))))
