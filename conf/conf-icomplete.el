@@ -11,7 +11,7 @@
 ;; (prescient-persist-mode 1)
 
 ;; (require 'prescient-complete)
-
+(setq orderless-regexp-separator " +\\|[-/]")
 (setq completion-styles '(orderless basic substring initials flex))
 (setq completion-category-overrides
       '((file (styles . (orderless basic  substring flex)))
@@ -72,7 +72,7 @@ To be used as filter return advice for `icomplete-completions'."
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 (define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
-(define-key icomplete-minibuffer-map (kbd "SPC") #'self-insert-command)
+;; (define-key icomplete-minibuffer-map (kbd "SPC") #'self-insert-command)
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
