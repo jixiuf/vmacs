@@ -29,7 +29,7 @@
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-(setq icomplete-prospects-height 5)
+(setq icomplete-prospects-height 8)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
 (setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
@@ -104,26 +104,6 @@ To be used as filter return advice for `icomplete-completions'."
       (icomplete-mode-yank-pop)
     ad-do-it))
 
-;; ;; this macro works
-;; ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
-;; (defmacro with-mode-on (mode &rest body)
-;;   (declare (indent defun)
-;;            (doc-string 3))
-;;   (macroexp-let2 nil mode-p mode
-;;     `(progn
-;;        (unless ,mode-p (,mode 1))
-;;        ,@body
-;;        (unless ,mode-p (,mode -1)))))
-
-;; ;; (macroexpand '(with-mode-off icomplete-mode (message "ss")))
-;; (defmacro with-mode-off (mode &rest body)
-;;   (declare (indent defun)
-;;            (doc-string 3))
-;;   (macroexp-let2 nil mode-p `(bound-and-true-p ,mode)
-;;     `(progn
-;;        (when ,mode-p (,mode -1))
-;;        ,@body
-;;        (when ,mode-p (,mode 1)))))
 
 
 (provide 'conf-icomplete)

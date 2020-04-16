@@ -663,6 +663,26 @@ end tell" (expand-file-name default-directory))))
      case-fold-search t ;nil=case sensitive
      evil-ex-search-case 'insensitive)
     (message "case insensitive")))
+;; ;; this macro works
+;; ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
+;; (defmacro with-mode-on (mode &rest body)
+;;   (declare (indent defun)
+;;            (doc-string 3))
+;;   (macroexp-let2 nil mode-p mode
+;;     `(progn
+;;        (unless ,mode-p (,mode 1))
+;;        ,@body
+;;        (unless ,mode-p (,mode -1)))))
+
+;; ;; (macroexpand '(with-mode-off icomplete-mode (message "ss")))
+;; (defmacro with-mode-off (mode &rest body)
+;;   (declare (indent defun)
+;;            (doc-string 3))
+;;   (macroexp-let2 nil mode-p `(bound-and-true-p ,mode)
+;;     `(progn
+;;        (when ,mode-p (,mode -1))
+;;        ,@body
+;;        (when ,mode-p (,mode 1)))))
 
 
 ;; ;;;###autoload
