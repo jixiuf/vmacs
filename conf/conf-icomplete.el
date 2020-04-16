@@ -21,7 +21,7 @@
         (info-menu (styles . (basic substring)))))
 
 
-(setq icomplete-delay-completions-threshold 0)
+;; (setq icomplete-delay-completions-threshold 0)
 ;; (setq icomplete-max-delay-chars 3)
 (setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
