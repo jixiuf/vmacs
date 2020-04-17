@@ -3,16 +3,10 @@
 
 (when (file-directory-p "~/.emacs.d/submodule/orderless")
   (add-to-list 'load-path "~/.emacs.d/submodule/orderless"))
-(require 'orderless)
-;; (require 'prescient)
-;; (setq prescient-filter-method  '(literal regexp))
-;; ;; to save your command history on disk, so the sorting gets more
-;; ;; intelligent over time
-;; (prescient-persist-mode 1)
-
-;; (require 'prescient-complete)
 (setq orderless-regexp-separator " +\\|[-/]")
-(setq completion-styles '(orderless basic substring initials flex))
+(when (require 'orderless nil t)
+  (setq completion-styles '(orderless basic substring initials flex))
+  (setq completion-styles '(basic substring initials flex)))
 
 ;; (setq icomplete-delay-completions-threshold 0)
 ;; (setq icomplete-max-delay-chars 3)
