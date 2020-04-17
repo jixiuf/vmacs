@@ -1,9 +1,9 @@
 ;;; Code:
 (require 'icomplete)
 
-(require 'multi-substring-complete)
-;; (when (file-directory-p "~/.emacs.d/submodule/prescient")
-;;   (add-to-list 'load-path "~/.emacs.d/submodule/prescient"))
+(when (file-directory-p "~/.emacs.d/submodule/orderless")
+  (add-to-list 'load-path "~/.emacs.d/submodule/orderless"))
+(require 'orderless)
 ;; (require 'prescient)
 ;; (setq prescient-filter-method  '(literal regexp))
 ;; ;; to save your command history on disk, so the sorting gets more
