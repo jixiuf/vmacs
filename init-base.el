@@ -5,6 +5,8 @@
 (add-to-list 'load-path (concat user-emacs-directory "conf/"))
 (defvar lazy-load-dir (concat user-emacs-directory "lazy"))
 (add-to-list 'load-path lazy-load-dir)
+(dolist (dir (directory-files (concat user-emacs-directory "submodule") nil "[a-zA-Z0-9_-]"))
+  (add-to-list 'load-path dir))
 
 (require 'conf-dump)
 (require 'conf-tmp-before nil t)
