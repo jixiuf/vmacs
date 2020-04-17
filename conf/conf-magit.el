@@ -5,6 +5,8 @@
   (require 'evil-magit)
   )
 (autoload 'magit-dired-jump "magit-extras" "" t)
+(autoload 'git-rebase-mode "git-rebase" "" t)
+
 
 (setq magit-git-executable (executable-find "git"))
 (setq-default evil-magit-use-y-for-yank t)
