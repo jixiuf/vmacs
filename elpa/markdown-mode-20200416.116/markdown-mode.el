@@ -7,7 +7,7 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.4-dev
-;; Package-Version: 20200413.2232
+;; Package-Version: 20200416.116
 ;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -585,6 +585,7 @@ requires Emacs to be built with ImageMagick support."
 (eval-and-compile
   (defconst markdown-rx-constituents
     `((newline . ,(rx "\n"))
+      ;; Note: #405 not consider markdown-list-indent-width however this is never used
       (indent . ,(rx (or (repeat 4 " ") "\t")))
       (block-end . ,(rx (and (or (one-or-more (zero-or-more blank) "\n") line-end))))
       (numeral . ,(rx (and (one-or-more (any "0-9#")) ".")))
@@ -1109,7 +1110,7 @@ at baseline (not inside of a nested list)."
       (list cur-bounds))
      ;; List item with greater indentation (four or more spaces).
      ;; Increase list level by consing CUR-BOUNDS onto BOUNDS.
-     ((and marker (>= indent (+ prev-indent 4)))
+     ((and marker (>= indent (+ prev-indent markdown-list-indent-width)))
       (cons cur-bounds bounds))
      ;; List item with greater or equal indentation (less than four spaces).
      ;; Keep list level the same by replacing the car of BOUNDS.
@@ -1122,7 +1123,7 @@ at baseline (not inside of a nested list)."
      ((< indent prev-indent)
       (while (and (> (length bounds) 1)
                   (setq prev-indent (cl-third (cadr bounds)))
-                  (< indent (+ prev-indent 4)))
+                  (< indent (+ prev-indent markdown-list-indent-width)))
         (setq bounds (cdr bounds)))
       (cons cur-bounds bounds))
      ;; Otherwise, do nothing.
@@ -2466,7 +2467,7 @@ it means we are at baseline (not inside of a nested list)."
     (setq levels (list indent)))
    ;; List item with greater indentation (four or more spaces).
    ;; Increase list level.
-   ((and marker (>= indent (+ (car levels) 4)))
+   ((and marker (>= indent (+ (car levels) markdown-list-indent-width)))
     (setq levels (cons indent levels)))
    ;; List item with greater or equal indentation (less than four spaces).
    ;; Do not increase list level.
@@ -2478,7 +2479,7 @@ it means we are at baseline (not inside of a nested list)."
    ;; that this block need not be the beginning of list item.
    ((< indent (car levels))
     (while (and (> (length levels) 1)
-                (< indent (+ (cadr levels) 4)))
+                (< indent (+ (cadr levels) markdown-list-indent-width)))
       (setq levels (cdr levels)))
     levels)
    ;; Otherwise, do nothing.
@@ -2997,7 +2998,7 @@ When FACELESS is non-nil, do not return matches where faces have been applied."
                                  markdown-math-face)))
           (progn (goto-char (min (1+ begin) last))
                  (when (< (point) last)
-                   (markdown-match-italic last)))
+                   (markdown-match-bold last)))
         (set-match-data (list (match-beginning 2) (match-end 2)
                               (match-beginning 3) (match-end 3)
                               (match-beginning 4) (match-end 4)
@@ -3538,7 +3539,7 @@ SEQ may be an atom or a sequence."
   "Apply font-lock properties to list markers from point to LAST."
   (when (markdown-match-list-items last)
     (let* ((indent (length (match-string-no-properties 1)))
-           (level (/ indent 4)) ;; level = 0, 1, 2, ...
+           (level (/ indent markdown-list-indent-width)) ;; level = 0, 1, 2, ...
            (bullet (nth (mod level (length markdown-list-item-bullets))
                         markdown-list-item-bullets)))
       (add-text-properties
@@ -6135,7 +6136,7 @@ increase the indentation by one level."
         (cond
          ;; Dedent: decrement indentation, find previous marker.
          ((= arg 4)
-          (setq indent (max (- cur-indent 4) 0))
+          (setq indent (max (- cur-indent markdown-list-indent-width) 0))
           (let ((prev-bounds
                  (save-excursion
                    (goto-char (nth 0 bounds))
@@ -6144,7 +6145,7 @@ increase the indentation by one level."
             (when prev-bounds
               (setq marker (nth 4 prev-bounds)))))
          ;; Indent: increment indentation by 4, use same marker.
-         ((= arg 16) (setq indent (+ cur-indent 4)))
+         ((= arg 16) (setq indent (+ cur-indent markdown-list-indent-width)))
          ;; Same level: keep current indentation and marker.
          (t (setq indent cur-indent)))
         (setq new-indent (make-string indent 32))
@@ -7971,7 +7972,7 @@ window when OTHER is non-nil."
       (when other (other-window 1))
       (let ((default-directory wp))
         (find-file filename)))
-    (when (not (eq major-mode 'markdown-mode))
+    (unless (memq major-mode '(markdown-mode gfm-mode))
       (markdown-mode))))
 
 (defun markdown-follow-wiki-link-at-point (&optional arg)
@@ -9645,9 +9646,8 @@ rows and columns and the column alignment."
   (add-hook 'kill-buffer-hook #'markdown-live-preview-remove-on-kill t t))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist
+             '("\\.\\(?:md\\|markdown\\|mkd\\|mdown\\|mkdn\\|mdwn\\)\\'" . markdown-mode))
 
 
 ;;; GitHub Flavored Markdown Mode  ============================================

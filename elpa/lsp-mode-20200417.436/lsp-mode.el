@@ -3480,9 +3480,8 @@ in that particular folder."
     (when-let (changes (gethash "changes" edit))
       (maphash
        (lambda (uri text-edits)
-         (let ((filename (lsp--uri-to-path uri)))
-           (with-current-buffer (find-file-noselect filename)
-             (lsp--apply-text-edits text-edits))))
+         (with-current-buffer (-> uri lsp--uri-to-path find-file-noselect)
+           (lsp--apply-text-edits text-edits)))
        changes))))
 
 (defun lsp--apply-text-document-edit (edit)
@@ -3563,12 +3562,21 @@ interface TextDocumentEdit {
     (delete-region start end)
     (insert newText)))
 
+
+;; WORKAROUND: typescript-language might send -1 when applying code actions.
+;; see https://github.com/emacs-lsp/lsp-mode/issues/1582
+(defun lsp--fix-point (point)
+  (-let [(&hash "character" "line") point]
+    (ht ("line" (max 0 line))
+        ("character" (max 0 character)))))
+
 (defun lsp--apply-text-edit-replace-buffer-contents (text-edit)
   "Apply the edits described in the TextEdit object in TEXT-EDIT.
 The method uses `replace-buffer-contents'."
-  (-let* (((&hash "newText" "range") text-edit)
+  (-let* (((&hash "newText" "range" (&hash "start" "end")) text-edit)
           (source (current-buffer))
-          ((beg . end) (lsp--range-to-region range)))
+          ((beg . end) (lsp--range-to-region (ht ("start" (lsp--fix-point start))
+                                                 ("end" (lsp--fix-point end))))))
     (with-temp-buffer
       (insert newText)
       (let ((temp (current-buffer)))
@@ -3606,7 +3614,7 @@ The method uses `replace-buffer-contents'."
                              (prepare-change-group)))
              (howmany (length edits))
              (message (format "Applying %s edits to `%s' ..." howmany (current-buffer)))
-             (_ (message message))
+             (_ (lsp--info message))
              (reporter (make-progress-reporter message 0 howmany))
              (done 0)
              (apply-edit (if (functionp 'replace-buffer-contents)
@@ -4604,24 +4612,25 @@ When language is nil render as markup if `markdown-mode' is loaded."
 
 (defun lsp--render-element (content)
   "Render CONTENT element."
-  ;; MarkedString
-  (or
-   (cond
-    ((and (hash-table-p content)
-          (gethash "language" content))
-     (-let [(&hash "language" "value") content]
-       (lsp--render-string value language)))
+  (let ((inhibit-message t))
+    (or
+     (cond
+      ;; MarkedString
+      ((and (hash-table-p content)
+            (gethash "language" content))
+       (-let [(&hash "language" "value") content]
+         (lsp--render-string value language)))
 
-    ;; MarkupContent
-    ((and (hash-table-p content)
-          (gethash "kind" content))
-     (-let [(&hash "value" "kind") content]
-       (lsp--render-string value kind)))
-    ;; plain string
-    ((stringp content) (lsp--render-string content "markdown"))
-    ((null content) "")
-    (t (error "Failed to handle %s" content)))
-   ""))
+      ;; MarkupContent
+      ((and (hash-table-p content)
+            (gethash "kind" content))
+       (-let [(&hash "value" "kind") content]
+         (lsp--render-string value kind)))
+      ;; plain string
+      ((stringp content) (lsp--render-string content "markdown"))
+      ((null content) "")
+      (t (error "Failed to handle %s" content)))
+     "")))
 
 (defun lsp--select-action (actions)
   "Select an action to execute from ACTIONS."
@@ -4947,9 +4956,8 @@ It will show up only if current point has signature help."
         :range (if (use-region-p)
                    (lsp--region-to-range (region-beginning) (region-end))
                  (lsp--region-to-range (point) (point)))
-        :context (list
-                  :diagnostics (lsp-cur-line-diagnostics)
-                  :only (when kind (vector kind)))))
+        :context `(:diagnostics ,(lsp-cur-line-diagnostics)
+                                ,@(when kind (list :only (vector kind))))))
 
 (defun lsp-code-actions-at-point (&optional kind)
   "Retrieve the code actions for the active region or the current line."
