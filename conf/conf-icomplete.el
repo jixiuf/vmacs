@@ -3,9 +3,9 @@
 
 (when (file-directory-p "~/.emacs.d/submodule/orderless")
   (add-to-list 'load-path "~/.emacs.d/submodule/orderless"))
-(setq orderless-regexp-separator " +\\|[-/]")
-(when (require 'orderless nil t)
-  (setq completion-styles '(orderless basic substring initials flex))
+(setq orderless-component-separator " +")
+(if (require 'orderless nil t)
+    (setq completion-styles '(orderless basic substring initials flex))
   (setq completion-styles '(basic substring initials flex)))
 
 ;; (setq icomplete-delay-completions-threshold 0)
