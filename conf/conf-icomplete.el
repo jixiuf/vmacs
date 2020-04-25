@@ -1,8 +1,6 @@
 ;;; Code:
 (require 'icomplete)
 
-(when (file-directory-p "~/.emacs.d/submodule/orderless")
-  (add-to-list 'load-path "~/.emacs.d/submodule/orderless"))
 (setq orderless-component-separator " +")
 (if (require 'orderless nil t)
     (setq completion-styles '(orderless basic substring initials flex))
