@@ -441,6 +441,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-declare-motion 'golden-ratio-scroll-screen-up)
 
 ;; this is need for vterm
+(autoload 'golden-ratio-scroll-screen-up "golden-ratio-scroll-screen" "" t)
+(autoload 'golden-ratio-scroll-screen-down "golden-ratio-scroll-screen" "" t)
 (define-key evil-motion-state-map (kbd "C-v") 'golden-ratio-scroll-screen-up)
 (define-key evil-motion-state-map (kbd "M-v") 'golden-ratio-scroll-screen-down)
 (define-key evil-motion-state-map (kbd "C-l") 'recenter-top-bottom)
