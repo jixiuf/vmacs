@@ -119,24 +119,7 @@
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
 
-(defun vterm-set-title-hook (title) ;title = user@host@lastcmd:path  or user@host:path
-  (unless (string-equal "term compile" (buffer-name))
-    (rename-buffer (vmacs-generate-dir-name "term " "" title
-                                            (- centaur-tabs-label-fixed-length 1 5)) t)))
-
-(add-hook 'vterm-set-title-functions 'vterm-set-title-hook)
-
-(defun vmacs-generate-dir-name(prefix cmd dir &optional max-dir-len)
-  (let* ((cmd (car (split-string cmd "[ |\t]" t " ")))
-         (pwd (abbreviate-file-name dir))
-         (dir-tokens (split-string pwd "[/|\\]" t " ")))
-    (when (> (length dir-tokens) 2)
-      (setq pwd (mapconcat  'identity (last dir-tokens 2)  "/")))
-    (when (and max-dir-len
-               (> max-dir-len 0)
-               (> (length pwd) max-dir-len))
-      (setq pwd (substring pwd (- (length pwd) max-dir-len))))
-    (string-trim (format "%s%s %s"  prefix (or cmd "") pwd))))
+(setq vterm-buffer-name-string "vterm %s")
 
 (defun vmacs-kill-buffer-hook()
   (let ((proc (get-buffer-process (current-buffer))))
