@@ -43,7 +43,7 @@ export LDFLAGS
 export PKG_CONFIG_PATH
 export PATH
 
-export LDFLAGS="${LDFLAGS}-L/usr/local/lib/gcc/9 "
+export LDFLAGS="${LDFLAGS}-L/usr/local/lib/gcc/9"
 echo $LDFLAGS
 export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin
 
@@ -59,11 +59,7 @@ CC='clang' \
 --enable-locallisppath=/usr/local/share/emacs/site-lisp \
 --prefix=${prefix} \
 --with-nativecomp \
---with-gnutls \
---without-dbus \
---without-imagemagick \
 --with-modules \
---with-xml2 \
 --with-ns \
 --disable-ns-self-contained
 # --with-x \

@@ -11,12 +11,11 @@ index 1f049c326b..792fc3a7fd 100644
  
      osmajor = `uname -r`.split(".").first
      pkgversion = "Homebrew GCC #{pkg_version} #{build.used_options*" "}".strip
-@@ -65,6 +65,8 @@ class Gcc < Formula
+@@ -65,6 +65,7 @@ class Gcc < Formula
        --with-system-zlib
        --with-pkgversion=#{pkgversion}
        --with-bugurl=https://github.com/Homebrew/homebrew-core/issues
 +      --enable-host-shared
-+       --disable-bootstrap
      ]
  
      # Xcode 10 dropped 32-bit support
