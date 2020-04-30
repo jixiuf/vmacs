@@ -2,6 +2,8 @@
 ;; \ \ / / '_ ` _ \ / _` |/ __/ __|
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
+;; https://emacs-china.org/t/macos-emacs-28-native-comp/12201/70?u=jixiuf
+(setq comp-deferred-compilation t)
 
 (setq-default
  ;; user-full-name ""                ;记得改成你的名字

@@ -74,7 +74,8 @@ CC='clang' \
 # cd lisp;make autoload
 # git clean -fdx
 # make bootstrap -j 4
-make -j 12
+# NATIVE_FAST_BOOT=1 只编译生成 pdump 需要的 elisp 文件
+time make -j4 NATIVE_FAST_BOOT=1
 # make bootstrap BYTE_COMPILE_EXTRA_FLAGS='--eval "(setq comp-speed 0)"'
 echo more info see INSTALL.REPO when compile error
 function catch_errors() {
