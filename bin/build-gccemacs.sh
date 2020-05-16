@@ -33,7 +33,7 @@ function catch_errors() {
 
 trap catch_errors ERR;
 
-make install
+make install -J 8
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
 #!/bin/bash
