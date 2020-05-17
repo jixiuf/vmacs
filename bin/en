@@ -11,10 +11,10 @@ function call_emacs(){
     fi
     # do not why pgrep doesnot work in Emacs/term.el
     # emacsDaemonCount=`pgrep -f "$EMACSCMD --daemon"|wc -l`
-    if [ -f  ~/.emacs.d/cache/dump/emacs.pdump  ]; then
-        cd ~;$EMACSCMD --dump-file  ~/.emacs.d/cache/dump/emacs.pdump $@
+    if [ -f  $HOME/.emacs.d/cache/dump/emacs.pdump  ]; then
+        cd $HOME;$EMACSCMD --dump-file  $HOME/.emacs.d/cache/dump/emacs.pdump $@
     else
-        cd ~;$EMACSCMD  $@
+        cd $HOME;$EMACSCMD  $@
     fi
 }
 
@@ -27,10 +27,15 @@ if [ ! -z $EMACSCMD ] && [ `$EMACSCMD --version 2>&1| head -n 1|awk -F ' ' '{pri
 fi
 
 
+if [  -z $EMACSCMD ] && [ -x "$HOME/bin/gccemacs"  ] && [ `$HOME/bin/gccemacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'`  != "22" ]; then
+    EMACSCMD="$HOME/bin/gccemacs"
+    call_emacs $@
+    exit
+fi
 
 #  if EMACSCLIENT is empty
-if [  -z $EMACSCMD ] && [ -x "~/bin/emacs"  ] && [ `~/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'`  != "22" ]; then
-    EMACSCMD="~/bin/emacs"
+if [  -z $EMACSCMD ] && [ -x "$HOME/bin/emacs"  ] && [ `$HOME/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'`  != "22" ]; then
+    EMACSCMD="$HOME/bin/emacs"
     call_emacs $@
     exit
 fi
