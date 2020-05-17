@@ -104,6 +104,10 @@
 
 
 (defun vmacs-vterm-hook()
+  (let ((p (get-buffer-process (current-buffer))))
+    (when p
+      (set-process-query-on-exit-flag p nil)))
+  (evil-local-mode 1)
   (evil-define-key 'insert 'local [escape] 'vterm--self-insert)
   (evil-define-key 'motion'local (kbd "C-r") 'vmacs-vterm-self-insert)
   (evil-define-key 'insert 'local (kbd "C-g") 'vterm-ctrl-g)
@@ -112,10 +116,7 @@
   (evil-define-key 'normal 'local (kbd "C-r") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
-  (evil-define-key 'normal 'local (kbd "G") 'vterm-eob)
-  (let ((p (get-buffer-process (current-buffer))))
-    (when p
-      (set-process-query-on-exit-flag p nil))))
+  (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
 
