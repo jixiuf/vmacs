@@ -6,11 +6,13 @@ EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-
 dump: clean update-autoload-cookie deps
 # @ln -sf  `pwd`/post-receive .git/hooks/
 # @ln -sf  `pwd`/pre-push .git/hooks/ #
+	echo $(EMACSCMD)
 	@-pkill  -f dump-emacs-portable
 	@mkdir -p ~/.emacs.d/cache/dump/
 	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
 	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
-
+dumpgcc:
+	EMACSCMD=gccemacs make dump
 base:
 	$(EMACS_BASE) --eval "(load-theme 'vmacs)" --debug-init
 compile:lib
