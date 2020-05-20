@@ -4,6 +4,7 @@
   (require 'magit-push)
   (require 'evil-magit)
   )
+(autoload 'magit-ediff-dwim "magit-ediff" "" t)
 (autoload 'magit-dired-jump "magit-extras" "" t)
 (autoload 'magit-gitignore "magit-gitignore" "" t)
 (autoload 'git-rebase-mode "git-rebase" "" t)
