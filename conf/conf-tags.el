@@ -100,6 +100,7 @@
 ;; (define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
 ;; (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
 (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
+(define-key evil-normal-state-map "gi" 'lsp-find-implementation)
 (define-key evil-motion-state-map "gc" 'lsp-find-implementation)
 (define-key evil-motion-state-map "gR" 'lsp-rename)
 
