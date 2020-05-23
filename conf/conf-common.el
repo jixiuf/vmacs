@@ -114,6 +114,7 @@
 ;; (add-to-list 'byte-compile-not-obsolete-vars 'font-lock-syntactic-keywords)
 
 (autoload 'go-mode "go-mode" nil t)
+(autoload 'lua-mode "lua-mode" nil t)
 ;; after-init-hook 所有配置文件都加载完之后才会运行此hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq-default auto-mode-alist
