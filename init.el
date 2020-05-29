@@ -51,7 +51,9 @@
 (with-eval-after-load 'js (require 'conf-program-js))
 
 (when (vmacs-not-dumping-p)
-  (when (eq system-type 'darwin) (exec-path-from-shell-initialize))
+  (when (eq system-type 'darwin)
+    (require 'exec-path-from-shell)
+    (exec-path-from-shell-initialize))
   (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
 
 

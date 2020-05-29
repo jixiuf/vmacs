@@ -38,7 +38,7 @@
 
 
  ;;(require 'tramp)
- tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
+
  remote-file-name-inhibit-cache 60 ;60s default 10s
  backup-by-copying t    ;自动备份
  delete-old-versions t ; 自动删除旧的备份文件
@@ -73,6 +73,8 @@
  truncate-lines t ;一行过长时 是否wrap显示
  display-line-numbers 'absolute
  fill-column 100
+ tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
+ tramp-shell-prompt-pattern (concat "\\(?:^\\|\r\\)" "[^]#@$%>\n]*#?[]#$@%>] *\\(\e\\[[0-9;]*[a-zA-Z-.] *\\)*")
  )
 (require 'display-fill-column-indicator nil t)
 (when (featurep 'display-fill-column-indicator)

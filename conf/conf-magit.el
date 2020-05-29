@@ -110,6 +110,13 @@
   ;; 避免不小心删掉未提交的代码
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
+  ;; brew install git-delta
+  (when (executable-find "delta")
+    (require 'magit-delta)
+    (setq magit-delta-hide-plus-minus-markers nil)
+    ;; delta --list-themes --dark
+    (setq magit-delta-default-dark-theme "DarkNeon")
+    (magit-delta-mode 1))
   (let ((dir (abbreviate-file-name (file-truename (directory-file-name (magit-toplevel))))))
     (unless (file-remote-p dir)
       (delete (cons dir 0) magit-repository-directories)
