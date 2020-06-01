@@ -815,21 +815,6 @@ buffer, but doing it this way has the advantage that you usually get to
 see the diff, which is useful because it increases the odds that you
 spot potential issues.
 
-The Built-In VC Package
-.......................
-
-Emacs comes with a version control interface called "VC", see *note
-(emacs)Version Control::.  It is enabled be default, and if you don’t
-use it in addition to Magit, then you should disable it to keep it from
-performing unnecessary work:
-
-     (setq vc-handled-backends nil)
-
-   You can also disable its use for Git but keep using it when using
-another version control system:
-
-     (setq vc-handled-backends (delq 'Git vc-handled-backends))
-
 
 File: magit.info,  Node: Microsoft Windows Performance,  Next: MacOS Performance,  Up: Performance
 
@@ -1717,6 +1702,7 @@ A.1 FAQ - How to ...?
 * How to show diffs for gpg-encrypted files?::
 * How does branching and pushing work?::
 * Can Magit be used as ediff-version-control-package?::
+* Should I disable VC?::
 
 
 File: magit.info,  Node: How to show git's output?,  Next: How to install the gitman info manual?,  Up: FAQ - How to ...?
@@ -1779,7 +1765,7 @@ Please see *note Branching:: and
 <http://emacsair.me/2016/01/18/magit-2.4>
 
 
-File: magit.info,  Node: Can Magit be used as ediff-version-control-package?,  Prev: How does branching and pushing work?,  Up: FAQ - How to ...?
+File: magit.info,  Node: Can Magit be used as ediff-version-control-package?,  Next: Should I disable VC?,  Prev: How does branching and pushing work?,  Up: FAQ - How to ...?
 
 A.1.5 Can Magit be used as ‘ediff-version-control-package’?
 -----------------------------------------------------------
@@ -1811,6 +1797,23 @@ you *can* use these commands, which then use ‘ediff-vc-merge-internal’.
 So we don’t actually have to implement ‘ediff-magit-merge-internal’.
 Instead we provide the more useful command ‘magit-ediff-resolve’ which
 only shows yet-to-be resolved conflicts.
+
+
+File: magit.info,  Node: Should I disable VC?,  Prev: Can Magit be used as ediff-version-control-package?,  Up: FAQ - How to ...?
+
+A.1.6 Should I disable VC?
+--------------------------
+
+If you don’t use VC (the built-in version control interface) then you
+might be tempted to disable it, not least because we used to recommend
+that you do that.
+
+   We no longer recommend that you disable VC.  Doing so would break
+useful third-party packages (such as ‘diff-hl’), which depend on VC
+being enabled.
+
+   If you choose to disable VC anyway, then you can do so by changing
+the value of ‘vc-handled-backends’.
 
 
 File: magit.info,  Node: FAQ - Issues and Errors,  Prev: FAQ - How to ...?,  Up: FAQ
@@ -1943,15 +1946,12 @@ information, and can be told to do so more often:
    But doing so isn’t good for performance.  For more (overly
 optimistic) information see *note (emacs)VC Mode Line::.
 
-   If you don’t really care about seeing that information in the
+   If you don’t really care about seeing this information in the
 mode-line, but just don’t want to see _incorrect_ information, then
-consider disabling VC when using Git:
+consider simply not displaying it in the mode-line:
 
-     (setq vc-handled-backends (delq 'Git vc-handled-backends))
-
-   Or to disable it completely:
-
-     (setq vc-handled-backends nil)
+     (setq-default mode-line-format
+                   (delete '(vc-mode vc-mode) mode-line-format))
 
 
 File: magit.info,  Node: A branch and tag sharing the same name breaks SOMETHING,  Next: My Git hooks work on the command-line but not inside Magit,  Prev: The mode-line information isn't always up-to-date,  Up: FAQ - Issues and Errors

@@ -68,6 +68,7 @@
 (defvar company-backends)
 (defvar c-basic-offset)
 (defvar yas-inhibit-overlay-modification-protection)
+(defvar yas-indent-line)
 
 (defconst lsp--message-type-face
   `((1 . ,compilation-error-face)
@@ -122,7 +123,7 @@
 
 (defcustom lsp-log-io nil
   "If non-nil, log all messages to and from the language server to a *lsp-log* buffer."
-  :group 'lsp
+  :group 'lsp-mode
   :type 'boolean)
 
 (defcustom lsp-print-performance nil
@@ -148,11 +149,6 @@ the buffer when it becomes large."
                  (integer :tag "Messages"))
   :package-version '(lsp-mode . "6.1"))
 
-(defcustom lsp-report-if-no-buffer t
-  "If non nil the errors will be reported even when the file is not open."
-  :type 'boolean
-  :group 'lsp-mode)
-
 (defcustom lsp-keep-workspace-alive t
   "If non nil keep workspace alive when the last workspace buffer is closed."
   :group 'lsp-mode
@@ -170,28 +166,37 @@ the buffer when it becomes large."
   :package-version '(lsp-mode . "6.1"))
 
 (defcustom lsp-semantic-highlighting nil
-  "When set to `:immediate' or `:deferred', this option enables
- semantic highlighting as proposed at
- https://github.com/microsoft/vscode-languageserver-node/pull/367.
+  "When set to `:semantic-tokens', this option enables support
+for semantic highlighting as defined by the Language Server
+Protocol 3.16.
 
- If `lsp-semantic-highlighting' is set to `:immediate', semantic
- highlighting information received from the language server is
- applied immediately, and in full. If `lsp-semantic-highlighting'
- is set to `:deferred', semantic highlighting will be performed
- after an idle timeout, and only within a limit region
- around `(point)' (see
- `lsp-semantic-highlighting-context-lines'). Compared to
- `:immediate', `:deferred' has a higher risk of producing stale
- highlights but may offer significantly better performance.
-
- Note that semantic highlighting is not yet part of the official
- LSP spec and may occasionally break as language servers are
- updated."
+Some older language servers may not conform to the semantic
+tokens protocol yet, but implement the theia semantic
+highlighting protocol, see
+https://github.com/microsoft/vscode-languageserver-node/pull/367.
+To use theia highlighting, set `lsp-semantic-highlighting' to
+`:immediate' or `:deferred', where `:deferred' should offer
+better performance than `:immediate' but has a higher risk of
+producing stale highlights."
   :group 'lsp-mode
   :type '(choice
           (const :tag "Disable" nil)
           (const :tag "Immediate" :immediate)
-          (const :tag "Deferred" :deferred)))
+          (const :tag "Deferred" :deferred)
+          (const :tag "SemanticTokens" :semantic-tokens)))
+
+(defcustom lsp-semantic-highlighting-warn-on-missing-face nil
+  "When non-nil, this option will emit a warning any time a token
+or modifier type returned by a language server has no face associated with it."
+  :group 'lsp-mode
+  :type 'boolean)
+
+(defcustom lsp-semantic-tokens-apply-modifiers nil
+  "Determines whether semantic highlighting should take token
+modifiers into account. Only applies if
+`lsp-semantic-highlighting' is set to `:semantic-tokens'."
+  :group 'lsp-mode
+  :type 'boolean)
 
 (defcustom lsp-semantic-highlighting-context-lines 15
   "How many lines to fontify above `(window-start)' and below `(window-end)'."
@@ -213,17 +218,17 @@ the buffer when it becomes large."
 
 (defcustom lsp-client-packages
   '(ccls cquery lsp-clients lsp-clojure lsp-csharp lsp-css lsp-dart lsp-elm
-    lsp-erlang lsp-eslint lsp-fsharp lsp-gdscript lsp-go lsp-haskell lsp-haxe
-    lsp-intelephense lsp-java lsp-json lsp-metals lsp-perl lsp-pwsh lsp-pyls
-    lsp-python-ms lsp-rust lsp-serenata lsp-solargraph lsp-terraform lsp-verilog lsp-vetur
-    lsp-vhdl lsp-xml lsp-yaml)
+         lsp-erlang lsp-eslint lsp-fsharp lsp-gdscript lsp-go lsp-haskell lsp-haxe
+         lsp-intelephense lsp-java lsp-json lsp-metals lsp-perl lsp-pwsh lsp-pyls
+         lsp-python-ms lsp-rust lsp-serenata lsp-solargraph lsp-terraform lsp-verilog lsp-vetur
+         lsp-vhdl lsp-xml lsp-yaml)
   "List of the clients to be automatically required."
   :group 'lsp-mode
   :type '(repeat symbol))
 
 (defcustom lsp-progress-via-spinner t
   "If non-nil, display LSP $/progress reports via a spinner in the modeline."
-  :group 'lsp
+  :group 'lsp-mode
   :type 'boolean)
 
 (defvar-local lsp--cur-workspace nil)
@@ -492,6 +497,9 @@ diagnostics have changed."
   :type 'hook
   :group 'lsp-mode)
 
+(define-obsolete-variable-alias 'lsp-after-diagnostics-hook
+  'lsp-diagnostics-updated-hook  "lsp-mode 6.4")
+
 (defcustom lsp-diagnostics-updated-hook nil
   "Hooks to run after diagnostics are received."
   :type 'hook
@@ -636,7 +644,6 @@ Changes take effect only when a new session is started."
                                         (sql-mode . "sql")
                                         (vimrc-mode . "vim")
                                         (sh-mode . "shellscript")
-                                        (sh-mode . "lua")
                                         (scala-mode . "scala")
                                         (julia-mode . "julia")
                                         (clojure-mode . "clojure")
@@ -685,6 +692,7 @@ Changes take effect only when a new session is started."
                                         (yaml-mode . "spring-boot-properties-yaml")
                                         (ruby-mode . "ruby")
                                         (enh-ruby-mode . "ruby")
+                                        (fortran-mode . "fortran")
                                         (f90-mode . "fortran")
                                         (elm-mode . "elm")
                                         (dart-mode . "dart")
@@ -740,6 +748,7 @@ directory")
     ("textDocument/rangeFormatting" :capability "documentRangeFormattingProvider")
     ("textDocument/references" :capability "referencesProvider")
     ("textDocument/selectionRange" :capability "selectionRangeProvider")
+    ("textDocument/semanticTokens" :capability "semanticTokensProvider")
     ("textDocument/signatureHelp" :capability "signatureHelpProvider")
     ("textDocument/typeDefinition" :capability "typeDefinitionProvider")
     ("workspace/executeCommand" :capability "executeCommandProvider")
@@ -1550,50 +1559,50 @@ interface ProgressParams<T> {
 }
 PARAMS contains the progress data.
 WORKSPACE is the workspace that contains the progress token."
-   (let* ((token (gethash "token" params))
-          (value (gethash "value" params))
-          (kind (gethash "kind" value)))
-     (pcase kind
+  (let* ((token (gethash "token" params))
+         (value (gethash "value" params))
+         (kind (gethash "kind" value)))
+    (pcase kind
 
-       ("begin"
-        (let* ((message (gethash "title" value))
-               (cur (gethash "percentage" value nil))
-               (reporter
-                (if lsp-progress-via-spinner
-                    (let* ((spinner-strings (alist-get 'progress-bar spinner-types))
-                           ;; Set message as a tooltip for the spinner strings
-                           (propertized-strings
-                            (seq-map (lambda (string) (propertize string 'help-echo message))
-                                     spinner-strings))
-                           (spinner-type (vconcat propertized-strings)))
-                      ;; The progress relates to the server as a whole,
-                      ;; display it on all buffers.
-                      (mapcar (lambda (buffer)
-                                (with-current-buffer buffer
-                                  (spinner-start spinner-type))
-                                buffer)
-                              (lsp--workspace-buffers workspace)))
-                  (if cur
-                      (make-progress-reporter message 0 100 cur)
-                    ;; No percentage, just progress
-                    (make-progress-reporter message nil nil)))))
-          (lsp-workspace-set-work-done-token token reporter workspace)))
+      ("begin"
+       (let* ((message (gethash "title" value))
+              (cur (gethash "percentage" value nil))
+              (reporter
+               (if lsp-progress-via-spinner
+                   (let* ((spinner-strings (alist-get 'progress-bar spinner-types))
+                          ;; Set message as a tooltip for the spinner strings
+                          (propertized-strings
+                           (seq-map (lambda (string) (propertize string 'help-echo message))
+                                    spinner-strings))
+                          (spinner-type (vconcat propertized-strings)))
+                     ;; The progress relates to the server as a whole,
+                     ;; display it on all buffers.
+                     (mapcar (lambda (buffer)
+                               (with-current-buffer buffer
+                                 (spinner-start spinner-type))
+                               buffer)
+                             (lsp--workspace-buffers workspace)))
+                 (if cur
+                     (make-progress-reporter message 0 100 cur)
+                   ;; No percentage, just progress
+                   (make-progress-reporter message nil nil)))))
+         (lsp-workspace-set-work-done-token token reporter workspace)))
 
-       ("report"
-        (when-let ((reporter (lsp-workspace-get-work-done-token token workspace)))
-          (when (not lsp-progress-via-spinner)
-            (progress-reporter-update reporter (gethash "percentage" value nil)))))
+      ("report"
+       (when-let ((reporter (lsp-workspace-get-work-done-token token workspace)))
+         (when (not lsp-progress-via-spinner)
+           (progress-reporter-update reporter (gethash "percentage" value nil)))))
 
-       ("end"
-        (when-let ((reporter (lsp-workspace-get-work-done-token token workspace)))
-          (if lsp-progress-via-spinner
-              (mapc (lambda (buffer)
-                      (when (buffer-live-p buffer)
-                        (with-current-buffer buffer
-                          (spinner-stop))))
-                    reporter)
-            (progress-reporter-done reporter))
-            (lsp-workspace-rem-work-done-token token workspace))))))
+      ("end"
+       (when-let ((reporter (lsp-workspace-get-work-done-token token workspace)))
+         (if lsp-progress-via-spinner
+             (mapc (lambda (buffer)
+                     (when (buffer-live-p buffer)
+                       (with-current-buffer buffer
+                         (spinner-stop))))
+                   reporter)
+           (progress-reporter-done reporter))
+         (lsp-workspace-rem-work-done-token token workspace))))))
 
 (defun lsp-diagnostics (&optional current-workspace?)
   "Return the diagnostics from all workspaces."
@@ -1709,20 +1718,14 @@ PARAMS contains the diagnostics data.
 WORKSPACE is the workspace that contains the diagnostics."
   (let* ((file (lsp--uri-to-path (gethash "uri" params)))
          (diagnostics (gethash "diagnostics" params))
-         (buffer (lsp--buffer-for-file file))
          (workspace-diagnostics (lsp--workspace-diagnostics workspace)))
 
     (if (seq-empty-p diagnostics)
         (remhash file workspace-diagnostics)
-      (when (or lsp-report-if-no-buffer buffer)
-        (puthash file (seq-map #'lsp--make-diag diagnostics) workspace-diagnostics)))
+      (puthash file (seq-map #'lsp--make-diag diagnostics) workspace-diagnostics))
 
     (run-hooks 'lsp-diagnostics-updated-hook)
-
-    (when buffer
-      (save-mark-and-excursion
-        (with-current-buffer buffer
-          (run-hooks 'lsp-after-diagnostics-hook))))))
+    (lsp--idle-reschedule (current-buffer))))
 
 (with-no-warnings
   (unless (version< emacs-version "26")
@@ -2606,11 +2609,16 @@ active `major-mode', or for all major modes when ALL-MODES is t."
   ;; ‘buffers’ is a list of buffers associated with this workspace.
   (buffers nil)
 
-  ;; ‘semantic-highlighting-faces' is a vector containing one face for each
-  ;; TextMate scope (or set of scopes) supported by the language server. Cf.
-  ;; ‘lsp-semantic-highlighting-faces' if you wish to change the default
-  ;; semantic highlighting faces
+  ;; If old-style (Theia) semantic highlighting is used (i.e., if 'lsp-semantic-highlighting‘
+  ;; is set to :immediate or :deferred), semantic-highlighting-faces' is a vector containing
+  ;; one face for each TextMate scope (or set of scopes) supported by the language server. If
+  ;; semanticTokens are used for highlighting, semantic-highlighting-faces contains one face
+  ;; (or nil) for each token type supported by the language server.
   (semantic-highlighting-faces nil)
+
+  ;; If semanticTokens are used for highlighting, semantic-highlighting-modifier-faces contains
+  ;; one face (or nil) for each modifier type supported by the language server
+  (semantic-highlighting-modifier-faces nil)
 
   ;; Extra client capabilities provided by third-party packages using
   ;; `lsp-register-client-capabilities'. It's value is an alist of (PACKAGE-NAME
@@ -3129,8 +3137,14 @@ disappearing, unset all the variables related to it."
                                          (hierarchicalDocumentSymbolSupport . t)))
                       (formatting . ((dynamicRegistration . t)))
                       (rangeFormatting . ((dynamicRegistration . t)))
+                      ,@(pcase lsp-semantic-highlighting
+                          ((or :immediate :deferred) '((semanticHighlightingCapabilities . ((semanticHighlighting . t)))))
+                          (:semantic-tokens `((semanticTokens
+                                               . ((tokenModifiers . ,(if lsp-semantic-tokens-apply-modifiers
+                                                                         (apply 'vector (mapcar #'car lsp-semantic-token-modifier-faces)) []))
+                                                  (tokenTypes . ,(apply 'vector (mapcar #'car lsp-semantic-token-faces)))))))
+                          (_ '()))
                       (rename . ((dynamicRegistration . t) (prepareSupport . t)))
-                      (semanticHighlightingCapabilities . ((semanticHighlighting . ,(lsp-json-bool lsp-semantic-highlighting))))
                       (codeAction . ((dynamicRegistration . t)
                                      (isPreferredSupport . t)
                                      (codeActionLiteralSupport . ((codeActionKind . ((valueSet . [""
@@ -3450,6 +3464,9 @@ in that particular folder."
       (lsp--update-on-type-formatting-hook)
       (lsp--update-signature-help-hook)
 
+      (when (and (eq lsp-semantic-highlighting :semantic-tokens)
+                 (lsp-feature? "textDocument/semanticTokens"))
+        (lsp--semantic-tokens-initialize-buffer))
       (add-hook 'post-command-hook #'lsp--post-command nil t)
       (when lsp-enable-xref
         (add-hook 'xref-backend-functions #'lsp--xref-backend nil t))
@@ -3490,6 +3507,10 @@ in that particular folder."
 
       (remove-hook 'lsp-on-idle-hook #'lsp--document-links t)
       (remove-hook 'lsp-on-idle-hook #'lsp--document-highlight t)
+
+      (when lsp--semantic-tokens-teardown
+        (funcall lsp--semantic-tokens-teardown)
+        (setq lsp--semantic-tokens-teardown nil))
 
       (lsp--remove-overlays 'lsp-sem-highlight)
       (lsp--remove-overlays 'lsp-highlight)
@@ -4411,7 +4432,7 @@ Also, additional data to attached to each candidate can be passed via PLIST."
     (ht<-alist
      (append
       `(("triggerKind" . ,(alist-get trigger-kind lsp--completion-trigger-kinds)))
-       (when trigger-char `(("triggerCharacter" . ,trigger-char)))))))
+      (when trigger-char `(("triggerCharacter" . ,trigger-char)))))))
 
 (defun lsp-completion-at-point ()
   "Get lsp completions."
@@ -4434,65 +4455,65 @@ Also, additional data to attached to each candidate can be passed via PLIST."
            (all-completions
             (lambda ()
               (cond
-                (done? result)
-                ((and lsp--capf-cache
-                      (listp lsp--capf-cache)
-                      (s-prefix? (car lsp--capf-cache)
-                                 (buffer-substring-no-properties bounds-start (point)))
-                      (< (caar (cadr lsp--capf-cache)) (point)))
-                 (apply #'lsp--capf-filter-candidates (cdr lsp--capf-cache)))
-                (t
-                 (-let* ((resp (lsp-request-while-no-input
-                                "textDocument/completion"
-                                (plist-put (lsp--text-document-position-params)
-                                           :context (lsp--capf-get-context trigger-chars))))
-                         (completed (or (seqp resp)
-                                        (not (gethash "isIncomplete" resp))))
-                         (items (--> (cond
-                                       ((seqp resp) resp)
-                                       ((hash-table-p resp) (gethash "items" resp)))
-                                     (if (or completed
-                                             (seq-some (-rpartial #'lsp--ht-get "sortText") it))
-                                         (lsp--sort-completions it)
-                                       it)
-                                     (-map (lambda (item)
-                                             (puthash "_emacsStartPoint"
-                                                      (lsp--capf-guess-prefix item bounds-start)
-                                                      item)
-                                             item)
-                                           it)))
-                         (markers (list bounds-start (copy-marker (point) t)))
-                         (prefix (buffer-substring-no-properties bounds-start (point))))
-                   (setf done? completed
-                         lsp--capf-cache (cond
-                                           ((and done? (not (seq-empty-p items)))
-                                            (list (buffer-substring-no-properties bounds-start (point))
-                                                  (lsp--capf-cached-items items)
-                                                  :lsp-items nil
-                                                  :markers markers
-                                                  :prefix prefix))
-                                           ((not done?) 'incomplete))
-                         result (lsp--capf-filter-candidates (if done? (cadr lsp--capf-cache))
-                                                             :lsp-items items
-                                                             :markers markers
-                                                             :prefix prefix))))))))
+               (done? result)
+               ((and lsp--capf-cache
+                     (listp lsp--capf-cache)
+                     (s-prefix? (car lsp--capf-cache)
+                                (buffer-substring-no-properties bounds-start (point)))
+                     (< (caar (cadr lsp--capf-cache)) (point)))
+                (apply #'lsp--capf-filter-candidates (cdr lsp--capf-cache)))
+               (t
+                (-let* ((resp (lsp-request-while-no-input
+                               "textDocument/completion"
+                               (plist-put (lsp--text-document-position-params)
+                                          :context (lsp--capf-get-context trigger-chars))))
+                        (completed (or (seqp resp)
+                                       (not (gethash "isIncomplete" resp))))
+                        (items (--> (cond
+                                     ((seqp resp) resp)
+                                     ((hash-table-p resp) (gethash "items" resp)))
+                                    (if (or completed
+                                            (seq-some (-rpartial #'lsp--ht-get "sortText") it))
+                                        (lsp--sort-completions it)
+                                      it)
+                                    (-map (lambda (item)
+                                            (puthash "_emacsStartPoint"
+                                                     (lsp--capf-guess-prefix item bounds-start)
+                                                     item)
+                                            item)
+                                          it)))
+                        (markers (list bounds-start (copy-marker (point) t)))
+                        (prefix (buffer-substring-no-properties bounds-start (point))))
+                  (setf done? completed
+                        lsp--capf-cache (cond
+                                         ((and done? (not (seq-empty-p items)))
+                                          (list (buffer-substring-no-properties bounds-start (point))
+                                                (lsp--capf-cached-items items)
+                                                :lsp-items nil
+                                                :markers markers
+                                                :prefix prefix))
+                                         ((not done?) 'incomplete))
+                        result (lsp--capf-filter-candidates (if done? (cadr lsp--capf-cache))
+                                                            :lsp-items items
+                                                            :markers markers
+                                                            :prefix prefix))))))))
       (list
        bounds-start
        (point)
        (lambda (probe _pred action)
          (cond
-           ;; metadata
-           ((equal action 'metadata)
-            `(metadata (category . lsp-capf)
-                       (display-sort-function . identity)))
-           ;; boundaries
-           ((equal (car-safe action) 'boundaries) nil)
-           ;; try-completion
-           ((null action) (and (member probe (funcall all-completions)) t))
-           ;; test-completion
-           ((equal action 'lambda) (member probe (funcall all-completions)))
-           ;; retrieve candidates
-           (t (funcall all-completions))))
+          ;; metadata
+          ((equal action 'metadata)
+           `(metadata (category . lsp-capf)
+                      (display-sort-function . identity)))
+          ;; boundaries
+          ((equal (car-safe action) 'boundaries) nil)
+          ;; try-completion
+          ((null action) (and (member probe (funcall all-completions)) t))
+          ;; test-completion
+          ((equal action 'lambda) (member probe (funcall all-completions)))
+          ;; retrieve candidates
+          (t (funcall all-completions))))
        :annotation-function #'lsp--annotate
        :company-require-match 'never
        :company-prefix-length
@@ -4521,21 +4542,22 @@ Others: TRIGGER-CHARS"
                   "additionalTextEdits" additional-text-edits)
            (or item lsp--empty-ht)))
     (cond
-      (text-edit
-       (apply #'delete-region markers)
-       (insert prefix)
-       (lsp--apply-text-edit text-edit))
-      ((or insert-text label)
-       (apply #'delete-region markers)
-       (insert prefix)
-       (delete-region start-point (point))
-       (insert (or insert-text label))))
+     (text-edit
+      (apply #'delete-region markers)
+      (insert prefix)
+      (lsp--apply-text-edit text-edit))
+     ((or insert-text label)
+      (apply #'delete-region markers)
+      (insert prefix)
+      (delete-region start-point (point))
+      (insert (or insert-text label))))
 
     (when (eq insert-text-format 2)
-      (yas-expand-snippet
-       (lsp--to-yasnippet-snippet (buffer-substring start-point (point)))
-       start-point
-       (point)))
+      (let (yas-indent-line)
+        (yas-expand-snippet
+         (lsp--to-yasnippet-snippet (buffer-substring start-point (point)))
+         start-point
+         (point))))
 
     (when (and lsp-completion-enable-additional-text-edit additional-text-edits)
       (lsp--apply-text-edits additional-text-edits)))
@@ -5538,8 +5560,145 @@ unless overridden by a more specific face association."
  Since the list is traversed in order, it should be sorted in order of decreasing
  specificity.")
 
+(defface lsp-face-semhl-comment
+  '((t (:inherit font-lock-comment-face)))
+  "Face used for comments."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-keyword
+  '((t (:inherit font-lock-keyword-face)))
+  "Face used for keywords."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-string
+  '((t (:inherit font-lock-string-face)))
+  "Face used for keywords."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-number
+  '((t (:inherit font-lock-constant-face)))
+  "Face used for numbers."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-regexp
+  '((t (:inherit font-lock-string-face :slant italic)))
+  "Face used for regexps."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-operator
+  '((t (:inherit font-lock-function-name-face)))
+  "Face used for operators."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-namespace
+  '((t (:inherit font-lock-keyword-face)))
+  "Face used for namespaces."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-type
+  '((t (:inherit font-lock-type-face)))
+  "Face used for types."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-type
+  '((t (:inherit font-lock-type-face)))
+  "Face used for types."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-struct
+  '((t (:inherit font-lock-type-face)))
+  "Face used for structs."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-class
+  '((t (:inherit font-lock-type-face)))
+  "Face used for classes."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-interface
+  '((t (:inherit font-lock-type-face)))
+  "Face used for interfaces."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-enum
+  '((t (:inherit font-lock-variable-name-face)))
+  "Face used for enums."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-type-parameter
+  '((t (:inherit font-lock-type-face)))
+  "Face used for type parameters."
+  :group 'lsp-faces)
+
+;; function face already defined, move here when support
+;; for theia highlighting gets removed
+(defface lsp-face-semhl-member
+  '((t (:inherit font-lock-variable-name-face)))
+  "Face used for members."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-property
+  '((t (:inherit font-lock-variable-name-face)))
+  "Face used for properties."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-macro
+  '((t (:inherit font-lock-preprocessor-face)))
+  "Face used for macros."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-variable
+  '((t (:inherit font-lock-variable-name-face)))
+  "Face used for variables."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-parameter
+  '((t (:inherit font-lock-variable-name-face)))
+  "Face used for parameters."
+  :group 'lsp-faces)
+
+(defface lsp-face-semhl-label
+  '((t (:inherit font-lock-comment-face)))
+  "Face used for labels."
+  :group 'lsp-faces)
+
+(defvar lsp-semantic-token-faces
+  '(("comment" . lsp-face-semhl-comment)
+    ("keyword" . lsp-face-semhl-keyword)
+    ("string" . lsp-face-semhl-string)
+    ("number" . lsp-face-semhl-number)
+    ("regexp" . lsp-face-semhl-regexp)
+    ("operator" . lsp-face-semhl-operator)
+    ("namespace" . lsp-face-semhl-namespace)
+    ("type" . lsp-face-semhl-type)
+    ("struct" . lsp-face-semhl-struct)
+    ("class" . lsp-face-semhl-class)
+    ("interface" . lsp-face-semhl-interface)
+    ("enum" . lsp-face-semhl-enum)
+    ("typeParameter" . lsp-face-semhl-type-parameter)
+    ("function" . lsp-face-semhl-function)
+    ("member" . lsp-face-semhl-member)
+    ("property" . lsp-face-semhl-property)
+    ("macro" . lsp-face-semhl-macro)
+    ("variable" . lsp-face-semhl-variable)
+    ("parameter" . lsp-face-semhl-parameter)
+    ("label" . lsp-face-semhl-label)
+    ("enumConstant" . lsp-face-semhl-constant)
+    ("dependent" . lsp-face-semhl-type)
+    ("concept" . lsp-face-semhl-interface))
+  "Faces to use for semantic highlighting if
+`lsp-semantic-highlighting' is set to :semantic-tokens.")
+
+(defvar lsp-semantic-token-modifier-faces
+  ;; TODO: add default definitions
+  '(("declaration" . lsp-face-semhl-interface)
+    ("readonly" . lsp-face-semhl-constant))
+  "Faces to use for semantic token modifiers if
+`lsp-semantic-highlighting' is set to `:semantic-tokens' and
+`lsp-semantic-tokens-apply-modifiers' is non-nil.")
+
 (defvar-local lsp--semantic-highlighting-current-region nil
-"Denotes the region `(min . max)' most recently fontified via the
+  "Denotes the region `(min . max)' most recently fontified via the
  deferred semantic-highlighting mechanism.
 
 Further fontification calls will be skipped unless new semantic
@@ -5691,7 +5850,7 @@ or `(point)' lies outside `lsp--semantic-highlighting-region'.")
          (inhibit-field-text-motion t))
     (when buffer
       (with-current-buffer buffer
-        (if (eq lsp-semantic-highlighting 'immediate)
+        (if (eq lsp-semantic-highlighting :immediate)
             (save-mark-and-excursion
               (save-restriction
                 (widen)
@@ -5699,6 +5858,129 @@ or `(point)' lies outside `lsp--semantic-highlighting-region'.")
                   (lsp--apply-semantic-highlighting
                    (lsp--workspace-semantic-highlighting-faces workspace) lines))))
           (lsp--semantic-highlighting-add-to-cache lines))))))
+
+(defun lsp--build-face-map (identifiers faces category varname)
+  (apply 'vector
+         (mapcar (lambda (id)
+                   (let ((maybe-face (cdr (assoc id faces))))
+                     (when (and lsp-semantic-highlighting-warn-on-missing-face (not maybe-face))
+                       (lsp-warn "No face has been associated to the %s '%s': consider adding a corresponding definition to %s"
+                                 category id varname)) maybe-face)) identifiers)))
+
+(defun lsp--semantic-tokens-initialize-workspace (workspace)
+  (cl-assert workspace)
+  (let* ((token-capabilities (gethash
+                              "semanticTokensProvider"
+                              (lsp--workspace-server-capabilities workspace)))
+         (legend (gethash "legend" token-capabilities)))
+    (setf (lsp--workspace-semantic-highlighting-faces workspace)
+          (lsp--build-face-map (gethash "tokenTypes" legend)
+                               lsp-semantic-token-faces
+                               "semantic token"
+                               "lsp-semantic-token-faces"))
+    (setf (lsp--workspace-semantic-highlighting-modifier-faces workspace)
+          (lsp--build-face-map (gethash "tokenModifiers" legend)
+                               lsp-semantic-token-modifier-faces
+                               "semantic token modifier"
+                               "lsp-semantic-token-modifier-faces"))))
+
+(defvar-local lsp--semantic-tokens-cache nil)
+
+(defvar-local lsp--semantic-tokens-teardown nil)
+
+(defun lsp--semantic-tokens-initialize-buffer ()
+  (let* ((old-extend-region-functions font-lock-extend-region-functions)
+         ;; make sure font-lock always fontifies entire lines (TODO: do we also have
+         ;; to change some jit-lock-...-region functions/variables?)
+         (new-extend-region-functions
+          (if (memq 'font-lock-extend-region-wholelines old-extend-region-functions)
+              old-extend-region-functions
+            (cons 'font-lock-extend-region-wholelines old-extend-region-functions))))
+    (setq font-lock-extend-region-functions new-extend-region-functions)
+    (add-function :around (local 'font-lock-fontify-region-function) #'lsp--semantic-tokens-fontify)
+    (add-hook 'lsp-on-change-hook #'lsp--semantic-tokens-request nil t)
+    (lsp--semantic-tokens-request)
+    (setq lsp--semantic-tokens-teardown
+          (lambda ()
+            (setq font-lock-extend-region-functions old-extend-region-functions)
+            (remove-function (local 'font-lock-fontify-region-function)
+                             #'lsp--semantic-tokens-fontify)))))
+
+(defun lsp--semantic-tokens-fontify (old-fontify-region beg end &optional loudly)
+  ;; TODO: support multiple language servers per buffer?
+  (let ((faces (seq-some #'lsp--workspace-semantic-highlighting-faces lsp--buffer-workspaces))
+        (modifier-faces
+         (when lsp-semantic-tokens-apply-modifiers
+           (seq-some #'lsp--workspace-semantic-highlighting-modifier-faces lsp--buffer-workspaces))))
+    (if (or (eq nil lsp--semantic-tokens-cache)
+            (eq nil faces)
+            ;; delay fontification until we have fresh tokens
+            (not (= lsp--cur-version (gethash "documentVersion" lsp--semantic-tokens-cache))))
+        '(jit-lock-bounds 0 . 0)
+      (funcall old-fontify-region beg end loudly)
+      (let* ((inhibit-field-text-motion t)
+             (data (gethash "data" lsp--semantic-tokens-cache))
+             (i0 0)
+             (i-max (1- (length data)))
+             (current-line 1)
+             (line-delta)
+             (column 0)
+             (face)
+             (line-start-pos)
+             (line-min)
+             (line-max-inclusive)
+             (text-property-beg)
+             (text-property-end))
+        (save-mark-and-excursion
+          (save-restriction
+            (widen)
+            (goto-char beg)
+            (goto-char (line-beginning-position))
+            (setq line-min (line-number-at-pos))
+            (with-silent-modifications
+              (goto-char end)
+              (goto-char (line-end-position))
+              (setq line-max-inclusive (line-number-at-pos))
+              (forward-line (- line-min line-max-inclusive))
+              (let ((skip-lines (- line-min current-line)))
+                (while (and (<= i0 i-max) (< (aref data i0) skip-lines))
+                  (setq skip-lines (- skip-lines (aref data i0)))
+                  (setq i0 (+ i0 5)))
+                (setq current-line (- line-min skip-lines)))
+              (forward-line (- current-line line-min))
+              (setq line-start-pos (point))
+              (cl-loop
+               for i from i0 to i-max by 5 do
+               (setq line-delta (aref data i))
+               (unless (= line-delta 0)
+                 (forward-line line-delta)
+                 (setq line-start-pos (point))
+                 (setq column 0)
+                 (setq current-line (+ current-line line-delta)))
+               (setq column (+ column (aref data (1+ i))))
+               (setq face (aref faces (aref data (+ i 3))))
+               (setq text-property-beg (+ line-start-pos column))
+               (setq text-property-end (+ text-property-beg (aref data (+ i 2))))
+               (when face (put-text-property text-property-beg text-property-end 'face face))
+               (cl-loop for i from 0 to (1- (length modifier-faces)) do
+                        (when (and (aref modifier-faces i)
+                                   (> 0 (logand (aref data (+ i 4)) (lsh 1 i))))
+                          (add-face-text-property text-property-beg text-property-end
+                                                  (aref modifier-faces i))))
+               when (> current-line line-max-inclusive) return nil)))))
+      `(jit-lock-bounds ,beg . ,end))))
+
+(defun lsp--semantic-tokens-request ()
+  (let ((cur-version lsp--cur-version))
+    (lsp-request-async
+     "textDocument/semanticTokens"
+     `(:textDocument ,(lsp--text-document-identifier))
+     (lambda (response)
+       (setq lsp--semantic-tokens-cache response)
+       (puthash "documentVersion" cur-version lsp--semantic-tokens-cache)
+       (font-lock-flush))
+     :mode 'tick
+     :cancel-token (format "semantic-tokens-%s" (lsp--buffer-uri)))))
 
 (defconst lsp--symbol-kind
   '((1 . "File")
@@ -6915,6 +7197,9 @@ SESSION is the active session."
          (setf (lsp--workspace-server-capabilities workspace) (gethash "capabilities" response)
                (lsp--workspace-status workspace) 'initialized)
 
+         (mapc #'lsp--semantic-tokens-initialize-workspace
+               (lsp--find-workspaces-for "textDocument/semanticTokens"))
+
          (with-lsp-workspace workspace
            (lsp-notify "initialized" lsp--empty-ht))
 
@@ -7850,13 +8135,6 @@ This avoids overloading the server with many files when starting Emacs."
 (defvar flycheck-checker)
 (defvar flycheck-checkers)
 
-(defcustom lsp-flycheck-live-reporting t
-  "If non-nil, diagnostics in buffer will be reported as soon as possible.
-Typically, on every keystroke. If nil, diagnostics will be
-reported according to `flycheck-check-syntax-automatically'."
-  :type 'boolean
-  :group 'lsp-mode)
-
 (defcustom lsp-flycheck-default-level 'error
   "Error level to use when the server does not report back a diagnostic level."
   :type '(choice (const error)
@@ -7893,6 +8171,9 @@ reported according to `flycheck-check-syntax-automatically'."
   "Start an LSP syntax check with CHECKER.
 
 CALLBACK is the status callback passed by Flycheck."
+  ;; avoid double diag check
+  (remove-hook 'lsp-on-idle-hook #'lsp--flycheck-buffer t)
+
   (->> (lsp--get-buffer-diagnostics)
        (-map (-lambda (diag)
                (flycheck-error-new
@@ -7927,19 +8208,17 @@ CALLBACK is the status callback passed by Flycheck."
 
 (defun lsp--flycheck-report ()
   "This callback is invoked when new diagnostics are received
-from the language server. Invoke flycheck-buffer to update the
-display of errors if flycheck-mode is on and we are live
-reporting or we are in save-mode and the buffer is not modified."
-  (cond
-   ;; do nothing
-   ((and (not lsp-flycheck-live-reporting)
-         (not (and (memq 'save flycheck-check-syntax-automatically)
-                   (not (buffer-modified-p))))))
-   ;; visible and not inhibit hooks - refresh right away
-   ((and (not lsp-inhibit-lsp-hooks) (lsp--buffer-visible?))
-    (flycheck-buffer))
-   ;; not visible or inhibit hooks - schedule refresh
-   (t (add-hook 'lsp-on-idle-hook #'lsp--flycheck-buffer nil t))))
+from the language server."
+  (when (and (memq 'idle-change flycheck-check-syntax-automatically)
+             lsp--cur-workspace)
+    ;; make sure diagnostics are published even if the diagnostics
+    ;; have been received after idle-change has been triggered
+    (-some->> lsp--cur-workspace
+      (lsp--workspace-buffers)
+      (mapc (lambda (buffer)
+              (when (buffer-live-p buffer)
+                (with-current-buffer buffer
+                  (add-hook 'lsp-on-idle-hook #'lsp--flycheck-buffer nil t))))))))
 
 (declare-function lsp-cpp-flycheck-clang-tidy-error-explainer "lsp-cpp")
 
@@ -7974,12 +8253,12 @@ g. `error', `warning') and list of LSP TAGS."
                (bitmap (or (get flycheck-level 'flycheck-fringe-bitmaps)
                            (get flycheck-level 'flycheck-fringe-bitmap-double-arrow))))
           (flycheck-define-error-level new-level
-                                       :severity (get flycheck-level 'flycheck-error-severity)
-                                       :compilation-level (get flycheck-level 'flycheck-compilation-level)
-                                       :overlay-category category
-                                       :fringe-bitmap bitmap
-                                       :fringe-face (get flycheck-level 'flycheck-fringe-face)
-                                       :error-list-face face)
+            :severity (get flycheck-level 'flycheck-error-severity)
+            :compilation-level (get flycheck-level 'flycheck-compilation-level)
+            :overlay-category category
+            :fringe-bitmap bitmap
+            :fringe-face (get flycheck-level 'flycheck-fringe-face)
+            :error-list-face face)
           new-level))))
 
 (with-eval-after-load 'flycheck
@@ -8003,8 +8282,6 @@ See https://github.com/emacs-lsp/lsp-mode."
 (defun lsp-flycheck-enable (&rest _)
   "Enable flycheck integration for the current buffer."
   (flycheck-mode 1)
-  (when lsp-flycheck-live-reporting
-    (setq-local flycheck-check-syntax-automatically nil))
   (setq-local flycheck-checker 'lsp)
   (lsp-flycheck-add-mode major-mode)
   (add-to-list 'flycheck-checkers 'lsp)

@@ -26,7 +26,7 @@ Forge User and Developer Manual
 Forge allows you to work with Git forges, such as Github and Gitlab,
 from the comfort of Magit and the rest of Emacs.
 
-This manual is for Forge version 0.1.0 (v0.1.0-304-g0ade907a+1).
+This manual is for Forge version 0.1.0 (v0.1.0-310-g09bf8adc+1).
 
      Copyright (C) 2018-2020 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -805,12 +805,12 @@ File: forge.info,  Node: Creating Topics,  Next: Editing Topics and Posts,  Prev
 4.3.3 Creating Topics
 ---------------------
 
-‘' p’     (‘forge-create-pullreq’)
+‘' c p’     (‘forge-create-pullreq’)
 ‘C-c C-n [on "Pull requests" section]’     (‘forge-create-pullreq’)
 
      This command creates a new pull-request for the current repository.
 
-‘' i’     (‘forge-create-issue’)
+‘' c i’     (‘forge-create-issue’)
 ‘C-c C-n [on "Issues" section]’     (‘forge-create-pullreq’)
 
      This command creates a new issue for the current repository.
@@ -1005,10 +1005,10 @@ Node: Working with Topics24482
 Node: Visiting Topics24855
 Node: Listing Topics and Notifications26583
 Node: Creating Topics30543
-Node: Editing Topics and Posts31104
-Node: Miscellaneous34468
-Node: FAQ36797
-Node: Is it possible to create a single pull-request without pulling everything?36973
+Node: Editing Topics and Posts31108
+Node: Miscellaneous34472
+Node: FAQ36801
+Node: Is it possible to create a single pull-request without pulling everything?36977
 
 End Tag Table
 

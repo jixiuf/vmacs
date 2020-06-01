@@ -2,7 +2,8 @@
 
 ;; Copyright (C) 2018  Wilfred Hughes
 ;; Version: 1.1
-;; Package-Version: 20180806.723
+;; Package-Version: 20200528.633
+;; Package-Commit: da1f76391ac0d277e3c5758203e0150f6bae0beb
 
 ;; Author: Wilfred Hughes <me@wilfred.me.uk>
 ;; Keywords: lisp
@@ -65,7 +66,9 @@ source code: they have e.g. org.elc but no org.el."
 (defun elisp-def--primitive-p (sym callable-p)
   "Return t if SYM is defined in C."
   (if callable-p
-      (subrp (indirect-function sym))
+      (if (fboundp 'subr-primitive-p)
+          (subr-primitive-p (indirect-function sym))
+        (subrp (indirect-function sym)))
     (let ((filename (find-lisp-object-file-name sym 'defvar)))
       (or (eq filename 'C-source)
           (and (stringp filename)
