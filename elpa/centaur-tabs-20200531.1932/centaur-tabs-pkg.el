@@ -1,8 +1,8 @@
-(define-package "centaur-tabs" "20200523.1611" "Aesthetic, modern looking customizable tabs plugin"
+(define-package "centaur-tabs" "20200531.1932" "Aesthetic, modern looking customizable tabs plugin"
   '((emacs "24.4")
     (powerline "2.4")
     (cl-lib "0.5"))
-  :commit "0e003e34beb24cdad13ffb6b0ec5c580280123e2" :authors
+  :commit "2154fa9679c5fa02a2a7e3d4c739256fd991a789" :authors
   '(("Emmanuel Bustos" . "ema2159@gmail.com"))
   :maintainer
   '("Emmanuel Bustos" . "ema2159@gmail.com")
