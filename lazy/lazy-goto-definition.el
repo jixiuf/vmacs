@@ -11,10 +11,12 @@
     (bm-bookmark-add line nil t)        ;跳转前在原处加一个书签
     (cl-case major-mode
       (emacs-lisp-mode
+       (require 'elisp-def)
        (elisp-def-mode 1)
        (condition-case nil (call-interactively 'elisp-def)
          (error (bm-bookmark-remove))))
       (lisp-interaction-mode
+       (require 'elisp-def)
        (elisp-def-mode 1)
        (condition-case nil (call-interactively 'elisp-def)
          (error (bm-bookmark-remove))))
