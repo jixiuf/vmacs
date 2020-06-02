@@ -2,7 +2,7 @@
 ;; doc https://rgel.readthedocs.io
 ;;; Code:
 (require 'rg)
-(setq rg-show-header nil)
+(setq rg-show-header t)
 (setq rg-command-line-flags '("-z"))
 (setq rg-group-result nil)
 (vmacs-leader "g" rg-global-map)
