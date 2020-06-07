@@ -1,5 +1,6 @@
 ;;确保需要的package 在本地都存在
 (require 'package)
+(setq package-name-column-width 50)
 ;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;; mirror
   ;; (setq package-archives
