@@ -24,11 +24,12 @@
 
 ;;; Code:
 
+(require 'lsp-protocol)
 (require 'lsp-mode)
 
-(defconst lsp-eslint-status-ok 1)
-(defconst lsp-eslint-status-warn 2)
-(defconst lsp-eslint-status-error 3)
+(defconst lsp-eslint/status-ok 1)
+(defconst lsp-eslint/status-warn 2)
+(defconst lsp-eslint/status-error 3)
 
 (defgroup lsp-eslint nil
   "ESlint language server group."
@@ -149,30 +150,29 @@
   "Create default eslint configuration."
   (interactive)
   (unless (lsp-session-folders (lsp-session))
-    (user-error "There are no workspace folders."))
+    (user-error "There are no workspace folders"))
   (pcase (->> (lsp-session)
               lsp-session-folders
               (-filter (lambda (dir)
                          (-none?
                           (lambda (file) (f-exists? (f-join dir file)))
                           '(".eslintrc.js" ".eslintrc.yaml" ".eslintrc.yml" ".eslintrc" ".eslintrc.json")))))
-    (`nil (user-error "All workspace folders contain eslint configuration."))
+    (`nil (user-error "All workspace folders contain eslint configuration"))
     (folders (let ((default-directory (completing-read "Select project folder: " folders nil t)))
                (async-shell-command (format "%s --init" (lsp--find-eslint)))))))
 
-(defun lsp-eslint-status-handler (workspace params)
+(lsp-defun lsp-eslint-status-handler (workspace (&eslint:StatusParams :state))
   (setf (lsp--workspace-status-string workspace)
         (propertize "ESLint"
                     'face (cond
-                           ((eq (gethash "state" params) lsp-eslint-status-error) 'error)
-                           ((eq (gethash "state" params) lsp-eslint-status-warn) 'warn)
+                           ((eq state lsp-eslint/status-error) 'error)
+                           ((eq state lsp-eslint/status-warn) 'warn)
                            (t 'success)))))
 
-(defun lsp-eslint--configuration (_workspace params)
-  (->> params
-       (gethash "items")
-       (seq-map (-lambda ((&hash "scopeUri" uri))
-                  (-when-let* ((file (lsp--uri-to-path uri))
+(lsp-defun lsp-eslint--configuration (_workspace (&ConfigurationParams :items))
+  (->> items
+       (seq-map (-lambda ((&ConfigurationItem :scope-uri?))
+                  (-when-let* ((file (lsp--uri-to-path scope-uri?))
                                (buffer (find-buffer-visiting file))
                                (workspace-folder (lsp-find-session-folder (lsp-session) file)))
                     (with-current-buffer buffer
@@ -191,11 +191,13 @@
                                          :disableRuleComment (or lsp-eslint-code-action-disable-rule-comment
                                                                  (list :enable t
                                                                        :location "separateLine"))
-                                         :showDocumentation (or lsp-eslint-code-action-show-documentation (list :enable t)) ))))))
+                                         :showDocumentation (or lsp-eslint-code-action-show-documentation
+                                                                (list :enable t)) ))))))
        (apply #'vector)))
 
-(defun lsp-eslint--open-doc (_workspace params)
-  (browse-url (gethash "url" params)))
+(lsp-defun lsp-eslint--open-doc (_workspace (&eslint:OpenESLintDocParams :url))
+  "Open doccumentation."
+  (browse-url url))
 
 (defun lsp-eslint-apply-all-fixes ()
   "Apply all autofixes in the current buffer."
