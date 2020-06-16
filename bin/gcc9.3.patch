@@ -1,8 +1,8 @@
 diff --git a/Formula/gcc.rb b/Formula/gcc.rb
-index 1f049c326b..792fc3a7fd 100644
+index bcbc53c82..33ed3ca2d 100644
 --- a/Formula/gcc.rb
 +++ b/Formula/gcc.rb
-@@ -45,7 +45,7 @@ class Gcc < Formula
+@@ -46,7 +46,7 @@ class Gcc < Formula
      #  - Ada, which requires a pre-existing GCC Ada compiler to bootstrap
      #  - Go, currently not supported on macOS
      #  - BRIG
@@ -11,7 +11,7 @@ index 1f049c326b..792fc3a7fd 100644
  
      osmajor = `uname -r`.split(".").first
      pkgversion = "Homebrew GCC #{pkg_version} #{build.used_options*" "}".strip
-@@ -65,6 +65,7 @@ class Gcc < Formula
+@@ -66,6 +66,7 @@ class Gcc < Formula
        --with-system-zlib
        --with-pkgversion=#{pkgversion}
        --with-bugurl=https://github.com/Homebrew/homebrew-core/issues
@@ -19,7 +19,7 @@ index 1f049c326b..792fc3a7fd 100644
      ]
  
      # Xcode 10 dropped 32-bit support
-@@ -90,7 +92,7 @@ class Gcc < Formula
+@@ -91,7 +92,7 @@ class Gcc < Formula
        # Use -headerpad_max_install_names in the build,
        # otherwise updated load commands won't fit in the Mach-O header.
        # This is needed because `gcc` avoids the superenv shim.

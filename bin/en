@@ -2,6 +2,7 @@
 cd `dirname $0`
 
 ulimit -n 50000
+ulimit -u 20000
 
 function call_emacs(){
     # echo "with emacs:$EMACSCMD"
