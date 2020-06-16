@@ -10,9 +10,7 @@
 ;;; Generated autoloads from logstash-conf.el
 
 (autoload 'logstash-conf-mode "logstash-conf" "\
-A major mode for editing Logstash pipeline files.
-
-\(fn)" t nil)
+A major mode for editing Logstash pipeline files." t nil)
 
 (add-to-list 'auto-mode-alist '("\\.logstash\\'" . logstash-conf-mode))
 

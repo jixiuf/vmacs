@@ -1,6 +1,6 @@
 (define-package "powerline" "20200105.2053" "Rewrite of Powerline"
   '((cl-lib "0.2"))
-  :keywords
+  :commit "edbb464eef680efc9d408730288c716cd4cac404" :keywords
   '("mode-line")
   :authors
   '(("Donald Ephraim Curtis" . "dcurtis@milkbox.net"))

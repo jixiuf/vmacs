@@ -5,6 +5,7 @@
 ;; Author: Lars Tveito
 ;; Keywords: org, wp, markdown, github
 ;; Package-Version: 20170628.2102
+;; Package-Commit: 99f93011b069e02b37c9660b8fcb45dab086a07f
 
 ;; This file is not part of GNU Emacs.
 

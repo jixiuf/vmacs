@@ -5,7 +5,7 @@
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
 ;; Package-Version: 20200610.1221
-;; Package-Commit: d7baa74eaa32cbed5d003a39a2687fa168cc4126
+;; Package-Commit: 33bc91e7518fb8cecd89580f16e0ac21799de2c2
 ;; Keywords: project, convenience
 ;; Version: 2.3.0-snapshot
 ;; Package-Requires: ((emacs "25.1") (pkg-info "0.4"))

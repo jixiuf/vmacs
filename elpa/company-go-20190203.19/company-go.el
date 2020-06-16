@@ -5,6 +5,7 @@
 ;; Author: nsf <no.smile.face@gmail.com>
 ;; Keywords: languages
 ;; Package-Version: 20190203.19
+;; Package-Commit: 4acdcbdea79de6b3dee1c637eca5cbea0fdbe37c
 ;; Package-Requires: ((company "0.8.0") (go-mode "1.0.0"))
 
 ;; No license, this code is under public domain, do whatever you want.

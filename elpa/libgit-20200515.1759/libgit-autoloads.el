@@ -6,6 +6,21 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
+;;;### (autoloads nil "libgit" "libgit.el" (0 0 0 0))
+;;; Generated autoloads from libgit.el
+
+(autoload 'libgit-load "libgit" "\
+Load the `libegit2' dynamic module.
+If the module is not available, then offer to build it." t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "libgit" '("libgit--")))
+
+;;;***
+
+;;;### (autoloads nil nil ("libgit-pkg.el") (0 0 0 0))
+
+;;;***
+
 ;; Local Variables:
 ;; version-control: never
 ;; no-byte-compile: t

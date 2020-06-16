@@ -5,6 +5,7 @@
 ;; Created: 2011-03-01
 ;; Version: 1.1
 ;; Package-Version: 20200419.451
+;; Package-Commit: 1b6ff0e3e8822423335d3f7d88c1fcb4cf43ce42
 ;; URL:   https://github.com/jixiuf/golden-ratio-scroll-screen
 ;; Keywords: scroll screen highlight
 ;;

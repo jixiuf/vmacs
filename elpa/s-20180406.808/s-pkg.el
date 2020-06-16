@@ -1,2 +1,2 @@
 ;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/s-20180406.808/s.el  -*- no-byte-compile: t -*-
-(define-package "s" "20180406.808" "The long lost Emacs string manipulation library." 'nil :commit "03410e6a7a2b11e47e1fea3b7d9899c7df26435e" :keywords '("strings") :authors '(("Magnar Sveen" . "magnars@gmail.com")) :maintainer '("Magnar Sveen" . "magnars@gmail.com"))
+(define-package "s" "20180406.808" "The long lost Emacs string manipulation library." 'nil :commit "43ba8b563bee3426cead0e6d4ddc09398e1a349d" :keywords '("strings") :authors '(("Magnar Sveen" . "magnars@gmail.com")) :maintainer '("Magnar Sveen" . "magnars@gmail.com"))

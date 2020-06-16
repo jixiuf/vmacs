@@ -5,13 +5,8 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Homepage: https://github.com/emacscollective/closql
 ;; Package-Requires: ((emacs "25.1") (emacsql-sqlite "3.0.0"))
-<<<<<<< HEAD:elpa/closql-20200603.1022/closql.el
-;; Package-Version: 20200603.1022
-;; Package-Commit: 079e09f337c87dcc72cd63fc539602a61de436eb
-=======
 ;; Package-Version: 20200603.1906
-;; Package-Commit: 17bc2f1167633b0c09acc649ebcb61312480be6c
->>>>>>> 51eda5304c6730a5a66ad950465fed1879640283:elpa/closql-20200603.1906/closql.el
+;; Package-Commit: 098f63130b457cb1d67d92fbb0add111d141e792
 ;; Keywords: extensions
 
 ;; This file is not part of GNU Emacs.
@@ -58,31 +53,13 @@
 ;;;; Oref
 
 (defun eieio-oref--closql-oref (fn obj slot)
-  (if (closql--closql-object-p obj)
+  (if (cl-letf (((symbol-function #'eieio--full-class-object)
+                 #'eieio--class-object))
+        (closql-object--eieio-childp obj))
       (closql-oref obj slot)
     (funcall fn obj slot)))
 
-(defun closql--closql-object-p (obj)
-  ;; This is like `closql-object--eieio-childp' except that instead
-  ;; of `object-of-class-p' it uses:
-  (and (eieio-object-p obj)
-       ;; This is like `object-of-class-p' except that instead of
-       ;; `child-of-class-p' it uses:
-       (let ((class 'closql-object))
-         ;; This is like `child-of-class-p' except that it does not
-         ;; enter recursive load when a class exists that is merely
-         ;; autoloaded, since it uses `eieio--class-object' instead
-         ;; of `eieio--full-class-object'.
-         (let ((child (eieio--class-object obj)))
-           (cl-check-type child eieio--class)
-           (or (eq class 'eieio-default-superclass)
-               (let ((p nil))
-                 (setq class (eieio--class-object class))
-                 (cl-check-type class eieio--class)
-                 (while (and child (not (eq child class)))
-                   (setq p (append p (eieio--class-parents child))
-                         child (pop p)))
-                 (if child t)))))))
+(advice-add 'eieio-oref :around #'eieio-oref--closql-oref)
 
 (defun closql--oref (obj slot)
   (aref obj (eieio--slot-name-index (eieio--object-class obj) slot)))

@@ -3,7 +3,7 @@
     (lsp-mode "4.2")
     (dash "0.14")
     (projectile "1.0.0"))
-  :keywords
+  :commit "17ec7bb4cf362b7268c24e070e841f0dfac1c919" :keywords
   '("languages" "lsp" "c++")
   :authors
   '(("Tobias Pisani, Fangrui Song"))

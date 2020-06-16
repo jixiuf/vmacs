@@ -7,6 +7,7 @@
 ;; Created: 13 Oct 2012
 ;; Keywords: Window Resizing
 ;; Package-Version: 20191028.1732
+;; Package-Commit: 007911d8a431b72670f5fe5f0e5b4380c2777a31
 ;; Version: 0.0.4
 
 ;; Code inspired by ideas from Tatsuhiro Ujihisa

@@ -6,6 +6,7 @@
 ;; Homepage: https://github.com/hniksic/emacs-htmlize
 ;; Keywords: hypermedia, extensions
 ;; Package-Version: 20191111.2130
+;; Package-Commit: 86f22f211e9230857197c42a9823d3f05381deed
 ;; Version: 1.56
 
 ;; This program is free software; you can redistribute it and/or modify

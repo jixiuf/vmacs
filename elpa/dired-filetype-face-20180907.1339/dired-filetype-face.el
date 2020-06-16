@@ -4,6 +4,7 @@
 ;; Copyright (C) 2011~2015,纪秀峰 , all rights reserved.
 ;; Version: 1.0
 ;; Package-Version: 20180907.1339
+;; Package-Commit: 7ade7f7e8c2d7518c65f3f0343a10c272da0f47e
 ;; URL:   https://github.com/jixiuf/dired-filetype-face
 ;; Keywords: dired filetype face
 ;;

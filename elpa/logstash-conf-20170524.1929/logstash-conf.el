@@ -6,6 +6,7 @@
 ;; Created: 21 October 2014
 ;; Version: 0.3
 ;; Package-Version: 20170524.1929
+;; Package-Commit: 4e127f9aec190786613445aa88efa307ff7c6748
 
 ;;; Commentary:
 ;; `conf-mode' offers adequate highlighting for Logstash configuration

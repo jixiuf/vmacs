@@ -11,9 +11,7 @@
 ;;; Generated autoloads from applescript-mode.el
 
 (autoload 'applescript-mode "applescript-mode" "\
-Major mode for editing AppleScript files.
-
-\(fn)" t nil)
+Major mode for editing AppleScript files." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "applescript-mode" '("applescript-" "as-")))
 

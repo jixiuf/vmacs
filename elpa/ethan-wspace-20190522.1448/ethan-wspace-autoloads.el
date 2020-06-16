@@ -12,14 +12,16 @@
 (autoload 'ethan-wspace-mode "ethan-wspace" "\
 Minor mode for coping with whitespace.
 
-If called interactively, enable Ethan-Wspace mode if ARG is positive, and
-disable it if ARG is zero or negative.  If called from Lisp,
-also enable the mode if ARG is omitted or nil, and toggle it
-if ARG is `toggle'; disable the mode otherwise.
+If called interactively, enable Ethan-Wspace mode if ARG is
+positive, and disable it if ARG is zero or negative.  If called
+from Lisp, also enable the mode if ARG is omitted or nil, and
+toggle it if ARG is `toggle'; disable the mode otherwise.
 
 This just activates each whitespace type in this buffer.
 
 \(fn &optional ARG)" t nil)
+
+(put 'global-ethan-wspace-mode 'globalized-minor-mode t)
 
 (defvar global-ethan-wspace-mode t "\
 Non-nil if Global Ethan-Wspace mode is enabled.

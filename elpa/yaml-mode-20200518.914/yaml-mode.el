@@ -7,6 +7,7 @@
 ;; Maintainer: Vasilij Schneidermann <mail@vasilij.de>
 ;; Package-Requires: ((emacs "24.1"))
 ;; Package-Version: 20200518.914
+;; Package-Commit: 34648f2502f52f4744d62758fa381fa35db1da49
 ;; Keywords: data yaml
 ;; Version: 0.0.14
 

@@ -7,6 +7,7 @@
 ;; Author: Ethan Glasser-Camp <ethan@betacantrips.com>
 ;; Keywords: whitespace, tab, newline, trailing, clean
 ;; Package-Version: 20190522.1448
+;; Package-Commit: 0f110fc26b829093c352e8dc9e50ba51a4e483ac
 ;;
 ;;; Commentary:
 ;; For more information on the design of this package, please see the

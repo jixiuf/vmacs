@@ -138,7 +138,7 @@ to connect to the default user containers."
                `(,docker-tramp-method
                  (tramp-login-program      ,docker-tramp-docker-executable)
                  (tramp-login-args         (,docker-tramp-docker-options ("exec" "-it") ("-u" "%u") ("%h") ("sh")))
-                 (tramp-remote-shell       "/bin/bash")
+                 (tramp-remote-shell       "/bin/sh")
                  (tramp-remote-shell-args  ("-i" "-c")))))
 
 ;;;###autoload

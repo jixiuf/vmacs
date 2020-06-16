@@ -2,6 +2,7 @@
 
 ;; Keywords: tools, c
 ;; Package-Version: 20191121.1708
+;; Package-Commit: 2d6a4526a2518b7c0059a8a0dfee156e90a49369
 ;; Package-Requires: ((cl-lib "0.3"))
 ;; SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 

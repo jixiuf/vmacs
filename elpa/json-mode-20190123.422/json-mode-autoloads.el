@@ -38,25 +38,14 @@ Major mode for editing JSON files
 (add-to-list 'magic-fallback-mode-alist '("^[{[]$" . json-mode))
 
 (autoload 'json-mode-show-path "json-mode" "\
-Print the path to the node at point to the minibuffer, and yank to the kill ring.
+Print the path to the node at point to the minibuffer, and yank to the kill ring." t nil)
 
-\(fn)" t nil)
-
-(autoload 'json-mode-kill-path "json-mode" "\
-
-
-\(fn)" t nil)
+(autoload 'json-mode-kill-path "json-mode" nil t nil)
 
 (autoload 'json-mode-beautify "json-mode" "\
-Beautify / pretty-print the active region (or the entire buffer if no active region).
-
-\(fn)" t nil)
+Beautify / pretty-print the active region (or the entire buffer if no active region)." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "json-mode" '("json-")))
-
-;;;***
-
-;;;### (autoloads nil nil ("json-mode-pkg.el") (0 0 0 0))
 
 ;;;***
 
