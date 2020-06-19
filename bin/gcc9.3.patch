@@ -1,5 +1,5 @@
 diff --git a/Formula/gcc.rb b/Formula/gcc.rb
-index bcbc53c82..33ed3ca2d 100644
+index bcbc53c82..c0732e4b2 100644
 --- a/Formula/gcc.rb
 +++ b/Formula/gcc.rb
 @@ -46,7 +46,7 @@ class Gcc < Formula
@@ -11,15 +11,16 @@ index bcbc53c82..33ed3ca2d 100644
  
      osmajor = `uname -r`.split(".").first
      pkgversion = "Homebrew GCC #{pkg_version} #{build.used_options*" "}".strip
-@@ -66,6 +66,7 @@ class Gcc < Formula
+@@ -66,6 +66,8 @@ class Gcc < Formula
        --with-system-zlib
        --with-pkgversion=#{pkgversion}
        --with-bugurl=https://github.com/Homebrew/homebrew-core/issues
 +      --enable-host-shared
++      --disable-bootstrap          
      ]
  
      # Xcode 10 dropped 32-bit support
-@@ -91,7 +92,7 @@ class Gcc < Formula
+@@ -91,7 +93,7 @@ class Gcc < Formula
        # Use -headerpad_max_install_names in the build,
        # otherwise updated load commands won't fit in the Mach-O header.
        # This is needed because `gcc` avoids the superenv shim.
