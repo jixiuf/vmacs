@@ -7,7 +7,7 @@
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (eval-when-compile (require 'evil))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
-(setq-default vterm-max-scrollback (- 10000 40))
+(setq-default vterm-max-scrollback (- 10000 42))
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-kill-buffer-on-exit t)
 (setq-default vterm-clear-scrollback t)
