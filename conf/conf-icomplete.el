@@ -2,6 +2,7 @@
 (require 'icomplete)
 
 (setq orderless-component-separator " +")
+(setq orderless-matching-styles '(orderless-regexp orderless-literal))
 (if (require 'orderless nil t)
     (setq completion-styles '(orderless basic substring initials flex))
   (setq completion-styles '(basic substring initials flex)))
