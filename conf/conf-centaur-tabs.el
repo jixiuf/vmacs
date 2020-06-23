@@ -27,6 +27,7 @@
     ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
      "Term")
     ((string-match-p (rx (or
+                          "\*Async-native-compile-log\*"
                           "\*Helm"
                           "\*company-documentation\*"
                           "\*helm"
