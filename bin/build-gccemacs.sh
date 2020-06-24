@@ -13,17 +13,18 @@ fi
 echo ${prefix}
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export LDFLAGS="-L/usr/local/lib/gcc/9"
-git clean -fdx
-./autogen.sh
-CC='clang' \
-  ./configure \
-  --disable-silent-rules \
-  --enable-locallisppath=/usr/local/share/emacs/site-lisp \
-  --prefix=${prefix} \
-  --with-nativecomp \
-  --with-ns \
-  --disable-ns-self-contained
-
+if [ $# -gt 0  ]; then
+    git clean -fdx
+    ./autogen.sh
+    CC='clang' \
+      ./configure \
+      --disable-silent-rules \
+      --enable-locallisppath=/usr/local/share/emacs/site-lisp \
+      --prefix=${prefix} \
+      --with-nativecomp \
+      --with-ns \
+      --disable-ns-self-contained
+fi
 # make bootstrap BYTE_COMPILE_EXTRA_FLAGS='--eval "(setq comp-speed 0)"'
 echo more info see INSTALL.REPO when compile error
 function catch_errors() {
@@ -33,7 +34,7 @@ function catch_errors() {
 
 trap catch_errors ERR;
 
-make install -j 8
+make install -j 12
 rm -rf ${prefix}/Emacs.app
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
