@@ -38,20 +38,15 @@
 (setq ibuffer-saved-filter-groups
       '(("Default"
          ("Hidden(g则不显示此分组)"  (name . "^ "))
-         ("Helm"  (or (name . "^\\*helm\\|^\\*ac-mode-")))
-         ("Woman"  (name . "^\\*WoMan.*\\*$"))
-         ("Compile"  (name . "^*.*compil[ea].*$"))
-         ("ERC"  (mode . erc-mode))
-         ("Custom"  (mode . Custom-mode))
          ("Mail" (or (mode . mew-summary-mode) (mode . mew-draft-mode)(mode . mew-message-mode)))
-         ("VC"  (or (name . "magit-") (name . "^\\*vc")(mode . diff-mode) (mode . vc-dir-mode)))
-         ("Magit "  (name . "magit:"))
+         ;; ("VC"  (or (name . "magit-") (name . "^\\*vc")(mode . diff-mode) (mode . vc-dir-mode)))
+         ;; ("Magit "  (name . "magit:"))
          ("Emacs"  (name . "^\\*.*$"))
-         ("Dired"  (mode . dired-mode))
+         ;; ("Dired"  (mode . dired-mode))
          ("Shell"  (or (mode . shell-mode) (mode . vterm-mode)))
-         ("Go"  (mode . go-mode))
-         ("Python"  (mode . python-mode))
-         ("EL"  (mode . emacs-lisp-mode))
+         ;; ("Go"  (mode . go-mode))
+         ;; ("Python"  (mode . python-mode))
+         ;; ("EL"  (mode . emacs-lisp-mode))
          )))
 
 (add-hook 'ibuffer-mode-hook
