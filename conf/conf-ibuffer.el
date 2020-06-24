@@ -23,7 +23,7 @@
 (setq ibuffer-show-empty-filter-groups nil);;不显示没有任何buffer的空分组
 (setq ibuffer-default-sorting-mode (quote major-mode)) ;;排序
 ;;设置默认不显示maybe-show-predicates的buffer (即隐藏上面Hidden分组里的内容)
-(setq ibuffer-default-display-maybe-show-predicates t)
+(setq ibuffer-default-display-maybe-show-predicates nil)
 
 (define-key ibuffer-mode-map (kbd "M-=") 'ibuffer-ediff-merge)
 (define-key ibuffer-mode-map (kbd "q") 'vmacs-kill-buffer-dwim)
@@ -37,22 +37,24 @@
 ;;ibuffer分组
 (setq ibuffer-saved-filter-groups
       '(("Default"
-         ("Hidden(g则不显示此分组)"  (name . "^ "))
-         ("Mail" (or (mode . mew-summary-mode) (mode . mew-draft-mode)(mode . mew-message-mode)))
+         ;; ("Mail" (or (mode . mew-summary-mode) (mode . mew-draft-mode)(mode . mew-message-mode)))
          ;; ("VC"  (or (name . "magit-") (name . "^\\*vc")(mode . diff-mode) (mode . vc-dir-mode)))
          ;; ("Magit "  (name . "magit:"))
          ("Emacs"  (name . "^\\*.*$"))
          ;; ("Dired"  (mode . dired-mode))
          ("Shell"  (or (mode . shell-mode) (mode . vterm-mode)))
+         ("Others"  (name . "^[? ]?.*$"))
          ;; ("Go"  (mode . go-mode))
          ;; ("Python"  (mode . python-mode))
          ;; ("EL"  (mode . emacs-lisp-mode))
+
+         ("Hidden(g则不显示此分组)"  (name . "^ "))
          )))
 
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
-            (ibuffer-switch-to-saved-filter-groups "Default")))
+;; (add-hook 'ibuffer-mode-hook
+;;           (lambda ()
+;;             ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
+;;             (ibuffer-switch-to-saved-filter-groups "Default")))
 
 ;; (defun donot-show-helm-buf(buf)
 ;;   "do not show *helm* buffer"
@@ -70,9 +72,9 @@
 
 
 ;;默认的分组default分组放在最后一个,此advice 倒序之
-(defadvice ibuffer-generate-filter-groups
-  (after reverse-ibuffer-groups () activate)
-  (setq ad-return-value (nreverse ad-return-value)))
+;; (defadvice ibuffer-generate-filter-groups
+;;   (after reverse-ibuffer-groups () activate)
+;;   (setq ad-return-value (nreverse ad-return-value)))
 
 ;;;; other
 (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
