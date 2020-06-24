@@ -9,8 +9,8 @@
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-prog-in-code-p
-        rime-predicate-after-alphabet-char-p
-        rime-predicate-auto-english-p
+        ;; rime-predicate-after-alphabet-char-p
+        ;; rime-predicate-auto-english-p
         ))
 (require 'rime)
 (add-to-list 'rime-translate-keybindings "C-v")
