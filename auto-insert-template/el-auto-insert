@@ -1,4 +1,4 @@
-;;; `(buffer-name)` --- ${1:Description}
+;;; `(buffer-name)` --- ${1:Description} -*- lexical-binding: t; -*-
 
 ;; Author: `user-full-name`  `user-mail-address`
 ;; Keywords: $2
