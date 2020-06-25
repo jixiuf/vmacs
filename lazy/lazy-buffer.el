@@ -1,24 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
-
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
 (declare-function magit-toplevel "magit")
 (autoload 'magit-toplevel "magit" "magit toplevel " nil)
-
-;; (require 'magit)
-;;;###autoload
-(defun vmacs-switch-buffer ()
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  (interactive)
-  (vmacs-files "Open: " (vmacs-switch-buffer--cands)))
-
-;;;###autoload
-(defun vmacs-git-files ()
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  (interactive)
-  (vmacs-files "Git Files: " (vmacs--git-files 0)))
 
 (defmacro vmacs-files (prompt files )
   "Open `recent-list' item in a new buffer.
@@ -34,7 +18,7 @@ The user's $HOME directory is abbreviated as a tilde."
        (if-let ((buf (get-buffer buf-or-file)))
            (pop-to-buffer-same-window buf)
          (find-file buf-or-file)))))
-
+;; (require 'magit)
 
 (defun vmacs-switch-buffer--cands()
   (let ((bufs (vmacs-buffers))
@@ -64,8 +48,8 @@ The user's $HOME directory is abbreviated as a tilde."
           (puthash git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
-    (dotimes (n (or n 3) magit-repos)
-      (let ((magit-repo (nth  n magit-repos)))
+    (dotimes (idx (or n 3) )
+      (let ((magit-repo (nth idx magit-repos)))
         (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
           (unless (string-equal magit-repo git-dir)
@@ -105,6 +89,20 @@ The user's $HOME directory is abbreviated as a tilde."
    (lambda (f-or-r)
      (string-match-p f-or-r buf))
    (or ignore-buffers vmacs-ignore-buffers)))
+
+;;;###autoload
+(defun vmacs-switch-buffer ()
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
+  (interactive)
+  (vmacs-files "Open: " (vmacs-switch-buffer--cands)))
+
+;;;###autoload
+(defun vmacs-git-files ()
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
+  (interactive)
+  (vmacs-files "Git Files: " (vmacs--git-files 0)))
 
 (defun bury-boring-windows(&optional bury-cur-win-if-boring)
   "close boring *Help* windows with `C-g'"
