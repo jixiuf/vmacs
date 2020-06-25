@@ -236,7 +236,10 @@ they are in `bind-map-set-keys'."
 (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 (setq ffap-machine-p-known 'accept)  ; no pinging
-(vmacs-leader "ff" 'find-file-at-point)
+(if (symbolp 'native-comp-available-p)
+    (vmacs-leader "ff" 'find-file)
+  (vmacs-leader "ff" 'find-file-at-point))
+
 (vmacs-leader "i" 'vmacs-git-files)
 (global-set-key (kbd "s-C-M-i")  'vmacs-git-files)
 
