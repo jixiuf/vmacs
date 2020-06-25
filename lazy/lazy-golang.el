@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; golang 生成getter setter
 ;;;###autoload
 (defun golang-setter-getter(beg end)

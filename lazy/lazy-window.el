@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;;; C-x2 ,C-x3 更好的分隔窗口
 ;;----------------------------------------------------------------------------
 ;; When splitting window, show (other-buffer) in the new window

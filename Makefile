@@ -30,6 +30,8 @@ compile:lib
 	   touch ./elpa/.elpa_compiled_by_make;\
 	fi
 	make update-autoload-cookie
+	$(BATCH) --eval '(native-compile-async "~/.emacs.d/elpa/")'
+	$(BATCH) --eval '(native-compile-async "~/.emacs.d/lazy/")'
 update-autoload-cookie:
 	@echo "生成 lisp/update-autoload-cookie.el"
 	@-rm lisp/lazy-loaddefs.el

@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
 (declare-function magit-toplevel "magit")

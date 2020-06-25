@@ -1,4 +1,5 @@
-;;; compile-dwim.el --- Automatic generate compile-command
+;;; compile-dwim.el --- Automatic generate compile-command -*- lexical-binding: t; -*-
+
 
 ;; Copyright (C) 2007 Free Software Foundation, Inc.
 ;;
@@ -44,7 +45,7 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 (require 'format-spec)
 (require 'compile)
 (require 'which-func)
@@ -345,7 +346,7 @@ that alist."
               (eval cmds)
               (if sentinel (funcall sentinel)))))))))
 
-(defun compile-dwim-prompt-run (&rest ignore)
+(defun compile-dwim-prompt-run (&rest _ignore)
   ;; this function should call only once
   (remove-hook 'compilation-finish-functions 'compile-dwim-prompt-run)
   (when (yes-or-no-p "Compilation finished, run it now? ")

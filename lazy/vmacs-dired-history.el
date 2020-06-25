@@ -1,4 +1,5 @@
-;;; vmacs-dired-history.el --- use vmacs to open recent directories
+;;; vmacs-dired-history.el --- use vmacs to open recent directories -*- lexical-binding: t; -*-
+
 
 ;; Author: 纪秀峰 <jixiuf@gmail.com>
 ;; Copyright (C) 2017 纪秀峰, all rights reserved.
@@ -90,7 +91,7 @@ Argument DIR directory."
            (let ((tmp-history ))
              (dolist (d vmacs-dired-history)
                (when (or (file-remote-p d) (file-directory-p d))
-                 (add-to-list 'tmp-history d t)))
+                 (push d tmp-history)))
              (setq vmacs-dired-history tmp-history)))
          (setq vmacs-dired-history
                (delete-dups (delete dir vmacs-dired-history)))

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;;用资源管理器打开当前文件所处目录 (open-in-filemanager)
 
 ;; 你可能需要调整你的文件管理器， 这只是个demo for linux

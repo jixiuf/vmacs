@@ -1,4 +1,4 @@
-;;; -*- coding:utf-8 -*-
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; ssh://user@server#2222:path/to/file
 ;; this stuff help you to switch between edit current buffer as root and as  common user
 ;;(global-set-key (kbd "C-c o") 'toggle-read-only-file-with-sudo)

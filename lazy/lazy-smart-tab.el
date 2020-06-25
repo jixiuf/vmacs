@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require  'ediff)
   (require  'vc-hooks)
@@ -57,7 +58,7 @@
 
 
 ;;;###autoload
-(defun smart-tab (&optional arg)
+(defun smart-tab (&optional _arg)
   (interactive "P")
   ;;根据buffer内容自动设置major-mode
   (when (equal "*scratch*" (buffer-name)) (set-auto-mode))

@@ -1,9 +1,9 @@
+;;; -*- lexical-binding: t; -*-
 (eval-when-compile (require 'cl-lib))
-
 ;; 跳转到函数定义的地方，跳转前在原处设置一个书签,space,可回原处
 ;; default bind on gd
 ;;;###autoload
-(defun goto-definition (&optional arg)
+(defun goto-definition (&optional _arg)
   "Make use of emacs' find-func and etags possibilities for finding definitions."
   (interactive "P")
   (let ((line (buffer-substring-no-properties

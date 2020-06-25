@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;;;###autoload
 (defun objc-surround()
   (interactive)

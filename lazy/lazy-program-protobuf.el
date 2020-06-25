@@ -1,6 +1,7 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; protobuf align 对齐与缩进
 ;;;###autoload
-(defun protobuf-indent-align(begin end &optional column)
+(defun protobuf-indent-align(begin end &optional _column)
   "do indent and align for protobuf.
 bind`indent-region-function' to this function in protobuf-hook"
   (interactive "r")

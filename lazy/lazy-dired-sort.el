@@ -1,4 +1,4 @@
-;;; lazy-dired-sort.el --- in Dired: press s then s, x, t or n to sort by Size, eXtension, Time or Name
+;;; lazy-dired-sort.el --- in Dired: press s then s, x, t or n to sort by Size, eXtension, Time or Name -*- lexical-binding: t; coding:utf-8 -*-
 
 ;; Copyright (C) 2002 -> Free Software Foundation, Inc.
 

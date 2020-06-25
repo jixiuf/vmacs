@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 (eval-when-compile (require 'evil)
                    (require 'pulse))
 (require 'bm)
@@ -26,7 +27,7 @@
   (add-hook 'post-command-hook 'go-back-after-mark-region)
 
 ;;;###autoload
-(defun evil-mark-defun(&optional arg)
+(defun evil-mark-defun(&optional _arg)
   "call function binding to `C-M-h'"
   (interactive)
   (setq evil-mark-funs-marker (point-marker))
@@ -35,7 +36,7 @@
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-M-h"))))))
 ;;;###autoload
-(defun evil-M-h(&optional arg)
+(defun evil-M-h(&optional _arg)
   "call function binding to `M-h'"
   (interactive)
   (setq evil-mark-funs-marker (point-marker))
@@ -44,7 +45,7 @@
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "M-h"))))))
 ;;;###autoload
-(defun evil-mark-whole-buffer(&optional arg)
+(defun evil-mark-whole-buffer(&optional _arg)
   "call function binding to `C-xh'"
   (interactive)
   (setq evil-mark-funs-marker (point-marker))
@@ -53,28 +54,28 @@
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-x h"))))))
 ;;;###autoload
-(defun evil-begin-of-defun(&optional arg)
+(defun evil-begin-of-defun(&optional _arg)
   "call function binding to `C-M-a'"
   (interactive)
   (call-interactively (key-binding (kbd "C-M-a")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-M-a"))))))
 ;;;###autoload
-(defun evil-end-of-defun(&optional arg)
+(defun evil-end-of-defun(&optional _arg)
   "call function binding to `C-M-e'"
   (interactive)
   (call-interactively (key-binding (kbd "C-M-e")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-M-e"))))))
 ;;;###autoload
-(defun evil-M-e(&optional arg)
+(defun evil-M-e(&optional _arg)
   "call function binding to `M-e'"
   (interactive)
   (call-interactively (key-binding (kbd "M-e")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "M-e"))))))
 ;;;###autoload
-(defun evil-M-a(&optional arg)
+(defun evil-M-a(&optional _arg)
   "call function binding to `M-a'"
   (interactive)
   (call-interactively (key-binding (kbd "M-a")))
@@ -82,21 +83,21 @@
                    (symbol-name (key-binding (kbd "M-a"))))))
 
 ;;;###autoload
-(defun evil-C-M-f(&optional arg)
+(defun evil-C-M-f(&optional _arg)
   "call function binding to `C-M-f'"
   (interactive)
   (call-interactively (key-binding (kbd "C-M-f")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-M-f"))))))
 ;;;###autoload
-(defun evil-C-M-b(&optional arg)
+(defun evil-C-M-b(&optional _arg)
   "call function binding to `C-M-b'"
   (interactive)
   (call-interactively (key-binding (kbd "C-M-b")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-M-b"))))))
 ;;;###autoload
-(defun evil-C-M-k(&optional arg)
+(defun evil-C-M-k(&optional _arg)
   "call function binding to `C-M-k'"
   (interactive)
   (call-interactively (key-binding (kbd "C-M-k")))
@@ -104,7 +105,7 @@
                    (symbol-name (key-binding (kbd "C-M-k"))))))
 
 ;;;###autoload
-(defun evil-copy-sexp-at-point(&optional arg)
+(defun evil-copy-sexp-at-point(&optional _arg)
   "call function binding to `C-M-kC-/'"
   (interactive)
   (let* ((bounds (bounds-of-thing-at-point 'sexp))

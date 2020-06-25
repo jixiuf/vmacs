@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; 插动图片到org 文件时， 自动将文件放到org下的static/下，并插入[[file:...static/image.jpg]]
 ;;;###autoload
 (defun vmacs-org-insert-image (event)
@@ -26,7 +27,7 @@
 
 
 ;;;###autoload
-(defun show-todo-list-after-init(&optional frame)
+(defun show-todo-list-after-init(&optional _frame)
   (require 'org-agenda)
   (dolist (f org-agenda-files)
     (unless (file-exists-p f)

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 (require 'subr-x)                       ;string-blank-p
 ;; 小说 段首缩进4格
 ;;;###autoload

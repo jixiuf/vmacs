@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; -*- coding:utf-8 -*-
 ;; eval-when-compile
 (eval-when-compile
@@ -191,9 +192,7 @@ Move point to end-of-line ,if point was already at that position,
   "Toggle between *scratch* buffer and the current buffer.
      If the *scratch* buffer does not exist, create it."
   (interactive)
-  (let ((scratch-buffer-name  "*scratch*")
-        (prev-major-mode major-mode)
-        )
+  (let ((scratch-buffer-name  "*scratch*"))
     (if (equal (buffer-name (current-buffer)) scratch-buffer-name)
         (switch-to-buffer (other-buffer))
       (with-current-buffer
@@ -384,9 +383,7 @@ Move point to end-of-line ,if point was already at that position,
 (defun vmacs-add-to-killed-file-list()
   "If buffer is associated with a file name, add that file to the
 `vmacs-killed-file-list' when killing the buffer."
-  (let ((default-directory default-directory)
-        (bufname (buffer-name))
-        )
+  (let ((default-directory default-directory))
     (cond
      (buffer-file-name
       (unless (or (string-match-p "COMMIT_EDITMSG" buffer-file-name)
@@ -419,7 +416,7 @@ Move point to end-of-line ,if point was already at that position,
          ((bufferp file)
           (switch-to-buffer file))
          ((equal type 'magit)
-          (magit-status-internal file)
+          (magit-status-setup-buffer file)
           (message "reopen magit-status in %s" file))
 
          (t
@@ -462,7 +459,7 @@ Move point to end-of-line ,if point was already at that position,
 ;; 在当前行任何位置输入分号都在行尾添加分号，除非本行有for 这个关键字，
 ;; 如果行尾已经有分号则删除行尾的分号，将其插入到当前位置,就是说输入两次分号则不在行尾插入而是像正常情况一样.
 ;;;###autoload
-(defun vmacs-append-semicolon-at-eol(&optional arg)
+(defun vmacs-append-semicolon-at-eol(&optional _arg)
   (interactive "*p")
   (let* ( ( init_position (point))
           (b (line-beginning-position))
@@ -649,16 +646,16 @@ end tell" (expand-file-name default-directory))))
   (if case-fold-search
       (progn
         (setq
-         helm-case-fold-search nil ;nil=case sensitive
+         ;; helm-case-fold-search nil ;nil=case sensitive
          case-fold-search nil ;nil=case sensitive
-         ivy-case-fold-search-default  nil
+         ;; ivy-case-fold-search-default  nil
          ;; counsel-rg-base-command  "rg -s --no-heading --line-number --color never  -z %s ."
          evil-ex-search-case 'sensitive)
 
         (message "case sensitive"))
     (setq
-     ivy-case-fold-search-default  'always
-     helm-case-fold-search t ;nil=case sensitive
+     ;; ivy-case-fold-search-default  'always
+     ;; helm-case-fold-search t ;nil=case sensitive
      ;; counsel-rg-base-command  "rg -i --no-heading --line-number --color never  -z %s ."
      case-fold-search t ;nil=case sensitive
      evil-ex-search-case 'insensitive)

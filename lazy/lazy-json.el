@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; man json_pp
 ;;;###autoload
 (defun vmacs-json-pretty()

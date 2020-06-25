@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;;; faces
 ;;(set-background-color "#2e2d28")
 ;;(set-foreground-color "#a1aca7") "#f7f8c6"

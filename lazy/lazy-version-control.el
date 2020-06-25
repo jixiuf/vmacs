@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require  'vc)
   (require  'ediff)
@@ -85,13 +86,13 @@
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
 
 ;;;###autoload
-(defun vmacs-magit-push-default(&optional args  upstream)
+(defun vmacs-magit-push-default(&optional args  _upstream)
   (interactive)
   (if (magit-svn-repos-p)
       (magit-run-git-async "svn" "dcommit" args)
       (call-interactively 'magit-push-current-to-pushremote)))
 ;;;###autoload
-(defun vmacs-magit-pull-default(&optional args  upstream)
+(defun vmacs-magit-pull-default(&optional args  _upstream)
   (interactive)
   (if (magit-svn-repos-p)
       (magit-run-git-async "svn" "rebase" args)

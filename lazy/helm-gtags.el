@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; ;;; helm-gtags.el --- GNU GLOBAL helm interface
 
 ;; ;; Copyright (C) 2013 by Syohei YOSHIDA

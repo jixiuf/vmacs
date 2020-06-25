@@ -1,4 +1,4 @@
-
+;; -*- lexical-binding: t; coding:utf-8 -*-
 (defun mapcar-head (fn-head fn-rest list)
   "Like MAPCAR, but applies a different function to the first element."
   (if list

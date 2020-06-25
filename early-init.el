@@ -3,6 +3,7 @@
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 ;; https://emacs-china.org/t/macos-emacs-28-native-comp/12201/70?u=jixiuf
+(setq comp-deferred-compilation-black-list '("yasnippet"))
 (setq comp-deferred-compilation t)
 
 (setq-default
