@@ -1,6 +1,14 @@
 # -*- coding:utf-8 -*-
 .PHONY: eshell lib rime
 EMACSCMD ?= emacs
+EMACSGCCCMD ?= gccemacs
+EMACSNATIVE ?= $(EMACSGCCCMD) --batch --quick -L . \
+			--eval "(let ((default-directory \"~/.emacs.d/elpa/\")) (normal-top-level-add-subdirs-to-load-path))" \
+			--eval "(add-to-list 'load-path \"~/.emacs.d/conf\")" \
+			--eval "(add-to-list 'load-path \"~/.emacs.d/lazy\")" \
+			--eval "(let ((default-directory \"~/.emacs.d/submodule/\")) (normal-top-level-add-subdirs-to-load-path))" \
+            -f batch-native-compile
+
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init-base.el
 dump: clean update-autoload-cookie deps
@@ -30,9 +38,16 @@ compile:lib
 	   touch ./elpa/.elpa_compiled_by_make;\
 	fi
 	make update-autoload-cookie
-	$(BATCH) --eval '(native-compile-async "~/.emacs.d/elpa/" t)'
-	rm ~/.emacs.d/elpa/yasnippet*/eln*
-	$(BATCH) --eval '(native-compile-async "~/.emacs.d/lazy/")'
+native:
+# $(BATCH) --eval '(native-compile-async "~/.emacs.d/elpa/" 5)'
+	for dir in $$HOME/.emacs.d/elpa/*; do \
+		rm -f $$dir/*.elc ; \
+		pushd $$dir; \
+		$(EMACSNATIVE)   $$(printf '%s\n' $$dir/*.el | grep -v autoloads.el|grep -v pkg.el) || true; \
+		popd ;\
+	done
+	@-rm -rf ~/.emacs.d/elpa/yasnippet*/eln*
+	$(EMACSNATIVE)   $$HOME/.emacs.d/lazy/*.el || true;
 update-autoload-cookie:
 	@echo "生成 lisp/update-autoload-cookie.el"
 	@-rm lisp/lazy-loaddefs.el
