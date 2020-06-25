@@ -16,7 +16,7 @@ The user's $HOME directory is abbreviated as a tilde."
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (vmacs-files "Git Files: " (vmacs--git-files)))
+  (vmacs-files "Git Files: " (vmacs--git-files 0)))
 
 (defmacro vmacs-files (prompt files )
   "Open `recent-list' item in a new buffer.
