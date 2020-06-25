@@ -51,10 +51,10 @@
          ("Hidden(g则不显示此分组)"  (name . "^ "))
          )))
 
-;; (add-hook 'ibuffer-mode-hook
-;;           (lambda ()
-;;             ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
-;;             (ibuffer-switch-to-saved-filter-groups "Default")))
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
+            (ibuffer-switch-to-saved-filter-groups "Default")))
 
 ;; (defun donot-show-helm-buf(buf)
 ;;   "do not show *helm* buffer"
@@ -95,26 +95,26 @@
         (mark " " (name 24 -1) " " filename)))
 ;;; Ediff
 
-(defadvice switch-to-buffer (around kill-ibuffer-mode activate)
-  "kill ibuffer mode if exists"
-  ad-do-it
-  (unless (string-match "*Ibuffer" (buffer-name))
-    (let ((buf (get-buffer "*Ibuffer*")))
-      (when buf (kill-buffer buf)))))
+;; (defadvice switch-to-buffer (around kill-ibuffer-mode activate)
+;;   "kill ibuffer mode if exists"
+;;   ad-do-it
+;;   (unless (string-match "*Ibuffer" (buffer-name))
+;;     (let ((buf (get-buffer "*Ibuffer*")))
+;;       (when buf (kill-buffer buf)))))
 
-(defadvice switch-to-buffer-other-window (around kill-ibuffer-mode activate)
-  "kill ibuffer mode if exists"
-  ad-do-it
-(unless (string-match "*Ibuffer" (buffer-name))
-    (let ((buf (get-buffer "*Ibuffer*")))
-      (when buf (kill-buffer buf)))))
+;; (defadvice switch-to-buffer-other-window (around kill-ibuffer-mode activate)
+;;   "kill ibuffer mode if exists"
+;;   ad-do-it
+;; (unless (string-match "*Ibuffer" (buffer-name))
+;;     (let ((buf (get-buffer "*Ibuffer*")))
+;;       (when buf (kill-buffer buf)))))
 
-(defadvice other-window (around kill-ibuffer-mode activate)
-  "kill ibuffer mode if exists"
-  ad-do-it
-(unless (string-equal "*Ibuffer*" (buffer-name))
-    (let ((buf (get-buffer "*Ibuffer*")))
-      (when buf (kill-buffer buf)))))
+;; (defadvice other-window (around kill-ibuffer-mode activate)
+;;   "kill ibuffer mode if exists"
+;;   ad-do-it
+;; (unless (string-equal "*Ibuffer*" (buffer-name))
+;;     (let ((buf (get-buffer "*Ibuffer*")))
+;;       (when buf (kill-buffer buf)))))
 
 (provide 'conf-ibuffer)
 
