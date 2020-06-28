@@ -9,9 +9,10 @@
 (setq rime-disable-predicates
       '(rime-predicate-evil-mode-p
         rime-predicate-prog-in-code-p
-        ;; rime-predicate-after-alphabet-char-p
+        rime-predicate-after-alphabet-char-p
         ;; rime-predicate-auto-english-p
         ))
+(setq rime-inline-predicates '(rime-predicate-space-after-cc-p))
 (require 'rime)
 (add-to-list 'rime-translate-keybindings "C-v")
 (add-to-list 'rime-translate-keybindings  "M-v")
