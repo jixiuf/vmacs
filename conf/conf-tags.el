@@ -104,11 +104,11 @@
 (define-key evil-motion-state-map "gc" 'lsp-find-implementation)
 (define-key evil-motion-state-map "gR" 'lsp-rename)
 
-;; (vmacs-leader "wge" 'helm-gtags-update-tags)
-;; (vmacs-leader "wgr" 'helm-gtags-find-rtag)
-;; (vmacs-leader "wgp" 'helm-gtags-parse-file)
-;; (vmacs-leader "wgi" 'helm-gtags-parse-file)
-;; (vmacs-leader "we" 'ctags-update)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wge") 'helm-gtags-update-tags)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wgr") 'helm-gtags-find-rtag)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wgp") 'helm-gtags-parse-file)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wgi") 'helm-gtags-parse-file)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>we") 'ctags-update)
 
 (defun vmacs-xref-find-references()
   (interactive)

@@ -13,38 +13,37 @@
 
 ;; (add-hook 'after-make-frame-functions 'vmacs-translate-keybind)
 ;; (add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
-(require 'bind-map)
+;; (require 'bind-map)
 
-(defun vmacs--leader-map-init-map(mode map &optional minor states)
-  (let ((prefix (intern (format "%s-prefix" map))))
-    (or (boundp prefix)
-        (progn
-          (eval
-           `(progn
-              (bind-map ,map
-                :prefix-cmd ,prefix
-                ,(if minor :minor-modes :major-modes) (,mode)
-                :keys ("M-m")
-                ;; :override-minor-modes t
-                :evil-keys ("SPC")
-                :evil-states ,(if states states '(normal motion visual evilified)))
-              ;; 默认会继承vmacs-leader-map 的全局设置
-              (set-keymap-parent ,map vmacs-leader-map)))
-          (boundp prefix)))))
+;; (defun vmacs--leader-map-init-map(mode map &optional minor states)
+;;   (let ((prefix (intern (format "%s-prefix" map))))
+;;     (or (boundp prefix)
+;;         (progn
+;;           (eval
+;;            `(progn
+;;               (bind-map ,map
+;;                 :prefix-cmd ,prefix
+;;                 ,(if minor :minor-modes :major-modes) (,mode)
+;;                 :keys ("M-m")
+;;                 ;; :override-minor-modes t
+;;                 :evil-keys ("SPC")
+;;                 :evil-states ,(if states states '(normal motion visual evilified)))
+;;               ;; 默认会继承vmacs-leader-map 的全局设置
+;;               (set-keymap-parent ,map vmacs-leader-map)))
+;;           (boundp prefix)))))
 
-(bind-map vmacs-leader-map
-  :keys ("M-m")
-  :evil-keys ("SPC")
-  ;; :override-minor-modes t
-  :evil-states (normal motion visual))
-
-(define-key special-mode-map " " nil)
+;; (bind-map vmacs-leader-map
+;;   :keys ("M-m")
+;;   :evil-keys ("SPC")
+;;   ;; :override-minor-modes t
+;;   :evil-states (normal motion visual))
 
 
-;; (macroexpand '(vmacs-leader "b" 'forward-char))
-;; (bind-map-set-keys vmacs-leader-map "b" 'forward-char)
-(defmacro vmacs-leader(key def &rest bindings)
-  `(bind-map-set-keys  vmacs-leader-map ,key ,def ,@bindings))
+
+;; ;; (macroexpand '(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>b") 'forward-char))
+;; ;; (bind-map-set-keys vmacs-leader-map "b" 'forward-char)
+;; (defmacro vmacs-leader(key def &rest bindings)
+;;   `(bind-map-set-keys  vmacs-leader-map ,key ,def ,@bindings))
 
 
 ;; 这种方式会使用vmacs-leader-map 的keys等属性，但:bindings并不会继承
@@ -53,73 +52,63 @@
 ;;   :major-modes (markdown-mode)
 ;;   :bindings ("c" 'forward-button))
 
-;; 几种用法举例
-;; 默认dired spc有绑定按键，却space不会做为leader key
-;; vmacs-leader-for-major-mode 会为dired-mode 启用leader key
-;; (vmacs-leader-for-major-mode 'dired-mode )
-;; (vmacs-leader-for-major-mode '(dired-mode message-mode))
-;; 除了继承默认的leader外，dired 中特殊绑定 "b" 按键
-;; (vmacs-leader-for-major-mode 'dired-mode "b" 'forward-char)
-(defmacro vmacs-leader-for-major-mode (major-modes  &rest bindings)
-  "enable leader key  for the major-mode
-MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
-major mode. The rest of the arguments are treated exactly like
-they are in `bind-map-set-keys'."
-  `(vmacs-leader-for ,major-modes nil ,@bindings))
+;; ;; 几种用法举例
+;; ;; 默认dired spc有绑定按键，却space不会做为leader key
+;; ;; vmacs-leader-for-major-mode 会为dired-mode 启用leader key
+;; ;; (vmacs-leader-for-major-mode 'dired-mode )
+;; ;; (vmacs-leader-for-major-mode '(dired-mode message-mode))
+;; ;; 除了继承默认的leader外，dired 中特殊绑定 "b" 按键
+;; ;; (vmacs-leader-for-major-mode 'dired-mode "b" 'forward-char)
+;; (defmacro vmacs-leader-for-major-mode (major-modes  &rest bindings)
+;;   "enable leader key  for the major-mode
+;; MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
+;; major mode. The rest of the arguments are treated exactly like
+;; they are in `bind-map-set-keys'."
+;;   `(vmacs-leader-for ,major-modes nil ,@bindings))
 
 
 
-;; 几种用法举例
-;; insert 模式下为特定的major-mode启动leader
-;; states 可以为nil 表示使用默认值'(normal motion visual evilified)
-(defun vmacs-leader-for (major-modes &optional states  &rest bindings)
-  "enable leader key  for the major-mode
-MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
-major mode. The rest of the arguments are treated exactly like
-they are in `bind-map-set-keys'."
-  (let ((major-modes (if (listp major-modes ) major-modes (list major-modes))))
-    (dolist (mode major-modes)
-      (let ((map (intern (format "vmacs-%s-map" mode)))
-            (key  (pop bindings)) def)
-        (when (vmacs--leader-map-init-map mode map nil states)
-          (while key
-            (setq def (pop bindings))
-            (define-key (symbol-value map) (kbd key) def)
-            (setq key (pop bindings) )))))))
+;; ;; 几种用法举例
+;; ;; insert 模式下为特定的major-mode启动leader
+;; ;; states 可以为nil 表示使用默认值'(normal motion visual evilified)
+;; (defun vmacs-leader-for (major-modes &optional states  &rest bindings)
+;;   "enable leader key  for the major-mode
+;; MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
+;; major mode. The rest of the arguments are treated exactly like
+;; they are in `bind-map-set-keys'."
+;;   (let ((major-modes (if (listp major-modes ) major-modes (list major-modes))))
+;;     (dolist (mode major-modes)
+;;       (let ((map (intern (format "vmacs-%s-map" mode)))
+;;             (key  (pop bindings)) def)
+;;         (when (vmacs--leader-map-init-map mode map nil states)
+;;           (while key
+;;             (setq def (pop bindings))
+;;             (define-key (symbol-value map) (kbd key) def)
+;;             (setq key (pop bindings) )))))))
 
 
-;;;###autoload
-(defmacro define-key-lazy (mode-map key cmd  feature &optional state)
-  "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
-  (if state
-      `(eval-after-load ,feature '(evil-define-key ,state ,mode-map ,key ,cmd))
-    `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd))))
-
-(defmacro vmacs-leader-for-map (map feature)
-  `(define-key-lazy ,map ,(kbd "SPC") vmacs-leader-map ,feature '(normal motion visual)))
-
-;; 目前未验证是否可用
-;; state 可以为nil 表示normal 模式
-;; (vmacs-leader-for-minor-mode '(mode1) '(insert) "b" 'forward-cahr)
-;; (vmacs-leader-for-minor-mode '(mode1) nil "b" 'forward-cahr)
-;; (vmacs-leader-for-minor-mode '(mode1) nil )
-;; (vmacs-leader-for-minor-mode '(mode1)  )
-;; (vmacs-leader-for-minor-mode mode1 nil )
-;; (vmacs-leader-for-minor-mode mode1  )
-(defun vmacs-leader-for-minor-mode(minor-modes &optional states  &rest bindings)
-  "enable leader key  for the minor-mode
-MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
-minor mode. The rest of the arguments are treated exactly like
-they are in `bind-map-set-keys'."
-  (let ((minor-modes (if (listp minor-modes ) minor-modes (list minor-modes))))
-    (dolist (mode minor-modes)
-      (let ((map (intern (format "vmacs-%s-map" mode)))
-            (key  (pop bindings)) def)
-        (when (vmacs--leader-map-init-map mode map t states)
-          (while key
-            (setq def (pop bindings))
-            (define-key (symbol-value map) (kbd key) def)
-            (setq key (pop bindings) )))))))
+;; ;; 目前未验证是否可用
+;; ;; state 可以为nil 表示normal 模式
+;; ;; (vmacs-leader-for-minor-mode '(mode1) '(insert) "b" 'forward-cahr)
+;; ;; (vmacs-leader-for-minor-mode '(mode1) nil "b" 'forward-cahr)
+;; ;; (vmacs-leader-for-minor-mode '(mode1) nil )
+;; ;; (vmacs-leader-for-minor-mode '(mode1)  )
+;; ;; (vmacs-leader-for-minor-mode mode1 nil )
+;; ;; (vmacs-leader-for-minor-mode mode1  )
+;; (defun vmacs-leader-for-minor-mode(minor-modes &optional states  &rest bindings)
+;;   "enable leader key  for the minor-mode
+;; MODES. MODES should be a quoted symbol or a list of symbol  corresponding to a valid
+;; minor mode. The rest of the arguments are treated exactly like
+;; they are in `bind-map-set-keys'."
+;;   (let ((minor-modes (if (listp minor-modes ) minor-modes (list minor-modes))))
+;;     (dolist (mode minor-modes)
+;;       (let ((map (intern (format "vmacs-%s-map" mode)))
+;;             (key  (pop bindings)) def)
+;;         (when (vmacs--leader-map-init-map mode map t states)
+;;           (while key
+;;             (setq def (pop bindings))
+;;             (define-key (symbol-value map) (kbd key) def)
+;;             (setq key (pop bindings) )))))))
 
 ;; iterm2下实同一些 终端下本没有的按键
 ;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在mac上的安装及一些相应配置/#orgheadline15
@@ -151,6 +140,16 @@ they are in `bind-map-set-keys'."
 ;; (global-set-key (kbd "C-<f3>") 'vmacs-eshell-term-toggle)
 ;; (global-set-key  (kbd "s-C-M-d") 'vmacs-shell-toggle)
 ;; (global-set-key [f3] 'cd-iterm2)
+;;;###autoload
+(defmacro define-key-lazy (mode-map key cmd  feature &optional state)
+  "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
+  (if state
+      `(eval-after-load ,feature '(evil-define-key ,state ,mode-map ,key ,cmd))
+    `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd))))
+
+;; (defmacro vmacs-leader-for-map (map feature)
+;;   `(define-key-lazy ,map ,(kbd "SPC") nil ,feature ))
+
 
 ;; (global-set-key [f2] 'vterm-toggle)
 ;; (global-set-key [C-f2] 'vterm-toggle-cd)
@@ -158,6 +157,7 @@ they are in `bind-map-set-keys'."
 ;; (global-set-key (kbd "s-d") 'vterm-toggle)
 ;; (global-set-key (kbd "s-C-M-d") 'vterm-toggle)
 (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
+(define-key special-mode-map " " nil)
 
 (global-set-key [(tab)]       'smart-tab)
 (global-set-key (kbd "TAB")   'smart-tab)
@@ -219,7 +219,6 @@ they are in `bind-map-set-keys'."
 
 ;; (global-set-key  (kbd "s-q") 'delete-frame)
 ;; (global-set-key  (kbd "s-C-S-M-q") 'delete-frame)
-
 ;; (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
 (global-set-key  (kbd "s-C-M-1") 'delete-other-windows) ;hyper-1
@@ -229,18 +228,6 @@ they are in `bind-map-set-keys'."
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 
-(vmacs-leader ";" 'execute-extended-command)
-(vmacs-leader "；" 'execute-extended-command)
-(vmacs-leader "wi" 'imenu)
-(vmacs-leader "SPC" 'vmacs-switch-buffer)
-(vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
-(vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-(setq ffap-machine-p-known 'accept)  ; no pinging
-(if (symbolp 'native-comp-available-p)
-    (vmacs-leader "ff" 'find-file)
-  (vmacs-leader "ff" 'find-file-at-point))
-
-(vmacs-leader "i" 'vmacs-git-files)
 (global-set-key (kbd "s-C-M-i")  'vmacs-git-files)
 
 

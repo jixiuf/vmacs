@@ -69,29 +69,29 @@
 ;; (global-set-key (kbd "<f1> b") 'counsel-descbinds)
 
 
-;; ;; (vmacs-leader "<lwindow>" 'ivy-switch-buffer) ;for windows
+;; ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC><lwindow>") 'ivy-switch-buffer) ;for windows
 
-;; (vmacs-leader "SPC" 'vmacs-switch-buffer)
-;; (vmacs-leader "ff" 'counsel-find-file)
-;; (vmacs-leader "ft" #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
-;; (vmacs-leader "fh" #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
-;; (vmacs-leader "fl" 'counsel-locate)
-;; ;; (vmacs-leader "g" 'vmacs-counsel-rg)
-;; (vmacs-leader "fp" 'vmacs-counsel-git-grep-region-or-symbol)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>SPC") 'vmacs-switch-buffer)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'counsel-find-file)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ft") #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'counsel-find-file))))
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fh") #'(lambda()(interactive)(let ((default-directory "~"))(call-interactively 'counsel-find-file))))
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fl") 'counsel-locate)
+;; ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>g") 'vmacs-counsel-rg)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fp") 'vmacs-counsel-git-grep-region-or-symbol)
 
-;; (vmacs-leader "?" 'counsel-descbinds)
-;; (vmacs-leader "wi" 'counsel-semantic-or-imenu)
-;; (vmacs-leader "b" 'ivy-resume)
-;; (vmacs-leader "wy" 'counsel-mark-ring)
-;; (vmacs-leader ";" 'counsel-M-x)
-;; (vmacs-leader "；" 'counsel-M-x)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>?") 'counsel-descbinds)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wi") 'counsel-semantic-or-imenu)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>b") 'ivy-resume)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wy") 'counsel-mark-ring)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>;") 'counsel-M-x)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>；") 'counsel-M-x)
 
 ;; ;; window layout
-;; (vmacs-leader "wl" 'ivy-switch-view)
-;; (vmacs-leader "m" 'ivy-push-view)
-;; (vmacs-leader "wc" 'ivy-push-view)
-;; (vmacs-leader "wn" 'ivy-push-view)
-;; (vmacs-leader "wk" 'ivy-pop-view)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wl") 'ivy-switch-view)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>m") 'ivy-push-view)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wc") 'ivy-push-view)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wn") 'ivy-push-view)
+;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wk") 'ivy-pop-view)
 
 
 ;; (global-set-key  (kbd "s-;") 'counsel-M-x)

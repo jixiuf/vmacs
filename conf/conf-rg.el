@@ -5,7 +5,7 @@
 (setq rg-show-header t)
 (setq rg-command-line-flags '("-z"))
 (setq rg-group-result nil)
-(vmacs-leader "g" rg-global-map)
+(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>g") rg-global-map)
 (define-key rg-global-map (kbd "C-.") #'rg-dwim-current-dir)
 (define-key rg-global-map (kbd ".") #'rg-dwim-current-dir)
 (define-key rg-global-map (kbd ",") #'rg-dwim-project-dir)

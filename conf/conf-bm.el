@@ -86,8 +86,8 @@
 ;; 在光标处手动添加一个书签
 (define-key evil-normal-state-map "mm" 'bm-toggle) ;evil-set-marker
 
-(vmacs-leader "," 'bm-previous)  ;space, 回到上一个书签
-(vmacs-leader "." 'bm-next)      ;space. 下一个书签
+(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>,") 'bm-previous)  ;space, 回到上一个书签
+(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>.") 'bm-next)      ;space. 下一个书签
 
 
 (provide 'conf-bm)
