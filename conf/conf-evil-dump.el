@@ -100,8 +100,6 @@
 ;; (define-key-lazy python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
 
 (defun vmacs-leader-after-init-hook(&optional frame)
-  (define-key-lazy magit-mode-map " " nil 'magit)
-  (define-key-lazy  dired-mode-map " " nil 'dired)
   (define-key-lazy magit-mode-map (kbd "<SPC>") nil  'magit)
   (define-key-lazy magit-status-mode-map (kbd "<SPC>") nil  'magit)
   (define-key-lazy magit-diff-mode-map (kbd "<SPC>") nil  'magit)
