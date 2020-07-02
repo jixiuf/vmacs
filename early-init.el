@@ -14,6 +14,7 @@
 ;; By default Emacs will initiate GC every 0.76 MB allocated (gc-cons-threshold == 800000).
 ;; If we increase this to 20 MB (gc-cons-threshold == 20000000) we get:
 (setq gc-cons-threshold  (* 10 1024 1024)) ;50 MB before garbage collection
+(setq read-process-output-max (* 3 1024 1024)) ;; 3mb default 4k
 ;; 禁用工具栏，滚运条 菜单栏
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))

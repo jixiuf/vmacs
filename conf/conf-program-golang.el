@@ -13,7 +13,6 @@
 (when (executable-find "goimports")
   (setq-default gofmt-command (executable-find "goimports")))
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
-(setq company-go-show-annotation t)
 (lsp-register-custom-settings
  '(("gopls.completeUnimported" t t)
    ("gopls.staticcheck" t t)
@@ -22,9 +21,9 @@
 (defun vmacs-go-mode-hook()
   (lsp-deferred)
   ;; (flymake-mode -1)
-  (setq company-backends `((company-yasnippet company-files )
-                           company-dabbrev
-                           company-dabbrev-code))
+  ;; (setq company-backends `((company-capf company-yasnippet company-files )
+  ;;                          company-dabbrev
+  ;;                          company-dabbrev-code))
   ;; git pre-commit for gofmt
   ;; http://tip.golang.org/misc/git/pre-commit
   ;; (add-hook 'before-save-hook 'gofmt-before-save t t)
