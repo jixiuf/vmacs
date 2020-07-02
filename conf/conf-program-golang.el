@@ -22,7 +22,7 @@
 (defun vmacs-go-mode-hook()
   (lsp-deferred)
   ;; (flymake-mode -1)
-  (setq company-backends `((company-lsp company-yasnippet company-files )
+  (setq company-backends `((company-yasnippet company-files )
                            company-dabbrev
                            company-dabbrev-code))
   ;; git pre-commit for gofmt

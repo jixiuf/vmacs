@@ -1,9 +1,9 @@
 (require 'company)
 ;; (require 'company-posframe)
-(require 'company-lsp)
+;; (require 'company-lsp)
 
 
-(setq-default company-lsp-cache-candidates 'auto)
+;; (setq-default company-lsp-cache-candidates 'auto)
 (add-to-list 'lsp-file-watch-ignored "[/\\\\]\\vendor$")
 
 ;; 调整默认backends
