@@ -8,8 +8,9 @@
 
 ;; 调整默认backends
 (setq-default company-backends
-              `(company-elisp
-                (company-files company-dabbrev company-keywords company-yasnippet)
+              `(
+                (company-capf company-files company-dabbrev company-keywords company-yasnippet)
+                company-elisp
                 company-nxml
                 company-css
                 company-clang
@@ -17,7 +18,6 @@
                 company-cmake
                 company-eclim
                 company-semantic
-                company-capf
                 (
                  ;; company-dabbrev-code
                  company-gtags
