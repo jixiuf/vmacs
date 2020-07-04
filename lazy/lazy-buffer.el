@@ -65,6 +65,7 @@ The user's $HOME directory is abbreviated as a tilde."
 (setq vmacs-ignore-buffers
       (list
        "\\` " "\*Helm" "\*helm"
+       "*Launch"
        "\*vc-diff\*" "\*magit-" "\*vc-" "\*vc*"
        "*Backtrace*" "*Package-Lint*" "\*Completions\*" "\*Compile-Log\*"
        "\*vc-change-log\*" "\*VC-log\*"

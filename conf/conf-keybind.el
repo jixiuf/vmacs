@@ -232,6 +232,7 @@
 
 (autoload 'dap-debug "dap-mode" nil t)
 (global-set-key (kbd "<f6>")  'dap-debug)
+(global-set-key (kbd "<f7>")  'dap-disconnect)
 
 
 

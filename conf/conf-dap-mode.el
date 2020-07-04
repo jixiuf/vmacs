@@ -22,9 +22,22 @@
 ;; ;; ;; displays floating panel with debug buttons
 ;; ;; ;; requies emacs 26+
 ;; (dap-ui-controls-mode 1)
-
+(setq dap-output-window-max-height 10)
 (add-hook 'dap-stopped-hook (lambda (arg) (call-interactively #'dap-hydra)))
+(add-hook 'dap-session-created-hook  #'vmacs-dap-session-created-hook)
+(add-hook 'dap-terminated-hook  #'vmacs-dap-terminated-hook)
+(defvar dap-window-config nil)
+(defun vmacs-dap-session-created-hook(&optional sess)
+  (setq dap-window-config (current-window-configuration))
+  (golden-ratio-mode -1)
+  (horizontal-scroll-bar-mode 1))
 
+(defun vmacs-dap-terminated-hook(&optional sess)
+  (golden-ratio-mode 1)
+  (horizontal-scroll-bar-mode -1)
+  (when dap-window-config
+    (set-window-configuration dap-window-config)
+    (setq dap-window-config nil)))
 
 (provide 'conf-dap-mode)
 
