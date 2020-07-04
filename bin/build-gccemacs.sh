@@ -12,7 +12,7 @@ if [ ! -d $prefix ]; then
 fi
 echo ${prefix}
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
-export LDFLAGS="-L/usr/local/lib/gcc/9"
+export LDFLAGS="-L/usr/local/lib/gcc/10"
 if [ $# -gt 0  ]; then
     git clean -fdx
     ./autogen.sh
