@@ -18,6 +18,7 @@
    ("gopls.staticcheck" t t)
    ))
 (require 'lsp-clients)
+(require 'lsp-go)
 (defun vmacs-go-mode-hook()
   (lsp-deferred)
   ;; (flymake-mode -1)
