@@ -41,3 +41,6 @@ osx-dictionary-cli
 /var/prescient-save.el
 *.eln
 /rime/*
+/.dap-breakpoints
+/.extension/
+/url/cookies
