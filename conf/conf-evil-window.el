@@ -24,6 +24,8 @@
 (setq golden-ratio-extra-commands
       (append golden-ratio-extra-commands
               '(
+                dap-hydra/dap-ui-locals
+                dap-ui-locals
                 evil-window-left
                 evil-window-right
                 evil-window-up

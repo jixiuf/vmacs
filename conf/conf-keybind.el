@@ -230,6 +230,10 @@
 
 (global-set-key (kbd "s-C-M-i")  'vmacs-git-files)
 
+(autoload 'dap-debug "dap-mode" nil t)
+(global-set-key (kbd "<f6>")  'dap-debug)
+
+
 
 
 

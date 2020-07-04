@@ -20,6 +20,7 @@
 (require 'lsp-clients)
 (require 'lsp-go)
 (defun vmacs-go-mode-hook()
+  (require 'dap-go)
   (lsp-deferred)
   ;; (flymake-mode -1)
   ;; (setq company-backends `((company-capf company-yasnippet company-files )

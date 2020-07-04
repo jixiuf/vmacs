@@ -31,6 +31,8 @@
                           "\*Helm"
                           "\*company-documentation\*"
                           "\*helm"
+                          "\*Launch "
+                          "*dap-"
                           "\*Flymake log\*"
                           "\*Help\*"
                           "\*Ibuffer\*"
