@@ -10,11 +10,32 @@
 (require 'dap-hydra)
 (require 'dap-ui)
 (require 'dap-mouse)
-(dap-auto-configure-mode)
+(setq dap-output-buffer-filter  '("stdout" ))
+(global-set-key (kbd "<f8>") 'dap-hydra)
+(defadvice dap-ui--show-buffer (around display (buff) activate)
+  "Show BUF according to defined rules."
+  (let ((win (display-buffer-in-side-window
+              buff
+              `((side . bottom) (slot . 1) (window-width . 0.20)))))
+    ;; (set-window-dedicated-p win t)
+    (select-window win)
+    (fit-window-to-buffer nil dap-output-window-max-height dap-output-window-min-height)))
+
+(defadvice dap-go-to-output-buffer (around display () activate)
+  "Go to output buffer."
+  (interactive)
+  (let ((win (display-buffer-in-side-window
+              (dap--debug-session-output-buffer (dap--cur-session-or-die))
+              `((side . bottom) (slot . 1) (window-width . 0.20)))))
+    ;; (set-window-dedicated-p win t)
+    (select-window win)
+    (fit-window-to-buffer nil dap-output-window-max-height dap-output-window-min-height)))
+
+(dap-auto-configure-mode 1)
 ;; (dap-mode 1)
-;; ;; ;; The modes above are optional
+;; ;; ;; ;; The modes above are optional
 ;; (dap-ui-mode 1)
-;; ;; ;; enables mouse hover support
+;; ;; ;; ;; enables mouse hover support
 ;; (dap-tooltip-mode 1)
 ;; ;; ;; use tooltips for mouse hover
 ;; ;; ;; if it is not enabled `dap-mode' will use the minibuffer.
@@ -23,7 +44,6 @@
 ;; ;; ;; requies emacs 26+
 ;; (dap-ui-controls-mode 1)
 (setq dap-output-window-max-height 10)
-(add-hook 'dap-stopped-hook (lambda (arg) (call-interactively #'dap-hydra)))
 (add-hook 'dap-session-created-hook  #'vmacs-dap-session-created-hook)
 (add-hook 'dap-terminated-hook  #'vmacs-dap-terminated-hook)
 (defvar dap-window-config nil)
@@ -37,7 +57,8 @@
   (horizontal-scroll-bar-mode -1)
   (when dap-window-config
     (set-window-configuration dap-window-config)
-    (setq dap-window-config nil)))
+    (setq dap-window-config nil))
+  (kill-buffer (dap--debug-session-output-buffer (dap--cur-session-or-die))))
 
 (provide 'conf-dap-mode)
 
