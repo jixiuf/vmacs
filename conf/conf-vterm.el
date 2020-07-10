@@ -10,7 +10,7 @@
 (setq-default vterm-max-scrollback (- 10000 42))
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-kill-buffer-on-exit t)
-(setq-default vterm-clear-scrollback t)
+(setq-default vterm-clear-scrollback-when-clearing t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
 ;; (setq vterm-toggle-prompt-regexp
 ;;   (concat "\\(?:^\\|\r\\)"
