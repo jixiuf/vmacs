@@ -9,8 +9,9 @@
 ;; 调整默认backends
 (setq-default company-backends
               `(
-                (company-capf company-files company-dabbrev company-keywords company-yasnippet)
                 company-elisp
+                (company-capf company-files company-yasnippet)
+                (company-dabbrev company-keywords )
                 company-nxml
                 company-css
                 company-clang
