@@ -11,7 +11,6 @@
 (require 'dap-ui)
 (require 'dap-mouse)
 (setq dap-output-buffer-filter  '("stdout" ))
-(global-set-key (kbd "<f8>") 'dap-hydra)
 (defadvice dap-ui--show-buffer (around display (buff) activate)
   "Show BUF according to defined rules."
   (let ((win (display-buffer-in-side-window
@@ -46,6 +45,28 @@
 (setq dap-output-window-max-height 10)
 (add-hook 'dap-session-created-hook  #'vmacs-dap-session-created-hook)
 (add-hook 'dap-terminated-hook  #'vmacs-dap-terminated-hook)
+
+(defun vmacs-dap-quit()
+  (interactive)
+  (if (= 0 (hydra-get-property 'dap-hydra :verbosity))
+      (call-interactively 'vmacs-dap-hydra)
+    (lv-delete-window)))
+
+;; append f8
+(defhydra+ dap-hydra (:color pink :hint nil :foreign-keys run)
+  ("<f8>" vmacs-dap-quit "hide" :color blue))
+
+(global-set-key (kbd "<f8>") 'vmacs-dap-hydra)
+(defun vmacs-dap-hydra(&optional _arg)
+  (interactive)
+  (message "<f8> show dap-hydra help window")
+  (if (called-interactively-p 'any)
+      (hydra-set-property 'dap-hydra :verbosity 1) ;显示提示窗口
+    (hydra-set-property 'dap-hydra :verbosity 0) ;隐藏提示窗口
+    )
+  (call-interactively 'dap-hydra))
+
+(add-hook 'dap-stopped-hook #'vmacs-dap-hydra)
 (defvar dap-window-config nil)
 (defun vmacs-dap-session-created-hook(&optional sess)
   (setq dap-window-config (current-window-configuration))
