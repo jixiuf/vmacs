@@ -37,6 +37,7 @@
                           "\*Helm"
                           "\*company-documentation\*"
                           "\*helm"
+                          "\*eldoc"
                           "\*Launch "
                           "*dap-"
                           "\*Flymake log\*"
