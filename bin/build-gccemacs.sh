@@ -43,6 +43,6 @@ exec ${prefix}/bin/emacs "\$@"
 EOS
 
 chmod 755 ${prefix}/bin/gccemacs
-ln -sf ${prefix}/bin/emacs ~/bin/gccemacs
+ln -sf ${prefix}/bin/gccemacs ~/bin/gccemacs
 
 make -C ~/.emacs.d native
