@@ -33,7 +33,7 @@
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
   (interactive)
-  (if (or (save-excursion (goto-char (point-at-bol))(search-forward-regexp "filter»" nil t))
+  (if (or (save-excursion (goto-char (point-at-bol))(search-forward-regexp "filter>" nil t))
           ;; (and (save-excursion (search-forward-regexp "[^\n \t]+" nil t))
           ;;      (save-excursion (not (vterm-next-prompt))))
           )
