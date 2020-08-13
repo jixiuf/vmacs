@@ -348,7 +348,7 @@ unless overridden by a more specific face association."
   :package-version '(lsp-mode . "6.1"))
 
 (defcustom lsp-client-packages
-  '(ccls lsp-clients lsp-clojure lsp-csharp lsp-css lsp-dart lsp-elm
+  '(ccls lsp-clients lsp-clojure lsp-crystal lsp-csharp lsp-css lsp-dart lsp-dockerfile lsp-elm
          lsp-erlang lsp-eslint lsp-fsharp lsp-gdscript lsp-go lsp-haskell lsp-haxe
          lsp-intelephense lsp-java lsp-json lsp-lua lsp-metals lsp-perl lsp-pwsh lsp-pyls
          lsp-python-ms lsp-rust lsp-serenata lsp-solargraph lsp-terraform lsp-verilog lsp-vetur
@@ -3445,28 +3445,31 @@ in that particular folder."
     (when (cl-find ch trigger-characters :key #'string-to-char)
       (lsp-signature-activate))))
 
-(defun lsp--update-on-type-formatting-hook (&optional cleanup?)
-  (let ((on-type-formatting-handler
-         (when-let ((provider (lsp--capability :documentOnTypeFormattingProvider)))
-           (-let [(&DocumentOnTypeFormattingOptions :more-trigger-character?
-                                                    :first-trigger-character) provider]
-             (lambda ()
-               (lsp--on-type-formatting first-trigger-character
-                                        more-trigger-character?))))))
-    (cond
-     ((and lsp-enable-on-type-formatting on-type-formatting-handler)
-      (add-hook 'post-self-insert-hook on-type-formatting-handler nil t))
+(defun lsp--on-type-formatting-handler-create ()
+  (when-let ((provider (lsp--capability :documentOnTypeFormattingProvider)))
+    (-let [(&DocumentOnTypeFormattingOptions :more-trigger-character?
+                                             :first-trigger-character) provider]
+      (lambda ()
+        (lsp--on-type-formatting first-trigger-character
+                                 more-trigger-character?)))))
 
+(defun lsp--update-on-type-formatting-hook (&optional cleanup?)
+  (let ((on-type-formatting-handler (lsp--on-type-formatting-handler-create)))
+    (cond
+     ((and lsp-enable-on-type-formatting on-type-formatting-handler (not cleanup?))
+      (add-hook 'post-self-insert-hook on-type-formatting-handler nil t))
      ((or cleanup?
           (not lsp-enable-on-type-formatting))
       (remove-hook 'post-self-insert-hook on-type-formatting-handler t)))))
 
+(defun lsp--signature-help-handler-create ()
+  (-when-let ((&SignatureHelpOptions? :trigger-characters?)
+              (lsp--capability :signatureHelpProvider))
+    (lambda ()
+      (lsp--maybe-enable-signature-help trigger-characters?))))
+
 (defun lsp--update-signature-help-hook (&optional cleanup?)
-  (let ((signature-help-handler
-         (-when-let ((&SignatureHelpOptions? :trigger-characters?)
-                     (lsp--capability :signatureHelpProvider))
-           (lambda ()
-             (lsp--maybe-enable-signature-help trigger-characters?)))))
+  (let ((signature-help-handler (lsp--signature-help-handler-create)))
     (cond
      ((and lsp-signature-auto-activate signature-help-handler)
       (add-hook 'post-self-insert-hook signature-help-handler nil t))

@@ -646,23 +646,6 @@ responsiveness at the cost of possible stability issues."
                                                  ("$/cancelRequest" 'ignore))
                   :request-handlers (lsp-ht ("window/showStatus" 'ignore))))
 
-
-;;; Dockerfile
-(defcustom lsp-dockerfile-language-server-command
-  '("docker-langserver" "--stdio")
-  "The command that starts the docker language server."
-  :group 'lsp-dockerfile
-  :type '(choice
-          (string :tag "Single string value")
-          (repeat :tag "List of string values"
-                  string)))
-
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-stdio-connection
-                                   (-const lsp-dockerfile-language-server-command))
-                  :major-modes '(dockerfile-mode)
-                  :priority -1
-                  :server-id 'dockerfile-ls))
 
 
 ;;; Angular
@@ -790,23 +773,6 @@ responsiveness at the cost of possible stability issues."
                   :major-modes '(ess-r-mode)
                   :server-id 'lsp-r))
 
-
-;; Crystal
-(defgroup lsp-crystal nil
-  "LSP support for Crystal via scry."
-  :group 'lsp-mode
-  :link '(url-link "https://github.com/crystal-lang-tools/scry"))
-
-(defcustom lsp-clients-crystal-executable '("scry" "--stdio")
-  "Command to start the scry language server."
-  :group 'lsp-crystal
-  :risky t
-  :type 'file)
-
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-stdio-connection lsp-clients-crystal-executable)
-                  :major-modes '(crystal-mode)
-                  :server-id 'scry))
 
 
 ;; Nim
