@@ -15,20 +15,12 @@
                 company-nxml
                 company-css
                 company-clang
-                company-xcode
                 company-cmake
-                company-eclim
                 company-semantic
                 (
-                 ;; company-dabbrev-code
                  company-gtags
                  company-etags
-
-
-
                  )
-                ;; company-oddmuse ;
-                ;; company-bbdb
                 ))
 
 (setq completion-ignore-case t)      ;company-capf匹配时不区分大小写
