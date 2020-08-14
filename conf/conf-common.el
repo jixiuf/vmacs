@@ -51,7 +51,8 @@
  pulse-iterations 3
  large-file-warning-threshold (* 1024 1024 50)       ;打开大文件时不必警告
 
- find-file-visit-truename t
+ ;; 改成true package 生成 autoload 有问题
+ ;; find-file-visit-truename t
 
  send-mail-function 'sendmail-send-it
  mail-addrbook-file (expand-file-name "mail_address" dropbox-dir)
