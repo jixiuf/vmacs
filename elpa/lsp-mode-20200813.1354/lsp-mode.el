@@ -348,10 +348,10 @@ unless overridden by a more specific face association."
   :package-version '(lsp-mode . "6.1"))
 
 (defcustom lsp-client-packages
-  '(ccls lsp-clients lsp-clojure lsp-crystal lsp-csharp lsp-css lsp-dart lsp-dockerfile lsp-elm
-         lsp-erlang lsp-eslint lsp-fsharp lsp-gdscript lsp-go lsp-haskell lsp-haxe
+  '(ccls lsp-ada lsp-bash lsp-clients lsp-clojure lsp-crystal lsp-csharp lsp-css lsp-dart lsp-dhall
+         lsp-dockerfile lsp-elm lsp-erlang lsp-eslint lsp-fsharp lsp-gdscript lsp-go lsp-haskell lsp-haxe
          lsp-intelephense lsp-java lsp-json lsp-lua lsp-metals lsp-perl lsp-pwsh lsp-pyls
-         lsp-python-ms lsp-rust lsp-serenata lsp-solargraph lsp-terraform lsp-verilog lsp-vetur
+         lsp-python-ms lsp-r lsp-rust lsp-serenata lsp-solargraph lsp-terraform lsp-verilog lsp-vetur
          lsp-vhdl lsp-xml lsp-yaml lsp-sqls lsp-svelte)
   "List of the clients to be automatically required."
   :group 'lsp-mode
@@ -1632,7 +1632,7 @@ On other systems, returns path without change."
   (or lsp-buffer-uri
       (plist-get lsp--virtual-buffer :buffer-uri)
       (lsp--path-to-uri
-       (or buffer-file-name (buffer-file-name (buffer-base-buffer))))))
+       (or (buffer-file-name) (buffer-file-name (buffer-base-buffer))))))
 
 (defun lsp-register-client-capabilities (&rest _args)
   "Implemented only to make `company-lsp' happy.
@@ -3346,6 +3346,9 @@ in that particular folder."
        (lsp:text-document-sync-options-save?)
        (lsp:text-document-save-registration-options-include-text?)))
 
+(declare-function project-roots "ext:project" (project) t)
+(declare-function project-root "ext:project" (project) t)
+
 (defun lsp--suggest-project-root ()
   "Get project root."
   (or
@@ -3354,8 +3357,10 @@ in that particular folder."
                                   (error nil)))
    (when (featurep 'project)
      (when-let ((project (project-current)))
-       (car (with-no-warnings
-              (project-roots project)))))))
+       (if (fboundp 'project-root)
+           (project-root project)
+         (car (with-no-warnings
+                (project-roots project))))))))
 
 (defun lsp--read-from-file (file)
   "Read FILE content."
@@ -4285,7 +4290,8 @@ Applies on type formatting."
   (or (->> lsp-language-id-configuration
            (-first (-lambda ((mode-or-pattern . language))
                      (cond
-                      ((and (stringp mode-or-pattern) (s-matches? mode-or-pattern buffer-file-name)) language)
+                      ((and (stringp mode-or-pattern)
+                            (s-matches? mode-or-pattern (buffer-file-name))) language)
                       ((eq mode-or-pattern major-mode) language))))
            cl-rest)
       (lsp-warn "Unable to calculate the languageId for current buffer. Take a look at lsp-language-id-configuration.")))
@@ -4373,7 +4379,7 @@ and the position respectively."
   "Return buffer diagnostics."
   (gethash (or
             (plist-get lsp--virtual-buffer :buffer-file-name)
-            (lsp--fix-path-casing buffer-file-name))
+            (lsp--fix-path-casing (buffer-file-name)))
            (lsp-diagnostics t)))
 
 (defun lsp-cur-line-diagnostics ()
@@ -6851,7 +6857,7 @@ nil."
 (defun lsp--matching-clients? (client)
   (and
    ;; both file and client remote or both local
-   (eq (---truthy? (file-remote-p buffer-file-name))
+   (eq (---truthy? (file-remote-p (buffer-file-name)))
        (---truthy? (lsp--client-remote? client)))
 
    ;; activation function or major-mode match.
@@ -6879,7 +6885,7 @@ remote machine and vice versa."
   (-when-let (matching-clients (lsp--filter-clients (-andfn #'lsp--matching-clients?
                                                             #'lsp--server-binary-present?)))
     (lsp-log "Found the following clients for %s: %s"
-             buffer-file-name
+             (buffer-file-name)
              (s-join ", "
                      (-map (lambda (client)
                              (format "(server-id %s, priority %s)"
@@ -6888,9 +6894,9 @@ remote machine and vice versa."
                            matching-clients)))
     (-let* (((add-on-clients main-clients) (-separate #'lsp--client-add-on? matching-clients))
             (selected-clients (if-let ((main-client (and main-clients
-                                                          (--max-by (> (lsp--client-priority it)
-                                                                       (lsp--client-priority other))
-                                                                    main-clients))))
+                                                         (--max-by (> (lsp--client-priority it)
+                                                                      (lsp--client-priority other))
+                                                                   main-clients))))
                                   (cons main-client add-on-clients)
                                 add-on-clients)))
       (lsp-log "The following clients were selected based on priority: %s"

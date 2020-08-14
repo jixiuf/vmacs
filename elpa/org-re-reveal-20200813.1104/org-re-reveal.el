@@ -8,7 +8,7 @@
 ;; SPDX-FileCopyrightText: 2017-2020 Jens Lechtenbörger
 
 ;; URL: https://gitlab.com/oer/org-re-reveal
-;; Version: 3.0.4
+;; Version: 3.1.0
 ;; Package-Requires: ((emacs "24.4") (org "8.3") (htmlize "1.34"))
 ;; Keywords: tools, outlines, hypermedia, slideshow, presentation, OER
 
@@ -121,6 +121,8 @@
       (:reveal-default-slide-background-repeat "REVEAL_DEFAULT_SLIDE_BACKGROUND_REPEAT" nil nil t)
       (:reveal-default-slide-background-size "REVEAL_DEFAULT_SLIDE_BACKGROUND_SIZE" nil nil t)
       (:reveal-default-slide-background-transition "REVEAL_DEFAULT_SLIDE_BACKGROUND_TRANSITION" nil nil t)
+      (:reveal-export-notes-to-pdf "REVEAL_EXPORT_NOTES_TO_PDF" nil
+                                   org-re-reveal-export-notes-to-pdf t)
       (:reveal-external-plugins "REVEAL_EXTERNAL_PLUGINS" nil org-re-reveal-external-plugins t)
       (:reveal-extra-attr "REVEAL_EXTRA_ATTR" nil org-re-reveal-extra-attr nil)
       (:reveal-extra-css "REVEAL_EXTRA_CSS" nil org-re-reveal-extra-css newline)
@@ -320,7 +322,7 @@ Alternatively, the string can also be the name of a file with the title
 slide's HTML code (containing the above escape sequences)."
   :group 'org-export-re-reveal
   :type '(choice (const :tag "No title slide" nil)
-                 (const :tag "Auto title slide" 'auto)
+                 (const :tag "Auto title slide" auto)
                  (string :tag "Custom title slide")))
 
 (defcustom org-re-reveal-transition "convex"
@@ -362,6 +364,20 @@ and URL `https://github.com/google/fonts/issues/1495'."
                 (const "white")
                 (string :tag "Other theme"))
   :package-version '(org-re-reveal . "2.8.1"))
+
+(defcustom org-re-reveal-export-notes-to-pdf nil
+  "Control `showNotes' option for PDF export.
+With the default value nil, default reveal.js behavior applies without
+an option `showNotes'; see URL `https://revealjs.com/pdf-export/'.
+With t, notes appear in an overlay box.
+Any string value is copied literally to the `showNotes' option; meant
+to be used with \"separate-page\"."
+  :group 'org-export-re-reveal
+  :type '(choice
+          (const :tag "Do not add \"showNotes\" option" nil)
+          (const :tag "Add \"showNotes: true\"" t)
+          (const :tag "Add \"showNotes: 'separate-page'\"" "separate-page"))
+  :package-version '(org-re-reveal . "3.1.0"))
 
 (defcustom org-re-reveal-extra-scripts nil
   "List of extra scripts.
@@ -700,8 +716,8 @@ That file embeds JS scripts and pictures."
 Styles distributed with reveal.js are monokai and zenburn.
 Alternatively, use any file path or URL."
   :group 'org-export-re-reveal
-  :type '(choice (const 'monokai)
-                 (const 'zenburn)
+  :type '(choice (const monokai)
+                 (const zenburn)
                  (string :tag "Other CSS file or URL"))
   :package-version '(org-re-reveal . "3.0.0"))
 
@@ -1360,6 +1376,16 @@ transitionSpeed: '%s',\n")
            (plist-get info :reveal-trans)
            (plist-get info :reveal-speed)))
 
+   ;; notes in PDF export
+   (let ((export-notes (plist-get info :reveal-export-notes-to-pdf)))
+    (if export-notes
+        (format "showNotes: window.location.search.match( /print-pdf/gi ) ? %s : false,\n"
+                (if (booleanp export-notes)
+                    "true"
+                  (format "'%s'" export-notes)))
+      ""))
+
+   ;; extra options
    (let ((options (plist-get info :reveal-extra-options)))
      (org-re-reveal--if-format "%s,\n" options))))
 

@@ -122,9 +122,21 @@ every REFRESH seconds.
 When ACCEPT-FOCUS is non-nil, posframe will accept focus.
 be careful, you may face some bugs when set it to non-nil.
 
+HIDEHANDLER is a function, when it return t, posframe will be
+hide when `post-command-hook' is executed, this function has a
+plist argument:
+
+  (:posframe-buffer xxx
+   :posframe-parent-buffer xxx)
+
+The builtin hidehandler functions are listed below:
+
+1. `posframe-hidehandler-when-buffer-switch'
+
+
 You can use `posframe-delete-all' to delete all posframes.
 
-\(fn BUFFER-OR-NAME &key STRING POSITION POSHANDLER WIDTH HEIGHT MIN-WIDTH MIN-HEIGHT X-PIXEL-OFFSET Y-PIXEL-OFFSET LEFT-FRINGE RIGHT-FRINGE INTERNAL-BORDER-WIDTH INTERNAL-BORDER-COLOR FONT FOREGROUND-COLOR BACKGROUND-COLOR RESPECT-HEADER-LINE RESPECT-MODE-LINE RESPECT-TAB-LINE INITIALIZE NO-PROPERTIES KEEP-RATIO LINES-TRUNCATE OVERRIDE-PARAMETERS TIMEOUT REFRESH ACCEPT-FOCUS &allow-other-keys)" nil nil)
+\(fn BUFFER-OR-NAME &key STRING POSITION POSHANDLER WIDTH HEIGHT MIN-WIDTH MIN-HEIGHT X-PIXEL-OFFSET Y-PIXEL-OFFSET LEFT-FRINGE RIGHT-FRINGE INTERNAL-BORDER-WIDTH INTERNAL-BORDER-COLOR FONT FOREGROUND-COLOR BACKGROUND-COLOR RESPECT-HEADER-LINE RESPECT-MODE-LINE RESPECT-TAB-LINE INITIALIZE NO-PROPERTIES KEEP-RATIO LINES-TRUNCATE OVERRIDE-PARAMETERS TIMEOUT REFRESH ACCEPT-FOCUS HIDEHANDLER &allow-other-keys)" nil nil)
 
 (autoload 'posframe-hide-all "posframe" "\
 Hide all posframe frames." t nil)

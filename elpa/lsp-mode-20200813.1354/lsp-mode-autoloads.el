@@ -6,6 +6,20 @@
                          (or (file-name-directory #$) (car load-path))))
 
 
+;;;### (autoloads nil "lsp-ada" "lsp-ada.el" (0 0 0 0))
+;;; Generated autoloads from lsp-ada.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-ada" '("lsp-ada-")))
+
+;;;***
+
+;;;### (autoloads nil "lsp-bash" "lsp-bash.el" (0 0 0 0))
+;;; Generated autoloads from lsp-bash.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-bash" '("lsp-bash-")))
+
+;;;***
+
 ;;;### (autoloads nil "lsp-clients" "lsp-clients.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-clients.el
 
@@ -336,6 +350,13 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 ;;;***
 
+;;;### (autoloads nil "lsp-r" "lsp-r.el" (0 0 0 0))
+;;; Generated autoloads from lsp-r.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "lsp-r" '("lsp-clients-r-server-command")))
+
+;;;***
+
 ;;;### (autoloads nil "lsp-rust" "lsp-rust.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-rust.el
 
@@ -407,8 +428,8 @@ and toggle it if ARG is `toggle'; disable the mode otherwise.
 
 ;;;***
 
-;;;### (autoloads nil nil ("lsp-mode-pkg.el" "lsp-svelte.el" "lsp.el")
-;;;;;;  (0 0 0 0))
+;;;### (autoloads nil nil ("lsp-dhall.el" "lsp-mode-pkg.el" "lsp-svelte.el"
+;;;;;;  "lsp.el") (0 0 0 0))
 
 ;;;***
 

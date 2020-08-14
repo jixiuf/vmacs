@@ -213,6 +213,7 @@ Whether anyone wants to use those package in isolation, is up to them.
 | ~nil~                             | ~REVEAL_DEFAULT_SLIDE_BACKGROUND_POSITION~   | ~nil~                                    |
 | ~nil~                             | ~REVEAL_DEFAULT_SLIDE_BACKGROUND_REPEAT~     | ~nil~                                    |
 | ~nil~                             | ~REVEAL_DEFAULT_SLIDE_BACKGROUND_TRANSITION~ | ~nil~                                    |
+| ~nil~                             | ~REVEAL_EXPORT_NOTES_TO_PDF~                 | ~org-re-reveal-export-notes-to-pdf~      |
 | ~nil~                             | ~REVEAL_EXTERNAL_PLUGINS~                    | ~org-re-reveal-external-plugins~         |
 | ~nil~                             | ~REVEAL_EXTRA_ATTR~                          | ~org-re-reveal-extra-attr~               |
 | ~nil~                             | ~REVEAL_EXTRA_CSS~                           | ~org-re-reveal-extra-css~                |
@@ -958,6 +959,13 @@ Whether anyone wants to use those package in isolation, is up to them.
 
     Customize ~org-re-reveal-note-key-char~ to change the default key
     'n'.  Set to nil to avoid auto-completion for speaker notes.
+
+*** PDF Export of Speaker Notes
+
+    To export speaker notes to PDF (with ~?print-pdf~ after ~.html~, see
+    [[https://revealjs.com/pdf-export/]]), customize
+    ~org-re-reveal-export-notes-to-pdf~ or use the keyword
+    ~REVEAL_EXPORT_NOTES_TO_PDF~ with the string ~separate-page~.
 
 ** Multiplexing
    Reveal.js supports multiplexing, which allows your audience to view

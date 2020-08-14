@@ -162,7 +162,10 @@ If there is only one worktree, then insert nothing."
                  (pcase-lambda (`(,path ,barep ,commit ,branch))
                    (cons (cond
                           (branch (propertize
-                                   branch 'font-lock-face 'magit-branch-local))
+                                   branch 'font-lock-face
+                                   (if (equal branch (magit-get-current-branch))
+                                       'magit-branch-current
+                                     'magit-branch-local)))
                           (commit (propertize (magit-rev-abbrev commit)
                                               'font-lock-face 'magit-hash))
                           (barep  "(bare)"))
@@ -172,7 +175,7 @@ If there is only one worktree, then insert nothing."
           (pcase-dolist (`(,head . ,path) cols)
             (magit-insert-section (worktree path)
               (insert head)
-              (indent-to align)
+              (insert (make-string (- align (length head)) ?\s))
               (insert (let ((r (file-relative-name path))
                             (a (abbreviate-file-name path)))
                         (if (< (string-width r) (string-width a)) r a)))
