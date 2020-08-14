@@ -26,10 +26,53 @@
 ;;   (setq-default ctags-update-command (expand-file-name  "binw32/ctags.exe" user-emacs-directory)))
 ;; (add-hook 'csharp-mode-hook  'turn-on-ctags-auto-update-mode)
 
-(setq lsp-enable-indentation nil)
 
+(setq lsp-print-performance t)
+(setq-default lsp-keymap-prefix "C-M-s-l")
+;; (setq lsp-auto-configure t)
+;; (setq lsp-enable-indentation nil)
 (autoload 'bm-bookmark-add "bm" "add bookmark")
 (autoload 'bm-bookmark-remove "bm" "remove bookmark")
+
+(require 'ccls)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+(add-hook 'objc-mode-hook 'lsp)
+
+(define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
+(define-key evil-motion-state-map "gr" 'vmacs-xref-find-references)
+(define-key evil-motion-state-map "gd" 'goto-definition)
+(define-key evil-motion-state-map "gD" 'lsp-find-definition)
+;; (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
+;; (define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
+;; (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
+(define-key evil-motion-state-map "gi" 'lsp-find-implementation)
+(define-key evil-normal-state-map "gi" 'lsp-find-implementation)
+(define-key evil-motion-state-map "gc" 'lsp-find-implementation)
+(define-key evil-motion-state-map "gR" 'lsp-rename)
+
+(defun vmacs-xref-find-references()
+  (interactive)
+  (if current-prefix-arg
+      (call-interactively 'xref-find-references)
+    (lsp-find-references)
+    ))
+;; (condition-case nil
+;;     (lsp-find-references)
+;;   (error
+;;    ))
+
+(with-eval-after-load 'xref
+  ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
+  (define-key xref--xref-buffer-mode-map (kbd "r") #'xref-query-replace-in-results)
+  (define-key xref--xref-buffer-mode-map (kbd "TAB") #'xref-goto-xref)
+  (define-key xref--xref-buffer-mode-map (kbd "<return>")  #'xref-quit-and-goto-xref)
+  (define-key xref--xref-buffer-mode-map (kbd "RET")  #'xref-quit-and-goto-xref)
+
+
+  )
+
 
 ;; (with-eval-after-load 'helm-etags-plus
 ;;   (add-hook 'helm-etags-plus-before-jump-hook '(lambda()(bm-bookmark-add nil nil t)))
@@ -45,10 +88,6 @@
 ;;   )
 
 ;; ;;; Enable helm-gtags-mode
-(require 'ccls)
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-(add-hook 'objc-mode-hook 'lsp)
 ;; (add-hook 'asm-mode-hook 'helm-gtags-mode)
 ;; (add-hook 'java-mode-hook 'helm-gtags-mode)
 
@@ -91,46 +130,9 @@
 ;; ;; ;;you can use  C-uM-. input symbol (default thing-at-point 'symbol)
 ;; (define-key global-map "\M-." 'goto-definition)
 
-(setq lsp-print-performance t)
-(setq lsp-auto-configure nil)
-
-(define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
-(define-key evil-motion-state-map "gr" 'vmacs-xref-find-references)
-(define-key evil-motion-state-map "gd" 'goto-definition)
-(define-key evil-motion-state-map "gD" 'lsp-find-definition)
-;; (define-key evil-motion-state-map "gt" 'helm-gtags-find-tag-and-symbol)
-;; (define-key evil-motion-state-map "g/" 'helm-gtags-find-rtag)
-;; (define-key evil-motion-state-map "gc" 'helm-gtags-find-tag-from-here)
-(define-key evil-motion-state-map "gi" 'lsp-find-implementation)
-(define-key evil-normal-state-map "gi" 'lsp-find-implementation)
-(define-key evil-motion-state-map "gc" 'lsp-find-implementation)
-(define-key evil-motion-state-map "gR" 'lsp-rename)
-
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wge") 'helm-gtags-update-tags)
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wgr") 'helm-gtags-find-rtag)
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wgp") 'helm-gtags-parse-file)
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wgi") 'helm-gtags-parse-file)
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>we") 'ctags-update)
-
-(defun vmacs-xref-find-references()
-  (interactive)
-  (if current-prefix-arg
-      (call-interactively 'xref-find-references)
-    (lsp-find-references)
-    ))
-;; (condition-case nil
-;;     (lsp-find-references)
-;;   (error
-;;    ))
-
-(with-eval-after-load 'xref
-  ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
-  ;; (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
-  (define-key xref--xref-buffer-mode-map (kbd "r") #'xref-query-replace-in-results)
-  (define-key xref--xref-buffer-mode-map (kbd "TAB") #'xref-goto-xref)
-  (define-key xref--xref-buffer-mode-map (kbd "<return>")  #'xref-quit-and-goto-xref)
-  (define-key xref--xref-buffer-mode-map (kbd "RET")  #'xref-quit-and-goto-xref)
-
-
-  )
 (provide 'conf-tags)
