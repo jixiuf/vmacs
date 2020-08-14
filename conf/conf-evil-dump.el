@@ -104,7 +104,7 @@
   (define-key-lazy magit-status-mode-map (kbd "<SPC>") nil  'magit)
   (define-key-lazy magit-diff-mode-map (kbd "<SPC>") nil  'magit)
   (define-key-lazy magit-stash-mode-map (kbd "<SPC>") nil  'magit)
-  (define-key-lazy log-view-mode-map (kbd "<SPC>") nil  'magit)
+  (define-key-lazy log-view-mode-map (kbd "<SPC>") nil  'log-view)
   (define-key-lazy tabulated-list-mode-map (kbd "<SPC>") nil  'tabulated-list)
   (define-key-lazy org-agenda-mode-map (kbd "<SPC>") nil  'org-agenda)
   (define-key-lazy dired-mode-map (kbd "<SPC>") nil  'dired)
