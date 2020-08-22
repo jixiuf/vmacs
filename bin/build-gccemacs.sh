@@ -34,7 +34,8 @@ function catch_errors() {
 
 trap catch_errors ERR;
 
-make install -j 12
+# sysctl hw.logicalcpu
+make install -j 8
 rm -rf ${prefix}/Emacs.app
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
