@@ -2,20 +2,20 @@
 ;; https://github.com/DogLooksGood/emacs-rime/blob/master/README_CN.org
 ;; https://gitlab.com/liberime/liberime
 ;; RIME_PATH=~/repos/squirrel/librime/ make liberime
-(add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
-;; (setq rime-user-data-dir "~/.emacs.d/cache/rime")
-(setq default-input-method "rime")
-(setq rime-show-candidate 'posframe)
-(setq rime-disable-predicates
-      '(rime-predicate-evil-mode-p
-        rime-predicate-prog-in-code-p
-        rime-predicate-after-alphabet-char-p
-        ;; rime-predicate-auto-english-p
-        ))
-(setq rime-inline-predicates '(rime-predicate-space-after-cc-p))
-(require 'rime)
-(add-to-list 'rime-translate-keybindings "C-v")
-(add-to-list 'rime-translate-keybindings  "M-v")
+;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
+;; ;; (setq rime-user-data-dir "~/.emacs.d/cache/rime")
+;; (setq default-input-method "rime")
+;; (setq rime-show-candidate 'posframe)
+;; (setq rime-disable-predicates
+;;       '(rime-predicate-evil-mode-p
+;;         rime-predicate-prog-in-code-p
+;;         rime-predicate-after-alphabet-char-p
+;;         ;; rime-predicate-auto-english-p
+;;         ))
+;; (setq rime-inline-predicates '(rime-predicate-space-after-cc-p))
+;; (require 'rime)
+;; (add-to-list 'rime-translate-keybindings "C-v")
+;; (add-to-list 'rime-translate-keybindings  "M-v")
 
 ;; (add-hook 'input-method-activate-hook 'vmacs-evil-input-method-activate t)
 ;; (add-hook 'input-method-deactivate-hook 'vmacs-evil-input-method-deactive t)
