@@ -17,7 +17,6 @@
  '(("gopls.completeUnimported" t t)
    ("gopls.staticcheck" t t)
    ))
-(require 'lsp-clients)
 (require 'lsp-go)
 (defun vmacs-go-mode-hook()
   (require 'dap-go)
