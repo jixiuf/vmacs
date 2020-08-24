@@ -12,6 +12,8 @@ if [ ! -d $prefix ]; then
 fi
 echo ${prefix}
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
 export LDFLAGS="-L/usr/local/lib/gcc/10"
 if [ $# -gt 0  ]; then
     git clean -fdx
@@ -33,6 +35,7 @@ function catch_errors() {
 }
 
 trap catch_errors ERR;
+export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
 
 # sysctl hw.logicalcpu
 make install -j 8
