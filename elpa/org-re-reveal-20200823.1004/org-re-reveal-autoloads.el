@@ -34,7 +34,7 @@ Return output file name.
 (autoload 'org-re-reveal-version "org-re-reveal" "\
 Display version string for org-re-reveal from Lisp file." t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "org-re-reveal" '("org-re-reveal-")))
+(register-definition-prefixes "org-re-reveal" '("org-re-reveal-"))
 
 ;;;***
 

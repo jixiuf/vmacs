@@ -42,7 +42,8 @@ It provides an export back-end for HTML presentations with
 Note that this Readme is written in the lightweight markup language
 Org mode, for which browser support on GitLab is limited.  In
 particular, internal hyperlinks won’t work.  I suggest to either open
-[[https://gitlab.com/oer/org-re-reveal/blob/master/Readme.org][this Readme]]
+[[https://gitlab.com/oer/org-re-reveal/-/blob/master/Readme.org][the
+Org source file of this Readme]]
 in Emacs or to view the generated
 [[https://oer.gitlab.io/org-re-reveal/Readme.html][Readme for
 org-re-reveal as /reveal.js/ presentation]] in your browser.
@@ -130,12 +131,14 @@ Whether anyone wants to use those package in isolation, is up to them.
    *Note:* This is only necessary if you do not use [[https://gitlab.com/oer/emacs-reveal][emacs-reveal]],
    which installs and configures reveal.js with several of its plugins.
 
-   Download reveal.js packages from [[https://github.com/hakimel/reveal.js/][here]].
+   Install reveal.js as described in its
+   [[https://revealjs.com/installation/][installation instructions]]
+   (the “Basic Setup” is sufficient to use org-re-reveal).
 
-   Extract reveal.js folders from the downloaded zip file.
-
-   If you do not wish to download reveal.js yourself and would rather get a copy from a CDN,
-   see the section [[#revealjs-location][Set the location of reveal.js]]
+   As described under [[#revealjs-location][Set the location of reveal.js]]
+   you could also use reveal.js from a remote location (a CDN),
+   avoiding a local installation; the reveal.js documentation does not
+   mention this alternative, though.
 
 ** Install org-re-reveal from MELPA
 
@@ -312,14 +315,9 @@ Whether anyone wants to use those package in isolation, is up to them.
    ,#+REVEAL_ROOT: file:///d:/reveal.js
    #+END_SRC
 
-   You can also set =REVEAL_ROOT= to a URL to use reveal.js from
-   the web instead of downloading a local copy.  The reveal.js
-   documentation does not recommend this, though.
-
-   #+BEGIN_SRC org
-   ,#+REVEAL_ROOT: https://revealjs.com/
-   #+END_SRC
-
+   You can also set =REVEAL_ROOT= to a URL (a CDN) to use
+   reveal.js from the web instead of downloading a local copy.  The
+   reveal.js documentation does not mention this alternative, though.
 
 *** URL form for file location
 

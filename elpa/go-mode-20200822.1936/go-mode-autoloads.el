@@ -101,7 +101,7 @@ A major mode for editing go.mod files.
 
 (add-to-list 'auto-mode-alist '("go\\.mod\\'" . go-dot-mod-mode))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "go-mode" '("go-" "god" "gofmt")))
+(register-definition-prefixes "go-mode" '("go-" "god" "gofmt"))
 
 ;;;***
 

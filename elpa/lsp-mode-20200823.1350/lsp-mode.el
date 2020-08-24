@@ -1937,7 +1937,7 @@ WORKSPACE is the workspace that contains the diagnostics."
 
 ;; textDocument/foldingRange support
 
-(cl-defstruct lsp--folding-range beg end kind children orig-folding-range)
+(cl-defstruct lsp--folding-range beg end kind children)
 
 (defvar-local lsp--cached-folding-ranges nil)
 (defvar-local lsp--cached-nested-folding-ranges nil)
@@ -1975,8 +1975,7 @@ WORKSPACE is the workspace that contains the diagnostics."
                                                 (cons start-line start-character?))
                                    :end (ht-get line-col-to-point-map
                                                 (cons end-line end-character?))
-                                   :kind kind?
-                                   :orig-folding-range range))
+                                   :kind kind?))
                                 it)
                        (seq-filter (lambda (folding-range)
                                      (< (lsp--folding-range-beg folding-range)
@@ -4437,6 +4436,14 @@ and the position respectively."
   (if (lsp-location? loc)
       (lsp:location-uri loc)
     (lsp:location-link-target-uri loc)))
+
+(lsp-defun lsp-goto-location ((loc &as &Location :uri :range (&Range :start)))
+  "Go to location."
+  (let ((path (lsp--uri-to-path uri)))
+    (if (f-exists? path)
+        (with-current-buffer (find-file path)
+          (goto-char (lsp--position-to-point start)))
+      (error "There is no file %s" path))))
 
 (defun lsp--location-range (loc)
   (if (lsp-location? loc)
@@ -7522,8 +7529,12 @@ You may find the installation instructions at https://emacs-lsp.github.io/lsp-mo
                               " ")))
        ;; no matches
        ((-> #'lsp--matching-clients? lsp--filter-clients not)
-        (lsp--error "There are no language servers supporting current mode %s registered with `lsp-mode'."
-                    major-mode))))))
+        (lsp--error "There are no language servers supporting current mode `%s' registered with `lsp-mode'.
+This issue might be caused by:
+1. You haven't registered/loaded external language server package which doesn't ship with `lsp-mode'(e. g. `lsp-java', `lsp-metals').
+2. The language server that you expect to run is not configured to run for major mode `%s'. You may check that by checking the `:major-modes' that are passed to `lsp-register-client'.
+3. `lsp-mode' doesn't have any integration for the language behind `%s'. Refer to https://emacs-lsp.github.io/lsp-mode/page/languages and https://langserver.org/ ."
+                    major-mode major-mode major-mode))))))
 
 (defun lsp--init-if-visible ()
   "Run `lsp' for the current buffer if the buffer is visible.

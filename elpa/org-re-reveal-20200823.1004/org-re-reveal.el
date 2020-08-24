@@ -8,7 +8,7 @@
 ;; SPDX-FileCopyrightText: 2017-2020 Jens Lechtenbörger
 
 ;; URL: https://gitlab.com/oer/org-re-reveal
-;; Version: 3.1.0
+;; Version: 3.1.1
 ;; Package-Requires: ((emacs "24.4") (org "8.3") (htmlize "1.34"))
 ;; Keywords: tools, outlines, hypermedia, slideshow, presentation, OER
 
@@ -51,12 +51,16 @@
 ;;    (c) Export to HTML: Press "C-c C-e v v" (write HTML file) or
 ;;        "C-c C-e v b" (write HTML file and open in browser)
 ;; See "Readme.org" for introduction, details, and features added to
-;; org-reveal.
+;; org-reveal:
+;; https://gitlab.com/oer/org-re-reveal/-/blob/master/Readme.org
+;; The Readme is also available as reveal.js presentation that is
+;; generated with org-re-reveal in a CI/CD infrastructure on GitLab:
+;; https://oer.gitlab.io/org-re-reveal/Readme.html
 ;;
 ;; Note that emacs-reveal offers a project that embeds org-re-reveal,
 ;; reveal.js, and various reveal.js plugins:
 ;; https://gitlab.com/oer/emacs-reveal
-;; Its howto, generated from Org source file in GitLab CI environment:
+;; Its howto, generated from Org source file with emacs-reveal:
 ;; https://oer.gitlab.io/emacs-reveal-howto/howto.html
 ;;
 ;; The package org-re-reveal grew out of a forked version of org-reveal
@@ -204,7 +208,10 @@ SYMBOL must be `org-re-reveal-keys' and VALUE its new value."
     (org-re-reveal-define-backend)))
 
 (defgroup org-export-re-reveal nil
-  "Options for exporting Org files to reveal.js HTML pressentations."
+  "Options for exporting Org files to reveal.js HTML pressentations.
+See URL `https://oer.gitlab.io/org-re-reveal/Readme.html' for the
+Readme of org-re-reveal as reveal.js presentation that is generated
+from its Org mode source file in a CI/CD infrastructure on GitLab."
   :tag "Org Export Reveal"
   :group 'org-export)
 
