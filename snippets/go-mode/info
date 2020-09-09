@@ -2,5 +2,5 @@
 # name: ctx.Info
 # key: info
 # --
-ctx.Info(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
+ctx.Infoln(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
 }$2${1:$(if (string-match "%" yas-text) "\)" "")}

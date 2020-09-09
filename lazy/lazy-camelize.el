@@ -75,6 +75,19 @@
   (let ((case-fold-search nil))
     (not (string-match-p "[A-Z]+" s))))
 
+(defun swagger-type(gotype)
+  (cond
+   ((string= gotype "string") "string")
+   ((string= gotype "int") "integer")
+   ((string= gotype "int64") "integer")
+   ((string= gotype "uint64") "integer")
+   ((string= gotype "int32") "integer")
+   ((string= gotype "float64") "number")
+   ((string= gotype "float32") "number")
+   ((string= gotype "bool") "boolean")
+   (t gotype)))
+
+
 (provide 'lazy-camelize)
 
 ;; Local Variables:

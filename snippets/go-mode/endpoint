@@ -5,16 +5,24 @@
 type $1Req struct {
 	$0
 }
+// https://github.com/swaggo/swag/blob/master/README_zh-CN.md#api操作
 
-func (this *$2Endpoint) $1(c *gin.Context) {
+// $1 godoc
+// @Summary $1
+// @Description $1
+// @Accept  x-www-form-urlencoded,json
+// @Produce x-www-form-urlencoded,json
+// //@Param msg  	query    string     	true  "this is message" default(hello)
+// @Param X-Uid  	header    int    	true   "用户id(header)" default(10064589)
+// @Param X-Av  	header    string    	true   "版本号" default(10.0.0)
+// @Router /${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} [get,post]
+// @Success 200 {object} $1Req
+func (end *${2:$1}Endpoint) $1(c engine.Context) {
 	var req $1Req
-	err := this.BindRequest(c, &req)
+	err:=c.ShouldBind(&req)
 	if err != nil {
-		glog.Warning("$2Endpoint.$1 ", err)
-		http.OutError(c, http.ErrInvalidParam)
+		c.Warningln("$2Endpoint.$1", err)
+		c.JSONResponseError(err)
 		return
 	}
-	uid := this.GetUid64(c)
-	ctx := this.GetContext(c)
-    
-}    
+}
