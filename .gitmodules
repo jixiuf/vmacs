@@ -1,6 +1,3 @@
-[submodule "submodule/emacs-rime"]
-	path = submodule/emacs-rime
-	url = https://github.com/DogLooksGood/emacs-rime.git
 [submodule "submodule/orderless"]
 	path = submodule/orderless
 	url = https://github.com/oantolin/orderless.git
