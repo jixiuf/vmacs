@@ -43,6 +43,7 @@ rm -rf ${prefix}/Emacs.app
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
 #!/bin/bash
+find ~/.emacs.d/eln-cache -type f -size -1  -exec rm -f {} \;
 exec ${prefix}/bin/emacs "\$@"
 EOS
 
