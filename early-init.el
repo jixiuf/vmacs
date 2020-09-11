@@ -24,6 +24,8 @@
                 (width . 120)
                 (font . "Sarasa Mono CL-18")
                 (ns-appearance . dark)
+                (foreground-color . "#ffffff")
+                (background-color . "#000000") ;;
                 ;; (foreground-color . "#eeeeec")
                 ;; (background-color . "#202020") ;;
                 ;; (background-mode . dark)

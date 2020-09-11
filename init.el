@@ -91,8 +91,7 @@
   (require 'conf-vterm)
   (when (eq system-type 'darwin) (require 'conf-evil-input-method))
   (unless (server-running-p) (server-start))
-  ;; (load-theme 'vmacs)
-  )
+  (load-theme 'modus-vivendi))
 
 
 ;; Local Variables:
