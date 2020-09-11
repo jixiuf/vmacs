@@ -8,7 +8,7 @@ index bcbc53c82..c0732e4b2 100644
      #  - BRIG
 -    languages = %w[c c++ objc obj-c++ fortran]
 +    languages = %w[c c++ objc obj-c++ fortran jit]
- 
+
      osmajor = `uname -r`.split(".").first
      pkgversion = "Homebrew GCC #{pkg_version} #{build.used_options*" "}".strip
 @@ -66,6 +66,8 @@ class Gcc < Formula
@@ -16,9 +16,9 @@ index bcbc53c82..c0732e4b2 100644
        --with-pkgversion=#{pkgversion}
        --with-bugurl=https://github.com/Homebrew/homebrew-core/issues
 +      --enable-host-shared
-+      --disable-bootstrap          
++      --disable-bootstrap
      ]
- 
+
      # Xcode 10 dropped 32-bit support
 @@ -91,7 +93,7 @@ class Gcc < Formula
        # Use -headerpad_max_install_names in the build,
@@ -27,5 +27,5 @@ index bcbc53c82..c0732e4b2 100644
 -      system "make", "BOOT_LDFLAGS=-Wl,-headerpad_max_install_names"
 +      system "make", "BOOT_LDFLAGS=-Wl,-headerpad_max_install_names -j 8"
        system "make", "install"
- 
+
        bin.install_symlink bin/"gfortran-#{version_suffix}" => "gfortran"
