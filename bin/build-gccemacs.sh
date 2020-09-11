@@ -38,7 +38,7 @@ trap catch_errors ERR;
 export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
 
 # sysctl hw.logicalcpu
-make install -j 8
+make install #-j 8
 rm -rf ${prefix}/Emacs.app
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
