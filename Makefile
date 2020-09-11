@@ -19,8 +19,6 @@ dump: clean update-autoload-cookie deps
 	@mkdir -p ~/.emacs.d/cache/dump/
 	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
 	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
-dumpgcc:
-	EMACSCMD=gccemacs make dump
 base:
 	$(EMACS_BASE) --eval "(load-theme 'vmacs)" --debug-init
 compile:lib
@@ -68,7 +66,7 @@ lib:
 	find $(PWD)/lib -name "*.dylib" -exec ln -fs {} /usr/local/lib/ \;
 	find $(PWD)/lib -name "*.so" -exec ln -fs {} /usr/local/lib/ \;
 	find $(PWD)/lib/include -exec ln -fs {} /usr/local/include \;
-	make -C submodule/emacs-rime lib
+# make -C submodule/emacs-rime lib
 # ln -fs ~/.emacs.d/submodule/emacs-rime/{librime-emacs.so,librime-emacs.dylib}
 
 eshell:
