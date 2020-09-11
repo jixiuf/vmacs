@@ -20,13 +20,13 @@
 ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (setq-default initial-frame-alist
               '((alpha . 85)
-                (font . "Sarasa Mono CL-18")
-                (foreground-color . "#eeeeec")
-                (background-color . "#202020") ;;
-                (background-mode . dark)
-                (ns-appearance . dark)
                 (height . 43)
                 (width . 120)
+                (font . "Sarasa Mono CL-18")
+                (ns-appearance . dark)
+                ;; (foreground-color . "#eeeeec")
+                ;; (background-color . "#202020") ;;
+                ;; (background-mode . dark)
                 ;; (left . 20)
                 ;; (top . 80)
                 ))
