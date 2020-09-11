@@ -397,9 +397,10 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ft") #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 (setq ffap-machine-p-known 'accept)  ; no pinging
-(if (symbolp 'native-comp-available-p)
-    (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file)
-  (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file-at-point))
+;; (if (symbolp 'native-comp-available-p)
+;;     (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file)
+;;   )
+(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file-at-point)
 
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>i") 'vmacs-git-files)
 
