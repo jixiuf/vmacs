@@ -38,7 +38,7 @@ compile:lib
 	make update-autoload-cookie
 native:
 # $(BATCH) --eval '(native-compile-async "~/.emacs.d/elpa/" 5)'
-	@-rm -rf ~/.emacs.d/eln-cache
+# @-rm -rf ~/.emacs.d/eln-cache
 	for dir in $$HOME/.emacs.d/elpa/*; do \
 		rm -f $$dir/*.elc ; \
 		pushd $$dir; \
