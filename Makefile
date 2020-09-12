@@ -2,7 +2,8 @@
 .PHONY: eshell lib rime
 EMACSCMD ?= emacs
 EMACSGCCCMD ?= gccemacs
-EMACSNATIVE ?= $(EMACSGCCCMD) --batch --quick -L . \
+LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0
+EMACSNATIVE ?= LIBRARY_PATH=$(LIBRARY_PATH) $(EMACSGCCCMD) --batch --quick -L . \
 			--eval "(let ((default-directory \"~/.emacs.d/elpa/\")) (normal-top-level-add-subdirs-to-load-path))" \
 			--eval "(add-to-list 'load-path \"~/.emacs.d/conf\")" \
 			--eval "(add-to-list 'load-path \"~/.emacs.d/lazy\")" \
