@@ -5,6 +5,7 @@
 .cask
 /recentf
 /tramp
+/eln-cache
 /cache/history
 /cache/helm-adaptive-history
 /elpa/.elpa_compiled_by_make
