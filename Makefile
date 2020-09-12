@@ -45,7 +45,6 @@ native:
 		$(EMACSNATIVE)   $$(printf '%s\n' $$dir/*.el | grep -v autoloads.el|grep -v pkg.el) || true; \
 		popd ;\
 	done
-	@-rm -rf ~/.emacs.d/elpa/yasnippet*/eln*
 	$(EMACSNATIVE)   $$HOME/.emacs.d/lazy/*.el || true;
 update-autoload-cookie:
 	@echo "生成 lisp/update-autoload-cookie.el"
