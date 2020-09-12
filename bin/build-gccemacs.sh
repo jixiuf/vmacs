@@ -38,6 +38,7 @@ trap catch_errors ERR;
 export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
 
 # sysctl hw.logicalcpu
+make NATIVE_FAST_BOOT=1
 make install #-j 8
 rm -rf ${prefix}/Emacs.app
 cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
