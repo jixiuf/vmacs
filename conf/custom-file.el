@@ -12,8 +12,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#616161" "#ff8272" "#b4fa72" "#fefdc2" "#a5d5fe" "#ff8ffd" "#d0d1fe" "#f1f1f1"])
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/cache/backup_files/" t)))
  '(auto-save-visited-interval 15)
  '(auto-save-visited-mode t)
@@ -24,7 +22,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("37cac21e697dd9a3ba8811f3b7b164a0496f31995ed7cc584165704441c251f4" "d4a89e8d54783f8d45c2c68cc6641ea2427f563405fde1f083191b10746fe59f" "3190c0cfdbe5f356f9dca98ca9d5f97425bbf348de0442e68667b904dab990c4"))
+   '("b12c7a111d1c37aa77270e56a0bed3375fed25c6b77d4aaab39af4b7f03eb886" "37cac21e697dd9a3ba8811f3b7b164a0496f31995ed7cc584165704441c251f4" "3190c0cfdbe5f356f9dca98ca9d5f97425bbf348de0442e68667b904dab990c4"))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
@@ -40,7 +38,7 @@
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
  '(package-selected-packages
-   '(projectile dap-mode posframe orderless rg magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link evil elisp-def dockerfile-mode json-mode iedit osx-dictionary dired-narrow magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell bm ethan-wspace git-commit go-mode golden-ratio goto-chg lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(modus-vivendi-theme projectile dap-mode posframe orderless rg magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link evil elisp-def dockerfile-mode json-mode iedit osx-dictionary dired-narrow magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell bm ethan-wspace git-commit go-mode golden-ratio goto-chg lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((checkdoc-minor-mode . t)
@@ -50,63 +48,7 @@
      (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
      (projectile-project-compilation-cmd . "bear make")
      (compile-command . "make lint")
-     (projectile-project-run-cmd . "make run")
-     (eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (unless
-               (featurep 'package-build)
-             (let
-                 ((load-path
-                   (cons "../package-build" load-path)))
-               (require 'package-build)))
-           (package-build-minor-mode)
-           (set
-            (make-local-variable 'package-build-working-dir)
-            (expand-file-name "../working/"))
-           (set
-            (make-local-variable 'package-build-archive-dir)
-            (expand-file-name "../packages/"))
-           (set
-            (make-local-variable 'package-build-recipes-dir)
-            default-directory))
-     (eval progn
-           (setq jedi:environment-root
-                 (expand-file-name "./virtual/"
-                                   (locate-dominating-file default-directory "Makefile")))
-           (setq jedi:server-args
-                 `("--virtual-env" ,(expand-file-name "./virtual/"
-                                                      (locate-dominating-file default-directory "Makefile"))
-                   "--virtual-env" ,(expand-file-name "~/python/")
-                   "--virtual-env" "/System/Library/Frameworks/Python.framework/Versions/2.7/" "--sys-path" ,(expand-file-name
-                                                                                                              (expand-file-name "./src/"
-                                                                                                                                (locate-dominating-file default-directory "Makefile")))
-                   "--sys-path" ,(expand-file-name
-                                  (expand-file-name "./src/db"
-                                                    (locate-dominating-file default-directory "Makefile")))
-                   "--sys-path" "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7" "--sys-path" "."))
-           (setq exec-path
-                 (delete-dups
-                  (cons
-                   (expand-file-name "./virtual/bin/"
-                                     (locate-dominating-file default-directory "Makefile"))
-                   exec-path)))
-           (setenv "PATH"
-                   (concat
-                    (expand-file-name "./virtual/bin/"
-                                      (locate-dominating-file default-directory "Makefile"))
-                    ":"
-                    (getenv "PATH")))
-           (setenv "PYTHONPATH"
-                   (expand-file-name "./src/"
-                                     (locate-dominating-file default-directory "Makefile")))
-           (setenv "PYTHONPATH"
-                   (expand-file-name "./db/"
-                                     (locate-dominating-file default-directory "Makefile"))))))
+     (projectile-project-run-cmd . "make run")))
  '(save-place-file "~/.emacs.d/cache/place")
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
