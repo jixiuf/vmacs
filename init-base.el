@@ -32,7 +32,7 @@
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
 (setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
 (require 'custom-file)
-(require 'vmacs-theme)
+;; (require 'vmacs-theme)
 
 
 
