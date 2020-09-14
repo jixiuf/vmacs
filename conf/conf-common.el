@@ -76,6 +76,8 @@
  fill-column 100
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  tramp-shell-prompt-pattern (concat "\\(?:^\\|\r\\)" "[^]#@$%>\n]*#?[]#$@%>] *\\(\e\\[[0-9;]*[a-zA-Z-.] *\\)*")
+ tramp-default-method "ssh" ;Faster than the default scp
+ tramp-verbose 1
  )
 (require 'display-fill-column-indicator nil t)
 (when (featurep 'display-fill-column-indicator)

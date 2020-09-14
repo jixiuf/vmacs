@@ -7,8 +7,6 @@
 ;; (require 'tramp)
 (require 'tramp)
 (require 'server)
-(setq-default tramp-default-method "ssh" ;Faster than the default scp
-              tramp-verbose 1)
 (defvar toggle-with-sudo-history-host-user-alist (make-hash-table))
 
 ;; sshx
