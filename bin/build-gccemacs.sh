@@ -45,7 +45,7 @@ cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
 #!/bin/bash
 find ~/.emacs.d/eln-cache -type f -size -1  -exec rm -f {} \;
-LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0 exec {prefix}/bin/emacs "$@"
+LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0 exec ${prefix}/bin/emacs "\$@"
 
 EOS
 
