@@ -4,8 +4,8 @@
 
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/projectile
-;; Package-Version: 20200909.650
-;; Package-Commit: c6c8d08924049609ed9be1be5351ce3b8a1f8a0d
+;; Package-Version: 20200914.436
+;; Package-Commit: f7eb5f264e85e6ae13c5e5217fd42cdded4d4749
 ;; Keywords: project, convenience
 ;; Version: 2.3.0-snapshot
 ;; Package-Requires: ((emacs "25.1") (pkg-info "0.4"))
@@ -689,7 +689,11 @@ as defined in `vc.el'."
 
     ;; OCaml extensions
     ("ml" . ("mli"))
-    ("mli" . ("ml"))
+    ("mli" . ("ml" "mll" "mly"))
+    ("mll" . ("mli"))
+    ("mly" . ("mli"))
+    ("eliomi" . ("eliom"))
+    ("eliom" . ("eliomi"))
 
     ;; vertex shader and fragment shader extensions in glsl
     ("vert" . ("frag"))
