@@ -77,7 +77,7 @@
   (require 'conf-company-mode)            ;补全
   (with-eval-after-load 'go-mode (require 'conf-program-golang))
   (with-eval-after-load 'python (require 'conf-program-python))
-  (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
+  ;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
 
   (with-eval-after-load 'magit (require 'conf-magit))
   (global-undo-tree-mode t)
