@@ -22,7 +22,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("6c3f9f5a8a8534c4f162c2e33de979fcd7e76726d96e07fd3ca7f7a1c003dda1" "3190c0cfdbe5f356f9dca98ca9d5f97425bbf348de0442e68667b904dab990c4"))
+   '("a1e54c03c2fa33d4cacabd32fcdbab8a8f3c287d8e6565605817c61cf179c6c0" "3190c0cfdbe5f356f9dca98ca9d5f97425bbf348de0442e68667b904dab990c4"))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
