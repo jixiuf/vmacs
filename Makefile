@@ -21,7 +21,7 @@ dump: clean update-autoload-cookie deps
 	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
 	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
 base:
-	$(EMACS_BASE) --eval "(load-theme 'vmacs)" --debug-init
+	$(EMACS_BASE)  --debug-init
 compile:lib
 	@echo "delete *.elc 以避免有问题的elc文件影响编译"
 	@rm -rf *.elc
