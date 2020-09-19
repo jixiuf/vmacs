@@ -3,7 +3,6 @@
 (setq history-delete-duplicates t)          ;minibuffer 删除重复历史
 (setq minibuffer-prompt-properties;minibuffer prompt 只读，且不允许光标进入其中
               '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-(setq resize-mini-windows 'grow-only)
 (setq read-buffer-completion-ignore-case t)
 (setq read-file-name-completion-ignore-case t)
 (setq completion-cycle-threshold 3)
@@ -13,7 +12,8 @@
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
-(setq max-mini-window-height 25)        ;selectrum-num-candidates-displayed 受影响
+(setq max-mini-window-height 0.45)        ;selectrum-num-candidates-displayed 受影响
+(setq resize-mini-windows 'grow-only)
 ;; (setq read-answer-short t)
 (setq minibuffer-eldef-shorten-default t)
 (minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏

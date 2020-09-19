@@ -15,7 +15,7 @@
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-(setq icomplete-prospects-height 8)
+;; (setq icomplete-prospects-height 8)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
 (when (boundp 'icomplete-format)
   (setq icomplete-format 'vertical))
