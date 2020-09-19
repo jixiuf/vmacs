@@ -1,7 +1,6 @@
 ;; https://github.com/saibing/tools
-;; go get -u golang.org/x/tools/cmd/gopls
+;; go get  golang.org/x/tools/cmd/gopls
 
-;; go get github.com/rogpeppe/godef
 ;; go install golang.org/x/tools/cmd/goimports
 (let ((gopath (getenv "GOPATH")))
   (when
@@ -13,10 +12,11 @@
 (when (executable-find "goimports")
   (setq-default gofmt-command (executable-find "goimports")))
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
+
 (lsp-register-custom-settings
  '(("gopls.completeUnimported" t t)
-   ("gopls.staticcheck" t t)
-   ))
+   ("gopls.staticcheck" t t)))
+
 (require 'lsp-go)
 (defun vmacs-go-mode-hook()
   ;; (require 'dap-go)
@@ -35,43 +35,6 @@
   (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
   (local-set-key (kbd "C-c i") 'go-goto-imports)
   (local-set-key (kbd "C-c g") 'golang-setter-getter))
-
-;; (defun vmacs-auto-gofmt()
-;;   (let ((gitdir (magit-toplevel)))
-;;     (when gitdir
-;;       (setq gitdir (file-name-nondirectory (directory-file-name gitdir)))
-;;       (set-process-query-on-exit-flag
-;;        (start-process-shell-command
-;;         "gofmt" " *vmacs-gofmt*"
-;;         (format "%s -l -w  $(git ls-files -m --exclude-standard -o | grep .go |grep -v /vendor/)" gofmt-command))
-;;        nil))))
-
-;; (add-hook 'magit-pre-refresh-hook #'vmacs-auto-gofmt)
-
-
-;; (defun auto-go-install()
-;;   (when (equal major-mode 'go-mode)
-;;     (unless (get-buffer-process  " *go-install*")
-;;       (set-process-query-on-exit-flag
-;;        (start-process-shell-command
-;;         "go-install-generate-shell" " *go-install*"
-;;         (format "go install"))nil))
-;;     )
-;;   )
-
-;; (defun vmacs-auto-build-package()
-;;   (interactive)
-;;   (require 'go-imports)
-;;   (go-imports-reload-packages-list)
-;;   (unless (get-buffer-process  " *go-install*")
-;;     (set-process-query-on-exit-flag
-;;      (start-process-shell-command
-;;       "go-install-generate-shell" " *go-install*"
-;;       (format "perl %s ~/go |cut -d '\"' -f 4|grep -v vendor|sort|uniq|sed 's/^/go install /g'|sh"
-;;               go-imports-find-packages-pl-path))nil)))
-
-;; (run-with-idle-timer (* 20 60) t 'vmacs-auto-build-package)
-
 
 ;; (defun vmacs-go-format()
 ;;   (when (eq major-mode 'go-mode)
