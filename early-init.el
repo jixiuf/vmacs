@@ -18,11 +18,23 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(create-fontset-from-fontset-spec
+    (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
+            ",han:Sarasa Mono CL:size=18"
+            ",symbol:Apple Color Emoji:size=18" ;😀
+            ",cjk-misc:Sarasa Mono CL:size=18"
+            ",bopomofo:Sarasa Mono CL:size=18"
+            ",kana:Sarasa Mono CL:size=18"
+            ",hangul:Sarasa Mono CL:size=18"
+            ",latin:Sarasa Mono CL:size=18"))
+
+
 (setq-default initial-frame-alist
               '((alpha . 85)
                 (height . 43)
                 (width . 120)
-                (font . "Sarasa Mono CL-18")
+                ;; (font . "Sarasa Mono CL-18")
+                (font . "fontset-mac")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;
@@ -32,6 +44,7 @@
                 ;; (left . 20)
                 ;; (top . 80)
                 ))
+
 (setq-default default-frame-alist initial-frame-alist)
 
 (setq-default mode-line-format nil)
