@@ -15,23 +15,13 @@
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-;; (setq icomplete-prospects-height 8)
+(setq icomplete-prospects-height 15)
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
 (when (boundp 'icomplete-format)
   (setq icomplete-format 'vertical))
 
 (unless (boundp 'icomplete-format)
   (setq icomplete-separator "\n")
-  (defun icomplete-vertical-minibuffer-setup ()
-    "Setup minibuffer for a vertical icomplete session. Meant to be
-added to `icomplete-minibuffer-setup-hook'."
-    (if (not (string-match-p "\n" icomplete-separator))
-        (setq truncate-lines nil)
-      (setq truncate-lines t)
-      (setq icomplete-hide-common-prefix nil)
-      (enlarge-window (- icomplete-prospects-height (1- (window-height))))))
-
-  (add-hook 'icomplete-minibuffer-setup-hook #'icomplete-vertical-minibuffer-setup)
   (defun icomplete-vertical-format-completions (completions)
     "Reformat COMPLETIONS for better aesthetics.
 To be used as filter return advice for `icomplete-completions'."
