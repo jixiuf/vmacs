@@ -16,31 +16,10 @@
 (setq icomplete-tidy-shadowed-file-names t)
 
 (setq icomplete-prospects-height 15)
-;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=24293
-(when (boundp 'icomplete-format)
-  (setq icomplete-format 'vertical))
-
-(unless (boundp 'icomplete-format)
-  (setq icomplete-separator "\n")
-  (defun icomplete-vertical-format-completions (completions)
-    "Reformat COMPLETIONS for better aesthetics.
-To be used as filter return advice for `icomplete-completions'."
-    (save-match-data
-      (if (and (string-match "^\\((.*)\\|\\[.+\\]\\)?{\\(\\(?:.\\|\n\\)+\\)}"
-                             completions)
-               (string-match-p "\n" icomplete-separator))
-          (format "%s \n%s"
-                  (or (match-string 1 completions) "")
-                  (match-string 2 completions))
-        completions)))
-  (advice-add 'icomplete-completions :filter-return #'icomplete-vertical-format-completions))
-
+(setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
-
-
 ;; 让第一个candidate不要显示在光标同一行，而是下一行
 
-;; (setq icomplete-with-completion-tables t)
 (icomplete-mode 1)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
@@ -57,8 +36,7 @@ To be used as filter return advice for `icomplete-completions'."
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
-  (let* ((icomplete-separator-vertical (concat "\n" (propertize (make-string 60 ?— ) 'face 'highlight) "\n "))
-         (icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'highlight) "\n "))
+  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'highlight) "\n "))
          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
          (completion-table
           (lambda (string pred action)
