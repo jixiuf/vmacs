@@ -3,14 +3,16 @@
   (require  'ediff)
   (require 'magit))
 ;;;###autoload
-(defun toggle-diff-whitespace-eol()
+(defun toggle-diff-whitespace()
   (interactive)
   (if  (equal vc-git-diff-switches t)
-      (progn
-        (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
-        (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff")))
-    (setq vc-git-diff-switches t)
-    (setq magit-buffer-diff-args '("--no-ext-diff")))
+      (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
+    (setq vc-git-diff-switches t))
+  (if (equal magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff"))
+      (setq magit-buffer-diff-args '("--no-ext-diff"))
+    (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff")))
+
+
   (if  (and (boundp 'vc-svn-diff-switches)(equal vc-svn-diff-switches t))
       (setq-default vc-svn-diff-switches '("-x --ignore-eol-style"  ))
     (setq-default vc-svn-diff-switches t))
@@ -19,7 +21,7 @@
     (revert-buffer))
    ((equal major-mode 'magit-status-mode)
     (magit-refresh)))
-  (message "toggle diff show whitespace at end of line"))
+  (message "toggle diff show whitespace "))
 ;; (setq-default magit-log-format-graph-function 'magit-log-format-unicode-graph)
 
 ;; ;;;###autoload

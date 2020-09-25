@@ -41,7 +41,7 @@
  ;;VC 的很多操作是调用外部命令,它选项会提示命令的相应信息,如运行了哪个命令
  vc-command-messages nil
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
- vc-git-diff-switches '("--ignore-space-at-eol" )
+ vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
  ;; svn diff --help
  ;; -b (--ignore-space-change): 忽略空白数量的修改。
  ;; -w (--ignore-all-space): 忽略所有的空白。
@@ -91,7 +91,7 @@
 
 (with-eval-after-load 'diff-mode
   ;; (define-key diff-mode-map "SPC" vmacs-leader-map)
-  (define-key diff-mode-map "t" 'toggle-diff-whitespace-eol))
+  (define-key diff-mode-map "t" 'toggle-diff-whitespace))
 
 
 ;; c-xvl列出当前文件的历史版本

@@ -20,7 +20,7 @@
  magit-diff-highlight-hunk-body nil
  magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename的log也能看到
  magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
- magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace-eol to toggle
+ magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace to toggle
  magit-section-highlight-hook nil       ;不必hightlight,光标移动的时候，默认会显示当前section区域
  magit-section-unhighlight-hook nil)                         ;
 (define-key magit-mode-map (kbd "C-w") nil)
@@ -91,7 +91,7 @@
                        "C-w"  evil-window-map)
 
 (evil-magit-define-key evil-magit-state 'magit-mode-map
-                       "gw" 'toggle-diff-whitespace-eol)
+                       "gw" 'toggle-diff-whitespace)
 
 (evil-magit-define-key evil-magit-state 'magit-mode-map "gm"  'magit-toggle-margin)
 
