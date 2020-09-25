@@ -12,6 +12,7 @@
 (setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
+(setq icomplete-hide-common-prefix nil)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
