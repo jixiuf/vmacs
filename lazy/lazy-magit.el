@@ -7,10 +7,10 @@
   (interactive)
   (if  (equal vc-git-diff-switches t)
       (progn
-        (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines"))
-        (setq magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff")))
+        (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
+        (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff")))
     (setq vc-git-diff-switches t)
-    (setq magit-diff-section-arguments '("--no-ext-diff")))
+    (setq magit-buffer-diff-args '("--no-ext-diff")))
   (if  (and (boundp 'vc-svn-diff-switches)(equal vc-svn-diff-switches t))
       (setq-default vc-svn-diff-switches '("-x --ignore-eol-style"  ))
     (setq-default vc-svn-diff-switches t))
