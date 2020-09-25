@@ -40,6 +40,7 @@ compile:lib
 native:
 # $(BATCH) --eval '(native-compile-async "~/.emacs.d/elpa/" 5)'
 # @-rm -rf ~/.emacs.d/eln-cache
+	mkdir -p ~/.emacs.d/eln-cache/
 	find ./elpa -name "*.el" |sed "s|.*/|~/.emacs.d/eln-cache/*/|g"|grep -v "pkg.el"|grep -v autoloads.el|sed 's|.el$$|-*|g' | xargs -I@ sh -c "rm -f @"
 	find ./lazy -name "*.el" |sed "s|.*/|~/.emacs.d/eln-cache/*/|g"|sed 's|.el$$|-*|g' | xargs -I@ sh -c "rm -f @"
 	for dir in $$HOME/.emacs.d/elpa/*; do \
