@@ -396,6 +396,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>SPC") 'vmacs-switch-buffer)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ft") #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(evil-define-key '(normal visual operator motion emacs) 'smerge-mode-map (kbd "c") smerge-basic-map)
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (if (symbolp 'native-comp-available-p)
 ;;     (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file)
