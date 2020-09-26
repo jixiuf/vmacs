@@ -89,9 +89,6 @@
  )
 
 
-(with-eval-after-load 'diff-mode
-  ;; (define-key diff-mode-map "SPC" vmacs-leader-map)
-  (define-key diff-mode-map "t" 'toggle-diff-whitespace))
 
 
 ;; c-xvl列出当前文件的历史版本
