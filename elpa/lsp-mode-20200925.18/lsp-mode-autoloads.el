@@ -52,6 +52,8 @@ Explain a clang-tidy ERROR by scraping documentation from llvm.org.
 
 (define-obsolete-variable-alias 'lsp-prefer-capf 'lsp-completion-provider "lsp-mode 7.0.1")
 
+(define-obsolete-variable-alias 'lsp-enable-completion-at-point 'lsp-completion-enable "lsp-mode 7.0.1")
+
 (autoload 'lsp-completion-at-point "lsp-completion" "\
 Get lsp completions." nil nil)
 

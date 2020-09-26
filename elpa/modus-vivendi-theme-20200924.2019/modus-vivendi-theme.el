@@ -236,6 +236,7 @@
 ;;     minimap
 ;;     modeline
 ;;     mood-line
+;;     mpdel
 ;;     mu4e
 ;;     mu4e-conversation
 ;;     multiple-cursors
@@ -2166,13 +2167,13 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(elfeed-log-error-level-face ((,class :foreground ,red)))
    `(elfeed-log-info-level-face ((,class :foreground ,green)))
    `(elfeed-log-warn-level-face ((,class :foreground ,yellow)))
-   `(elfeed-search-date-face ((,class :foreground ,cyan)))
-   `(elfeed-search-feed-face ((,class :foreground ,blue)))
-   `(elfeed-search-filter-face ((,class :foreground ,magenta-active)))
-   `(elfeed-search-last-update-face ((,class :foreground ,green-active)))
-   `(elfeed-search-tag-face ((,class :foreground ,cyan-alt-other)))
+   `(elfeed-search-date-face ((,class :foreground ,blue-nuanced)))
+   `(elfeed-search-feed-face ((,class :foreground ,cyan)))
+   `(elfeed-search-filter-face ((,class :inherit bold :foreground ,magenta-active)))
+   `(elfeed-search-last-update-face ((,class :foreground ,cyan-active)))
+   `(elfeed-search-tag-face ((,class :foreground ,blue-nuanced)))
    `(elfeed-search-title-face ((,class :foreground ,fg-dim)))
-   `(elfeed-search-unread-count-face ((,class :foreground ,blue-active)))
+   `(elfeed-search-unread-count-face ((,class :foreground ,green-active)))
    `(elfeed-search-unread-title-face ((,class :inherit bold :foreground ,fg-main)))
 ;;;;; elfeed-score
    `(elfeed-score-date-face ((,class :foreground ,blue)))
@@ -2629,9 +2630,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(gnus-group-news-6-empty ((,class :foreground ,fg-alt)))
    `(gnus-group-news-low ((,class :inherit bold :foreground ,green-nuanced)))
    `(gnus-group-news-low-empty ((,class :foreground ,green-nuanced)))
-   `(gnus-header-content ((,class :foreground ,fg-special-calm)))
+   `(gnus-header-content ((,class :foreground ,cyan)))
    `(gnus-header-from ((,class :inherit bold :foreground ,cyan-alt :underline nil)))
-   `(gnus-header-name ((,class :foreground ,cyan-alt-other)))
+   `(gnus-header-name ((,class :foreground ,green)))
    `(gnus-header-newsgroups ((,class :inherit bold :foreground ,blue-alt)))
    `(gnus-header-subject ((,class :inherit bold :foreground ,magenta-alt-other)))
    `(gnus-server-agent ((,class :inherit bold :foreground ,cyan)))
@@ -3375,6 +3376,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(mood-line-status-success ((,class :foreground ,green-active)))
    `(mood-line-status-warning ((,class :inherit bold :foreground ,yellow-active)))
    `(mood-line-unimportant ((,class :foreground ,fg-inactive)))
+;;;;; mpdel
+   `(mpdel-browser-directory-face ((,class :foreground ,blue)))
+   `(mpdel-playlist-current-song-face ((,class :inherit bold :foreground ,blue-alt-other)))
 ;;;;; mu4e
    `(mu4e-attach-number-face ((,class :inherit bold :foreground ,cyan-alt)))
    `(mu4e-cited-1-face ((,class :foreground ,blue-alt)))
@@ -3645,8 +3649,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-link ((,class :inherit link)))
    `(org-list-dt ((,class :inherit bold)))
    `(org-macro ((,class :background ,blue-nuanced-bg :foreground ,magenta-alt-other)))
-   `(org-meta-line ((,class ,@(modus-vivendi-theme-mixed-fonts)
-                            :background ,cyan-nuanced-bg :foreground ,cyan-nuanced)))
+   `(org-meta-line ((,class ,@(modus-vivendi-theme-mixed-fonts) :foreground ,fg-alt)))
    `(org-mode-line-clock ((,class :foreground ,fg-main)))
    `(org-mode-line-clock-overrun ((,class :inherit modus-theme-active-red)))
    `(org-priority ((,class :box ,bg-region :background ,bg-dim :foreground ,magenta)))
