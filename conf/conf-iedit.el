@@ -16,7 +16,9 @@
 (defun evil-iedit-state-iedit-mode (&optional arg)
   "Start `iedit-mode'."
   (interactive "P")
-  (if (fboundp 'ahs-clear) (ahs-clear))
+  (when (fboundp 'ahs-clear) (ahs-clear))
+  (when (bound-and-true-p electric-pair-mode)
+    (electric-pair-mode -1))
   (iedit-mode arg)
   (evil-iedit-state))
 ;; (require 'evil-iedit-state)
@@ -26,6 +28,7 @@
 (defun evil-iedit-state-quit-iedit-mode ()
   "Quit iedit-mode and return set state `evil-iedit-state-default-state'."
   (interactive)
+  (electric-pair-mode 1)
   (iedit-done)
   (evil-normal-state))
 
