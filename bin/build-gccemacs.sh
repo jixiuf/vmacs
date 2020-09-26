@@ -40,8 +40,8 @@ export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
 # sysctl hw.logicalcpu
 make NATIVE_FAST_BOOT=1
 make install #-j 8
-rm -rf ${prefix}/Emacs.app
-cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
+# rm -rf ${prefix}/Emacs.app
+# cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
 cat >${prefix}/bin/gccemacs << EOS
 #!/bin/bash
 find ~/.emacs.d/eln-cache -type f -size -1  -exec rm -f {} \;
