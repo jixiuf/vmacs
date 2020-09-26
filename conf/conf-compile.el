@@ -5,7 +5,7 @@
    compilation-disable-input nil
    compilation-scroll-output t
    compilation-read-command nil;默认emacs提供M-x:compile 用于编译，编译前 不提示用户输入命令
-   compilation-always-kill     ;启动新的compile命令前，自动杀掉之前未完成的compile命令
+   compilation-always-kill t    ;启动新的compile命令前，自动杀掉之前未完成的compile命令
    )
 
 

@@ -1,6 +1,5 @@
 (eval-when-compile (require 'org))
 (eval-when-compile (require 'cc-mode))
-(eval-when-compile (require 'wgrep))
 (defvar  dropbox-dir (expand-file-name "~/Documents/dropbox"))
 (when (equal system-type 'darwin)
   (when (or (not (file-exists-p dropbox-dir))
@@ -201,20 +200,6 @@
 ;;                                               magic-mode-regexp-match-limit t)
 ;;                            )))
 ;;                . mysql-mode))
-
-;; (setq-default ace-jump-mode-case-fold nil
-;;               ace-jump-mode-scope 'window
-;;               ;; 59==; ,97=a
-;;               ace-jump-mode-move-keys '(97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 59))
-
-
-;; (defun disable-wgrep-when-exit-insert()
-;;   (when (derived-mode-p '(ivy-occur-mode ivy-occur-grep-mode helm-grep-mode))
-;;     (wgrep-abort-changes)))
-;; (autoload 'wgrep-change-to-wgrep-mode "wgrep" "enable wgrep" nil)
-;; (autoload 'wgrep-abort-changes "wgrep" "disable wgrep" nil)
-;; (add-hook 'evil-insert-state-exit-hook 'disable-wgrep-when-exit-insert)
-
 ;; (setq-default hippie-expand-try-functions-list
 ;;               '(
 ;;                 yas-hippie-try-expand

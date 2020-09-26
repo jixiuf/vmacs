@@ -6,31 +6,66 @@
 (setq rg-command-line-flags '("-z"))
 (setq rg-group-result nil)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>g") rg-global-map)
-(define-key rg-global-map (kbd "C-.") #'rg-dwim-current-dir)
-(define-key rg-global-map (kbd ".") #'rg-dwim-current-dir)
-(define-key rg-global-map (kbd ",") #'rg-dwim-project-dir)
+(define-key rg-global-map (kbd "C-.") #'vmacs-rg-dwim-current-dir)
+(define-key rg-global-map (kbd ".") #'vmacs-rg-dwim-current-dir)
+(define-key rg-global-map (kbd ",") #'vmacs-rg-dwim-project-dir)
 (define-key rg-global-map "g" #'vmacs-rg-word-current-dir)
 (define-key rg-global-map "p" #'vmacs-rg-word-root-dir)
 (define-key rg-global-map "m" #'rg-menu)
 
 (rg-define-search vmacs-rg-word-current-dir
-  :format literal  ;; :menu ("Custom" "g" "dwim current dir")
+  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
+  :flags ("--type=all")
   :files current :dir current)
 (rg-define-search vmacs-rg-word-root-dir
-  :format literal :files current :dir project)
+  :flags ("--type=all")
+  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
+  :files current :dir project)
+
+(rg-define-search vmacs-rg-dwim-current-dir
+  "Search for thing at point in files matching the current file
+under the current directory."
+  :query point
+  :flags ("--type=all")
+  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
+  :files current
+  :dir current)
+
+(rg-define-search vmacs-rg-dwim-project-dir
+  "Search for thing at point in files matching the current file
+under the project root directory."
+  :query point
+  :flags ("--type=all")
+  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
+  :files current
+  :dir project)
 
 ;; c toggle case
 (defun vmacs-rg-hook()
   (setq-local scroll-conservatively 101)
   (setq-local scroll-margin 0)
+  (setq-local compilation-scroll-output 'first-error)
+  (setq-local compilation-always-kill t)
   (define-key rg-mode-map "g" nil)
   (define-key rg-mode-map "e" nil)
   (define-key rg-mode-map "i" nil)
+  (define-key rg-mode-map "l" nil)
+  (define-key rg-mode-map "h" nil)
+  (define-key rg-mode-map (kbd "M-n") 'next-error-no-select)
+  (define-key rg-mode-map (kbd "M-p") 'previous-error-no-select)
+  (define-key rg-mode-map "n" 'compilation-next-error)
+  (define-key rg-mode-map "p" 'compilation-previous-error)
+  (define-key rg-mode-map (kbd "L") 'rg-forward-history)
+  (define-key rg-mode-map (kbd "H") 'rg-back-history)
+  (define-key rg-mode-map (kbd "M-p") 'previous-error-no-select)
   (define-key rg-mode-map "I" #'rg-rerun-toggle-ignore)
   (define-key rg-mode-map (kbd "z") 'rg-occur-hide-lines-matching)
   (define-key rg-mode-map (kbd "/") 'rg-occur-hide-lines-not-matching)
-
-  (evil-define-key 'normal 'local "gr" 'rg-recompile))
+  (evil-define-key 'normal 'local "gr" 'rg-recompile)
+  ;; (setq-local compilation-auto-jump-to-first-error t)
+  ;; (setq-local compilation-auto-jump-to-next t)
+  ;; (call-interactively 'compilation-next-error)
+  )
 
 (add-hook 'rg-mode-hook #'vmacs-rg-hook)
 
