@@ -7,6 +7,13 @@
 ;;在进行`C-xvv' `C-xvi'等操作时不必进行确认,
 (autoload 'magit-status "magit" "magit")
 (with-eval-after-load 'magit (require 'conf-magit))
+;; smerge
+;; cn next
+;; cu （upper） 选择上面的部分，cl (lower) 选下部分
+;; ca 两部分都要
+;; cRET 选择光标下的
+(evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map)
+(evil-define-key 'normal diff-mode-map (kbd "t") #'toggle-diff-whitespace)
 
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vv") 'vmacs-vc-next-action)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vr") 'vc-revert)

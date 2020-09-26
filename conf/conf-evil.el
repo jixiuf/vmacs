@@ -401,8 +401,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file-at-point)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>i") 'vmacs-git-files)
 
-(evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map)
-(evil-define-key 'normal diff-mode-map (kbd "t") #'toggle-diff-whitespace)
 
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)
 
