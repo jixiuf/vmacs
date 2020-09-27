@@ -5,7 +5,7 @@ workingdir=`dirname $0`
 
 
 # export PATH=/usr/local/opt/gcc/bin:$PATH
-prefix=~/gccemacs
+prefix=$HOME/gccemacs
 if [ ! -d $prefix ]; then
     sudo mkdir -p $prefix ;
     # sudo chown ${USER}:admin  $prefix ;
