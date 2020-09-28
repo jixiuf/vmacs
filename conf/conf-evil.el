@@ -42,6 +42,8 @@
 (evil-set-initial-state 'calc-mode 'normal)
 (evil-set-initial-state 'snails-mode 'insert)
 (evil-set-initial-state 'rg-mode 'normal)
+(evil-set-initial-state 'help-mode 'normal)
+
 ;; (evil-set-initial-state 'term-mode 'normal)
 ;; (evil-set-initial-state 'eshell-mode 'normal)
 
