@@ -26,7 +26,7 @@ Forge User and Developer Manual
 Forge allows you to work with Git forges, such as Github and Gitlab,
 from the comfort of Magit and the rest of Emacs.
 
-This manual is for Forge version 0.1.0 (v0.1.0-320-g639ce512+1).
+This manual is for Forge version 0.1.0 (v0.1.0-328-g3e707156+1).
 
      Copyright (C) 2018-2020 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -753,9 +753,19 @@ separate buffers.
      This function inserts a list of open pull-requests that are
      awaiting your review.
 
+ -- Function: forge-insert-authored-pullreqs
+
+     This function inserts a list of open pull-requests that are
+     authored by you.
+
  -- Function: forge-insert-assigned-issues
 
      This function inserts a list of open issues that are assigned to
+     you.
+
+ -- Function: forge-insert-authored-issues
+
+     This function inserts a list of open issues that are authored by
      you.
 
    The following commands list repositories, notifications and topics in
@@ -794,6 +804,16 @@ dedicated buffers:
 
      This command lists pull-requests of the current repository that are
      awaiting your review in a separate buffer.
+
+ -- Command: forge-list-authored-pullreqs
+
+     This command lists the current repository’s open issues that are
+     authored by you in a separate buffer.
+
+ -- Command: forge-list-authored-issues
+
+     This command lists the current repository’s open pull-requests that
+     are authored by you in a separate buffer.
 
  -- Command: forge-list-owned-pullreqs
 
@@ -1030,13 +1050,13 @@ Appendix B Keystroke Index
 * ' c i:                                 Creating Topics.     (line  11)
 * ' c p:                                 Creating Topics.     (line   6)
 * ' I:                                   Listing Topics and Notifications.
-                                                              (line  74)
+                                                              (line  84)
 * ' l:                                   Listing Topics and Notifications.
-                                                              (line  64)
+                                                              (line  74)
 * ' P:                                   Listing Topics and Notifications.
-                                                              (line  69)
+                                                              (line  79)
 * ' r:                                   Listing Topics and Notifications.
-                                                              (line  60)
+                                                              (line  70)
 * b Y:                                   Branching.           (line  12)
 * b y:                                   Branching.           (line 106)
 * C-c C-c:                               Editing Topics and Posts.
@@ -1124,23 +1144,27 @@ Appendix C Command Index
 * forge-edit-topic-title:                Editing Topics and Posts.
                                                               (line  33)
 * forge-list-assigned-issues:            Listing Topics and Notifications.
-                                                              (line  84)
-* forge-list-assigned-pullreqs:          Listing Topics and Notifications.
-                                                              (line  79)
-* forge-list-issues:                     Listing Topics and Notifications.
-                                                              (line  74)
-* forge-list-notifications:              Listing Topics and Notifications.
-                                                              (line  64)
-* forge-list-owned-issues:               Listing Topics and Notifications.
-                                                              (line 101)
-* forge-list-owned-pullreqs:             Listing Topics and Notifications.
                                                               (line  94)
-* forge-list-pull-requests:              Listing Topics and Notifications.
-                                                              (line  69)
-* forge-list-repositories:               Listing Topics and Notifications.
-                                                              (line  60)
-* forge-list-requested-reviews:          Listing Topics and Notifications.
+* forge-list-assigned-pullreqs:          Listing Topics and Notifications.
                                                               (line  89)
+* forge-list-authored-issues:            Listing Topics and Notifications.
+                                                              (line 109)
+* forge-list-authored-pullreqs:          Listing Topics and Notifications.
+                                                              (line 104)
+* forge-list-issues:                     Listing Topics and Notifications.
+                                                              (line  84)
+* forge-list-notifications:              Listing Topics and Notifications.
+                                                              (line  74)
+* forge-list-owned-issues:               Listing Topics and Notifications.
+                                                              (line 121)
+* forge-list-owned-pullreqs:             Listing Topics and Notifications.
+                                                              (line 114)
+* forge-list-pull-requests:              Listing Topics and Notifications.
+                                                              (line  79)
+* forge-list-repositories:               Listing Topics and Notifications.
+                                                              (line  70)
+* forge-list-requested-reviews:          Listing Topics and Notifications.
+                                                              (line  99)
 * forge-post-cancel:                     Editing Topics and Posts.
                                                               (line  89)
 * forge-post-submit:                     Editing Topics and Posts.
@@ -1168,9 +1192,13 @@ Appendix D Function Index
 * forge-add-organization-repositories:   Miscellaneous.       (line  33)
 * forge-add-user-repositories:           Miscellaneous.       (line  25)
 * forge-insert-assigned-issues:          Listing Topics and Notifications.
-                                                              (line  52)
+                                                              (line  57)
 * forge-insert-assigned-pullreqs:        Listing Topics and Notifications.
                                                               (line  42)
+* forge-insert-authored-issues:          Listing Topics and Notifications.
+                                                              (line  62)
+* forge-insert-authored-pullreqs:        Listing Topics and Notifications.
+                                                              (line  52)
 * forge-insert-issues:                   Listing Topics and Notifications.
                                                               (line  18)
 * forge-insert-pullreqs:                 Listing Topics and Notifications.
@@ -1178,15 +1206,19 @@ Appendix D Function Index
 * forge-insert-requested-reviews:        Listing Topics and Notifications.
                                                               (line  47)
 * forge-list-assigned-issues:            Listing Topics and Notifications.
-                                                              (line  84)
-* forge-list-assigned-pullreqs:          Listing Topics and Notifications.
-                                                              (line  79)
-* forge-list-owned-issues:               Listing Topics and Notifications.
-                                                              (line 101)
-* forge-list-owned-pullreqs:             Listing Topics and Notifications.
                                                               (line  94)
-* forge-list-requested-reviews:          Listing Topics and Notifications.
+* forge-list-assigned-pullreqs:          Listing Topics and Notifications.
                                                               (line  89)
+* forge-list-authored-issues:            Listing Topics and Notifications.
+                                                              (line 109)
+* forge-list-authored-pullreqs:          Listing Topics and Notifications.
+                                                              (line 104)
+* forge-list-owned-issues:               Listing Topics and Notifications.
+                                                              (line 121)
+* forge-list-owned-pullreqs:             Listing Topics and Notifications.
+                                                              (line 114)
+* forge-list-requested-reviews:          Listing Topics and Notifications.
+                                                              (line  99)
 * forge-remove-repository:               Miscellaneous.       (line  41)
 * forge-remove-topic-locally:            Miscellaneous.       (line  46)
 * forge-reset-database:                  Miscellaneous.       (line  57)
@@ -1203,9 +1235,9 @@ Appendix E Variable Index
 * Menu:
 
 * forge-owned-accounts:                  Listing Topics and Notifications.
-                                                              (line 108)
+                                                              (line 128)
 * forge-owned-blacklist:                 Listing Topics and Notifications.
-                                                              (line 113)
+                                                              (line 133)
 
 
 
@@ -1223,15 +1255,15 @@ Node: Branching18814
 Node: Working with Topics24935
 Node: Visiting Topics25308
 Node: Listing Topics and Notifications27036
-Node: Creating Topics30996
-Node: Editing Topics and Posts31561
-Node: Miscellaneous35118
-Node: FAQ37447
-Node: Is it possible to create a single pull-request without pulling everything?37647
-Node: Keystroke Index38052
-Node: Command Index41938
-Node: Function Index47083
-Node: Variable Index49249
+Node: Creating Topics31578
+Node: Editing Topics and Posts32143
+Node: Miscellaneous35700
+Node: FAQ38029
+Node: Is it possible to create a single pull-request without pulling everything?38229
+Node: Keystroke Index38634
+Node: Command Index42520
+Node: Function Index47961
+Node: Variable Index50719
 
 End Tag Table
 

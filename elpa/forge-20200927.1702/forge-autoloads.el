@@ -294,6 +294,18 @@ Options `forge-owned-accounts' and `forge-owned-blacklist'
 controls which repositories are considered to be owned by you.
 Only Github is supported for now." t nil)
 
+(autoload 'forge-list-authored-pullreqs "forge-list" "\
+List open pull-requests of the current repository that are authored by you.
+List them in a separate buffer.
+
+\(fn ID)" t nil)
+
+(autoload 'forge-list-authored-issues "forge-list" "\
+List open issues from the current repository that are authored by you.
+List them in a separate buffer.
+
+\(fn ID)" t nil)
+
 (autoload 'forge-list-repositories "forge-list" "\
 List known repositories in a separate buffer.
 Here \"known\" means that an entry exists in the local database." t nil)
