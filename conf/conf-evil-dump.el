@@ -58,6 +58,7 @@
                 ("*compile*" . normal)
                 ;; ("*Org Src" . insert)
                 ("*Org Export Dispatcher*" . insert)
+                ("COMMIT_EDITMSG" . insert)
                 ("*Async Shell Command*" . normal)
                 ("^ \\*load\\*")))
 (defun vmacs-calc-hook()
