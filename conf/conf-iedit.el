@@ -5,8 +5,8 @@
 (global-set-key (kbd "C-;") 'iedit-mode)
 (with-eval-after-load 'iedit
   (add-hook 'iedit-mode-hook #'(lambda() (electric-pair-mode -1)))
-  (add-hook 'iedit-aborting-hook  #'electric-pair-mode)
-  (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode (kbd "C-;")  'iedit-quit)
+  (add-hook 'iedit-aborting-hook #'electric-pair-mode)
+  (evil-define-minor-mode-key '(motion visual normal insert) 'iedit-mode (kbd "C-;")  'iedit-quit)
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode "t"   'iedit-show/hide-occurrence-lines)
 
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode "gg"  'iedit-goto-first-occurrence)
