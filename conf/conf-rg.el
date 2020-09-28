@@ -49,6 +49,7 @@ under the project root directory."
   (define-key rg-mode-map "g" nil)
   (define-key rg-mode-map "e" nil)
   (define-key rg-mode-map "i" nil)
+  (define-key rg-mode-map "s" nil)
   (define-key rg-mode-map "l" nil)
   (define-key rg-mode-map "h" nil)
   (define-key rg-mode-map (kbd "M-n") 'next-error-no-select)
@@ -139,7 +140,7 @@ under the project root directory."
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit))
 
 (defun enable-wgrep-when-entry-insert()
-  (when (derived-mode-p 'ivy-occur-mode 'rg-mode
+  (when (derived-mode-p 'ivy-occur-mode 'rg-mode 'grep-mode
                         'ivy-occur-grep-mode 'helm-grep-mode)
     (wgrep-change-to-wgrep-mode)))
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
