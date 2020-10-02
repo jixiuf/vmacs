@@ -24,7 +24,7 @@ The user's $HOME directory is abbreviated as a tilde."
   (let ((bufs (vmacs-buffers))
         (recentf (vmacs-recentf))
         (gitfiles (vmacs--git-files)))
-    (append bufs recentf  gitfiles)))
+    (append bufs recentf vmacs-dired-history gitfiles)))
 
 
 (defun vmacs-recentf ()
