@@ -7,9 +7,13 @@
 
 (with-eval-after-load 'cc-mode
   (require 'ccls)
-  (add-hook 'c-mode-hook 'lsp)
-  (add-hook 'c++-mode-hook 'lsp)
-  (add-hook 'objc-mode-hook 'lsp))
+  (defun vmacs-cc-hook()
+    (lsp-deferred)
+    ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
+    (add-hook 'before-save-hook #'lsp-format-buffer 20 t))
+  (add-hook 'c-mode-hook 'vmacs-cc-hook)
+  (add-hook 'c++-mode-hook 'vmacs-cc-hook)
+  (add-hook 'objc-mode-hook 'vmacs-cc-hook))
 
 (define-key evil-normal-state-map "gf" 'evil-jump-forward)
 (define-key evil-normal-state-map "gb" 'evil-jump-backward)
