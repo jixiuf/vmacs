@@ -18,15 +18,7 @@
 (with-eval-after-load 'lua (require 'conf-program-lua))
 (require 'conf-face)
 ;; (when (executable-find "gpg") (require 'conf-gpg))
-(require 'conf-sql)
-
-;; 如果你想重新编译，去掉这行前面的注释重新启动
-;; (async-byte-recompile-directory user-emacs-directory)
-;; 或者如果在linux 或mac 或 windows上有make rm等一系列命令
-;; 可以在本目录下运行以下命令
-;; make compile
-
-
+(with-eval-after-load 'sql (require 'conf-sql))
 
 (require 'conf-evil)
 ;; mac 上处理evil-mode 与中文输入法
@@ -37,7 +29,8 @@
 
 (when (eq system-type 'darwin) (require 'conf-macos))
 (when (eq system-type 'windows-nt) (require 'conf-w32))
-(require 'conf-iedit)
+(global-set-key (kbd "C-;") 'iedit-mode)
+(with-eval-after-load 'iedit (require 'conf-iedit))
 (require 'conf-common)
 (require 'conf-org)
 

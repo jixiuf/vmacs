@@ -1,8 +1,6 @@
 ;;; Code:
-(autoload 'iedit-mode "iedit" nil t)
 ;; C-u0 只限本函数内
 ;; C-u 恢复上次的iedit
-(global-set-key (kbd "C-;") 'iedit-mode)
 (with-eval-after-load 'iedit
   (add-hook 'iedit-mode-hook #'(lambda() (electric-pair-mode -1)))
   (add-hook 'iedit-aborting-hook #'electric-pair-mode)
