@@ -11,7 +11,7 @@
   (require 'cc-mode)
   (require 'hippie-exp))
 
-(require 'clang-format)
+;; (require 'clang-format)
 
 (declare-function novel-fill "lazy-novel-mode")
 (defun term-complete-tab()
@@ -23,7 +23,7 @@
 (defvar smart-tab-completion-functions
   '(
     (emacs-lisp-mode company-complete)
-    (python-mode jedi:complete)
+    ;; (python-mode jedi:complete)
     (Custom-mode  widget-forward)
     (magit-status-mode magit-section-toggle)
     (magit-mode magit-section-toggle)
@@ -75,12 +75,10 @@
                   (or (looking-back "[,;)}]" (point-at-bol))   ;前面是,;)} 几种符号 ，则不适全补全
                       (looking-back "]" (point-at-bol))        ;前面是] 也不适全补全
                       ))))
-    (if (and mark-active )
-        (if (and (locate-dominating-file default-directory ".clang-format")
-                 (member major-mode '(c-mode c++-mode))
-                 )
+    (if (and mark-active)
+        (if (member major-mode '(c-mode c++-mode))
             (progn
-              (call-interactively #'clang-format-region)
+              (call-interactively #'lsp-format-region)
               (deactivate-mark))
           (indent-region (region-beginning) (region-end)))
       (if (or indent-tabs-mode
