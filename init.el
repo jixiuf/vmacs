@@ -34,7 +34,7 @@
 (require 'conf-evil-symbol)       ;对symbol 的操作
 (require 'conf-evil-window)       ;窗口
 (require 'conf-evil-clipboard)
-(require 'conf-bm)              ; 可视化书签功能与跳转功能
+;; (require 'conf-bm)              ; 可视化书签功能与跳转功能
 
 (when (eq system-type 'darwin) (require 'conf-macos))
 (when (eq system-type 'windows-nt) (require 'conf-w32))

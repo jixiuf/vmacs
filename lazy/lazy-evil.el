@@ -1,28 +1,15 @@
 ;;; -*- lexical-binding: t; coding:utf-8 -*-
 (eval-when-compile (require 'evil)
                    (require 'pulse))
-(require 'bm)
 (autoload 'pulse-momentary-highlight-region "pulse")
 
 (defvar evil-mark-funs-marker nil)
 
-;; (defadvice keyboard-quit (before save-marker-when-mark-region activate)
-;;   "goto init position after quit mark region"
-;;   (when (and (member last-command '(evil-mark-defun
-;;                                     evil-M-h
-;;                                     evil-mark-whole-buffer
-;;                                     evil-indent))
-;;              ;; (region-active-p)
-;;              evil-mark-funs-marker)
-;;     (goto-char (marker-position evil-mark-funs-marker))
-;;     (setq evil-mark-funs-marker nil)
-;;     (bm-bookmark-remove)))
 (defun go-back-after-mark-region()
   (when (and evil-mark-funs-marker
              (not mark-active))
-    (goto-char (marker-position evil-mark-funs-marker))
-    (setq evil-mark-funs-marker nil)
-    (bm-bookmark-remove)))
+    (evil-jump-backward)
+    (setq evil-mark-funs-marker nil)))
 
   (add-hook 'post-command-hook 'go-back-after-mark-region)
 
@@ -31,7 +18,7 @@
   "call function binding to `C-M-h'"
   (interactive)
   (setq evil-mark-funs-marker (point-marker))
-  (bm-bookmark-add)
+  (evil-set-jump)
   (call-interactively (key-binding (kbd "C-M-h")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-M-h"))))))
@@ -40,7 +27,7 @@
   "call function binding to `M-h'"
   (interactive)
   (setq evil-mark-funs-marker (point-marker))
-  (bm-bookmark-add)
+  (evil-set-jump)
   (call-interactively (key-binding (kbd "M-h")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "M-h"))))))
@@ -49,7 +36,7 @@
   "call function binding to `C-xh'"
   (interactive)
   (setq evil-mark-funs-marker (point-marker))
-  (bm-bookmark-add)
+  (evil-set-jump)
   (call-interactively (key-binding (kbd "C-x h")))
   (message (concat "call function: "
                    (symbol-name (key-binding (kbd "C-x h"))))))

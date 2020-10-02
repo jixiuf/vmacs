@@ -21,7 +21,6 @@
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
 ;; 设置一些mode的初始state
 (evil-set-initial-state 'vterm-mode 'insert)
-(evil-set-initial-state 'bm-show-mode 'insert)
 (evil-set-initial-state 'diff-mode 'normal)
 (evil-set-initial-state 'git-rebase-mode 'normal)
 (evil-set-initial-state 'package-menu-mode 'normal)

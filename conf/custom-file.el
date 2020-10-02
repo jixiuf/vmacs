@@ -22,7 +22,7 @@
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes
-   '("228367014b0abc4b8afe6244d3f4652aaeaac1dddbb5582c2432221e7dd05d98" ))
+   '("228367014b0abc4b8afe6244d3f4652aaeaac1dddbb5582c2432221e7dd05d98"))
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
@@ -38,7 +38,7 @@
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
  '(package-selected-packages
-   '(modus-vivendi-theme dap-mode posframe orderless rg magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link evil elisp-def dockerfile-mode json-mode iedit osx-dictionary dired-narrow magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell bm ethan-wspace git-commit go-mode golden-ratio goto-chg lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
+   '(modus-vivendi-theme dap-mode posframe orderless rg magit-libgit docker-tramp ox-gfm forge clang-format centaur-tabs lsp-python-ms ccls org-re-reveal htmlize evil-magit git-link evil dockerfile-mode json-mode iedit osx-dictionary dired-narrow magit gitconfig-mode dired-filetype-face auto-compile golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell ethan-wspace git-commit go-mode golden-ratio goto-chg lua-mode markdown-mode protobuf-mode thrift web-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((checkdoc-minor-mode . t)
