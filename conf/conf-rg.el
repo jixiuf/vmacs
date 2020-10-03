@@ -3,7 +3,7 @@
 ;;; Code:
 (require 'rg)
 (setq rg-show-header t)
-(setq rg-command-line-flags '("-z"))
+(setq rg-command-line-flags '("-z" "--pcre2"))
 (setq rg-group-result nil)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>g") rg-global-map)
 (define-key rg-global-map (kbd "C-.") #'vmacs-rg-dwim-current-dir)
@@ -12,31 +12,51 @@
 (define-key rg-global-map "g" #'vmacs-rg-word-current-dir)
 (define-key rg-global-map "p" #'vmacs-rg-word-root-dir)
 (define-key rg-global-map "m" #'rg-menu)
+;; (rg-define-toggle "-w" "w" t) ;word edge ,等同于前后加\b
+;; 0宽断言
+;; https://leongfeng.github.io/2017/03/10/regex-java-assertions/
+;;  '(?<![a-zA-Z0-9_-])(world)(?![a-zA-Z0-9-_])' ;
+;; 搜索world ，只是它前后不能包含a-z等字符， 基本等价于\bworld\b
+;; 但是\b 对于_- 也当作单词边界,并不符合我的预期
+;;
+;; 利用0宽断言作多关键字匹配，
+;; rg --pcre2    '(defun).*(?=vmacs-rg-query).*(?=val)'
+(defun vmacs-rg-query(&optional val wrap)
+  (print (prefix-numeric-value current-prefix-arg))
+  (unless val (setq val (thing-at-point 'symbol)))
+  (if wrap
+      (format "%s%s%s" "(?<![a-zA-Z0-9_-])" val "(?![a-zA-Z0-9-_])")
+    val))
 
+;; 默认 使用有单词边界的正则，C-u 使用非正则，C-uC-u 使用用户输入的正则（不含边界）
 (rg-define-search vmacs-rg-word-current-dir
-  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
-  :flags ("--type=all")
+  :query (vmacs-rg-query (rg-read-pattern  (= 4 (prefix-numeric-value current-prefix-arg)))
+                         (= 1 (prefix-numeric-value current-prefix-arg)))
+  :format (= 4 (prefix-numeric-value current-prefix-arg))      ;无prefix arg 或prefix>4 使用regex，否是非正则
+  :flags ("--type=all ")
   :files current :dir current)
 (rg-define-search vmacs-rg-word-root-dir
+  :query (vmacs-rg-query (rg-read-pattern  (= 4 (prefix-numeric-value current-prefix-arg)))
+                         (= 1 (prefix-numeric-value current-prefix-arg)))
+  :format (= 4 (prefix-numeric-value current-prefix-arg))      ;无prefix arg 或prefix>4 使用regex，否是非正则
   :flags ("--type=all")
-  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
   :files current :dir project)
 
 (rg-define-search vmacs-rg-dwim-current-dir
   "Search for thing at point in files matching the current file
 under the current directory."
-  :query point
+  :query (vmacs-rg-query nil (= 1 (prefix-numeric-value current-prefix-arg)))
+  :format (= 4 (prefix-numeric-value current-prefix-arg))      ;无prefix arg 或prefix>4 使用regex，否是非正则
   :flags ("--type=all")
-  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
   :files current
   :dir current)
 
 (rg-define-search vmacs-rg-dwim-project-dir
   "Search for thing at point in files matching the current file
 under the project root directory."
-  :query point
+  :query (vmacs-rg-query nil (= 1 (prefix-numeric-value current-prefix-arg)))
+  :format (= 4 (prefix-numeric-value current-prefix-arg))      ;无prefix arg 或prefix>4 使用regex，否是非正则
   :flags ("--type=all")
-  :format (not current-prefix-arg)      ;do a literal search by default, regexp with a prefix arg
   :files current
   :dir project)
 
@@ -62,11 +82,7 @@ under the project root directory."
   (define-key rg-mode-map "I" #'rg-rerun-toggle-ignore)
   (define-key rg-mode-map (kbd "z") 'rg-occur-hide-lines-matching)
   (define-key rg-mode-map (kbd "/") 'rg-occur-hide-lines-not-matching)
-  (evil-define-key 'normal 'local "gr" 'rg-recompile)
-  ;; (setq-local compilation-auto-jump-to-first-error t)
-  ;; (setq-local compilation-auto-jump-to-next t)
-  ;; (call-interactively 'compilation-next-error)
-  )
+  (evil-define-key 'normal 'local "gr" 'rg-recompile))
 
 (add-hook 'rg-mode-hook #'vmacs-rg-hook)
 
