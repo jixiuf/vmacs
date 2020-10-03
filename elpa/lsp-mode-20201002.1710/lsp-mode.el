@@ -5690,10 +5690,11 @@ perform the request synchronously."
   "Send request named METHOD and get cross references of the symbol under point.
 EXTRA is a plist of extra parameters.
 REFERENCES? t when METHOD returns references."
-  (if-let ((loc (lsp-request method
-                             (append (lsp--text-document-position-params) extra))))
-      (lsp-show-xrefs (lsp--locations-to-xref-items loc) display-action references?)
-    (message "Not found for: %s" (thing-at-point 'symbol t))))
+  (let ((loc (lsp-request method
+                          (append (lsp--text-document-position-params) extra))))
+    (if (seq-empty-p loc)
+        (message "Not found for: %s" (thing-at-point 'symbol t))
+      (lsp-show-xrefs (lsp--locations-to-xref-items loc) display-action references?))))
 
 (cl-defun lsp-find-declaration (&key display-action)
   "Find declarations of the symbol under point."
@@ -7756,10 +7757,12 @@ This avoids overloading the server with many files when starting Emacs."
        (with-help-window (current-buffer)
          ,@(-map (-lambda ((msg form))
                    `(insert (format "%s: %s\n" ,msg
-                                    (if (with-current-buffer buf
-                                          ,form)
-                                        (propertize "OK" 'face 'success)
-                                      (propertize "ERROR" 'face 'error)))))
+                                    (let ((res (with-current-buffer buf
+                                                 ,form)))
+                                      (cond
+                                       ((eq res :optional) (propertize "NOT AVAILABLE (OPTIONAL)" 'face 'warning))
+                                       (res (propertize "OK" 'face 'success))
+                                       (t (propertize "ERROR" 'face 'error)))))))
                  (-partition 2 checks))))))
 
 (defvar company-backends)
@@ -7772,8 +7775,9 @@ This avoids overloading the server with many files when starting Emacs."
   (interactive)
   (lsp--doctor
    "Checking for Native JSON support" (functionp 'json-serialize)
-   "Checking emacs version has `read-process-output-max'" (boundp 'read-process-output-max)
-   "Using company-capf" (-contains? company-backends 'company-capf)
+   "Using company-capf" (--find (or (equal it 'company-capf)
+                                    (and (listp it) (-contains? it 'company-capf)))
+                                company-backends)
    "Check emacs supports `read-process-output-max'" (boundp 'read-process-output-max)
    "Check `read-process-output-max' default has been changed from 4k"
    (and (boundp 'read-process-output-max)
@@ -7783,7 +7787,11 @@ This avoids overloading the server with many files when starting Emacs."
        (progn (lsp--make-message (list "a" "b"))
               nil)
      (error t))
-   "`gc-cons-threshold' increased?" (> gc-cons-threshold 800000)))
+   "`gc-cons-threshold' increased?" (> gc-cons-threshold 800000)
+   "Using gccemacs with emacs lisp native compilation (https://akrl.sdf.org/gccemacs.html)"
+   (or (and (fboundp 'native-comp-available-p)
+            (native-comp-available-p))
+       :optional)))
 
 
 ;; org-mode/virtual-buffer

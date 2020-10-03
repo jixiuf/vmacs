@@ -990,12 +990,12 @@ values.  It is intended to be used as a distant-foreground
 property."
   (pcase modus-vivendi-theme-mode-line
     ('3d
-     `(:foreground ,fg-alt :background ,bg-alt
+     `(:background ,bg-alt :foreground ,fg-alt
                    :box (:line-width ,(or border-width 1)
                                      :color ,border-3d
                                      :style ,(and alt-style 'released-button))))
     ('moody
-     `(:foreground ,fg-alt :background ,bg-alt :underline ,border :overline ,border
+     `(:background ,bg-alt :foreground ,fg-alt :underline ,border :overline ,border
                    :distant-foreground ,fg-distant))
     (_
      `(:foreground ,fg :background ,bg :box ,border))))
@@ -3240,7 +3240,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(Man-reverse ((,class :inherit modus-theme-subtle-magenta)))
    `(Man-underline ((,class :foreground ,cyan :underline t)))
 ;;;;; markdown-mode
-   `(markdown-blockquote-face ((,class :foreground ,fg-special-warm :slant ,modus-theme-slant)))
+   `(markdown-blockquote-face ((,class :foreground ,fg-special-cold :slant ,modus-theme-slant)))
    `(markdown-bold-face ((,class :inherit bold)))
    `(markdown-code-face ((,class ,@(modus-vivendi-theme-mixed-fonts))))
    `(markdown-comment-face ((,class :foreground ,fg-alt :slant ,modus-theme-slant)))
@@ -3591,12 +3591,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-block-end-line ((,class :inherit org-block-begin-line)))
    `(org-checkbox ((,class :box (:line-width 1 :color ,bg-active)
                            :background ,bg-inactive :foreground ,fg-active)))
-   `(org-checkbox-statistics-done ((,class :box ,bg-region :background ,bg-dim
-                                           :foreground ,green
-                                           :inherit ,modus-theme-variable-pitch)))
-   `(org-checkbox-statistics-todo ((,class :box ,bg-region :background ,bg-dim
-                                           :foreground ,red-alt
-                                           :inherit ,modus-theme-variable-pitch)))
+   `(org-checkbox-statistics-done ((,class :inherit org-done)))
+   `(org-checkbox-statistics-todo ((,class :inherit org-todo)))
    `(org-clock-overlay ((,class :inherit modus-theme-special-cold)))
    `(org-code ((,class ,@(modus-vivendi-theme-mixed-fonts) :foreground ,magenta)))
    `(org-column ((,class :background ,bg-alt)))
@@ -3646,7 +3642,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-property-value ((,class ,@(modus-vivendi-theme-mixed-fonts)
                                  :foreground ,cyan-alt-other)))
    `(org-quote ((,class ,@(modus-vivendi-theme-org-block bg-dim)
-                        :foreground ,fg-special-calm :slant ,modus-theme-slant)))
+                        :foreground ,fg-special-cold :slant ,modus-theme-slant)))
    `(org-scheduled ((,class :foreground ,fg-special-warm)))
    `(org-scheduled-previously ((,class :foreground ,yellow-alt-other)))
    `(org-scheduled-today ((,class :foreground ,magenta-alt-other)))

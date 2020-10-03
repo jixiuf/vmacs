@@ -312,7 +312,7 @@ Click lsp lens using `avy' package." t nil)
 ;;;### (autoloads nil "lsp-lua" "lsp-lua.el" (0 0 0 0))
 ;;; Generated autoloads from lsp-lua.el
 
-(register-definition-prefixes "lsp-lua" '("lsp-clients-"))
+(register-definition-prefixes "lsp-lua" '("lsp-"))
 
 ;;;***
 
