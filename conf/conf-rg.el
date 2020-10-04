@@ -158,7 +158,11 @@ under the project root directory."
 (defun enable-wgrep-when-entry-insert()
   (when (derived-mode-p 'ivy-occur-mode 'rg-mode 'grep-mode
                         'ivy-occur-grep-mode 'helm-grep-mode)
-    (wgrep-change-to-wgrep-mode)))
+    (wgrep-change-to-wgrep-mode)
+    (when (equal last-command 'iedit-mode)
+      ;; 恢复iedit bug导致rg iedit在进入wgrep 模式下 iedit 消失
+      (run-with-timer 0.001 nil 'iedit-mode '(4)))))
+
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
 
 (provide 'conf-rg)
