@@ -42,22 +42,6 @@
   (setq xref-show-xrefs-function 'completing-read-xref-show-defs)
   (setq xref-show-definitions-function 'completing-read-xref-show-defs)
 
-  (defgroup completing-read-xref nil
-    "Select xref results using completing-read."
-    :prefix "completing-read-xref-"
-    :group 'completing-read
-    :link '(url-link :tag "Github" "https://github.com/jixiuf/completing-read-xref"))
-
-  (defcustom completing-read-xref-use-file-path nil
-    "Whether to display the file path."
-    :type 'boolean
-    :group 'completing-read-xref)
-
-  (defcustom completing-read-xref-remove-text-properties nil
-    "Whether to display the candidates with their original faces."
-    :type 'boolean
-    :group 'completing-read-xref)
-
   (defun completing-read-xref-make-collection (xrefs)
     "Transform XREFS into a collection for display via `completing-read'."
     (let ((collection nil))
@@ -69,21 +53,15 @@
                   (concat
                    (propertize
                     (concat
-                     (if completing-read-xref-use-file-path
-                         file
-                       (file-name-nondirectory file))
+                     (file-name-nondirectory file)
                      (if (integerp line)
                          (format ":%d: " line)
                        ": "))
                     'face 'compilation-info)
-                   (progn
-                     (when completing-read-xref-remove-text-properties
-                       (set-text-properties 0 (length summary) nil summary))
-                     summary))))
+                   summary)))
             (push `(,candidate . ,location) collection))))
       (nreverse collection)))
 
-;;;###autoload
   (defun completing-xref-show-xrefs (fetcher alist)
     "Show the list of xrefs returned by FETCHER and ALIST via completing-read."
     ;; call the original xref--show-xref-buffer so we can be used with
@@ -118,7 +96,6 @@
       ;; return value
       buffer))
 
-;;;###autoload
   (defun completing-read-xref-show-defs (fetcher alist)
     "Show the list of definitions returned by FETCHER and ALIST via completing-read.
 Will jump to the definition if only one is found."
