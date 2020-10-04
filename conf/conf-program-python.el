@@ -59,7 +59,7 @@
   ;;   (find-file "~/.emacs.d/conf/conf-program-python.el")
   ;;   (message "pyls not found,try setup python now"))
   (require 'lsp-python-ms)
-  (lsp))
+  (lsp-deferred))
 (add-hook 'python-mode-hook 'vmacs-python-mode-hook)
 
 
