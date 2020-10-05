@@ -12,7 +12,7 @@
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
-(setq max-mini-window-height 0.45)        ;selectrum-num-candidates-displayed 受影响
+(setq max-mini-window-height 20)        ;selectrum-num-candidates-displayed 受影响
 (setq resize-mini-windows 'grow-only)
 ;; (setq read-answer-short t)
 (setq minibuffer-eldef-shorten-default t)
@@ -64,8 +64,8 @@ Monospaced font whihc is fixed idth and height is recommended."
   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
   (setq mini-frame-show-parameters
         '((top . 0.4) (width . 0.7) (left . 0.3)
-          (min-height .  5)
-          (height . 10)
+          (min-height .  3)
+          (height . 15)
           (minibuffer-exit . t)
           (font . "Sarasa Mono CL-22")
           (alpha . 100)
