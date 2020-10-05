@@ -64,18 +64,19 @@ Monospaced font whihc is fixed idth and height is recommended."
   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
   (setq mini-frame-show-parameters
         '((top . 0.4) (width . 0.7) (left . 0.3)
-          (min-height .  3)
+          (min-height .  4)
           (height . 15)
           (minibuffer-exit . t)
           (font . "Sarasa Mono CL-22")
           (alpha . 100)
           (left-fringe . 10 )
           (cursor-color . "Yellow")
+          (background-color . "#2a3a4a")
           ;; (border-color . "green")
-          ;; (background-mode 'light)
-          (background-mode 'dark)
-          (foreground-color . "#bbc2cf") ;;
-          (background-color . "SkyBlue4")))
+          (background-mode 'light)
+          ;; (background-mode 'dark)
+          ;; (foreground-color . "#dddddd") ;;
+          ))
 
   (mini-frame-mode 1))
 
