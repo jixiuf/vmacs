@@ -23,7 +23,7 @@
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
 (defface vmacs-minibuffer-font
-  `((t :inherit default :height 1.3))
+  `((t :inherit default :height 1.2))
   "The default font for minibuffer buffer.
 Monospaced font whihc is fixed idth and height is recommended."
   :group 'minibuffer)
@@ -60,11 +60,13 @@ Monospaced font whihc is fixed idth and height is recommended."
 (when (require 'mini-frame nil t)
   (setq mini-frame-resize-max-height max-mini-window-height)
   (setq mini-frame-completions-focus 'minibuffer)
+  (setq mini-frame-border-color "gray70")
   ;; (setq mini-frame-ignore-commands nil)
   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
   (setq mini-frame-show-parameters
-        '((top . 0.4) (width . 0.7) (left . 0.3)
-          (min-height .  4)
+        '((top . 0.4)
+          (width . 0.9) (left . 0.5)
+          (min-height .  5)
           (height . 15)
           (minibuffer-exit . t)
           (font . "Sarasa Mono CL-22")
