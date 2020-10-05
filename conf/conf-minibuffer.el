@@ -75,8 +75,10 @@ Monospaced font whihc is fixed idth and height is recommended."
           ;; (background-mode 'light)
           (background-mode 'dark)
           (foreground-color . "#bbc2cf") ;;
-          (background-color . "#242730")))
+          (background-color . "SkyBlue4")))
+
   (mini-frame-mode 1))
+
 
 
 (provide 'conf-minibuffer)
