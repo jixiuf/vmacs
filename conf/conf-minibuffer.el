@@ -72,15 +72,10 @@ Monospaced font whihc is fixed idth and height is recommended."
           (minibuffer-exit . t)
           (font . "Sarasa Mono CL-22")
           (alpha . 100)
-          (left-fringe . 10 )
+          ;; (left-fringe . 10 )
           (cursor-color . "Yellow")
           (background-color . "#2a3a4a")
-          ;; (border-color . "green")
-          (background-mode 'light)
-          ;; (background-mode 'dark)
-          ;; (foreground-color . "#dddddd") ;;
-          ))
-
+          (background-mode . 'dark)))
   (mini-frame-mode 1))
 
 
