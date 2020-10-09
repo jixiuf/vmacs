@@ -1,10 +1,5 @@
 (require 'company)
-;; (require 'company-posframe)
-;; (require 'company-lsp)
 
-
-;; (setq-default company-lsp-cache-candidates 'auto)
-(add-to-list 'lsp-file-watch-ignored "[/\\\\]\\vendor$")
 
 ;; 调整默认backends
 (setq-default company-backends
@@ -72,16 +67,6 @@
         '(vmacs-company-complete-common-or-selection)))
 
 (global-company-mode 1)
-
-;; (unless (or (daemonp) (vmacs-dumping-p))
-;;   (company-posframe-mode 1))
-
-;; (defun vmacs-company-posframe-mode(&optional frame)
-;;   (with-selected-frame frame
-;;     (company-posframe-mode 1)))
-
-;; (add-hook 'after-make-frame-functions 'vmacs-company-posframe-mode)
-;; ;; (add-hook 'after-init-hook (lambda() (global-company-mode 1)))
 
 (defun vmacs-company-complete-common-or-selection()
   (interactive)

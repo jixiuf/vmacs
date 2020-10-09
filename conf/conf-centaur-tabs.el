@@ -8,8 +8,8 @@
 (global-set-key  (kbd "s-C-M-n") 'centaur-tabs-forward)
 (global-set-key  (kbd "s-p") 'centaur-tabs-backward)
 (global-set-key  (kbd "s-C-M-p") 'centaur-tabs-backward)
-(define-key evil-normal-state-map (kbd "gh") 'centaur-tabs-move-current-tab-to-left)
-(define-key evil-normal-state-map (kbd "gl") 'centaur-tabs-move-current-tab-to-right)
+;; (define-key evil-normal-state-map (kbd "gh") 'centaur-tabs-move-current-tab-to-left)
+;; (define-key evil-normal-state-map (kbd "gl") 'centaur-tabs-move-current-tab-to-right)
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>e") 'centaur-tabs-build-ivy-source)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>e") 'centaur-tabs-forward-group)
 
@@ -40,6 +40,7 @@
                           "\*eldoc"
                           "\*Launch "
                           "*dap-"
+                          "*EGLOT "
                           "\*Flymake log\*"
                           "\*Help\*"
                           "\*Ibuffer\*"

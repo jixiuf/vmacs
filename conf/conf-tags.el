@@ -1,19 +1,13 @@
 ;;; -*- coding:utf-8 -*-
+;; (setq eglot-confirm-server-initiated-edits nil)
+;; (setq eglot-autoshutdown t)
+(defun vmacs-lsp-hook()
+  (eglot-ensure)
+  ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
+  (add-hook 'before-save-hook #'eglot-format-buffer 20 t))
 
-(setq lsp-print-performance t)
-(setq-default lsp-keymap-prefix "C-M-s-l")
-;; (setq lsp-auto-configure t)
-;; (setq lsp-enable-indentation nil)
-
-(with-eval-after-load 'cc-mode
-  (require 'ccls)
-  (defun vmacs-cc-hook()
-    (lsp-deferred)
-    ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
-    (add-hook 'before-save-hook #'lsp-format-buffer 20 t))
-  (add-hook 'c-mode-hook 'vmacs-cc-hook)
-  (add-hook 'c++-mode-hook 'vmacs-cc-hook)
-  (add-hook 'objc-mode-hook 'vmacs-cc-hook))
+(dolist (mod '(python-mode-hook c++-mode-hook c-mode-hook ))
+  (add-hook mod 'vmacs-lsp-hook))
 
 (define-key evil-normal-state-map "gf" 'evil-jump-forward)
 (define-key evil-normal-state-map "gb" 'evil-jump-backward)
@@ -23,21 +17,22 @@
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>.") 'evil-jump-forward)      ;space. 下一个书签
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
-(define-key evil-motion-state-map "gr" 'lsp-find-references)
+(define-key evil-motion-state-map "gr" 'xref-find-references)
+(define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
 ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
-;; (define-key evil-motion-state-map "gd" 'xref-find-references)
-(define-key evil-motion-state-map "gi" 'lsp-find-implementation)
-(define-key evil-normal-state-map "gi" 'lsp-find-implementation)
-(define-key evil-motion-state-map "gc" 'lsp-find-implementation)
-(define-key evil-motion-state-map "gR" 'lsp-rename)
+(define-key evil-motion-state-map "gr" 'xref-find-references)
+(define-key evil-normal-state-map "gi" 'eglot-find-implementation)
+(define-key evil-motion-state-map "gc" 'eglot-find-declaration)
+(define-key evil-motion-state-map "gR" 'eglot-rename)
+(define-key evil-normal-state-map "gh" 'eglot-code-actions)
 
 (with-eval-after-load 'xref
-  ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
-  ;; (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
-  (define-key xref--xref-buffer-mode-map (kbd "r") #'xref-query-replace-in-results)
-  (define-key xref--xref-buffer-mode-map (kbd "TAB") #'xref-goto-xref)
-  (define-key xref--xref-buffer-mode-map (kbd "<return>")  #'xref-quit-and-goto-xref)
-  (define-key xref--xref-buffer-mode-map (kbd "RET")  #'xref-quit-and-goto-xref)
+  ;; ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
+  ;; ;; (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "r") #'xref-query-replace-in-results)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "TAB") #'xref-goto-xref)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "<return>")  #'xref-quit-and-goto-xref)
+  ;; (define-key xref--xref-buffer-mode-map (kbd "RET")  #'xref-quit-and-goto-xref)
 
   (setq xref-show-xrefs-function 'completing-read-xref-show-defs)
   (setq xref-show-definitions-function 'completing-read-xref-show-defs)

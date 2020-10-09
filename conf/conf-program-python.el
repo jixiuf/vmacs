@@ -49,18 +49,18 @@
 ;; C-c. goto def
 ;; C-tab complete
 ;;  C-c , jedi:goto-definition-pop-marker s
-(setq lsp-python-ms-dir
-      (expand-file-name "~/repos/python-language-server/output/bin/Release"))
-(setq lsp-python-ms-executable
-      (expand-file-name "osx-x64/publish/Microsoft.Python.LanguageServer" lsp-python-ms-dir))
+;; (setq lsp-python-ms-dir
+;;       (expand-file-name "~/repos/python-language-server/output/bin/Release"))
+;; (setq lsp-python-ms-executable
+;;       (expand-file-name "osx-x64/publish/Microsoft.Python.LanguageServer" lsp-python-ms-dir))
 
-(defun vmacs-python-mode-hook ()
-  ;; (unless (executable-find "pyls")
-  ;;   (find-file "~/.emacs.d/conf/conf-program-python.el")
-  ;;   (message "pyls not found,try setup python now"))
-  (require 'lsp-python-ms)
-  (lsp-deferred))
-(add-hook 'python-mode-hook 'vmacs-python-mode-hook)
+;; (defun vmacs-python-mode-hook ()
+;;   ;; (unless (executable-find "pyls")
+;;   ;;   (find-file "~/.emacs.d/conf/conf-program-python.el")
+;;   ;;   (message "pyls not found,try setup python now"))
+;;   (require 'lsp-python-ms)
+;;   (lsp-deferred))
+;; (add-hook 'python-mode-hook 'vmacs-python-mode-hook)
 
 
 ;; ; Set PYTHONPATH, because we don't load .bashrc
