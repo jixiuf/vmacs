@@ -13,7 +13,10 @@
   (setq-default gofmt-command (executable-find "goimports")))
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 
+
 (defun vmacs-go-mode-hook()
+  ;; (setq eglot-workspace-configuration '((:gopls . (:usePlaceholders t))))
+  (setq eglot-workspace-configuration '((:gopls . (:usePlaceholders t))))
   (eglot-ensure)
   (add-hook 'before-save-hook #'gofmt 20 t)
   (setq require-final-newline nil)
