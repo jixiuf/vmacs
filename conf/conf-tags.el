@@ -6,6 +6,8 @@
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
   (add-hook 'before-save-hook #'eglot-format-buffer 20 t))
 
+;; :documentHighlightProvider 禁用高亮光标下的单词
+ (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (dolist (mod '(python-mode-hook c++-mode-hook c-mode-hook ))
   (add-hook mod 'vmacs-lsp-hook))
 
