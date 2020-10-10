@@ -30,6 +30,7 @@
 (evil-set-initial-state 'ibuffer-mode 'normal)
 (evil-set-initial-state 'vc-dir-mode 'normal)
 (evil-set-initial-state 'vc-git-log-view-mode 'normal)
+(evil-set-initial-state 'log-edit-mode 'insert)
 (evil-set-initial-state 'vc-svn-log-view-mode 'normal)
 ;; (evil-set-initial-state 'erlang-shell-mode 'normal)
 (evil-set-initial-state 'org-agenda-mode 'normal)
