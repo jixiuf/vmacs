@@ -28,20 +28,21 @@
       (format "%s%s%s" "(?<![a-zA-Z0-9_-])" val "(?![a-zA-Z0-9-_])")
     val))
 
-;; 默认 使用有单词边界的正则，C-u 使用非正则，C-uC-u 使用用户输入的正则（不含边界）
+;; 默认非正则 C-u 使用有单词边界的正则，C-uC-u 使用用户输入的正则（不含边界）
 (rg-define-search vmacs-rg-word-current-dir
-  :query (vmacs-rg-query (rg-read-pattern  (= 4 (prefix-numeric-value current-prefix-arg)))
-                         (= 1 (prefix-numeric-value current-prefix-arg)))
-  :format (= 4 (prefix-numeric-value current-prefix-arg))      ;无prefix arg 或prefix>4 使用regex，否是非正则
+  :query (vmacs-rg-query (rg-read-pattern  (= 1 (prefix-numeric-value current-prefix-arg)))
+                         (= 4 (prefix-numeric-value current-prefix-arg)))
+  :format (= 1 (prefix-numeric-value current-prefix-arg))      ;默认非正则 prefix=4 使用regex（查symbol），16 原样使用regex
   :flags ("--type=all ")
   :files current :dir current)
 (rg-define-search vmacs-rg-word-root-dir
-  :query (vmacs-rg-query (rg-read-pattern  (= 4 (prefix-numeric-value current-prefix-arg)))
-                         (= 1 (prefix-numeric-value current-prefix-arg)))
-  :format (= 4 (prefix-numeric-value current-prefix-arg))      ;无prefix arg 或prefix>4 使用regex，否是非正则
+  :query (vmacs-rg-query (rg-read-pattern  (= 1 (prefix-numeric-value current-prefix-arg)))
+                         (= 4 (prefix-numeric-value current-prefix-arg)))
+  :format (= 1 (prefix-numeric-value current-prefix-arg))      ;默认非正则 prefix=4 使用regex（查symbol），16 原样使用regex
   :flags ("--type=all")
   :files current :dir project)
 
+;; 默认 使用有单词边界的正则，C-u 使用非正则，C-uC-u 使用用户输入的正则（不含边界）
 (rg-define-search vmacs-rg-dwim-current-dir
   "Search for thing at point in files matching the current file
 under the current directory."
