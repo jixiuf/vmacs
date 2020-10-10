@@ -46,6 +46,7 @@
 
 
 
+(define-key magit-mode-map "e" nil)     ;disable ediff
 ;; (define-key magit-mode-map "v" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)
 ;; (transient-append-suffix 'magit-push ?v 'magit-push-current-to-pushremote)
