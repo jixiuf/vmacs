@@ -61,11 +61,11 @@ IF LITERAL is non nil this will trigger a literal search, otherwise a regexp sea
 
 
 (defun vmacs-rg-rerun-exclude-dir ()
-  "Rerun last search but exclude selected diredctory with flag: -g !dir"
+  "Rerun last search but exclude selected filename or diredctory with flag: --glob='!*name*'"
   (interactive)
-  (let ((flags (rg-search-flags rg-cur-search)))
-    (setq flags (append flags `("-g" ,(concat "!" (read-string "exclude dir(demo: elpa or elp*) : ")))))
-    (print flags)
+  (let ((flags (rg-search-flags rg-cur-search))
+        (dir (read-string "exclude(file or dir): ")))
+    (setq flags (append flags (list (format "--glob='!*%s*'"  dir))))
     (setf (rg-search-flags rg-cur-search) flags)
     (rg-rerun)))
 
