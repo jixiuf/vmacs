@@ -75,7 +75,7 @@ under the project root directory."
   (define-key rg-mode-map (kbd "r") #'vmacs-rg-rerun-change-regex)
   (define-key rg-mode-map (kbd "/") #'vmacs-rg-rerun-change-regex)
   (evil-define-key 'normal 'local "gt" 'vmacs-rg-rerun-toggle-surround)
-  (evil-define-key 'normal 'local "x" 'vmacs-rg-rerun-exclude-dir) ;C-ux 则include
+  (evil-define-key 'normal 'local "x" 'vmacs-rg-rerun-filter-by-file) ;C-ux 则
   (evil-define-key 'normal 'local "c" 'vmacs-rg-rerun-toggle-surround)
   (evil-define-key 'normal 'local "gr" 'rg-recompile))
 
@@ -160,7 +160,7 @@ IF LITERAL is non nil this will trigger a literal search, otherwise a regexp sea
     (rg-rerun)))
 
 
-(defun vmacs-rg-rerun-exclude-dir ()
+(defun vmacs-rg-rerun-filter-by-file ()
   "Rerun last search but exclude selected filename or diredctory with flag: --glob='!*name*'"
   (interactive)
   (let ((flags (rg-search-flags rg-cur-search))
