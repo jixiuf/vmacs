@@ -75,7 +75,7 @@ under the project root directory."
   (define-key rg-mode-map (kbd "r") #'vmacs-rg-rerun-change-regex)
   (define-key rg-mode-map (kbd "/") #'vmacs-rg-rerun-change-regex)
   (evil-define-key 'normal 'local "gt" 'vmacs-rg-rerun-toggle-surround)
-  (evil-define-key 'normal 'local "x" 'vmacs-rg-rerun-exclude-dir)
+  (evil-define-key 'normal 'local "x" 'vmacs-rg-rerun-exclude-dir) ;C-ux 则include
   (evil-define-key 'normal 'local "c" 'vmacs-rg-rerun-toggle-surround)
   (evil-define-key 'normal 'local "gr" 'rg-recompile))
 
@@ -164,8 +164,8 @@ IF LITERAL is non nil this will trigger a literal search, otherwise a regexp sea
   "Rerun last search but exclude selected filename or diredctory with flag: --glob='!*name*'"
   (interactive)
   (let ((flags (rg-search-flags rg-cur-search))
-        (dir (read-string "exclude(file or dir): ")))
-    (setq flags (append flags (list (format "--glob='!*%s*'"  dir))))
+        (dir (read-string (format "%s(file or dir): " (if current-prefix-arg "include" "exclude")))))
+    (setq flags (append flags (list (format "--glob='%s*%s*'" (if current-prefix-arg "" "!") dir))))
     (setf (rg-search-flags rg-cur-search) flags)
     (rg-rerun)))
 
@@ -244,6 +244,7 @@ IF LITERAL is non nil this will trigger a literal search, otherwise a regexp sea
     (wgrep-change-to-wgrep-mode)
     (when (equal last-command 'iedit-mode)
       ;; 恢复iedit bug导致rg iedit在进入wgrep 模式下 iedit 消失
+      ;; 但是在 rg-group-result 为t 时似乎无效， 未明其因。
       (run-with-timer 0.001 nil 'iedit-mode '(4)))))
 
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
