@@ -43,6 +43,24 @@
       regex)))
 
 
+
+(defun vmacs-rg-rerun-change-regex ()
+  "Rerun last search but prompt for new regexp."
+  (interactive)
+  (let ((pattern (rg-search-pattern rg-cur-search))
+        (read-from-minibuffer-orig (symbol-function 'read-from-minibuffer)))
+    (when  (string-prefix-p rg-symbol-prefix pattern)
+      (setq pattern (substring  pattern (length rg-symbol-prefix))))
+    (when (string-suffix-p rg-symbol-suffix pattern)
+      (setq pattern (substring  pattern 0 (- (length pattern) (length rg-symbol-suffix)))))
+    (setq pattern (concat pattern " "))
+    (cl-letf (((symbol-function #'read-from-minibuffer)
+               (lambda (prompt &optional _ &rest args)
+                 (apply read-from-minibuffer-orig prompt pattern args))))
+      (setf (rg-search-pattern rg-cur-search) (vmacs-rg-query (rg-read-pattern nil pattern)
+                                                        (= 4 (prefix-numeric-value current-prefix-arg)))))
+    (rg-rerun)))
+
 (defun vmacs-rg-rerun-toggle-surround ()
   "Rerun last search but prompt for new search pattern.
 IF LITERAL is non nil this will trigger a literal search, otherwise a regexp search."
@@ -122,6 +140,7 @@ under the project root directory."
   (define-key rg-mode-map (kbd "H") 'rg-back-history)
   (define-key rg-mode-map (kbd "M-p") 'previous-error-no-select)
   (define-key rg-mode-map "I" #'rg-rerun-toggle-ignore)
+  (define-key rg-mode-map "r" #'vmacs-rg-rerun-change-regex)
   (define-key rg-mode-map (kbd "z") 'rg-occur-hide-lines-matching)
   (define-key rg-mode-map (kbd "/") 'rg-occur-hide-lines-not-matching)
   (evil-define-key 'normal 'local "gt" 'vmacs-rg-rerun-toggle-surround)
