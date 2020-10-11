@@ -1,5 +1,7 @@
 ;; https://github.com/dajva/rg.el
 ;; doc https://rgel.readthedocs.io
+;; -g '!elpa' 不包含elpa
+;; -g '*.el' 包含 el文件
 ;;; Code:
 (require 'rg)
 (setq rg-show-header t)
@@ -36,7 +38,6 @@
           (setq regex (format "%s^(?!.*%s)" regex (substring token 1 (length token))))
         (setq regex (format "%s^(?=.*%s)" regex token ))))
     (when (= 1 (length tokens)) (setq regex val))
-    (print regex)
     (if surround-as-symbol
         (format "%s%s%s" rg-symbol-prefix regex rg-symbol-suffix)
       regex)))
@@ -58,12 +59,22 @@ IF LITERAL is non nil this will trigger a literal search, otherwise a regexp sea
     (setf (rg-search-literal rg-cur-search) nil)
     (rg-rerun)))
 
+
+(defun vmacs-rg-rerun-exclude-dir ()
+  "Rerun last search but exclude selected diredctory with flag: -g !dir"
+  (interactive)
+  (let ((flags (rg-search-flags rg-cur-search)))
+    (setq flags (append flags `("-g" ,(concat "!" (read-string "exclude dir(demo: elpa or elp*) : ")))))
+    (print flags)
+    (setf (rg-search-flags rg-cur-search) flags)
+    (rg-rerun)))
+
 ;; 默认非正则 C-u 使用有单词边界的正则，C-uC-u 使用用户输入的正则（不含边界）
 (rg-define-search  vmacs-rg-word-current-dir
   :query (vmacs-rg-query (rg-read-pattern  nil)
                          (= 4 (prefix-numeric-value current-prefix-arg)))
   :format regexp
-  :flags ("--type=all ")
+  :flags ("--type=all")
   :files current :dir current)
 (rg-define-search vmacs-rg-word-root-dir
   :query (vmacs-rg-query (rg-read-pattern  nil)
@@ -114,6 +125,7 @@ under the project root directory."
   (define-key rg-mode-map (kbd "z") 'rg-occur-hide-lines-matching)
   (define-key rg-mode-map (kbd "/") 'rg-occur-hide-lines-not-matching)
   (evil-define-key 'normal 'local "gt" 'vmacs-rg-rerun-toggle-surround)
+  (evil-define-key 'normal 'local "x" 'vmacs-rg-rerun-exclude-dir)
   (evil-define-key 'normal 'local "c" 'vmacs-rg-rerun-toggle-surround)
   (evil-define-key 'normal 'local "gr" 'rg-recompile))
 
