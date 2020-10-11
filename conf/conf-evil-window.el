@@ -76,6 +76,10 @@
          ;; (side . bottom)
          ;; (window-height . 1)
          )
+        ((lambda (bufname _)
+           (memq this-command '( next-error previous-error compile-goto-error)))
+         (display-buffer-same-window )
+         (inhibit-same-window . nil))
         ("\\*rg\\*"
          (display-buffer-same-window ))
         ("\\*Annotate .*"
