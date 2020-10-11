@@ -60,7 +60,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq mini-frame-resize-max-height max-mini-window-height)
 (setq mini-frame-completions-focus 'minibuffer)
 (setq mini-frame-internal-border-color "gray70")
-(when (require 'mini-frame nil t)
+(when (and (not noninteractive) (require 'mini-frame nil t)) ;batch 模式下miniframe 有问题
   ;; (setq mini-frame-ignore-commands nil)
   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
   (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-change-regex)
