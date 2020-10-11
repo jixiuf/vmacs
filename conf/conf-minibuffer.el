@@ -63,6 +63,10 @@ Monospaced font whihc is fixed idth and height is recommended."
 (when (require 'mini-frame nil t)
   ;; (setq mini-frame-ignore-commands nil)
   (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
+  (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-change-regex)
+  (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-hide-matched)
+
+
   (setq mini-frame-show-parameters
         '((top . 0.4)
           (width . 1.0)
