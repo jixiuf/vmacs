@@ -6,13 +6,14 @@
 (setq rg-command-line-flags '("-z" "--pcre2"))
 (setq rg-group-result nil)
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>g") rg-global-map)
-(define-key rg-global-map (kbd "C-.") #'vmacs-rg-dwim-current-dir)
 (define-key rg-global-map (kbd ".") #'vmacs-rg-dwim-current-dir)
 (define-key rg-global-map (kbd ",") #'vmacs-rg-dwim-project-dir)
 (define-key rg-global-map "g" #'vmacs-rg-word-current-dir)
-(define-key rg-global-map "p" #'vmacs-rg-word-root-dir)
+(define-key rg-global-map "t" #'vmacs-rg-word-root-dir)
 (define-key rg-global-map "m" #'rg-menu)
-;; (rg-define-toggle "-w" "w" t) ;word edge ,等同于前后加\b
+
+(defconst rg-symbol-prefix "(?<![a-zA-Z0-9_-])" )
+(defconst rg-symbol-suffix  "(?![a-zA-Z0-9-_])" )
 ;; 0宽断言
 ;; https://leongfeng.github.io/2017/03/10/regex-java-assertions/
 ;;  '(?<![a-zA-Z0-9_-])(world)(?![a-zA-Z0-9-_])' ;
@@ -20,28 +21,42 @@
 ;; 但是\b 对于_- 也当作单词边界,并不符合我的预期
 ;;
 ;; 利用0宽断言作多关键字匹配，
-;; rg --pcre2    '(defun).*(?=vmacs-rg-query).*(?=val)'
-;; rg --pcre2    'rg-define-search((?:(?!.*vmacs-rg-word-current-dir))+)'
-;; rg --pcre2    'rg-define-search((?:(?=.*vmacs-rg-word-current-dir))+)'
-;; rg --pcre2    '(?=.*rg-define-search)((?:(?!.*vmacs-rg-word-current-dir))+)'
+;; rg --pcre2    '^(?=.*hello)^(?=.*world)' #include hello and world
+;; rg --pcre2    '^(?!.*hello)^(?=.*world)' # include world ,exclude hello
 ;; hello  world
 ;; world  hello
 ;; world  foo
-(defun vmacs-rg-query(&optional val wrap)
+;; hello !world 包含hello 不包含world
+(defun vmacs-rg-query(&optional val surround-as-symbol)
   (unless val (setq val (thing-at-point 'symbol)))
   (let ((tokens (split-string val " " t))
         (regex ""))
     (dolist (token tokens)
       (if (char-equal ?! (car (string-to-list token)))
-          (setq regex (format "%s(?!.*%s)" regex (substring token 1 (length token))))
-        (setq regex (format "%s(?=.*%s)" regex token )))
-      )
+          (setq regex (format "%s^(?!.*%s)" regex (substring token 1 (length token))))
+        (setq regex (format "%s^(?=.*%s)" regex token ))))
     (when (= 1 (length tokens)) (setq regex val))
     (print regex)
-    (if wrap
-      (format "%s%s%s" "(?<![a-zA-Z0-9_-])" regex "(?![a-zA-Z0-9-_])")
-    regex)))
+    (if surround-as-symbol
+        (format "%s%s%s" rg-symbol-prefix regex rg-symbol-suffix)
+      regex)))
 
+
+(defun vmacs-rg-rerun-toggle-surround ()
+  "Rerun last search but prompt for new search pattern.
+IF LITERAL is non nil this will trigger a literal search, otherwise a regexp search."
+  (interactive)
+  (let ((pattern (rg-search-pattern rg-cur-search)))
+    ;; Override read-from-minibuffer in order to insert the original
+    ;; pattern in the input area.
+    (if (not (string-prefix-p rg-symbol-prefix pattern))
+        (setq pattern (format "%s%s%s" rg-symbol-prefix pattern rg-symbol-suffix))
+      (setq pattern (substring  pattern (length rg-symbol-prefix)))
+      (when (string-suffix-p rg-symbol-suffix pattern)
+        (setq pattern (substring  pattern 0 (- (length pattern) (length rg-symbol-suffix))))))
+    (setf (rg-search-pattern rg-cur-search) pattern)
+    (setf (rg-search-literal rg-cur-search) nil)
+    (rg-rerun)))
 
 ;; 默认非正则 C-u 使用有单词边界的正则，C-uC-u 使用用户输入的正则（不含边界）
 (rg-define-search  vmacs-rg-word-current-dir
@@ -51,9 +66,9 @@
   :flags ("--type=all ")
   :files current :dir current)
 (rg-define-search vmacs-rg-word-root-dir
-  :query (vmacs-rg-query (rg-read-pattern  (= 1 (prefix-numeric-value current-prefix-arg)))
+  :query (vmacs-rg-query (rg-read-pattern  nil)
                          (= 4 (prefix-numeric-value current-prefix-arg)))
-  :format (= 1 (prefix-numeric-value current-prefix-arg))      ;默认非正则 prefix=4 使用regex（查symbol），16 原样使用regex
+  :format regexp
   :flags ("--type=all")
   :files current :dir project)
 
@@ -98,6 +113,8 @@ under the project root directory."
   (define-key rg-mode-map "I" #'rg-rerun-toggle-ignore)
   (define-key rg-mode-map (kbd "z") 'rg-occur-hide-lines-matching)
   (define-key rg-mode-map (kbd "/") 'rg-occur-hide-lines-not-matching)
+  (evil-define-key 'normal 'local "gt" 'vmacs-rg-rerun-toggle-surround)
+  (evil-define-key 'normal 'local "c" 'vmacs-rg-rerun-toggle-surround)
   (evil-define-key 'normal 'local "gr" 'rg-recompile))
 
 (add-hook 'rg-mode-hook #'vmacs-rg-hook)
