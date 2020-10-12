@@ -117,6 +117,8 @@
   (evil-define-key 'normal 'local (kbd "C-n") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-r") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
+  (evil-define-key 'normal 'local "i" 'evil-collection-vterm-insert)
+
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
 
@@ -132,6 +134,31 @@
       (kill-process proc))))
 
 (add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
+
+(defun evil-collection-vterm-insert (count &optional vcount skip-empty-lines)
+  (interactive
+   (list (prefix-numeric-value current-prefix-arg)
+         (and (evil-visual-state-p)
+              (memq (evil-visual-type) '(line block))
+              (save-excursion
+                (let ((m (mark)))
+                  ;; go to upper-left corner temporarily so
+                  ;; `count-lines' yields accurate results
+                  (evil-visual-rotate 'upper-left)
+                  (prog1 (count-lines evil-visual-beginning evil-visual-end)
+                    (set-mark m)))))
+         (evil-visual-state-p)))
+  (let ((p (point)))
+    (evil-insert count vcount skip-empty-lines)
+    (vterm-reset-cursor-point)
+    (while (< p (point))
+      (vterm-send-left)
+      (forward-char -1))
+    (while (> p (point))
+      (vterm-send-right)
+      (forward-char 1))))
+
+
 
 (defun vterm-toggle-after-ssh-login (method user host port localdir)
   (when (string-equal "docker" method)
