@@ -696,7 +696,7 @@ for `org-re-reveal-title-slide'."
 
 By default, multiplex is not enabled.  With reveal.js 4.x, multiplex
 needs to be downloaded separately.
-Include 'multiplex in this variable to enable it.
+Include `multiplex' in this variable to enable it.
 
 This variable, like lots of other variables, can be overridden
 in the org buffer comments as follows:

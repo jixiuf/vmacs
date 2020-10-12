@@ -28,6 +28,7 @@
 
 (require 'cl-lib)
 (require 'grep)
+(require 'mouse)
 (require 'rg-header)
 (require 'rg-history)
 (require 'subr-x)
@@ -195,7 +196,6 @@ Becomes buffer local in `rg-mode' buffers.")
   '(;; Command output lines.
     (": \\(.+\\): \\(?:Permission denied\\|No such \\(?:file or directory\\|device or address\\)\\)$"
      1 'rg-error-face)
-    ;; remove match from grep-regexp-alist before fontifying
     ("^rg[/a-zA-z]* started.*"
      (0 '(face nil compilation-message nil help-echo nil mouse-face nil) t))
     ("^rg[/a-zA-z]* finished \\(?:(\\([0-9]+ matches found\\))\\|with \\(no matches found\\)\\).*"
@@ -210,8 +210,10 @@ Becomes buffer local in `rg-mode' buffers.")
     ;; context lines in rg
     ("^ *\\(?:.+?-\\)?[0-9]+-.*\n" (0 'rg-context-face))
     ("^.*rg \\(--color=always .*$\\)"
-     (0 (rg-command-line-properties))
-     (1 (rg-hidden-command-line-properties)))))
+     (0 rg-command-line-properties)
+     (1 (rg-hidden-command-line-properties)))
+    ("^-\\*- mode: rg; default-directory: \"\\(.*\\)\" -\\*-$"
+     (1 rg-directory-properties))))
 
 (defmacro rg-define-key-deprecated (keymap new-key old-key fn)
   "In KEYMAP, define key sequence NEW-KEY as FN and deprecate OLD-KEY.
@@ -238,9 +240,63 @@ definitions is a string or a vector of symbols an characters."
     (define-key ,keymap ,old-key ',deprecated-fn)
     (define-key ,keymap ,new-key ,fn))))
 
+(defvar rg-menu-map
+  (let ((map (make-sparse-keymap "RipGrep")))
+    (define-key map [rg-toggle-command-hiding]
+      '(menu-item "Toggle command visibility"
+                  rg-toggle-command-hiding
+                  :help "Toggle showing verbose command options"))
+    (define-key map [rg-enable-wgrep]
+      '(menu-item "Edit buffer" wgrep-change-to-wgrep-mode
+                  :help "Edit buffer and save changes."))
+    (define-key map [rg-save-search]
+      '(menu-item "Save search" rg-save-search-as-name
+                  :help "Save current search."))
+    (define-key map [rg-search-list]
+      '(menu-item "List searches" rg-list-searches
+                  :help "List all ripgrep search buffers."))
+    (define-key map [rg-change-dir]
+      '(menu-item "Change dir" rg-rerun-change-dir
+                  :help "Rerun search in another directory."))
+    (define-key map [rg-change-files]
+      '(menu-item "Change file type" rg-rerun-change-files
+                  :help "Rerun search on other file types."))
+    (define-key map [rg-change-regexp]
+      '(menu-item "Change regexp" rg-rerun-change-regexp
+                  :help "Run regexp search with changed pattern."))
+    (define-key map [rg-change-literal]
+      '(menu-item "Change literal" rg-rerun-change-literal
+                  :help "Run literal search with changed search string."))
+    (define-key map [rg-kill-compilation]
+      '(menu-item "Kill Ripgrep" kill-compilation
+		  :help "Kill the currently running rg process"))
+    (define-key map [rg-another]
+      '(menu-item "Another search..."
+                  (lambda ()
+                    (interactive)
+                    (rg-save-search)
+                    (call-interactively 'rg))
+		  :help "Save current search results and start a new search."))
+    (define-key map [rg-recompile]
+      '(menu-item "Go..." rg-recompile
+		  :help "Rerun search"))
+    map))
+
 (defvar rg-mode-map
   (let ((map (make-sparse-keymap)))
-    (set-keymap-parent map grep-mode-map)
+    (set-keymap-parent map compilation-minor-mode-map)
+    (define-key map " " 'scroll-up-command)
+    (define-key map [?\S-\ ] 'scroll-down-command)
+    (define-key map "\^?" 'scroll-down-command)
+    (define-key map "\C-c\C-f" 'next-error-follow-minor-mode)
+    (define-key map "\r" 'compile-goto-error)  ;; ?
+    (define-key map "n" 'next-error-no-select)
+    (define-key map "p" 'previous-error-no-select)
+    (define-key map "{" 'compilation-previous-file)
+    (define-key map "}" 'compilation-next-file)
+    (define-key map "\t" 'compilation-next-error)
+    (define-key map [backtab] 'compilation-previous-error)
+
     (define-key map "c" 'rg-rerun-toggle-case)
     (define-key map "d" 'rg-rerun-change-dir)
     (define-key map "f" 'rg-rerun-change-files)
@@ -258,6 +314,10 @@ definitions is a string or a vector of symbols an characters."
     (define-key map "\C-c<" 'rg-back-history)
     (when rg-use-transient-menu
       (define-key map "m" #'rg-menu))
+
+    ;; Set up the menu-bar
+    (define-key map [menu-bar rg]
+      (cons "RipGrep" rg-menu-map))
     map)
   "The keymap for `rg-mode'.")
 
@@ -267,17 +327,24 @@ definitions is a string or a vector of symbols an characters."
 
 ;; Defuns
 
-;; This solution was mostly copied from emacs grep.el and adjusted to
-;; be more usable.
-(defun rg-command-line-properties ()
-  "Return properties for graying out and keymap for hiding command line."
+(defun rg-create-mouse-map (command)
+  "Create a mouse-map for the COMMAND.
+This makes sure point moves to click and that the clicked window is
+selected."
   (let ((map (make-sparse-keymap)))
     (define-key map [down-mouse-2] 'mouse-set-point)
-    (define-key map [mouse-2] 'rg-toggle-command-hiding)
-    (define-key map "\C-m" 'rg-toggle-command-hiding)
+    (define-key map [mouse-2] command)
+    (define-key map "\C-m" command)
+    map))
+
+;; This solution was mostly copied from emacs grep.el and adjusted to
+;; be more usable.
+(defvar rg-command-line-properties
+  (let ((map (rg-create-mouse-map 'rg-toggle-command-hiding)))
     `(face rg-context-face mouse-face highlight
            help-echo "RET, mouse-2: show unabbreviated command"
-           keymap ,map)))
+           keymap ,map))
+  "Properties for graying out and keymap for hiding command line.")
 
 (defun rg-hidden-command-line-properties ()
   "Return properties of button-like ellipsis on part of rg command line."
@@ -299,6 +366,13 @@ definitions is a string or a vector of symbols an characters."
             (add-text-properties beg end `(display ,rg-ellipsis)))
         (user-error "No abbreviated part to hide/show")))))
 
+(defvar rg-directory-properties
+  (let ((map (rg-create-mouse-map 'rg-rerun-change-dir)))
+    `(face rg-filename-face mouse-face highlight
+           help-echo "RET, mouse-2: Change search directory"
+           keymap ,map))
+  "Properties for `default-directory' in header.")
+
 (defun rg-list-toggle (elem list)
   "Remove ELEM from LIST if present or add it if not present.
 Returns the new list."
@@ -308,7 +382,7 @@ Returns the new list."
 
 (defun rg-process-setup ()
   "Setup compilation variables and buffer for `rg'.
-Set up `compilation-exit-message-function' and run `grep-setup-hook'."
+Set up `compilation-exit-message-function'."
   (set (make-local-variable 'compilation-exit-message-function)
        (lambda (status code msg)
          (if (eq status 'exit)
@@ -321,9 +395,7 @@ Set up `compilation-exit-message-function' and run `grep-setup-hook'."
                     '("finished with no matches found\n" . "no match"))
                    (t
                     (cons msg code)))
-           (cons msg code))))
-  ;; Run this hook to intergrate with wgrep
-  (run-hooks 'grep-setup-hook))
+           (cons msg code)))))
 
 (defun rg-prepend-space (text length)
   "Prepend TEXT with LENGTH number of spaces."
@@ -473,7 +545,6 @@ Commands:
 \\[wgrep-change-to-wgrep-mode]\t Change mode to `wgrep'.
 
 \\{rg-mode-map}"
-  (setq grep-last-buffer (current-buffer))
   (set (make-local-variable 'tool-bar-map) grep-mode-tool-bar-map)
   (set (make-local-variable 'compilation-error-face) 'rg-filename-face)
   (set (make-local-variable 'compilation-message-face) 'rg-match-position-face)
@@ -497,7 +568,7 @@ Commands:
   (set (make-local-variable 'compilation-error-screen-columns) nil)
   (unless rg-search-history
     (setq rg-search-history (rg-history-create)))
-  (add-hook 'compilation-filter-hook 'rg-filter nil t))
+  (set (make-local-variable 'compilation-filter-hook) '(rg-filter)))
 
 (defun rg-maybe-show-header ()
   "Recreate header if enabled."
@@ -594,6 +665,13 @@ backwards and positive means forwards."
   "Rerun last search with toggled '--no-ignore' flag."
   (interactive)
   (rg-rerun-toggle-flag "--no-ignore"))
+
+(defun rg-rerun-toggle-rexexp-literal ()
+  "Rerun last search with toggled '--no-ignore' flag."
+  (interactive)
+  (if (rg-search-literal rg-cur-search)
+      (rg-rerun-change-regexp)
+    (rg-rerun-change-literal)))
 
 (defun rg-rerun-change-search-string (literal)
   "Rerun last search but prompt for new search pattern.
