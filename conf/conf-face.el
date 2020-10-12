@@ -50,6 +50,7 @@
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
 
+;; https://protesilaos.com/modus-themes/#h:f4651d55-8c07-46aa-b52b-bed1e53463bb
 (setq modus-vivendi-theme-override-colors-alist
       '(("bg-tab-active" . "gray45")))
 
