@@ -50,6 +50,8 @@
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
 
+(setq modus-vivendi-theme-override-colors-alist
+      '(("bg-tab-active" . "gray45")))
 
 ;; (setq-default undo-tree-mode-lighter " Ü") ;undo
 ;; (setq-default helm-completion-mode-string " H")
