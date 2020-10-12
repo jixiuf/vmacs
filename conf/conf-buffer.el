@@ -11,7 +11,6 @@
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fr") 'vmacs-undo-kill-buffer)
 
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>k") 'vmacs-kill-buffer-dwim) ;
-(global-set-key  (kbd "s-C-M-k") 'vmacs-kill-buffer-dwim) ; hyper-k default on mac
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)

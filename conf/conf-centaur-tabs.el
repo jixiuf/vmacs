@@ -4,10 +4,8 @@
 (setq-default centaur-tabs-style "zigzag")
 
 (require 'centaur-tabs)
-(global-set-key  (kbd "s-n") 'centaur-tabs-forward)
-(global-set-key  (kbd "s-C-M-n") 'centaur-tabs-forward)
-(global-set-key  (kbd "s-p") 'centaur-tabs-backward)
-(global-set-key  (kbd "s-C-M-p") 'centaur-tabs-backward)
+(global-set-key  (kbd "s-C-M-k") 'centaur-tabs-backward)
+(global-set-key  (kbd "s-C-M-j") 'centaur-tabs-forward)
 ;; (define-key evil-normal-state-map (kbd "gh") 'centaur-tabs-move-current-tab-to-left)
 ;; (define-key evil-normal-state-map (kbd "gl") 'centaur-tabs-move-current-tab-to-right)
 ;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>e") 'centaur-tabs-build-ivy-source)
