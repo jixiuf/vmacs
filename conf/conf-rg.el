@@ -17,14 +17,14 @@
 
 ;; 默认非正则 C-u 使用有单词边界的正则，C-uC-u 使用用户输入的正则（不含边界）
 (rg-define-search  vmacs-rg-word-current-dir
-  :query (vmacs-rg-query (vmacs-rg-read-regex "Regexp at . : " (thing-at-point 'symbol) )
+  :query (vmacs-rg-query (vmacs-rg-read-regex "Regexp at ." (thing-at-point 'symbol) "")
                          (= 4 (prefix-numeric-value current-prefix-arg)))
   :format regexp
   :flags ("--type=all")
   :files current :dir current)
 
 (rg-define-search vmacs-rg-word-root-dir
-  :query (vmacs-rg-query (vmacs-rg-read-regex "Regexp at project root: " (thing-at-point 'symbol) )
+  :query (vmacs-rg-query (vmacs-rg-read-regex "Regexp at project root " (thing-at-point 'symbol) "" )
                          (= 4 (prefix-numeric-value current-prefix-arg)))
   :format regexp
   :flags ("--type=all")
@@ -61,20 +61,15 @@ under the project root directory."
   (define-key rg-mode-map "s" nil)
   (define-key rg-mode-map "l" nil)
   (define-key rg-mode-map "h" nil)
-  ;; (define-key rg-mode-map (kbd "M-n") 'next-error-no-select)
-  ;; (define-key rg-mode-map (kbd "M-p") 'previous-error-no-select)
+  (define-key rg-mode-map " " nil)
   (define-key rg-mode-map "\M-n" 'rg-next-file)
   (define-key rg-mode-map "\M-p" 'rg-prev-file)
-  (define-key rg-mode-map "n" 'compilation-next-error)
-  (define-key rg-mode-map "p" 'compilation-previous-error)
   (define-key rg-mode-map (kbd "L") 'rg-forward-history)
   (define-key rg-mode-map (kbd "H") 'rg-back-history)
-  (define-key rg-mode-map (kbd "M-p") 'previous-error-no-select)
   (define-key rg-mode-map "I" #'rg-rerun-toggle-ignore)
   (define-key rg-mode-map (kbd "z") #'vmacs-rg-rerun-hide-matched)
   (define-key rg-mode-map (kbd "r") #'vmacs-rg-rerun-change-regex)
   (define-key rg-mode-map (kbd "/") #'vmacs-rg-rerun-change-regex)
-  (evil-define-key 'normal 'local "gt" 'vmacs-rg-rerun-toggle-surround)
   (evil-define-key 'normal 'local "x" 'vmacs-rg-rerun-filter-by-file) ;C-ux 则
   (evil-define-key 'normal 'local "c" 'vmacs-rg-rerun-toggle-surround)
   (evil-define-key 'normal 'local "gr" 'rg-recompile))
@@ -120,20 +115,21 @@ under the project root directory."
   (string-trim val))
 
 
-(defun vmacs-rg-read-regex (&optional prompt pattern suffix)
+(defun vmacs-rg-read-regex (&optional prompt def pattern suffix)
   (let ((pattern (or pattern (rg-search-pattern rg-cur-search)))
         (read-from-minibuffer-orig (symbol-function 'read-from-minibuffer)))
     (setq pattern (vmacs-rg-unquote pattern))
     (setq pattern (concat pattern  (or suffix "")))
     (cl-letf (((symbol-function #'read-from-minibuffer)
-               (lambda (prompt &optional _ keymap read hist _ &rest args)
-                 (apply read-from-minibuffer-orig prompt pattern keymap read hist nil args))))
-      (read-regexp (or prompt "regexp: " ) nil 'rg-pattern-history))))
+               (lambda (prompt &optional _  &rest args)
+                 (print def)
+                 (apply read-from-minibuffer-orig prompt pattern  args))))
+      (read-regexp (or prompt "regexp: " ) def 'rg-pattern-history))))
 
 (defun vmacs-rg-rerun-change-regex (&optional suffix)
   "Rerun last search but prompt for new regexp."
   (interactive)
-  (let ((pattern (vmacs-rg-read-regex nil nil (or suffix " "))))
+  (let ((pattern (vmacs-rg-read-regex nil nil nil (or suffix " "))))
       (setf (rg-search-pattern rg-cur-search)
             (vmacs-rg-query pattern nil))
       (rg-rerun)))

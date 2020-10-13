@@ -77,6 +77,7 @@
 (add-to-list 'evil-overriding-maps '(term-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(term-raw-map . nil))
 (add-to-list 'evil-overriding-maps '(calc-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(rg-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(magit-blob-mode-map . nil)) ;n p 浏览文件历史版本
 (add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(xref--xref-buffer-mode-map . nil))
