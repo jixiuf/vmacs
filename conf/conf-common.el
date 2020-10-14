@@ -183,7 +183,7 @@
 (add-to-list 'magic-mode-alist
              `(,(lambda ()
                   (looking-at "[ \t\n]*{[ \t\n]*\""))
-               . json-mode))
+               . js-mode))
 ;; (add-to-list 'magic-mode-alist
 ;;              `(,(lambda ()
 ;;                   (and
