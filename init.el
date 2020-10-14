@@ -11,7 +11,6 @@
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 (require 'conf-space-tab)
-(require 'conf-auto-compile)          ;自动编译elisp文件,以加快elisp的加载速度
 (eval-after-load 'ibuffer '(require 'conf-ibuffer)) ;绑定在space l 上，用于列出当前打开的哪些文件
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
 (with-eval-after-load 'css-mode (require 'conf-css))
