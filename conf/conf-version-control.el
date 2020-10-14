@@ -8,7 +8,9 @@
 ;; cu （upper） 选择上面的部分，cl (lower) 选下部分
 ;; ca 两部分都要
 ;; cRET 选择光标下的
-(evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map)
+(with-eval-after-load 'smerge-mode
+  (evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map)
+  )
 (evil-define-key 'normal diff-mode-map (kbd "t") #'toggle-diff-whitespace)
 
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vv") 'vmacs-vc-next-action)
