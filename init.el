@@ -6,7 +6,6 @@
 (load "~/.emacs.d/init-base.el")
 
 
-(require 'conf-dired-dump)
 (require 'conf-evil-dump)
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
