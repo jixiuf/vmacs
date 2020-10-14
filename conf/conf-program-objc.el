@@ -1,7 +1,3 @@
-(eval-when-compile
-  (require 'company)
-  ;; (require 'helm-gtags)
-  )
 
 ;; (declare-function helm-gtags-set-GTAGSLIBPATH-alist "helm-gtags")
 

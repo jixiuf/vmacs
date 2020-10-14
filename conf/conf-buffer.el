@@ -1,5 +1,4 @@
 ;;ctrl-g ctrl-g 两次ctrl-关闭一些临时buffer
-(eval-when-compile (require 'cl-macs) (require 'cl-seq))
 
 ;; bury-boring-windows with `C-gC-g'
 

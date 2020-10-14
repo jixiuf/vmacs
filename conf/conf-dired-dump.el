@@ -90,7 +90,6 @@
 ;;与*类似但不相同的"?" 表示对mark的文件"分别" 运行这个命令
 ;;; image-dired
 
-(eval-when-compile (require 'wdired))
 (setq-default
  image-dired-db-file (concat user-emacs-directory "cache/image-dired/image-dired_db" )
  image-dired-dir (concat user-emacs-directory "cache/image-dired/image-dired" )

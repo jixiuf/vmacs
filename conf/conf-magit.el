@@ -1,14 +1,3 @@
-(eval-when-compile
-  (require 'magit)
- (require 'magit-libgit)
-  (require 'magit-push)
-  (require 'evil-magit)
-  )
-(autoload 'magit-ediff-dwim "magit-ediff" "" t)
-(autoload 'magit-dired-jump "magit-extras" "" t)
-(autoload 'magit-gitignore "magit-gitignore" "" t)
-(autoload 'git-rebase-mode "git-rebase" "" t)
-
 
 (setq magit-git-executable (executable-find "git"))
 (setq-default evil-magit-use-y-for-yank t)

@@ -1,6 +1,5 @@
 ;;; Code:
 
-(eval-when-compile (require 'sql))
 (setq sql-input-ring-file-name "~/.emacs.d/cache/sql-cmd-hist")
 (defun vmacs-try-write-sql-hist()
   "kill-buffer方式退出时,不会自动写hist, 此处修复之."

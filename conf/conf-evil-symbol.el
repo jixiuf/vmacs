@@ -1,4 +1,3 @@
-(eval-when-compile (require 'evil))
 
 ;; http://vimcdoc.sourceforge.net/doc/motion.html
 ;; vim 里有

@@ -1,5 +1,3 @@
-(eval-when-compile (require 'org))
-(eval-when-compile (require 'cc-mode))
 (defvar  dropbox-dir (expand-file-name "~/Documents/dropbox"))
 (when (equal system-type 'darwin)
   (when (or (not (file-exists-p dropbox-dir))

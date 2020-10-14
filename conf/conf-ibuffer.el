@@ -14,8 +14,6 @@
 
 ;;M-n M-p 组间跳转
 
-(eval-when-compile
-  (require 'ibuf-macs))
 
 (require 'ibuf-ext)
 (setq ibuffer-modified-char ?m);; 用m 字符表示modified的buffer
