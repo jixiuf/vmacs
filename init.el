@@ -30,13 +30,12 @@
 (global-set-key (kbd "C-;") 'iedit-mode)
 (with-eval-after-load 'iedit (require 'conf-iedit))
 (require 'conf-common)
-(require 'conf-org)
+(with-eval-after-load 'org (require 'conf-org))
 
 (require 'conf-yasnippet)               ;模版系统
 (require 'conf-yas-auto-insert)         ;利用yasnipet模版,在新建文件时,自动在文件中插入相应的模版
 (require 'conf-buffer)
-(require 'conf-compile)
-(require 'conf-version-control)         ;版本管理
+(with-eval-after-load 'compile (require 'conf-compile))
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'js (require 'conf-program-js))
 
@@ -50,7 +49,7 @@
 
   ;; (require 'conf-helm)            ;
   ;; (require 'conf-ivy)
-  (require 'conf-rg)
+(require 'conf-rg)
   ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
   ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
 
@@ -69,7 +68,10 @@
   (with-eval-after-load 'python (require 'conf-program-python))
   ;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
 
-  (with-eval-after-load 'magit (require 'conf-magit))
+  (with-eval-after-load 'magit
+    (require 'conf-version-control)
+    (require 'conf-magit))
+
   (global-undo-tree-mode t)
   (global-font-lock-mode)
   (transient-mark-mode 1)
