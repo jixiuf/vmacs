@@ -1,4 +1,3 @@
-
 (setq magit-git-executable (executable-find "git"))
 (setq-default evil-magit-use-y-for-yank t)
 (setq-default
@@ -60,6 +59,7 @@
 ;; (transient-append-suffix 'magit-fetch "f"
 ;;      '("f" "Full from pushremote" magit-pull))
 
+(require 'evil-magit)
 (transient-insert-suffix 'magit-revert "o"
   '("_" "Revert no commit" magit-revert-no-commit))
 
@@ -73,7 +73,6 @@
 (define-key transient-map        "q" 'transient-quit-one)
 (define-key transient-edit-map   "q" 'transient-quit-one)
 (define-key transient-sticky-map "q" 'transient-quit-seq)
-(require 'evil-magit)
 ;;(setq evil-window-map  ctl-w-map)
 (evil-magit-define-key evil-magit-state 'magit-mode-map
                        "v"  'magit-push)
