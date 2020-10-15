@@ -68,9 +68,8 @@
   (with-eval-after-load 'python (require 'conf-program-python))
   ;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
 
-  (with-eval-after-load 'magit
-    (require 'conf-version-control)
-    (require 'conf-magit))
+  (require 'conf-version-control)
+  (with-eval-after-load 'magit (require 'conf-magit))
 
   (global-undo-tree-mode t)
   (global-font-lock-mode)

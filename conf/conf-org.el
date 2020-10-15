@@ -1,7 +1,7 @@
 ;; org-mode 相关
-(require 'ox-re-reveal)
-(setq org-re-reveal-root (format "file://%sreveal.js-3.0.0" (expand-file-name user-emacs-directory)))
-(setq org-re-reveal-single-file t)
+;;(require 'ox-re-reveal)
+;;(setq org-re-reveal-root (format "file://%sreveal.js-3.0.0" (expand-file-name user-emacs-directory)))
+;;(setq org-re-reveal-single-file t)
 ;; C-cC-eRR
 
 (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>t") 'org-agenda)   ;列出todo list等

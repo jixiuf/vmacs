@@ -7,6 +7,7 @@
 (setq rg-show-header t)
 (setq rg-command-line-flags '("-z" "--pcre2"))
 (setq rg-group-result nil);bug enable-wgrep-when-entry-insert
+(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>g") rg-global-map)
 
 (define-key rg-global-map (kbd ".") #'vmacs-rg-dwim-current-dir)
 (define-key rg-global-map (kbd ",") #'vmacs-rg-dwim-project-dir)
