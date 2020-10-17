@@ -1,6 +1,4 @@
 (require 'company)
-
-
 ;; 调整默认backends
 (setq-default company-backends
               `(
@@ -19,7 +17,6 @@
                 ))
 
 (setq completion-ignore-case t)      ;company-capf匹配时不区分大小写
-
 ;; 'all 的意思是像 dabbrev-expand 那样搜索所有 buffer 的内容, 而不仅仅是和当前模式相同的buffer里面去搜索.
 (setq-default company-dabbrev-code-other-buffers 'all)
 ;; company-dabbrev-char-regexp 默认的正则表达式是 \sw , 意味着只能匹配单词才能补全, 我重新定制成 [\.0-9a-z-_’/] , 增加搜寻的范围
@@ -41,24 +38,17 @@
 ;; (define-key company-mode-map (kbd "C-[ [ 1 h") (key-binding (kbd "C-i"))) ;iterm map to C-i
 (define-key company-active-map (kbd "C-e") #'company-other-backend)
 (define-key company-active-map (kbd "C-s") #'company-filter-candidates)
-(define-key company-active-map (kbd "M-s") #'company-search-candidates)
-(define-key company-active-map (kbd "C-n") 'company-select-next)
-(define-key company-active-map (kbd "C-p") 'company-select-previous)
-(define-key company-search-map (kbd "C-n") 'company-select-next)
-(define-key company-search-map (kbd "C-p") 'company-select-previous)
+(define-key company-active-map (kbd "C-j") 'company-select-next)
+(define-key company-active-map (kbd "C-k") 'company-select-previous)
+(define-key company-search-map (kbd "C-j") 'company-select-next)
+(define-key company-search-map (kbd "C-k") 'company-select-previous)
 
 (define-key company-active-map [tab] 'vmacs-company-complete-common-or-selection)
 (define-key company-active-map (kbd "TAB") 'vmacs-company-complete-common-or-selection)
-;; (define-key company-active-map [return]  'vmacs-company-complete-common-or-selection)
-(define-key company-active-map (kbd "C-j")  'company-complete-selection)
 (define-key company-active-map [(meta tab)] 'company-complete-common)
 (define-key company-active-map (kbd "<C-m>") 'company-complete-selection)
 (define-key company-active-map (kbd "C-[ [ 1 m")  'company-complete-selection)
-;; (define-key company-active-map  (kbd "<return>") nil)
-;; (define-key company-active-map  (kbd "RET") nil)
 
-;; (define-key company-mode-map (kbd "C-:") 'helm-company)
-;; (define-key company-active-map (kbd "C-:") 'helm-company)
 (make-variable-buffer-local 'company-backends)
 ;; make evil repeat . work with company
 
