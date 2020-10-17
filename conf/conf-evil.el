@@ -117,23 +117,6 @@
 
 (evil-mode 1)
 
-;; (unless (equal system-type 'windows-nt)
-;;   (defun vmacs-change-cursor-hook(&optional f)
-;;     (with-selected-frame (or f (selected-frame))
-;;       (if (display-graphic-p)
-;;           (when (featurep 'evil-terminal-cursor-changer)
-;;             (evil-terminal-cursor-changer-deactivate))
-;;         (evil-terminal-cursor-changer-activate)
-;;         (remove-hook 'pre-command-hook 'etcc--evil-set-cursor))))
-;;   (add-hook 'after-make-frame-functions 'vmacs-change-cursor-hook)
-;;   ;; (add-hook 'focus-in-hook 'vmacs-change-cursor-hook)
-;;   ;; (add-hook 'evil-insert-state-entry-hook 'vmacs-change-cursor-hook)
-;;   )
-
-
-;;(global-evil-matchit-mode 1)
-
-
 ;; emacs 自带的repeat 绑定在C-xz上， 这个advice ,奖 repeat 的功能 与evil 里的","功能合
 ;; 2为1,一起绑定在","紧临evil-repeat"." 如此一来， 跟编辑相关的repeat用"." ,跟光标移动相关的
 ;; 可以用","
@@ -175,20 +158,12 @@ execute emacs native `repeat' default binding to`C-xz'"
         (evil-change-to-initial-state)) ;如果初始化state不是normal ，按一次 转到初始状态
       ))))
 
-
-
-
-
 (with-eval-after-load 'org-agenda
   (evil-define-key 'normal org-agenda-mode-map
     "j" 'evil-next-line
     "k" 'evil-previous-line
     ":" 'evil-ex
     "r" 'org-agenda-redo))
-
-
-
-
 
 ;; ;; 清空所有insert-state的绑定,这样 ,insert mode 就是没装evil 前的正常emacs了
 ;; (setcdr evil-insert-state-map nil);evil-disable-insert-state-bindings
@@ -257,41 +232,18 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map (kbd "DEL") nil) ;backupspace
 (define-key evil-motion-state-map  (kbd "RET") nil) ;
 (define-key evil-normal-state-map  (kbd "RET") nil) ;
-;; (define-key evil-motion-state-map "n" nil)
-;; (define-key evil-motion-state-map "N" nil)
-;; (define-key evil-normal-state-map "\C-r" nil)
-;; (global-unset-key (kbd "C-s"))
 (define-key evil-normal-state-map  (kbd "C-.") nil)
 (define-key evil-normal-state-map  (kbd "M-.") nil)
-;; (define-key evil-normal-state-map "o" nil)
-;; (define-key evil-normal-state-map "\M-o" 'evil-open-below)
-;; (define-key evil-normal-state-map "O" nil)
-;; (define-key evil-motion-state-map (kbd "C-o") 'evil-open-below)
 
-;; (define-key evil-normal-state-map "m" nil) ;evil-set-marker
-
-(define-key evil-motion-state-map "`" nil) ;'evil-goto-mark
-
-
-;; (define-key evil-motion-state-map "L" 'vmacs-forward-4-line)
-;; (define-key evil-motion-state-map "H" 'vmacs-backward-4-line)
-;; (define-key evil-normal-state-map "s" 'conf-forward-symbol-or-isearch-regexp-forward)
-;; (define-key evil-normal-state-map "S" 'conf-backward-symbol-or-isearch-regexp-backward)
 (define-key evil-normal-state-map "m" nil)
 (define-key evil-normal-state-map "mq" 'fill-paragraph)
-;; (define-key evil-normal-state-map "m\t" 'novel-fill)
+(define-key evil-normal-state-map "mm" 'evil-set-marker) ;`
 
 
-;; C-3 加任一char ,start  and C-3 end ,then @char repeat
-;; (define-key evil-normal-state-map (kbd "C-[ [ 1 i") 'evil-record-macro) ;C-3 default q
-;; (define-key evil-normal-state-map (kbd "C-3") 'evil-record-macro) ;C-3 default q
 (define-key evil-normal-state-map (kbd "C-3") #'evil-search-word-backward) ;C-3
 (define-key evil-normal-state-map (kbd "C-4") #'evil-search-word-forward) ;C-8
 (define-key evil-normal-state-map (kbd "C-8") #'evil-search-word-forward) ;C-8
 
-;; g; goto-last-change
-;; g,  goto-last-change-reverse
-;; (define-key evil-normal-state-map "g/" 'goto-last-change-reverse); goto-last-change
 
 (define-key evil-normal-state-map "gh" 'evil-goto-line) ;default G
 
@@ -324,16 +276,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "sy" 'evil-copy-sexp-at-point) ;kill-sexp,undo
 (define-key evil-normal-state-map "sk" (kbd "C-k"))
 (define-key evil-normal-state-map "su" (kbd "C-u 0 C-k")) ;H-i =C-u 删除从光标位置到行首的内容
-;; (vmacs-leader (kbd "h") 'evil-mark-whole-buffer)
-
-;; (define-key evil-normal-state-map "so" 'helm-occur)
-
-
-
-
 (define-key evil-normal-state-map (kbd "C-j") 'open-line-or-new-line-dep-pos)
-;; (define-key evil-normal-state-map (kbd ".") 'repeat)
-;; (define-key evil-normal-state-map (d "zx") 'repeat) ;
 (define-key evil-normal-state-map "," 'repeat)
 (define-key evil-visual-state-map "," 'repeat)
 (define-key evil-motion-state-map "," 'repeat) ;
@@ -344,22 +287,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; dib dab绑定
 (define-key evil-inner-text-objects-map "b" 'evil-textobj-anyblock-inner-block)
 (define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
-
-
-
-;; (define-key evil-normal-state-map "s;" 'vmacs-comment-dwim-line)
-
-
-
-;; (evil-set-leader '(normal motion visual operator) (kbd "<SPC>") )
-(vmacs-leader (kbd "") (make-sparse-keymap))
 (vmacs-leader (kbd "o") 'other-window)
-;; (vmacs-leader (kbd "G") 'helm-do-zgrep)
-;; magit
 
-
-
-(autoload 'dired-jump "dired-x" "dired-jump" t)
 (vmacs-leader (kbd "j") 'dired-jump)
 (global-set-key  (kbd "s-j") 'dired-jump)
 
@@ -389,12 +318,9 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader (kbd "cc") 'toggle-case-fold)
 (vmacs-leader (kbd "u") 'backward-up-list)
 (vmacs-leader (kbd "t") 'org-agenda)
-(vmacs-leader (kbd "/") 'undo)
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
-(evil-define-key 'normal 'global  (kbd "<SPC>f;") 'ff-find-other-file) ;头文件与源文件间快速切换
-(vmacs-leader (kbd "fs") 'save-buffer)
-(vmacs-leader (kbd ";") 'execute-extended-command)
-(vmacs-leader (kbd "；") 'execute-extended-command)
+(evil-define-key 'normal 'global  (kbd "<SPC>fo") 'ff-find-other-file) ;头文件与源文件间快速切换
+(vmacs-leader (kbd "m") 'execute-extended-command)
 (vmacs-leader (kbd "wi") 'imenu)
 (vmacs-leader (kbd "SPC") 'vmacs-switch-buffer)
 (vmacs-leader (kbd "fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
