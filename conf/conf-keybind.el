@@ -1,11 +1,5 @@
 (featurep 'evil)
-
-
-;; (global-set-key [f2] 'vterm-toggle)
-;; (global-set-key [C-f2] 'vterm-toggle-cd)
 (global-set-key (kbd "s-,") 'vterm-toggle)
-;; (global-set-key (kbd "s-d") 'vterm-toggle)
-;; (global-set-key (kbd "s-C-M-d") 'vterm-toggle)
 (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
 (define-key special-mode-map " " nil)
 

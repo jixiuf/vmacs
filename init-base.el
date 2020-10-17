@@ -22,8 +22,6 @@
   (when (boundp 'load-path-backup)
     (setq load-path load-path-backup)))
 
-;; 下面(package-initialize) 这行注释不要删
-(when (< emacs-major-version 27) (package-initialize))
 (require 'conf-package)
 (require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 (require 'conf-minibuffer)
