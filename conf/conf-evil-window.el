@@ -41,14 +41,6 @@
                 avy-goto-word-1
                 ace-jump-mode-pop-mark)))
 
-(add-to-list 'golden-ratio-inhibit-functions 'golden-ratio-ediff-comparison-buffer-p)
-
-(defun golden-ratio-ediff-comparison-buffer-p ()
-  "用于判断当前buffer是不是ediff session中， 以便决定用不用golden-ratio"
-  (when (boundp 'ediff-this-buffer-ediff-sessions)
-    ediff-this-buffer-ediff-sessions))
-
-
 (defun vmacs-evil-window-cmd-p ()
   (when (symbolp last-command)
     (string-prefix-p "evil-window-" (symbol-name last-command))))
