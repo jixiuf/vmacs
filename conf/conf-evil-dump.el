@@ -16,6 +16,7 @@
 
 (setq-default
  ;; evil-search-module 'isearch        ;可以用C-w yank word
+ evil-undo-system 'undo-tree
  evil-disable-insert-state-bindings t
  evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
 ;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
