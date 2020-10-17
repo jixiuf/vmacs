@@ -4,8 +4,8 @@
 ;;(setq org-re-reveal-single-file t)
 ;; C-cC-eRR
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>t") 'org-agenda)   ;列出todo list等
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>T") 'org-capture)  ;新加一个todo 条目等
+(vmacs-leader (kbd "t") 'org-agenda)   ;列出todo list等
+(vmacs-leader (kbd "T") 'org-capture)  ;新加一个todo 条目等
 (define-key evil-normal-state-map "mt" 'org-capture)
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)

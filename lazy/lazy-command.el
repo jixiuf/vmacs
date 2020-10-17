@@ -433,7 +433,7 @@ Move point to end-of-line ,if point was already at that position,
 (defun kill-other-buffers ()
   "kill all buffer which not showing in window."
   (interactive)
-  (mapc 'vmacs-kill-buffer-dwim
+  (mapc 'kill-buffer
         (cl-remove-if 'get-buffer-window (buffer-list)))
   (message "all other buffers are killed."))
 

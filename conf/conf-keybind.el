@@ -1,12 +1,4 @@
-;;;###autoload
-(defmacro define-key-lazy (mode-map key cmd  feature &optional state)
-  "define-key in `eval-after-load' block. `feature' is the file name where defined `mode-map'"
-  (if state
-      `(eval-after-load ,feature '(evil-define-key ,state ,mode-map ,key ,cmd))
-    `(eval-after-load ,feature '(define-key ,mode-map ,key ,cmd))))
-
-;; (defmacro vmacs-leader-for-map (map feature)
-;;   `(define-key-lazy ,map ,(kbd "SPC") nil ,feature ))
+(featurep 'evil)
 
 
 ;; (global-set-key [f2] 'vterm-toggle)
@@ -92,6 +84,24 @@
 (global-set-key (kbd "<f6>")  'dap-debug)
 (global-set-key (kbd "<f7>")  'dap-disconnect)
 
+
+(global-set-key  (kbd "s-C-M-u") 'vmacs-prev-buffer)
+
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
+
+(global-set-key  (kbd "s-C-M-h") 'vmacs-undo-kill-buffer)
+;; (vmacs-define-key  'global (kbd "<SPC>q") 'kill-other-buffers nil '(normal visual operator motion emacs))
+(vmacs-leader "q" 'kill-other-buffers)
+
+
+
+(defadvice keyboard-quit (before bury-boring-windows activate)
+  (when (equal last-command 'keyboard-quit)
+    (require 'lazy-buffer)
+    (bury-boring-windows)))
+
+(global-set-key (kbd "C-;") 'iedit-mode)
 
 ;; C-x esc esc 可以查看global-set-key 究竟bind哪个key
 ;; 默认Emacs 把TAB==`C-i'

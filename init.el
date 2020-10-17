@@ -27,14 +27,11 @@
 
 (when (eq system-type 'darwin) (require 'conf-macos))
 (when (eq system-type 'windows-nt) (require 'conf-w32))
-(global-set-key (kbd "C-;") 'iedit-mode)
 (with-eval-after-load 'iedit (require 'conf-iedit))
 (require 'conf-common)
 (with-eval-after-load 'org (require 'conf-org))
 
 (require 'conf-yasnippet)               ;模版系统
-(require 'conf-yas-auto-insert)         ;利用yasnipet模版,在新建文件时,自动在文件中插入相应的模版
-(require 'conf-buffer)
 (with-eval-after-load 'compile (require 'conf-compile))
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'js (require 'conf-program-js))

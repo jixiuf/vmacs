@@ -8,8 +8,8 @@
 (global-set-key  (kbd "s-C-M-j") 'centaur-tabs-forward)
 ;; (define-key evil-normal-state-map (kbd "gh") 'centaur-tabs-move-current-tab-to-left)
 ;; (define-key evil-normal-state-map (kbd "gl") 'centaur-tabs-move-current-tab-to-right)
-;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>e") 'centaur-tabs-build-ivy-source)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>e") 'centaur-tabs-forward-group)
+;; (vmacs-leader (kbd "e") 'centaur-tabs-build-ivy-source)
+(vmacs-leader (kbd "e") 'centaur-tabs-forward-group)
 
 ;; 只为eshell-mode term-mode 启用centaur-tabs
 

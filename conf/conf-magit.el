@@ -131,7 +131,7 @@
     (unless (equal magit-buffer-file-name (buffer-file-name prev-buffer))
       (kill-buffer prev-buffer))))
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vm") 'vmacs-magit-blob-toggle) ;类似于time machine
+(vmacs-leader (kbd "vm") 'vmacs-magit-blob-toggle) ;类似于time machine
 (define-key magit-blob-mode-map (kbd "M-n") 'magit-blob-next)
 (define-key magit-blob-mode-map (kbd "M-p") 'magit-blob-previous)
 (define-key magit-blob-mode-map (kbd "C-c C-c") 'vmacs-magit-blob-save)

@@ -10,7 +10,7 @@
   (dolist (dir (directory-files submodules-dir  nil "[a-zA-Z0-9_-]"))
     (add-to-list 'load-path dir)))
 
-
+(require 'conf-macro)
 (require 'conf-dump)
 (require 'conf-tmp-before nil t)
 

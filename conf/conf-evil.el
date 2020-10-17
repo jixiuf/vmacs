@@ -324,7 +324,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "sy" 'evil-copy-sexp-at-point) ;kill-sexp,undo
 (define-key evil-normal-state-map "sk" (kbd "C-k"))
 (define-key evil-normal-state-map "su" (kbd "C-u 0 C-k")) ;H-i =C-u 删除从光标位置到行首的内容
-;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>h") 'evil-mark-whole-buffer)
+;; (vmacs-leader (kbd "h") 'evil-mark-whole-buffer)
 
 ;; (define-key evil-normal-state-map "so" 'helm-occur)
 
@@ -352,57 +352,57 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 
 ;; (evil-set-leader '(normal motion visual operator) (kbd "<SPC>") )
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>") (make-sparse-keymap))
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>o") 'other-window)
-;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>G") 'helm-do-zgrep)
+(vmacs-leader (kbd "") (make-sparse-keymap))
+(vmacs-leader (kbd "o") 'other-window)
+;; (vmacs-leader (kbd "G") 'helm-do-zgrep)
 ;; magit
 
 
 
 (autoload 'dired-jump "dired-x" "dired-jump" t)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>j") 'dired-jump)
+(vmacs-leader (kbd "j") 'dired-jump)
 (global-set-key  (kbd "s-j") 'dired-jump)
 
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>l") 'ibuffer)
+(vmacs-leader (kbd "l") 'ibuffer)
 
 (evil-define-key 'normal 'global  (kbd "<SPC>C-g") 'keyboard-quit)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>zd") 'sdcv-to-buffer)
+(vmacs-leader (kbd "zd") 'sdcv-to-buffer)
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>s") 'evil-write-all)
+(vmacs-leader (kbd "s") 'evil-write-all)
 
-;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>S") 'save-buffer)
-;; (evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>j") 'open-line-or-new-line-dep-pos)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>rt") 'string-rectangle)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>rk") 'kill-rectangle)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ry") 'yank-rectangle)
+;; (vmacs-leader (kbd "S") 'save-buffer)
+;; (vmacs-leader (kbd "j") 'open-line-or-new-line-dep-pos)
+(vmacs-leader (kbd "rt") 'string-rectangle)
+(vmacs-leader (kbd "rk") 'kill-rectangle)
+(vmacs-leader (kbd "ry") 'yank-rectangle)
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>nw") 'widen)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>nn") 'narrow-to-region)
+(vmacs-leader (kbd "nw") 'widen)
+(vmacs-leader (kbd "nn") 'narrow-to-region)
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>xu") 'undo-tree-visualize)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>xv") 'switch-to-scratch-buffer)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC><RET>r") 'revert-buffer-with-coding-system) ;C-x<RET>r
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>(") 'kmacro-start-macro) ;C-x(
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>)") 'kmacro-end-macro) ;C-x
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ca") 'org-agenda)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>cc") 'toggle-case-fold)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>u") 'backward-up-list)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>t") 'org-agenda)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>/") 'undo)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>$") 'toggle-truncate-lines)
+(vmacs-leader (kbd "xu") 'undo-tree-visualize)
+(vmacs-leader (kbd "xv") 'switch-to-scratch-buffer)
+(vmacs-leader (kbd "<RET>r") 'revert-buffer-with-coding-system) ;C-x<RET>r
+(vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
+(vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
+(vmacs-leader (kbd "ca") 'org-agenda)
+(vmacs-leader (kbd "cc") 'toggle-case-fold)
+(vmacs-leader (kbd "u") 'backward-up-list)
+(vmacs-leader (kbd "t") 'org-agenda)
+(vmacs-leader (kbd "/") 'undo)
+(vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (evil-define-key 'normal 'global  (kbd "<SPC>f;") 'ff-find-other-file) ;头文件与源文件间快速切换
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fs") 'save-buffer)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>;") 'execute-extended-command)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>；") 'execute-extended-command)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wi") 'imenu)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>SPC") 'vmacs-switch-buffer)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ft") #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(vmacs-leader (kbd "fs") 'save-buffer)
+(vmacs-leader (kbd ";") 'execute-extended-command)
+(vmacs-leader (kbd "；") 'execute-extended-command)
+(vmacs-leader (kbd "wi") 'imenu)
+(vmacs-leader (kbd "SPC") 'vmacs-switch-buffer)
+(vmacs-leader (kbd "fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
+(vmacs-leader (kbd "ft") #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 
 (setq ffap-machine-p-known 'accept)  ; no pinging
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ff") 'find-file-at-point)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>i") 'vmacs-git-files)
+(vmacs-leader (kbd "ff") 'find-file-at-point)
+(vmacs-leader (kbd "i") 'vmacs-git-files)
 
 
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)
@@ -410,7 +410,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (global-set-key (kbd "C-s") 'evil-search-forward)
 (global-set-key (kbd "C-r") 'evil-search-backward)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>y") 'evil-paste-before) ;default P
+(vmacs-leader (kbd "y") 'evil-paste-before) ;default P
 
 ;; 默认visual选中即复制到剪切版，去掉这个功能
 (fset 'evil-visual-update-x-selection 'ignore)

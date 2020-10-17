@@ -10,25 +10,25 @@
   (evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map))
 (evil-define-key 'normal diff-mode-map (kbd "t") #'toggle-diff-whitespace)
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vv") 'vmacs-vc-next-action)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vr") 'vc-revert)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vl") 'vc-print-log)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vL") 'vc-print-root-log)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>v+") 'vc-update)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vf") 'vmacs-magit-pull-default)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vg") 'vc-annotate)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vd") 'vc-dir)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>v=") 'vc-diff)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>=") 'vc-diff)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>+") 'vc-ediff)
+(vmacs-leader (kbd "vv") 'vmacs-vc-next-action)
+(vmacs-leader (kbd "vr") 'vc-revert)
+(vmacs-leader (kbd "vl") 'vc-print-log)
+(vmacs-leader (kbd "vL") 'vc-print-root-log)
+(vmacs-leader (kbd "v+") 'vc-update)
+(vmacs-leader (kbd "vf") 'vmacs-magit-pull-default)
+(vmacs-leader (kbd "vg") 'vc-annotate)
+(vmacs-leader (kbd "vd") 'vc-dir)
+(vmacs-leader (kbd "v=") 'vc-diff)
+(vmacs-leader (kbd "=") 'vc-diff)
+(vmacs-leader (kbd "+") 'vc-ediff)
 
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vj") 'magit-status) ;like dired-jump
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vu") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vp") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vs") 'magit-file-dispatch)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>vb") 'magit-file-dispatch) ;space-vb[n/p] 查看此文件上/下一个版本
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>ve") 'magit-commit-extend)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>va") 'magit-commit-amend)
+(vmacs-leader (kbd "vj") 'magit-status) ;like dired-jump
+(vmacs-leader (kbd "vu") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
+(vmacs-leader (kbd "vp") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
+(vmacs-leader (kbd "vs") 'magit-file-dispatch)
+(vmacs-leader (kbd "vb") 'magit-file-dispatch) ;space-vb[n/p] 查看此文件上/下一个版本
+(vmacs-leader (kbd "ve") 'magit-commit-extend)
+(vmacs-leader (kbd "va") 'magit-commit-amend)
 
 
 

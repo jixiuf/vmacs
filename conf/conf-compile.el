@@ -16,9 +16,9 @@
     "r" 'recompile))
 
 (global-set-key (kbd "C-c C-k") 'compile-dwim-run)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC><f5>") 'compile-dwim-compile)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC><f6>") 'compile-dwim-run)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC><f7>") 'recompile)
+(vmacs-leader (kbd "<f5>") 'compile-dwim-compile)
+(vmacs-leader (kbd "<f6>") 'compile-dwim-run)
+(vmacs-leader (kbd "<f7>") 'recompile)
 ;;                                ;
 
 

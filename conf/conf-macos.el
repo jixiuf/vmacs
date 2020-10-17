@@ -9,7 +9,7 @@
 
 ;; ;; pip install jieba
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)
-(evil-define-key '(normal visual operator motion emacs) 'global (kbd "<SPC>wd") 'osx-dictionary-search-pointer)
+(vmacs-leader (kbd "wd") 'osx-dictionary-search-pointer)
 
 ;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
 ;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
