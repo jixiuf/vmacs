@@ -14,7 +14,7 @@
  ;; initial-buffer-choice "~/"
 
 
- use-dialog-box nil		      ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
+ use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost
  frame-title-format '("%e " evil-mode-line-format "「"mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   "%f  GNU/Emacs")
 
@@ -84,39 +84,12 @@
 ;; path /Library/TeX/texbin
 (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
                               "xelatex -interaction nonstopmode %f"))
-;; (with-eval-after-load 'org
-;;   ;; #+LATEX_HEADER: \usepackage{fontspec}
-;;   ;; #+LATEX_HEADER: \setmainfont{Songti SC}
-;;   ;; (add-to-list 'org-latex-default-packages-alist '(""     "fontspec" nil))
-;;   ;; (setq org-format-latex-header (concat org-format-latex-header "\n\\setmainfont{Songti SC}"))
-
-;;   )
-
-;; (defun pretty-chinese-char()
-;;   (push '("“" . "「") prettify-symbols-alist)
-;;   (push '("”" . "」") prettify-symbols-alist)
-;;   (prettify-symbols-mode 1)
-;;   )
-;; ;; (add-hook 'org-mode-hook 'pretty-chinese-char)
-;; (add-hook 'text-mode-hook 'pretty-chinese-char)
-
-
-
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; 把Yes用y代替
 
 ;;(put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil);; 启用narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
-
-;; 因为经常按出c-x c-u，总是出upcase region的警告，
-;; (put 'upcase-region 'disabled nil)
-;; (put 'downcase-region 'disabled nil)
-;; (add-to-list 'byte-compile-not-obsolete-vars 'font-lock-beginning-of-syntax-function)
-;; (add-to-list 'byte-compile-not-obsolete-vars 'font-lock-syntactic-keywords)
-
-(autoload 'go-mode "go-mode" nil t)
-(autoload 'lua-mode "lua-mode" nil t)
 ;; after-init-hook 所有配置文件都加载完之后才会运行此hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq-default auto-mode-alist
@@ -184,47 +157,6 @@
              `(,(lambda ()
                   (looking-at "[ \t\n]*{[ \t\n]*\""))
                . js-mode))
-;; (add-to-list 'magic-mode-alist
-;;              `(,(lambda ()
-;;                   (and
-;;                    (or
-;;                     ;; (re-search-forward "insert "
-;;                     ;;                           magic-mode-regexp-match-limit t)
-;;                     ;; (re-search-forward "delete "
-;;                     ;;                           magic-mode-regexp-match-limit t)
-;;                     (re-search-forward "alter "
-;;                                               magic-mode-regexp-match-limit t)
-;;                     (re-search-forward "grant"
-;;                                               magic-mode-regexp-match-limit t)
-;;                            )))
-;;                . mysql-mode))
-;; (setq-default hippie-expand-try-functions-list
-;;               '(
-;;                 yas-hippie-try-expand
-;;                 try-expand-dabbrev
-;;                 ;; try-vmacs-dabbrev-substring
-;;                 try-expand-dabbrev-visible
-;;                 try-expand-dabbrev-all-buffers
-;;                 try-expand-dabbrev-from-kill
-;;                 try-expand-list
-;;                 try-expand-list-all-buffers
-;;                 try-expand-line
-;;                 try-expand-line-all-buffers
-;;                 try-complete-file-name-partially
-;;                 try-complete-file-name
-;;                 try-expand-whole-kill
-;;                 )
-;;               )
-;; (global-set-key [(meta return)] 'hippie-expand)
-;;  ;meta return on terminal
-;; (global-set-key (kbd "C-M-m") 'hippie-expand) ;meta return for terminal
-
-
-;; (push '("lambda" . #x1d77a) prettify-symbols-alist)
-;; (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
-
-
-
 (global-set-key "\C-j" 'open-line-or-new-line-dep-pos)
 (define-key lisp-interaction-mode-map "\C-j" 'open-line-or-new-line-dep-pos)
 
@@ -257,23 +189,6 @@
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 
 (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
-;; (with-eval-after-load 'elisp-mode
-;;   (define-key emacs-lisp-mode-map (kbd "C-x C-e") 'eval-print-last-sexp))
-
-
-;; (global-set-key "\M-n"  'vmacs-forward-4-line)
-;; (global-set-key "\M-p"  'vmacs-backward-4-line)
-
-
-;; ;; 因为evil的 jk 用于上下移动，C-n C-p基本上用不到
-;; ;; 故把C-n C-p绑定到上下移动4 行，以便小范围的快速移动
-;; ;; Faster point movement,一次前进后退5行
-;; (global-set-key "\C-n"  'vmacs-forward-4-line)
-;; (global-set-key "\C-p"  'vmacs-backward-4-line)
-;; (global-set-key "\M-n"  'next-line)
-;; (global-set-key "\M-p"  'previous-line)
-
-
 
 (provide 'conf-common)
 
