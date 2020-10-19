@@ -366,6 +366,8 @@ Move point to end-of-line ,if point was already at that position,
        )
      ( (derived-mode-p 'calc-mode)
        (call-interactively 'calc-quit))
+     ( (derived-mode-p 'diff-mode)
+       (call-interactively 'kill-buffer-and-window))
      ( (derived-mode-p 'Info-mode)
        (call-interactively 'kill-buffer-and-window))
      ( (derived-mode-p 'special-mode)
