@@ -54,12 +54,6 @@
             ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
             (ibuffer-switch-to-saved-filter-groups "Default")))
 
-;; (defun donot-show-helm-buf(buf)
-;;   "do not show *helm* buffer"
-;;   (and (string-match "^\\*helm\\|^\\*ac-mode-"
-;;                      (buffer-name buf))
-;;        (null buffer-file-name)))
-;; (add-to-list 'ibuffer-maybe-show-predicates 'donot-show-helm-buf)
 ;;toggle 显示上面的 Hidden分组里的内容
 (defun ibuffer-toggle-maybe-show()
   (interactive)
@@ -68,11 +62,6 @@
   (kill-buffer "*Ibuffer*")
   (ibuffer))
 
-
-;;默认的分组default分组放在最后一个,此advice 倒序之
-;; (defadvice ibuffer-generate-filter-groups
-;;   (after reverse-ibuffer-groups () activate)
-;;   (setq ad-return-value (nreverse ad-return-value)))
 
 ;;;; other
 (setq ibuffer-filter-group-name-face 'font-lock-doc-face)
@@ -91,28 +80,6 @@
               (mode 16 16 :left :elide)
               " " filename-and-process)
         (mark " " (name 24 -1) " " filename)))
-;;; Ediff
-
-;; (defadvice switch-to-buffer (around kill-ibuffer-mode activate)
-;;   "kill ibuffer mode if exists"
-;;   ad-do-it
-;;   (unless (string-match "*Ibuffer" (buffer-name))
-;;     (let ((buf (get-buffer "*Ibuffer*")))
-;;       (when buf (kill-buffer buf)))))
-
-;; (defadvice switch-to-buffer-other-window (around kill-ibuffer-mode activate)
-;;   "kill ibuffer mode if exists"
-;;   ad-do-it
-;; (unless (string-match "*Ibuffer" (buffer-name))
-;;     (let ((buf (get-buffer "*Ibuffer*")))
-;;       (when buf (kill-buffer buf)))))
-
-;; (defadvice other-window (around kill-ibuffer-mode activate)
-;;   "kill ibuffer mode if exists"
-;;   ad-do-it
-;; (unless (string-equal "*Ibuffer*" (buffer-name))
-;;     (let ((buf (get-buffer "*Ibuffer*")))
-;;       (when buf (kill-buffer buf)))))
 
 (provide 'conf-ibuffer)
 
