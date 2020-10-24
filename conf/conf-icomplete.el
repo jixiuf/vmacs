@@ -40,7 +40,7 @@
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
-  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'highlight) "\n "))
+  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'vertical-border) "\n "))
          ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
          (completion-table
           (lambda (string pred action)
