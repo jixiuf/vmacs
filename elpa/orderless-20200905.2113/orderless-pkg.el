@@ -1,2 +1,0 @@
-;;; Generated package description from /Users/jixiuf/.emacs.d/elpa/orderless-20200905.2113/orderless.el  -*- no-byte-compile: t -*-
-(define-package "orderless" "20200905.2113" "Completion style for matching regexps in any order" '((emacs "24.4")) :commit "6b94b9abf89c97e65803bc6f05c766e60e11a469" :keywords '("extensions") :authors '(("Omar Antolín Camarena" . "omar@matem.unam.mx")) :maintainer '("Omar Antolín Camarena" . "omar@matem.unam.mx") :url "https://github.com/oantolin/orderless")

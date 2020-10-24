@@ -6,7 +6,7 @@
 (if (require 'orderless nil t)
     (setq completion-styles '(orderless basic substring initials flex))
   (setq completion-styles '(basic substring initials flex)))
-(setq completion-styles '(flex))
+
 
 
 ;; (setq icomplete-delay-completions-threshold 0)
