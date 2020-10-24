@@ -1,13 +1,8 @@
 ;;; Code:
 (require 'icomplete)
 
-(setq orderless-component-separator " +")
-(setq orderless-matching-styles '(orderless-regexp orderless-literal))
-(if (require 'orderless nil t)
-    (setq completion-styles '(orderless basic substring initials flex))
-  (setq completion-styles '(basic substring initials flex)))
-
-
+;; (setq orderless-component-separator " +")
+;; (setq orderless-matching-styles '(orderless-regexp orderless-literal))
 
 ;; (setq icomplete-delay-completions-threshold 0)
 ;; (setq icomplete-max-delay-chars 3)
@@ -23,20 +18,21 @@
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
 ;; 让第一个candidate不要显示在光标同一行，而是下一行
 
-(icomplete-mode 1)
-(define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-s") #'icomplete-forward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-r") #'icomplete-backward-completions)
-(define-key icomplete-minibuffer-map (kbd "C-k") #'icomplete-fido-kill)
-(define-key icomplete-minibuffer-map (kbd "C-m") #'icomplete-fido-ret)
-(define-key icomplete-minibuffer-map (kbd "RET") #'icomplete-fido-ret)
-;; (define-key icomplete-minibuffer-map [(control return)]   #'exit-minibuffer)
+(fido-mode 1)
+
+(defun vmacs-fido-setup ()
+  (if (require 'orderless nil t)
+      (setq-local completion-styles '(orderless basic substring initials flex))
+    (setq-local completion-styles '(basic substring initials flex))))
+
+(add-hook 'minibuffer-setup-hook #'vmacs-fido-setup 99)
+
+(define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
+(define-key icomplete-fido-mode-map (kbd "C-p") #'icomplete-backward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
-(define-key icomplete-minibuffer-map (kbd "M-j") #'icomplete-force-complete-and-exit)
-(define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
-;; (define-key icomplete-minibuffer-map (kbd "SPC") #'self-insert-command)
-(define-key icomplete-minibuffer-map (kbd "<SPC>") #'ignore)
+(define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
+(define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
+;; (define-key icomplete-fido-mode-map (kbd "SPC") #'self-insert-command)
 
 (defun icomplete-mode-yank-pop ()
   (interactive)
