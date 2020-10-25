@@ -14,7 +14,7 @@
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
 ;; (setq vterm-toggle-prompt-regexp
 ;;   (concat "\\(?:^\\|\r\\)"
-;; 	      "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
+;;        "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
 
 (require 'vterm)
 (require 'vterm-toggle)
@@ -122,7 +122,7 @@
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
-
+(add-hook 'vterm-exec-hook  'with-editor-export-editor)
 (setq vterm-buffer-name-string "vterm %s")
 
 (defun vmacs-kill-buffer-hook()
