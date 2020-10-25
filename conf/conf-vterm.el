@@ -122,7 +122,7 @@
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
-(add-hook 'vterm-exec-hook  'with-editor-export-editor)
+(add-hook 'vterm-mode-hook  'with-editor-export-editor)
 (setq vterm-buffer-name-string "vterm %s")
 
 (defun vmacs-kill-buffer-hook()
