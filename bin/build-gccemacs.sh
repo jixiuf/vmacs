@@ -15,7 +15,6 @@ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 
 export LDFLAGS="-L/usr/local/lib/gcc/10"
-echo more info see INSTALL.REPO when compile error
 function catch_errors() {
     echo "script aborted, because of errors";
     exit $?;
@@ -46,7 +45,7 @@ make install #-j 8
 cat >${prefix}/bin/gccemacs << EOS
 #!/bin/bash
 find ~/.emacs.d/eln-cache -type f -size -1  -exec rm -f {} \;
-LIBRARY_PATH=/usr/local/opt/libgccjit/lib/gcc/10:/usr/local/opt/libgccjit/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0 exec ${prefix}/bin/emacs "\$@"
+LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0 exec ${prefix}/bin/emacs "\$@"
 
 EOS
 
