@@ -38,7 +38,7 @@
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
  '(package-selected-packages
-   '(undo-tree eglot modus-vivendi-theme rg magit-libgit docker-tramp ox-gfm centaur-tabs htmlize evil-magit git-link evil dockerfile-mode iedit osx-dictionary dired-narrow magit gitconfig-mode dired-filetype-face golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell git-commit go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
+   '(lsp-mode undo-tree modus-vivendi-theme rg magit-libgit docker-tramp ox-gfm centaur-tabs htmlize evil-magit git-link evil dockerfile-mode iedit osx-dictionary dired-narrow magit gitconfig-mode dired-filetype-face golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell git-commit go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((checkdoc-minor-mode . t)
