@@ -19,7 +19,6 @@
 (vmacs-leader (kbd ".") 'evil-jump-forward)      ;space. 下一个书签
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
-(define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 (define-key evil-motion-state-map "gr" 'lsp-find-references)
 ;; (define-key evil-motion-state-map "gr" 'xref-find-references)
 (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
