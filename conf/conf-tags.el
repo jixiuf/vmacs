@@ -19,11 +19,15 @@
 (vmacs-leader (kbd ".") 'evil-jump-forward)      ;space. 下一个书签
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
+(define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 (define-key evil-motion-state-map "gr" 'lsp-find-references)
 ;; (define-key evil-motion-state-map "gr" 'xref-find-references)
 (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
 (define-key evil-motion-state-map "gR" 'lsp-rename)
 ;; (define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
+(setq evil-goto-definition-functions
+      '(evil-goto-definition-xref evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
+
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-normal-state-map "gi" 'eglot-find-implementation)
 ;; (define-key evil-motion-state-map "gc" 'eglot-find-declaration)
