@@ -18,6 +18,7 @@
 
 (require 'vterm)
 (require 'vterm-toggle)
+(setq vterm-toggle-scope 'project)
 
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
 ;; (add-hook 'vterm-toggle-hide-hook #'(lambda()(compilation-shell-minor-mode -1)))

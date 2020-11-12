@@ -18,7 +18,15 @@
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
 ;; 让第一个candidate不要显示在光标同一行，而是下一行
 
-(fido-mode 1)
+(if (fboundp 'fido-mode)
+    (progn
+      (fido-mode 1)
+      (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
+      (define-key icomplete-fido-mode-map (kbd "C-p") #'icomplete-backward-completions)
+      (define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
+      (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
+      )
+  (icomplete-mode 1))
 
 (defun vmacs-fido-setup ()
   (if (require 'orderless nil t)
@@ -27,11 +35,7 @@
 
 (add-hook 'minibuffer-setup-hook #'vmacs-fido-setup 99)
 
-(define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
-(define-key icomplete-fido-mode-map (kbd "C-p") #'icomplete-backward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
-(define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
-(define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
 ;; (define-key icomplete-fido-mode-map (kbd "SPC") #'self-insert-command)
 
 (defun icomplete-mode-yank-pop ()
