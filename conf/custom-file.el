@@ -21,8 +21,7 @@
  '(centaur-tab-background-color "#202020")
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
- '(custom-safe-themes
-   '("cb8ec356aeda797b9214241beca9cd2e87c4a24cae0b4957503c84c45d9f85cb"))
+ '(custom-safe-themes t)
  '(display-fill-column-indicator t)
  '(electric-pair-mode t)
  '(flycheck-check-syntax-automatically '(save mode-enabled))
