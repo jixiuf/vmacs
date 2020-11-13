@@ -5,6 +5,7 @@
 
 (load "~/.emacs.d/init-base.el")
 
+(when (< emacs-major-version 27) (package-initialize))
 
 (require 'conf-evil-dump)
 
@@ -23,6 +24,8 @@
 (require 'conf-evil-window)       ;窗口
 (require 'conf-evil-clipboard)
 ;; (require 'conf-bm)              ; 可视化书签功能与跳转功能
+
+
 
 (when (eq system-type 'darwin) (require 'conf-macos))
 (when (eq system-type 'windows-nt) (require 'conf-w32))
