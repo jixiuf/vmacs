@@ -88,7 +88,6 @@
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
 (define-key vterm-mode-map [f2]   nil)
 (define-key vterm-mode-map [f3]   nil)
-(define-key vterm-mode-map (kbd "<C-backspace>") #'vterm-send-C-w)
 
 (define-key vterm-mode-map (kbd "C-.")   #'vterm-reset-cursor-point)
 (define-key vterm-copy-mode-map (kbd "C-.")   #'vterm-reset-cursor-point)
