@@ -18,8 +18,6 @@
 
 (require 'vterm)
 (require 'vterm-toggle)
-(setq vterm-toggle-scope 'project)
-(setq vterm-toggle-project-root nil)
 
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
 ;; (add-hook 'vterm-toggle-hide-hook #'(lambda()(compilation-shell-minor-mode -1)))
@@ -123,7 +121,7 @@
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
-(add-hook 'vterm-mode-hook  'with-editor-export-editor)
+;; (add-hook 'vterm-mode-hook  'with-editor-export-editor)
 (setq vterm-buffer-name-string "vterm %s")
 
 (defun vmacs-kill-buffer-hook()
