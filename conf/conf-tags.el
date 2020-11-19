@@ -118,50 +118,29 @@ Will jump to the definition if only one is found."
   )
 
 
-(defun eglot-organize-imports ( &optional beg end)
-  "Offer to execute code actions between BEG and END.
-Interactively, if a region is active, BEG and END are its bounds,
-else BEG is point and END is nil, which results in a request for
-code actions at point"
-  (interactive
-   (if (region-active-p) `(,(region-beginning) ,(region-end)) `(,(point) nil)))
-  (unless beg (point))
+(defun eglot-organize-imports ()
+  "Offer to execute code actions `source.organizeImports'."
+  (interactive)
   (unless (eglot--server-capable :codeActionProvider)
     (eglot--error "Server can't execute code actions!"))
   (let* ((server (eglot--current-server-or-lose))
-         (actions
-          (jsonrpc-request
-           server
-           :textDocument/codeAction
-           (list :textDocument (eglot--TextDocumentIdentifier)
-                 :range (list :start (eglot--pos-to-lsp-position beg)
-                              :end (eglot--pos-to-lsp-position end))
-                 :context
-                 `(:diagnostics
-                   [,@(cl-loop for diag in (flymake-diagnostics beg end)
-                               when (cdr (assoc 'eglot-lsp-diag (eglot--diag-data diag)))
-                               collect it)]))))
-         (menu-items
-          (or (mapcar (jsonrpc-lambda (&rest all &key title &allow-other-keys)
-                        (cons title all))
-                      actions)
-              (eglot--error "No code actions here")))
-         (preferred-action (cl-find-if
-                            (jsonrpc-lambda (&key isPreferred &allow-other-keys)
-                              isPreferred)
-                            actions))
-         (menu `("Eglot code actions:" ("dummy" ,@menu-items)))
-         (action (if (listp last-nonmenu-event)
-                     (x-popup-menu last-nonmenu-event menu)
-                   (cdr (assoc "Organize Imports" menu-items)))))
-    (eglot--dcase action
-      (((Command) command arguments)
-       (eglot-execute-command server (intern command) arguments))
-      (((CodeAction) edit command)
-       (when edit (eglot--apply-workspace-edit edit))
-       (when command
-         (eglot--dbind ((Command) command arguments) command
-           (eglot-execute-command server (intern command) arguments)))))))
+         (actions (jsonrpc-request
+                   server
+                   :textDocument/codeAction
+                   (list :textDocument (eglot--TextDocumentIdentifier))))
+         (action (cl-find-if
+                  (jsonrpc-lambda (&key kind &allow-other-keys)
+                    (string-equal kind "source.organizeImports" ))
+                  actions)))
+    (when action
+      (eglot--dcase action
+        (((Command) command arguments)
+         (eglot-execute-command server (intern command) arguments))
+        (((CodeAction) edit command)
+         (when edit (eglot--apply-workspace-edit edit))
+         (when command
+           (eglot--dbind ((Command) command arguments) command
+             (eglot-execute-command server (intern command) arguments))))))))
 
 
 
