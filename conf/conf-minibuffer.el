@@ -13,6 +13,7 @@
 (setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
 (setq completion-show-help nil) ;*Completions* show help
 (setq max-mini-window-height 20)        ;selectrum-num-candidates-displayed 受影响
+(setq eldoc-echo-area-use-multiline-p 3)
 (setq resize-mini-windows 'grow-only)
 ;; (setq read-answer-short t)
 (setq minibuffer-eldef-shorten-default t)
