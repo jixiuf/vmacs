@@ -1,13 +1,16 @@
 ;;; -*- coding:utf-8 -*-
-;; (setq eglot-confirm-server-initiated-edits nil)
-;; (setq eglot-autoshutdown t)
+(setq eglot-confirm-server-initiated-edits nil)
+(setq eglot-autoshutdown nil)
+(setq eglot-sync-connect 0)
 (defun vmacs-lsp-hook()
-  (lsp-deferred)
+  ;; (lsp-deferred)
+  (eglot-ensure)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
-  (add-hook 'before-save-hook #'lsp-format-buffer 20 t))
+  ;; (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
+  (add-hook 'before-save-hook #'eglot-format-buffer 20 t))
 
 ;; :documentHighlightProvider 禁用高亮光标下的单词
- (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
+(setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
   (add-hook mod 'vmacs-lsp-hook))
 
@@ -19,19 +22,19 @@
 (vmacs-leader (kbd ".") 'evil-jump-forward)      ;space. 下一个书签
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
-(define-key evil-motion-state-map "gr" 'lsp-find-references)
-;; (define-key evil-motion-state-map "gr" 'xref-find-references)
-(define-key evil-motion-state-map "gi" 'lsp-find-implementation)
-(define-key evil-motion-state-map "gR" 'lsp-rename)
-;; (define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
+;; (define-key evil-motion-state-map "gr" 'lsp-find-references)
+(define-key evil-motion-state-map "gr" 'xref-find-references)
+(define-key evil-motion-state-map "gc" 'eglot-find-declaration)
+(define-key evil-motion-state-map "gi" 'eglot-find-implementation)
+(define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
+(define-key evil-motion-state-map "gs" 'eglot-reconnect)
+(define-key evil-normal-state-map "gh" 'eglot-code-actions)
+;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
+;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
+;; (define-key evil-motion-state-map "gR" 'lsp-rename)
 (setq evil-goto-definition-functions
       '(evil-goto-definition-xref evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
 
-;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
-;; (define-key evil-normal-state-map "gi" 'eglot-find-implementation)
-;; (define-key evil-motion-state-map "gc" 'eglot-find-declaration)
-;; (define-key evil-motion-state-map "gR" 'eglot-rename)
-;; (define-key evil-normal-state-map "gh" 'eglot-code-actions)
 
 (with-eval-after-load 'xref
   ;; ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)

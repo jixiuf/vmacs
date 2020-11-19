@@ -18,9 +18,8 @@
   (setq eglot-workspace-configuration
         '((:gopls . (:usePlaceholders t :completeUnimported  t ;; :staticcheck t
                                       ))))
-  ;; (eglot-ensure)
-  ;; (add-hook 'before-save-hook #'gofmt 20 t)
-  (add-hook 'before-save-hook #'lsp-organize-imports 20 t)
+  (add-hook 'before-save-hook #'gofmt 20 t)
+  ;; (add-hook 'before-save-hook #'lsp-organize-imports 20 t)
   (setq require-final-newline nil)
   (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
   (local-set-key (kbd "C-c i") 'go-goto-imports)
