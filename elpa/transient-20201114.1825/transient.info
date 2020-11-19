@@ -44,7 +44,7 @@ reading a new value in the minibuffer.
    Calling a suffix command usually causes the transient to be exited
 but suffix commands can also be configured to not exit the transient.
 
-This manual is for Transient version 0.2.0 (v0.2.0-49-ga3517747+1).
+This manual is for Transient version 0.2.0 (v0.2.0-54-gd76f73f8+1).
 
      Copyright (C) 2018-2020 Jonas Bernoulli <jonas@bernoul.li>
 
@@ -994,9 +994,8 @@ constructor of that class.
      changes to the children including constructing new children from
      scratch.  Also see ‘transient-setup-children’.
 
-   • The constructors of ‘transient-column’ and ‘transient-columns’
-     accept an additional keyword argument ‘:pad-keys’.  If non-nil,
-     then keys of all contained suffixes are right padded, effectively
+   • The boolean ‘:pad-keys’ argument controls whether keys of all
+     suffixes contained in a group are right padded, effectively
      aligning the descriptions.
 
    The ELEMENTs are either all subgroups (vectors), or all suffixes
@@ -1008,6 +1007,13 @@ principle there is nothing that prevents that.)
 lists that specify commands and strings.  Strings are inserted verbatim.
 The empty string can be used to insert gaps between suffixes, which is
 particularly useful if the suffixes are outlined as a table.
+
+   Variables are supported inside group specifications.  For example in
+place of a direct subgroup specification, a variable can be used whose
+value is a vector that qualifies as a group specification.  Likewise a
+variable can be used where a suffix specification is expected.  Lists of
+group or suffix specifications are also supported.  Indirect
+specifications are resolved when the transient prefix is being defined.
 
    The form of suffix specifications is documented in the next node.
 
@@ -1201,6 +1207,14 @@ function, which for infix arguments serves about the same purpose as
      command PREFIX, then it returns the active infix arguments.  If the
      current command was not invoked from PREFIX, then it returns the
      set, saved or default value for PREFIX.
+
+ -- Function: transient-arg-value arg args
+
+     This function return the value of ARG as it appears in ARGS.
+
+     For a switch a boolean is returned.  For an option the value is
+     returned as a string, using the empty string for the empty value,
+     or nil if the option does not appear in ARGS.
 
  -- Function: transient-suffixes prefix
 
@@ -2372,6 +2386,8 @@ Appendix D Function Index
 * transient--insert-group:               Group Methods.       (line  20)
 * transient-append-suffix:               Modifying Existing Transients.
                                                               (line  47)
+* transient-arg-value:                   Using Infix Arguments.
+                                                              (line  32)
 * transient-args:                        Using Infix Arguments.
                                                               (line  22)
 * transient-define-argument:             Defining Suffix and Infix Commands.
@@ -2417,7 +2433,7 @@ Appendix D Function Index
 * transient-suffix-put:                  Modifying Existing Transients.
                                                               (line  65)
 * transient-suffixes:                    Using Infix Arguments.
-                                                              (line  32)
+                                                              (line  40)
 
 
 File: transient.info,  Node: Variable Index,  Prev: Function Index,  Up: Top
@@ -2429,11 +2445,11 @@ Appendix E Variable Index
 * Menu:
 
 * transient-current-command:             Using Infix Arguments.
-                                                              (line  54)
+                                                              (line  62)
 * transient-current-prefix:              Using Infix Arguments.
-                                                              (line  48)
+                                                              (line  56)
 * transient-current-suffixes:            Using Infix Arguments.
-                                                              (line  39)
+                                                              (line  47)
 * transient-default-level:               Enabling and Disabling Suffixes.
                                                               (line  38)
 * transient-detect-key-conflicts:        Other Options.       (line 137)
@@ -2474,29 +2490,29 @@ Node: Defining New Commands34573
 Node: Defining Transients34909
 Node: Binding Suffix and Infix Commands37340
 Node: Group Specifications38194
-Node: Suffix Specifications42186
-Node: Defining Suffix and Infix Commands46144
-Node: Using Infix Arguments49342
-Node: Transient State51871
-Node: Classes and Methods57744
-Node: Group Classes59958
-Node: Group Methods61874
-Node: Prefix Classes63123
-Node: Suffix Classes64215
-Node: Suffix Methods66459
-Node: Suffix Value Methods66780
-Node: Suffix Format Methods69540
-Node: Prefix Slots70992
-Node: Suffix Slots73467
-Node: Predicate Slots76993
-Node: Related Abstractions and Packages78241
-Node: Comparison With Prefix Keys and Prefix Arguments78528
-Node: Comparison With Other Packages88840
-Node: FAQ93030
-Node: Keystroke Index96764
-Node: Command Index98544
-Node: Function Index100477
-Node: Variable Index104844
+Node: Suffix Specifications42523
+Node: Defining Suffix and Infix Commands46481
+Node: Using Infix Arguments49679
+Node: Transient State52511
+Node: Classes and Methods58384
+Node: Group Classes60598
+Node: Group Methods62514
+Node: Prefix Classes63763
+Node: Suffix Classes64855
+Node: Suffix Methods67099
+Node: Suffix Value Methods67420
+Node: Suffix Format Methods70180
+Node: Prefix Slots71632
+Node: Suffix Slots74107
+Node: Predicate Slots77633
+Node: Related Abstractions and Packages78881
+Node: Comparison With Prefix Keys and Prefix Arguments79168
+Node: Comparison With Other Packages89480
+Node: FAQ93670
+Node: Keystroke Index97404
+Node: Command Index99184
+Node: Function Index101117
+Node: Variable Index105621
 
 End Tag Table
 
