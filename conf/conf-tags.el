@@ -24,6 +24,7 @@
 
 (define-key evil-motion-state-map "g." 'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 ;; (define-key evil-motion-state-map "gr" 'lsp-find-references)
+(define-key evil-motion-state-map "gR" 'eglot-rename)
 (define-key evil-motion-state-map "gr" 'xref-find-references)
 (define-key evil-motion-state-map "gc" 'eglot-find-declaration)
 (define-key evil-motion-state-map "gi" 'eglot-find-implementation)
