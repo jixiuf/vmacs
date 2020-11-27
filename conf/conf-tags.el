@@ -4,7 +4,6 @@
 (setq eglot-sync-connect 0)
 (defun vmacs-lsp-hook()
   ;; (lsp-deferred)
-  (eglot-ensure)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
   ;; (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
   (add-hook 'before-save-hook #'eglot-organize-imports 30 t)
@@ -13,7 +12,8 @@
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
-  (add-hook mod 'vmacs-lsp-hook))
+  (add-hook mod 'eglot-ensure))
+(dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
 
 (define-key evil-normal-state-map "gf" 'evil-jump-forward)
 (define-key evil-normal-state-map "gb" 'evil-jump-backward)
