@@ -6,29 +6,18 @@
 ;; make
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
-(setq-default vterm-max-scrollback (- 10000 42))
+(setq-default vterm-max-scrollback (- 20000 42))
 (setq-default vterm-enable-manipulate-selection-data-by-osc52 t)
 (setq vterm-toggle-cd-auto-create-buffer t)
-(setq-default vterm-kill-buffer-on-exit t)
 (setq-default vterm-clear-scrollback-when-clearing t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
-;; (setq vterm-toggle-prompt-regexp
-;;   (concat "\\(?:^\\|\r\\)"
-;;        "[^]#$%>\n]*#?[]#$%➜⇒»☞\[@λ] *\\(\e\\[[0-9;]*[-_a-zA-Z] *\\)*"))
 
 (require 'vterm)
 (require 'vterm-toggle)
 
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
-;; (add-hook 'vterm-toggle-hide-hook #'(lambda()(compilation-shell-minor-mode -1)))
 (add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
-(setq vterm-toggle-fullscreen-p t)
-
-(defun vterm-send-ctrl-x-ctrl-e ()
-  "edit with editor"
-  (interactive)
-  (vterm-send-key "x" nil nil t)
-  (vterm-send-key "e" nil nil t))
+(setq vterm-toggle-fullscreen-p nil)
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
@@ -80,7 +69,6 @@
 
 (define-key vterm-mode-map (kbd "s-C-M-u") 'vterm-toggle)
 ;; (define-key vterm-mode-map (kbd "s-t")   #'vterm-toggle-cd-show)
-(define-key vterm-mode-map (kbd "C-x C-e")   #'vterm-send-ctrl-x-ctrl-e)
 (define-key vterm-mode-map (kbd "C-g")   #'vterm-ctrl-g)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
@@ -105,8 +93,7 @@
 
 (defun vmacs-vterm-hook()
   (let ((p (get-buffer-process (current-buffer))))
-    (when p
-      (set-process-query-on-exit-flag p nil)))
+    (when p (set-process-query-on-exit-flag p nil)))
   (evil-local-mode 1)
   (evil-define-key 'insert 'local [escape] 'vterm--self-insert)
   (evil-define-key 'motion'local (kbd "C-r") 'vmacs-vterm-self-insert)
@@ -114,8 +101,14 @@
   (evil-define-key 'normal 'local (kbd "C-p") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-n") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-r") 'vmacs-vterm-self-insert)
-  (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
-  (evil-define-key 'normal 'local "i" 'evil-collection-vterm-insert)
+  (evil-define-key 'normal 'local (kbd "p") 'vterm-evil-paste-after)
+  (evil-define-key 'normal 'local (kbd "P") 'vterm-evil-paste-before)
+  (evil-define-key 'normal 'local (kbd "C-y") 'vterm-yank)
+  (evil-define-key 'normal 'local (kbd "C-/") 'vterm-undo)
+  (evil-define-key 'normal 'local "a" 'vterm-evil-append)
+  (evil-define-key 'normal 'local "d" 'vterm-evil-delete)
+  (evil-define-key 'normal 'local "i" 'vterm-evil-insert)
+  (evil-define-key 'normal 'local "c" 'vterm-evil-change)
 
   (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
@@ -133,29 +126,58 @@
 
 (add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
 
-(defun evil-collection-vterm-insert (count &optional vcount skip-empty-lines)
-  (interactive
-   (list (prefix-numeric-value current-prefix-arg)
-         (and (evil-visual-state-p)
-              (memq (evil-visual-type) '(line block))
-              (save-excursion
-                (let ((m (mark)))
-                  ;; go to upper-left corner temporarily so
-                  ;; `count-lines' yields accurate results
-                  (evil-visual-rotate 'upper-left)
-                  (prog1 (count-lines evil-visual-beginning evil-visual-end)
-                    (set-mark m)))))
-         (evil-visual-state-p)))
-  (let ((p (point)))
-    (evil-insert count vcount skip-empty-lines)
-    (vterm-reset-cursor-point)
-    (while (< p (point))
-      (vterm-send-left)
-      (forward-char -1))
-    (while (> p (point))
-      (vterm-send-right)
-      (forward-char 1))))
+(defun vterm-evil-insert ()
+  (interactive)
+  (vterm-goto-char (point))
+  (call-interactively #'evil-insert))
 
+(defun vterm-evil-append ()
+  (interactive)
+  (vterm-goto-char (point))
+  (call-interactively #'evil-append))
+
+(defun vterm-evil-delete ()
+  "Provide similar behavior as `evil-delete'."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
+      (call-interactively #'evil-delete))))
+
+(defun vterm-evil-change ()
+  "Provide similar behavior as `evil-change'."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
+      (call-interactively #'evil-change))))
+
+(defvar origin-evil-paste-after (symbol-function #'evil-paste-after))
+(defvar origin-evil-paste-before (symbol-function #'evil-paste-before))
+
+(evil-define-command vterm-evil-paste-after
+  (count &optional register yank-handler)
+  "Pastes the latest yanked text behind point.
+The return value is the yanked text."
+  :suppress-operator t
+  (interactive "P<x>")
+  (vterm-goto-char (1+ (point)))
+  (let ((inhibit-read-only t)
+        (buffer-read-only nil))
+    (cl-letf* (((symbol-function #'insert) #'vterm-insert)
+               ((symbol-function #'delete-region) #'vterm-delete-region))
+      (funcall origin-evil-paste-after count register yank-handler))))
+
+(evil-define-command vterm-evil-paste-before
+  (count &optional register yank-handler)
+  "Pastes the latest yanked text behind point.
+The return value is the yanked text."
+  :suppress-operator t
+  (interactive "P<x>")
+  (vterm-goto-char (point))
+  (let ((inhibit-read-only t)
+        (buffer-read-only nil))
+    (cl-letf* (((symbol-function #'insert) #'vterm-insert)
+               ((symbol-function #'delete-region) #'vterm-delete-region))
+      (funcall origin-evil-paste-before count register yank-handler))))
 
 
 (defun vterm-toggle-after-ssh-login (method user host port localdir)
@@ -172,12 +194,5 @@
 
 (defun vmacs-term-mode-p(&optional args)
   (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)))
-
-(defun vterm-open-other-window (path)
-  (if-let* ((buf (find-file-noselect path)))
-      (pop-to-buffer buf )
-    (message "Failed to open file: %s" path)))
-
-(push (list "vterm-open-other-window" 'vterm-open-other-window) vterm-eval-cmds)
 
 (provide 'conf-vterm)
