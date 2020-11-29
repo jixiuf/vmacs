@@ -18,6 +18,7 @@
 (add-hook 'vterm-toggle-show-hook #'evil-insert-state)
 (add-hook 'vterm-toggle-hide-hook #'evil-insert-state)
 (setq vterm-toggle-fullscreen-p nil)
+(setq vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
