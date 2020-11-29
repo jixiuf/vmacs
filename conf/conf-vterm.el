@@ -101,8 +101,7 @@
   (evil-define-key 'normal 'local (kbd "C-p") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-n") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-r") 'vmacs-vterm-self-insert)
-  (evil-define-key 'normal 'local (kbd "p") 'vterm-evil-paste-after)
-  (evil-define-key 'normal 'local (kbd "P") 'vterm-evil-paste-before)
+  (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "C-y") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "C-/") 'vterm-undo)
   (evil-define-key 'normal 'local "a" 'vterm-evil-append)
@@ -150,34 +149,6 @@
     (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
       (call-interactively #'evil-change))))
 
-(defvar origin-evil-paste-after (symbol-function #'evil-paste-after))
-(defvar origin-evil-paste-before (symbol-function #'evil-paste-before))
-
-(evil-define-command vterm-evil-paste-after
-  (count &optional register yank-handler)
-  "Pastes the latest yanked text behind point.
-The return value is the yanked text."
-  :suppress-operator t
-  (interactive "P<x>")
-  (vterm-goto-char (1+ (point)))
-  (let ((inhibit-read-only t)
-        (buffer-read-only nil))
-    (cl-letf* (((symbol-function #'insert) #'vterm-insert)
-               ((symbol-function #'delete-region) #'vterm-delete-region))
-      (funcall origin-evil-paste-after count register yank-handler))))
-
-(evil-define-command vterm-evil-paste-before
-  (count &optional register yank-handler)
-  "Pastes the latest yanked text behind point.
-The return value is the yanked text."
-  :suppress-operator t
-  (interactive "P<x>")
-  (vterm-goto-char (point))
-  (let ((inhibit-read-only t)
-        (buffer-read-only nil))
-    (cl-letf* (((symbol-function #'insert) #'vterm-insert)
-               ((symbol-function #'delete-region) #'vterm-delete-region))
-      (funcall origin-evil-paste-before count register yank-handler))))
 
 
 (defun vterm-toggle-after-ssh-login (method user host port localdir)
