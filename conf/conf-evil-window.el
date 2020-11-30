@@ -16,7 +16,7 @@
 (golden-ratio-mode 1)
 ;; Work with ediff and helm
 (add-to-list 'golden-ratio-exclude-modes "ediff-mode")
-(add-to-list 'golden-ratio-exclude-modes 'vterm-mode)
+;; (add-to-list 'golden-ratio-exclude-modes 'vterm-mode)
 (add-to-list 'golden-ratio-exclude-modes 'snails-mode)
 ;; (add-to-list 'golden-ratio-exclude-modes "magit-mode")
 (add-to-list 'golden-ratio-exclude-modes "magit-key-mode")
@@ -56,12 +56,13 @@
       '(
         ((lambda(bufname _) (with-current-buffer bufname (equal major-mode 'vterm-mode)))
          ;; "^v?term.*"
-         (display-buffer-reuse-window )
+         ;; (display-buffer-reuse-window )
          ;; (inhibit-same-window . t)
-         ;; (display-buffer-reuse-window display-buffer-in-direction)
+         (display-buffer-reuse-window display-buffer-in-direction)
+         ;; (dedicated . t) ;dedicated is supported in emacs27
          ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-         ;; (direction . bottom)
-         ;; (window-height . 0.3)
+         (direction . bottom)
+         (window-height . 0.3)
          ;; (display-buffer-reuse-window display-buffer-at-bottom)
          ;; (inhibit-same-window . t)
          ;; (reusable-frames . nil)
