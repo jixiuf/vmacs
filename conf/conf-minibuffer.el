@@ -10,7 +10,8 @@
 (setq completion-pcm-complete-word-inserts-delimiters t) ;partial-completion in completion-styles
 ;; (setq completion-pcm-word-delimiters "-_/:| ")
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
-(setq completions-format 'vertical)   ; *Completions* buffer M-v跳到*Completions* buffer
+(setq completions-format 'one-column)   ; *Completions* buffer M-v跳到*Completions* buffer
+(setq completions-detailed t)
 (setq completion-show-help nil) ;*Completions* show help
 (setq max-mini-window-height 20)        ;selectrum-num-candidates-displayed 受影响
 (setq eldoc-echo-area-use-multiline-p 3)
