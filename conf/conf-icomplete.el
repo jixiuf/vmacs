@@ -38,34 +38,9 @@
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 ;; (define-key icomplete-fido-mode-map (kbd "SPC") #'self-insert-command)
 
-(defun icomplete-mode-yank-pop ()
-  (interactive)
-  (let* ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'vertical-border) "\n "))
-         ;;disable sorting https://emacs.stackexchange.com/questions/41801/how-to-stop-completing-read-ivy-completing-read-from-sorting
-         (completion-table
-          (lambda (string pred action)
-            (if (eq action 'metadata)
-                '(metadata (display-sort-function . identity)
-                           (cycle-sort-function . identity))
-              (complete-with-action
-               action kill-ring string pred))))
-         (selected (completing-read "Yank from kill ring: " completion-table nil t)))
-    (if (eq major-mode 'vterm-mode)
-        (vterm-send-string selected t)
-      (insert selected))))
-
-
-(defadvice yank-pop (around kill-ring-browse-maybe (arg) activate)
-  "If last action was not a yank, run `browse-kill-ring' instead."
-  ;; yank-pop has an (interactive "*p") form which does not allow
-  ;; it to run in a read-only buffer. We want browse-kill-ring to
-  ;; be allowed to run in a read only buffer, so we change the
-  ;; interactive form here. In that case, we need to
-  ;; barf-if-buffer-read-only if we're going to call yank-pop with
-  ;; ad-do-it
+(defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
-  (if (not (eq last-command 'yank))
-      (icomplete-mode-yank-pop)
+  (let ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'vertical-border) "\n ")))
     ad-do-it))
 
 
