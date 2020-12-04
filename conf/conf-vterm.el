@@ -133,7 +133,7 @@
 
 (defun vterm-evil-append ()
   (interactive)
-  (vterm-goto-char (point))
+  (vterm-goto-char (1+ (point)))
   (call-interactively #'evil-append))
 
 (defun vterm-evil-delete ()
