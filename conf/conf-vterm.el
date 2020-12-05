@@ -106,6 +106,7 @@
   (evil-define-key 'normal 'local (kbd "C-y") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "C-/") 'vterm-undo)
   (evil-define-key 'normal 'local "a" 'vterm-evil-append)
+  (evil-define-key 'normal 'local "x" 'vterm-evil-delete-char)
   (evil-define-key 'normal 'local "d" 'vterm-evil-delete)
   (evil-define-key 'normal 'local "i" 'vterm-evil-insert)
   (evil-define-key 'normal 'local "c" 'vterm-evil-change)
@@ -135,6 +136,12 @@
   (interactive)
   (vterm-goto-char (1+ (point)))
   (call-interactively #'evil-append))
+(defun vterm-evil-delete-char ()
+  (interactive)
+  (vterm-goto-char (point))
+  (let ((inhibit-read-only t))
+    (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
+      (call-interactively #'evil-delete-char))))
 
 (defun vterm-evil-delete ()
   "Provide similar behavior as `evil-delete'."
