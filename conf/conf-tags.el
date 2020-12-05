@@ -38,85 +38,8 @@
       '(evil-goto-definition-xref evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
 
 
-(with-eval-after-load 'xref
-  ;; ;; (define-key xref--xref-buffer-mode-map (kbd "j") #'xref-next-line)
-  ;; ;; (define-key xref--xref-buffer-mode-map (kbd "k") #'xref-prev-line)
-  ;; (define-key xref--xref-buffer-mode-map (kbd "r") #'xref-query-replace-in-results)
-  ;; (define-key xref--xref-buffer-mode-map (kbd "TAB") #'xref-goto-xref)
-  ;; (define-key xref--xref-buffer-mode-map (kbd "<return>")  #'xref-quit-and-goto-xref)
-  ;; (define-key xref--xref-buffer-mode-map (kbd "RET")  #'xref-quit-and-goto-xref)
-
-  (setq xref-show-xrefs-function 'completing-read-xref-show-defs)
-  (setq xref-show-definitions-function 'completing-read-xref-show-defs)
-
-  (defun completing-read-xref-make-collection (xrefs)
-    "Transform XREFS into a collection for display via `completing-read'."
-    (let ((collection nil))
-      (dolist (xref xrefs)
-        (with-slots (summary location) xref
-          (let* ((line (xref-location-line location))
-                 (file (xref-location-group location))
-                 (candidate
-                  (concat
-                   (propertize
-                    (concat
-                     (file-name-nondirectory file)
-                     (if (integerp line)
-                         (format ":%d: " line)
-                       ": "))
-                    'face 'compilation-info)
-                   summary)))
-            (push `(,candidate . ,location) collection))))
-      (nreverse collection)))
-
-  (defun completing-xref-show-xrefs (fetcher alist)
-    "Show the list of xrefs returned by FETCHER and ALIST via completing-read."
-    ;; call the original xref--show-xref-buffer so we can be used with
-    ;; dired-do-find-regexp-and-replace etc which expects to use the normal xref
-    ;; results buffer but then bury it and delete the window containing it
-    ;; immediately since we don't want to see it - see #2
-    (let* ((xrefs (if (functionp fetcher)
-                      ;; Emacs 27
-                      (or (assoc-default 'fetched-xrefs alist)
-                          (funcall fetcher))
-                    fetcher))
-           (buffer (xref--show-xref-buffer fetcher alist)))
-      (quit-window)
-      (let* ((orig-buf (current-buffer))
-             (orig-pos (point))
-             (cands (completing-read-xref-make-collection xrefs))
-             (candidate (completing-read "xref: "  cands nil t ))
-             done)
-        (setq candidate (assoc candidate cands))
-        (condition-case err
-            (let* ((marker (xref-location-marker (cdr candidate)))
-                   (buf (marker-buffer marker)))
-              (with-current-buffer buffer
-                (select-window
-                 ;; function signature changed in
-                 ;; 2a973edeacefcabb9fd8024188b7e167f0f9a9b6
-                 (if (version< emacs-version "26.0.90")
-                     (xref--show-pos-in-buf marker buf t)
-                   (xref--show-pos-in-buf marker buf)))))
-          (user-error (message (error-message-string err)))))
-      ;; honor the contact of xref--show-xref-buffer by returning its original
-      ;; return value
-      buffer))
-
-  (defun completing-read-xref-show-defs (fetcher alist)
-    "Show the list of definitions returned by FETCHER and ALIST via completing-read.
-Will jump to the definition if only one is found."
-    (let ((xrefs (funcall fetcher)))
-      (cond
-       ((not (cdr xrefs))
-        (xref-pop-to-location (car xrefs)
-                              (assoc-default 'display-action alist)))
-       (t
-        (completing-xref-show-xrefs fetcher
-                                    (cons (cons 'fetched-xrefs xrefs)
-                                          alist))))))
-
-  )
+(setq xref-show-xrefs-function 'xref--show-defs-minibuffer)
+(setq xref-show-definitions-function 'xref--show-defs-minibuffer)
 
 
 (defun eglot-organize-imports ()
