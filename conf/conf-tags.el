@@ -31,6 +31,7 @@
 (define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
 (define-key evil-motion-state-map "gs" 'eglot-reconnect)
 (define-key evil-normal-state-map "gh" 'eglot-code-actions)
+(define-key evil-normal-state-map "gp" 'project-find-regexp)
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
 ;; (define-key evil-motion-state-map "gR" 'lsp-rename)
@@ -40,6 +41,7 @@
 
 (setq xref-show-xrefs-function 'xref--show-defs-minibuffer)
 (setq xref-show-definitions-function 'xref--show-defs-minibuffer)
+(setq xref-search-program 'ripgrep)     ;project-find-regexp
 
 
 (defun eglot-organize-imports ()
