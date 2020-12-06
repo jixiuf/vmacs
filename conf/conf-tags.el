@@ -14,6 +14,11 @@
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
   (add-hook mod 'eglot-ensure))
 (dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
+(with-eval-after-load 'eglot
+  ;; brew install llvm
+  ;;clangd https://clangd.llvm.org/installation.html
+  ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
+  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd")))
 
 (define-key evil-normal-state-map "gf" 'evil-jump-forward)
 (define-key evil-normal-state-map "gb" 'evil-jump-backward)
@@ -27,7 +32,7 @@
 (define-key evil-motion-state-map "gR" 'eglot-rename)
 (define-key evil-motion-state-map "gr" 'xref-find-references)
 (define-key evil-motion-state-map "gc" 'eglot-find-declaration)
-(define-key evil-motion-state-map "gi" 'eglot-find-implementation)
+(define-key evil-normal-state-map "gi" 'eglot-find-implementation)
 (define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
 (define-key evil-motion-state-map "gs" 'eglot-reconnect)
 (define-key evil-normal-state-map "gh" 'eglot-code-actions)
