@@ -28,12 +28,12 @@
       )
   (icomplete-mode 1))
 
-(defun vmacs-fido-setup ()
-  (if (require 'orderless nil t)
-      (setq-local completion-styles '(orderless partial-completion basic substring initials flex))
-    (setq-local completion-styles '(basic substring initials partial-completion flex))))
+(if (require 'orderless nil t)
+    (setq completion-styles '(orderless partial-completion basic substring initials flex))
+  (setq completion-styles '(basic substring initials partial-completion flex)))
 
-(add-hook 'minibuffer-setup-hook #'vmacs-fido-setup 99)
+;; (defun vmacs-fido-setup ())
+;; (add-hook 'minibuffer-setup-hook #'vmacs-fido-setup 99)
 
 (define-key icomplete-minibuffer-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 ;; (define-key icomplete-fido-mode-map (kbd "SPC") #'self-insert-command)
