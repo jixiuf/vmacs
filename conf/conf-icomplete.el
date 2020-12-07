@@ -16,7 +16,9 @@
 (setq icomplete-prospects-height 15)
 (setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
-;; 让第一个candidate不要显示在光标同一行，而是下一行
+(if (require 'orderless nil t)
+    (setq completion-styles '(orderless partial-completion basic substring initials flex))
+  (setq completion-styles '(basic substring initials partial-completion flex)))
 
 (if (fboundp 'fido-mode)
     (progn
@@ -24,13 +26,9 @@
       (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
       (define-key icomplete-fido-mode-map (kbd "C-p") #'icomplete-backward-completions)
       (define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
-      (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
-      )
+      (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir))
   (icomplete-mode 1))
 
-(if (require 'orderless nil t)
-    (setq completion-styles '(orderless partial-completion basic substring initials flex))
-  (setq completion-styles '(basic substring initials partial-completion flex)))
 
 ;; (defun vmacs-fido-setup ())
 ;; (add-hook 'minibuffer-setup-hook #'vmacs-fido-setup 99)
