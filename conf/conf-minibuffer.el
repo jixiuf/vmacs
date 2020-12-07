@@ -41,7 +41,7 @@ Monospaced font whihc is fixed idth and height is recommended."
   (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
   (define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
   (define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
-  ;; (local-set-key (kbd "SPC") 'self-insert-command)
+  (local-set-key (kbd "SPC") 'self-insert-command)
   ;; (define-key minibuffer-local-must-match-map (kbd "<C-m>") 'exit-minibuffer)
   ;; (define-key minibuffer-local-map (kbd "<C-m>") 'exit-minibuffer)
   ;; (define-key minibuffer-local-completion-map (kbd "<C-m>") 'exit-minibuffer)
