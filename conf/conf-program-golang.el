@@ -16,8 +16,10 @@
 
 (defun vmacs-go-mode-hook()
   (setq eglot-workspace-configuration
+        ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
         '((:gopls . (:usePlaceholders t :completeUnimported  t ;; :staticcheck t
-                                      ))))
+                                      :experimentalWorkspaceModule  t
+                                      :allowModfileModifications t))))
   ;; (add-hook 'before-save-hook #'gofmt 20 t)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 20 t)
   (setq require-final-newline nil)
