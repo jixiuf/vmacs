@@ -43,10 +43,11 @@
 (setq evil-goto-definition-functions
       '(evil-goto-definition-xref evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
 
-
-(setq xref-show-xrefs-function 'xref--show-defs-minibuffer)
-(setq xref-show-definitions-function 'xref--show-defs-minibuffer)
-(setq xref-search-program 'ripgrep)     ;project-find-regexp
+(with-eval-after-load 'xref
+  (setq xref-search-program 'ripgrep)     ;project-find-regexp
+  (when (functionp 'xref--show-defs-minibuffer)
+    (setq xref-show-definitions-function 'xref--show-defs-minibuffer)
+    (setq xref-show-xrefs-function 'xref--show-defs-minibuffer)))
 
 
 (defun eglot-organize-imports ()
@@ -58,7 +59,14 @@
          (actions (jsonrpc-request
                    server
                    :textDocument/codeAction
-                   (list :textDocument (eglot--TextDocumentIdentifier))))
+                   (list :textDocument (eglot--TextDocumentIdentifier)
+                         :range (list :start (eglot--pos-to-lsp-position (point-min))
+                                      :end (eglot--pos-to-lsp-position (point-max)))
+                         :context
+                         `(:diagnostics
+                           [,@(cl-loop for diag in (flymake-diagnostics (point-min) (point-max))
+                                       when (cdr (assoc 'eglot-lsp-diag (eglot--diag-data diag)))
+                                       collect it)]))))
          (action (cl-find-if
                   (jsonrpc-lambda (&key kind &allow-other-keys)
                     (string-equal kind "source.organizeImports" ))
