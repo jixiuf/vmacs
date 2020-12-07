@@ -30,8 +30,8 @@
 
 (defun vmacs-fido-setup ()
   (if (require 'orderless nil t)
-      (setq-local completion-styles '(orderless basic substring initials flex))
-    (setq-local completion-styles '(basic substring initials flex))))
+      (setq-local completion-styles '(orderless partial-completion basic substring initials flex))
+    (setq-local completion-styles '(basic substring initials partial-completion flex))))
 
 (add-hook 'minibuffer-setup-hook #'vmacs-fido-setup 99)
 
