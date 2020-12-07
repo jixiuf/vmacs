@@ -82,8 +82,8 @@
   (when (eq system-type 'darwin) (require 'conf-evil-input-method))
   (require 'server)
   (unless (server-running-p) (server-start))
-  (load-theme 'modus-vivendi))
-
+  (when (custom-theme-p 'modus-vivendi)
+    (load-theme 'modus-vivendi)))
 
 ;; Local Variables:
 ;; coding: utf-8
