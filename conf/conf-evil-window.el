@@ -76,6 +76,9 @@
          (inhibit-same-window . nil))
         ("\\*rg\\*"
          (display-buffer-same-window ))
+        ("\\*xref\\*"
+         (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
+         )
         ("\\*Annotate .*"
          (display-buffer-same-window ))
         ("\\*ivy-occur.*"
