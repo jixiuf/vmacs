@@ -8,8 +8,9 @@
   ;; (lsp-deferred)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
   ;; (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
-  (add-hook 'before-save-hook #'eglot-organize-imports 30 t)
-  (add-hook 'before-save-hook #'eglot-format-buffer 20 t))
+  (add-hook 'after-save-hook #'eglot-organize-imports);before hook有时无效，只好After
+  ;; (add-hook 'before-save-hook #'eglot-organize-imports -100 t)
+  (add-hook 'before-save-hook #'eglot-format-buffer 30 t))
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
   (add-hook mod 'eglot-ensure))
@@ -85,7 +86,8 @@
          (when edit (eglot--apply-workspace-edit edit))
          (when command
            (eglot--dbind ((Command) command arguments) command
-             (eglot-execute-command server (intern command) arguments))))))))
+             (eglot-execute-command server (intern command) arguments)))))))
+  (save-current-buffer))
 
 
 

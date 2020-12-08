@@ -1,0 +1,2 @@
+;;; Generated package description from git-link.el  -*- no-byte-compile: t -*-
+(define-package "git-link" "20201124.155" "Get the GitHub/Bitbucket/GitLab URL for a buffer location" '((emacs "24.3")) :commit "151df174a662ae6711f26f160e7759ea014f1a3c" :keywords '("git" "vc" "github" "bitbucket" "gitlab" "sourcehut" "convenience") :authors '(("Skye Shaw" . "skye.shaw@gmail.com")) :maintainer '("Skye Shaw" . "skye.shaw@gmail.com") :url "http://github.com/sshaw/git-link")
