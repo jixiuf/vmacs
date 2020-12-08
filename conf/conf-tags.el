@@ -2,6 +2,8 @@
 (setq eglot-confirm-server-initiated-edits nil)
 (setq eglot-autoshutdown nil)
 (setq eglot-sync-connect 0)
+;; :documentHighlightProvider 禁用高亮光标下的单词
+(setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (defun vmacs-lsp-hook()
   ;; (lsp-deferred)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
@@ -9,8 +11,6 @@
   (add-hook 'before-save-hook #'eglot-organize-imports 30 t)
   (add-hook 'before-save-hook #'eglot-format-buffer 20 t))
 
-;; :documentHighlightProvider 禁用高亮光标下的单词
-(setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
   (add-hook mod 'eglot-ensure))
 (dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
@@ -36,12 +36,18 @@
 (define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
 (define-key evil-motion-state-map "gs" 'eglot-reconnect)
 (define-key evil-normal-state-map "gh" 'eglot-code-actions)
-(define-key evil-normal-state-map "gp" 'project-find-regexp)
+(define-key evil-normal-state-map "gp" 'evil-project-find-regexp)
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
 ;; (define-key evil-motion-state-map "gR" 'lsp-rename)
+(defun evil-project-find-regexp( &optional string _pos)
+  (interactive)
+  (project-find-regexp (or string (regexp-quote (thing-at-point 'symbol))))
+  ;; (call-interactively 'vmacs-rg-dwim-project-dir)
+  )
+
 (setq evil-goto-definition-functions
-      '(evil-goto-definition-xref evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
+      '(evil-goto-definition-xref  evil-project-find-regexp evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
 
 (with-eval-after-load 'xref
   (setq xref-search-program 'ripgrep)     ;project-find-regexp
