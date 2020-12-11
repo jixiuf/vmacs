@@ -32,7 +32,7 @@ A major mode to edit Dockerfiles.
 
 (add-to-list 'auto-mode-alist '("Dockerfile\\(?:\\..*\\)?\\'" . dockerfile-mode))
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "dockerfile-mode" '("dockerfile-")))
+(register-definition-prefixes "dockerfile-mode" '("dockerfile-"))
 
 ;;;***
 
