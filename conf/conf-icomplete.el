@@ -21,6 +21,7 @@
 
 (when (require 'embark nil t)
   (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
+  (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-occur)
   (global-set-key (kbd "C-o") 'embark-act))
 
 (fido-mode 1)
