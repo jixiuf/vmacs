@@ -33,6 +33,9 @@
   (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
   (define-key icomplete-fido-mode-map (kbd "C-c C-o") 'embark-export)
   (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-occur)
+  (define-key icomplete-fido-mode-map (kbd "C-c C-e") 'embark-live-occur)
+  ;; (define-key embark-occur-mode-map (kbd "/") 'hide-lines-not-matching)
+  ;; (define-key embark-occur-mode-map (kbd "z") 'hide-lines-matching)
   (global-set-key (kbd "C-o") 'embark-act))
 
 
