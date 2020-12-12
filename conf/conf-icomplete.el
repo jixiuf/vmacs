@@ -18,7 +18,10 @@
     (setq completion-styles '(orderless partial-completion basic substring initials flex))
   (setq completion-styles '(basic substring initials partial-completion flex)))
 
-(when (require 'embark nil t) (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act))
+
+(when (require 'embark nil t)
+  (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
+  (global-set-key (kbd "C-o") 'embark-act))
 
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)

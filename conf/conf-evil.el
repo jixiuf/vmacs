@@ -373,6 +373,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (global-set-key (kbd "C-c C-c") 'vmacs-smart-double-ctrl-c)
 (define-key evil-normal-state-map (kbd "M-o") 'toggle-camelize)
+(define-key evil-motion-state-map (kbd "C-o") nil)
 
 (evil-declare-motion 'golden-ratio-scroll-screen-down)
 (evil-declare-motion 'golden-ratio-scroll-screen-up)
