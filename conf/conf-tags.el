@@ -8,7 +8,7 @@
   ;; (lsp-deferred)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
   ;; (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
-  (add-hook 'after-save-hook #'eglot-organize-imports);before hook有时无效，只好After
+  (add-hook 'after-save-hook #'eglot-organize-imports 29 t);before hook有时无效，只好After
   ;; (add-hook 'before-save-hook #'eglot-organize-imports -100 t)
   (add-hook 'before-save-hook #'eglot-format-buffer 30 t))
 
@@ -43,9 +43,8 @@
 ;; (define-key evil-motion-state-map "gR" 'lsp-rename)
 (defun evil-project-find-regexp( &optional string _pos)
   (interactive)
-  (project-find-regexp (or string (regexp-quote (thing-at-point 'symbol))))
   ;; (call-interactively 'vmacs-rg-dwim-project-dir)
-  )
+  (project-find-regexp (or string (regexp-quote (thing-at-point 'symbol)))))
 
 (setq evil-goto-definition-functions
       '(evil-goto-definition-xref  evil-project-find-regexp evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
