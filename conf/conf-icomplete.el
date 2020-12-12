@@ -19,10 +19,6 @@
   (setq completion-styles '(basic substring initials partial-completion flex)))
 
 
-(when (require 'embark nil t)
-  (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
-  (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-occur)
-  (global-set-key (kbd "C-o") 'embark-act))
 
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
@@ -30,6 +26,16 @@
 (define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-fido-mode-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
+
+(when (require 'embark nil t)
+  (when (require 'marginalia nil t) (marginalia-mode 1))
+  (setq embark-occur-initial-view-alist '((t . list)))
+  (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
+  (define-key icomplete-fido-mode-map (kbd "C-c C-o") 'embark-export)
+  (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-occur)
+  (global-set-key (kbd "C-o") 'embark-act))
+
+
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")

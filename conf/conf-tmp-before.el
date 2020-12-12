@@ -12,6 +12,11 @@
    (add-to-list 'load-path "~/repos/vterm-toggle"))
 
 
+(when (file-directory-p "~/repos/marginalia")
+  (add-to-list 'load-path "~/repos/marginalia"))
+
+(when (file-directory-p "~/repos/embark")
+  (add-to-list 'load-path "~/repos/embark"))
 
 (provide 'conf-tmp-before)
 
