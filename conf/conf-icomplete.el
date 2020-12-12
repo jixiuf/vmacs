@@ -13,10 +13,15 @@
 (setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
 (setq completion-styles '(basic partial-completion substring initials  flex))
+
+(defun vmacs-fido-mode-hook()
+  (when (and icomplete-mode (icomplete-simple-completing-p))
+    (setq-local completion-styles '(orderless partial-completion initials flex))))
+
 (when (require 'orderless nil t)
+  (add-hook 'minibuffer-setup-hook #'vmacs-fido-mode-hook 99)
   (setq orderless-component-separator " +")
-  (setq orderless-matching-styles '(orderless-regexp orderless-literal))
-  (setq completion-styles '(orderless partial-completion basic substring initials flex)))
+  (setq orderless-matching-styles '(orderless-regexp orderless-literal)))
 
 
 
