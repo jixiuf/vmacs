@@ -43,6 +43,7 @@
   ;; (define-key embark-occur-mode-map (kbd "z") 'hide-lines-matching)
   (global-set-key (kbd "C-o") 'embark-act))
 
+(vmacs-leader (kbd "wi") 'consult-imenu)
 
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)

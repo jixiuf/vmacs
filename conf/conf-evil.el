@@ -322,7 +322,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (evil-define-key 'normal 'global  (kbd "<SPC>fo") 'ff-find-other-file) ;头文件与源文件间快速切换
 (vmacs-leader (kbd "m") 'execute-extended-command)
-(vmacs-leader (kbd "wi") 'imenu)
 (vmacs-leader (kbd "wl") 'git-link)
 (vmacs-leader (kbd "SPC") 'vmacs-switch-buffer)
 (vmacs-leader (kbd "fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))

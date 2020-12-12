@@ -1,34 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
+(require 'consult nil t)
 (declare-function magit-toplevel "magit")
 (autoload 'magit-toplevel "magit" "magit toplevel " nil)
-
-(defmacro vmacs-files (prompt files )
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  `(let* (
-          ;; (icomplete-compute-delay 0)    ;do not delay
-          ;; (icomplete-separator "\n")
-          ;; (icomplete-prospects-height 8)
-          ;; (icomplete-delay-completions-threshold 1000000)
-          ;; (completion-styles '( prescient )) ;flex
-          (buf-or-file (completing-read ,prompt ,files nil t)))
-     (unless (string-blank-p buf-or-file)
-       (if-let ((buf (get-buffer buf-or-file)))
-           (pop-to-buffer-same-window buf)
-         (find-file buf-or-file)))))
-;; (require 'magit)
-
-(defun vmacs-switch-buffer--cands()
-  (let ((bufs (vmacs-buffers))
-        (recentf (vmacs-recentf))
-        (gitfiles (vmacs--git-files)))
-    (append bufs recentf vmacs-dired-history gitfiles)))
-
-
-(defun vmacs-recentf ()
-  (mapcar #'abbreviate-file-name recentf-list ))
 
 (defvar git-repos-files-cache (make-hash-table :test 'equal))
 (defun vmacs--git-files (&optional n)
@@ -79,11 +54,6 @@ The user's $HOME directory is abbreviated as a tilde."
   '(help-mode compilation-mode log-view-mode log-edit-mode
               org-agenda-mode magit-revision-mode ibuffer-mode))
 
-(defun vmacs-buffers()
-  (cl-remove-if
-   #'vmacs-filter
-   (mapcar (lambda(buf) (propertize (buffer-name buf) 'face 'shadow))
-           (buffer-list))))
 
 (defun vmacs-filter(buf &optional ignore-buffers)
   (cl-find-if
@@ -96,7 +66,8 @@ The user's $HOME directory is abbreviated as a tilde."
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (vmacs-files "Open: " (vmacs-switch-buffer--cands)))
+  (let ((recentf-list (append  recentf-list vmacs-dired-history (vmacs--git-files))))
+    (consult--buffer #'switch-to-buffer #'find-file #'bookmark-jump)))
 
 ;;;###autoload
 (defun vmacs-git-files ()
