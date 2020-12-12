@@ -1,8 +1,6 @@
 ;;; Code:
 (require 'icomplete)
 
-;; (setq orderless-component-separator " +")
-;; (setq orderless-matching-styles '(orderless-regexp orderless-literal))
 ;; (setq icomplete-max-delay-chars 3)
 (setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
@@ -14,9 +12,11 @@
 (setq icomplete-prospects-height 15)
 (setq icomplete-separator "\n")
 ;; (setq icomplete-separator (propertize " ⚫ " 'face  '(foreground-color . "SlateBlue1")))
-(if (require 'orderless nil t)
-    (setq completion-styles '(orderless partial-completion basic substring initials flex))
-  (setq completion-styles '(basic substring initials partial-completion flex)))
+(setq completion-styles '(basic partial-completion substring initials  flex))
+(when (require 'orderless nil t)
+  (setq orderless-component-separator " +")
+  (setq orderless-matching-styles '(orderless-regexp orderless-literal))
+  (setq completion-styles '(orderless partial-completion basic substring initials flex)))
 
 
 
