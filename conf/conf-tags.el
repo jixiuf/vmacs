@@ -38,6 +38,8 @@
 (define-key evil-motion-state-map "gs" 'eglot-reconnect)
 (define-key evil-normal-state-map "gh" 'eglot-code-actions)
 (define-key evil-normal-state-map "gp" 'evil-project-find-regexp)
+(define-key evil-normal-state-map "gP" 'project-or-external-find-file)
+;;
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
 ;; (define-key evil-motion-state-map "gR" 'lsp-rename)
