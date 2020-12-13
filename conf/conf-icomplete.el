@@ -27,7 +27,6 @@
 
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
-(define-key icomplete-fido-mode-map (kbd "C-p") #'icomplete-backward-completions)
 (define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-fido-mode-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
@@ -36,8 +35,9 @@
   (when (require 'marginalia nil t) (marginalia-mode 1))
   (setq embark-occur-initial-view-alist '((t . list)))
   (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
-  (define-key icomplete-fido-mode-map (kbd "C-c C-o") 'embark-export)
-  (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-occur)
+  (define-key icomplete-fido-mode-map (kbd "C-o") 'embark-act)
+  (define-key icomplete-fido-mode-map (kbd "C-c C-o") 'embark-occur)
+  (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-export)
   (define-key icomplete-fido-mode-map (kbd "C-c C-e") 'embark-live-occur)
   ;; (define-key embark-occur-mode-map (kbd "/") 'hide-lines-not-matching)
   ;; (define-key embark-occur-mode-map (kbd "z") 'hide-lines-matching)
