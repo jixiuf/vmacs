@@ -27,9 +27,7 @@
 
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
-(define-key icomplete-fido-mode-map (kbd "M-j") #'icomplete-force-complete-and-exit)
 (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
-(define-key icomplete-fido-mode-map (kbd "C-j") #'icomplete-fido-exit) ;minibuffer-complete-and-exit
 
 (when (require 'embark nil t)
   (when (require 'marginalia nil t) (marginalia-mode 1))
