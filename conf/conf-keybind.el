@@ -72,8 +72,8 @@
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 
-(global-set-key (kbd "s-C-M-i")  'vmacs-git-files)
-
+(global-set-key (kbd "s-C-M-i")  'project-find-file)
+(global-set-key (kbd "s-C-M-I")  'project-or-external-find-file)
 (autoload 'dap-debug "dap-mode" nil t)
 (global-set-key (kbd "<f6>")  'dap-debug)
 (global-set-key (kbd "<f7>")  'dap-disconnect)
