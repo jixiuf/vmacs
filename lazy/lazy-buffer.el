@@ -36,6 +36,14 @@
             (setq result-list (append result-list list))))))
     result-list))
 
+;;;###autoload
+(defun vmacs-switch-buffer ()
+  "Open `recent-list' item in a new buffer.
+The user's $HOME directory is abbreviated as a tilde."
+  (interactive)
+  (let ((recentf-list (append  recentf-list vmacs-dired-history (vmacs--git-files))))
+    (consult--buffer #'switch-to-buffer #'find-file #'bookmark-jump)))
+
 ;;
 (setq vmacs-ignore-buffers
       (list
@@ -61,20 +69,7 @@
      (string-match-p f-or-r buf))
    (or ignore-buffers vmacs-ignore-buffers)))
 
-;;;###autoload
-(defun vmacs-switch-buffer ()
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  (interactive)
-  (let ((recentf-list (append  recentf-list vmacs-dired-history (vmacs--git-files))))
-    (consult--buffer #'switch-to-buffer #'find-file #'bookmark-jump)))
 
-;;;###autoload
-(defun vmacs-git-files ()
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  (interactive)
-  (vmacs-files "Git Files: " (vmacs--git-files 0)))
 
 (defun bury-boring-windows(&optional bury-cur-win-if-boring)
   "close boring *Help* windows with `C-g'"

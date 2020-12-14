@@ -329,7 +329,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (setq ffap-machine-p-known 'accept)  ; no pinging
 (vmacs-leader (kbd "ff") 'find-file-at-point)
-(vmacs-leader (kbd "i") 'vmacs-git-files)
 
 
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)
