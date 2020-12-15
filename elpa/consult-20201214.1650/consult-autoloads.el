@@ -18,8 +18,8 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES.
 (autoload 'consult-outline "consult" "\
 Jump to an outline heading." t nil)
 
-(autoload 'consult-flycheck "consult" "\
-Jump to flycheck error." t nil)
+(autoload 'consult-error "consult" "\
+Jump to an error in the current buffer." t nil)
 
 (autoload 'consult-mark "consult" "\
 Jump to a marker in `mark-ring'." t nil)
@@ -115,7 +115,7 @@ Enhanced `switch-to-buffer-other-frame' command with support for virtual buffers
 Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
 
 (autoload 'consult-buffer "consult" "\
-Enhanced `switch-to-buffer-other-window' command with support for virtual buffers." t nil)
+Enhanced `switch-to-buffer' command with support for virtual buffers." t nil)
 
 (autoload 'consult-kmacro "consult" "\
 Run a chosen keyboard macro.  With prefix ARG, run the macro that many times.
@@ -130,10 +130,7 @@ Choose from flattened `imenu' using `completing-read'." t nil)
 (defvar consult-preview-mode nil "\
 Non-nil if Consult-Preview mode is enabled.
 See the `consult-preview-mode' command
-for a description of this minor mode.
-Setting this variable directly does not take effect;
-either customize it (see the info node `Easy Customization')
-or call the function `consult-preview-mode'.")
+for a description of this minor mode.")
 
 (custom-autoload 'consult-preview-mode "consult" nil)
 

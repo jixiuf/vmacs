@@ -9,6 +9,17 @@
 ;;;### (autoloads nil "rg" "rg.el" (0 0 0 0))
 ;;; Generated autoloads from rg.el
 
+(defvar rg-keymap-prefix "\3s" "\
+Prefix for global `rg' keymap.")
+
+(custom-autoload 'rg-keymap-prefix "rg" t)
+
+(defvar rg-command-line-flags-function 'identity "\
+Function to modify command line flags of a search.
+The argument of the function is an optional list of search specific
+command line flags and the function shall return a list of command
+line flags to use.")
+
 (autoload 'rg-define-toggle "rg" "\
 Define a command line flag that can be toggled from the rg result buffer.
 
@@ -148,6 +159,7 @@ List all `rg-mode' buffers in `ibuffer'." t nil)
 
 ;;;### (autoloads nil "rg-menu" "rg-menu.el" (0 0 0 0))
 ;;; Generated autoloads from rg-menu.el
+ (autoload 'rg-menu "rg-menu.el" "" t)
 
 (autoload 'rg-enable-menu "rg-menu" "\
 Bind `rg-menu' to PREFIX key.

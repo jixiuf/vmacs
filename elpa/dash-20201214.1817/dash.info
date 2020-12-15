@@ -2132,7 +2132,7 @@ File: dash.info,  Node: Threading macros,  Next: Binding,  Prev: Tree operations
               ⇒ 106
 
  -- Macro: -some--> (x &optional form &rest more)
-     When expr in non-nil, thread it through the first form (via ‘-->’
+     When expr is non-nil, thread it through the first form (via ‘-->’
      (*note -->::)), and when that result is non-nil, through the next
      form, etc.
 
@@ -2564,8 +2564,8 @@ These combinators require Emacs 24 for its lexical scope.  So they are
 offered in a separate package: ‘dash-functional‘.
 
  -- Function: -partial (fn &rest args)
-     Takes a function FN and fewer than the normal arguments to FN, and
-     returns a fn that takes a variable number of additional ARGS.  When
+     Take a function FN and fewer than the normal arguments to FN, and
+     return a fn that takes a variable number of additional ARGS.  When
      called, the returned function calls FN with ARGS first and then
      additional args.
 
@@ -3382,25 +3382,25 @@ Ref: !cons86552
 Ref: !cdr86758
 Node: Function combinators86953
 Ref: -partial87227
-Ref: -rpartial87623
-Ref: -juxt88026
-Ref: -compose88458
-Ref: -applify89011
-Ref: -on89442
-Ref: -flip89968
-Ref: -const90280
-Ref: -cut90619
-Ref: -not91105
-Ref: -orfn91415
-Ref: -andfn91849
-Ref: -iteratefn92344
-Ref: -fixfn93047
-Ref: -prodfn94610
-Node: Development95678
-Node: Contribute96027
-Node: Changes96775
-Node: Contributors99773
-Node: Index101392
+Ref: -rpartial87621
+Ref: -juxt88024
+Ref: -compose88456
+Ref: -applify89009
+Ref: -on89440
+Ref: -flip89966
+Ref: -const90278
+Ref: -cut90617
+Ref: -not91103
+Ref: -orfn91413
+Ref: -andfn91847
+Ref: -iteratefn92342
+Ref: -fixfn93045
+Ref: -prodfn94608
+Node: Development95676
+Node: Contribute96025
+Node: Changes96773
+Node: Contributors99771
+Node: Index101390
 
 End Tag Table
 
