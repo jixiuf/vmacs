@@ -45,7 +45,7 @@
 ;; (define-key evil-motion-state-map "gR" 'lsp-rename)
 (defun evil-project-find-regexp( &optional string _pos)
   (interactive)
-  ;; (call-interactively 'vmacs-rg-dwim-project-dir)
+  (when current-prefix-arg (setq string (project--read-regexp)))
   (project-find-regexp (or string (regexp-quote (thing-at-point 'symbol)))))
 
 (setq evil-goto-definition-functions
