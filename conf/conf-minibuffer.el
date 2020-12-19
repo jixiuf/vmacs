@@ -38,7 +38,7 @@ Monospaced font whihc is fixed idth and height is recommended."
   (local-set-key [escape] 'abort-recursive-edit)
   (local-set-key (kbd "TAB") 'minibuffer-complete)
   (local-set-key (kbd "<tab>") 'minibuffer-complete)
-  (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
+  ;; (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
   (define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
   (define-key minibuffer-local-map (kbd "M-n") 'next-history-element)
   (local-set-key (kbd "SPC") 'self-insert-command)

@@ -28,6 +28,7 @@
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
+(define-key icomplete-fido-mode-map (kbd "C-e") 'icomplete-fido-exit)
 
 (when (require 'embark nil t)
   (when (require 'marginalia nil t) (marginalia-mode 1))
