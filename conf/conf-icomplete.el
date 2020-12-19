@@ -38,10 +38,12 @@
   (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-export)
   (define-key icomplete-fido-mode-map (kbd "C-c C-e") 'embark-live-occur)
   ;; (define-key embark-occur-mode-map (kbd "/") 'hide-lines-not-matching)
-  ;; (define-key embark-occur-mode-map (kbd "z") 'hide-lines-matching)
+  (define-key embark-occur-mode-map (kbd "h") nil)
+  (define-key embark-occur-mode-map (kbd "v") nil)
+  (define-key embark-occur-mode-map (kbd "e") nil)
   (global-set-key (kbd "C-o") 'embark-act))
 
-(vmacs-leader (kbd "wi") 'consult-imenu)
+(fset 'imenu 'consult-imenu)
 
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
