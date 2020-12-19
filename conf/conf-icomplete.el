@@ -42,7 +42,12 @@
   (define-key embark-occur-mode-map (kbd "h") nil)
   (define-key embark-occur-mode-map (kbd "v") nil)
   (define-key embark-occur-mode-map (kbd "e") nil)
-  (global-set-key (kbd "C-o") 'embark-act))
+  (global-set-key (kbd "C-o") 'embark-act)
+  ;; (add-hook 'embark-occur-mode-hook #'tablist-minor-mode)
+  ;; (evil-define-key 'normal 'embark-occur-mode-map  "/" 'tablist-push-regexp-filter)
+  ;; (evil-define-key 'normal 'embark-occur-mode-map  "gr" 'tablist-clear-filter)
+  ;; (add-hook 'embark-occur-mode-hook #'evil-normalize-keymaps)
+  )
 
 (fset 'imenu 'consult-imenu)
 

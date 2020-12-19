@@ -83,6 +83,7 @@
 (add-to-list 'evil-overriding-maps '(xref--xref-buffer-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(snails-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(embark-occur-mode-map . nil))
+(add-to-list 'evil-overriding-maps '(tablist-minor-mode-map . nil))
 
 (evil-set-custom-state-maps 'evil-overriding-maps
                             'evil-pending-overriding-maps
