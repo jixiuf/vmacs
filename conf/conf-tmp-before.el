@@ -1,5 +1,7 @@
  (when (file-directory-p "~/repos/emacs-libvterm")
    (add-to-list 'load-path "~/repos/emacs-libvterm"))
+ (when (file-directory-p "~/repos/Emacs-wgrep")
+   (add-to-list 'load-path "~/repos/Emacs-wgrep"))
 
 (when (file-directory-p "~/repos/magit/lisp")
   (add-to-list 'load-path "~/repos/magit/lisp"))
