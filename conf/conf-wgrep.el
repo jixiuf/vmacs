@@ -45,33 +45,7 @@
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
 
 
-(require 'wgrep)
-
-;;;###autoload
-(defun embark-occur-wgrep-setup ()
-  (set (make-local-variable 'wgrep-header/footer-parser)
-       'embark-occur-wgrep-prepare-header/footer)
-  (wgrep-setup-internal))
-
-(defun embark-occur-wgrep-prepare-header/footer ()
-  (let ((beg (point-min))
-        (end (point-min)))
-    ;; Set read-only grep result header
-    (unless tabulated-list-use-header-line
-      (save-excursion
-        (goto-char (point-min))
-        (setq end (point-at-eol))))
-    (put-text-property beg end 'read-only t)
-    (put-text-property beg end 'wgrep-header t)
-    ;; embark-occur-mode have NO footer.
-    ))
-
-
-;;;###autoload
-(add-hook 'embark-occur-mode-hook 'embark-occur-wgrep-setup)
-
-
-
+(require 'embark-wgrep nil t)
 (provide 'conf-wgrep)
 
 ;; Local Variables:
