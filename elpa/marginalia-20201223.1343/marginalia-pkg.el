@@ -1,0 +1,2 @@
+;;; Generated package description from marginalia.el  -*- no-byte-compile: t -*-
+(define-package "marginalia" "20201223.1343" "Enrich existing commands with completion annotations" '((emacs "26.1")) :commit "18cfe2350347806d0cbb327a23695e0c1a6c2700" :authors '(("Omar Antolín Camarena, Daniel Mendler")) :maintainer '("Omar Antolín Camarena, Daniel Mendler") :url "https://github.com/minad/marginalia")
