@@ -4,8 +4,8 @@
 
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>
 ;; Keywords: convenience
-;; Package-Version: 20201223.430
-;; Package-Commit: cb9d2c69ab8a0908762c3b3114dcd1fac8e8ca51
+;; Package-Version: 20201225.1624
+;; Package-Commit: c56e325b6f440b6fbe9dd97ae02ef52180e03f5e
 ;; Version: 0.9
 ;; Homepage: https://github.com/oantolin/embark
 ;; Package-Requires: ((emacs "25.1"))
@@ -47,30 +47,30 @@
 
 ;; Everything is easily configurable: determining the current target,
 ;; classifying it, and deciding with actions are offered for each type
-;; in the classification. The above introduction just mentions part of
+;; in the classification.  The above introduction just mentions part of
 ;; the default configuration.
 
-;; Configuring which act are offered for a type is particularly easy and
-;; requires no programming: the variable `embark-keymap-alist' associates
-;; target types with variable containing keymaps, and those keymaps
-;; containing binds for the actions. For example, in the default
-;; configuration the type `file' is associated with the symbol
-;; `embark-file-keymap'. That symbol names a keymap with single-letter
-;; keybindings for common Emacs file commands, for instance `c' is bound
-;; to `copy-file'. This means that if while you are in the minibuffer
-;; after running a command that prompts for a file, such as `find-file' or
-;; `rename-file', you can copy a file by running `embark-act' and then
-;; pressing `c'.
+;; Configuring which actions are offered for a type is particularly
+;; easy and requires no programming: the `embark-keymap-alist'
+;; variable associates target types with variable containing keymaps,
+;; and those keymaps containing binds for the actions.  For example,
+;; in the default configuration the type `file' is associated with the
+;; symbol `embark-file-keymap'.  That symbol names a keymap with
+;; single-letter keybindings for common Emacs file commands, for
+;; instance `c' is bound to `copy-file'.  This means that if while you
+;; are in the minibuffer after running a command that prompts for a
+;; file, such as `find-file' or `rename-file', you can copy a file by
+;; running `embark-act' and then pressing `c'.
 
 ;; These action keymaps are very convenient but not strictly necessary
 ;; when using `embark-act': you can use any command that reads from the
 ;; minibuffer as an action and the target of the action will be inserted
-;; at the first minibuffer prompt. After running `embark-act' all of your
+;; at the first minibuffer prompt.  After running `embark-act' all of your
 ;; keybindings and even `execute-extended-command' can be used to run a
 ;; command.
 
 ;; The actions in `embark-general-map' are available no matter what
-;; type of completion you are in the middle of. By default this
+;; type of completion you are in the middle of.  By default this
 ;; includes bindings to save the current candidate in the kill ring
 ;; and to insert the current candidate in the previously selected
 ;; buffer (the buffer that was current when you executed a command
@@ -80,26 +80,26 @@
 ;; https://github.com/oantolin/embark/wiki/Default-Actions
 
 ;; Besides acting individually on targets, Embark lets you work
-;; collectively on a set of target /candidates/. For example, while you are
+;; collectively on a set of target /candidates/.  For example, while you are
 ;; in the minibuffer the candidates are simply the possible completions
-;; of your input. Embark provides two commands to work on candidate sets:
+;; of your input.  Embark provides two commands to work on candidate sets:
 
 ;; - The `embark-occur' command produces a buffer listing all candidates,
-;;  for you to peruse and run actions on at your leisure. The
+;;  for you to peruse and run actions on at your leisure.  The
 ;;  candidates can be viewed in a grid or as a list showing additional
-;;  annotations. The `embark-live-occur' variant produces "live" Embark
+;;  annotations.  The `embark-live-occur' variant produces "live" Embark
 ;;  Occur buffer, meaning they autoupdate as the set of candidates
 ;;  changes.
 
 ;; - The `embark-export' command tries to open a buffer in an appropriate
-;;  major mode for the set of candidates. If the candidates are files
+;;  major mode for the set of candidates.  If the candidates are files
 ;;  export produces a Dired buffer; if they are buffers, you get an
 ;;  Ibuffer buffer; and if they are packages you get a buffer in
 ;;  package menu mode.
 
 ;; These are always available as "actions" (although they do not act
 ;; on just the current target but on all candidates) for embark-act and
-;; are bound to O, L and E, respectively, in embark-general-map. This
+;; are bound to O, L and E, respectively, in embark-general-map.  This
 ;; means that you do not have to bind your own key bindings for these
 ;; (although you can, of course), just a key binding for `embark-act'
 ;; or `embark-act-noexit'.
@@ -125,6 +125,7 @@
     (unicode-name . embark-unicode-name-map)
     (symbol . embark-symbol-map)
     (variable . embark-symbol-map)
+    (minor-mode . embark-symbol-map)
     (package . embark-package-map)
     (bookmark . embark-bookmark-map)
     (region . embark-region-map))
@@ -214,9 +215,11 @@ prompts for an action with completion."
   "Indicator to use when embarking upon an action.
 
 If set to a string prepend it to the minibuffer prompt or to the
-message in the echo area when outside of the minibuffer.  When set
-to a function it is called with no arguments to indicate the
-pending action itself.  For nil no indication is shown."
+message in the echo area when outside of the minibuffer.  When
+set to a function it is called with the action keymap.  The
+function should return either nil or a function to be called when
+the indicator is no longer needed.  Finally, if this variable is
+set to nil no indication is shown."
   :type '(choice function string nil)
   :group 'embark)
 
@@ -224,9 +227,13 @@ pending action itself.  For nil no indication is shown."
   "Indicator to use when using `embark-become'.
 
 If set to a string prepend it to the minibuffer prompt or to the
-message in the echo area when outside of the minibuffer.  When set
-to a function it is called with no arguments to indicate the
-pending action itself.  For nil no indication is shown."
+message in the echo area when outside of the minibuffer.  If set
+to a function it will be called with one of the keymaps listed in
+`embark-become-keymaps' containing the currently executing
+command (or nil, if no such keymap exists).  The function should
+return either nil or a function to be called when the indicator
+is no longer needed.  Finally, if this variable is set to nil no
+indication is shown."
   :type '(choice function string nil)
   :group 'embark)
 
@@ -307,9 +314,9 @@ These are used to fill an Embark Occur buffer."
     (t . list))
   "Initial views for Embark Occur buffers by type.
 This is an alist associating completion types to either `list',
-`grid' or `zebra' (which means list view together with
-`embark-occur-zebra-minor-mode').  Additionally you can associate
-t to a default initial view for types not mentioned separately."
+`grid' or `zebra' (which means list view the Embark Occur Zebra
+minor mode activated).  Additionally you can associate t to a
+default initial view for types not mentioned separately."
   :type '(alist :key-type symbol
                 :value-type (choice (const :tag "List view" list)
                                     (const :tag "Grid view" grid)))
@@ -369,17 +376,11 @@ If you are using `embark-completing-read' as your
 (defvar-local embark--type nil
   "Cache for the completion type, meant to be set buffer-locally.")
 
-(defvar-local embark--target-window nil
-  "Cache for the previous window, meant to be set buffer-locally.")
+(defvar-local embark--target-buffer nil
+  "Cache for the previous buffer, meant to be set buffer-locally.")
 
 (defvar-local embark--command nil
   "Command that started the completion session.")
-
-(defun embark--record-command ()
-  "Record the command that opened the minibuffer."
-  (setq embark--command this-command))
-
-(add-hook 'minibuffer-setup-hook #'embark--record-command)
 
 (defun embark--default-directory ()
   "Guess a reasonable default directory for the current candidates."
@@ -389,31 +390,31 @@ If you are using `embark-completing-read' as your
         (buffer-substring (minibuffer-prompt-end) (point))))
     default-directory))
 
-(defun embark--target-window ()
-  "Get target buffer for insert actions."
-  (cond
-   (embark--target-window embark--target-window)
-   ((minibufferp) (minibuffer-selected-window))
-   ((derived-mode-p 'completion-list-mode)
-    (if (minibufferp completion-reference-buffer)
-        (with-current-buffer completion-reference-buffer
-          (minibuffer-selected-window))
-      (get-buffer-window completion-reference-buffer)))
-   (t (selected-window))))
-
 (defun embark--cache-info (&optional buffer)
-  "Cache information needed for actions in variables local to BUFFER."
+  "Cache information needed for actions in variables local to BUFFER.
+BUFFER defaults to the current buffer."
   (let ((type (embark-classify))
-        (cmd embark--command)
+        (cmd (or embark--command this-command))
         (dir (embark--default-directory))
-        (target-window (embark--target-window)))
-    (with-current-buffer (or buffer standard-output)
-      (setq embark--command cmd)
-      (setq embark--type type)
+        (target-buffer (if (minibufferp)
+                           (window-buffer (minibuffer-selected-window))
+                         (or embark--target-buffer
+                             (current-buffer)))))
+    (with-current-buffer (or buffer (current-buffer))
+      (setq-local embark--command cmd)
+      (setq-local embark--type type)
       (setq-local default-directory dir)
-      (setq embark--target-window target-window))))
+      (setq-local embark--target-buffer target-buffer))))
 
-(add-hook 'completion-setup-hook #'embark--cache-info t)
+(defun embark--cache-info--completion-list ()
+  "Cache information needed for actions in a *Completions* buffer.
+Meant to be be added to `completion-setup-hook'."
+  ;; when completion-setup-hook hook runs, the *Completions* buffer is
+  ;; available in the variable standard-output
+  (embark--cache-info standard-output))
+
+(add-hook 'completion-setup-hook #'embark--cache-info--completion-list)
+(add-hook 'minibuffer-setup-hook #'embark--cache-info)
 
 ;;; internal variables
 
@@ -610,14 +611,14 @@ BODY."
        (setq-local inhibit-message t)
        (top-level))))
 
-(defun embark--show-indicator (indicator)
+(defun embark--show-indicator (indicator keymap)
   "Show INDICATOR for a pending action or a instance of becoming.
 If INDICATOR is a string, it is put in an overlay in the
 minibuffer; the overlay is returned so it can be deleted when the
 indicator is no longer needed.  If it is a function, this
-function is called.  The function should return either nil, an
-overlay to be deleted later, or a function to be called when the
-indicator is no longer needed."
+function is called with the KEYMAP.  The function should return
+either nil, or a function to be called when the indicator is no
+longer needed."
   (cond
    ((stringp indicator)
     (let ((mini (active-minibuffer-window)))
@@ -635,19 +636,31 @@ indicator is no longer needed."
                        (concat indicator " "))
           indicator-overlay))))
    ((functionp indicator)
-    (funcall indicator))))
+    (funcall indicator keymap))))
 
 (defun embark-keymap-prompter (keymap)
   "Let the user choose an action using the bindings in KEYMAP.
 Besides the bindings in KEYMAP, the user is free to use all their
 keybindings and even \\[execute-extended-command] to select a command."
-  (let ((cmd (let* ((overriding-terminal-local-map keymap)
-                    (key (read-key-sequence nil)))
-               (key-binding key))))
-    (when (eq cmd 'execute-extended-command)
-      (setq cmd (intern-soft (read-extended-command))))
-    (when (eq cmd 'embark-keymap-help)
-      (setq cmd (embark-completing-read-prompter keymap)))
+  (let* ((key (let ((overriding-terminal-local-map keymap))
+                (read-key-sequence nil)))
+         (cmd (let ((overriding-terminal-local-map keymap))
+                (key-binding key))))
+    (setq cmd
+          (pcase cmd
+            ('abort-recursive-edit nil)
+            ('self-insert-command
+             (minibuffer-message "Not an action")
+             (embark-keymap-prompter keymap))
+            ((or 'universal-argument 'negative-argument 'digit-argument)
+             (let ((last-command-event (aref key 0)))
+               (command-execute cmd))
+             (embark-keymap-prompter keymap))
+            ('execute-extended-command
+             (intern-soft (read-extended-command)))
+            ('embark-keymap-help
+             (embark-completing-read-prompter keymap))
+            (_ cmd)))
     cmd))
 
 (defun embark-completing-read-prompter (keymap)
@@ -668,38 +681,42 @@ keybindings and even \\[execute-extended-command] to select a command."
     (intern-soft
      (completing-read
       "Command: "
-      (lambda (s p a)
-        (if (eq a 'metadata)
-            `(metadata (metadata . command))
-          (complete-with-action a commands s p)))
+      (lambda (string predicate action)
+        (if (eq action 'metadata)
+            `(metadata (category . command))
+          (complete-with-action action commands string predicate)))
       nil t))))
 
-(defun embark--with-indicator (indicator prompter &rest args)
-  "Display INDICATOR while calling PROMPTER with ARGS."
-  (let ((indicator (embark--show-indicator indicator))
+(defun embark--with-indicator (indicator prompter keymap)
+  "Display INDICATOR while calling PROMPTER with KEYMAP."
+  (let ((remove-indicator (embark--show-indicator indicator keymap))
         (cmd (condition-case nil
                  (minibuffer-with-setup-hook
                      ;; if the prompter opens its own minibuffer, show
-                     ;; the indicator there too
-                     (lambda () (embark--show-indicator indicator))
-                   (apply prompter args))
+                     ;; the indicator there too (don't bother with
+                     ;; removing it since the whole recursive
+                     ;; minibuffer disappears)
+                     (lambda () (embark--show-indicator indicator keymap))
+                   (let ((enable-recursive-minibuffers t))
+                     (funcall prompter keymap)))
                (quit nil))))
     (cond
-     ((overlayp indicator) (delete-overlay indicator))
-     ((functionp indicator) (funcall indicator)))
+     ((overlayp remove-indicator) (delete-overlay remove-indicator))
+     ((functionp remove-indicator) (funcall remove-indicator)))
     cmd))
 
 (defun embark--act (action &optional exit)
-  "Perform ACTION injecting the target, optionally EXIT to top-level."
+  "Perform ACTION injecting the target, optionally EXIT to top level."
   (let* ((target (embark--target))
          (command embark--command)
          (special (memq action '(embark-become     ; these actions handle
                                  embark-live-occur ; exiting on their own
                                  embark-occur      ; and should not be run
                                  embark-export)))  ; in the target window
-         (action-window (if special
-                            (selected-window)
-                          (embark--target-window)))
+         (action-window (if (and (not special)
+                                 (buffer-live-p embark--target-buffer))
+                            (display-buffer embark--target-buffer)
+                          (selected-window)))
          (setup-hook (or (alist-get action embark-setup-overrides)
                          embark-setup-hook))
          (allow-edit (if embark-allow-edit-default
@@ -719,7 +736,9 @@ keybindings and even \\[execute-extended-command] to select a command."
                          (with-selected-window action-window
                            (run-hooks 'embark-pre-action-hook)
                            (let ((enable-recursive-minibuffers t)
-                                 (embark--command command))
+                                 (embark--command command)
+                                 (use-dialog-box nil)     ; avoid mouse dialogs
+                                 (last-nonmenu-event 13)) ; avoid mouse dialogs
                              (command-execute action))
                            (run-hooks 'embark-post-action-hook))))))
     (if (or (not exit) special)
@@ -738,14 +757,14 @@ and returns a function that executes the chosen command, in the
 correct target window, injecting the target at the first
 minibuffer prompt.  The optional argument EXIT controls whether
 to exit the minibuffer."
-  (let* ((keymap (embark--action-keymap))
-         (action (embark--with-indicator embark-action-indicator
-                                         embark-prompter
-                                         keymap)))
+  (let ((action (embark--with-indicator embark-action-indicator
+                                        embark-prompter
+                                        (embark--action-keymap))))
     (if (null action)
-        (progn (minibuffer-message "Canceled") nil)
+        (minibuffer-message "Canceled")
       (embark--act action exit))))
 
+;;;###autoload
 (defun embark-act-noexit ()
   "Embark upon an action.
 The target of the action is chosen by `embark-target-finders'.
@@ -755,6 +774,7 @@ Completions buffer it is the candidate at point."
   (interactive)
   (embark--prompt-for-action))
 
+;;;###autoload
 (defun embark-act ()
   "Embark upon an action and exit from all minibuffers (if any).
 The target of the action is chosen by `embark-target-finders'.
@@ -764,6 +784,16 @@ Completions buffer it ixs the candidate at point."
   (interactive)
   (embark--prompt-for-action 'exit))
 
+(defun embark--become-keymap ()
+  "Return keymap of commands to become for current command."
+  (make-composed-keymap
+   (cl-loop for keymap-name in embark-become-keymaps
+            for keymap = (symbol-value keymap-name)
+            when (where-is-internal embark--command (list keymap))
+            collect keymap)
+   embark-meta-map))
+
+;;;###autoload
 (defun embark-become ()
   "Make current command become a different command.
 Take the current minibuffer input as initial input for new
@@ -773,17 +803,10 @@ command.  The new command can be run normally using keybindings or
 convenient access to the other commands in it."
   (interactive)
   (when (minibufferp)
-    (let* ((keymap
-            (cl-loop for keymap-name in embark-become-keymaps
-                     for keymap = (symbol-value keymap-name)
-                     when (where-is-internal embark--command (list keymap))
-                     return keymap))
-           (target (run-hook-with-args-until-success 'embark-input-getters))
-           (become (embark--with-indicator embark-become-indicator
-                                           embark-prompter
-                                           (make-composed-keymap
-                                            keymap
-                                            embark-meta-map))))
+    (let ((target (run-hook-with-args-until-success 'embark-input-getters))
+          (become (embark--with-indicator embark-become-indicator
+                                          embark-prompter
+                                          (embark--become-keymap))))
       (if (null become)
           (minibuffer-message "Canceled")
         (run-at-time 0 nil (lambda ()
@@ -951,7 +974,7 @@ Returns the name of the command."
 (defun embark--omit-binding-p (cmd)
   "Should CMD binding be hidden from the user?
 Return non-nil if this is a key binding that should not be bound
-in `embark-occur-direct-action-minor-mode' nor mentioned by
+in `embark-occur-direct-action-minor-mode-map' nor mentioned by
 `embark-keymap-help'."
   (or (null cmd)
       (not (symbolp cmd))
@@ -1025,8 +1048,6 @@ If you are using `embark-completing-read' as your
                     (= (car (embark--boundaries))
                        (- (point) (minibuffer-prompt-end))))
           (exit-minibuffer)))
-    (goto-char entry)            ;; pretend RET was pressed even if
-    (setq last-nonmenu-event 13) ;; mouse was clicked, to fool imenu
     (embark--act #'embark-default-action)))
 
 (embark-define-keymap embark-occur-mode-map
@@ -1069,22 +1090,27 @@ keybinding for it.  Or alternatively you might want to enable
     (setq header-line-format nil))
   (setq tabulated-list-entries
         (if embark-occur-annotator
-            (let ((annotator embark-occur-annotator)
+            (let ((dir default-directory) ; smuggle to the target window
+                  (annotator embark-occur-annotator)
                   (candidates embark-occur-candidates))
-              (with-selected-window (embark--target-window)
-                (mapcar
-                 (lambda (cand)
-                   (let* ((annotation (or (funcall annotator cand) ""))
-                          (length (length annotation))
-                          (facesp (text-property-not-all
-                                   0 length 'face nil annotation)))
-                     (when facesp (add-face-text-property
-                                   0 length 'default t annotation))
-                     `(,cand [(,cand type embark-occur-entry)
-                              (,annotation
-                               ,@(unless facesp
-                                   '(face embark-occur-annotation)))])))
-                 candidates)))
+              (with-current-buffer
+                  (if (buffer-live-p embark--target-buffer)
+                      embark--target-buffer
+                    (current-buffer))
+                (let ((default-directory dir)) ; for marginalia's file annotator
+                  (mapcar
+                   (lambda (cand)
+                     (let* ((annotation (or (funcall annotator cand) ""))
+                            (length (length annotation))
+                            (facesp (text-property-not-all
+                                     0 length 'face nil annotation)))
+                       (when facesp (add-face-text-property
+                                     0 length 'default t annotation))
+                       `(,cand [(,cand type embark-occur-entry)
+                                (,annotation
+                                 ,@(unless facesp
+                                     '(face embark-occur-annotation)))])))
+                   candidates))))
           (mapcar
            (lambda (cand)
              `(,cand [(,cand type embark-occur-entry)]))
@@ -1099,7 +1125,7 @@ keybinding for it.  Or alternatively you might want to enable
   (embark-occur--remove-zebra-stripes)
   (save-excursion
     (goto-char (point-min))
-    (when (tabulated-list-header-overlay-p) (forward-line))
+    (when (overlays-at (point)) (forward-line))
     (let ((columns (length tabulated-list-format)))
       (while (not (eobp))
         (condition-case nil
@@ -1279,6 +1305,7 @@ ALIST comes from the action argument of `display-buffer'."
                      (string-match-p "Embark Live Occur" name))
            return (window--display-buffer buffer window 'reuse alist)))
 
+;;;###autoload
 (defun embark-live-occur (&optional initial-view)
   "Create a live-updating Embark Occur buffer.
 Optionally start in INITIAL-VIEW (either `list' or `grid')
@@ -1304,6 +1331,7 @@ with key \"Embark Live Occur\"."
                   nil t)
         (setq minibuffer-scroll-window occur-window)))))
 
+;;;###autoload
 (defun embark-occur (&optional initial-view)
   "Create an Embark Occur buffer and exit all minibuffers.
 Optionally start in INITIAL-VIEW (either `list' or `grid')
@@ -1364,6 +1392,7 @@ minibuffer; the length of the delay after typing is given by
       (switch-to-buffer buffer)
     (user-error "No Embark Live Occur buffer")))
 
+;;;###autoload
 (defun embark-export ()
   "Create a type-specific buffer to manage current candidates.
 The variable `embark-exporters-alist' controls how to make the
@@ -1420,7 +1449,7 @@ buffer for each type of completion."
 (defun embark-keymap-help ()
   "Prompt for an action to perform or command to become and run it."
   (interactive)
-  (user-error "Not meant to be called directly."))
+  (user-error "Not meant to be called directly"))
 
 (defun embark-default-action ()
   "Default action.
@@ -1464,7 +1493,11 @@ This is whatever command opened the minibuffer in the first place."
   "Rename buffer BUF."
   (interactive "bBuffer: ")
   (with-current-buffer buf
-    (call-interactively #'rename-buffer)))
+    (minibuffer-with-setup-hook
+        (lambda ()
+          (let ((prompt (make-overlay (point-min) (minibuffer-prompt-end))))
+            (overlay-put prompt 'display (format "Rename %s to: " buf))))
+      (call-interactively #'rename-buffer))))
 
 (defun embark-browse-package-url (pkg)
   "Open homepage for package PKG with `browse-url'."

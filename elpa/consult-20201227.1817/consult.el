@@ -42,18 +42,19 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'subr-x)
+  (require 'cl-lib))
 (require 'bookmark)
-(require 'cl-lib)
 (require 'imenu)
 (require 'kmacro)
 (require 'outline)
 (require 'recentf)
 (require 'ring)
 (require 'seq)
-(require 'subr-x)
 
 (defgroup consult nil
-  "Consultation using `completing-read'."
+  "Consulting `completing-read'."
   :group 'convenience
   :prefix "consult-")
 
@@ -64,7 +65,8 @@
   :type 'vector)
 
 (defcustom consult-widen-key nil
-  "Key used for widening during completion."
+  "Key used for widening during completion.
+If this key is unset, defaults to 'consult-narrow-key SPC'."
   :type 'vector)
 
 (defcustom consult-view-list-function nil
@@ -96,6 +98,12 @@ You may want to add a function which pulses the current line, e.g.,
 `xref-pulse-momentarily'."
   :type 'hook)
 
+(defcustom consult-line-point-placement 'match-beginning
+  "Where to leave point after `consult-line' jumps to a match."
+  :type '(choice (const :tag "Beginning of the line" line-beginning)
+                 (const :tag "Beginning of the match" match-beginning)
+                 (const :tag "End of the match" match-end)))
+
 (defcustom consult-line-numbers-widen t
   "Show absolute line numbers when narrowing is active."
   :type 'boolean)
@@ -116,6 +124,11 @@ You may want to add a function which pulses the current line, e.g.,
                         (?v . "Variables"))))
   "Narrowing keys used by `consult-imenu'."
   :type 'alist)
+
+(defcustom consult-mode-command-filter
+  "-mode$\\|--"
+  "Filter regexp for `consult-mode-command'."
+  :type 'regexp)
 
 ;;;; Preview customization
 
@@ -199,9 +212,9 @@ You may want to add a function which pulses the current line, e.g.,
   '((t :inherit consult-key))
   "Face used to highlight imenu prefix in `consult-imenu'.")
 
-(defface consult-location
-  '((t :inherit consult-file))
-  "Face used to highlight locations in `consult-global-mark'.")
+(defface consult-line-number
+  '((t :inherit consult-key))
+  "Face used to highlight location line in `consult-global-mark'.")
 
 (defface consult-file
   '((t :inherit font-lock-function-name-face))
@@ -219,7 +232,7 @@ You may want to add a function which pulses the current line, e.g.,
   '((t :inherit font-lock-keyword-face))
   "Face used to highlight views in `consult-buffer'.")
 
-(defface consult-line-number
+(defface consult-line-number-prefix
   '((t :inherit line-number))
   "Face used to highlight line numbers in selections.")
 
@@ -229,11 +242,18 @@ You may want to add a function which pulses the current line, e.g.,
 (defvar consult--apropos-history nil)
 (defvar consult--theme-history nil)
 (defvar consult--minor-mode-menu-history nil)
+(defvar consult--mode-command-history nil)
 (defvar consult--kmacro-history nil)
 (defvar consult--buffer-history nil)
 (defvar-local consult--imenu-history nil)
 
 ;;;; Internal variables
+
+(defvar consult--completion-candidate-hook nil
+  "Get candidate from completion system.")
+
+(defvar consult--completion-refresh-hook nil
+  "Refresh completion system.")
 
 (defconst consult--special-char #x100000
   "Special character used to encode line prefixes for disambiguation.
@@ -261,10 +281,23 @@ Size of private unicode plane b.")
 (defvar consult--gc-percentage 0.5
   "Large gc percentage for temporary increase.")
 
-(defvar-local consult--preview-function nil
-  "Active preview function.")
-
 ;;;; Helper functions
+
+(defsubst consult--format-location (file line)
+  "Format location string FILE:LINE."
+  (concat
+   (propertize file 'face 'consult-file) ":"
+   (propertize (number-to-string line) 'face 'consult-line-number)))
+
+(defun consult--line-position (line)
+  "Compute position from LINE number."
+  (save-excursion
+    (save-restriction
+      (when consult-line-numbers-widen
+        (widen))
+      (goto-char (point-min))
+      (forward-line (- line 1))
+      (point))))
 
 (defmacro consult--overlay (beg end &rest props)
   "Make consult overlay between BEG and END with PROPS."
@@ -335,39 +368,55 @@ DISPLAY is the string to display instead of the unique string."
              (and (>= n consult--special-range) (setq n (/ n consult--special-range)))))
     (propertize str 'display display)))
 
-(defun consult--preview-install (preview fun)
-  "Install preview support to minibuffer completion.
+(defun consult--with-preview-1 (transform preview fun)
+  "Install TRANSFORM and PREVIEW function for FUN."
+  (if (or (not consult-preview-mode) (not preview))
+      (let ((input ""))
+        (minibuffer-with-setup-hook
+            (apply-partially
+             #'add-hook 'post-command-hook
+             (lambda () (setq input (minibuffer-contents-no-properties)))
+             nil t)
+          (cons (when-let (result (funcall fun))
+                  (funcall transform input result))
+                input)))
+    (let ((orig-window (selected-window))
+          (selected)
+          (input ""))
+      (minibuffer-with-setup-hook
+          (apply-partially
+           #'add-hook 'post-command-hook
+           (lambda ()
+             (setq input (minibuffer-contents-no-properties))
+             (when-let (cand (run-hook-with-args-until-success 'consult--completion-candidate-hook))
+               (with-selected-window (if (window-live-p orig-window)
+                                         orig-window
+                                       (selected-window))
+                 (funcall preview (and cand (funcall transform input cand)) nil))))
+           nil t)
+        (unwind-protect
+            (save-excursion
+              (save-restriction
+                (setq selected (when-let (result (funcall fun))
+                                 (funcall transform input result)))
+                (cons selected input)))
+          (funcall preview selected t))))))
 
-PREVIEW is the preview function.
-FUN is the body function."
-  (let ((orig-window (selected-window))
-        (selected)
-        (state (funcall preview 'save nil nil)))
-    (minibuffer-with-setup-hook
-        (lambda ()
-          (setq consult--preview-function
-                (lambda (cand)
-                  (with-selected-window orig-window
-                    (funcall preview 'preview cand nil)))))
-      (unwind-protect
-          (save-excursion
-            (save-restriction
-              (setq selected (funcall fun))))
-        (funcall preview 'restore selected state)))))
+(defmacro consult--with-preview (transform preview &rest body)
+  "Install TRANSFORM and PREVIEW in BODY."
+  (declare (indent 2))
+  `(consult--with-preview-1 ,transform ,preview (lambda () ,@body)))
 
-(defmacro consult--with-preview (preview &rest body)
-  "Install preview in BODY.
+(defun consult--widen-key ()
+  "Return widening key, if `consult-widen-key' is not set, default to 'consult-narrow-key SPC'."
+  (or consult-widen-key (and consult-narrow-key (vconcat consult-narrow-key " "))))
 
-PREVIEW is the preview function."
-  (declare (indent 1))
-  (let ((preview-var (make-symbol "preview")))
-    `(let ((,preview-var ,preview))
-       (if ,preview-var
-           (consult--preview-install ,preview-var (lambda () ,@body))
-         ,@body))))
-
-(defun consult--narrow-set (key)
-  "Set narrowing key `consult--narrow' to KEY."
+(defun consult-narrow (key)
+  "Narrow current completion with KEY."
+  (interactive
+   (list (unless (equal (this-single-command-keys) (consult--widen-key))
+           last-command-event)))
+  (unless (minibufferp) (error "Command must be executed in minibuffer"))
   (setq consult--narrow key)
   (when consult--narrow-predicate
     (setq-local minibuffer-completion-predicate (and consult--narrow consult--narrow-predicate)))
@@ -376,26 +425,18 @@ PREVIEW is the preview function."
   (when consult--narrow
     (setq consult--narrow-overlay
           (consult--overlay (- (minibuffer-prompt-end) 1) (minibuffer-prompt-end)
-                            'after-string
-                            (propertize (format "[%s] " (cdr (assoc key consult--narrow-prefixes)))
-                                        'face 'consult-narrow-indicator)))))
-
-(defun consult-widen ()
-  "Widen current completion."
-  (interactive)
-  (consult--narrow-set nil))
-
-(defun consult-narrow ()
-  "Narrow current completion."
-  (interactive)
-  (consult--narrow-set last-command-event))
+                            'before-string
+                            (propertize (format " [%s]" (cdr (assoc key consult--narrow-prefixes)))
+                                        'face 'consult-narrow-indicator))))
+  (run-hooks 'consult--completion-refresh-hook))
 
 (defconst consult--narrow-delete
   `(menu-item
     "" nil :filter
     ,(lambda (&optional _)
        (when (string= (minibuffer-contents-no-properties) "")
-         #'consult-widen))))
+         (consult-narrow nil)
+         #'ignore))))
 
 (defconst consult--narrow-space
   `(menu-item
@@ -405,8 +446,29 @@ PREVIEW is the preview function."
          (when-let (pair (or (and (= 1 (length str)) (assoc (elt str 0) consult--narrow-prefixes))
                              (and (string= str "") (assoc 32 consult--narrow-prefixes))))
            (delete-minibuffer-contents)
-           (consult--narrow-set (car pair))
+           (consult-narrow (car pair))
            #'ignore)))))
+
+(defun consult-narrow-help ()
+  "Print narrowing help as `minibuffer-message'.
+This command can be bound in `consult-narrow-map'."
+  (interactive)
+  (minibuffer-message
+   (string-join
+    (delq nil
+          (mapcar (lambda (x)
+                    (when (/= (car x) 32)
+                      (format "%c %s" (car x) (cdr x))))
+                  consult--narrow-prefixes))
+    " ")))
+
+(defvar consult-narrow-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map " " consult--narrow-space)
+    (define-key map [127] consult--narrow-delete)
+    map)
+  "Narrowing keymap which is added to the local minibuffer map.
+Note that `consult-narrow-key' and `consult-widen-key' are bound dynamically.")
 
 (defun consult--define-key (map key cmd desc)
   "Bind CMD to KEY in MAP and add which-key description DESC."
@@ -420,40 +482,33 @@ PREVIEW is the preview function."
     (define-key map (vconcat (seq-take key idx) (vector 'which-key (elt key idx)))
       `(which-key (,desc . ,cmd)))))
 
-(defun consult--narrow-install (predicate prefixes fun)
-  "Install narrowing in FUN.
-
-PREDICATE is the narrowing predicate.
-PREFIXES is the list of narrowing prefixes."
-  (minibuffer-with-setup-hook
-      (:append
-       (lambda ()
-         (setq consult--narrow-predicate predicate
-               consult--narrow-prefixes prefixes)
-         (let ((map (make-composed-keymap nil (current-local-map))))
-           (when consult-narrow-key
-             (dolist (pair consult--narrow-prefixes)
-               (when (/= (car pair) 32)
-                 (consult--define-key map
-                                      (vconcat consult-narrow-key (vector (car pair)))
-                                      #'consult-narrow (cdr pair)))))
-           (when consult-widen-key
-             (consult--define-key map consult-widen-key #'consult-widen "All"))
-           (define-key map " " consult--narrow-space)
-           (define-key map [127] consult--narrow-delete)
-           (use-local-map map))))
-    (funcall fun)))
+(defun consult--with-narrow-1 (settings fun)
+  "Install narrowing in FUN with narrowing SETTINGS."
+  (if (not settings) (funcall fun)
+    (minibuffer-with-setup-hook
+        (:append
+         (lambda ()
+           (if (functionp (car settings))
+               (setq consult--narrow-predicate (car settings)
+                     consult--narrow-prefixes (cdr settings))
+             (setq consult--narrow-predicate nil
+                   consult--narrow-prefixes settings))
+           (let ((map (make-composed-keymap consult-narrow-map (current-local-map))))
+             (when consult-narrow-key
+               (dolist (pair consult--narrow-prefixes)
+                 (when (/= (car pair) 32)
+                   (consult--define-key map
+                                        (vconcat consult-narrow-key (vector (car pair)))
+                                        #'consult-narrow (cdr pair)))))
+             (when-let (widen (consult--widen-key))
+               (consult--define-key map widen #'consult-narrow "All"))
+             (use-local-map map))))
+      (funcall fun))))
 
 (defmacro consult--with-narrow (settings &rest body)
-  "Setup narrowing in BODY.
-
-SETTINGS is the narrow settings."
+  "Setup narrowing in BODY with SETTINGS."
   (declare (indent 1))
-  (let ((settings-var (make-symbol "settings")))
-    `(let ((,settings-var ,settings))
-       (if ,settings-var
-           (consult--narrow-install (car ,settings-var) (cdr ,settings-var) (lambda () ,@body))
-         ,@body))))
+  `(consult--with-narrow-1 ,settings (lambda () ,@body)))
 
 (defmacro consult--with-increased-gc (&rest body)
   "Temporarily increase the gc limit in BODY to optimize for throughput."
@@ -487,14 +542,20 @@ PERMANENTLY non-nil means the overlays will not be restored later."
 
 (defun consult--jump-1 (pos)
   "Go to POS and recenter."
-  (when pos
+  (cond
+   ((and (markerp pos) (not (buffer-live-p (marker-buffer pos))))
+    ;; Only print a message, no error in order to not mess
+    ;; with the minibuffer update hook.
+    (message "Buffer is dead"))
+   (t
+    ;; Switch to buffer if it is not visible
     (when (and (markerp pos) (not (eq (current-buffer) (marker-buffer pos))))
       (switch-to-buffer (marker-buffer pos)))
     ;; Widen if we cannot jump to the position (idea from flycheck-jump-to-error)
     (unless (= (goto-char pos) (point))
       (widen)
       (goto-char pos))
-    (run-hooks 'consult-after-jump-hook)))
+    (run-hooks 'consult-after-jump-hook))))
 
 (defun consult--jump (pos)
   "Push current position to mark ring, go to POS and recenter."
@@ -515,27 +576,27 @@ The function can be used as the `:preview' argument of `consult--read'.
 FACE is the cursor face."
   (let ((overlays)
         (invisible)
-        (face (or face 'consult-preview-cursor)))
-    (lambda (cmd cand state)
-      (pcase cmd
-        ('save (current-buffer))
-        ('restore
-         (consult--invisible-restore invisible)
-         (mapc #'delete-overlay overlays)
-         (when (buffer-live-p state)
-           (set-buffer state)))
-        ('preview
-         (consult--jump-1 cand)
-         (consult--invisible-restore invisible)
-         (setq invisible (consult--invisible-show))
-         (mapc #'delete-overlay overlays)
-         (let ((pos (point)))
-           (setq overlays
-                 (list (consult--overlay (line-beginning-position) (line-end-position) 'face 'consult-preview-line)
-                       (consult--overlay pos (1+ pos) 'face face)))))))))
+        (face (or face 'consult-preview-cursor))
+        (saved-buf (current-buffer)))
+    (lambda (cand restore)
+      (cond
+       (restore
+        (consult--invisible-restore invisible)
+        (mapc #'delete-overlay overlays)
+        (when (buffer-live-p saved-buf)
+          (set-buffer saved-buf)))
+       (cand
+        (consult--jump-1 cand)
+        (consult--invisible-restore invisible)
+        (setq invisible (consult--invisible-show))
+        (mapc #'delete-overlay overlays)
+        (let ((pos (point)))
+          (setq overlays
+                (list (consult--overlay (line-beginning-position) (line-end-position) 'face 'consult-preview-line)
+                      (consult--overlay pos (1+ pos) 'face face)))))))))
 
 (cl-defun consult--read (prompt candidates &key
-                                predicate require-match history history-type default
+                                predicate require-match history default
                                 category initial preview narrow
                                 (sort t) (default-top t) (lookup (lambda (_input _cands x) x)))
   "Simplified completing read function.
@@ -545,7 +606,6 @@ CANDIDATES is the candidate list or alist.
 PREDICATE is a filter function for the candidates.
 REQUIRE-MATCH equals t means that an exact match is required.
 HISTORY is the symbol of the history variable.
-HISTORY-TYPE must be 'input if the input string should be saved in the history.
 DEFAULT is the default input.
 CATEGORY is the completion category.
 SORT should be set to nil if the candidates are already sorted.
@@ -556,36 +616,38 @@ PREVIEW is a preview function.
 NARROW is an alist of narrowing prefix strings and description."
   (ignore default-top)
   ;; supported types
-  (cl-assert (and
-              (not (functionp candidates))
-              (or (not candidates) ;; nil
-                  (obarrayp candidates) ;; obarray
-                  (stringp (car candidates)) ;; string list
-                  (symbolp (car candidates)) ;; symbol list
-                  (consp (car candidates))))) ;; alist
-  (let* ((metadata
-          `(metadata
-            ,@(when category `((category . ,category)))
-            ,@(unless sort '((cycle-sort-function . identity)
-                             (display-sort-function . identity)))))
-         (input "")
-         (table
-          (lambda (str pred action)
-            (setq input (substring-no-properties str))
-            (if (eq action 'metadata)
-                metadata
-              (complete-with-action action candidates str pred))))
-         (result (consult--with-preview
-                     (and preview
-                          (lambda (cmd cand state)
-                            (funcall preview cmd (and cand (funcall lookup input candidates cand)) state)))
-                   (consult--with-narrow narrow
-                     (completing-read prompt table
-                                      predicate require-match initial history default)))))
-    (when (eq history-type 'input)
-      (set history (cdr (symbol-value history)))
-      (add-to-history history input))
-    (funcall lookup input candidates result)))
+  (cl-assert (and (not (functionp candidates))    ;; no function support
+                  (or (not candidates)            ;; nil
+                      (obarrayp candidates)       ;; obarray
+                      (stringp (car candidates))  ;; string list
+                      (symbolp (car candidates))  ;; symbol list
+                      (consp (car candidates))))) ;; alist
+  (consult--with-narrow narrow
+    (let* ((metadata
+            `(metadata
+              ,@(when category `((category . ,category)))
+              ,@(unless sort '((cycle-sort-function . identity)
+                               (display-sort-function . identity)))))
+           (table
+            (lambda (str pred action)
+              (if (eq action 'metadata)
+                  metadata
+                (complete-with-action action candidates str pred))))
+           (transform
+            (lambda (input cand)
+              (funcall lookup input candidates cand)))
+           (result
+            (consult--with-preview transform preview
+              (completing-read prompt table
+                               predicate require-match initial
+                               (if (symbolp history) history (cadr history))
+                               default))))
+      (pcase-exhaustive history
+        (`(:input ,var)
+         (set var (cdr (symbol-value var)))
+         (add-to-history var (cdr result)))
+        ((pred symbolp)))
+      (car result))))
 
 (defun consult--count-lines (pos)
   "Move to position POS and return number of lines."
@@ -604,7 +666,7 @@ NARROW is an alist of narrowing prefix strings and description."
                (make-string (- width (length line)) 32)
                line
                " ")
-              'face 'consult-line-number))
+              'face 'consult-line-number-prefix))
 
 (defun consult--add-line-number (max-line candidates)
   "Add line numbers to unformatted CANDIDATES as prefix.
@@ -624,16 +686,14 @@ BEGIN is the begin position.
 END is the end position.
 MARKER is the cursor position.
 FACE is the face to use for the cursor marking."
-  (let* ((col (- marker begin))
-         (str (buffer-substring begin end))
-         (end (1+ col))
-         (face (or face 'consult-preview-cursor)))
-    (if (> end (length str))
-        (concat (substring str 0 col)
-                (propertize " " 'face face))
-      (concat (substring str 0 col)
-              (propertize (substring str col end) 'face face)
-              (substring str end)))))
+  (let ((marker-end (1+ marker)))
+    (if (> marker-end end)
+        (concat (buffer-substring begin marker)
+                (propertize " " 'face (or face 'consult-preview-cursor)))
+      (concat (buffer-substring begin marker)
+              (propertize (buffer-substring marker marker-end)
+                          'face (or face 'consult-preview-cursor))
+              (buffer-substring marker-end end)))))
 
 (defun consult--line-with-cursor (line marker &optional face)
   "Return line candidate.
@@ -691,8 +751,7 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
                   :sort nil
                   :require-match t
                   :lookup #'consult--line-match
-                  :history 'consult--line-history
-                  :history-type 'input
+                  :history '(:input consult--line-history)
                   :preview (and consult-preview-outline (consult--preview-position)))))
 
 (defun consult--next-error ()
@@ -714,15 +773,15 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
   (consult--fontify-all)
   (let* ((line (line-number-at-pos (point-min) consult-line-numbers-widen))
          (candidates))
-      (save-excursion
-        (goto-char (point-min))
-        (while (when-let (pos (consult--next-error))
-                 (setq line (+ line (consult--count-lines pos))))
-          (push (consult--line-with-cursor line (point-marker) 'consult-preview-error)
-                candidates)))
-      (unless candidates
-        (user-error "No errors"))
-      (consult--add-line-number line (nreverse candidates))))
+    (save-excursion
+      (goto-char (point-min))
+      (while (when-let (pos (consult--next-error))
+               (setq line (+ line (consult--count-lines pos))))
+        (push (consult--line-with-cursor line (point-marker) 'consult-preview-error)
+              candidates)))
+    (unless candidates
+      (user-error "No errors"))
+    (consult--add-line-number line (nreverse candidates))))
 
 ;;;###autoload
 (defun consult-error ()
@@ -734,8 +793,7 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
                   :sort nil
                   :require-match t
                   :lookup #'consult--lookup-cdr
-                  :history 'consult--line-history
-                  :history-type 'input
+                  :history '(:input consult--line-history)
                   :preview
                   (and consult-preview-error (consult--preview-position 'consult-preview-error)))))
 
@@ -772,22 +830,20 @@ The alist contains (string . position) pairs."
                   :sort nil
                   :require-match t
                   :lookup #'consult--lookup-cdr
-                  :history 'consult--line-history
-                  :history-type 'input
+                  :history '(:input consult--line-history)
                   :preview (and consult-preview-mark (consult--preview-position)))))
 
 (defun consult--global-mark-candidates ()
   "Return alist of lines containing markers.
 The alist contains (string . position) pairs."
   (consult--forbid-minibuffer)
-  (let* ((max-line 0)
-         (max-name 0)
+  (let* ((max-loc 0)
          (candidates))
     (save-excursion
       (dolist (marker global-mark-ring)
         (let ((pos (marker-position marker))
               (buf (marker-buffer marker)))
-          (when (and pos buf (not (minibufferp buf)))
+          (when (and pos buf (buffer-live-p buf) (not (minibufferp buf)))
             (with-current-buffer buf
               (when (consult--in-range-p pos)
                 (goto-char pos)
@@ -795,20 +851,18 @@ The alist contains (string . position) pairs."
                 (let* ((line (line-number-at-pos pos consult-line-numbers-widen))
                        (begin (line-beginning-position))
                        (end (line-end-position))
-                       (name (buffer-name)))
-                  (setq max-name (max (length name) max-name)
-                        max-line (max line max-line))
+                       (loc (consult--format-location (buffer-name buf) line)))
+                  (setq max-loc (max (length loc) max-loc))
                   (consult--fontify-region begin end)
-                  (push (cons (list name line (consult--region-with-cursor begin end marker)) marker)
+                  (push (cons (cons loc (consult--region-with-cursor begin end marker)) marker)
                         candidates))))))))
     (unless candidates
       (user-error "No global marks"))
-    (let ((fmt (format "%%%ds:%%-%dd" max-name (length (number-to-string max-line)))))
-      (dolist (cand candidates (nreverse (consult--remove-dups candidates #'car)))
-        (pcase-let ((`(,name ,line ,str) (car cand)))
-          (setcar cand (concat (consult--unique (cdr cand) "")
-                               (propertize (format fmt name line) 'face 'consult-location)
-                               " " str)))))))
+    (dolist (cand candidates (nreverse (consult--remove-dups candidates #'car)))
+      (setcar cand (concat (consult--unique (cdr cand) "")
+                           (caar cand)
+                           (make-string (+ 3 (- max-loc (length (caar cand)))) 32)
+                           (cdar cand))))))
 
 ;;;###autoload
 (defun consult-global-mark ()
@@ -821,8 +875,7 @@ The alist contains (string . position) pairs."
                   :sort nil
                   :require-match t
                   :lookup #'consult--lookup-cdr
-                  :history 'consult--line-history
-                  :history-type 'input
+                  :history '(:input consult--line-history)
                   :preview (and consult-preview-global-mark (consult--preview-position)))))
 
 (defun consult--line-candidates ()
@@ -865,14 +918,15 @@ INPUT is the input string entered by the user.
 CANDIDATES is the line candidates alist.
 CAND is the currently selected candidate."
   (when-let (pos (cdr (assoc cand candidates)))
-    (if (string-blank-p input)
+    (if (or (string-blank-p input)
+            (eq consult-line-point-placement 'line-beginning))
         pos
       ;; Strip unique line number prefix
       (while (and (> (length cand) 0)
                   (>= (elt cand 0) consult--special-char)
                   (< (elt cand 0) (+ consult--special-char consult--special-range)))
         (setq cand (substring cand 1)))
-      (let ((start 0)
+      (let ((beg 0)
             (end (length cand)))
         ;; Find match end position, remove characters from line end until matching fails
         (let ((step 16))
@@ -881,14 +935,17 @@ CAND is the currently selected candidate."
                         (completion-all-completions input (list (substring cand 0 (- end step))) nil 0))
               (setq end (- end step)))
             (setq step (/ step 2))))
-        ;; Find match start position, remove characters from line beginning until matching fails
-        (let ((step 16))
-          (while (> step 0)
-            (while (and (< (+ start step) end)
-                        (completion-all-completions input (list (substring cand (+ start step) end)) nil 0))
-              (setq start (+ start step)))
-            (setq step (/ step 2))))
-        (+ pos start)))))
+        ;; Find match beginning position, remove characters from line beginning until matching fails
+        (when (eq consult-line-point-placement 'match-beginning)
+          (let ((step 16))
+            (while (> step 0)
+              (while (and (< (+ beg step) end)
+                          (completion-all-completions input (list (substring cand (+ beg step) end)) nil 0))
+                (setq beg (+ beg step)))
+              (setq step (/ step 2)))
+            (setq end beg)))
+        ;; Marker can be dead
+        (ignore-errors (+ pos end))))))
 
 ;;;###autoload
 (defun consult-line (&optional initial)
@@ -903,8 +960,7 @@ This command obeys narrowing. Optionally INITIAL input can be provided."
                     :sort nil
                     :default-top nil
                     :require-match t
-                    :history 'consult--line-history
-                    :history-type 'input
+                    :history '(:input consult--line-history)
                     :lookup #'consult--line-match
                     :default (car candidates)
                     :initial initial
@@ -924,23 +980,6 @@ This command obeys narrowing. Optionally INITIAL input can be provided."
                     isearch-string
                   (regexp-quote isearch-string))))
 
-(defun consult--line-position (line)
-  "Compute position from LINE number."
-  (save-excursion
-    (save-restriction
-      (when consult-line-numbers-widen
-        (widen))
-      (goto-char (point-min))
-      (forward-line (- line 1))
-      (point))))
-
-(defun consult--goto-line-hook (&rest _)
-  "Hook calling the line number preview."
-  (let* ((str (minibuffer-contents-no-properties))
-         (line (string-to-number str)))
-    (when (string= str (number-to-string line))
-      (funcall consult--preview-function line))))
-
 ;;;###autoload
 (defun consult-goto-line ()
   "Read line number and jump to the line with preview.
@@ -949,23 +988,30 @@ Respects narrowing and the settings
 `consult-goto-line-numbers' and `consult-line-numbers-widen'."
   (interactive)
   (let ((display-line-numbers consult-goto-line-numbers)
-        (display-line-numbers-widen consult-line-numbers-widen)
-        (pos))
-    (while (progn
-             (minibuffer-with-setup-hook
-                 (lambda () (add-hook 'after-change-functions #'consult--goto-line-hook nil t))
-               (consult--with-preview
-                   (let ((preview (consult--preview-position)))
-                     (lambda (cmd cand state)
-                       (if (eq cmd 'preview)
-                           (let ((pos (consult--line-position cand)))
-                             (when (consult--in-range-p pos)
-                               (funcall preview cmd pos state)))
-                         (funcall preview cmd cand state))))
-                 (setq pos (consult--line-position (read-number "Go to line: ")))))
-             (if (consult--in-range-p pos)
-                 (consult--jump pos)
-               (message "Line number out of range")
+        (display-line-numbers-widen consult-line-numbers-widen))
+    (while (let ((ret (minibuffer-with-setup-hook
+                          (lambda ()
+                            (setq-local consult--completion-candidate-hook
+                                        '(minibuffer-contents-no-properties)))
+                        (consult--with-preview
+                            (lambda (_ cand)
+                              (when (and cand (string-match-p "^[[:digit:]]+$" cand))
+                                (string-to-number cand)))
+                            (let ((preview (consult--preview-position)))
+                              (lambda (cand restore)
+                                (funcall preview
+                                         (when-let (pos (and cand (consult--line-position cand)))
+                                           (and (consult--in-range-p pos) pos))
+                                         restore)))
+                          (read-from-minibuffer "Go to line: ")))))
+             (if (car ret)
+                 (let ((pos (consult--line-position (car ret))))
+                   (if (consult--in-range-p pos)
+                       (consult--jump pos)
+                     (message "Line number out of range.")
+                     (sit-for 1)
+                     t))
+               (message "Please enter a number.")
                (sit-for 1)
                t)))))
 
@@ -1053,6 +1099,62 @@ The arguments and expected return value are as specified for
         (funcall exit completion exit-status))
       t)))
 
+(defun consult--mode-commands (mode)
+  "Extract commands from MODE."
+  (let ((library-path (symbol-file mode))
+        (key (if (memq mode minor-mode-list)
+                 (if (local-variable-if-set-p mode) ?l ?g)
+               ?m))
+        (mode-rx (regexp-quote
+                  (substring (if (eq major-mode 'c-mode)
+                                 "cc-mode"
+                               (symbol-name major-mode))
+                             0 -5))))
+    (mapcan
+     (lambda (feature)
+       (let ((path (car feature)))
+         (when (or (string= path library-path)
+                   (string-match-p mode-rx (file-name-nondirectory path)))
+           (mapcar
+            (lambda (x) (cons (cdr x) key))
+            (seq-filter
+             (lambda (cmd)
+               (and (consp cmd)
+                    (eq (car cmd) 'defun)
+                    (commandp (cdr cmd))
+                    (not (string-match-p consult-mode-command-filter
+                                         (symbol-name (cdr cmd))))))
+             (cdr feature))))))
+     load-history)))
+
+;;;###autoload
+(defun consult-mode-command (&rest modes)
+  "Run a command from the MODES.
+
+If no modes are specified, use currently active major and minor modes."
+  (interactive)
+  (unless modes
+    (setq modes (cons major-mode
+                      (seq-filter (lambda (m)
+                                    (and (boundp m) (symbol-value m)))
+                                  minor-mode-list))))
+  (command-execute
+   (intern
+    (consult--read "Mode command: "
+                   (consult--remove-dups
+                    (mapcan #'consult--mode-commands modes) #'car)
+                   :predicate
+                   (lambda (cand)
+                     (if consult--narrow
+                         (= (cdr cand) consult--narrow)
+                       (/= (cdr cand) ?g)))
+                   :narrow '((?m . "Major")
+                             (?l . "Local Minor")
+                             (?g . "Global Minor"))
+                   :require-match t
+                   :history 'consult--mode-command-history
+                   :category 'command))))
+
 (defun consult--yank-read ()
   "Open kill ring menu and return selected text."
   (consult--read
@@ -1062,20 +1164,19 @@ The arguments and expected return value are as specified for
    :sort nil
    :category 'kill-ring
    :require-match t
-   :preview (and consult-preview-yank
-                 (let* ((pt (point))
-                        ;; If previous command is yank, hide previously yanked text
-                        (mk (or (and (eq last-command 'yank) (mark t)) pt))
-                        (ov (consult--overlay (min pt mk) (max pt mk) 'invisible t)))
-                   (lambda (cmd cand _state)
-                     (pcase cmd
-                       ('restore (delete-overlay ov))
-                       ('preview
-                        ;; Use `add-face-text-property' on a copy of "cand in order to merge face properties
-                        (setq cand (copy-sequence cand))
-                        (add-face-text-property 0 (length cand) 'consult-preview-yank t cand)
-                        ;; Use the `before-string' property since the overlay might be empty.
-                        (overlay-put ov 'before-string cand))))))))
+   :preview (when consult-preview-yank
+              (let* ((pt (point))
+                     ;; If previous command is yank, hide previously yanked text
+                     (mk (or (and (eq last-command 'yank) (mark t)) pt))
+                     (ov (consult--overlay (min pt mk) (max pt mk) 'invisible t)))
+                (lambda (cand restore)
+                  (if restore
+                      (delete-overlay ov)
+                    ;; Use `add-face-text-property' on a copy of "cand in order to merge face properties
+                    (setq cand (copy-sequence cand))
+                    (add-face-text-property 0 (length cand) 'consult-preview-yank t cand)
+                    ;; Use the `before-string' property since the overlay might be empty.
+                    (overlay-put ov 'before-string cand)))))))
 
 ;; Insert selected text.
 ;; Adapted from the Emacs yank function.
@@ -1268,7 +1369,7 @@ for which the command history is used."
                     (when (and lighter (not (equal "" lighter)))
                       (setq lighter (string-trim (format-mode-line lighter)))
                       (unless (string-blank-p lighter)
-                       (cons lighter sym))))
+                        (cons lighter sym))))
                   minor-mode-alist)))))
 
 ;;;###autoload
@@ -1291,15 +1392,13 @@ This is an alternative to `minor-mode-menu-from-indicator'."
 
 ;;;###autoload
 (defun consult-theme (theme)
-  "Disable current themes and enable THEME from `consult-themes'.
-
-During theme selection the theme is shown as
-preview if `consult-preview-mode' is enabled."
+  "Disable current themes and enable THEME from `consult-themes'."
   (interactive
    (list
     (let ((avail-themes (seq-filter (lambda (x) (or (not consult-themes)
                                                     (memq x consult-themes)))
-                                    (cons nil (custom-available-themes)))))
+                                    (cons nil (custom-available-themes))))
+          (saved-theme (car custom-enabled-themes)))
       (consult--read
        "Theme: "
        (mapcar (lambda (x) (or x 'default)) avail-themes)
@@ -1308,14 +1407,12 @@ preview if `consult-preview-mode' is enabled."
        :history 'consult--theme-history
        :lookup (lambda (_input _cands x)
                  (and x (not (string= x "default")) (intern-soft x)))
-       :preview (and consult-preview-theme
-                     (lambda (cmd cand state)
-                       (pcase cmd
-                         ('save (car custom-enabled-themes))
-                         ('restore (consult-theme state))
-                         ('preview (when (memq cand avail-themes)
-                                     (consult-theme cand))))))
-       :default (symbol-name (or (car custom-enabled-themes) 'default))))))
+       :preview (when consult-preview-theme
+                  (lambda (cand restore)
+                    (cond
+                     ((and restore (not cand)) (consult-theme saved-theme))
+                     ((memq cand avail-themes) (consult-theme cand)))))
+       :default (symbol-name (or saved-theme 'default))))))
   (unless (eq theme (car custom-enabled-themes))
     (mapc #'disable-theme custom-enabled-themes)
     (when theme
@@ -1341,7 +1438,8 @@ Depending on the selected item OPEN-BUFFER, OPEN-FILE or OPEN-BOOKMARK will be u
          (curr-buf (buffer-name))
          (bufs (mapcar (lambda (x)
                          (consult--buffer-candidate ?b x 'consult-buffer))
-                       (append (mapcar #'buffer-name (buffer-list)) (list curr-buf))))
+                       (append (delete curr-buf (mapcar #'buffer-name (buffer-list)))
+                               (list curr-buf))))
          (views (when consult-view-list-function
                   (mapcar (lambda (x)
                             (consult--buffer-candidate ?v x 'consult-view))
@@ -1352,6 +1450,7 @@ Depending on the selected item OPEN-BUFFER, OPEN-FILE or OPEN-BOOKMARK will be u
          (files (mapcar (lambda (x)
                           (consult--buffer-candidate ?f (abbreviate-file-name x) 'consult-file))
                         (seq-remove (lambda (x) (gethash x buf-file-hash)) recentf-list)))
+         (saved-buf (current-buffer))
          (selected
           (consult--read
            "Switch to: " (append bufs files views bookmarks)
@@ -1367,8 +1466,7 @@ Depending on the selected item OPEN-BUFFER, OPEN-FILE or OPEN-BOOKMARK will be u
                     (/= (elt cand 1) 32))
                 (or (not consult--narrow) ;; narrowed
                     (= (- (elt cand 0) consult--special-char) consult--narrow)))))
-           :narrow `(nil
-                     (32 . "Ephemeral")
+           :narrow `((32 . "Ephemeral")
                      (?b . "Buffer")
                      (?f . "File")
                      (?m . "Bookmark")
@@ -1377,7 +1475,7 @@ Depending on the selected item OPEN-BUFFER, OPEN-FILE or OPEN-BOOKMARK will be u
            :lookup
            (lambda (_ candidates cand)
              (if (member cand candidates)
-                 (cons (pcase (- (elt cand 0) consult--special-char)
+                 (cons (pcase-exhaustive (- (elt cand 0) consult--special-char)
                          (?b open-buffer)
                          (?m open-bookmark)
                          (?v consult-view-open-function)
@@ -1387,19 +1485,18 @@ Depending on the selected item OPEN-BUFFER, OPEN-FILE or OPEN-BOOKMARK will be u
                ;; default to creating a new buffer.
                (and (not (string-blank-p cand)) (cons open-buffer cand))))
            :preview
-           (and consult-preview-buffer
-                (lambda (cmd cand state)
-                  (pcase cmd
-                    ('save (current-buffer))
-                    ('restore (when (buffer-live-p state)
-                                (set-buffer state)))
-                    ('preview
-                     ;; In order to avoid slowness and unnecessary complexity, we
-                     ;; only preview buffers. Loading recent files, bookmarks or
-                     ;; views can result in expensive operations.
-                     (when (and (eq (car cand) open-buffer) (get-buffer (cdr cand)))
-                       (funcall open-buffer (cdr cand) 'norecord)))))))))
-  (when selected (funcall (car selected) (cdr selected)))))
+           (when consult-preview-buffer
+             (lambda (cand restore)
+               (cond
+                (restore
+                 (when (buffer-live-p saved-buf)
+                   (set-buffer saved-buf)))
+                ;; In order to avoid slowness and unnecessary complexity, we
+                ;; only preview buffers. Loading recent files, bookmarks or
+                ;; views can result in expensive operations.
+                ((and (eq (car cand) open-buffer) (get-buffer (cdr cand)))
+                 (funcall open-buffer (cdr cand) 'norecord))))))))
+    (when selected (funcall (car selected) (cdr selected)))))
 
 ;;;###autoload
 (defun consult-buffer-other-frame ()
@@ -1529,83 +1626,61 @@ Prepend PREFIX in front of all items."
 (defun consult-imenu ()
   "Choose from flattened `imenu' using `completing-read'."
   (interactive)
-   (let ((narrow (cdr (seq-find (lambda (x) (derived-mode-p (car x))) consult-imenu-narrow))))
-     (imenu
-      (consult--read
-       "Go to item: "
-       (or (consult--imenu-candidates)
-           (user-error "Imenu is empty"))
-       :preview (and consult-preview-imenu
-                     (let ((preview (consult--preview-position)))
-                       (lambda (cmd cand state)
-                         (if (eq cmd 'preview)
-                             ;; Only handle imenu items which are markers for preview,
-                             ;; in order to avoid any bad side effects.
-                             (when (and (consp cand) (markerp (cdr cand)))
-                               (funcall preview cmd (cdr cand) state))
-                           (funcall preview cmd cand state)))))
-       :require-match t
-       :narrow (cons (lambda (cand)
-                       (when-let (n (cdr (assoc consult--narrow narrow)))
-                         (let* ((c (car cand))
-                                (l (length n)))
-                           (and (> (length c) l)
-                                (eq t (compare-strings n 0 l c 0 l))
-                                (= (elt c l) 32)))))
-                     narrow)
-       :category 'imenu
-       :lookup #'consult--lookup-cdr
-       :history 'consult--imenu-history
-       :sort nil))
-     (run-hooks 'consult-after-jump-hook)))
+  (let ((narrow (cdr (seq-find (lambda (x) (derived-mode-p (car x))) consult-imenu-narrow))))
+    (imenu
+     (consult--read
+      "Go to item: "
+      (or (consult--imenu-candidates)
+          (user-error "Imenu is empty"))
+      :preview
+      (when consult-preview-imenu
+        (let ((preview (consult--preview-position)))
+          (lambda (cand restore)
+            ;; Only preview imenu items which are markers,
+            ;; in order to avoid any bad side effects.
+            (funcall preview (and (consp cand) (markerp (cdr cand)) (cdr cand)) restore))))
+      :require-match t
+      :narrow
+      (cons (lambda (cand)
+              (when-let (n (cdr (assoc consult--narrow narrow)))
+                (let* ((c (car cand))
+                       (l (length n)))
+                  (and (> (length c) l)
+                       (eq t (compare-strings n 0 l c 0 l))
+                       (= (elt c l) 32)))))
+            narrow)
+      :category 'imenu
+      :lookup #'consult--lookup-cdr
+      :history 'consult--imenu-history
+      :sort nil))
+    (run-hooks 'consult-after-jump-hook)))
 
-;;;; default completion-system support for preview
+;;;; default completion-system support
 
-(defun consult--default-preview-update (&rest _)
-  "Preview function used for the default completion system."
-  (when consult--preview-function
+(defun consult--default-candidate ()
+  "Return current candidate from default completion system."
+  (when (and (not icomplete-mode) (eq completing-read-function #'completing-read-default))
     (let ((cand (minibuffer-contents-no-properties)))
       (when (test-completion cand
                              minibuffer-completion-table
                              minibuffer-completion-predicate)
-        (funcall consult--preview-function cand)))))
+        cand))))
 
-(defun consult--default-preview-hook ()
-  "Add preview update to `after-change-functions' if the default completion system is active."
-  ;; Check if the default completion-system is active, by looking
-  ;; at `completing-read-function' and `icomplete-mode'.
-  (when (and (not icomplete-mode) (eq completing-read-function #'completing-read-default))
-    (add-hook 'after-change-functions #'consult--default-preview-update nil t)))
+(add-hook 'consult--completion-candidate-hook #'consult--default-candidate)
 
-(defun consult--default-preview-setup ()
-  "Setup preview support for the default completion-system."
-  (remove-hook 'minibuffer-setup-hook #'consult--default-preview-hook)
-  (when consult-preview-mode
-    (add-hook 'minibuffer-setup-hook #'consult--default-preview-hook)))
+;;;; icomplete support
 
-(add-hook 'consult-preview-mode-hook #'consult--default-preview-setup)
+(defun consult--icomplete-candidate ()
+  "Return current icomplete candidate."
+  (and icomplete-mode (car completion-all-sorted-completions)))
 
-;;;; icomplete support for preview
+(add-hook 'consult--completion-candidate-hook #'consult--icomplete-candidate)
 
-(defun consult--icomplete-preview-update ()
-  "Preview function used for Icomplete."
-  (when consult--preview-function
-    (when-let (cand (car completion-all-sorted-completions))
-      (funcall consult--preview-function cand))))
-
-(defun consult--icomplete-preview-setup ()
-  "Setup preview support for Icomplete."
-  (advice-remove 'icomplete-post-command-hook #'consult--icomplete-preview-update)
-  (when consult-preview-mode
-    (advice-add 'icomplete-post-command-hook :after #'consult--icomplete-preview-update)))
-
-(add-hook 'consult-preview-mode-hook #'consult--icomplete-preview-setup)
-
-(defun consult--icomplete-refresh (&rest _)
+(defun consult--icomplete-refresh ()
   "Refresh icomplete view."
   (setq completion-all-sorted-completions nil))
 
-(advice-add #'consult--narrow-set :after #'consult--icomplete-refresh)
+(add-hook 'consult--completion-refresh-hook #'consult--icomplete-refresh)
 
 (provide 'consult)
 ;;; consult.el ends here

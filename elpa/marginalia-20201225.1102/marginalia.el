@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201223.1343
-;; Package-Commit: 18cfe2350347806d0cbb327a23695e0c1a6c2700
+;; Package-Version: 20201225.1102
+;; Package-Commit: 3ec73cd5104cef843c0fc1f38ced9a0b6de71881
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -28,6 +28,8 @@
 ;;; Commentary:
 
 ;; Enrich existing commands with completion annotations
+
+;; Merry Christmas!
 
 ;;; Code:
 
@@ -608,15 +610,14 @@ looking for a regexp that matches the prompt."
              when (string-match-p regexp prompt)
              return category)))
 
-;; We generally run the annotators in the original window.
-;; `with-selected-window' is necessary because of `lookup-minor-mode-from-indicator'.
-;; Otherwise it would probably suffice to only change the current buffer.
 (defmacro marginalia--context (&rest body)
   "Setup annotator context around BODY."
   (let ((w (make-symbol "w")))
     ;; Take the window width of the current window (minibuffer window!)
     `(let ((,w (window-width)))
-       ;; Switch to the originally selected window before entering the minibuffer
+       ;; We generally run the annotators in the original window.
+       ;; `with-selected-window' is necessary because of `lookup-minor-mode-from-indicator'.
+       ;; Otherwise it would probably suffice to only change the current buffer.
        ;; We need the `selected-window' fallback for Embark Occur.
        (with-selected-window (or (minibuffer-selected-window) (selected-window))
          (let ((marginalia-truncate-width (min (/ ,w 2) marginalia-truncate-width))

@@ -1708,8 +1708,8 @@ Other list functions not fit to be classified elsewhere.
               ⇒ '((1 . 3) (2 . 4))
 
  -- Function: -cycle (list)
-     Return an infinite copy of LIST that will cycle through the
-     elements and repeat from the beginning.
+     Return an infinite circular copy of LIST.  The returned list cycles
+     through the elements of LIST and repeats from the beginning.
 
           (-take 5 (-cycle '(1 2 3)))
               ⇒ '(1 2 3 1 2)
@@ -3333,81 +3333,81 @@ Ref: -zip-lists54145
 Ref: -zip-fill54846
 Ref: -unzip55169
 Ref: -cycle55914
-Ref: -pad56287
-Ref: -table56610
-Ref: -table-flat57399
-Ref: -first58407
-Ref: -some58779
-Ref: -last59088
-Ref: -first-item59422
-Ref: -second-item59838
-Ref: -third-item60118
-Ref: -fourth-item60396
-Ref: -fifth-item60662
-Ref: -last-item60924
-Ref: -butlast61216
-Ref: -sort61463
-Ref: -list61952
-Ref: -fix62283
-Node: Tree operations62823
-Ref: -tree-seq63019
-Ref: -tree-map63877
-Ref: -tree-map-nodes64320
-Ref: -tree-reduce65170
-Ref: -tree-reduce-from66052
-Ref: -tree-mapreduce66653
-Ref: -tree-mapreduce-from67513
-Ref: -clone68799
-Node: Threading macros69127
-Ref: ->69272
-Ref: ->>69763
-Ref: -->70268
-Ref: -as->70824
-Ref: -some->71279
-Ref: -some->>71653
-Ref: -some-->72089
-Node: Binding72560
-Ref: -when-let72772
-Ref: -when-let*73257
-Ref: -if-let73780
-Ref: -if-let*74175
-Ref: -let74792
-Ref: -let*80882
-Ref: -lambda81822
-Ref: -setq82619
-Node: Side-effects83435
-Ref: -each83629
-Ref: -each-while84036
-Ref: -each-indexed84396
-Ref: -each-r84914
-Ref: -each-r-while85347
-Ref: -dotimes85722
-Ref: -doto86025
-Ref: --doto86453
-Node: Destructive operations86728
-Ref: !cons86901
-Ref: !cdr87107
-Node: Function combinators87302
-Ref: -partial87576
-Ref: -rpartial87970
-Ref: -juxt88373
-Ref: -compose88805
-Ref: -applify89358
-Ref: -on89789
-Ref: -flip90315
-Ref: -const90627
-Ref: -cut90966
-Ref: -not91452
-Ref: -orfn91762
-Ref: -andfn92196
-Ref: -iteratefn92691
-Ref: -fixfn93394
-Ref: -prodfn94957
-Node: Development96025
-Node: Contribute96374
-Node: Changes97122
-Node: Contributors100120
-Node: Index101739
+Ref: -pad56316
+Ref: -table56639
+Ref: -table-flat57428
+Ref: -first58436
+Ref: -some58808
+Ref: -last59117
+Ref: -first-item59451
+Ref: -second-item59867
+Ref: -third-item60147
+Ref: -fourth-item60425
+Ref: -fifth-item60691
+Ref: -last-item60953
+Ref: -butlast61245
+Ref: -sort61492
+Ref: -list61981
+Ref: -fix62312
+Node: Tree operations62852
+Ref: -tree-seq63048
+Ref: -tree-map63906
+Ref: -tree-map-nodes64349
+Ref: -tree-reduce65199
+Ref: -tree-reduce-from66081
+Ref: -tree-mapreduce66682
+Ref: -tree-mapreduce-from67542
+Ref: -clone68828
+Node: Threading macros69156
+Ref: ->69301
+Ref: ->>69792
+Ref: -->70297
+Ref: -as->70853
+Ref: -some->71308
+Ref: -some->>71682
+Ref: -some-->72118
+Node: Binding72589
+Ref: -when-let72801
+Ref: -when-let*73286
+Ref: -if-let73809
+Ref: -if-let*74204
+Ref: -let74821
+Ref: -let*80911
+Ref: -lambda81851
+Ref: -setq82648
+Node: Side-effects83464
+Ref: -each83658
+Ref: -each-while84065
+Ref: -each-indexed84425
+Ref: -each-r84943
+Ref: -each-r-while85376
+Ref: -dotimes85751
+Ref: -doto86054
+Ref: --doto86482
+Node: Destructive operations86757
+Ref: !cons86930
+Ref: !cdr87136
+Node: Function combinators87331
+Ref: -partial87605
+Ref: -rpartial87999
+Ref: -juxt88402
+Ref: -compose88834
+Ref: -applify89387
+Ref: -on89818
+Ref: -flip90344
+Ref: -const90656
+Ref: -cut90995
+Ref: -not91481
+Ref: -orfn91791
+Ref: -andfn92225
+Ref: -iteratefn92720
+Ref: -fixfn93423
+Ref: -prodfn94986
+Node: Development96054
+Node: Contribute96403
+Node: Changes97151
+Node: Contributors100149
+Node: Index101768
 
 End Tag Table
 

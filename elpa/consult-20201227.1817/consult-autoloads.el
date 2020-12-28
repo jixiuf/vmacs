@@ -92,6 +92,13 @@ The arguments and expected return value are as specified for
 
 \(fn START END COLLECTION &optional PREDICATE)" nil nil)
 
+(autoload 'consult-mode-command "consult" "\
+Run a command from the MODES.
+
+If no modes are specified, use currently active major and minor modes.
+
+\(fn &rest MODES)" t nil)
+
 (autoload 'consult-yank "consult" "\
 Select text from the kill ring and insert it." t nil)
 
@@ -134,9 +141,6 @@ This is an alternative to `minor-mode-menu-from-indicator'." t nil)
 
 (autoload 'consult-theme "consult" "\
 Disable current themes and enable THEME from `consult-themes'.
-
-During theme selection the theme is shown as
-preview if `consult-preview-mode' is enabled.
 
 \(fn THEME)" t nil)
 
