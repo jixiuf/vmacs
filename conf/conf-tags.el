@@ -53,9 +53,9 @@
 
 (with-eval-after-load 'xref
   (setq xref-search-program 'ripgrep)     ;project-find-regexp
-  (when (functionp 'xref--show-defs-minibuffer)
-    (setq xref-show-definitions-function 'xref--show-defs-minibuffer)
-    (setq xref-show-xrefs-function 'xref--show-defs-minibuffer)))
+  (when (functionp 'xref-show-definitions-completing-read)
+    (setq xref-show-definitions-function 'xref-show-definitions-completing-read)
+    (setq xref-show-xrefs-function 'xref-show-definitions-completing-read)))
 
 
 (defun eglot-organize-imports ()
