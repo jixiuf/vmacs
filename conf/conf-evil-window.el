@@ -75,6 +75,8 @@
          (inhibit-same-window . nil))
         ("\\*rg\\*"
          (display-buffer-same-window ))
+        ("\\*Embark Export Grep\\*"
+         (display-buffer-same-window ))
         ("\\*xref\\*"
          (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
          )
