@@ -50,6 +50,8 @@
   )
 
 (fset 'imenu 'consult-imenu)
+(vmacs-leader "gg" #'consult-ripgrep)
+(vmacs-leader "g." #'consult-git-grep)
 
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)

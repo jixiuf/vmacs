@@ -48,7 +48,7 @@
 
   ;; (require 'conf-helm)            ;
   ;; (require 'conf-ivy)
-(require 'conf-rg)
+;; (require 'conf-rg)
 (require 'conf-wgrep)
   ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
   ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
