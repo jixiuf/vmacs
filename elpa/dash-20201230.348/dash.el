@@ -91,9 +91,8 @@ Note: `it' is not required in each form."
 
 (defun -each (list fn)
   "Call FN with every item in LIST. Return nil, used for side-effects only."
+  (declare (indent 1))
   (--each list (funcall fn it)))
-
-(put '-each 'lisp-indent-function 1)
 
 (defalias '--each-indexed '--each)
 
@@ -103,30 +102,29 @@ Note: `it' is not required in each form."
 In the anaphoric form `--each-indexed', the index is exposed as symbol `it-index'.
 
 See also: `-map-indexed'."
+  (declare (indent 1))
   (--each list (funcall fn it-index it)))
-(put '-each-indexed 'lisp-indent-function 1)
 
 (defmacro --each-while (list pred &rest body)
   "Anaphoric form of `-each-while'."
   (declare (debug (form form body))
            (indent 2))
-  (let ((l (make-symbol "list"))
-        (c (make-symbol "continue")))
+  (let ((l (make-symbol "list")))
     `(let ((,l ,list)
-           (,c t)
-           (it-index 0))
-       (while (and ,l ,c)
-         (let ((it (car ,l)))
-           (if (not ,pred) (setq ,c nil) ,@body))
-         (setq it-index (1+ it-index))
-         (!cdr ,l)))))
+           (it-index 0)
+           it)
+       (ignore it)
+       (while (when ,l
+                (setq it (pop ,l))
+                ,pred)
+         ,@body
+         (setq it-index (1+ it-index))))))
 
 (defun -each-while (list pred fn)
   "Call FN with every item in LIST while (PRED item) is non-nil.
 Return nil, used for side-effects only."
+  (declare (indent 2))
   (--each-while list (funcall pred it) (funcall fn it)))
-
-(put '-each-while 'lisp-indent-function 2)
 
 (defmacro --each-r (list &rest body)
   "Anaphoric form of `-each-r'."
@@ -184,9 +182,8 @@ Return nil, used for side-effects only."
 
 (defun -dotimes (num fn)
   "Repeatedly calls FN (presumably for side-effects) passing in integers from 0 through NUM-1."
+  (declare (indent 1))
   (--dotimes num (funcall fn it)))
-
-(put '-dotimes 'lisp-indent-function 1)
 
 (defun -map (fn list)
   "Return a new list consisting of the result of applying FN to the items in LIST."

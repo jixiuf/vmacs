@@ -57,12 +57,6 @@ This command obeys narrowing. Optionally INITIAL input can be provided.
 
 \(fn &optional INITIAL)" t nil)
 
-(autoload 'consult-line-symbol-at-point "consult" "\
-Search for a symbol at point." t nil)
-
-(autoload 'consult-line-from-isearch "consult" "\
-Search by lines from isearch string." t nil)
-
 (autoload 'consult-goto-line "consult" "\
 Read line number and jump to the line with preview.
 
@@ -162,6 +156,21 @@ Macros containing mouse clicks aren't displayed.
 
 (autoload 'consult-imenu "consult" "\
 Choose from flattened `imenu' using `completing-read'." t nil)
+
+(autoload 'consult-grep "consult" "\
+Search for REGEXP with grep in DIR.
+
+\(fn DIR)" t nil)
+
+(autoload 'consult-git-grep "consult" "\
+Search for REGEXP with grep in DIR.
+
+\(fn DIR)" t nil)
+
+(autoload 'consult-ripgrep "consult" "\
+Search for REGEXP with rg in DIR.
+
+\(fn DIR)" t nil)
 
 (register-definition-prefixes "consult" '("consult-"))
 

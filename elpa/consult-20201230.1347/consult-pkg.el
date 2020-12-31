@@ -1,6 +1,6 @@
-(define-package "consult" "20201227.1817" "Consulting completing-read"
+(define-package "consult" "20201230.1347" "Consulting completing-read"
   '((emacs "26.1"))
-  :commit "1a975bc78f743922446021a2ac5ce83a6981d9ac" :authors
+  :commit "219c7e259d04ea36c8ec14db0bbe2278c506af30" :authors
   (("Daniel Mendler, Consult and Selectrum contributors"))
   :maintainer
   ("Daniel Mendler")
