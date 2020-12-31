@@ -28,7 +28,9 @@
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
-(define-key icomplete-fido-mode-map (kbd "C-e") 'icomplete-fido-exit)
+(define-key icomplete-fido-mode-map (kbd "C-e") #'(lambda(&optional argv)(interactive)(if (eolp) (call-interactively #'icomplete-fido-exit) (end-of-line))) )
+
+
 
 (when (require 'embark nil t)
   (when (require 'marginalia nil t) (marginalia-mode 1))
@@ -50,6 +52,7 @@
   )
 
 (fset 'imenu 'consult-imenu)
+(setq consult-async-default-split nil)
 (vmacs-leader "gg" #'consult-ripgrep)
 (vmacs-leader "g." #'consult-git-grep)
 
