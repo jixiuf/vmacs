@@ -291,6 +291,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
 (vmacs-leader (kbd "o") 'other-window)
 
+(autoload 'dired-jump "dired" "" t)
 (vmacs-leader (kbd "j") 'dired-jump)
 (global-set-key  (kbd "s-j") 'dired-jump)
 
