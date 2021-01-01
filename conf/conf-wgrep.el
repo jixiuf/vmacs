@@ -33,6 +33,8 @@
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit))
 
 (vmacs-define-key grep-mode-map "g" nil  'grep)
+(vmacs-define-key grep-mode-map "/" #'grep-hide-lines-not-matching  'grep)
+(vmacs-define-key grep-mode-map "z" #'grep-hide-lines-matching  'grep)
 (defun enable-wgrep-when-entry-insert()
   (when (derived-mode-p 'ivy-occur-mode 'rg-mode 'grep-mode 'embark-occur-mode
                         'ivy-occur-grep-mode 'helm-grep-mode)
@@ -46,6 +48,45 @@
 
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
 
+
+(defun grep-hide-lines-not-matching (search-text)
+  "Hide lines that don't match the specified regexp."
+  (interactive "MHide lines not matched by regexp: ")
+  (set (make-local-variable 'line-move-ignore-invisible) t)
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 2)
+    (let ((inhibit-read-only t)
+          (start-position (point))
+          (pos (re-search-forward search-text nil t)))
+      (while pos
+        (beginning-of-line)
+        (delete-region start-position (point))
+        (forward-line 1)
+        (setq start-position (point))
+        (if (eq (point) (point-max))
+            (setq pos nil)
+          (setq pos (re-search-forward search-text nil t))))
+              (delete-region start-position (point-max) ))))
+
+(defun grep-hide-lines-matching  (search-text)
+  "Hide lines matching the specified regexp."
+  (interactive "MHide lines matching regexp: ")
+  (set (make-local-variable 'line-move-ignore-invisible) t)
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 2)
+    (let ((inhibit-read-only t)
+          (pos (re-search-forward search-text nil t))
+          start-position)
+      (while pos
+        (beginning-of-line)
+        (setq start-position (point))
+        (end-of-line)
+        (delete-region start-position (+ 1 (point)))
+        (if (eq (point) (point-max))
+            (setq pos nil)
+          (setq pos (re-search-forward search-text nil t)))))))
 
 
 (provide 'conf-wgrep)
