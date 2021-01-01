@@ -54,10 +54,6 @@
 (vmacs-leader "gt" #'(lambda()(interactive) (consult-ripgrep (project-root (project-current t)))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
 (vmacs-leader "g," #'(lambda()(interactive) (consult-ripgrep (project-root (project-current t)) (thing-at-point 'symbol))))
-(defun consult-ripgrep-project-root()
-  (let ((consult-project-root-function  #'(lambda() (project-root (project-current t)))) )
-    (call-interactively 'consult-ripgrep)))
-
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
