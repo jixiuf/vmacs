@@ -1,2 +1,0 @@
-;;; Generated package description from embark.el  -*- no-byte-compile: t -*-
-(define-package "embark" "20201230.527" "Conveniently act on minibuffer completions" '((emacs "25.1")) :commit "7c95f1f36c1c6ecaeeb3364dbde0e753513aeedf" :authors '(("Omar Antolín Camarena" . "omar@matem.unam.mx")) :maintainer '("Omar Antolín Camarena" . "omar@matem.unam.mx") :keywords '("convenience") :url "https://github.com/oantolin/embark")
