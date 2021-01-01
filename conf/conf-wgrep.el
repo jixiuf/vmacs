@@ -36,6 +36,7 @@
 (defun enable-wgrep-when-entry-insert()
   (when (derived-mode-p 'ivy-occur-mode 'rg-mode 'grep-mode 'embark-occur-mode
                         'ivy-occur-grep-mode 'helm-grep-mode)
+    (require 'wgrep)
     (wgrep-change-to-wgrep-mode)
     ;; (when (equal last-command 'iedit-mode)
     ;;   ;; 恢复iedit bug导致rg iedit在进入wgrep 模式下 iedit 消失
