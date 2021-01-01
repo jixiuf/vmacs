@@ -118,15 +118,6 @@
 ;; (add-hook 'vterm-mode-hook  'with-editor-export-editor)
 (setq vterm-buffer-name-string "vterm %s")
 
-(defun vmacs-kill-buffer-hook()
-  (let ((proc (get-buffer-process (current-buffer))))
-    (when (and (derived-mode-p 'vterm-mode)
-               (process-live-p proc))
-      (vterm-send-C-c)
-      (kill-process proc))))
-
-(add-hook 'kill-buffer-hook 'vmacs-kill-buffer-hook)
-
 (defun vterm-evil-insert ()
   (interactive)
   (vterm-goto-char (point))
