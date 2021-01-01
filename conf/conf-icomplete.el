@@ -27,6 +27,8 @@
 
 (fido-mode 1)
 (define-key icomplete-fido-mode-map (kbd "C-n") #'icomplete-forward-completions)
+
+(define-key icomplete-minibuffer-map (kbd "C-.") 'next-history-element)
 (define-key icomplete-fido-mode-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-fido-mode-map (kbd "C-e") #'(lambda(&optional argv)(interactive)(if (eolp) (call-interactively #'icomplete-fido-exit) (end-of-line))) )
 
@@ -40,15 +42,10 @@
   (define-key icomplete-fido-mode-map (kbd "C-c C-o") 'embark-occur)
   (define-key icomplete-fido-mode-map (kbd "C-c C-c") 'embark-export)
   (define-key icomplete-fido-mode-map (kbd "C-c C-e") 'embark-live-occur)
-  ;; (define-key embark-occur-mode-map (kbd "/") 'hide-lines-not-matching)
   (define-key embark-occur-mode-map (kbd "h") nil)
   (define-key embark-occur-mode-map (kbd "v") nil)
   (define-key embark-occur-mode-map (kbd "e") nil)
   (global-set-key (kbd "C-o") 'embark-act)
-  ;; (add-hook 'embark-occur-mode-hook #'tablist-minor-mode)
-  ;; (evil-define-key 'normal 'embark-occur-mode-map  "/" 'tablist-push-regexp-filter)
-  ;; (evil-define-key 'normal 'embark-occur-mode-map  "gr" 'tablist-clear-filter)
-  ;; (add-hook 'embark-occur-mode-hook #'evil-normalize-keymaps)
   )
 
 (fset 'imenu 'consult-imenu)
