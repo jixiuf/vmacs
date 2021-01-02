@@ -4,8 +4,8 @@
 
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>
 ;; Keywords: extensions
-;; Package-Version: 20200905.2113
-;; Package-Commit: e56eeef6e11909ccd62aa7250867dce803706d2c
+;; Package-Version: 20210101.1603
+;; Package-Commit: e316991cfe1274efe5881fee0230532c67f9b035
 ;; Version: 0.5
 ;; Homepage: https://github.com/oantolin/orderless
 ;; Package-Requires: ((emacs "24.4"))
@@ -308,6 +308,18 @@ at a word boundary in the candidate.  This is similar to the
   (orderless--separated-by '(zero-or-more nonl)
    (cl-loop for prefix in (split-string component "\\>")
             collect `(seq word-boundary ,prefix))))
+
+(defun orderless-without-literal (component)
+  "Match strings that do *not* contain COMPONENT as a literal match."
+  (rx-to-string
+   `(seq
+     (group string-start)               ; highlight nothing!
+     (zero-or-more
+      (or ,@(cl-loop for i from 1 below (length component)
+                     collect `(seq ,(substring component 1 i)
+                                   (or (not (any ,(aref component i)))
+                                       string-end)))))
+     string-end)))
 
 ;;; Highlighting matches
 

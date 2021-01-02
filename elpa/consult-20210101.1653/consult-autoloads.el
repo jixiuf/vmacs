@@ -158,19 +158,19 @@ Macros containing mouse clicks aren't displayed.
 Choose from flattened `imenu' using `completing-read'." t nil)
 
 (autoload 'consult-grep "consult" "\
-Search for regexp with grep in DIR.
+Search for regexp with grep in DIR with INITIAL input.
 
-\(fn &optional DIR)" t nil)
+\(fn &optional DIR INITIAL)" t nil)
 
 (autoload 'consult-git-grep "consult" "\
-Search for regexp with grep in DIR.
+Search for regexp with grep in DIR with INITIAL input.
 
-\(fn &optional DIR)" t nil)
+\(fn &optional DIR INITIAL)" t nil)
 
 (autoload 'consult-ripgrep "consult" "\
-Search for regexp with rg in DIR.
+Search for regexp with rg in DIR with INITIAL input.
 
-\(fn &optional DIR)" t nil)
+\(fn &optional DIR INITIAL)" t nil)
 
 (autoload 'consult-find "consult" "\
 Search for regexp with find in DIR.

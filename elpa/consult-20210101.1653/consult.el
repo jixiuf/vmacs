@@ -25,20 +25,21 @@
 
 ;;; Commentary:
 
-;; Consult implements a set of commands which use `completing-read' to select
-;; from a list of candidates. Most provided commands follow the naming scheme
-;; `consult-<thing>'. Some commands are drop-in replacements for existing
-;; functions, e.g., `consult-apropos' or the enhanced buffer switcher
-;; `consult-buffer.' Other commands provide additional functionality, e.g.,
-;; `consult-line', to search for a line. Many commands support candidate
-;; preview. If a candidate is selected in the completion view, the buffer shows
-;; the candidate immediately.
+;; Consult implements a set of `consult-<thing>' commands which use
+;; `completing-read' to select from a list of candidates. Consult
+;; provides an enhanced buffer switcher `consult-buffer' and many
+;; search and navigation commands like `consult-line' and an
+;; asynchronous `consult-grep'. Many commands support candidate
+;; preview - if a candidate is selected in the completion view, the
+;; buffer shows the candidate immediately.
 
-;;; Acknowledgements:
+;; The Consult commands are compatible with completion systems based
+;; on the Emacs `completing-read' API, notably the default completion
+;; system, Icomplete, Selectrum and Embark's live-occur.
 
-;; This package took inspiration from Counsel by Oleh Krehel. Some of the
-;; commands found in this package originated in the Selectrum wiki. See the
-;; README for a full list of contributors.
+;; This package took inspiration from Counsel by Oleh Krehel. Some of
+;; the commands found in this package originated in the Selectrum
+;; wiki. See the README for a full list of contributors.
 
 ;;; Code:
 
@@ -336,13 +337,15 @@ Size of private unicode plane b.")
 (defun consult--format-directory-prompt (prompt dir)
   "Format PROMPT with directory DIR."
   (save-match-data
-    (let ((edir (expand-file-name dir)))
+    (let ((edir (file-name-as-directory (expand-file-name dir)))
+          (ddir (file-name-as-directory (expand-file-name default-directory))))
       (cons
-       (if (string= (expand-file-name default-directory) edir)
+       (if (string= ddir edir)
            (concat prompt ": ")
          (let ((adir (abbreviate-file-name edir)))
            (if (string-match "/\\([^/]+\\)/\\([^/]+\\)/$" adir)
-               (format "%s in …/%s/%s/: " prompt (match-string 1 adir) (match-string 2 adir))
+               (format "%s in …/%s/%s/: " prompt
+                       (match-string 1 adir) (match-string 2 adir))
              (format "%s in %s: " prompt adir))))
        edir))))
 
@@ -777,7 +780,9 @@ NARROW is an alist of narrowing prefix strings and description."
   (minibuffer-with-setup-hook
       (:append
        (lambda ()
-         (consult--add-history (cons default add-history))
+         (consult--add-history (cons default (if (stringp add-history)
+                                                 (list add-history)
+                                               add-history)))
          (when narrow (consult--narrow-setup narrow))))
     (consult--with-async (async candidates)
       (let* ((metadata
@@ -1104,14 +1109,16 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
   "Jump to an outline heading."
   (interactive)
   (consult--jump
-   (consult--read "Go to heading: " (consult--with-increased-gc (consult--outline-candidates))
-                  :category 'line
-                  :sort nil
-                  :require-match t
-                  :lookup #'consult--line-match
-                  :history '(:input consult--line-history)
-                  :add-history (list (thing-at-point 'symbol))
-                  :preview (and consult-preview-outline (consult--preview-position)))))
+   (consult--read
+    "Go to heading: "
+    (consult--with-increased-gc (consult--outline-candidates))
+    :category 'line
+    :sort nil
+    :require-match t
+    :lookup #'consult--line-match
+    :history '(:input consult--line-history)
+    :add-history (thing-at-point 'symbol)
+    :preview (and consult-preview-outline (consult--preview-position)))))
 
 (defun consult--font-lock (str)
   "Apply `font-lock' faces in STR."
@@ -1162,18 +1169,20 @@ See `multi-occur' for the meaning of the arguments BUFS, REGEXP and NLINES."
   (unless (compilation-buffer-p (current-buffer))
     (user-error "Not a compilation buffer"))
   (consult--jump
-   (consult--read "Go to error: " (consult--with-increased-gc (consult--error-candidates))
-                  :category 'compilation-error
-                  :sort nil
-                  :require-match t
-                  :lookup #'consult--lookup-cadr
-                  :narrow '((lambda (cand) (= (caddr cand) consult--narrow))
-                            (?e . "Error")
-                            (?w . "Warning")
-                            (?i . "Info"))
-                  :history '(:input consult--error-history)
-                  :preview
-                  (and consult-preview-error (consult--preview-position 'consult-preview-error)))))
+   (consult--read
+    "Go to error: "
+    (consult--with-increased-gc (consult--error-candidates))
+    :category 'compilation-error
+    :sort nil
+    :require-match t
+    :lookup #'consult--lookup-cadr
+    :narrow '((lambda (cand) (= (caddr cand) consult--narrow))
+              (?e . "Error")
+              (?w . "Warning")
+              (?i . "Info"))
+    :history '(:input consult--error-history)
+    :preview
+    (and consult-preview-error (consult--preview-position 'consult-preview-error)))))
 
 (defun consult--mark-candidates ()
   "Return alist of lines containing markers.
@@ -1202,14 +1211,15 @@ The alist contains (string . position) pairs."
   "Jump to a marker in `mark-ring'."
   (interactive)
   (consult--jump
-   (consult--read "Go to mark: "
-                  (consult--with-increased-gc (consult--mark-candidates))
-                  :category 'line
-                  :sort nil
-                  :require-match t
-                  :lookup #'consult--lookup-cdr
-                  :history '(:input consult--line-history)
-                  :preview (and consult-preview-mark (consult--preview-position)))))
+   (consult--read
+    "Go to mark: "
+    (consult--with-increased-gc (consult--mark-candidates))
+    :category 'line
+    :sort nil
+    :require-match t
+    :lookup #'consult--lookup-cdr
+    :history '(:input consult--line-history)
+    :preview (and consult-preview-mark (consult--preview-position)))))
 
 (defun consult--global-mark-candidates ()
   "Return alist of lines containing markers.
@@ -1244,14 +1254,15 @@ The alist contains (string . position) pairs."
   "Jump to a marker in `global-mark-ring'."
   (interactive)
   (consult--jump
-   (consult--read "Go to global mark: "
-                  (consult--with-increased-gc (consult--global-mark-candidates))
-                  :category 'line
-                  :sort nil
-                  :require-match t
-                  :lookup #'consult--lookup-cdr
-                  :history '(:input consult--line-history)
-                  :preview (and consult-preview-global-mark (consult--preview-position)))))
+   (consult--read
+    "Go to global mark: "
+    (consult--with-increased-gc (consult--global-mark-candidates))
+    :category 'line
+    :sort nil
+    :require-match t
+    :lookup #'consult--lookup-cdr
+    :history '(:input consult--line-history)
+    :preview (and consult-preview-global-mark (consult--preview-position)))))
 
 (defun consult--line-candidates ()
   "Return alist of lines and positions."
@@ -1331,22 +1342,23 @@ This command obeys narrowing. Optionally INITIAL input can be provided."
   (interactive)
   (let ((candidates (consult--with-increased-gc (consult--line-candidates))))
     (consult--jump
-     (consult--read "Go to line: " (cdr candidates)
-                    :category 'line
-                    :sort nil
-                    :default-top nil
-                    :require-match t
-                    :add-history (list
-                                  (thing-at-point 'symbol)
-                                  (when isearch-string
-                                    (if isearch-regexp
-                                        isearch-string
-                                      (regexp-quote isearch-string))))
-                    :history '(:input consult--line-history)
-                    :lookup #'consult--line-match
-                    :default (car candidates)
-                    :initial initial
-                    :preview (and consult-preview-line (consult--preview-position))))))
+     (consult--read
+      "Go to line: " (cdr candidates)
+      :category 'line
+      :sort nil
+      :default-top nil
+      :require-match t
+      :add-history (list
+                    (thing-at-point 'symbol)
+                    (when isearch-string
+                      (if isearch-regexp
+                          isearch-string
+                        (regexp-quote isearch-string))))
+      :history '(:input consult--line-history)
+      :lookup #'consult--line-match
+      :default (car candidates)
+      :initial initial
+      :preview (and consult-preview-line (consult--preview-position))))))
 
 ;;;###autoload
 (defun consult-goto-line ()
@@ -1509,20 +1521,21 @@ If no modes are specified, use currently active major and minor modes."
                                   minor-mode-list))))
   (command-execute
    (intern
-    (consult--read "Mode command: "
-                   (consult--remove-dups
-                    (mapcan #'consult--mode-commands modes) #'car)
-                   :predicate
-                   (lambda (cand)
-                     (if consult--narrow
-                         (= (cdr cand) consult--narrow)
-                       (/= (cdr cand) ?g)))
-                   :narrow '((?m . "Major")
-                             (?l . "Local Minor")
-                             (?g . "Global Minor"))
-                   :require-match t
-                   :history 'consult--mode-command-history
-                   :category 'command))))
+    (consult--read
+     "Mode command: "
+     (consult--remove-dups
+      (mapcan #'consult--mode-commands modes) #'car)
+     :predicate
+     (lambda (cand)
+       (if consult--narrow
+           (= (cdr cand) consult--narrow)
+         (/= (cdr cand) ?g)))
+     :narrow '((?m . "Major")
+               (?l . "Local Minor")
+               (?g . "Global Minor"))
+     :require-match t
+     :history 'consult--mode-command-history
+     :category 'command))))
 
 (defun consult--yank-read ()
   "Open kill ring menu and return selected text."
@@ -1614,13 +1627,14 @@ Otherwise replace the just-yanked text with the selected text."
   "Use register REG. Either jump to location or insert the stored text."
   (interactive
    (list
-    (consult--read "Register: "
-                   (consult--register-candidates)
-                   :category 'register
-                   :sort nil
-                   :require-match t
-                   :history t ;; disable history
-                   :lookup #'consult--lookup-cdr)))
+    (consult--read
+     "Register: "
+     (consult--register-candidates)
+     :category 'register
+     :sort nil
+     :require-match t
+     :history t ;; disable history
+     :lookup #'consult--lookup-cdr)))
   (condition-case nil
       (jump-to-register reg)
     (error (insert-register reg))))
@@ -1628,9 +1642,10 @@ Otherwise replace the just-yanked text with the selected text."
 ;;;###autoload
 (defun consult-bookmark (name)
   "If bookmark NAME exists, open it, otherwise set bookmark under the given NAME."
-  (interactive (list (consult--read "Bookmark: " (bookmark-all-names)
-                                    :history 'bookmark-history
-                                    :category 'bookmark)))
+  (interactive (list (consult--read
+                      "Bookmark: " (bookmark-all-names)
+                      :history 'bookmark-history
+                      :category 'bookmark)))
   (if (assoc name bookmark-alist)
       (bookmark-jump name)
     (bookmark-set name)))
@@ -1640,12 +1655,13 @@ Otherwise replace the just-yanked text with the selected text."
   "Select pattern and call `apropos'."
   (interactive)
   (let ((pattern
-         (consult--read "Apropos: "
-                        obarray
-                        :predicate (lambda (x) (or (fboundp x) (boundp x) (facep x) (symbol-plist x)))
-                        :history 'consult--apropos-history
-                        :category 'symbol
-                        :default (thing-at-point 'symbol))))
+         (consult--read
+          "Apropos: "
+          obarray
+          :predicate (lambda (x) (or (fboundp x) (boundp x) (facep x) (symbol-plist x)))
+          :history 'consult--apropos-history
+          :category 'symbol
+          :default (thing-at-point 'symbol))))
     (when (string= pattern "")
       (user-error "No pattern given"))
     (apropos pattern)))
@@ -1703,18 +1719,19 @@ for which the command history is used."
   "Insert string from buffer HISTORY."
   (interactive)
   (let* ((enable-recursive-minibuffers t)
-         (str (consult--read "History: "
-                             (let ((history (or history (consult--current-history))))
-                               (or (consult--remove-dups (if (ring-p history)
-                                                             (ring-elements history)
-                                                           history))
-                                   (user-error "History is empty")))
-                             :history t ;; disable history
-                             :category ;; Report command category for M-x history
-                             (and (minibufferp)
-                                  (eq minibuffer-history-variable 'extended-command-history)
-                                  'command)
-                             :sort nil)))
+         (str (consult--read
+               "History: "
+               (let ((history (or history (consult--current-history))))
+                 (or (consult--remove-dups (if (ring-p history)
+                                               (ring-elements history)
+                                             history))
+                     (user-error "History is empty")))
+               :history t ;; disable history
+               :category ;; Report command category for M-x history
+               (and (minibufferp)
+                    (eq minibuffer-history-variable 'extended-command-history)
+                    'command)
+               :sort nil)))
     (when (minibufferp)
       (delete-minibuffer-contents))
     (insert (substring-no-properties str))))
@@ -1747,17 +1764,18 @@ for which the command history is used."
 This is an alternative to `minor-mode-menu-from-indicator'."
   (interactive)
   (call-interactively
-   (consult--read "Minor mode: "
-                  (consult--minor-mode-candidates)
-                  :require-match t
-                  :category 'minor-mode
-                  :narrow '((lambda (cand) (seq-position (caddr cand) consult--narrow))
-                            (?l . "Local")
-                            (?g . "Global")
-                            (?i . "On")
-                            (?o . "Off"))
-                  :lookup #'consult--lookup-cadr
-                  :history 'consult--minor-mode-menu-history)))
+   (consult--read
+    "Minor mode: "
+    (consult--minor-mode-candidates)
+    :require-match t
+    :category 'minor-mode
+    :narrow '((lambda (cand) (seq-position (caddr cand) consult--narrow))
+              (?l . "Local")
+              (?g . "Global")
+              (?i . "On")
+              (?o . "Off"))
+    :lookup #'consult--lookup-cadr
+    :history 'consult--minor-mode-menu-history)))
 
 ;;;###autoload
 (defun consult-theme (theme)
@@ -2040,7 +2058,7 @@ Prepend PREFIX in front of all items."
       :category 'imenu
       :lookup #'consult--lookup-cdr
       :history 'consult--imenu-history
-      :add-history (list (thing-at-point 'symbol))
+      :add-history (thing-at-point 'symbol)
       :sort nil))
     (run-hooks 'consult-after-jump-hook)))
 
@@ -2104,8 +2122,8 @@ CMD is the grep argument list."
     (consult--async-throttle)
     (consult--async-split)))
 
-(defun consult--grep (prompt cmd dir)
-  "Run grep CMD in DIR.
+(defun consult--grep (prompt cmd dir initial)
+  "Run grep CMD in DIR with INITIAL input.
 
 PROMPT is the prompt string."
   (pcase-let ((`(,prompt . ,default-directory) (consult--directory-prompt prompt dir)))
@@ -2116,30 +2134,30 @@ PROMPT is the prompt string."
         (consult--grep-async cmd)
         :lookup (consult--grep-marker open)
         :preview (and consult-preview-grep (consult--preview-position))
-        :initial consult-async-default-split
-        :add-history (list (concat consult-async-default-split (thing-at-point 'symbol)))
+        :initial (concat consult-async-default-split initial)
+        :add-history (concat consult-async-default-split (thing-at-point 'symbol))
         :require-match t
         :category 'xref-location
         :history '(:input consult--grep-history)
         :sort nil)))))
 
 ;;;###autoload
-(defun consult-grep (&optional dir)
-  "Search for regexp with grep in DIR."
+(defun consult-grep (&optional dir initial)
+  "Search for regexp with grep in DIR with INITIAL input."
   (interactive "P")
-  (consult--grep "Grep" consult--grep-command dir))
+  (consult--grep "Grep" consult--grep-command dir initial))
 
 ;;;###autoload
-(defun consult-git-grep (&optional dir)
-  "Search for regexp with grep in DIR."
+(defun consult-git-grep (&optional dir initial)
+  "Search for regexp with grep in DIR with INITIAL input."
   (interactive "P")
-  (consult--grep "Git-grep" consult--git-grep-command dir))
+  (consult--grep "Git-grep" consult--git-grep-command dir initial))
 
 ;;;###autoload
-(defun consult-ripgrep (&optional dir)
-  "Search for regexp with rg in DIR."
+(defun consult-ripgrep (&optional dir initial)
+  "Search for regexp with rg in DIR with INITIAL input."
   (interactive "P")
-  (consult--grep "Ripgrep" consult--ripgrep-command dir))
+  (consult--grep "Ripgrep" consult--ripgrep-command dir initial))
 
 (defun consult--find-async (cmd)
   "Async function for `consult--find'.
@@ -2164,7 +2182,7 @@ CMD is the find argument list."
     :sort nil
     :require-match t
     :initial consult-async-default-split
-    :add-history (list (concat consult-async-default-split (thing-at-point 'symbol)))
+    :add-history (concat consult-async-default-split (thing-at-point 'symbol))
     :category 'file
     :history '(:input consult--find-history))))
 
@@ -2194,7 +2212,7 @@ CMD is the find argument list."
 
 ;;;; default completion-system support
 
-(defun consult--default-candidate ()
+(defun consult--default-completion-candidate ()
   "Return current candidate from default completion system."
   (when (and (not icomplete-mode) (eq completing-read-function #'completing-read-default))
     (let ((cand (minibuffer-contents-no-properties)))
@@ -2203,21 +2221,18 @@ CMD is the find argument list."
                              minibuffer-completion-predicate)
         cand))))
 
-(add-hook 'consult--completion-candidate-hook #'consult--default-candidate)
-
-(defun consult--default-match ()
+(defun consult--default-completion-match ()
   "Return default matching function."
   (lambda (str cands) (completion-all-completions str cands nil (length str))))
 
-(add-hook 'consult--completion-match-hook #'consult--default-match)
+(add-hook 'consult--completion-candidate-hook #'consult--default-completion-candidate)
+(add-hook 'consult--completion-match-hook #'consult--default-completion-match)
 
 ;;;; icomplete support
 
 (defun consult--icomplete-candidate ()
   "Return current icomplete candidate."
   (and icomplete-mode (car completion-all-sorted-completions)))
-
-(add-hook 'consult--completion-candidate-hook #'consult--icomplete-candidate)
 
 (declare-function icomplete-exhibit "icomplete")
 (declare-function icomplete--field-beg "icomplete")
@@ -2243,6 +2258,7 @@ CMD is the find argument list."
               (setq completions (cdr completions)))))))
     (icomplete-exhibit)))
 
+(add-hook 'consult--completion-candidate-hook #'consult--icomplete-candidate)
 (add-hook 'consult--completion-refresh-hook #'consult--icomplete-refresh)
 
 (provide 'consult)

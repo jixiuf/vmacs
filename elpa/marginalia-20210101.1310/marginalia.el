@@ -5,8 +5,8 @@
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
 ;; Version: 0.1
-;; Package-Version: 20201230.1926
-;; Package-Commit: 3c8042845c62b565c211e11d54defa093153b715
+;; Package-Version: 20210101.1310
+;; Package-Commit: 5a644d85640a5104758d0105b9d8e02a9551f502
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/marginalia
 
@@ -526,18 +526,21 @@ Similar to `marginalia-annotate-symbol', but does not show symbol class."
                           marginalia--separator
                           (16 (:propertize mode-name face marginalia-mode)))
                         nil nil buffer))
-     ((cond
-       ;; see ibuffer-buffer-file-name
-       ((when-let (file (buffer-file-name buffer))
-          (abbreviate-file-name file)))
-       ((when-let (proc (get-buffer-process buffer))
-          (format "(%s %s)" proc (process-status proc))))
-       ((local-variable-p 'list-buffers-directory buffer)
-        (buffer-local-value 'list-buffers-directory buffer))
-       ((when-let (dir (and (local-variable-p 'dired-directory buffer)
-                            (buffer-local-value 'dired-directory buffer)))
-	  (expand-file-name (if (stringp dir) dir (car dir))
-                            (buffer-local-value 'default-directory buffer)))))
+     ((if-let (proc (get-buffer-process buffer))
+          (format "(%s %s) %s"
+                  proc (process-status proc)
+                  (abbreviate-file-name (buffer-local-value 'default-directory buffer)))
+        (abbreviate-file-name
+         (or (cond
+              ;; see ibuffer-buffer-file-name
+              ((buffer-file-name buffer))
+              ((when-let (dir (and (local-variable-p 'dired-directory buffer)
+                                   (buffer-local-value 'dired-directory buffer)))
+                 (expand-file-name (if (stringp dir) dir (car dir))
+                                   (buffer-local-value 'default-directory buffer))))
+              ((local-variable-p 'list-buffers-directory buffer)
+               (buffer-local-value 'list-buffers-directory buffer)))
+             "")))
       :truncate (/ marginalia-truncate-width 2)
       :face 'marginalia-file-name))))
 

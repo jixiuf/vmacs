@@ -51,9 +51,9 @@
 (fset 'imenu 'consult-imenu)
 (setq consult-async-default-split nil)
 (vmacs-leader "gg" #'consult-ripgrep)
-(vmacs-leader "gt" #'(lambda()(interactive) (consult-ripgrep (project-root (project-current t)))))
+(vmacs-leader "gt" #'(lambda()(interactive) (require 'magit)(consult-ripgrep (magit-toplevel))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
-(vmacs-leader "g," #'(lambda()(interactive) (consult-ripgrep (project-root (project-current t)) (thing-at-point 'symbol))))
+(vmacs-leader "g," #'(lambda()(interactive) (require 'magit)(consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))))
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
