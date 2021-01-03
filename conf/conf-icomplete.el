@@ -52,17 +52,8 @@
 (setq consult-async-default-split nil)
 (vmacs-leader "gg" #'consult-ripgrep)
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit)(consult-ripgrep (magit-toplevel))))
-(vmacs-leader "g." #'(lambda()(interactive)
-                       (setq consult-async-input-delay 0.001)
-                       (unwind-protect
-                           (consult-ripgrep nil (thing-at-point 'symbol))
-                         (setq consult-async-input-delay 0.3))))
-(vmacs-leader "g," #'(lambda()(interactive)
-                       (require 'magit)
-                       (setq consult-async-input-delay 0.001)
-                       (unwind-protect
-                           (consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))
-                         (setq consult-async-input-delay 0.3))))
+(vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
+(vmacs-leader "g," #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))))
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
