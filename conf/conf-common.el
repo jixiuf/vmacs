@@ -115,11 +115,6 @@
          ("\\.go\\'" . go-mode)
 
          ("\\.yaws$" . nxml-mode)
-         ("\\.html$"  . web-mode)
-         ("\\.htm$"   . web-mode)
-         ("\\.phtml$" . web-mode)
-         ("\\.php3$"  . web-mode)
-         ("\\.jsp$" . web-mode)
 
          ("\\.hrl$" . erlang-mode)
          ("\\.erl$" . erlang-mode)
