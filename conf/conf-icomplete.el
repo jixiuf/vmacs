@@ -20,8 +20,14 @@
 
 (when (require 'orderless nil t)
   (add-hook 'minibuffer-setup-hook #'vmacs-fido-mode-hook 99)
-  (setq orderless-component-separator " +")
-  (setq orderless-matching-styles '(orderless-regexp orderless-literal)))
+  (setq orderless-component-separator "[ /]")
+
+  (setq orderless-matching-styles '(orderless-regexp orderless-literal))
+  (defun without-if-bang (pattern _index _total)
+    (when (string-prefix-p "!" pattern)
+      `(orderless-without-literal . ,(substring pattern 1))))
+
+  (setq orderless-style-dispatchers '(without-if-bang)))
 
 
 
@@ -49,7 +55,7 @@
   )
 
 (fset 'imenu 'consult-imenu)
-(setq consult-async-default-split nil)
+(setq consult-async-default-split "#")
 (vmacs-leader "gg" #'consult-ripgrep)
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (let ((default-directory (magit-toplevel))) (consult-ripgrep))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
