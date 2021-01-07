@@ -31,6 +31,8 @@
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
+(define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)
+(define-key icomplete-minibuffer-map (kbd "C-s") #'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-r") #'icomplete-backward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-.") 'next-history-element)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
