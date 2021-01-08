@@ -65,10 +65,10 @@
 (fset 'imenu 'consult-imenu)
 (setq consult-async-default-split "#")
 (vmacs-leader "gg" #'consult-ripgrep)
-(vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (let ((default-directory (magit-toplevel))) (consult-ripgrep))))
+(vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (concat (thing-at-point 'symbol) consult-async-default-split))))
 (vmacs-leader "g," #'(lambda()(interactive) (require 'magit)
-                       (let ((default-directory (magit-toplevel))) (consult-ripgrep nil (concat (thing-at-point 'symbol) consult-async-default-split)))))
+                       (consult-ripgrep (magit-toplevel) (concat (thing-at-point 'symbol) consult-async-default-split))))
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
