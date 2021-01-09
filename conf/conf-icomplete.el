@@ -67,6 +67,7 @@
 (fset 'imenu 'consult-imenu)
 (setq consult-async-default-split "#")
 (vmacs-leader "gg" #'consult-ripgrep)
+(vmacs-leader "gG" #'consult-grep)
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (concat (thing-at-point 'symbol) consult-async-default-split))))
 (vmacs-leader "g," #'(lambda()(interactive) (require 'magit)
