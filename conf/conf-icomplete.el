@@ -1,4 +1,4 @@
-;;; Code:
+ ;;; Code:
 (require 'icomplete)
 
 ;; (setq icomplete-max-delay-chars 3)
@@ -42,17 +42,19 @@
 
 (when (require 'embark nil t)
   (when (require 'marginalia nil t) (marginalia-mode 1))
-  (setq embark-occur-initial-view-alist '((t . list)))
+  (setq embark-collect-initial-view-alist '((t . list)))
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
-  (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-occur)
+  (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embar-collect)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (define-key icomplete-minibuffer-map (kbd "C-c C-e") 'embark-live-occur)
-  (define-key embark-occur-mode-map (kbd "h") nil)
-  (define-key embark-occur-mode-map (kbd "v") nil)
-  (define-key embark-occur-mode-map (kbd "e") nil)
+  (define-key embark-collect-mode-map (kbd "h") nil)
+  (define-key embark-collect-mode-map (kbd "v") nil)
+  (define-key embark-collect-mode-map (kbd "e") nil)
   (global-set-key (kbd "C-o") 'embark-act)
   )
+
+
 (defun vmacs-minibuffer-space ()
   (interactive)
   (if (and (string-prefix-p consult-async-default-split (minibuffer-contents))
