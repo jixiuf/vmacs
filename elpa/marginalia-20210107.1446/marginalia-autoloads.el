@@ -1,4 +1,4 @@
-;;; marginalia-autoloads.el --- automatically extracted autoloads
+;;; marginalia-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 

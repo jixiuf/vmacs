@@ -7,8 +7,8 @@
 ;; Maintainer: Jason R. Blevins <jblevins@xbeta.org>
 ;; Created: May 24, 2007
 ;; Version: 2.5-dev
-;; Package-Version: 20201220.253
-;; Package-Commit: e250a8465f805644d372c264eb0572f569d7f2a1
+;; Package-Version: 20210107.101
+;; Package-Commit: 6d64f9e96203b1e76e3f0adfd2f545b5b02f5ffb
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: Markdown, GitHub Flavored Markdown, itex
 ;; URL: https://jblevins.org/projects/markdown-mode/
@@ -118,7 +118,8 @@ arguments."
   :type '(choice file function (const :tag "None" nil)))
 
 (defcustom markdown-open-image-command nil
-  "Command used for opening image files directly at `markdown-follow-link-at-point'."
+  "Command used for opening image files directly.
+This is used at `markdown-follow-link-at-point'."
   :group 'markdown
   :type '(choice file function (const :tag "None" nil)))
 
@@ -2142,7 +2143,7 @@ Depending on your font, some reasonable choices are:
 
 (defconst markdown-footnote-chars
   "[[:alnum:]-]"
-  "Regular expression matching any character that is allowed in a footnote identifier.")
+  "Regular expression matching any character for a footnote identifier.")
 
 (defconst markdown-regex-footnote-definition
   (concat "^ \\{0,3\\}\\[\\(\\^" markdown-footnote-chars "*?\\)\\]:\\(?:[ \t]+\\|$\\)")
@@ -4303,6 +4304,11 @@ opening code fence and an info string."
   :safe #'natnump
   :package-version '(markdown-mode . "2.3"))
 
+(defcustom markdown-code-block-braces nil
+  "When non-nil, automatically insert braces for GFM code blocks."
+  :group 'markdown
+  :type 'boolean)
+
 (defun markdown-insert-gfm-code-block (&optional lang edit)
   "Insert GFM code block for language LANG.
 If LANG is nil, the language will be queried from user.  If a
@@ -4323,45 +4329,49 @@ code block in an indirect buffer after insertion."
              (quit "")))
          current-prefix-arg))
   (unless (string= lang "") (markdown-gfm-add-used-language lang))
-  (when (> (length lang) 0)
+  (when (and (> (length lang) 0)
+             (not markdown-code-block-braces))
     (setq lang (concat (make-string markdown-spaces-after-code-fence ?\s)
                        lang)))
-  (if (use-region-p)
-      (let* ((b (region-beginning)) (e (region-end)) end
-             (indent (progn (goto-char b) (current-indentation))))
-        (goto-char e)
-        ;; if we're on a blank line, don't newline, otherwise the ```
-        ;; should go on its own line
-        (unless (looking-back "\n" nil)
-          (newline))
+  (let ((gfm-open-brace (if markdown-code-block-braces "{" ""))
+        (gfm-close-brace (if markdown-code-block-braces "}" "")))
+    (if (use-region-p)
+        (let* ((b (region-beginning)) (e (region-end)) end
+               (indent (progn (goto-char b) (current-indentation))))
+          (goto-char e)
+          ;; if we're on a blank line, don't newline, otherwise the ```
+          ;; should go on its own line
+          (unless (looking-back "\n" nil)
+            (newline))
+          (indent-to indent)
+          (insert "```")
+          (markdown-ensure-blank-line-after)
+          (setq end (point))
+          (goto-char b)
+          ;; if we're on a blank line, insert the quotes here, otherwise
+          ;; add a new line first
+          (unless (looking-at-p "\n")
+            (newline)
+            (forward-line -1))
+          (markdown-ensure-blank-line-before)
+          (indent-to indent)
+          (insert "```" gfm-open-brace lang gfm-close-brace)
+          (markdown-syntax-propertize-fenced-block-constructs (point-at-bol) end))
+      (let ((indent (current-indentation))
+            start-bol)
+        (delete-horizontal-space :backward-only)
+        (markdown-ensure-blank-line-before)
+        (indent-to indent)
+        (setq start-bol (point-at-bol))
+        (insert "```" gfm-open-brace lang gfm-close-brace "\n")
+        (indent-to indent)
+        (unless edit (insert ?\n))
         (indent-to indent)
         (insert "```")
         (markdown-ensure-blank-line-after)
-        (setq end (point))
-        (goto-char b)
-        ;; if we're on a blank line, insert the quotes here, otherwise
-        ;; add a new line first
-        (unless (looking-at-p "\n")
-          (newline)
-          (forward-line -1))
-        (markdown-ensure-blank-line-before)
-        (indent-to indent)
-        (insert "```" lang)
-        (markdown-syntax-propertize-fenced-block-constructs (point-at-bol) end))
-    (let ((indent (current-indentation)) start-bol)
-      (delete-horizontal-space :backward-only)
-      (markdown-ensure-blank-line-before)
-      (indent-to indent)
-      (setq start-bol (point-at-bol))
-      (insert "```" lang "\n")
-      (indent-to indent)
-      (unless edit (insert ?\n))
-      (indent-to indent)
-      (insert "```")
-      (markdown-ensure-blank-line-after)
-      (markdown-syntax-propertize-fenced-block-constructs start-bol (point)))
-    (end-of-line 0)
-    (when edit (markdown-edit-code-block))))
+        (markdown-syntax-propertize-fenced-block-constructs start-bol (point)))
+      (end-of-line 0)
+      (when edit (markdown-edit-code-block)))))
 
 (defun markdown-code-block-lang (&optional pos-prop)
   "Return the language name for a GFM or tilde fenced code block.
@@ -8431,13 +8441,17 @@ or \\[markdown-toggle-inline-images]."
                                   unhex_file
                                 (concat default-directory unhex_file)))
                      (image
-                      (if (and markdown-max-image-size
+                      (cond ((and markdown-max-image-size
                                (image-type-available-p 'imagemagick))
-                          (create-image
-                           abspath 'imagemagick nil
-                           :max-width (car markdown-max-image-size)
-                           :max-height (cdr markdown-max-image-size))
-                        (create-image abspath))))
+                             (create-image
+                              abspath 'imagemagick nil
+                              :max-width (car markdown-max-image-size)
+                              :max-height (cdr markdown-max-image-size)))
+                            (markdown-max-image-size
+                             (create-image abspath nil nil
+                                           :max-width (car markdown-max-image-size)
+                                           :max-height (cdr markdown-max-image-size)))
+                            (t (create-image abspath)))))
                 (when image
                   (let ((ov (make-overlay start end)))
                     (overlay-put ov 'display image)

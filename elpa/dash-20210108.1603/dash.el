@@ -50,105 +50,132 @@
   `(setq ,list (cdr ,list)))
 
 (defmacro --each (list &rest body)
-  "Anaphoric form of `-each'."
-  (declare (debug (form body))
-           (indent 1))
-  (let ((l (make-symbol "list")))
+  "Evaluate BODY for each element of LIST and return nil.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating BODY.
+This is the anaphoric counterpart to `-each'."
+  (declare (debug (form body)) (indent 1))
+  (let ((l (make-symbol "list"))
+        (i (make-symbol "i")))
     `(let ((,l ,list)
-           (it-index 0))
+           (,i 0)
+           it it-index)
+       (ignore it it-index)
        (while ,l
-         (let ((it (car ,l)))
-           ,@body)
-         (setq it-index (1+ it-index))
-         (!cdr ,l)))))
+         (setq it (pop ,l) it-index ,i ,i (1+ ,i))
+         ,@body))))
 
 (defun -each (list fn)
-  "Call FN with every item in LIST. Return nil, used for side-effects only."
+  "Call FN on each element of LIST.
+Return nil; this function is intended for side effects.
+Its anaphoric counterpart is `--each'.  For access to the current
+element's index in LIST, see `-each-indexed'."
   (declare (indent 1))
-  (--each list (funcall fn it)))
+  (ignore (mapc fn list)))
 
 (defalias '--each-indexed '--each)
 
 (defun -each-indexed (list fn)
-  "Call (FN index item) for each item in LIST.
-
-In the anaphoric form `--each-indexed', the index is exposed as symbol `it-index'.
-
+  "Call FN on each index and element of LIST.
+For each ITEM at INDEX in LIST, call (funcall FN INDEX ITEM).
+Return nil; this function is intended for side effects.
 See also: `-map-indexed'."
   (declare (indent 1))
   (--each list (funcall fn it-index it)))
 
 (defmacro --each-while (list pred &rest body)
-  "Anaphoric form of `-each-while'."
-  (declare (debug (form form body))
-           (indent 2))
-  (let ((l (make-symbol "list")))
+  "Evaluate BODY for each item in LIST, while PRED evaluates to non-nil.
+Each element of LIST in turn is bound to `it' and its index
+within LIST to `it-index' before evaluating PRED or BODY.  Once
+an element is reached for which PRED evaluates to nil, no further
+BODY is evaluated.  The return value is always nil.
+This is the anaphoric counterpart to `-each-while'."
+  (declare (debug (form form body)) (indent 2))
+  (let ((l (make-symbol "list"))
+        (i (make-symbol "i"))
+        (elt (make-symbol "elt")))
     `(let ((,l ,list)
-           (it-index 0)
-           it)
-       (ignore it)
-       (while (when ,l
-                (setq it (pop ,l))
-                ,pred)
-         ,@body
-         (setq it-index (1+ it-index))))))
+           (,i 0)
+           ,elt it it-index)
+       (ignore it it-index)
+       (while (and ,l (setq ,elt (pop ,l) it ,elt it-index ,i) ,pred)
+         (setq it ,elt it-index ,i ,i (1+ ,i))
+         ,@body))))
 
 (defun -each-while (list pred fn)
-  "Call FN with every item in LIST while (PRED item) is non-nil.
-Return nil, used for side-effects only."
+  "Call FN on each ITEM in LIST, while (PRED ITEM) is non-nil.
+Once an ITEM is reached for which PRED returns nil, FN is no
+longer called.  Return nil; this function is intended for side
+effects.
+Its anaphoric counterpart is `--each-while'."
   (declare (indent 2))
   (--each-while list (funcall pred it) (funcall fn it)))
 
 (defmacro --each-r (list &rest body)
-  "Anaphoric form of `-each-r'."
-  (declare (debug (form body))
-           (indent 1))
-  (let ((v (make-symbol "vector")))
-    ;; Implementation note: building vector is considerably faster
+  "Evaluate BODY for each element of LIST in reversed order.
+Each element of LIST in turn, starting at its end, is bound to
+`it' and its index within LIST to `it-index' before evaluating
+BODY.  The return value is always nil.
+This is the anaphoric counterpart to `-each-r'."
+  (declare (debug (form body)) (indent 1))
+  (let ((v (make-symbol "vector"))
+        (i (make-symbol "i")))
+    ;; Implementation note: building a vector is considerably faster
     ;; than building a reversed list (vector takes less memory, so
-    ;; there is less GC), plus length comes naturally.  In-place
-    ;; 'nreverse' would be faster still, but BODY would be able to see
-    ;; that, even if modification was reversed before we return.
+    ;; there is less GC), plus `length' comes naturally.  In-place
+    ;; `nreverse' would be faster still, but BODY would be able to see
+    ;; that, even if the modification was undone before we return.
     `(let* ((,v (vconcat ,list))
-            (it-index (length ,v))
-            it)
-       (while (> it-index 0)
-         (setq it-index (1- it-index))
-         (setq it (aref ,v it-index))
+            (,i (length ,v))
+            it it-index)
+       (ignore it it-index)
+       (while (> ,i 0)
+         (setq ,i (1- ,i) it-index ,i it (aref ,v ,i))
          ,@body))))
 
 (defun -each-r (list fn)
-  "Call FN with every item in LIST in reversed order.
- Return nil, used for side-effects only."
+  "Call FN on each element of LIST in reversed order.
+Return nil; this function is intended for side effects.
+Its anaphoric counterpart is `--each-r'."
   (--each-r list (funcall fn it)))
 
 (defmacro --each-r-while (list pred &rest body)
-  "Anaphoric form of `-each-r-while'."
-  (declare (debug (form form body))
-           (indent 2))
-  (let ((v (make-symbol "vector")))
+  "Eval BODY for each item in reversed LIST, while PRED evals to non-nil.
+Each element of LIST in turn, starting at its end, is bound to
+`it' and its index within LIST to `it-index' before evaluating
+PRED or BODY.  Once an element is reached for which PRED
+evaluates to nil, no further BODY is evaluated.  The return value
+is always nil.
+This is the anaphoric counterpart to `-each-r-while'."
+  (declare (debug (form form body)) (indent 2))
+  (let ((v (make-symbol "vector"))
+        (i (make-symbol "i"))
+        (elt (make-symbol "elt")))
     `(let* ((,v (vconcat ,list))
-            (it-index (length ,v))
-            it)
-       (while (> it-index 0)
-         (setq it-index (1- it-index))
-         (setq it (aref ,v it-index))
-         (if (not ,pred)
-             (setq it-index -1)
-           ,@body)))))
+            (,i (length ,v))
+            ,elt it it-index)
+       (ignore it it-index)
+       (while (when (> ,i 0)
+                (setq ,i (1- ,i) it-index ,i)
+                (setq ,elt (aref ,v ,i) it ,elt)
+                ,pred)
+         (setq it-index ,i it ,elt)
+         ,@body))))
 
 (defun -each-r-while (list pred fn)
-  "Call FN with every item in reversed LIST while (PRED item) is non-nil.
-Return nil, used for side-effects only."
+  "Call FN on each ITEM in reversed LIST, while (PRED ITEM) is non-nil.
+Once an ITEM is reached for which PRED returns nil, FN is no
+longer called.  Return nil; this function is intended for side
+effects.
+Its anaphoric counterpart is `--each-r-while'."
   (--each-r-while list (funcall pred it) (funcall fn it)))
 
 (defmacro --dotimes (num &rest body)
-  "Evaluate BODY NUM times, presumably for side-effects.
+  "Evaluate BODY NUM times, presumably for side effects.
 BODY is evaluated with the local variable `it' temporarily bound
 to successive integers running from 0, inclusive, to NUM,
 exclusive.  BODY is not evaluated if NUM is less than 1.
-
-This is the anaphoric version of `-dotimes'."
+This is the anaphoric counterpart to `-dotimes'."
   (declare (debug (form body)) (indent 1))
   (let ((n (make-symbol "num"))
         (i (make-symbol "i")))
@@ -161,138 +188,239 @@ This is the anaphoric version of `-dotimes'."
          ,@body))))
 
 (defun -dotimes (num fn)
-  "Call FN NUM times, presumably for side-effects.
+  "Call FN NUM times, presumably for side effects.
 FN is called with a single argument on successive integers
 running from 0, inclusive, to NUM, exclusive.  FN is not called
-if NUM is less than 1."
+if NUM is less than 1.
+This function's anaphoric counterpart is `--dotimes'."
   (declare (indent 1))
   (--dotimes num (funcall fn it)))
 
 (defun -map (fn list)
-  "Return a new list consisting of the result of applying FN to the items in LIST."
+  "Apply FN to each item in LIST and return the list of results.
+This function's anaphoric counterpart is `--map'."
   (mapcar fn list))
 
 (defmacro --map (form list)
-  "Anaphoric form of `-map'."
+  "Eval FORM for each item in LIST and return the list of results.
+Each element of LIST in turn is bound to `it' before evaluating
+BODY.
+This is the anaphoric counterpart to `-map'."
   (declare (debug (form form)))
-  `(mapcar (lambda (it) ,form) ,list))
+  (let ((l (make-symbol "list"))
+        (r (make-symbol "res")))
+    `(let ((,l ,list) ,r it)
+       (ignore it)
+       (while ,l
+         (setq it (pop ,l))
+         (push ,form ,r))
+       (nreverse ,r))))
 
-(defmacro --reduce-from (form initial-value list)
-  "Anaphoric form of `-reduce-from'."
+(defmacro --reduce-from (form init list)
+  "Accumulate a value by evaluating FORM across LIST.
+This macro is like `--each' (which see), but it additionally
+provides an accumulator variable `acc' which it successively
+binds to the result of evaluating FORM for the current LIST
+element before processing the next element.  For the first
+element, `acc' is initialized with the result of evaluating INIT.
+The return value is the resulting value of `acc'.  If LIST is
+empty, FORM is not evaluated, and the return value is the result
+of INIT.
+This is the anaphoric counterpart to `-reduce-from'."
   (declare (debug (form form form)))
-  `(let ((acc ,initial-value))
+  `(let ((acc ,init))
      (--each ,list (setq acc ,form))
      acc))
 
-(defun -reduce-from (fn initial-value list)
-  "Return the result of applying FN to INITIAL-VALUE and the
-first item in LIST, then applying FN to that result and the 2nd
-item, etc. If LIST contains no items, return INITIAL-VALUE and
-do not call FN.
+(defun -reduce-from (fn init list)
+  "Reduce the function FN across LIST, starting with INIT.
+Return the result of applying FN to INIT and the first element of
+LIST, then applying FN to that result and the second element,
+etc.  If LIST is empty, return INIT without calling FN.
 
-In the anaphoric form `--reduce-from', the accumulated value is
-exposed as symbol `acc'.
-
-See also: `-reduce', `-reduce-r'"
-  (--reduce-from (funcall fn acc it) initial-value list))
+This function's anaphoric counterpart is `--reduce-from'.
+For other folds, see also `-reduce' and `-reduce-r'."
+  (--reduce-from (funcall fn acc it) init list))
 
 (defmacro --reduce (form list)
-  "Anaphoric form of `-reduce'."
+  "Accumulate a value by evaluating FORM across LIST.
+This macro is like `--reduce-from' (which see), except the first
+element of LIST is taken as INIT.  Thus if LIST contains a single
+item, it is returned without evaluating FORM.  If LIST is empty,
+FORM is evaluated with `it' and `acc' bound to nil.
+This is the anaphoric counterpart to `-reduce'."
   (declare (debug (form form)))
   (let ((lv (make-symbol "list-value")))
     `(let ((,lv ,list))
        (if ,lv
            (--reduce-from ,form (car ,lv) (cdr ,lv))
-         (let (acc it) ,form)))))
+         (let (acc it)
+           (ignore acc it)
+           ,form)))))
 
 (defun -reduce (fn list)
-  "Return the result of applying FN to the first 2 items in LIST,
-then applying FN to that result and the 3rd item, etc. If LIST
-contains no items, return the result of calling FN with no
-arguments. If LIST contains a single item, return that item
-and do not call FN.
+  "Reduce the function FN across LIST.
+Return the result of applying FN to the first two elements of
+LIST, then applying FN to that result and the third element, etc.
+If LIST contains a single element, return it without calling FN.
+If LIST is empty, return the result of calling FN with no
+arguments.
 
-In the anaphoric form `--reduce', the accumulated value is
-exposed as symbol `acc'.
-
-See also: `-reduce-from', `-reduce-r'"
+This function's anaphoric counterpart is `--reduce'.
+For other folds, see also `-reduce-from' and `-reduce-r'."
   (if list
       (-reduce-from fn (car list) (cdr list))
     (funcall fn)))
 
-(defmacro --reduce-r-from (form initial-value list)
-  "Anaphoric version of `-reduce-r-from'."
+(defmacro --reduce-r-from (form init list)
+  "Accumulate a value by evaluating FORM across LIST in reverse.
+This macro is like `--reduce-from', except it starts from the end
+of LIST.
+This is the anaphoric counterpart to `-reduce-r-from'."
   (declare (debug (form form form)))
-  `(--reduce-from ,form ,initial-value (reverse ,list)))
+  `(let ((acc ,init))
+     (--each-r ,list (setq acc ,form))
+     acc))
 
-(defun -reduce-r-from (fn initial-value list)
-  "Replace conses with FN, nil with INITIAL-VALUE and evaluate
-the resulting expression. If LIST is empty, INITIAL-VALUE is
-returned and FN is not called.
+(defun -reduce-r-from (fn init list)
+  "Reduce the function FN across LIST in reverse, starting with INIT.
+Return the result of applying FN to the last element of LIST and
+INIT, then applying FN to the second-to-last element and the
+previous result of FN, etc.  That is, the first argument of FN is
+the current element, and its second argument the accumulated
+value.  If LIST is empty, return INIT without calling FN.
 
-Note: this function works the same as `-reduce-from' but the
-operation associates from right instead of from left.
+This function is like `-reduce-from' but the operation associates
+from the right rather than left.  In other words, it starts from
+the end of LIST and flips the arguments to FN.  Conceptually, it
+is like replacing the conses in LIST with applications of FN, and
+its last link with INIT, and evaluating the resulting expression.
 
-See also: `-reduce-r', `-reduce'"
-  (--reduce-r-from (funcall fn it acc) initial-value list))
+This function's anaphoric counterpart is `--reduce-r-from'.
+For other folds, see also `-reduce-r' and `-reduce'."
+  (--reduce-r-from (funcall fn it acc) init list))
 
 (defmacro --reduce-r (form list)
-  "Anaphoric version of `-reduce-r'."
+  "Accumulate a value by evaluating FORM across LIST in reverse order.
+This macro is like `--reduce', except it starts from the end of
+LIST.
+This is the anaphoric counterpart to `-reduce-r'."
   (declare (debug (form form)))
   `(--reduce ,form (reverse ,list)))
 
 (defun -reduce-r (fn list)
-  "Replace conses with FN and evaluate the resulting expression.
-The final nil is ignored. If LIST contains no items, return the
-result of calling FN with no arguments. If LIST contains a single
-item, return that item and do not call FN.
+  "Reduce the function FN across LIST in reverse.
+Return the result of applying FN to the last two elements of
+LIST, then applying FN to the third-to-last element and the
+previous result of FN, etc.  That is, the first argument of FN is
+the current element, and its second argument the accumulated
+value.  If LIST contains a single element, return it without
+calling FN.  If LIST is empty, return the result of calling FN
+with no arguments.
 
-The first argument of FN is the new item, the second is the
-accumulated value.
+This function is like `-reduce' but the operation associates from
+the right rather than left.  In other words, it starts from the
+end of LIST and flips the arguments to FN.  Conceptually, it is
+like replacing the conses in LIST with applications of FN,
+ignoring its last link, and evaluating the resulting expression.
 
-Note: this function works the same as `-reduce' but the operation
-associates from right instead of from left.
-
-See also: `-reduce-r-from', `-reduce'"
+This function's anaphoric counterpart is `--reduce-r'.
+For other folds, see also `-reduce-r-from' and `-reduce'."
   (if list
       (--reduce-r (funcall fn it acc) list)
     (funcall fn)))
 
+(defmacro --reductions-from (form init list)
+  "Return a list of FORM's intermediate reductions across LIST.
+That is, a list of the intermediate values of the accumulator
+when `--reduce-from' (which see) is called with the same
+arguments.
+This is the anaphoric counterpart to `-reductions-from'."
+  (declare (debug (form form form)))
+  `(nreverse
+    (--reduce-from (cons (let ((acc (car acc))) (ignore acc) ,form) acc)
+                   (list ,init)
+                   ,list)))
+
 (defun -reductions-from (fn init list)
-  "Return a list of the intermediate values of the reduction.
+  "Return a list of FN's intermediate reductions across LIST.
+That is, a list of the intermediate values of the accumulator
+when `-reduce-from' (which see) is called with the same
+arguments.
+This function's anaphoric counterpart is `--reductions-from'.
+For other folds, see also `-reductions' and `-reductions-r'."
+  (--reductions-from (funcall fn acc it) init list))
 
-See `-reduce-from' for explanation of the arguments.
-
-See also: `-reductions', `-reductions-r', `-reduce-r'"
-  (nreverse (--reduce-from (cons (funcall fn (car acc) it) acc) (list init) list)))
+(defmacro --reductions (form list)
+  "Return a list of FORM's intermediate reductions across LIST.
+That is, a list of the intermediate values of the accumulator
+when `--reduce' (which see) is called with the same arguments.
+This is the anaphoric counterpart to `-reductions'."
+  (declare (debug (form form)))
+  (let ((lv (make-symbol "list-value")))
+    `(let ((,lv ,list))
+       (if ,lv
+           (--reductions-from ,form (car ,lv) (cdr ,lv))
+         (let (acc it)
+           (ignore acc it)
+           (list ,form))))))
 
 (defun -reductions (fn list)
-  "Return a list of the intermediate values of the reduction.
+  "Return a list of FN's intermediate reductions across LIST.
+That is, a list of the intermediate values of the accumulator
+when `-reduce' (which see) is called with the same arguments.
+This function's anaphoric counterpart is `--reductions'.
+For other folds, see also `-reductions' and `-reductions-r'."
+  (if list
+      (--reductions-from (funcall fn acc it) (car list) (cdr list))
+    (list (funcall fn))))
 
-See `-reduce' for explanation of the arguments.
-
-See also: `-reductions-from', `-reductions-r', `-reduce-r'"
-  (and list (-reductions-from fn (car list) (cdr list))))
+(defmacro --reductions-r-from (form init list)
+  "Return a list of FORM's intermediate reductions across reversed LIST.
+That is, a list of the intermediate values of the accumulator
+when `--reduce-r-from' (which see) is called with the same
+arguments.
+This is the anaphoric counterpart to `-reductions-r-from'."
+  (declare (debug (form form form)))
+  `(--reduce-r-from (cons (let ((acc (car acc))) (ignore acc) ,form) acc)
+                    (list ,init)
+                    ,list))
 
 (defun -reductions-r-from (fn init list)
-  "Return a list of the intermediate values of the reduction.
+  "Return a list of FN's intermediate reductions across reversed LIST.
+That is, a list of the intermediate values of the accumulator
+when `-reduce-r-from' (which see) is called with the same
+arguments.
+This function's anaphoric counterpart is `--reductions-r-from'.
+For other folds, see also `-reductions' and `-reductions-r'."
+  (--reductions-r-from (funcall fn it acc) init list))
 
-See `-reduce-r-from' for explanation of the arguments.
-
-See also: `-reductions-r', `-reductions', `-reduce'"
-  (--reduce-r-from (cons (funcall fn it (car acc)) acc) (list init) list))
+(defmacro --reductions-r (form list)
+  "Return a list of FORM's intermediate reductions across reversed LIST.
+That is, a list of the intermediate values of the accumulator
+when `--reduce-re' (which see) is called with the same arguments.
+This is the anaphoric counterpart to `-reductions-r'."
+  (declare (debug (form list)))
+  (let ((lv (make-symbol "list-value")))
+    `(let ((,lv (reverse ,list)))
+       (if ,lv
+           (--reduce-from (cons (let ((acc (car acc))) (ignore acc) ,form) acc)
+                          (list (car ,lv))
+                          (cdr ,lv))
+         (let (acc it)
+           (ignore acc it)
+           (list ,form))))))
 
 (defun -reductions-r (fn list)
-  "Return a list of the intermediate values of the reduction.
-
-See `-reduce-r' for explanation of the arguments.
-
-See also: `-reductions-r-from', `-reductions', `-reduce'"
-  (when list
-    (let ((rev (reverse list)))
-      (--reduce-from (cons (funcall fn it (car acc)) acc)
-                     (list (car rev))
-                     (cdr rev)))))
+  "Return a list of FN's intermediate reductions across reversed LIST.
+That is, a list of the intermediate values of the accumulator
+when `-reduce-r' (which see) is called with the same arguments.
+This function's anaphoric counterpart is `--reductions-r'.
+For other folds, see also `-reductions-r-from' and
+`-reductions'."
+  (if list
+      (--reductions-r (funcall fn it acc) list)
+    (list (funcall fn))))
 
 (defmacro --filter (form list)
   "Anaphoric form of `-filter'.
@@ -587,12 +715,17 @@ See also: `-splice', `-insert-at'"
 
 (defun -cons* (&rest args)
   "Make a new list from the elements of ARGS.
-
-The last 2 members of ARGS are used as the final cons of the
-result so if the final member of ARGS is not a list the result is
-a dotted list."
+The last 2 elements of ARGS are used as the final cons of the
+result, so if the final element of ARGS is not a list, the result
+is a dotted list.  With no ARGS, return nil."
   (declare (pure t) (side-effect-free t))
-  (-reduce-r 'cons args))
+  (let* ((len (length args))
+         (tail (nthcdr (- len 2) args))
+         (last (cdr tail)))
+    (if (null last)
+        (car args)
+      (setcdr tail (car last))
+      args)))
 
 (defun -snoc (list elem &rest elements)
   "Append ELEM to the end of the list.
@@ -2476,13 +2609,11 @@ if the first element should sort before the second."
   `(-sort (lambda (it other) ,form) ,list))
 
 (defun -list (&rest args)
-  "Return a list with ARGS.
-
-If first item of ARGS is already a list, simply return ARGS.  If
-not, return a list with ARGS as elements."
+  "Return a list based on ARGS.
+If the first item of ARGS is already a list, simply return it.
+Otherwise, return a list with ARGS as elements."
   (declare (pure t) (side-effect-free t))
-  (let ((arg (car args)))
-    (if (listp arg) arg args)))
+  (if (listp (car args)) (car args) args))
 
 (defun -repeat (n x)
   "Return a new list of length N with each element being X.
@@ -2814,6 +2945,10 @@ structure such as plist or alist."
                       "--reduce-from"
                       "--reduce-r"
                       "--reduce-r-from"
+                      "--reductions"
+                      "--reductions-from"
+                      "--reductions-r"
+                      "--reductions-r-from"
                       "--remove"
                       "--remove-first"
                       "--remove-last"

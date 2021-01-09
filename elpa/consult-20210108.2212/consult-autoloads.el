@@ -1,4 +1,4 @@
-;;; consult-autoloads.el --- automatically extracted autoloads
+;;; consult-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -8,29 +8,6 @@
 
 ;;;### (autoloads nil "consult" "consult.el" (0 0 0 0))
 ;;; Generated autoloads from consult.el
-
-(defvar consult-preview-mode nil "\
-Non-nil if Consult-Preview mode is enabled.
-See the `consult-preview-mode' command
-for a description of this minor mode.")
-
-(custom-autoload 'consult-preview-mode "consult" nil)
-
-(autoload 'consult-preview-mode "consult" "\
-Enable preview for consult commands.
-
-If called interactively, toggle `Consult-Preview mode'.  If the
-prefix argument is positive, enable the mode, and if it is zero
-or negative, disable the mode.
-
-If called from Lisp, toggle the mode if ARG is `toggle'.  Enable
-the mode if ARG is nil, omitted, or is a positive number.
-Disable the mode if ARG is a negative number.
-
-The mode's hook is called both when the mode is enabled and when
-it is disabled.
-
-\(fn &optional ARG)" t nil)
 
 (autoload 'consult-multi-occur "consult" "\
 Improved version of `multi-occur' based on `completing-read-multiple'.
@@ -127,7 +104,9 @@ Use register REG and either jump to location or insert the stored text.
 \(fn REG)" t nil)
 
 (autoload 'consult-bookmark "consult" "\
-If bookmark NAME exists, open it, otherwise set bookmark under the given NAME.
+If bookmark NAME exists, open it, otherwise create a new bookmark with NAME.
+
+The command supports preview of file bookmarks and narrowing.
 
 \(fn NAME)" t nil)
 
@@ -210,12 +189,14 @@ Search for regexp with rg in DIR with INITIAL input.
 \(fn &optional DIR INITIAL)" t nil)
 
 (autoload 'consult-find "consult" "\
-Search for regexp with find in DIR.
+Search for regexp with find in DIR with INITIAL input.
 
-\(fn &optional DIR)" t nil)
+\(fn &optional DIR INITIAL)" t nil)
 
 (autoload 'consult-locate "consult" "\
-Search for regexp with locate." t nil)
+Search for regexp with locate with INITIAL input.
+
+\(fn &optional INITIAL)" t nil)
 
 (register-definition-prefixes "consult" '("consult-"))
 

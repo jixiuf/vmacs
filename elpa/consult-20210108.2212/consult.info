@@ -18,6 +18,7 @@ consult.el - Consulting completing-read
 * Available commands::
 * Special features::
 * Installation::
+* Related packages::
 * Acknowledgements::
 
 — The Detailed Node Listing —
@@ -43,7 +44,7 @@ Installation
 
 * Example configuration::
 * Customizable variables::
-* Related packages::
+* Configuration of individual commands::
 
 
 
@@ -52,20 +53,23 @@ File: consult.info,  Node: Introduction,  Next: Available commands,  Prev: Top, 
 1 Introduction
 **************
 
-This package provides various commands based on the Emacs completion
-function ‘completing-read’, in particular a more advanced buffer
-switching command ‘consult-buffer’ which allows to select from buffers,
-recent files and more.  Furthermore various search commands are
-provided, like ‘consult-grep’ and ‘consult-line’, which resembles Swiper
-(https://github.com/abo-abo/swiper#swiper).
+This package provides various handy commands based on the Emacs
+completion function ‘completing-read’, which allows to quickly select
+from a list of candidates.  Consult offers in particular a more advanced
+buffer switching command ‘consult-buffer’ which allows to select from
+buffers, recent files and more.  Various search commands are provided,
+like an asynchronous ‘consult-grep’, and ‘consult-line’, which resembles
+Swiper (https://github.com/abo-abo/swiper#swiper) or Helm-Swoop
+(https://github.com/emacsorphanage/helm-swoop).  Please take a look at
+the *note full list of commands: Available commands.!
 
-   The commands are compatible with completion systems based on the
-standard Emacs ‘completing-read’ API, notably the default completion
+   All Consult commands are compatible with completion systems based on
+the standard Emacs ‘completing-read’ API, notably the default completion
 system, Icomplete
 (https://www.gnu.org/software/emacs/manual/html_node/emacs/Icomplete.html),
-Selectrum (https://github.com/raxod502/selectrum) and Embark’s
-live-occur (https://github.com/oantolin/embark/).  If Icomplete is used,
-it is recommended to install Icomplete-vertical
+Selectrum (https://github.com/raxod502/selectrum) and Embark
+(https://github.com/oantolin/embark/).  If Icomplete is used, it is
+recommended to install Icomplete-vertical
 (https://github.com/oantolin/icomplete-vertical).  The completion system
 specifics in this package are kept to a minimum.
 
@@ -73,10 +77,13 @@ specifics in this package are kept to a minimum.
 Embark (https://github.com/oantolin/embark/) packages, which can be
 combined with Consult.  The ‘marginalia-mode’ enriches the completion
 display with annotations.  The annotations show for example
-documentation strings or file information.  Embark provides local
-actions (like a context menu), which can be executed while selecting a
-candidate in the minibuffer.  For example, when selecting a file, an
-action to delete the file is offered.
+documentation strings or file information.  The versatile Embark
+packages provides local actions, comparable to a context menu, which can
+be executed while selecting a candidate in the minibuffer or in other
+contexts.  For example, when selecting from a list of files, an action
+to delete the file is offered.  Embark offers more than local actions
+and can also be used as a completion system through its live-updating
+candidate collect buffer.
 
    _Note_: If you use Ivy (https://github.com/abo-abo/swiper#ivy) or
 Helm (https://github.com/emacs-helm/helm), you probably don’t need
@@ -89,12 +96,14 @@ File: consult.info,  Node: Available commands,  Next: Special features,  Prev: I
 2 Available commands
 ********************
 
-Most provided commands follow the naming scheme ‘consult-<thing>’.
+Most provided commands follow the meaningful naming scheme
+‘consult-<thing>’.
 
-   *Tip:* If you have Marginalia installed and heavy annotators enabled,
-type ‘M-x ^consult’ to see all Consult commands with their abbreviated
-description!  Alternatively, type ‘C-h a ^consult’ to get an overview of
-all Consult variables and functions with their descriptions.
+   *Tip:* If you have Marginalia (https://github.com/minad/marginalia)
+installed and heavy annotators enabled, type ‘M-x ^consult’ to see all
+Consult commands with their abbreviated description!  Alternatively,
+type ‘C-h a ^consult’ to get an overview of all Consult variables and
+functions with their descriptions.
 
 * Menu:
 
@@ -125,13 +134,15 @@ File: consult.info,  Node: Virtual Buffers,  Next: Editing,  Up: Available comma
         • f Files
         • m Bookmarks
         • p Project (only available if ‘consult-project-root-function’
-          is configured)
+          is configured as shown in the *note example configuration:
+          Example configuration.)
         • v Views (only available if ‘consult-view-*-function’ is
-          configured)
-
-   • ‘consult-bookmark’: Select or create bookmark.  You might prefer
-     the more powerful ‘consult-buffer’ instead, which includes
-     bookmarks.
+          configured as shown in the *note example configuration:
+          Example configuration.)
+   • ‘consult-bookmark’: Select or create bookmark.  You might consider
+     the powerful ‘consult-buffer’ instead as an alternative, which
+     includes bookmarks.  However ‘consult-bookmark’ supports preview of
+     bookmarks and narrowing.
    • ‘consult-recent-file’ (‘-other-window’, ‘-other-frame’): Select a
      recent files.  You might prefer the more powerful ‘consult-buffer’
      instead, which includes recent files.
@@ -194,11 +205,12 @@ File: consult.info,  Node: Search,  Next: Compilation errors,  Prev: Navigation,
      narrow down the list of matches.  This is particularily useful if
      you are using an advanced completion style like orderless.
      ‘consult-grep’ supports preview.  If
-     ‘consult-project-root-function’ is configured and the function
-     returns non-nil, ‘consult-grep’ searches the current project
-     directory.  Otherwise the ‘default-directory’ is searched.  If
-     ‘consult-grep’ is invoked with prefix argument, you can specify the
-     directory manually, i.e., ‘C-u M-g r’.
+     ‘consult-project-root-function’ is *note configured: Example
+     configuration. and the function returns non-nil, ‘consult-grep’
+     searches the current project directory.  Otherwise the
+     ‘default-directory’ is searched.  If ‘consult-grep’ is invoked with
+     prefix argument, you can specify the directory manually, i.e., ‘C-u
+     M-g r’.
    • ‘consult-find’, ‘consult-locate’: Find file by matching the path
      against a regexp.  Like ‘consult-grep’ either the project root or
      the current directory is used as root directory for the search.
@@ -207,8 +219,8 @@ File: consult.info,  Node: Search,  Next: Compilation errors,  Prev: Navigation,
      filtering.  Note that ‘find’ uses wildcards, e.g. enter
      ‘*consult*’, to find all files containing the string "consult".  In
      case you want to use another search utility like ‘fd’, you can
-     write wrapper command ‘my-fdfind’ (see below in the configuration
-     example).
+     write wrapper command ‘my-fdfind’ as shown in the *note example
+     configuration: Example configuration.
 
 
 File: consult.info,  Node: Compilation errors,  Next: Histories,  Prev: Search,  Up: Available commands
@@ -241,7 +253,7 @@ File: consult.info,  Node: Histories,  Next: Minor and Major modes,  Prev: Compi
      for the ‘command-history’ command from chistory.el.
    • ‘consult-history’: Insert a string from the current buffer history.
      This command can be invoked from the minibuffer.  In that case the
-     history stored in the minibuffer-history-variable is used.
+     history stored in the ‘minibuffer-history-variable’ is used.
 
 
 File: consult.info,  Node: Minor and Major modes,  Next: Miscellaneous,  Prev: Histories,  Up: Available commands
@@ -282,6 +294,15 @@ File: consult.info,  Node: Special features,  Next: Installation,  Prev: Availab
 3 Special features
 ******************
 
+Consult enhances ‘completing-read’ with live previews of candidates,
+additional narrowing capabilities to candidate subsets and
+asynchronously generated candidate lists.  This functionality is
+provided by the internal ‘consult--read’ function, which is used by most
+Consult commands.  The ‘consult--read’ function is a thin wrapper around
+‘completing-read’.  This allows Consult to work with different
+completion systems in the backend, while still offering more advanced
+features.
+
 * Menu:
 
 * Live previews::
@@ -298,9 +319,17 @@ Some Consult commands support live previews.  For example when you
 scroll through the items of ‘consult-line’, the buffer will scroll to
 the corresponding position.  It is possible to jump back and forth
 between the minibuffer and the buffer to perform recursive editing while
-the search is ongoing.  Previews must be explicitly enabled via
-‘consult-preview-mode’.  Furthermore each command can be configured
-individually to selectively enable/disable preview.
+the search is ongoing.
+
+   Previews are enabled by default but can be disabled via the
+‘consult-preview-key’ variable.  Furthermore it is possible to define a
+keybinding to trigger the preview manually as shown in the *note example
+configuration: Example configuration.  The default setting of
+‘consult-preview-key’ is ‘'any’ which means that the preview will be
+triggered on any keypress when the selected candidate changes.  Each
+command can be configured individually with its own ‘:preview-key’, such
+that preview can be manual for some commands, for some commands
+automatic and for some commands completely disabled.
 
 
 File: consult.info,  Node: Narrowing to subsets,  Next: Asynchronous candidates and filtering,  Prev: Live previews,  Up: Special features
@@ -308,13 +337,25 @@ File: consult.info,  Node: Narrowing to subsets,  Next: Asynchronous candidates 
 3.2 Narrowing to subsets
 ========================
 
-Consult has special support to narrow to candidate subsets.  When you
-use the ‘consult-buffer’ command, you can press ‘b SPC’ and the list of
-candidates will be restricted such that only buffers are shown.  If you
-press ‘DEL’ afterwards, the full candidate list will be shown again.
-Furthermore a narrowing/widening key can be configured which can be
-pressed to achieve the same effect, see the configuration variables
-‘consult-narrow-key’ and ‘consult-widen-key’.
+Consult has special support to narrow to candidate subsets.  This
+functionality is useful if the list of candidates consists of candidates
+of multiple types or candidates from multiple sources, like the
+‘consult-buffer’ command, which shows both buffers and recently opened
+files.
+
+   When you use the ‘consult-buffer’ command, you can press ‘b SPC’ and
+the list of candidates will be restricted such that only buffers are
+shown.  If you press ‘DEL’ afterwards, the full candidate list will be
+shown again.  Furthermore a narrowing prefix key and a widening key can
+be configured which can be pressed to achieve the same effect, see the
+configuration variables ‘consult-narrow-key’ and ‘consult-widen-key’.
+
+   If which-key (https://github.com/justbur/emacs-which-key) is
+installed, the possible narrowing keys are shown in the which-key window
+after pressing the prefix key ‘consult-narrow-key’.  Furthermore there
+is the ‘consult-narrow-help’ command which can be bound to a key in the
+‘consult-narrow-map’ if this is desired, as shown in the *note example
+configuration: Example configuration.
 
 
 File: consult.info,  Node: Asynchronous candidates and filtering,  Prev: Narrowing to subsets,  Up: Special features
@@ -325,13 +366,19 @@ File: consult.info,  Node: Asynchronous candidates and filtering,  Prev: Narrowi
 Consult has support for asynchronous generation of candidate lists.
 This feature is used for example by ‘consult-grep’, where the list of
 matches is generated dynamically while the user is typing a grep regular
-expression.  Furthermore the found matches can then be narrowed using
-the installed Emacs completion-style, which can be very powerful if you
-are using for example the ‘orderless’ completion style.  This is
-possible since part of the input string is treated as input to grep and
-part of the input is used for filtering.  The input string is split at a
-punctuation character, using a similar syntax as Perl regular
-expressions.
+expression.  The grep process is executed in the background.  When
+modifying the grep regular expression, the background process is
+terminated and a new process is started with the modified regular
+expression.
+
+   The matches, which have been found, can then be narrowed using the
+installed Emacs completion-style.  This can be very powerful if you are
+using for example the ‘orderless’ completion style.
+
+   This two-level filtering is possible by splitting the input string.
+Part of the input string is treated as input to grep and part of the
+input is used for filtering.  The input string is split at a punctuation
+character, using a similar syntax as Perl regular expressions.
 
    Examples:
 
@@ -347,18 +394,19 @@ expressions.
      grep.
 
 
-File: consult.info,  Node: Installation,  Next: Acknowledgements,  Prev: Special features,  Up: Top
+File: consult.info,  Node: Installation,  Next: Related packages,  Prev: Special features,  Up: Top
 
 4 Installation
 **************
 
-*NOTE: If you are using Selectrum, you MUST install the packages
+*NOTE: If you are using Selectrum
+(https://github.com/raxod502/selectrum), you MUST install the packages
 selectrum, consult and consult-selectrum!*
 
-   It is recommended to manage package configurations with
-‘use-package’.  The Consult package only provides commands and does not
-add any keybindings.  In order to use the enhanced commands, you must
-configure the keybindings yourself.
+   It is recommended to manage package configurations with the excellent
+‘use-package’ macro.  The Consult package only provides commands and
+does not add any keybindings.  In order to use the Consult commands, you
+must configure the keybindings yourself.
 
    Note that there are three packages as of now: ‘consult.el’,
 ‘consult-selectrum.el’ and ‘consult-flycheck.el’.  Consult has been
@@ -369,7 +417,7 @@ components.
 
 * Example configuration::
 * Customizable variables::
-* Related packages::
+* Configuration of individual commands::
 
 
 File: consult.info,  Node: Example configuration,  Next: Customizable variables,  Up: Installation
@@ -420,9 +468,10 @@ File: consult.info,  Node: Example configuration,  Next: Customizable variables,
        ;; Configure other variables and modes in the :config section, after lazily loading the package
        :config
 
-       ;; Optionally configure a function which returns the project root directory
-       (autoload 'projectile-project-root "projectile")
-       (setq consult-project-root-function #'projectile-project-root)
+       ;; Configure preview. Note that the preview-key can also be configured on a
+       ;; per-command basis via `consult-config'.
+       ;; The default value is 'any, such that any key triggers the preview.
+       ;; (setq consult-preview-key (kbd "M-p"))
 
        ;; Optionally configure narrowing key.
        ;; Both < and C-+ work reasonably well.
@@ -438,9 +487,9 @@ File: consult.info,  Node: Example configuration,  Next: Customizable variables,
        ;; (setq consult-view-open-function #'bookmark-jump
        ;;       consult-view-list-function #'bookmark-view-names)
 
-       ;; Optionally enable previews. Note that individual previews can be disabled
-       ;; via customization variables.
-       (consult-preview-mode))
+       ;; Optionally configure a function which returns the project root directory
+       (autoload 'projectile-project-root "projectile")
+       (setq consult-project-root-function #'projectile-project-root))
 
      ;; Enable Consult-Selectrum integration.
      ;; This package should be installed if Selectrum is used.
@@ -454,16 +503,16 @@ File: consult.info,  Node: Example configuration,  Next: Customizable variables,
                    ("!" . consult-flycheck)))
 
 
-File: consult.info,  Node: Customizable variables,  Next: Related packages,  Prev: Example configuration,  Up: Installation
+File: consult.info,  Node: Customizable variables,  Next: Configuration of individual commands,  Prev: Example configuration,  Up: Installation
 
 4.2 Customizable variables
 ==========================
 
-*Tip:* If you have Marginalia installed, type ‘M-x customize-variable
-RET ^consult’ to see all Consult-specific customizable variables with
-their current values and abbreviated description!  Alternatively, type
-‘C-h a ^consult’ to get an overview of all Consult variables and
-functions with their descriptions.
+*Tip:* If you have Marginalia (https://github.com/minad/marginalia)
+installed, type ‘M-x customize-variable RET ^consult’ to see all
+Consult-specific customizable variables with their current values and
+abbreviated description!  Alternatively, type ‘C-h a ^consult’ to get an
+overview of all Consult variables and functions with their descriptions.
 
 Variable                        Default            Description
 ------------------------------------------------------------------------------------------------------------
@@ -473,6 +522,7 @@ consult-async-input-debounce    0.25               Input debounce for asynchrono
 consult-async-input-throttle    0.5                Input throttle for asynchronous commands
 consult-async-min-input         3                  Minimum numbers of letters needed for async process
 consult-async-refresh-delay     0.25               Refresh delay for asynchronous commands
+consult-bookmark-narrow         ...                Narrowing configuration for ‘consult-bookmark’
 consult-buffer-filter           ...                Filter for ‘consult-buffer’
 consult-config                  nil                Invididual command option configuration
 consult-find-command            ’(...)             Command line arguments for find
@@ -488,6 +538,7 @@ consult-locate-command          ’(...)             Command line arguments for 
 consult-mode-command-filter     ...                Filter for ‘consult-mode-command’
 consult-mode-histories          ...                Mode-specific history variables
 consult-narrow-key              nil                Narrowing prefix key during completion
+consult-preview-key             ’any               Key which triggers preview
 consult-preview-max-count       10                 Maximum number of files to keep open during preview
 consult-preview-max-size        10485760           Size limit for previewed files
 consult-project-root-function   nil                Function which returns current project root
@@ -497,24 +548,46 @@ consult-view-list-function      nil                Function which returns a list
 consult-view-open-function      nil                Function to open a view by name
 consult-widen-key               nil                Widening key during completion
 
-   Commands allow flexible, individual customization by setting the
-‘consult-config’ list.  You can set override any option passed to
-‘consult--read’, for example ‘:preview’, ‘:initial’, ‘:default’,
-‘:history’ or ‘:sort’.  Note that ‘consult–read‘ is part of the internal
-API as of now.  Options could be removed, replaced or renamed at any
-time.
+
+File: consult.info,  Node: Configuration of individual commands,  Prev: Customizable variables,  Up: Installation
 
-     ;; Disable preview for `consult-buffer' and `consult-theme'.
-     (setq consult-config '((consult-theme :preview nil)
-                            (consult-buffer :preview nil)))
+4.3 Configuration of individual commands
+========================================
+
+*Note:* This configuration feature is made available for experienced
+users, in case fine-grained control for each individual command is
+needed.
+
+   Commands allow flexible, individual customization by setting the
+‘consult-config’ list.  You can override any option passed to the
+internal ‘consult--read’ API, for example ‘:preview-key’, ‘:initial’,
+‘:default’, ‘:history’ or ‘:sort’.  Note that since ‘consult--read’ is
+part of the internal API, options could be removed, replaced or renamed
+at any time.
+
+     ;; Set preview for `consult-buffer' to key `M-p'
+     ;; and disable preview for `consult-theme' completely.
+     (setq consult-config `((consult-theme :preview-key nil)
+                            (consult-buffer :preview-key ,(kbd "M-p"))))
+
+   Generally it is possible to modify commands for your individual needs
+by the following techniques:
+
+  1. Create your own wrapper function which passes modified arguments to
+     the Consult functions.
+  2. Modify ‘consult-config’ in order to change the ‘consult--read’
+     settings.
+  3. Create advices to modify some internal behavior.
+  4. Write or propose a patch!
 
 
-File: consult.info,  Node: Related packages,  Prev: Customizable variables,  Up: Installation
+File: consult.info,  Node: Related packages,  Next: Acknowledgements,  Prev: Installation,  Up: Top
 
-4.3 Related packages
-====================
+5 Related packages
+******************
 
-*NOTE: If you are using Selectrum, you MUST install the packages
+*NOTE: If you are using Selectrum
+(https://github.com/raxod502/selectrum), you MUST install the packages
 selectrum, consult and consult-selectrum!*
 
    It is recommended to install the following package combination:
@@ -522,11 +595,18 @@ selectrum, consult and consult-selectrum!*
    • consult: This package
    • consult-flycheck: Provides the consult-flycheck command
    • consult-selectrum: Provides integration with Selectrum
-   • selectrum or icomplete-vertical: Vertical completion systems
-   • marginalia: Annotations for the completion candidates
-   • embark: Action commands, which can act on the completion candidates
-   • orderless: Completion style, Flexible candidate filtering
-   • prescient: Frecency-based candidate sorting, also offers filtering
+   • selectrum (https://github.com/raxod502/selectrum) or
+     icomplete-vertical
+     (https://github.com/oantolin/icomplete-vertical): Vertical
+     completion systems
+   • marginalia (https://github.com/minad/marginalia): Annotations for
+     the completion candidates
+   • embark (https://github.com/oantolin/embark): Action commands, which
+     can act on the completion candidates
+   • orderless (https://github.com/oantolin/orderless): Completion
+     style, Flexible candidate filtering
+   • prescient (https://github.com/raxod502/prescient.el):
+     Frecency-based candidate sorting, also offers filtering
 
    Note that all packages are independent and can potentially be
 exchanged with alternative components, since there exist no hard
@@ -534,9 +614,9 @@ dependencies.  Furthermore it is possible to get started with only
 Selectrum and Consult and add more components later to the mix.
 
 
-File: consult.info,  Node: Acknowledgements,  Prev: Installation,  Up: Top
+File: consult.info,  Node: Acknowledgements,  Prev: Related packages,  Up: Top
 
-5 Acknowledgements
+6 Acknowledgements
 ******************
 
 You probably guessed from the name that this package took inspiration
@@ -568,25 +648,26 @@ wiki (https://github.com/raxod502/selectrum/wiki/Useful-Commands).
 
 Tag Table:
 Node: Top205
-Node: Introduction851
-Node: Available commands2665
-Node: Virtual Buffers3321
-Node: Editing4542
-Node: Navigation5030
-Node: Search6087
-Node: Compilation errors8451
-Node: Histories9346
-Node: Minor and Major modes9993
-Node: Miscellaneous10524
-Node: Special features11469
-Node: Live previews11708
-Node: Narrowing to subsets12311
-Node: Asynchronous candidates and filtering12990
-Node: Installation14348
-Node: Example configuration15150
-Node: Customizable variables18976
-Node: Related packages22931
-Node: Acknowledgements24008
+Node: Introduction892
+Node: Available commands3123
+Node: Virtual Buffers3828
+Node: Editing5301
+Node: Navigation5789
+Node: Search6846
+Node: Compilation errors9271
+Node: Histories10166
+Node: Minor and Major modes10819
+Node: Miscellaneous11350
+Node: Special features12295
+Node: Live previews13033
+Node: Narrowing to subsets14086
+Node: Asynchronous candidates and filtering15413
+Node: Installation17026
+Node: Example configuration17907
+Node: Customizable variables21839
+Node: Configuration of individual commands25468
+Node: Related packages26836
+Node: Acknowledgements28237
 
 End Tag Table
 

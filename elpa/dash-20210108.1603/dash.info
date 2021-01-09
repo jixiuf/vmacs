@@ -68,7 +68,7 @@ Functions
 * Tree operations::
 * Threading macros::
 * Binding::
-* Side-effects::
+* Side effects::
 * Destructive operations::
 * Function combinators::
 
@@ -188,7 +188,7 @@ following example, which demonstrates the utility of both versions.
 * Tree operations::
 * Threading macros::
 * Binding::
-* Side-effects::
+* Side effects::
 * Destructive operations::
 * Function combinators::
 
@@ -200,16 +200,16 @@ File: dash.info,  Node: Maps,  Next: Sublist selection,  Up: Functions
 
 Functions in this category take a transforming function, which is then
 applied sequentially to each or selected elements of the input list.
-The results are collected in order and returned as new list.
+The results are collected in order and returned as a new list.
 
  -- Function: -map (fn list)
-     Return a new list consisting of the result of applying FN to the
-     items in LIST.
+     Apply FN to each item in LIST and return the list of results.  This
+     function’s anaphoric counterpart is ‘--map’.
 
           (-map (lambda (num) (* num num)) '(1 2 3 4))
               ⇒ '(1 4 9 16)
-          (-map 'square '(1 2 3 4))
-              ⇒ '(1 4 9 16)
+          (-map #'1+ '(1 2 3 4))
+              ⇒ '(2 3 4 5)
           (--map (* it it) '(1 2 3 4))
               ⇒ '(1 4 9 16)
 
@@ -743,150 +743,156 @@ File: dash.info,  Node: Reductions,  Next: Unfolding,  Prev: List to list,  Up: 
 2.4 Reductions
 ==============
 
-Functions reducing lists into single value.
+Functions reducing lists to a single value (which may also be a list).
 
- -- Function: -reduce-from (fn initial-value list)
-     Return the result of applying FN to INITIAL-VALUE and the first
-     item in LIST, then applying FN to that result and the 2nd item,
-     etc.  If LIST contains no items, return INITIAL-VALUE and do not
-     call FN.
+ -- Function: -reduce-from (fn init list)
+     Reduce the function FN across LIST, starting with INIT.  Return the
+     result of applying FN to INIT and the first element of LIST, then
+     applying FN to that result and the second element, etc.  If LIST is
+     empty, return INIT without calling FN.
 
-     In the anaphoric form ‘--reduce-from’, the accumulated value is
-     exposed as symbol ‘acc’.
+     This function’s anaphoric counterpart is ‘--reduce-from’.  For
+     other folds, see also ‘-reduce’ (*note -reduce::) and ‘-reduce-r’
+     (*note -reduce-r::).
 
-     See also: ‘-reduce’ (*note -reduce::), ‘-reduce-r’ (*note
-     -reduce-r::)
-
-          (-reduce-from '- 10 '(1 2 3))
+          (-reduce-from #'- 10 '(1 2 3))
               ⇒ 4
-          (-reduce-from (lambda (memo item) (format "(%s - %d)" memo item)) "10" '(1 2 3))
-              ⇒ "(((10 - 1) - 2) - 3)"
+          (-reduce-from #'list 10 '(1 2 3))
+              ⇒ '(((10 1) 2) 3)
           (--reduce-from (concat acc " " it) "START" '("a" "b" "c"))
               ⇒ "START a b c"
 
- -- Function: -reduce-r-from (fn initial-value list)
-     Replace conses with FN, nil with INITIAL-VALUE and evaluate the
-     resulting expression.  If LIST is empty, INITIAL-VALUE is returned
-     and FN is not called.
+ -- Function: -reduce-r-from (fn init list)
+     Reduce the function FN across LIST in reverse, starting with INIT.
+     Return the result of applying FN to the last element of LIST and
+     INIT, then applying FN to the second-to-last element and the
+     previous result of FN, etc.  That is, the first argument of FN is
+     the current element, and its second argument the accumulated value.
+     If LIST is empty, return INIT without calling FN.
 
-     Note: this function works the same as ‘-reduce-from’ (*note
-     -reduce-from::) but the operation associates from right instead of
-     from left.
+     This function is like ‘-reduce-from’ (*note -reduce-from::) but the
+     operation associates from the right rather than left.  In other
+     words, it starts from the end of LIST and flips the arguments to
+     FN.  Conceptually, it is like replacing the conses in LIST with
+     applications of FN, and its last link with INIT, and evaluating the
+     resulting expression.
 
-     See also: ‘-reduce-r’ (*note -reduce-r::), ‘-reduce’ (*note
-     -reduce::)
+     This function’s anaphoric counterpart is ‘--reduce-r-from’.  For
+     other folds, see also ‘-reduce-r’ (*note -reduce-r::) and ‘-reduce’
+     (*note -reduce::).
 
-          (-reduce-r-from '- 10 '(1 2 3))
+          (-reduce-r-from #'- 10 '(1 2 3))
               ⇒ -8
-          (-reduce-r-from (lambda (item memo) (format "(%d - %s)" item memo)) "10" '(1 2 3))
-              ⇒ "(1 - (2 - (3 - 10)))"
+          (-reduce-r-from #'list 10 '(1 2 3))
+              ⇒ '(1 (2 (3 10)))
           (--reduce-r-from (concat it " " acc) "END" '("a" "b" "c"))
               ⇒ "a b c END"
 
  -- Function: -reduce (fn list)
-     Return the result of applying FN to the first 2 items in LIST, then
-     applying FN to that result and the 3rd item, etc.  If LIST contains
-     no items, return the result of calling FN with no arguments.  If
-     LIST contains a single item, return that item and do not call FN.
+     Reduce the function FN across LIST.  Return the result of applying
+     FN to the first two elements of LIST, then applying FN to that
+     result and the third element, etc.  If LIST contains a single
+     element, return it without calling FN.  If LIST is empty, return
+     the result of calling FN with no arguments.
 
-     In the anaphoric form ‘--reduce’, the accumulated value is exposed
-     as symbol ‘acc’.
+     This function’s anaphoric counterpart is ‘--reduce’.  For other
+     folds, see also ‘-reduce-from’ (*note -reduce-from::) and
+     ‘-reduce-r’ (*note -reduce-r::).
 
-     See also: ‘-reduce-from’ (*note -reduce-from::), ‘-reduce-r’ (*note
-     -reduce-r::)
-
-          (-reduce '- '(1 2 3 4))
+          (-reduce #'- '(1 2 3 4))
               ⇒ -8
-          (-reduce 'list '(1 2 3 4))
+          (-reduce #'list '(1 2 3 4))
               ⇒ '(((1 2) 3) 4)
           (--reduce (format "%s-%d" acc it) '(1 2 3))
               ⇒ "1-2-3"
 
  -- Function: -reduce-r (fn list)
-     Replace conses with FN and evaluate the resulting expression.  The
-     final nil is ignored.  If LIST contains no items, return the result
-     of calling FN with no arguments.  If LIST contains a single item,
-     return that item and do not call FN.
+     Reduce the function FN across LIST in reverse.  Return the result
+     of applying FN to the last two elements of LIST, then applying FN
+     to the third-to-last element and the previous result of FN, etc.
+     That is, the first argument of FN is the current element, and its
+     second argument the accumulated value.  If LIST contains a single
+     element, return it without calling FN.  If LIST is empty, return
+     the result of calling FN with no arguments.
 
-     The first argument of FN is the new item, the second is the
-     accumulated value.
+     This function is like ‘-reduce’ (*note -reduce::) but the operation
+     associates from the right rather than left.  In other words, it
+     starts from the end of LIST and flips the arguments to FN.
+     Conceptually, it is like replacing the conses in LIST with
+     applications of FN, ignoring its last link, and evaluating the
+     resulting expression.
 
-     Note: this function works the same as ‘-reduce’ (*note -reduce::)
-     but the operation associates from right instead of from left.
+     This function’s anaphoric counterpart is ‘--reduce-r’.  For other
+     folds, see also ‘-reduce-r-from’ (*note -reduce-r-from::) and
+     ‘-reduce’ (*note -reduce::).
 
-     See also: ‘-reduce-r-from’ (*note -reduce-r-from::), ‘-reduce’
-     (*note -reduce::)
-
-          (-reduce-r '- '(1 2 3 4))
+          (-reduce-r #'- '(1 2 3 4))
               ⇒ -2
-          (-reduce-r (lambda (item memo) (format "%s-%d" memo item)) '(1 2 3))
-              ⇒ "3-2-1"
+          (-reduce-r #'list '(1 2 3 4))
+              ⇒ '(1 (2 (3 4)))
           (--reduce-r (format "%s-%d" acc it) '(1 2 3))
               ⇒ "3-2-1"
 
  -- Function: -reductions-from (fn init list)
-     Return a list of the intermediate values of the reduction.
+     Return a list of FN’s intermediate reductions across LIST.  That
+     is, a list of the intermediate values of the accumulator when
+     ‘-reduce-from’ (*note -reduce-from::) (which see) is called with
+     the same arguments.  This function’s anaphoric counterpart is
+     ‘--reductions-from’.  For other folds, see also ‘-reductions’
+     (*note -reductions::) and ‘-reductions-r’ (*note -reductions-r::).
 
-     See ‘-reduce-from’ (*note -reduce-from::) for explanation of the
-     arguments.
-
-     See also: ‘-reductions’ (*note -reductions::), ‘-reductions-r’
-     (*note -reductions-r::), ‘-reduce-r’ (*note -reduce-r::)
-
-          (-reductions-from (lambda (a i) (format "(%s FN %d)" a i)) "INIT" '(1 2 3 4))
-              ⇒ '("INIT" "(INIT FN 1)" "((INIT FN 1) FN 2)" "(((INIT FN 1) FN 2) FN 3)" "((((INIT FN 1) FN 2) FN 3) FN 4)")
-          (-reductions-from 'max 0 '(2 1 4 3))
+          (-reductions-from #'max 0 '(2 1 4 3))
               ⇒ '(0 2 2 4 4)
-          (-reductions-from '* 1 '(1 2 3 4))
+          (-reductions-from #'* 1 '(1 2 3 4))
               ⇒ '(1 1 2 6 24)
+          (--reductions-from (format "(FN %s %d)" acc it) "INIT" '(1 2 3))
+              ⇒ '("INIT" "(FN INIT 1)" "(FN (FN INIT 1) 2)" "(FN (FN (FN INIT 1) 2) 3)")
 
  -- Function: -reductions-r-from (fn init list)
-     Return a list of the intermediate values of the reduction.
+     Return a list of FN’s intermediate reductions across reversed LIST.
+     That is, a list of the intermediate values of the accumulator when
+     ‘-reduce-r-from’ (*note -reduce-r-from::) (which see) is called
+     with the same arguments.  This function’s anaphoric counterpart is
+     ‘--reductions-r-from’.  For other folds, see also ‘-reductions’
+     (*note -reductions::) and ‘-reductions-r’ (*note -reductions-r::).
 
-     See ‘-reduce-r-from’ (*note -reduce-r-from::) for explanation of
-     the arguments.
-
-     See also: ‘-reductions-r’ (*note -reductions-r::), ‘-reductions’
-     (*note -reductions::), ‘-reduce’ (*note -reduce::)
-
-          (-reductions-r-from (lambda (i a) (format "(%d FN %s)" i a)) "INIT" '(1 2 3 4))
-              ⇒ '("(1 FN (2 FN (3 FN (4 FN INIT))))" "(2 FN (3 FN (4 FN INIT)))" "(3 FN (4 FN INIT))" "(4 FN INIT)" "INIT")
-          (-reductions-r-from 'max 0 '(2 1 4 3))
+          (-reductions-r-from #'max 0 '(2 1 4 3))
               ⇒ '(4 4 4 3 0)
-          (-reductions-r-from '* 1 '(1 2 3 4))
+          (-reductions-r-from #'* 1 '(1 2 3 4))
               ⇒ '(24 24 12 4 1)
+          (--reductions-r-from (format "(FN %d %s)" it acc) "INIT" '(1 2 3))
+              ⇒ '("(FN 1 (FN 2 (FN 3 INIT)))" "(FN 2 (FN 3 INIT))" "(FN 3 INIT)" "INIT")
 
  -- Function: -reductions (fn list)
-     Return a list of the intermediate values of the reduction.
+     Return a list of FN’s intermediate reductions across LIST.  That
+     is, a list of the intermediate values of the accumulator when
+     ‘-reduce’ (*note -reduce::) (which see) is called with the same
+     arguments.  This function’s anaphoric counterpart is
+     ‘--reductions’.  For other folds, see also ‘-reductions’ (*note
+     -reductions::) and ‘-reductions-r’ (*note -reductions-r::).
 
-     See ‘-reduce’ (*note -reduce::) for explanation of the arguments.
-
-     See also: ‘-reductions-from’ (*note -reductions-from::),
-     ‘-reductions-r’ (*note -reductions-r::), ‘-reduce-r’ (*note
-     -reduce-r::)
-
-          (-reductions (lambda (a i) (format "(%s FN %d)" a i)) '(1 2 3 4))
-              ⇒ '(1 "(1 FN 2)" "((1 FN 2) FN 3)" "(((1 FN 2) FN 3) FN 4)")
-          (-reductions '+ '(1 2 3 4))
+          (-reductions #'+ '(1 2 3 4))
               ⇒ '(1 3 6 10)
-          (-reductions '* '(1 2 3 4))
+          (-reductions #'* '(1 2 3 4))
               ⇒ '(1 2 6 24)
+          (--reductions (format "(FN %s %d)" acc it) '(1 2 3))
+              ⇒ '(1 "(FN 1 2)" "(FN (FN 1 2) 3)")
 
  -- Function: -reductions-r (fn list)
-     Return a list of the intermediate values of the reduction.
+     Return a list of FN’s intermediate reductions across reversed LIST.
+     That is, a list of the intermediate values of the accumulator when
+     ‘-reduce-r’ (*note -reduce-r::) (which see) is called with the same
+     arguments.  This function’s anaphoric counterpart is
+     ‘--reductions-r’.  For other folds, see also ‘-reductions-r-from’
+     (*note -reductions-r-from::) and ‘-reductions’ (*note
+     -reductions::).
 
-     See ‘-reduce-r’ (*note -reduce-r::) for explanation of the
-     arguments.
-
-     See also: ‘-reductions-r-from’ (*note -reductions-r-from::),
-     ‘-reductions’ (*note -reductions::), ‘-reduce’ (*note -reduce::)
-
-          (-reductions-r (lambda (i a) (format "(%d FN %s)" i a)) '(1 2 3 4))
-              ⇒ '("(1 FN (2 FN (3 FN 4)))" "(2 FN (3 FN 4))" "(3 FN 4)" 4)
-          (-reductions-r '+ '(1 2 3 4))
+          (-reductions-r #'+ '(1 2 3 4))
               ⇒ '(10 9 7 4)
-          (-reductions-r '* '(1 2 3 4))
+          (-reductions-r #'* '(1 2 3 4))
               ⇒ '(24 24 12 4)
+          (--reductions-r (format "(FN %d %s)" it acc) '(1 2 3))
+              ⇒ '("(FN 1 (FN 2 3))" "(FN 2 3)" 3)
 
  -- Function: -count (pred list)
      Counts the number of items in LIST where (PRED item) is non-nil.
@@ -1592,11 +1598,10 @@ Other list functions not fit to be classified elsewhere.
               ⇒ nil
 
  -- Function: -cons* (&rest args)
-     Make a new list from the elements of ARGS.
-
-     The last 2 members of ARGS are used as the final cons of the result
-     so if the final member of ARGS is not a list the result is a dotted
-     list.
+     Make a new list from the elements of ARGS.  The last 2 elements of
+     ARGS are used as the final cons of the result, so if the final
+     element of ARGS is not a list, the result is a dotted list.  With
+     no ARGS, return nil.
 
           (-cons* 1 2)
               ⇒ '(1 . 2)
@@ -1925,10 +1930,9 @@ Other list functions not fit to be classified elsewhere.
               ⇒ '(1 2 3)
 
  -- Function: -list (&rest args)
-     Return a list with ARGS.
-
-     If first item of ARGS is already a list, simply return ARGS.  If
-     not, return a list with ARGS as elements.
+     Return a list based on ARGS.  If the first item of ARGS is already
+     a list, simply return it.  Otherwise, return a list with ARGS as
+     elements.
 
           (-list 1)
               ⇒ '(1)
@@ -2172,8 +2176,21 @@ File: dash.info,  Node: Threading macros,  Next: Binding,  Prev: Tree operations
           (-some--> '(1 3 5) (-filter 'even? it) (append it it) (-map 'square it))
               ⇒ nil
 
+ -- Macro: -doto (init &rest forms)
+     Evaluate INIT and pass it as argument to FORMS with ‘->’ (*note
+     ->::).  The RESULT of evaluating INIT is threaded through each of
+     FORMS individually using ‘->’ (*note ->::), which see.  The return
+     value is RESULT, which FORMS may have modified by side effect.
+
+          (-doto (list 1 2 3) pop pop)
+              ⇒ '(3)
+          (-doto (cons 1 2) (setcar 3) (setcdr 4))
+              ⇒ '(3 . 4)
+          (gethash 'k (--doto (make-hash-table) (puthash 'k 'v it)))
+              ⇒ 'v
+
 
-File: dash.info,  Node: Binding,  Next: Side-effects,  Prev: Threading macros,  Up: Functions
+File: dash.info,  Node: Binding,  Next: Side effects,  Prev: Threading macros,  Up: Functions
 
 2.13 Binding
 ============
@@ -2473,72 +2490,82 @@ control.
               ⇒ "c"
 
 
-File: dash.info,  Node: Side-effects,  Next: Destructive operations,  Prev: Binding,  Up: Functions
+File: dash.info,  Node: Side effects,  Next: Destructive operations,  Prev: Binding,  Up: Functions
 
-2.14 Side-effects
+2.14 Side effects
 =================
 
-Functions iterating over lists for side-effect only.
+Functions iterating over lists for side effect only.
 
  -- Function: -each (list fn)
-     Call FN with every item in LIST.  Return nil, used for side-effects
-     only.
+     Call FN on each element of LIST.  Return nil; this function is
+     intended for side effects.  Its anaphoric counterpart is ‘--each’.
+     For access to the current element’s index in LIST, see
+     ‘-each-indexed’ (*note -each-indexed::).
 
-          (let (s) (-each '(1 2 3) (lambda (item) (setq s (cons item s)))))
+          (let (l) (-each '(1 2 3) (lambda (x) (push x l))) l)
+              ⇒ '(3 2 1)
+          (let (l) (--each '(1 2 3) (push it l)) l)
+              ⇒ '(3 2 1)
+          (-each '(1 2 3) #'identity)
               ⇒ nil
-          (let (s) (-each '(1 2 3) (lambda (item) (setq s (cons item s)))) s)
-              ⇒ '(3 2 1)
-          (let (s) (--each '(1 2 3) (setq s (cons it s))) s)
-              ⇒ '(3 2 1)
 
  -- Function: -each-while (list pred fn)
-     Call FN with every item in LIST while (PRED item) is non-nil.
-     Return nil, used for side-effects only.
+     Call FN on each ITEM in LIST, while (PRED ITEM) is non-nil.  Once
+     an ITEM is reached for which PRED returns nil, FN is no longer
+     called.  Return nil; this function is intended for side effects.
+     Its anaphoric counterpart is ‘--each-while’.
 
-          (let (s) (-each-while '(2 4 5 6) 'even? (lambda (item) (push item s))) s)
+          (let (l) (-each-while '(2 4 5 6) #'even? (lambda (x) (push x l))) l)
               ⇒ '(4 2)
-          (let (s) (--each-while '(1 2 3 4) (< it 3) (push it s)) s)
+          (let (l) (--each-while '(1 2 3 4) (< it 3) (push it l)) l)
               ⇒ '(2 1)
           (let ((s 0)) (--each-while '(1 3 4 5) (odd? it) (setq s (+ s it))) s)
               ⇒ 4
 
  -- Function: -each-indexed (list fn)
-     Call (FN index item) for each item in LIST.
+     Call FN on each index and element of LIST.  For each ITEM at INDEX
+     in LIST, call (funcall FN INDEX ITEM).  Return nil; this function
+     is intended for side effects.  See also: ‘-map-indexed’ (*note
+     -map-indexed::).
 
-     In the anaphoric form ‘--each-indexed’, the index is exposed as
-     symbol ‘it-index’.
-
-     See also: ‘-map-indexed’ (*note -map-indexed::).
-
-          (let (s) (-each-indexed '(a b c) (lambda (index item) (setq s (cons (list item index) s)))) s)
+          (let (l) (-each-indexed '(a b c) (lambda (i x) (push (list x i) l))) l)
               ⇒ '((c 2) (b 1) (a 0))
-          (let (s) (--each-indexed '(a b c) (setq s (cons (list it it-index) s))) s)
+          (let (l) (--each-indexed '(a b c) (push (list it it-index) l)) l)
               ⇒ '((c 2) (b 1) (a 0))
+          (let (l) (--each-indexed nil (push it l)) l)
+              ⇒ nil
 
  -- Function: -each-r (list fn)
-     Call FN with every item in LIST in reversed order.  Return nil,
-     used for side-effects only.
+     Call FN on each element of LIST in reversed order.  Return nil;
+     this function is intended for side effects.  Its anaphoric
+     counterpart is ‘--each-r’.
 
-          (let (s) (-each-r '(1 2 3) (lambda (item) (setq s (cons item s)))))
+          (let (l) (-each-r '(1 2 3) (lambda (x) (push x l))) l)
+              ⇒ '(1 2 3)
+          (let (l) (--each-r '(1 2 3) (push it l)) l)
+              ⇒ '(1 2 3)
+          (-each-r '(1 2 3) #'identity)
               ⇒ nil
-          (let (s) (-each-r '(1 2 3) (lambda (item) (setq s (cons item s)))) s)
-              ⇒ '(1 2 3)
-          (let (s) (--each-r '(1 2 3) (setq s (cons it s))) s)
-              ⇒ '(1 2 3)
 
  -- Function: -each-r-while (list pred fn)
-     Call FN with every item in reversed LIST while (PRED item) is
-     non-nil.  Return nil, used for side-effects only.
+     Call FN on each ITEM in reversed LIST, while (PRED ITEM) is
+     non-nil.  Once an ITEM is reached for which PRED returns nil, FN is
+     no longer called.  Return nil; this function is intended for side
+     effects.  Its anaphoric counterpart is ‘--each-r-while’.
 
-          (let (s) (-each-r-while '(2 4 5 6) 'even? (lambda (item) (!cons item s))) s)
+          (let (l) (-each-r-while '(2 4 5 6) #'even? (lambda (x) (push x l))) l)
               ⇒ '(6)
-          (let (s) (--each-r-while '(1 2 3 4) (>= it 3) (!cons it s)) s)
+          (let (l) (--each-r-while '(1 2 3 4) (>= it 3) (push it l)) l)
               ⇒ '(3 4)
+          (let ((s 0)) (--each-r-while '(1 2 3 5) (odd? it) (setq s (+ s it))) s)
+              ⇒ 8
 
  -- Function: -dotimes (num fn)
-     Call FN NUM times, presumably for side-effects.  FN is called with
+     Call FN NUM times, presumably for side effects.  FN is called with
      a single argument on successive integers running from 0, inclusive,
-     to NUM, exclusive.  FN is not called if NUM is less than 1.
+     to NUM, exclusive.  FN is not called if NUM is less than 1.  This
+     function’s anaphoric counterpart is ‘--dotimes’.
 
           (let (s) (-dotimes 3 (lambda (n) (push n s))) s)
               ⇒ '(2 1 0)
@@ -2547,21 +2574,8 @@ Functions iterating over lists for side-effect only.
           (let (s) (--dotimes 5 (push it s)) s)
               ⇒ '(4 3 2 1 0)
 
- -- Macro: -doto (init &rest forms)
-     Evaluate INIT and pass it as argument to FORMS with ‘->’ (*note
-     ->::).  The RESULT of evaluating INIT is threaded through each of
-     FORMS individually using ‘->’ (*note ->::), which see.  The return
-     value is RESULT, which FORMS may have modified by side effect.
-
-          (-doto (list 1 2 3) pop pop)
-              ⇒ '(3)
-          (-doto (cons 1 2) (setcar 3) (setcdr 4))
-              ⇒ '(3 . 4)
-          (gethash 'k (--doto (make-hash-table) (puthash 'k 'v it)))
-              ⇒ 'v
-
 
-File: dash.info,  Node: Destructive operations,  Next: Function combinators,  Prev: Side-effects,  Up: Functions
+File: dash.info,  Node: Destructive operations,  Next: Function combinators,  Prev: Side effects,  Up: Functions
 
 2.15 Destructive operations
 ===========================
@@ -4323,10 +4337,10 @@ Index
                                                               (line  55)
 * -as->:                                 Threading macros.    (line  46)
 * -butlast:                              Other list operations.
-                                                              (line 340)
+                                                              (line 339)
 * -clone:                                Tree operations.     (line 122)
-* -common-prefix:                        Reductions.          (line 223)
-* -common-suffix:                        Reductions.          (line 233)
+* -common-prefix:                        Reductions.          (line 229)
+* -common-suffix:                        Reductions.          (line 239)
 * -compose:                              Function combinators.
                                                               (line  42)
 * -concat:                               List to list.        (line  22)
@@ -4336,37 +4350,37 @@ Index
                                                               (line  92)
 * -contains?:                            Predicates.          (line  57)
 * -copy:                                 Maps.                (line 134)
-* -count:                                Reductions.          (line 151)
+* -count:                                Reductions.          (line 157)
 * -cut:                                  Function combinators.
                                                               (line 104)
 * -cycle:                                Other list operations.
-                                                              (line 168)
+                                                              (line 167)
 * -difference:                           Set operations.      (line  20)
 * -distinct:                             Set operations.      (line  62)
-* -dotimes:                              Side-effects.        (line  63)
-* -doto:                                 Side-effects.        (line  75)
+* -dotimes:                              Side effects.        (line  72)
+* -doto:                                 Threading macros.    (line  95)
 * -drop:                                 Sublist selection.   (line 128)
 * -drop-last:                            Sublist selection.   (line 142)
 * -drop-while:                           Sublist selection.   (line 171)
-* -each:                                 Side-effects.        (line   8)
-* -each-indexed:                         Side-effects.        (line  30)
-* -each-r:                               Side-effects.        (line  43)
-* -each-r-while:                         Side-effects.        (line  54)
-* -each-while:                           Side-effects.        (line  19)
+* -each:                                 Side effects.        (line   8)
+* -each-indexed:                         Side effects.        (line  34)
+* -each-r:                               Side effects.        (line  47)
+* -each-r-while:                         Side effects.        (line  59)
+* -each-while:                           Side effects.        (line  21)
 * -elem-index:                           Indexing.            (line   9)
 * -elem-indices:                         Indexing.            (line  21)
 * -fifth-item:                           Other list operations.
-                                                              (line 320)
+                                                              (line 319)
 * -filter:                               Sublist selection.   (line   8)
 * -find-index:                           Indexing.            (line  32)
 * -find-indices:                         Indexing.            (line  60)
 * -find-last-index:                      Indexing.            (line  46)
 * -first:                                Other list operations.
-                                                              (line 234)
+                                                              (line 233)
 * -first-item:                           Other list operations.
-                                                              (line 271)
+                                                              (line 270)
 * -fix:                                  Other list operations.
-                                                              (line 376)
+                                                              (line 374)
 * -fixfn:                                Function combinators.
                                                               (line 175)
 * -flatten:                              List to list.        (line  33)
@@ -4374,18 +4388,18 @@ Index
 * -flip:                                 Function combinators.
                                                               (line  80)
 * -fourth-item:                          Other list operations.
-                                                              (line 310)
+                                                              (line 309)
 * -grade-down:                           Indexing.            (line  81)
 * -grade-up:                             Indexing.            (line  71)
 * -group-by:                             Partitioning.        (line 187)
 * -if-let:                               Binding.             (line  36)
 * -if-let*:                              Binding.             (line  49)
-* -inits:                                Reductions.          (line 203)
+* -inits:                                Reductions.          (line 209)
 * -insert-at:                            List to list.        (line 109)
 * -interleave:                           Other list operations.
-                                                              (line  68)
+                                                              (line  67)
 * -interpose:                            Other list operations.
-                                                              (line  58)
+                                                              (line  57)
 * -intersection:                         Set operations.      (line  32)
 * -is-infix?:                            Predicates.          (line 110)
 * -is-prefix?:                           Predicates.          (line  86)
@@ -4398,23 +4412,23 @@ Index
 * -keep:                                 List to list.        (line   8)
 * -lambda:                               Binding.             (line 251)
 * -last:                                 Other list operations.
-                                                              (line 261)
+                                                              (line 260)
 * -last-item:                            Other list operations.
-                                                              (line 330)
+                                                              (line 329)
 * -let:                                  Binding.             (line  65)
 * -let*:                                 Binding.             (line 231)
 * -list:                                 Other list operations.
-                                                              (line 363)
+                                                              (line 362)
 * -map:                                  Maps.                (line  10)
 * -map-first:                            Maps.                (line  37)
 * -map-indexed:                          Maps.                (line  65)
 * -map-last:                             Maps.                (line  51)
 * -map-when:                             Maps.                (line  21)
 * -mapcat:                               Maps.                (line 123)
-* -max:                                  Reductions.          (line 267)
-* -max-by:                               Reductions.          (line 277)
-* -min:                                  Reductions.          (line 243)
-* -min-by:                               Reductions.          (line 253)
+* -max:                                  Reductions.          (line 273)
+* -max-by:                               Reductions.          (line 283)
+* -min:                                  Reductions.          (line 249)
+* -min-by:                               Reductions.          (line 259)
 * -non-nil:                              Sublist selection.   (line  79)
 * -none?:                                Predicates.          (line  30)
 * -not:                                  Function combinators.
@@ -4425,7 +4439,7 @@ Index
 * -orfn:                                 Function combinators.
                                                               (line 126)
 * -pad:                                  Other list operations.
-                                                              (line 179)
+                                                              (line 178)
 * -partial:                              Function combinators.
                                                               (line   9)
 * -partition:                            Partitioning.        (line  74)
@@ -4442,15 +4456,15 @@ Index
 * -powerset:                             Set operations.      (line  44)
 * -prodfn:                               Function combinators.
                                                               (line 209)
-* -product:                              Reductions.          (line 181)
-* -reduce:                               Reductions.          (line  46)
+* -product:                              Reductions.          (line 187)
+* -reduce:                               Reductions.          (line  51)
 * -reduce-from:                          Reductions.          (line   8)
-* -reduce-r:                             Reductions.          (line  65)
-* -reduce-r-from:                        Reductions.          (line  27)
-* -reductions:                           Reductions.          (line 119)
-* -reductions-from:                      Reductions.          (line  87)
-* -reductions-r:                         Reductions.          (line 135)
-* -reductions-r-from:                    Reductions.          (line 103)
+* -reduce-r:                             Reductions.          (line  69)
+* -reduce-r-from:                        Reductions.          (line  25)
+* -reductions:                           Reductions.          (line 126)
+* -reductions-from:                      Reductions.          (line  96)
+* -reductions-r:                         Reductions.          (line 141)
+* -reductions-r-from:                    Reductions.          (line 111)
 * -remove:                               Sublist selection.   (line  23)
 * -remove-at:                            List to list.        (line 145)
 * -remove-at-indices:                    List to list.        (line 158)
@@ -4467,11 +4481,11 @@ Index
                                                               (line   8)
 * -rpartial:                             Function combinators.
                                                               (line  20)
-* -running-product:                      Reductions.          (line 191)
-* -running-sum:                          Reductions.          (line 169)
+* -running-product:                      Reductions.          (line 197)
+* -running-sum:                          Reductions.          (line 175)
 * -same-items?:                          Predicates.          (line  72)
 * -second-item:                          Other list operations.
-                                                              (line 286)
+                                                              (line 285)
 * -select-by-indices:                    Sublist selection.   (line 185)
 * -select-column:                        Sublist selection.   (line 215)
 * -select-columns:                       Sublist selection.   (line 196)
@@ -4479,31 +4493,31 @@ Index
 * -setq:                                 Binding.             (line 273)
 * -slice:                                Sublist selection.   (line  85)
 * -snoc:                                 Other list operations.
-                                                              (line  44)
+                                                              (line  43)
 * -some:                                 Other list operations.
-                                                              (line 248)
+                                                              (line 247)
 * -some-->:                              Threading macros.    (line  83)
 * -some->:                               Threading macros.    (line  59)
 * -some->>:                              Threading macros.    (line  71)
 * -sort:                                 Other list operations.
-                                                              (line 350)
+                                                              (line 349)
 * -splice:                               Maps.                (line  90)
 * -splice-list:                          Maps.                (line 110)
 * -split-at:                             Partitioning.        (line   8)
 * -split-on:                             Partitioning.        (line  28)
 * -split-when:                           Partitioning.        (line  46)
 * -split-with:                           Partitioning.        (line  17)
-* -sum:                                  Reductions.          (line 159)
+* -sum:                                  Reductions.          (line 165)
 * -table:                                Other list operations.
-                                                              (line 190)
+                                                              (line 189)
 * -table-flat:                           Other list operations.
-                                                              (line 209)
-* -tails:                                Reductions.          (line 213)
+                                                              (line 208)
+* -tails:                                Reductions.          (line 219)
 * -take:                                 Sublist selection.   (line 101)
 * -take-last:                            Sublist selection.   (line 114)
 * -take-while:                           Sublist selection.   (line 156)
 * -third-item:                           Other list operations.
-                                                              (line 298)
+                                                              (line 297)
 * -tree-map:                             Tree operations.     (line  28)
 * -tree-map-nodes:                       Tree operations.     (line  39)
 * -tree-mapreduce:                       Tree operations.     (line  84)
@@ -4514,18 +4528,18 @@ Index
 * -unfold:                               Unfolding.           (line  25)
 * -union:                                Set operations.      (line   8)
 * -unzip:                                Other list operations.
-                                                              (line 146)
+                                                              (line 145)
 * -update-at:                            List to list.        (line 132)
 * -when-let:                             Binding.             (line   9)
 * -when-let*:                            Binding.             (line  23)
 * -zip:                                  Other list operations.
-                                                              (line  95)
+                                                              (line  94)
 * -zip-fill:                             Other list operations.
-                                                              (line 138)
+                                                              (line 137)
 * -zip-lists:                            Other list operations.
-                                                              (line 119)
+                                                              (line 118)
 * -zip-with:                             Other list operations.
-                                                              (line  79)
+                                                              (line  78)
 * dash-fontify-mode:                     Fontification of special variables.
                                                               (line   6)
 * global-dash-fontify-mode:              Fontification of special variables.
@@ -4540,202 +4554,202 @@ Node: Using in a package3162
 Node: Fontification of special variables3662
 Node: Functions4425
 Node: Maps5909
-Ref: -map6204
-Ref: -map-when6545
-Ref: -map-first7123
-Ref: -map-last7601
-Ref: -map-indexed8074
-Ref: -annotate8554
-Ref: -splice9044
-Ref: -splice-list9825
-Ref: -mapcat10287
-Ref: -copy10663
-Node: Sublist selection10867
-Ref: -filter11060
-Ref: -remove11512
-Ref: -remove-first11918
-Ref: -remove-last12445
-Ref: -remove-item12966
-Ref: -non-nil13361
-Ref: -slice13520
-Ref: -take14052
-Ref: -take-last14461
-Ref: -drop14894
-Ref: -drop-last15324
-Ref: -take-while15752
-Ref: -drop-while16278
-Ref: -select-by-indices16802
-Ref: -select-columns17316
-Ref: -select-column18022
-Node: List to list18486
-Ref: -keep18678
-Ref: -concat19181
-Ref: -flatten19478
-Ref: -flatten-n20237
-Ref: -replace20624
-Ref: -replace-first21087
-Ref: -replace-last21584
-Ref: -insert-at22074
-Ref: -replace-at22401
-Ref: -update-at22791
-Ref: -remove-at23282
-Ref: -remove-at-indices23770
-Node: Reductions24352
-Ref: -reduce-from24521
-Ref: -reduce-r-from25287
-Ref: -reduce26054
-Ref: -reduce-r26783
-Ref: -reductions-from27654
-Ref: -reductions-r-from28369
-Ref: -reductions29094
-Ref: -reductions-r29719
-Ref: -count30354
-Ref: -sum30578
-Ref: -running-sum30767
-Ref: -product31060
-Ref: -running-product31269
-Ref: -inits31582
-Ref: -tails31830
-Ref: -common-prefix32077
-Ref: -common-suffix32374
-Ref: -min32671
-Ref: -min-by32897
-Ref: -max33420
-Ref: -max-by33645
-Node: Unfolding34173
-Ref: -iterate34414
-Ref: -unfold34864
-Node: Predicates35672
-Ref: -any?35796
-Ref: -all?36116
-Ref: -none?36446
-Ref: -only-some?36748
-Ref: -contains?37233
-Ref: -same-items?37622
-Ref: -is-prefix?38007
-Ref: -is-suffix?38330
-Ref: -is-infix?38653
-Node: Partitioning39007
-Ref: -split-at39195
-Ref: -split-with39480
-Ref: -split-on39883
-Ref: -split-when40559
-Ref: -separate41199
-Ref: -partition41641
-Ref: -partition-all42093
-Ref: -partition-in-steps42521
-Ref: -partition-all-in-steps43018
-Ref: -partition-by43503
-Ref: -partition-by-header43885
-Ref: -partition-after-pred44489
-Ref: -partition-before-pred44833
-Ref: -partition-before-item45184
-Ref: -partition-after-item45495
-Ref: -group-by45801
-Node: Indexing46238
-Ref: -elem-index46440
-Ref: -elem-indices46835
-Ref: -find-index47218
-Ref: -find-last-index47707
-Ref: -find-indices48211
-Ref: -grade-up48619
-Ref: -grade-down49022
-Node: Set operations49432
-Ref: -union49615
-Ref: -difference50057
-Ref: -intersection50474
-Ref: -powerset50911
-Ref: -permutations51124
-Ref: -distinct51424
-Node: Other list operations51802
-Ref: -rotate52027
-Ref: -repeat52397
-Ref: -cons*52678
-Ref: -snoc53065
-Ref: -interpose53478
-Ref: -interleave53776
-Ref: -zip-with54145
-Ref: -zip54862
-Ref: -zip-lists55694
-Ref: -zip-fill56395
-Ref: -unzip56718
-Ref: -cycle57463
-Ref: -pad57865
-Ref: -table58188
-Ref: -table-flat58977
-Ref: -first59985
-Ref: -some60357
-Ref: -last60666
-Ref: -first-item61000
-Ref: -second-item61416
-Ref: -third-item61696
-Ref: -fourth-item61974
-Ref: -fifth-item62240
-Ref: -last-item62502
-Ref: -butlast62794
-Ref: -sort63041
-Ref: -list63530
-Ref: -fix63861
-Node: Tree operations64401
-Ref: -tree-seq64597
-Ref: -tree-map65455
-Ref: -tree-map-nodes65898
-Ref: -tree-reduce66748
-Ref: -tree-reduce-from67630
-Ref: -tree-mapreduce68231
-Ref: -tree-mapreduce-from69091
-Ref: -clone70377
-Node: Threading macros70705
-Ref: ->70850
-Ref: ->>71341
-Ref: -->71846
-Ref: -as->72402
-Ref: -some->72857
-Ref: -some->>73231
-Ref: -some-->73667
-Node: Binding74138
-Ref: -when-let74350
-Ref: -when-let*74835
-Ref: -if-let75358
-Ref: -if-let*75753
-Ref: -let76370
-Ref: -let*82445
-Ref: -lambda83385
-Ref: -setq84181
-Node: Side-effects84997
-Ref: -each85191
-Ref: -each-while85598
-Ref: -each-indexed86056
-Ref: -each-r86574
-Ref: -each-r-while87007
-Ref: -dotimes87382
-Ref: -doto87872
-Node: Destructive operations88428
-Ref: !cons88601
-Ref: !cdr88807
-Node: Function combinators89002
-Ref: -partial89276
-Ref: -rpartial89670
-Ref: -juxt90073
-Ref: -compose90505
-Ref: -applify91058
-Ref: -on91489
-Ref: -flip92015
-Ref: -const92327
-Ref: -cut92666
-Ref: -not93152
-Ref: -orfn93462
-Ref: -andfn93896
-Ref: -iteratefn94391
-Ref: -fixfn95094
-Ref: -prodfn96657
-Node: Development97717
-Node: Contribute98070
-Node: Change log99076
-Node: Contributors106614
-Node: FDL108632
-Node: GPL133952
-Node: Index171701
+Ref: -map6206
+Ref: -map-when6582
+Ref: -map-first7160
+Ref: -map-last7638
+Ref: -map-indexed8111
+Ref: -annotate8591
+Ref: -splice9081
+Ref: -splice-list9862
+Ref: -mapcat10324
+Ref: -copy10700
+Node: Sublist selection10904
+Ref: -filter11097
+Ref: -remove11549
+Ref: -remove-first11955
+Ref: -remove-last12482
+Ref: -remove-item13003
+Ref: -non-nil13398
+Ref: -slice13557
+Ref: -take14089
+Ref: -take-last14498
+Ref: -drop14931
+Ref: -drop-last15361
+Ref: -take-while15789
+Ref: -drop-while16315
+Ref: -select-by-indices16839
+Ref: -select-columns17353
+Ref: -select-column18059
+Node: List to list18523
+Ref: -keep18715
+Ref: -concat19218
+Ref: -flatten19515
+Ref: -flatten-n20274
+Ref: -replace20661
+Ref: -replace-first21124
+Ref: -replace-last21621
+Ref: -insert-at22111
+Ref: -replace-at22438
+Ref: -update-at22828
+Ref: -remove-at23319
+Ref: -remove-at-indices23807
+Node: Reductions24389
+Ref: -reduce-from24585
+Ref: -reduce-r-from25310
+Ref: -reduce26574
+Ref: -reduce-r27326
+Ref: -reductions-from28605
+Ref: -reductions-r-from29409
+Ref: -reductions30237
+Ref: -reductions-r30946
+Ref: -count31694
+Ref: -sum31918
+Ref: -running-sum32107
+Ref: -product32400
+Ref: -running-product32609
+Ref: -inits32922
+Ref: -tails33170
+Ref: -common-prefix33417
+Ref: -common-suffix33714
+Ref: -min34011
+Ref: -min-by34237
+Ref: -max34760
+Ref: -max-by34985
+Node: Unfolding35513
+Ref: -iterate35754
+Ref: -unfold36204
+Node: Predicates37012
+Ref: -any?37136
+Ref: -all?37456
+Ref: -none?37786
+Ref: -only-some?38088
+Ref: -contains?38573
+Ref: -same-items?38962
+Ref: -is-prefix?39347
+Ref: -is-suffix?39670
+Ref: -is-infix?39993
+Node: Partitioning40347
+Ref: -split-at40535
+Ref: -split-with40820
+Ref: -split-on41223
+Ref: -split-when41899
+Ref: -separate42539
+Ref: -partition42981
+Ref: -partition-all43433
+Ref: -partition-in-steps43861
+Ref: -partition-all-in-steps44358
+Ref: -partition-by44843
+Ref: -partition-by-header45225
+Ref: -partition-after-pred45829
+Ref: -partition-before-pred46173
+Ref: -partition-before-item46524
+Ref: -partition-after-item46835
+Ref: -group-by47141
+Node: Indexing47578
+Ref: -elem-index47780
+Ref: -elem-indices48175
+Ref: -find-index48558
+Ref: -find-last-index49047
+Ref: -find-indices49551
+Ref: -grade-up49959
+Ref: -grade-down50362
+Node: Set operations50772
+Ref: -union50955
+Ref: -difference51397
+Ref: -intersection51814
+Ref: -powerset52251
+Ref: -permutations52464
+Ref: -distinct52764
+Node: Other list operations53142
+Ref: -rotate53367
+Ref: -repeat53737
+Ref: -cons*54018
+Ref: -snoc54436
+Ref: -interpose54849
+Ref: -interleave55147
+Ref: -zip-with55516
+Ref: -zip56233
+Ref: -zip-lists57065
+Ref: -zip-fill57766
+Ref: -unzip58089
+Ref: -cycle58834
+Ref: -pad59236
+Ref: -table59559
+Ref: -table-flat60348
+Ref: -first61356
+Ref: -some61728
+Ref: -last62037
+Ref: -first-item62371
+Ref: -second-item62787
+Ref: -third-item63067
+Ref: -fourth-item63345
+Ref: -fifth-item63611
+Ref: -last-item63873
+Ref: -butlast64165
+Ref: -sort64412
+Ref: -list64901
+Ref: -fix65241
+Node: Tree operations65781
+Ref: -tree-seq65977
+Ref: -tree-map66835
+Ref: -tree-map-nodes67278
+Ref: -tree-reduce68128
+Ref: -tree-reduce-from69010
+Ref: -tree-mapreduce69611
+Ref: -tree-mapreduce-from70471
+Ref: -clone71757
+Node: Threading macros72085
+Ref: ->72230
+Ref: ->>72721
+Ref: -->73226
+Ref: -as->73782
+Ref: -some->74237
+Ref: -some->>74611
+Ref: -some-->75047
+Ref: -doto75518
+Node: Binding76074
+Ref: -when-let76286
+Ref: -when-let*76771
+Ref: -if-let77294
+Ref: -if-let*77689
+Ref: -let78306
+Ref: -let*84381
+Ref: -lambda85321
+Ref: -setq86117
+Node: Side effects86933
+Ref: -each87127
+Ref: -each-while87644
+Ref: -each-indexed88248
+Ref: -each-r88838
+Ref: -each-r-while89276
+Ref: -dotimes89899
+Node: Destructive operations90455
+Ref: !cons90628
+Ref: !cdr90834
+Node: Function combinators91029
+Ref: -partial91303
+Ref: -rpartial91697
+Ref: -juxt92100
+Ref: -compose92532
+Ref: -applify93085
+Ref: -on93516
+Ref: -flip94042
+Ref: -const94354
+Ref: -cut94693
+Ref: -not95179
+Ref: -orfn95489
+Ref: -andfn95923
+Ref: -iteratefn96418
+Ref: -fixfn97121
+Ref: -prodfn98684
+Node: Development99744
+Node: Contribute100097
+Node: Change log101103
+Node: Contributors108641
+Node: FDL110659
+Node: GPL135979
+Node: Index173728
 
 End Tag Table
 

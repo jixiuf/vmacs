@@ -1,4 +1,4 @@
-;;; embark-autoloads.el --- automatically extracted autoloads
+;;; embark-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -20,14 +20,14 @@ This function is meant to be added to `minibuffer-setup-hook'." (setq-local emba
 Embark upon an action.
 The target of the action is chosen by `embark-target-finders'.
 By default, if called from a minibuffer the target is the top
-completion candidate, if called from an Embark Occur or a
+completion candidate, if called from an Embark Collect or a
 Completions buffer it is the candidate at point." t nil)
 
 (autoload 'embark-act "embark" "\
 Embark upon an action and exit from all minibuffers (if any).
 The target of the action is chosen by `embark-target-finders'.
 By default, if called from a minibuffer the target is the top
-completion candidate, if called from an Embark Occur or a
+completion candidate, if called from an Embark Collect or a
 Completions buffer it ixs the candidate at point." t nil)
 
 (autoload 'embark-become "embark" "\
@@ -38,32 +38,47 @@ command.  The new command can be run normally using keybindings or
 `embark-become-keymaps', that keymap is activated to provide
 convenient access to the other commands in it." t nil)
 
-(autoload 'embark-live-occur "embark" "\
-Create a live-updating Embark Occur buffer.
+(autoload 'embark-collect-live "embark" "\
+Create a live-updating Embark Collect buffer.
 Optionally start in INITIAL-VIEW (either `list' or `grid')
-instead of what `embark-occur-initial-view-alist' specifies.
+instead of what `embark-collect-initial-view-alist' specifies.
 Interactively, \\[universal-argument] means grid view, a prefix
 argument of 1 means list view.
 
 To control the display, add an entry to `display-buffer-alist'
-with key \"Embark Live Occur\".
+with key \"Embark Collect Live\".
 
 \(fn &optional INITIAL-VIEW)" t nil)
 
-(autoload 'embark-occur "embark" "\
-Create an Embark Occur buffer and exit all minibuffers.
+(autoload 'embark-collect-snapshot "embark" "\
+Create an Embark Collect buffer.
 Optionally start in INITIAL-VIEW (either `list' or `grid')
-instead of what `embark-occur-initial-view-alist' specifies.
+instead of what `embark-collect-initial-view-alist' specifies.
 Interactively, \\[universal-argument] means grid view, a prefix
 argument of 1 means list view.
 
 To control the display, add an entry to `display-buffer-alist'
-with key \"Embark Occur\".
+with key \"Embark Collect\".
 
 \(fn &optional INITIAL-VIEW)" t nil)
 
-(autoload 'embark-switch-to-live-occur "embark" "\
-Switch to the Embark Live Occur buffer, creating it if necessary." t nil)
+(autoload 'embark-collect-completions "embark" "\
+Create an ephemeral live-updating Embark Collect buffer." t nil)
+
+(autoload 'embark-collect-completions-after-delay "embark" "\
+Start `embark-collect-live' after `embark-collect-live-initial-delay'.
+Add this function to `minibuffer-setup-hook' to have an Embark
+Live Collect buffer popup every time you use the minibuffer." nil nil)
+
+(autoload 'embark-collect-completions-after-input "embark" "\
+Start `embark-collect-completions' after some minibuffer input.
+Add this function to `minibuffer-setup-hook' to have an Embark
+Live Collect buffer popup soon after you type something in the
+minibuffer; the length of the delay after typing is given by
+`embark-collect-live-initial-delay'." nil nil)
+
+(autoload 'embark-switch-to-collect-completions "embark" "\
+Switch to the Embark Collect Completions buffer, creating it if necessary." t nil)
 
 (autoload 'embark-export "embark" "\
 Create a type-specific buffer to manage current candidates.
