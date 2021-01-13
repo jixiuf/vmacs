@@ -1,4 +1,4 @@
-;;; orderless-autoloads.el --- automatically extracted autoloads
+;;; orderless-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
