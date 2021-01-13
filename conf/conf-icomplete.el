@@ -17,12 +17,23 @@
 (when (require 'orderless nil t)
   (setq completion-styles (cons 'orderless completion-styles))
   (setq orderless-component-separator "[ /]")
-  (setq orderless-matching-styles '(orderless-regexp orderless-literal))
-  (defun without-if-bang (pattern _index _total)
-    (when (string-prefix-p "!" pattern)
+  (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism orderless-flex))
+  (defun without-if-$! (pattern _index _total)
+    (when (or (string-prefix-p "$" pattern) ;如果以! 或$ 开头，刚表示否定
+              (string-prefix-p "!" pattern))
       `(orderless-without-literal . ,(substring pattern 1))))
+  (defun flex-if-comma (pattern _index _total) ;如果以逗号结尾，则以flex 算法匹配此组件
+    (when (string-suffix-p "," pattern)
+      `(orderless-flex . ,(substring pattern 0 -1))))
+  (defun literal-if-= (pattern _index _total) ;如果以=结尾，则以literal  算法匹配此组件
+    (when (or (string-suffix-p "=" pattern)
+              (string-suffix-p "-" pattern)
+              (string-suffix-p ";" pattern))
+      `(orderless-literal . ,(substring pattern 0 -1))))
 
-  (setq orderless-style-dispatchers '(without-if-bang)))
+
+  (setq orderless-style-dispatchers '(literal-if-= flex-if-comma without-if-$!)))
+
 
 
 
@@ -69,9 +80,8 @@
 (vmacs-leader "gg" #'consult-ripgrep)
 (vmacs-leader "gG" #'consult-grep)
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
-(vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (concat (thing-at-point 'symbol) consult-async-default-split))))
-(vmacs-leader "g," #'(lambda()(interactive) (require 'magit)
-                       (consult-ripgrep (magit-toplevel) (concat (thing-at-point 'symbol) consult-async-default-split))))
+(vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
+(vmacs-leader "g," #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))))
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
