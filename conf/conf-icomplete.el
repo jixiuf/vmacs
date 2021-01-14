@@ -82,6 +82,8 @@
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
 (vmacs-leader "g," #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))))
+(vmacs-define-key  'global "g/" 'consult-keep-lines nil 'normal)
+(vmacs-define-key  'global "gz" 'consult-flush-lines nil 'normal)
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
