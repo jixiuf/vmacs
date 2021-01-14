@@ -17,7 +17,7 @@
 (when (require 'orderless nil t)
   (setq completion-styles (cons 'orderless completion-styles))
   (setq orderless-component-separator "[ /]")
-  (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism orderless-flex))
+  (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism ))
   (defun without-if-$! (pattern _index _total)
     (when (or (string-prefix-p "$" pattern) ;如果以! 或$ 开头，刚表示否定
               (string-prefix-p "!" pattern))
@@ -84,6 +84,8 @@
 (vmacs-leader "g," #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))))
 (vmacs-define-key  'global "g/" 'consult-keep-lines nil 'normal)
 (vmacs-define-key  'global "gz" 'consult-flush-lines nil 'normal)
+(global-set-key [remap goto-line] 'consult-goto-line)
+(global-set-key (kbd "C-c C-s") 'consult-line)
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
