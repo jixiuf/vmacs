@@ -2,6 +2,7 @@
 ;; C-u0 只限本函数内
 ;; C-u 恢复上次的iedit
 (with-eval-after-load 'iedit
+  (setq iedit-search-invisible nil)
   (add-hook 'iedit-mode-hook #'(lambda() (electric-pair-mode -1)))
   (add-hook 'iedit-aborting-hook #'electric-pair-mode)
   (evil-define-minor-mode-key '(motion visual normal insert) 'iedit-mode (kbd "C-;")  'iedit--quit)
