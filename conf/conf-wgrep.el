@@ -35,8 +35,8 @@
 (defun vmacs-grep-mode-hook ()
   (evil-local-mode)
   (define-key grep-mode-map "g" nil)
-  (evil-define-key 'normal 'local "/" #'consult-hide-lines)
-  (evil-define-key 'normal 'local "z"
+  (evil-define-key 'normal 'local "z" #'consult-hide-lines)
+  (evil-define-key 'normal 'local "l"
     #'(lambda() (interactive) (consult-hide-lines
                                nil (run-hook-with-args-until-success 'consult--completion-filter-hook) "!")))
                                         ;show hidden lines
