@@ -4,7 +4,7 @@
 (with-eval-after-load 'iedit
   (setq iedit-search-invisible nil)
   (add-hook 'iedit-mode-hook #'(lambda() (electric-pair-mode -1)))
-  (add-hook 'iedit-aborting-hook #'electric-pair-mode)
+  (add-hook 'iedit-aborting-hook #'(lambda() (electric-pair-mode 1)))
   (evil-define-minor-mode-key '(motion visual normal insert) 'iedit-mode (kbd "C-;")  'iedit--quit)
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode "t"   'iedit-show/hide-occurrence-lines)
 
