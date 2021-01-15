@@ -4,7 +4,7 @@
 (with-eval-after-load 'iedit
   (setq iedit-search-invisible nil)
   (add-hook 'iedit-mode-hook #'(lambda() ((electric-pair-mode -1)))
-  (add-hook 'iedit-mode-end-hook #'electric-pair-mode)
+  (add-hook 'iedit-mode-end-hook #'electric-pair-mode(lambda() ( 1)))
   (evil-define-minor-mode-key '(motion visual normal insert) 'iedit-mode (kbd "C-;")  'iedit--quit)
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode "t"   'iedit-show/hide-occurrence-lines)
 
@@ -21,6 +21,7 @@
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode  (kbd "ml") 'iedit-restrict-current-line)
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode  (kbd "zc") 'iedit-toggle-case-sensitive)
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode  (kbd "zb") 'iedit-toggle-buffering)
+  (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode  (kbd "zi") 'iedit-toggle-search-invisible)
   (evil-define-minor-mode-key '(motion visual normal) 'iedit-mode  (kbd "C－x r n") 'iedit-number-occurrences)
   (evil-normalize-keymaps) ;bug of evil-define-minor-mode-key https://github.com/emacs-evil/evil/issues/301
   )
