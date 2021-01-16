@@ -82,7 +82,7 @@
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
 (vmacs-leader "g," #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel) (thing-at-point 'symbol))))
-(vmacs-define-key  'global "g/" 'consult-hide-lines nil 'normal)
+(vmacs-define-key  'global "g/" 'consult-focus-lines nil 'normal)
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
 
