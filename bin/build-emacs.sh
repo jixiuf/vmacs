@@ -54,7 +54,6 @@ if [ $# -gt 0  ]; then
     --disable-silent-rules \
     --enable-locallisppath=/usr/local/share/emacs/site-lisp \
     --prefix=${prefix} \
-    --with-nativecomp \
     --with-gnutls \
     --without-x \
     --without-dbus \
