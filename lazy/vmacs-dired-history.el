@@ -84,20 +84,22 @@
 (defun vmacs-dired-history--update(dir)
   "Update variable `vmacs-dired-history'.
 Argument DIR directory."
-       (setq dir (abbreviate-file-name (expand-file-name dir)))
-       (unless (member dir vmacs-dired-history-ignore-directory)
-         (unless vmacs-dired-history--cleanup-p
-           (setq vmacs-dired-history--cleanup-p t)
-           (let ((tmp-history ))
-             (dolist (d vmacs-dired-history)
-               (when (or (file-remote-p d) (file-directory-p d))
-                 (push d tmp-history)))
-             (setq vmacs-dired-history tmp-history)))
-         (setq vmacs-dired-history
-               (delete-dups (delete dir vmacs-dired-history)))
-         (setq vmacs-dired-history
-               (append (list dir) vmacs-dired-history))
-         (vmacs-dired-history--trim)))
+  (setq dir (abbreviate-file-name (expand-file-name dir)))
+  (unless (or (member dir vmacs-dired-history-ignore-directory)
+              (string-match-p "/vendor/" dir)
+              (string-match-p "go/pkg/mod" dir))
+    (unless vmacs-dired-history--cleanup-p
+      (setq vmacs-dired-history--cleanup-p t)
+      (let ((tmp-history ))
+        (dolist (d vmacs-dired-history)
+          (when (or (file-remote-p d) (file-directory-p d))
+            (push d tmp-history)))
+        (setq vmacs-dired-history tmp-history)))
+    (setq vmacs-dired-history
+          (delete-dups (delete dir vmacs-dired-history)))
+    (setq vmacs-dired-history
+          (append (list dir) vmacs-dired-history))
+    (vmacs-dired-history--trim)))
 
 (defun vmacs-dired-history-update()
   "Update variable `vmacs-dired-history'."
@@ -170,27 +172,30 @@ Argument ACTION action."
      ((eq action 'metadata)
       (setq vmacs-dired-history---last-token last-token)
       '(metadata (display-sort-function . identity) ;disable sort
-                 (cycle-sort-function . identity)))
+                 (cycle-sort-function . identity))
+      )
      ((eq action 'lambda) origin-result)
      ((eq (car-safe action) 'boundaries)
       '(boundaries 0 . 0))
      ((not action) origin-result)
-     (t
+     ((eq action t)
       (setq last-token vmacs-dired-history---last-token)
-      (setq regexp (mapconcat #'(lambda(e) (if (char-equal ?\  e) ".*" (char-to-string e))) last-token ""))
-      (setq cands (seq-filter (lambda (e) (string-match-p  regexp e)) cands))
+      ;; (setq regexp (mapconcat #'(lambda(e) (if (char-equal ?\  e) ".*" (char-to-string e))) last-token ""))
+      ;; (setq cands (seq-filter (lambda (e) (string-match-p  regexp e)) cands))
+      (setq cands (completion-all-completions last-token cands pred 0))
+      (when (last cands) (setcdr (last cands) nil))
 
-      ;; (setq cands  (prescient-filter last-token cands))
-      (vmacs-dired-history--sort
-       last-token
-       (append
+       (setq cands (append
         cands
         (mapcar (lambda(e)
                   (if (stringp e)
                       (abbreviate-file-name (expand-file-name e))
                     e))
-                origin-result)
-        ))))))
+                origin-result)))
+       (vmacs-dired-history--sort last-token cands)
+       )
+     (t  origin-result)
+     )))
 
 
 (defun vmacs-dired-history--sort (name candidates)
