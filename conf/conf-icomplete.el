@@ -38,6 +38,7 @@
 
 
 (icomplete-mode 1)
+(when (require 'icomplete-vertical nil t) (icomplete-vertical-mode))
 
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
