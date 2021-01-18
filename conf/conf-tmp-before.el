@@ -20,7 +20,9 @@
 (when (file-directory-p "~/repos/embark")
   (add-to-list 'load-path "~/repos/embark"))
 (when (file-directory-p "~/repos/consult")
-  (add-to-list 'load-path "~/repos/consult"))
+  (add-to-list 'load-path "~/repos/consult")
+  (require 'consult)
+  )
 (when (file-directory-p "~/repos/icomplete-vertical")
   (add-to-list 'load-path "~/repos/icomplete-vertical"))
 
