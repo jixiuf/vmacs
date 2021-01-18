@@ -25,6 +25,8 @@
   )
 (when (file-directory-p "~/repos/icomplete-vertical")
   (add-to-list 'load-path "~/repos/icomplete-vertical"))
+(when (file-directory-p "~/repos/evil")
+  (add-to-list 'load-path "~/repos/evil"))
 
 (provide 'conf-tmp-before)
 
