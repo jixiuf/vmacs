@@ -31,8 +31,8 @@ Monospaced font whihc is fixed idth and height is recommended."
   :group 'minibuffer)
 
 (defun vmacs-minibuffer-hook()
-  (set (make-local-variable 'buffer-face-mode-face) 'vmacs-minibuffer-font)
-  (buffer-face-mode t)
+  ;; (set (make-local-variable 'buffer-face-mode-face) 'vmacs-minibuffer-font)
+  ;; (buffer-face-mode t)
   (local-set-key (kbd "<C-m>") 'exit-minibuffer)
   (local-set-key (kbd "<C-h>") 'backward-delete-char-untabify)
   (local-set-key (kbd "C-l") 'backward-kill-word)
