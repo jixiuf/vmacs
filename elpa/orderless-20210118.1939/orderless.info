@@ -65,36 +65,44 @@ used with the default Emacs completion UI (sometimes called minibuffer
 tab completion) or with the built-in Icomplete package (which is similar
 to the more well-known Ido Mode).  To use a completion style in this
 fashion simply add it as an entry in the variables ‘completion-styles’
-and ‘completion-category-overrides’ (see their documentation).
+or ‘completion-category-overrides’ (see their documentation).  Note that
+there is also the variable ‘completion-category-defaults’ which
+configures some completion styles for special kinds of completion by
+default.  If you want to use _only_ orderless, set that variable to nil.
 
    With a bit of effort, it might still be possible to use ‘orderless’
 with other completion UIs, even if those UIs don’t support the standard
-Emacs completion styles.  Currently there is support for Ivy
-(https://github.com/abo-abo/swiper) and Selectrum
-(https://github.com/raxod502/selectrum) (see below).
+Emacs completion styles.  Currently there is support for Selectrum
+(https://github.com/raxod502/selectrum) and Ivy
+(https://github.com/abo-abo/swiper) (see below).
+
+     (use-package orderless
+       :ensure t
+       :init (icomplete-mode) ; optional but recommended
+       :custom
+       (completion-styles '(orderless))
+       (completion-category-defaults nil)) ; optional
+
+   Alternatively, put ‘orderless.el’ somewhere on your ‘load-path’, and
+use the following configuration:
 
    If you use MELPA, the easiest way to install ‘orderless’ is via
 ‘package-install’.  If you use both MELPA and ‘use-package’, you can
 use:
 
-     (use-package orderless
-       :ensure t
-       :init (icomplete-mode) ; optional but recommended!
-       :custom (completion-styles '(orderless)))
-
-   Alternatively, put ‘orderless.el’ somewhere on your ‘load-path’, and
-use the following configuration:
-
      (require 'orderless)
-     (setq completion-styles '(orderless))
-     (icomplete-mode) ; optional but recommended!
+     (setq completion-styles '(orderless)
+           completion-category-defaults nil) ; optional
+     (icomplete-mode) ; optional but recommended
 
    (And of course, if you use another completion framework such as Ivy
 or Helm, disable it.)
 
    If you like the experience of using ‘orderless’ with Icomplete, but
 wish the candidates displayed vertically, you can use icomplete-vertical
-(https://github.com/oantolin/icomplete-vertical).
+(https://github.com/oantolin/icomplete-vertical), Selectrum
+(https://github.com/raxod502/selectrum) or Ivy
+(https://github.com/abo-abo/swiper).
 
    Bug reports are highly welcome and appreciated!
 
@@ -189,6 +197,14 @@ orderless-flex
 desired matching styles to use.  By default it enables the regexp and
 initialism styles.
 
+   If you want to use certain matching styles only for completion of
+certain categories, you can add an entry to the built-in variable
+‘completion-category-overrides’.  For example, to use ‘orderless-flex’
+to complete buffer names, you could use:
+
+     (add-to-list 'completion-category-overrides
+                  '(buffer (orderless-matching-styles orderless-flex)))
+
 * Menu:
 
 * Style dispatchers::
@@ -243,6 +259,18 @@ details.
            orderless-style-dispatchers '(first-initialism
                                          flex-if-twiddle
                                          without-if-bang))
+
+   As with matching styles, you can set which style dispatchers to use
+for specific completion catgories using the
+‘completion-category-overrides’ variable.  For example, if you wanted to
+match buffer using the ‘orderless-flex’ matching style except for
+components starting with ‘!’, which you want to treat as excluded terms,
+you could use the following configuration (which relies on the above
+‘without-if-bang’ dispatcher):
+
+     (add-to-list 'completion-category-overrides
+                  '(buffer (orderless-matching-styles orderless-flex)
+                           (orderless-style-dispatchers without-if-bang)))
 
 
 File: orderless.info,  Node: Component separator regexp,  Next: Faces for component matches,  Prev: Component matching styles,  Up: Customization
@@ -395,8 +423,9 @@ File: orderless.info,  Node: Selectrum,  Next: Company,  Prev: Ivy,  Up: Integra
 3.2 Selectrum
 =============
 
-To use ‘orderless’ from Selectrum add this to your Selectrum
-configuration:
+Recent versions of Selectrum use your configured completion styles by
+default!  To use ‘orderless’ from Selectrum, you can either stick to
+that default or add this to your Selectrum configuration:
 
      (setq selectrum-refine-candidates-function #'orderless-filter)
      (setq selectrum-highlight-candidates-function #'orderless-highlight-matches)
@@ -526,21 +555,21 @@ out of order matching!
 Tag Table:
 Node: Top221
 Node: Overview909
-Node: Customization3103
-Node: Component matching styles3424
-Node: Style dispatchers6211
-Node: Component separator regexp8387
-Node: Faces for component matches9619
-Node: Pattern compiler10417
-Node: Interactively changing the configuration11222
-Node: Integration with other completion UIs13756
-Node: Ivy14547
-Node: Selectrum14800
-Node: Company15175
-Node: Related packages16668
-Node: Ivy and Helm16966
-Node: Prescient18163
-Node: Restricting to current matches in Icicles Ido and Ivy19017
+Node: Customization3530
+Node: Component matching styles3851
+Node: Style dispatchers7016
+Node: Component separator regexp9831
+Node: Faces for component matches11063
+Node: Pattern compiler11861
+Node: Interactively changing the configuration12666
+Node: Integration with other completion UIs15200
+Node: Ivy15991
+Node: Selectrum16244
+Node: Company16740
+Node: Related packages18233
+Node: Ivy and Helm18531
+Node: Prescient19728
+Node: Restricting to current matches in Icicles Ido and Ivy20582
 
 End Tag Table
 
