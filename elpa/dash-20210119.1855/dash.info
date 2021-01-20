@@ -2913,7 +2913,7 @@ docs’.  Contributors are encouraged to install these commands as a Git
 pre-commit hook, so that the tests are always running and the docs are
 always in sync:
 
-     $ cp pre-commit.sh .git/hooks/pre-commit
+     $ cp dev/pre-commit.sh .git/hooks/pre-commit
 
    Oh, and don’t edit ‘README.md’ or ‘dash.texi’ directly, as they are
 auto-generated.  Instead, change their respective templates
@@ -4807,11 +4807,11 @@ Ref: -fixfn101072
 Ref: -prodfn102635
 Node: Development103695
 Node: Contribute104048
-Node: Change log105054
-Node: Contributors112592
-Node: FDL114610
-Node: GPL139930
-Node: Index177679
+Node: Change log105058
+Node: Contributors112596
+Node: FDL114614
+Node: GPL139934
+Node: Index177683
 
 End Tag Table
 

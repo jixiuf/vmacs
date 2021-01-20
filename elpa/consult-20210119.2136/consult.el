@@ -893,21 +893,23 @@ See consult--with-preview for the arguments PREVIEW-KEY, PREVIEW, TRANSFORM and 
                           (with-selected-window (or (minibuffer-selected-window) (next-window))
                             (funcall preview (funcall transform inp cand) nil))
                           (setq last-preview cand)))))
-              (add-hook 'post-command-hook
-                        (lambda ()
-                          (setq input (minibuffer-contents-no-properties))
-                          (when (or (eq preview-key 'any)
-                                    (let ((keys (this-single-command-keys)))
-                                      (seq-find (lambda (x) (equal (vconcat x) keys))
-                                                (if (listp preview-key)
-                                                    preview-key
-                                                  (list preview-key)))))
-                            (when-let (cand (funcall candidate))
-                              (funcall consult--preview-function input cand))))
-                        nil t))
-          (apply-partially #'add-hook 'post-command-hook
-                           (lambda () (setq input (minibuffer-contents-no-properties)))
-                           nil t))
+              (let ((post-command-sym (make-symbol "consult--with-preview-post-command")))
+                (fset post-command-sym
+                      (lambda ()
+                        (setq input (minibuffer-contents-no-properties))
+                        (when (or (eq preview-key 'any)
+                                  (let ((keys (this-single-command-keys)))
+                                    (seq-find (lambda (x) (equal (vconcat x) keys))
+                                              (if (listp preview-key)
+                                                  preview-key
+                                                (list preview-key)))))
+                          (when-let (cand (funcall candidate))
+                            (funcall consult--preview-function input cand)))))
+                (add-hook 'post-command-hook post-command-sym nil t)))
+          (lambda ()
+            (let ((post-command-sym (make-symbol "consult--with-preview-post-command")))
+              (fset post-command-sym (lambda () (setq input (minibuffer-contents-no-properties))))
+              (add-hook 'post-command-hook post-command-sym nil t))))
       (unwind-protect
           (cons (setq selected (when-let (result (funcall fun))
                                  (funcall transform input result)))
@@ -1016,10 +1018,12 @@ to make it available for commands with narrowing."
     (minibuffer-with-setup-hook
         (lambda ()
           (funcall async 'setup)
-          ;; push input string to request refresh
-          (let ((push (lambda (&rest _) (funcall async (minibuffer-contents-no-properties)))))
-            (run-at-time 0 nil push)
-            (add-hook 'after-change-functions push nil t)))
+          ;; Push input string to request refresh.
+          ;; We use a symbol in order to avoid adding lambdas to the hook variable.
+          (let ((sym (make-symbol "consult--with-async-after-change")))
+            (fset sym (lambda (&rest _) (funcall async (minibuffer-contents-no-properties))))
+            (run-at-time 0 nil sym)
+            (add-hook 'after-change-functions sym nil t)))
       (unwind-protect
           (funcall fun async)
         (funcall async 'destroy)))))
@@ -2063,36 +2067,62 @@ The arguments and expected return value are as specified for
 
 ;;;;; Command: consult-mode-command
 
-(defun consult--mode-commands (mode)
-  "Extract commands from MODE.
+(defun consult--mode-name (mode)
+  "Return name part of MODE."
+  (replace-regexp-in-string
+   "global-\\(.*\\)-mode" "\\1"
+   (replace-regexp-in-string
+    "\\(-global\\)?-mode$" ""
+    (if (eq mode 'c-mode)
+        "cc"
+      (symbol-name mode)))))
 
-The list of features is searched for files belonging to MODE.
+(defun consult--mode-command-candidates (modes)
+  "Extract commands from MODES.
+
+The list of features is searched for files belonging to the modes.
 From these files, the commands are extracted."
-  (let ((library-path (symbol-file mode))
-        (filter (consult--regexp-filter consult-mode-command-filter))
-        (key (if (memq mode minor-mode-list)
-                 (if (local-variable-if-set-p mode) ?l ?g)
-               ?m))
-        (mode-rx (regexp-quote
-                  (substring (if (eq major-mode 'c-mode)
-                                 "cc-mode"
-                               (symbol-name major-mode))
-                             0 -5))))
-    (mapcan
-     (lambda (feature)
-       (let ((path (car feature)))
-         (when (or (string= path library-path)
-                   (string-match-p mode-rx (file-name-nondirectory path)))
-           (mapcar
-            (lambda (x) (cons (cdr x) key))
-            (seq-filter
-             (lambda (cmd)
-               (and (consp cmd)
-                    (eq (car cmd) 'defun)
-                    (commandp (cdr cmd))
-                    (not (string-match-p filter (symbol-name (cdr cmd))))))
-             (cdr feature))))))
-     load-history)))
+  (let* ((filter (consult--regexp-filter consult-mode-command-filter))
+         (minor-hash (consult--string-hash minor-mode-list))
+         (minor-local-modes (seq-filter (lambda (m)
+                                         (and (gethash m minor-hash)
+                                              (local-variable-if-set-p m)))
+                                       modes))
+         (minor-global-modes (seq-filter (lambda (m)
+                                         (and (gethash m minor-hash)
+                                              (not (local-variable-if-set-p m))))
+                                       modes))
+         (major-modes (seq-remove (lambda (m)
+                                    (gethash m minor-hash))
+                                  modes))
+         (major-paths-hash (consult--string-hash (mapcar #'symbol-file major-modes)))
+         (minor-local-paths-hash (consult--string-hash (mapcar #'symbol-file minor-local-modes)))
+         (minor-global-paths-hash (consult--string-hash (mapcar #'symbol-file minor-global-modes)))
+         (major-name-regexp (regexp-opt (mapcar #'consult--mode-name major-modes)))
+         (minor-local-name-regexp (regexp-opt (mapcar #'consult--mode-name minor-local-modes)))
+         (minor-global-name-regexp (regexp-opt (mapcar #'consult--mode-name minor-global-modes)))
+         (commands))
+    (dolist (feature load-history commands)
+      (let* ((path (car feature))
+             (file (file-name-nondirectory path))
+             (key (cond
+                   ((or (gethash path major-paths-hash)
+                        (string-match-p major-name-regexp file))
+                    ?m)
+                   ((or (gethash path minor-local-paths-hash)
+                        (string-match-p minor-local-name-regexp file))
+                    ?l)
+                   ((or (gethash path minor-global-paths-hash)
+                        (string-match-p minor-global-name-regexp file))
+                    ?g))))
+        (when key
+          (dolist (cmd (cdr feature))
+            (when (and (consp cmd)
+                       (eq (car cmd) 'defun)
+                       (commandp (cdr cmd))
+                       (not (string-match-p filter (symbol-name (cdr cmd))))
+                       (not (get (cdr cmd) 'byte-obsolete-info)))
+              (push (cons (cdr cmd) key) commands))))))))
 
 ;;;###autoload
 (defun consult-mode-command (&rest modes)
@@ -2109,8 +2139,7 @@ If no MODES are specified, use currently active major and minor modes."
    (intern
     (consult--read
      "Mode command: "
-     (consult--remove-dups
-      (mapcan #'consult--mode-commands modes) #'car)
+     (consult--mode-command-candidates modes)
      :predicate
      (lambda (cand)
        (if consult--narrow
