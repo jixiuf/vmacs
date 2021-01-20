@@ -340,12 +340,11 @@ execute emacs native `repeat' default binding to`C-xz'"
 (fset 'evil-visual-update-x-selection 'ignore)
 
 
-
-;; (defadvice evil-ex-search (after dotemacs activate)
-;;   ;; (recenter)
-;;   (unless evil-ex-search-persistent-highlight
-;;     (sit-for 0.1)
-;;     (evil-ex-delete-hl 'evil-ex-search)))
+(defadvice evil-ex-search (after dotemacs activate)
+  ;; (recenter)
+  (unless evil-ex-search-persistent-highlight
+    (sit-for 0.1)
+    (evil-ex-delete-hl 'evil-ex-search)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
