@@ -9,8 +9,15 @@
 (define-key evil-normal-state-map "mt" 'org-capture)
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
+  (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (http . t)))
+;; https://github.com/zweifisch/ob-http
 (with-eval-after-load 'org-src
 
   (add-to-list 'org-src-lang-modes (cons "go" 'go))
@@ -149,9 +156,6 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
-
-
-
 
 
 

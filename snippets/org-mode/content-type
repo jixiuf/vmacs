@@ -1,0 +1,5 @@
+# key: ct
+# name: src Content-Type
+# --
+
+Content-Type: ${2:$$(yas-choose-value (list "application/json" "application/x-www-form-urlencoded"))} $0

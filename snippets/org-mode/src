@@ -1,4 +1,4 @@
-# key: src
+# key: s
 # name: src (#+BEGIN_SRC...)
 # --
 #+BEGIN_SRC ${1:$$(yas/choose-value (reverse (mapcar (lambda (x) (symbol-name (car x))) org-babel-load-languages)))}

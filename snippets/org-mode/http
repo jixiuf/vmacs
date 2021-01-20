@@ -1,0 +1,8 @@
+# key: http
+# name: src (#+BEGIN_SRC http...)
+# --
+
+#+BEGIN_SRC http ${1::pretty}
+${2:$$(yas-choose-value (list "GET " "POST " "PUT " "DELETE "))} $0
+
+#+END_SRC
