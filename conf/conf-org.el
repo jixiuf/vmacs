@@ -62,11 +62,13 @@
                           "* TODO %? :%T\n  %i\n")
                          ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt" dropbox-dir) "Info")
                           "* Info %? :%T\n  %i\n")
+                         ("h" "Note" item (file ,(expand-file-name "http.txt" dropbox-dir))
+                          " %? ")
                          ("n" "Note" item (file ,org-default-notes-file)
                           " %? "))
- org-agenda-custom-commands '(("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file)
-                                                                    (undo)
-                                                                    ))
+ org-agenda-custom-commands '(
+                              ("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file) (undo)))
+                              ("h"  "[Note] Go to  http.txt (Note )" ((find-file (expand-file-name "http.txt" dropbox-dir)) (undo)))
                               ;; ("b" . "show item of tags prefix") ; describe prefix "h"
                               ;; ("be" tags "+Emacs")
                               ;; ("bj" tags "+Java")
