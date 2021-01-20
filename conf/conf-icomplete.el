@@ -76,7 +76,6 @@
 
 (fset 'imenu 'consult-imenu)
 (setq consult-async-default-split "#")
-(setq consult-preview-key nil)          ;disable preview for evil post-command-hook bug https://github.com/minad/consult/issues/141
 (vmacs-leader "gg" #'consult-ripgrep)
 (vmacs-leader "gG" #'consult-grep)
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
