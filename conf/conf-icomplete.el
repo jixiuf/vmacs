@@ -53,6 +53,7 @@
 (when (require 'embark nil t)
   (when (require 'marginalia nil t) (marginalia-mode 1))
   (setq embark-collect-initial-view-alist '((t . list)))
+  (global-set-key (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embar-collect)
@@ -61,7 +62,18 @@
   (define-key embark-collect-mode-map (kbd "h") nil)
   (define-key embark-collect-mode-map (kbd "v") nil)
   (define-key embark-collect-mode-map (kbd "e") nil)
-  (global-set-key (kbd "C-o") 'embark-act)
+  (define-key embark-collect-mode-map (kbd "g") nil)
+  (defun vmacs-embark-collect-mode-hook ()
+    (evil-local-mode)
+    (evil-define-key 'normal 'local "/" #'consult-focus-lines)
+    (evil-define-key 'normal 'local "z"
+      #'(lambda() (interactive) (consult-focus-lines
+                                 nil (run-hook-with-args-until-success 'consult--completion-filter-hook) "! ")))
+                                        ;show hidden lines
+    (evil-define-key 'normal 'local "r" #'(lambda()(interactive) (consult-focus-lines t))))
+
+  (add-hook 'embark-collect-mode-hook 'vmacs-embark-collect-mode-hook)
+
   )
 
 
