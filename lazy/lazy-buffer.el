@@ -43,7 +43,7 @@ The user's $HOME directory is abbreviated as a tilde."
   (interactive)
   (let ((recentf-list (append  recentf-list
                                vmacs-dired-history
-                               (vmacs--git-files 0 "~/vmacs")
+                               (vmacs--git-files 0 "~/repos/vmacs")
                                (vmacs--git-files 0 "~/repos/dotfiles")
                                (vmacs--git-files 1 nil))))
     (consult--buffer #'switch-to-buffer #'find-file #'bookmark-jump)))
