@@ -102,7 +102,6 @@
  dired-recursive-copies 'always         ;让 dired 可以递归的拷贝和删除目录。
  dired-recursive-deletes 'always       ;always表示不加询问
  dired-dwim-target t                   ;Dired试着猜处默认的目标目录
- ivy-dired-history-max 200
  dired-listing-switches "-alht"
  )
 
@@ -134,7 +133,8 @@
 (define-key dired-mode-map  (kbd "C-s") 'consult-focus-lines) ;
 ;; (dired-mark-unmarked-files "init" nil nil )
 ;; 临时忽略某些文件,用正则表达示  "z"跟/的作用相反
-(define-key dired-mode-map (kbd "z")  'dired-omit-expunge)
+(autoload 'dired-omit-expunge "dired-x" "" t)
+(define-key dired-mode-map (kbd "z")  'consult-hide-lines)
 ;; (define-key dired-mode-map (kbd "M-=") 'dired-ediff)
 
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回

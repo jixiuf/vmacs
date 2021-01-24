@@ -36,11 +36,8 @@
   (evil-local-mode)
   (define-key grep-mode-map "g" nil)
   (evil-define-key 'normal 'local "/" #'consult-focus-lines)
-  (evil-define-key 'normal 'local "z"
-    #'(lambda() (interactive) (consult-focus-lines
-                               nil (run-hook-with-args-until-success 'consult--completion-filter-hook) "! ")))
-                                        ;show hidden lines
-  (evil-define-key 'normal 'local "r" #'(lambda()(interactive) (consult-focus-lines t))))
+  (evil-define-key 'normal 'local "z" #'consult-hide-lines)
+  (evil-define-key 'normal 'local "r" #'consult-reset-lines))
 
 (add-hook 'grep-mode-hook 'vmacs-grep-mode-hook)
 

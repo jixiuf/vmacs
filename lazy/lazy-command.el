@@ -658,6 +658,18 @@ end tell" (expand-file-name default-directory))))
      case-fold-search t ;nil=case sensitive
      evil-ex-search-case 'insensitive)
     (message "case insensitive")))
+
+;;;###autoload
+(defun consult-hide-lines ()
+  (interactive)
+  (consult-focus-lines nil (consult--completion-filter 'consult-location nil) "! "))
+
+;;;###autoload
+(defun consult-reset-lines ()
+  (interactive)
+  (consult-focus-lines t))
+
+
 ;; ;; this macro works
 ;; ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))
 ;; (defmacro with-mode-on (mode &rest body)

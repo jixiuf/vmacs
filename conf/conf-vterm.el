@@ -130,23 +130,20 @@
 (defun vterm-evil-delete-char ()
   (interactive)
   (vterm-goto-char (point))
-  (let ((inhibit-read-only t))
-    (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
-      (call-interactively #'evil-delete-char))))
+  (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
+    (call-interactively #'evil-delete-char)))
 
 (defun vterm-evil-delete ()
   "Provide similar behavior as `evil-delete'."
   (interactive)
-  (let ((inhibit-read-only t))
-    (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
-      (call-interactively #'evil-delete))))
+  (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
+    (call-interactively #'evil-delete)))
 
 (defun vterm-evil-change ()
   "Provide similar behavior as `evil-change'."
   (interactive)
-  (let ((inhibit-read-only t))
     (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
-      (call-interactively #'evil-change))))
+      (call-interactively #'evil-change)))
 
 
 
