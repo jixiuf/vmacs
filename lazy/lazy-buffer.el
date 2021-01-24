@@ -6,10 +6,10 @@
 (autoload 'magit-toplevel "magit" "magit toplevel " nil)
 
 (defvar git-repos-files-cache (make-hash-table :test 'equal))
-(defun vmacs--git-files (&optional n)
+(defun vmacs--git-files (&optional n dir )
   "Append git files as virtual buffer"
   (let (result-list
-        (default-directory default-directory)
+        (default-directory (or dir default-directory))
         (magit-repos (mapcar 'car magit-repository-directories))
         list git-dir)
     (unless (file-remote-p default-directory)
@@ -41,7 +41,11 @@
   "Open `recent-list' item in a new buffer.
 The user's $HOME directory is abbreviated as a tilde."
   (interactive)
-  (let ((recentf-list (append  recentf-list vmacs-dired-history (vmacs--git-files))))
+  (let ((recentf-list (append  recentf-list
+                               vmacs-dired-history
+                               (vmacs--git-files 0 "~/vmacs")
+                               (vmacs--git-files 0 "~/repos/dotfiles")
+                               (vmacs--git-files 1 nil))))
     (consult--buffer #'switch-to-buffer #'find-file #'bookmark-jump)))
 
 ;;
