@@ -12,10 +12,44 @@
   (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
+(setq verb-auto-kill-response-buffers t)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
+(defun vmacs-verb-handler-json ()
+  "Standard handler for the \"application/json\" text content type."
+  (when verb-json-use-mode
+    (funcall verb-json-use-mode))
+  (when (< (oref verb-http-response body-bytes)
+           (or verb-json-max-pretty-print-size 0))
+    (unwind-protect
+        (unless (zerop (buffer-size))
+          (vmacs-json-pretty))
+      (buffer-enable-undo))
+    (goto-char (point-min))))
+
+(setq verb-content-type-handlers
+  '(;; Text handlers
+    ("text/html" html-mode)
+    ("\\(application\\|text\\)/xml" xml-mode)
+    ("application/xhtml\\+xml" xml-mode)
+    ("application/json" vmacs-verb-handler-json)
+    ("application/javascript" js-mode)
+    ("application/css" css-mode)
+    ("text/plain" text-mode)
+    ;; Binary handlers
+    ("application/pdf" doc-view-mode t)
+    ("image/png" image-mode t)
+    ("image/svg\\+xml" image-mode t)
+    ("image/x-windows-bmp" image-mode t)
+    ("image/gif" image-mode t)
+    ("image/jpe?g" image-mode t)))
+
+(define-key org-mode-map (kbd "C-c C-u") #'verb-export-request-on-point-curl)
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((emacs-lisp . t)))
+ '((emacs-lisp . t)
+   (verb . t)))
 ;; https://github.com/zweifisch/ob-http
 (with-eval-after-load 'org-src
 
