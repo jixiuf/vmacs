@@ -15,8 +15,7 @@
 
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((emacs-lisp . t)
-   (http . t)))
+ '((emacs-lisp . t)))
 ;; https://github.com/zweifisch/ob-http
 (with-eval-after-load 'org-src
 
