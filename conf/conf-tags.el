@@ -4,11 +4,12 @@
 (setq eglot-sync-connect 0)
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
+(defun +eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
 (defun vmacs-lsp-hook()
   ;; (lsp-deferred)
   ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
   ;; (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
-  (add-hook 'after-save-hook #'eglot-organize-imports 29 t);before hook有时无效，只好After
+  (add-hook 'before-save-hook #'+eglot-organize-imports 29 t);before hook有时无效，只好After
   ;; (add-hook 'before-save-hook #'eglot-organize-imports -100 t)
   (add-hook 'before-save-hook #'eglot-format-buffer 30 t))
 
@@ -57,38 +58,6 @@
     (setq xref-show-definitions-function 'xref-show-definitions-completing-read)
     (setq xref-show-xrefs-function 'xref-show-definitions-completing-read)))
 
-
-(defun eglot-organize-imports ()
-  "Offer to execute code actions `source.organizeImports'."
-  (interactive)
-  (unless (eglot--server-capable :codeActionProvider)
-    (eglot--error "Server can't execute code actions!"))
-  (let* ((server (eglot--current-server-or-lose))
-         (actions (jsonrpc-request
-                   server
-                   :textDocument/codeAction
-                   (list :textDocument (eglot--TextDocumentIdentifier)
-                         :range (list :start (eglot--pos-to-lsp-position (point-min))
-                                      :end (eglot--pos-to-lsp-position (point-max)))
-                         :context
-                         `(:diagnostics
-                           [,@(cl-loop for diag in (flymake-diagnostics (point-min) (point-max))
-                                       when (cdr (assoc 'eglot-lsp-diag (eglot--diag-data diag)))
-                                       collect it)]))))
-         (action (cl-find-if
-                  (jsonrpc-lambda (&key kind &allow-other-keys)
-                    (string-equal kind "source.organizeImports" ))
-                  actions)))
-    (when action
-      (eglot--dcase action
-        (((Command) command arguments)
-         (eglot-execute-command server (intern command) arguments))
-        (((CodeAction) edit command)
-         (when edit (eglot--apply-workspace-edit edit))
-         (when command
-           (eglot--dbind ((Command) command arguments) command
-             (eglot-execute-command server (intern command) arguments)))))))
-  (save-current-buffer))
 
 
 
