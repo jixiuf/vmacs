@@ -15,11 +15,6 @@
 ;; 黄金分隔 多窗口操作时
 (golden-ratio-mode 1)
 ;; Work with ediff and helm
-(add-to-list 'golden-ratio-exclude-modes "ediff-mode")
-;; (add-to-list 'golden-ratio-exclude-modes 'vterm-mode)
-(add-to-list 'golden-ratio-exclude-modes 'snails-mode)
-;; (add-to-list 'golden-ratio-exclude-modes "magit-mode")
-(add-to-list 'golden-ratio-exclude-modes "magit-key-mode")
 (setq golden-ratio-adjust-factor 0.91)
 (setq golden-ratio-extra-commands
       (append golden-ratio-extra-commands
@@ -81,8 +76,6 @@
          (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
          )
         ("\\*Annotate .*"
-         (display-buffer-same-window ))
-        ("\\*ivy-occur.*"
          (display-buffer-same-window ))
         ;; default
         ;; (".*" (display-buffer-pop-up-window))
