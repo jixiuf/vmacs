@@ -296,6 +296,10 @@ window should only be used if it displays `embark--target-buffer'.")
 (defvar-local embark--command nil
   "Command that started the completion session.")
 
+(defvar-local embark--default-action nil
+  "Command that should be used as the default action.
+Defaults to `embark--command'.")
+
 (defun embark--default-directory ()
   "Guess a reasonable default directory for the current candidates."
   (if (and (minibufferp) minibuffer-completing-file-name)
@@ -333,11 +337,13 @@ window if necessary."
   "Cache information needed for actions in variables local to BUFFER.
 BUFFER defaults to the current buffer."
   (let ((cmd (or embark--command this-command))
+        (def embark--default-action)
         (dir (embark--default-directory))
         (target-buffer (embark--target-buffer))
         (target-window (embark--target-window)))
     (with-current-buffer buffer
       (setq-local embark--command cmd
+                  embark--default-action def
                   default-directory dir
                   embark--target-buffer target-buffer
                   embark--target-window target-window))))
@@ -531,7 +537,7 @@ relative path."
    (if (eq type 'region)
        embark-meta-map
      (make-composed-keymap
-      `(keymap (13 . ,embark--command))
+      `(keymap (13 . ,(or embark--default-action embark--command)))
       embark-general-map))))
 
 (defun embark--show-indicator (indicator keymap target)
@@ -608,44 +614,48 @@ keybindings and even \\[execute-extended-command] to select a command."
 (defun embark-completing-read-prompter (keymap)
   "Prompt via completion for a command bound in KEYMAP."
   (let* ((commands
-          (cl-loop
-           for (key . cmd) in (cdr (keymap-canonicalize keymap))
-           unless (embark--omit-binding-p cmd)
-           collect (let ((desc (if (numberp key)
-                                       (single-key-description key)
-                                     (key-description key)))
-                         (name (symbol-name cmd)))
-                     (concat
-                      (substring name 0 -1)
-                      (propertize
-                       (substring name -1)
-                       'display
-                       (format "%s (%s)"
-                               (substring name -1)
-                               (propertize desc 'face 'embark-keybinding))))))))
-    (intern-soft
-     (minibuffer-with-setup-hook
-         (lambda ()
-           (use-local-map
-            (make-composed-keymap
-             (let ((map (make-sparse-keymap)))
-               (define-key map "@"
-                 (lambda ()
-                   (interactive)
-                   (message "Action key:")
-                   (when-let ((cmd (embark-keymap-prompter keymap)))
-                     (delete-minibuffer-contents)
-                     (insert (symbol-name cmd))
-                     (add-hook 'post-command-hook #'exit-minibuffer nil t))))
-               map)
-             (current-local-map))))
-       (completing-read
-        "Command: "
-        (lambda (string predicate action)
-          (if (eq action 'metadata)
-              `(metadata (category . command))
-            (complete-with-action action commands string predicate)))
-        nil t)))))
+          (cl-loop for (key . cmd) in (embark--all-bindings keymap)
+                   for name = (or
+                               (when (symbolp cmd) (symbol-name cmd))
+                               (when-let ((doc (documentation cmd)))
+                                 (save-match-data
+                                   (when (string-match "^\\(.*\\)$" doc)
+                                     (match-string 1 doc))))
+                               "<unnamed>")
+                   do (add-text-properties
+                       0 1
+                       `(display
+                         ,(format "%-3s %s"
+                                  (propertize key 'face 'embark-keybinding)
+                                  (substring name 0 1)))
+                       name)
+                   unless (eq cmd 'embark-keymap-help)
+                   collect (cons name cmd))))
+    (cdr
+     (assoc
+      (minibuffer-with-setup-hook
+          (lambda ()
+            (use-local-map
+             (make-composed-keymap
+              (let ((map (make-sparse-keymap)))
+                (define-key map "@"
+                  (lambda ()
+                    (interactive)
+                    (message "Action key:")
+                    (when-let ((cmd (embark-keymap-prompter keymap)))
+                      (delete-minibuffer-contents)
+                      (insert (symbol-name cmd))
+                      (add-hook 'post-command-hook #'exit-minibuffer nil t))))
+                map)
+              (current-local-map))))
+        (completing-read
+         "Command: "
+         (lambda (string predicate action)
+           (if (eq action 'metadata)
+               `(metadata (category . command))
+             (complete-with-action action commands string predicate)))
+         nil t))
+      commands))))
 
 (defun embark--with-indicator (indicator prompter keymap &optional target)
   "Display INDICATOR while calling PROMPTER with KEYMAP.
@@ -741,7 +751,7 @@ work on them."
 
 (defun embark-set-xref-location-default-action (target)
   "Set `embark-goto-location' as the default action for TARGET."
-  (setq embark--command 'embark-goto-location)
+  (setq embark--default-action 'embark-goto-location)
   (cons 'xref-location target))
 
 (defun embark--target ()
@@ -1090,14 +1100,22 @@ Returns the name of the command."
            (documentation action)))
     name))
 
-(defun embark--omit-binding-p (cmd)
-  "Should CMD binding be hidden from the user?
-Return non-nil if this is a key binding that should not be bound
-in `embark-collect-direct-action-minor-mode-map' nor mentioned by
-`embark-keymap-help'."
-  (or (null cmd)
-      (not (symbolp cmd))
-      (memq cmd '(ignore embark-keymap-help))))
+(defun embark--all-bindings (keymap)
+  "Return an alist of all bindings in KEYMAP."
+  (let (bindings)
+    (map-keymap
+     (lambda (key def)
+       (let ((desc (single-key-description key)))
+         (cond
+          ((null def))
+          ((keymapp def)
+           (dolist (bind (embark--all-bindings def))
+             (push (cons (concat desc " " (car bind))
+                         (cdr bind))
+                   bindings)))
+          (t (push (cons desc def) bindings)))))
+     keymap)
+    (nreverse bindings)))
 
 (define-obsolete-variable-alias
   'embark-occur-direct-action-minor-mode-map
@@ -1121,11 +1139,10 @@ in `embark-collect-direct-action-minor-mode-map' nor mentioned by
     ;; must mutate keymap, not make new one
     (let ((map embark-collect-direct-action-minor-mode-map))
       (setcdr map nil)
-      (map-keymap
-       (lambda (key cmd)
-         (unless (embark--omit-binding-p cmd)
-           (define-key map (vector key) (embark--action-command cmd))))
-       (embark--action-keymap embark--type)))))
+      (cl-loop for (key . cmd) in (embark--all-bindings
+                                   (embark--action-keymap embark--type))
+               unless (eq cmd 'embark-keymap-help)
+               do (define-key map (kbd key) (embark--action-command cmd))))))
 
 (define-button-type 'embark-collect-entry
   'face 'embark-collect-candidate
@@ -1172,7 +1189,7 @@ For other Embark Collect buffers, run the default action on ENTRY."
                       (= (car (embark--boundaries))
                          (- (point) (minibuffer-prompt-end))))
             (exit-minibuffer)))
-      (embark--act embark--command text))))
+      (embark--act (or embark--default-action embark--command) text))))
 
 (make-obsolete 'embark-occur-mode-map 'embark-collect-mode-map "0.10")
 
@@ -1205,6 +1222,7 @@ keybinding for it.  Or alternatively you might want to enable
 
 (defun embark-collect--max-width ()
   "Maximum width of any Embark Collect candidate."
+  ;; TODO take into account display properties
   (or (cl-loop for cand in embark-collect-candidates
                maximize (length cand))
       0))
@@ -1860,14 +1878,19 @@ minibuffer, which means it can be used as an Embark action."
 (defun embark-act-on-region-contents ()
   "Act on the contents of the region."
   (interactive)
-  (let ((contents (buffer-substring (region-beginning) (region-end)))
-        (mode major-mode))
-    (with-temp-buffer
-      (setq-local major-mode mode)
-      (insert contents)
-      (goto-char (point-min))
-      (let (embark-quit-after-action)
-        (embark-act)))))
+  (let* ((contents (buffer-substring (region-beginning) (region-end)))
+         (embark-target-finders
+          (lambda ()
+            (cons
+             (if (string-match-p "\\`\\_<.*?\\_>\\'" contents)
+                 (if (or (derived-mode-p 'emacs-lisp-mode)
+                         (and (not (derived-mode-p 'prog-mode))
+                              (intern-soft contents)))
+                     'symbol
+                   'identifier)
+               'general)
+             contents))))
+    (embark-act)))
 
 ;;; setup hooks for actions
 
@@ -1983,7 +2006,7 @@ and leaves the point to the left of it."
   "Keymap for Embark command actions."
   :parent embark-symbol-map
   ("x" embark-execute-command)
-  ("c" Info-goto-emacs-command-node)
+  ("I" Info-goto-emacs-command-node)
   ("g" global-set-key)
   ("l" local-set-key))
 
@@ -1992,7 +2015,7 @@ and leaves the point to the left of it."
   :parent embark-symbol-map
   ("=" set-variable)
   ("c" customize-set-variable)
-  ("C" customize-variable))
+  ("u" customize-variable))
 
 (embark-define-keymap embark-package-map
   "Keymap for Embark package actions."

@@ -640,7 +640,7 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
        ;; (add-to-list 'consult-buffer-sources
        ;;               (list ?v
        ;;                    :name     "View"
-       ;;                    :category 'consult-view
+       ;;                    :category 'bookmark
        ;;                    :face     'font-lock-keyword-face
        ;;                    :open     #'bookmark-jump
        ;;                    :items    #'bookmark-view-names)
@@ -882,11 +882,11 @@ Node: Asynchronous candidates21208
 Node: Embark integration23558
 Node: Configuration25356
 Node: Use-package example26710
-Node: Custom variables32078
-Node: Fine-tuning35649
-Node: Recommended packages37665
-Node: Contributions39518
-Node: Acknowledgements40958
+Node: Custom variables32074
+Node: Fine-tuning35645
+Node: Recommended packages37661
+Node: Contributions39514
+Node: Acknowledgements40954
 
 End Tag Table
 
