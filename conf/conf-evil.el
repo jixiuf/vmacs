@@ -14,8 +14,10 @@
 ;; (evil-set-command-property #'evil-find-char-to-backward :jump nil)
 
 
-
 (require 'evil)
+(setq evil-collection-key-blacklist '("SPC") )
+(when (require 'evil-collection nil t)
+  (evil-collection-init))
 ;; minor-mode
 ;; 设置一些mode的初始state
 (add-hook 'org-capture-mode-hook 'evil-insert-state)

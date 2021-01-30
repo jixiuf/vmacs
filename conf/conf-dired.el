@@ -117,44 +117,39 @@
 ;;(setq directory-free-space-args "-Pkh")
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (require 'dired)
-(define-key dired-mode-map "u" 'dired-up-directory) ;上层目录
+(evil-collection-define-key 'normal 'dired-mode-map
+  "u" 'dired-up-directory ;上层目录
+  ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
+  "/" 'consult-focus-lines
+  (kbd "C-s") 'consult-focus-lines
+  "z"  'consult-hide-lines
+  ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
+  (kbd "C-a") 'dired-smart-beginning-of-line
+  ;; C-gC-g 退出编辑或C-cC-c保存修改
+  "i" 'wdired-change-to-wdired-mode
+  "\M-o" 'dired-omit-mode ;不显示一些不重要的文件
+  "L" 'dired-add-to-load-path-or-load-it
+  "v" 'add-dir-local-variable
+  "," 'dired
+  "f" 'open-in-filemanager
+  "r" 'revert-buffer
+  "gr" 'revert-buffer
+  "gg" 'dired-beginning-of-buffer
+  "G" 'dired-end-of-buffer
+  )
+
 (define-key dired-mode-map "y" nil)     ;给evil-mode 的y让位
-;;change to another directory
-;; (define-key dired-mode-map "c" 'dired)
-;;(define-key dired-mode-map "q" 'kill-buffer-and-window)
 (define-key dired-mode-map "g" nil)     ;给evil-mode 的gg让位
-(define-key dired-mode-map "r" 'revert-buffer)
-
-
-(define-key dired-mode-map (kbd "<C-m>" ) 'dired-find-file)
-(define-key dired-mode-map (kbd "C-[ [ 1 m") 'dired-find-file)
-;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
-(define-key dired-mode-map  "/" 'consult-focus-lines)
-(define-key dired-mode-map  (kbd "C-s") 'consult-focus-lines) ;
-;; (dired-mark-unmarked-files "init" nil nil )
-;; 临时忽略某些文件,用正则表达示  "z"跟/的作用相反
-(autoload 'dired-omit-expunge "dired-x" "" t)
-(define-key dired-mode-map (kbd "z")  'consult-hide-lines)
-;; (define-key dired-mode-map (kbd "M-=") 'dired-ediff)
-
-;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
-(define-key dired-mode-map (kbd "C-a") 'dired-smart-beginning-of-line)
-;;; wdired的配置
-;; (define-key dired-mode-map (kbd "r") 'wdired-change-to-wdired-mode)
+;; (define-key dired-mode-map "r" 'revert-buffer)
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state
 (setq-default wdired-allow-to-change-permissions t);; writable 时,不仅可以改文件名,还可以改权限
-;; C-gC-g 退出编辑或C-cC-c保存修改
-(define-key dired-mode-map "i" 'wdired-change-to-wdired-mode)
 
 
 (with-eval-after-load 'wdired
   (define-key wdired-mode-map (kbd "C-a") 'dired-smart-beginning-of-line)
   (define-key wdired-mode-map (kbd "C-g") 'wdired-abort-changes))
-
-(with-eval-after-load 'dired-x
-  (define-key dired-mode-map "\M-o" 'dired-omit-mode)) ;不显示一些不重要的文件
 
 ;;; dired-x 增强的dired功能
 (with-eval-after-load 'dired-x
@@ -188,13 +183,9 @@
     (setq ad-return-value(dired-move-to-filename))))
 
 ;; 把目录加入到load-path中，或load el文件
-(define-key dired-mode-map "L" 'dired-add-to-load-path-or-load-it)
-(define-key dired-mode-map "v" 'add-dir-local-variable)
 ;; (define-key dired-mode-map (kbd "C-o") 'golden-ratio-scroll-screen-down)
 
 
-(define-key dired-mode-map "," 'dired)  ;
-(define-key dired-mode-map "f" 'open-in-filemanager)  ;
 
 ;; 删除 copy 文件目录时 以异步的形式进行，以避copy大文件时emacs卡位无法进行其他操作
 (with-eval-after-load 'dired-aux
@@ -218,18 +209,7 @@
 (setq vmacs-dired-history-max 500)
 (require 'vmacs-dired-history)
 
-
-
-
-
-  (require 'dired-async nil t)
-(with-eval-after-load 'dired
-  (evil-define-key 'normal dired-mode-map
-    "r" 'revert-buffer                ; "l"
-    "gr" 'revert-buffer
-    "gg" 'dired-beginning-of-buffer
-    "G" 'dired-end-of-buffer
-    ";" nil))                             ;取消对;的绑定，；进行clipboard的操作
+(require 'dired-async nil t)
 
 
 (provide 'conf-dired)

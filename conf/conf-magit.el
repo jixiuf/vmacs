@@ -59,7 +59,7 @@
 ;; (transient-append-suffix 'magit-fetch "f"
 ;;      '("f" "Full from pushremote" magit-pull))
 
-(require 'evil-magit)
+;; (require 'evil-magit)
 (transient-insert-suffix 'magit-revert "o"
   '("_" "Revert no commit" magit-revert-no-commit))
 
@@ -74,19 +74,12 @@
 (define-key transient-edit-map   "q" 'transient-quit-one)
 (define-key transient-sticky-map "q" 'transient-quit-seq)
 ;;(setq evil-window-map  ctl-w-map)
-(evil-magit-define-key evil-magit-state 'magit-mode-map
-                       "v"  'magit-push)
-(evil-magit-define-key evil-magit-state 'magit-mode-map
-                       "C-w"  evil-window-map)
-
-(evil-magit-define-key evil-magit-state 'magit-mode-map
-                       "gw" 'toggle-diff-whitespace)
-
-(evil-magit-define-key evil-magit-state 'magit-mode-map "gm"  'magit-toggle-margin)
-
-;; (define-key magit-mode-map "\s" nil) ;space
-;; (define-key magit-diff-mode-map "\s" nil) ;space
-;; (define-key magit-diff-mode-map "j" nil)
+(evil-collection-define-key 'normal 'magit-mode-map
+  "v"  'magit-push
+       "C-w"  evil-window-map
+       "gw" 'toggle-diff-whitespace
+       "gm"  'magit-toggle-margin
+  )
 
 
 (defun vmacs-magit-mode-hook()

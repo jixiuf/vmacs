@@ -15,6 +15,9 @@
 
 
 (setq-default
+ evil-want-integration t ;; This is optional since it's already set to t by default.
+ evil-want-keybinding nil
+
  ;; evil-search-module 'isearch        ;可以用C-w yank word
  evil-undo-system 'undo-tree
  evil-disable-insert-state-bindings t
