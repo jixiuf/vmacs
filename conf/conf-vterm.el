@@ -102,43 +102,15 @@
   (evil-define-key 'normal 'local (kbd "C-p") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-n") 'vmacs-vterm-self-insert)
   (evil-define-key 'normal 'local (kbd "C-r") 'vmacs-vterm-self-insert)
-  (evil-define-key 'normal 'local (kbd "p") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "C-y") 'vterm-yank)
   (evil-define-key 'normal 'local (kbd "C-/") 'vterm-undo)
-  (evil-define-key 'normal 'local "a" 'vterm-evil-append)
-  (evil-define-key 'normal 'local "x" 'vterm-evil-delete-char)
-  (evil-define-key 'normal 'local "d" 'vterm-evil-delete)
-  (evil-define-key 'normal 'local "i" 'vterm-evil-insert)
   (evil-define-key 'normal 'local "c" 'vterm-evil-change)
 
-  (evil-define-key 'normal 'local (kbd "u") 'vterm-undo)
   (evil-define-key 'normal 'local (kbd "G") 'vterm-eob))
 
 (add-hook 'vterm-mode-hook 'vmacs-vterm-hook)
 ;; (add-hook 'vterm-mode-hook  'with-editor-export-editor)
 (setq vterm-buffer-name-string "vterm %s")
-
-(defun vterm-evil-insert ()
-  (interactive)
-  (vterm-goto-char (point))
-  (call-interactively #'evil-insert))
-
-(defun vterm-evil-append ()
-  (interactive)
-  (vterm-goto-char (1+ (point)))
-  (call-interactively #'evil-append))
-(defun vterm-evil-delete-char ()
-  (interactive)
-  (vterm-goto-char (point))
-  (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
-    (call-interactively #'evil-delete-char)))
-
-(defun vterm-evil-delete ()
-  "Provide similar behavior as `evil-delete'."
-  (interactive)
-  (cl-letf (((symbol-function #'delete-region) #'vterm-delete-region))
-    (call-interactively #'evil-delete)))
-
 (defun vterm-evil-change ()
   "Provide similar behavior as `evil-change'."
   (interactive)
@@ -159,7 +131,5 @@
 
 (add-hook 'vterm-toggle-after-remote-login-function 'vterm-toggle-after-ssh-login)
 
-(defun vmacs-term-mode-p(&optional args)
-  (or (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode 'tsmterm-mode)))
 
 (provide 'conf-vterm)

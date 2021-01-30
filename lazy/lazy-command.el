@@ -340,7 +340,7 @@ Move point to end-of-line ,if point was already at that position,
            (boundp 'server-buffer-clients)
            server-buffer-clients)
       (server-edit))
-     ((vmacs-term-mode-p)
+     ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
       (kill-this-buffer)
       ;; (vterm-toggle-hide )
       ;; (vmacs-add-to-killed-file-list)
