@@ -155,39 +155,10 @@
 (with-eval-after-load 'dired-x
   (add-hook 'dired-mode-hook 'dired-omit-mode);;M-o toggle 是否显示忽略的文件
   ;; 默认这些后缀的文件 不显示，M-o后才显示
-  (setq dired-omit-files (concat dired-omit-files "\\|^.*~$\\|^#.*#$\\|^\\.svn$\\|.DS_Store\\|.go-imports-packages.el\\|\\.ccls-cache"))
+  (setq dired-omit-files (concat dired-omit-files "\\|^.*~$\\|^#.*#$\\|^\\.svn$\\|.DS_Store\\|\\.ccls-cache"))
   (setq dired-omit-extensions
-        (append dired-omit-extensions (list ".beam" ".swp"  "CVS/")))
+        (append dired-omit-extensions (list ".beam" ".swp"  "CVS/"))))
 
-  )
-;;in dired mode ,C-s works like "M-s f C-s" ,only search filename in dired buffer
-;; (setq dired-isearch-filenames t )
-;;不知道出什么原因,如果delete-by-moving-to-trash 设成t ,emacs --daemon 会启动失败
-;; (setq delete-by-moving-to-trash t);;using trash
-;; 如果buffer中有一个路径如/home/jixiuf/,光标移动到其上C-u C-x C-f,会以此路径默认路径
-;; Make sure our binding preference is invoked.
-;;(setq dired-x-hands-off-my-keys nil) (dired-x-bind-find-file)
-;; Set dired-x global variables here.  For example:
-;;定义哪些文件会忽略如.git
-
-
-;;; np下下运动的时候光标始终在文件名上（evil-mode 的j k 不受此限制）
-(defadvice dired-next-line (around dired-keep-point-on-filename-next activate)
-  "Replace current buffer if file is a directory."
-  ad-do-it
-  (while (and  (not  (eobp)) (not ad-return-value))
-    (forward-line)
-    (setq ad-return-value (dired-move-to-filename)))
-  (when (eobp)
-    (forward-line -1)
-    (setq ad-return-value(dired-move-to-filename))))
-
-;; 把目录加入到load-path中，或load el文件
-;; (define-key dired-mode-map (kbd "C-o") 'golden-ratio-scroll-screen-down)
-
-
-
-;; 删除 copy 文件目录时 以异步的形式进行，以避copy大文件时emacs卡位无法进行其他操作
 (with-eval-after-load 'dired-aux
   (add-to-list 'dired-compress-files-alist '("\\.tgz\\'" . "tar -c %i | gzip -c9 > %o")))
 ;; 根据后缀名对文件进行着色
