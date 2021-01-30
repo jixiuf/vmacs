@@ -86,6 +86,7 @@
 (setq consult-async-default-split "#")
 (vmacs-leader "gg" #'consult-ripgrep)
 (vmacs-leader " " 'consult-buffer)
+(vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "gG" #'consult-grep)
 (vmacs-leader "gt" #'(lambda()(interactive) (require 'magit) (consult-ripgrep (magit-toplevel))))
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol))))
