@@ -105,21 +105,11 @@ execute emacs native `repeat' default binding to`C-xz'"
     ":" 'evil-ex
     "r" 'org-agenda-redo)
 
-;; ;; 清空所有insert-state的绑定,这样 ,insert mode 就是没装evil 前的正常emacs了
-;; (setcdr evil-insert-state-map nil);evil-disable-insert-state-bindings
-(setq evil-window-map nil)
-;; (define-key evil-insert-state-map [escape] nil) ;emacs karabiner shift 输入法切换相关
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
 
-(define-key evil-ex-completion-map (kbd "M-p") 'previous-history-element) ;
-(define-key evil-ex-completion-map (kbd "M-n")  'next-history-element)
-(define-key evil-normal-state-map (kbd "C-z") nil)
-(define-key evil-normal-state-map "\C-n" nil)
-(define-key evil-normal-state-map "\C-p" nil)
-(define-key evil-normal-state-map "\C-v" nil)
-(define-key evil-motion-state-map "\C-v" nil)
-(define-key evil-normal-state-map "\C-e" nil)
+;; (define-key evil-ex-completion-map (kbd "M-p") 'previous-history-element) ;
+;; (define-key evil-ex-completion-map (kbd "M-n")  'next-history-element)
+;; (define-key evil-normal-state-map "\C-n" nil)
+;; (define-key evil-normal-state-map "\C-p" nil)
 
 ;; (evil-define-motion vmacs-evil-next-line (count)
 ;;   "Move the cursor COUNT lines down."
@@ -137,22 +127,20 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; (fset 'evil-next-line 'vmacs-evil-next-line)
 ;; (fset 'evil-previous-line 'vmacs-evil-previous-line)
 
-;; (define-key evil-motion-state-map (kbd "C-w") nil)
-(define-key evil-motion-state-map (kbd "C-i") nil)
-(define-key evil-motion-state-map (kbd "C-b") nil)
-(define-key evil-motion-state-map (kbd "C-d") nil)
-(define-key evil-motion-state-map (kbd "C-e") nil)
-(define-key evil-motion-state-map (kbd "C-f") nil)
-(define-key evil-motion-state-map (kbd "C-y") nil)
-(define-key evil-normal-state-map [remap yank-pop] nil)
-(define-key evil-normal-state-map (kbd "M-.") nil)
-(define-key evil-normal-state-map "q" nil)
-(define-key evil-normal-state-map (kbd "DEL") nil) ;backupspace
-(define-key evil-motion-state-map  (kbd "RET") nil) ;
-(define-key evil-normal-state-map  (kbd "RET") nil) ;
-(define-key evil-normal-state-map  (kbd "C-.") nil)
-(define-key evil-normal-state-map  (kbd "M-.") nil)
+;; ;; (define-key evil-motion-state-map (kbd "C-w") nil)
+;; (define-key evil-motion-state-map (kbd "C-i") nil)
+;; (define-key evil-motion-state-map (kbd "C-b") nil)
+;; (define-key evil-motion-state-map (kbd "C-d") nil)
+;; (define-key evil-motion-state-map (kbd "C-e") nil)
+;; (define-key evil-motion-state-map (kbd "C-f") nil)
+;; (define-key evil-normal-state-map "q" nil)
+;; (define-key evil-motion-state-map  (kbd "RET") nil) ;
+;; (define-key evil-normal-state-map  (kbd "RET") nil) ;
+;; (define-key evil-normal-state-map  (kbd "M-.") nil)
 
+(define-key evil-motion-state-map (kbd "C-y") nil)
+(define-key evil-normal-state-map  (kbd "C-.") nil)
+(define-key evil-normal-state-map (kbd "DEL") nil) ;backupspace
 (define-key evil-normal-state-map "m" nil)
 (define-key evil-normal-state-map "mq" 'fill-paragraph)
 (define-key evil-normal-state-map "mm" 'evil-set-marker) ;`
@@ -162,21 +150,11 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map (kbd "C-4") #'evil-search-word-forward) ;C-8
 (define-key evil-normal-state-map (kbd "C-8") #'evil-search-word-forward) ;C-8
 
-
-(define-key evil-normal-state-map "gh" 'evil-goto-line) ;default G
-
 (define-key evil-normal-state-map "ga" (kbd "M-a"))
 (define-key evil-normal-state-map "ge" (kbd "M-e"))
-;; (define-key evil-normal-state-map "gA" (kbd "C-M-a"))
-;; (define-key evil-normal-state-map "gE" (kbd "C-M-e"))
-
 (define-key evil-normal-state-map "s" nil)
 (define-key evil-normal-state-map "sa" 'evil-begin-of-defun)
 (define-key evil-normal-state-map "sw" 'evil-begin-of-defun)
-
-;; (define-key evil-normal-state-map "sp" 'evil-paste-pop)
-;; (define-key evil-normal-state-map "sP" 'evil-paste-pop)
-
 
 (define-key evil-normal-state-map "ss" 'evil-end-of-defun)
 (define-key evil-normal-state-map "se" 'evil-end-of-defun)
@@ -199,7 +177,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-visual-state-map "," 'repeat)
 (define-key evil-motion-state-map "," 'repeat) ;
 
-;; (define-key evil-ex-completion-map (kbd "H-m") 'exit-minibuffer)
 (define-key evil-ex-completion-map (kbd "<C-m>") 'exit-minibuffer)
 
 ;; dib dab绑定
