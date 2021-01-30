@@ -14,7 +14,8 @@
   (require  'log-view)
   (require 'cc-mode)
   (require 'lazy-camelize)
-  (require 'hippie-exp))
+  ;;(require 'hippie-exp)
+  )
 
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")

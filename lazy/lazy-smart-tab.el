@@ -9,7 +9,8 @@
   (require  'ibuffer)
   (require  'log-view)
   (require 'cc-mode)
-  (require 'hippie-exp))
+  ;; (require 'hippie-exp)
+  )
 
 ;; (require 'clang-format)
 

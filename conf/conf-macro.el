@@ -7,12 +7,22 @@
         `(with-eval-after-load 'evil  (evil-define-key ,state ,mode-map ,key ,cmd)))
     `(with-eval-after-load ,feature (define-key ,mode-map ,key ,cmd))))
 
-(defvar vmacs-leader-map (make-sparse-keymap))
+(defvar vmacs-leader-mode-map (make-sparse-keymap) "High precedence keymap.")
+(defvar vmacs-space-leader-mode-map (make-sparse-keymap) "High precedence keymap.")
 
-(with-eval-after-load 'evil (evil-define-key '(normal visual operator motion emacs) 'global (kbd "SPC") vmacs-leader-map))
+(define-minor-mode vmacs-leader-mode "Global minor mode for higher precedence evil keybindings." :global t)
+(vmacs-leader-mode)
+
+(with-eval-after-load 'evil
+  (dolist (state '(normal visual insert))
+    (evil-make-intercept-map
+     ;; NOTE: This requires an evil version from 2018-03-20 or later
+     (evil-get-auxiliary-keymap vmacs-leader-mode-map state t t)
+     state))
+  (evil-define-key '(normal visual operator motion emacs) vmacs-leader-mode-map " " vmacs-space-leader-mode-map))
 
 (defmacro vmacs-leader (key cmd)
-  `(define-key vmacs-leader-map ,key ,cmd))
+  `(define-key vmacs-space-leader-mode-map ,key ,cmd))
 
 (provide 'conf-macro)
 

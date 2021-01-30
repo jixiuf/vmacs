@@ -71,7 +71,6 @@
   (calc-word-size 128)
   (define-key calc-mode-map (kbd "j") 'evil-next-line)
   (define-key calc-mode-map (kbd "k") 'evil-previous-line)
-  (define-key calc-mode-map (kbd "SPC") nil)
   (define-key calc-mode-map (kbd "y") 'evil-yank))
 
 (add-hook 'calc-mode-hook 'vmacs-calc-hook)
@@ -99,39 +98,6 @@
                           ("\\[" . "\\]")
                           ("\"" . "\"")))))
 
-
-(global-set-key (kbd "C-x C-s") 'evil-write-all)
-(global-set-key (kbd "C-x s") 'evil-write-all)
-;; (vmacs-define-key python-mode-map [(meta return)] 'eval-print-last-sexp 'python)
-
-(defun vmacs-leader-after-init-hook(&optional frame)
-  (vmacs-define-key magit-mode-map (kbd "<SPC>") nil  'magit)
-  (vmacs-define-key magit-status-mode-map (kbd "<SPC>") nil  'magit)
-  (vmacs-define-key magit-diff-mode-map (kbd "<SPC>") nil  'magit)
-  (vmacs-define-key magit-stash-mode-map (kbd "<SPC>") nil  'magit)
-  (vmacs-define-key log-view-mode-map (kbd "<SPC>") nil  'log-view)
-  (vmacs-define-key tabulated-list-mode-map (kbd "<SPC>") nil  'tabulated-list)
-  (vmacs-define-key org-agenda-mode-map (kbd "<SPC>") nil  'org-agenda)
-  (vmacs-define-key dired-mode-map (kbd "<SPC>") nil  'dired)
-  (vmacs-define-key custom-mode-map (kbd "<SPC>") nil  'cus-edit)
-
-  ;; (vmacs-define-key ivy-occur-grep-mode-map (kbd "<SPC>") nil  'ivy)
-  (vmacs-define-key calc-mode-map (kbd "<SPC>") nil  'calc)
-  (vmacs-define-key Info-mode-map (kbd "<SPC>") nil  'info)
-  (vmacs-define-key Info-mode-map "g" nil 'info)
-  (vmacs-define-key Info-mode-map "n" nil 'info)
-  (vmacs-define-key grep-mode-map (kbd "<SPC>") nil  'grep)
-  (vmacs-define-key help-mode-map (kbd "<SPC>") nil  'help-mode)
-  (vmacs-define-key ibuffer-mode-map (kbd "<SPC>") nil  'ibuffer)
-  (vmacs-define-key ert-results-mode-map (kbd "<SPC>") nil  'ert)
-  (vmacs-define-key compilation-mode-map (kbd "<SPC>") nil  'compile)
-  (vmacs-define-key debugger-mode-map (kbd "<SPC>") nil  'debug)
-  ;; (vmacs-leader-for '(diff-mode debugger-mode) '(insert))
-  )
-;; emacs27 daemonp 启动的时候 after-init-hook会有问题
-(unless (daemonp)
-  (add-hook 'after-init-hook 'vmacs-leader-after-init-hook))
-(add-hook 'after-make-frame-functions 'vmacs-leader-after-init-hook)
 
 
 (provide 'conf-evil-dump)

@@ -85,7 +85,6 @@
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
 
 (global-set-key  (kbd "s-C-M-h") 'vmacs-undo-kill-buffer)
-;; (vmacs-define-key  'global (kbd "<SPC>q") 'kill-other-buffers nil '(normal visual operator motion emacs))
 (vmacs-leader "q" 'kill-other-buffers)
 
 
