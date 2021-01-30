@@ -9,7 +9,6 @@
   ;;         ("gnu-cn"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")))
   (setq package-archives
         '(("melpa-cn" . "http://mirrors.163.com/elpa/melpa/")
-          ("org-cn"   . "http://mirrors.163.com/elpa/org/")
           ("gnu-cn"   . "http://mirrors.163.com/elpa/gnu/")))
 
 ;; (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
