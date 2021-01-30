@@ -8,80 +8,22 @@
 ;; 如果不想让某些命令jump ,则可以通过这种方式实现
 ;; You can disable it for %, f, F, t and T with the following:
 ;; (evil-set-command-property #'evil-jump-item :jump nil)
-;; (evil-set-command-property #'evil-find-char :jump nil)
-;; (evil-set-command-property #'evil-find-char-backward :jump nil)
-;; (evil-set-command-property #'evil-find-char-to :jump nil)
-;; (evil-set-command-property #'evil-find-char-to-backward :jump nil)
 
 
 (require 'evil)
-(setq evil-collection-key-blacklist '("SPC") )
-(when (require 'evil-collection nil t)
-  (evil-collection-init))
+(setq evil-collection-key-blacklist '("SPC"))
+(when (require 'evil-collection nil t) (evil-collection-init))
+
 ;; minor-mode
-;; 设置一些mode的初始state
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
 ;; 设置一些mode的初始state
-;; (evil-set-initial-state 'vterm-mode 'insert)
-;; (evil-set-initial-state 'diff-mode 'normal)
-(evil-set-initial-state 'git-rebase-mode 'normal)
-(evil-set-initial-state 'package-menu-mode 'normal)
-(evil-set-initial-state 'vc-annotate-mode 'normal)
-(evil-set-initial-state 'Custom-mode 'normal)
-(evil-set-initial-state 'erc-mode 'normal)
-(evil-set-initial-state 'ibuffer-mode 'normal)
-(evil-set-initial-state 'vc-dir-mode 'normal)
-(evil-set-initial-state 'vc-git-log-view-mode 'normal)
 (evil-set-initial-state 'log-edit-mode 'insert)
-(evil-set-initial-state 'vc-svn-log-view-mode 'normal)
-;; (evil-set-initial-state 'erlang-shell-mode 'normal)
 (evil-set-initial-state 'org-agenda-mode 'normal)
-(evil-set-initial-state 'minibuffer-inactive-mode 'insert)
-(evil-set-initial-state 'grep-mode 'normal)
-(evil-set-initial-state 'Info-mode 'motion)
-(evil-set-initial-state 'calc-mode 'normal)
-(evil-set-initial-state 'help-mode 'normal)
-
-;; (evil-set-initial-state 'term-mode 'normal)
-;; (evil-set-initial-state 'eshell-mode 'normal)
-
-;; 把所有emacs state  的mode 都转成insert mode
-(dolist (mode evil-emacs-state-modes)
-  (cond
-   ((memq mode evil-normal-state-modes)
-    (evil-set-initial-state mode 'normal))
-   ((memq mode evil-motion-state-modes)
-    (evil-set-initial-state mode 'motion))
-   (t
-    (evil-set-initial-state mode 'insert))))
-
-(setq evil-emacs-state-modes nil)
 
 
 ;; evil-overriding-maps中的按键绑定 优先级高于evil-mode
-(add-to-list 'evil-overriding-maps '(vc-git-log-view-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(vc-svn-log-view-mode-map . nil))
-;; (add-to-list 'evil-overriding-maps '(vmacs-leader-map . nil))
-(add-to-list 'evil-overriding-maps '(custom-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(ediff-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(package-menu-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(minibuffer-local-map . nil))
-(add-to-list 'evil-overriding-maps '(minibuffer-local-completion-map . nil))
-(add-to-list 'evil-overriding-maps '(minibuffer-inactive-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(minibuffer-local-must-match-map . nil))
-(add-to-list 'evil-overriding-maps '(minibuffer-local-isearch-map . nil))
-(add-to-list 'evil-overriding-maps '(minibuffer-local-ns-map . nil))
-(add-to-list 'evil-overriding-maps '(epa-key-list-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(calc-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(rg-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(magit-blob-mode-map . nil)) ;n p 浏览文件历史版本
+;; (add-to-list 'evil-overriding-maps '(grep-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(xref--xref-buffer-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(embark-collect-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(tablist-minor-mode-map . nil))
-(add-to-list 'evil-overriding-maps '(grep-mode-map . nil))
-
-
 (evil-set-custom-state-maps 'evil-overriding-maps
                             'evil-pending-overriding-maps
                             'override-state
@@ -89,7 +31,7 @@
                             evil-overriding-maps)
 
 ;; evil-normalize-keymaps forces an update of all Evil keymaps
-(add-hook 'magit-blob-mode-hook #'evil-normalize-keymaps)
+;; (add-hook 'magit-blob-mode-hook #'evil-normalize-keymaps)
 ;; 更新 evil-overriding-maps ,因为org-agenda-mode-map 变量初始为空keymap,在org-agenda-mode内才往里添加绑定
 (add-hook 'org-agenda-mode-hook #'evil-normalize-keymaps)
 
@@ -157,12 +99,11 @@ execute emacs native `repeat' default binding to`C-xz'"
         (evil-change-to-initial-state)) ;如果初始化state不是normal ，按一次 转到初始状态
       ))))
 
-(with-eval-after-load 'org-agenda
-  (evil-define-key 'normal org-agenda-mode-map
-    "j" 'evil-next-line
+(evil-collection-define-key 'normal 'org-agenda-mode-map
+      "j" 'evil-next-line
     "k" 'evil-previous-line
     ":" 'evil-ex
-    "r" 'org-agenda-redo))
+    "r" 'org-agenda-redo)
 
 ;; ;; 清空所有insert-state的绑定,这样 ,insert mode 就是没装evil 前的正常emacs了
 ;; (setcdr evil-insert-state-map nil);evil-disable-insert-state-bindings
@@ -173,50 +114,28 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (define-key evil-ex-completion-map (kbd "M-p") 'previous-history-element) ;
 (define-key evil-ex-completion-map (kbd "M-n")  'next-history-element)
-
-;; (define-key evil-insert-state-map [escape] 'evil-normal-state)
-;; (define-key evil-insert-state-map (kbd "C-g") 'vmacs-evil-normal-state)
-;; (define-key evil-insert-state-map [escape] 'vmacs-evil-normal-state)
-
-;; (define-key evil-normal-state-map "/" 'helm-swoop)
-
-;; (define-key evil-motion-state-map "/" 'evil-search-forward)
-;; (define-key evil-normal-state-map "/" 'evil-search-forward)
-
-
-
-;; (define-key evil-window-map "1" 'delete-other-windows)
-;; (define-key evil-window-map "0" 'delete-window)
-;; (define-key evil-window-map "2" 'vmacs-split-window-vertically)
-;; (define-key evil-window-map "3" 'vmacs-split-window-horizontally)
-
-;; (define-key evil-normal-state-map (kbd "f") 'ace-jump-mode)
 (define-key evil-normal-state-map (kbd "C-z") nil)
-;; (define-key evil-normal-state-map (kbd "C-w") 'ctl-w-map)
 (define-key evil-normal-state-map "\C-n" nil)
 (define-key evil-normal-state-map "\C-p" nil)
 (define-key evil-normal-state-map "\C-v" nil)
 (define-key evil-motion-state-map "\C-v" nil)
 (define-key evil-normal-state-map "\C-e" nil)
 
-(evil-define-motion vmacs-evil-next-line (count)
-  "Move the cursor COUNT lines down."
-  :type line
-  (let ((line-move-visual (not truncate-lines)))
-    (evil-line-move (or count 1))))
+;; (evil-define-motion vmacs-evil-next-line (count)
+;;   "Move the cursor COUNT lines down."
+;;   :type line
+;;   (let ((line-move-visual (not truncate-lines)))
+;;     (evil-line-move (or count 1))))
 
-(evil-define-motion vmacs-evil-previous-line (count)
-  "Move the cursor COUNT lines up."
-  :type line
-  (let ((line-move-visual (not truncate-lines)))
-    (evil-line-move (- (or count 1)))))
+;; (evil-define-motion vmacs-evil-previous-line (count)
+;;   "Move the cursor COUNT lines up."
+;;   :type line
+;;   (let ((line-move-visual (not truncate-lines)))
+;;     (evil-line-move (- (or count 1)))))
 
 
-(fset 'evil-next-line 'vmacs-evil-next-line)
-(fset 'evil-previous-line 'vmacs-evil-previous-line)
-;; (define-key evil-motion-state-map "j" 'evil-next-visual-line)
-;; (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
-
+;; (fset 'evil-next-line 'vmacs-evil-next-line)
+;; (fset 'evil-previous-line 'vmacs-evil-previous-line)
 
 ;; (define-key evil-motion-state-map (kbd "C-w") nil)
 (define-key evil-motion-state-map (kbd "C-i") nil)
@@ -458,61 +377,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-outer-text-objects-map "e" 'evil-a-symbol)
 (define-key evil-inner-text-objects-map "e" 'evil-inner-symbol)
 
-
-;; ;; 多行编辑时 优化性能
-;; (defun vmacs-evil-cleanup-insert-state (orig-fun &rest args)
-;;   (if  (not evil-insert-vcount)
-;;       (apply orig-fun args)
-;;     (let ((vcount (nth 2 evil-insert-vcount))
-;;           (company-mode-p (and (boundp 'company-mode) company-mode))
-;;           (blink-cursor-mode-p (and (boundp 'blink-cursor-mode) blink-cursor-mode))
-;;           (electric-indent-mode-p (and (boundp 'electric-indent-mode) electric-indent-mode))
-;;           (electric-pair-mode-p (and (boundp 'electric-pair-mode) electric-pair-mode))
-;;           (flycheck-mode-p (and (boundp 'flycheck-mode) flycheck-mode))
-;;           (yas-minor-mode-p (and (boundp 'yas-minor-mode) yas-minor-mode))
-;;           (flymake-mode-p (and (boundp 'flymake-mode) flymake-mode))
-;;           (eldoc-mode-p (and (boundp 'eldoc-mode) eldoc-mode))
-;;           (ethan-wspace-mode-p (and (boundp 'ethan-wspace-mode) ethan-wspace-mode)))
-
-
-;;       (if (and vcount (> vcount 200))
-;;           (progn
-;;             (jit-lock-mode nil)
-;;             (when electric-indent-mode-p (electric-indent-mode -1))
-;;             (when company-mode-p (company-mode -1) )
-;;             (when blink-cursor-mode-p (blink-cursor-mode -1))
-;;             (when electric-pair-mode-p (electric-pair-mode -1))
-;;             (when flycheck-mode-p (flycheck-mode -1))
-;;             (when flymake-mode-p (flymake-mode -1))
-;;             (when yas-minor-mode-p (yas-minor-mode -1))
-;;             (when eldoc-mode-p (eldoc-mode -1))
-;;             (when ethan-wspace-mode-p (ethan-wspace-mode -1))
-
-
-;;             (remove-hook 'pre-command-hook 'evil--jump-hook)
-
-
-;;             (apply orig-fun args)
-
-;;             (jit-lock-mode t)
-;;             (when electric-indent-mode-p (electric-indent-mode t))
-;;             (when company-mode-p (company-mode t))
-;;             (when blink-cursor-mode-p (blink-cursor-mode t))
-;;             (when electric-pair-mode-p (electric-pair-mode t))
-;;             (when flycheck-mode-p (flycheck-mode t))
-;;             (when flymake-mode-p (flymake-mode t))
-;;             (when yas-minor-mode-p (yas-minor-mode t))
-;;             (when eldoc-mode-p (eldoc-mode t))
-;;             (when ethan-wspace-mode-p (ethan-wspace-mode t))
-;;             (add-hook 'pre-command-hook 'evil--jump-hook)
-;;             )
-
-
-;;         (apply orig-fun args)
-;;         ))))
-
-;; (advice-add 'evil-cleanup-insert-state :around #'vmacs-evil-cleanup-insert-state)
-;; ;; (advice-remove 'evil-cleanup-insert-state #'vmacs-evil-cleanup-insert-state)
 
 (provide 'conf-evil)
 
