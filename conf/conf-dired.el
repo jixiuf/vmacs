@@ -120,7 +120,7 @@
 (evil-collection-define-key 'normal 'dired-mode-map
   "u" 'dired-up-directory ;上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
-  "/" 'dired-narrow-regexp
+  "/" 'consult-focus-lines
   (kbd "C-s") 'consult-focus-lines
   "z"  'consult-hide-lines
   ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
