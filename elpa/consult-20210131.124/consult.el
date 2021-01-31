@@ -82,7 +82,9 @@ This is the key representation accepted by `define-key'."
   :type '(choice vector string (const nil)))
 
 (defcustom consult-project-root-function nil
-  "Function which returns project root directory, used by `consult-buffer' and `consult-grep'."
+  "Function which returns project root directory.
+
+The root directory is used by `consult-buffer' and `consult-grep'."
   :type '(choice function (const nil)))
 
 (defcustom consult-async-refresh-delay 0.25
@@ -202,7 +204,9 @@ with a space character."
     (?m . consult--source-bookmark)
     (?p . consult--source-project-buffer)
     (?q . consult--source-project-file))
-  "Sources used by `consult-buffer'."
+  "Sources used by `consult-buffer'.
+
+See `consult--multi' for a description of the source values."
   :type 'alist)
 
 (defcustom consult-mode-command-filter
@@ -401,8 +405,8 @@ the public API."
 
 ;;;; Internal variables
 
-(defvar consult--memo nil
-  "Memoized data populated by `consult--define-memo'.")
+(defvar consult--cache nil
+  "Cached data populated by `consult--define-cache'.")
 
 (defvar consult--completion-filter-hook
   (list #'consult--default-completion-filter)
@@ -463,6 +467,14 @@ Size of private unicode plane b.")
   "Overlays used by `consult-focus-lines'.")
 
 ;;;; Helper functions and macros
+
+(defmacro consult--define-cache (name &rest body)
+  "Define cached value with NAME and BODY."
+  (declare (indent 1))
+  `(defun ,name ()
+     (or (alist-get ',name consult--cache)
+         (setf (alist-get ',name consult--cache)
+               ,(macroexp-progn body)))))
 
 (defsubst consult--completion-filter (category highlight)
   "Return filter function used by completion system.
@@ -669,10 +681,11 @@ KEY is the key function."
 
 (defun consult--fontify-all ()
   "Ensure that the whole buffer is fontified."
-  ;; Font-locking is lazy, i.e., if a line has not been looked at yet, the line is not font-locked.
-  ;; We would observe this if consulting an unfontified line. Therefore we have to enforce
-  ;; font-locking now, which is slow. In order to prevent is hang-up we check the buffer size
-  ;; against `consult-fontify-max-size'.
+  ;; Font-locking is lazy, i.e., if a line has not been looked at yet, the line
+  ;; is not font-locked. We would observe this if consulting an unfontified
+  ;; line. Therefore we have to enforce font-locking now, which is slow. In
+  ;; order to prevent is hang-up we check the buffer size against
+  ;; `consult-fontify-max-size'.
   (when (and jit-lock-mode (< (buffer-size) consult-fontify-max-size))
     (jit-lock-fontify-now)))
 
@@ -710,17 +723,18 @@ KEY is the key function."
     (goto-char pos)
     line))
 
-;; We must disambiguate the lines by adding a prefix such that two lines with the same text can be
-;; distinguished. In order to avoid matching the line number, such that the user can search for
-;; numbers with `consult-line', we encode the line number as unicode characters in the supplementary
-;; private use plane b. By doing that, it is unlikely that accidential matching occurs.
+;; We must disambiguate the lines by adding a prefix such that two lines with
+;; the same text can be distinguished. In order to avoid matching the line
+;; number, such that the user can search for numbers with `consult-line', we
+;; encode the line number as unicode characters in the supplementary private use
+;; plane b. By doing that, it is unlikely that accidential matching occurs.
 (defsubst consult--encode-location (marker)
   "Generate unique string for MARKER.
 DISPLAY is the string to display instead of the unique string."
   (let ((str "") (n marker))
     (while (progn
-             (setq str (concat str
-                               (char-to-string (+ consult--tofu-char (% n consult--tofu-range)))))
+             (setq str (concat str (char-to-string (+ consult--tofu-char
+                                                      (% n consult--tofu-range)))))
              (and (>= n consult--tofu-range) (setq n (/ n consult--tofu-range)))))
     str))
 
@@ -761,7 +775,8 @@ MARKER is the cursor position."
   (let ((str (buffer-substring begin end)))
     (if (>= marker end)
         (concat str (propertize " " 'face 'consult-preview-cursor))
-      (put-text-property (- marker begin) (- (1+ marker) begin) 'face 'consult-preview-cursor str)
+      (put-text-property (- marker begin) (- (1+ marker) begin)
+                         'face 'consult-preview-cursor str)
       str)))
 
 (defsubst consult--line-with-cursor (marker)
@@ -953,7 +968,13 @@ See consult--with-preview for the arguments PREVIEW-KEY, PREVIEW, TRANSFORM and 
 PREVIEW is the preview function.
 TRANSFORM is the transformation function.
 CANDIDATE is the function returning the current candidate.
-PREVIEW-KEY are the keys which triggers the preview."
+PREVIEW-KEY are the keys which triggers the preview.
+
+The preview function takes two arguments, the selected candidate and a restore
+flag. It is called every time with restore=nil after a preview-key keypress, as
+long as a new candidate is selected. Finally the preview function is called in
+any case with restore=t even if no preview has actually taken place. The
+candidate argument can be nil if the selection has been aborted."
   (declare (indent 4))
   `(consult--with-preview-1 ,preview-key ,preview ,transform ,candidate (lambda () ,@body)))
 
@@ -978,10 +999,11 @@ This command is used internally by the narrowing system of `consult--read'."
     (delete-overlay consult--narrow-overlay))
   (when consult--narrow
     (setq consult--narrow-overlay
-          (consult--overlay (- (minibuffer-prompt-end) 1) (minibuffer-prompt-end)
-                            'before-string
-                            (propertize (format " [%s]" (cdr (assoc key consult--narrow-prefixes)))
-                                        'face 'consult-narrow-indicator))))
+          (consult--overlay
+           (- (minibuffer-prompt-end) 1) (minibuffer-prompt-end)
+           'before-string
+           (propertize (format " [%s]" (cdr (assoc key consult--narrow-prefixes)))
+                       'face 'consult-narrow-indicator))))
   (run-hooks 'consult--completion-refresh-hook))
 
 (defconst consult--narrow-delete
@@ -997,8 +1019,10 @@ This command is used internally by the narrowing system of `consult--read'."
     "" nil :filter
     ,(lambda (&optional _)
        (let ((str (minibuffer-contents-no-properties)))
-         (when-let (pair (or (and (= 1 (length str)) (assoc (aref str 0) consult--narrow-prefixes))
-                             (and (string= str "") (assoc 32 consult--narrow-prefixes))))
+         (when-let (pair (or (and (= 1 (length str))
+                                  (assoc (aref str 0) consult--narrow-prefixes))
+                             (and (string= str "")
+                                  (assoc 32 consult--narrow-prefixes))))
            (delete-minibuffer-contents)
            (consult-narrow (car pair))
            #'ignore)))))
@@ -1310,13 +1334,13 @@ The refresh happens after a DELAY, defaulting to `consult-async-refresh-delay'."
     (save-match-data
       (let ((opts))
         (when (string-match " +--\\( +\\|$\\)" input)
-        ;; split-string-and-unquote fails if the quotes are invalid. Ignore it.
+          ;; split-string-and-unquote fails if the quotes are invalid. Ignore it.
           (setq opts (ignore-errors (split-string-and-unquote (substring input (match-end 0))))
                 input (substring input 0 (match-beginning 0))))
         (mapcan (lambda (x)
                   (if (string= x "OPTS")
                       opts
-                    (list (replace-regexp-in-string "ARG" input x t))))
+                    (list (replace-regexp-in-string "ARG" input x 'fixedcase 'literal))))
                 cmd)))))
 
 (defmacro consult--async-command (cmd &rest transforms)
@@ -1459,7 +1483,7 @@ LOOKUP is a function which is applied to the result.
 ANNOTATE is the annotation function.
 INITIAL is initial input.
 DEFAULT-TOP must be nil if the default candidate should not be moved to the top.
-PREVIEW is a preview function.
+PREVIEW is a preview function, see `consult--with-preview'.
 PREVIEW-KEY are the preview keys (nil, 'any, a single key or a list of keys).
 NARROW is an alist of narrowing prefix strings and description.
 KEYMAP is a command-specific keymap."
@@ -1531,8 +1555,8 @@ KEYMAP is a command-specific keymap."
                 (cons (car x) (plist-get (cdr x) :name))))
           sources))
 
-(defsubst consult--multi-properties (sources cand)
-  "Lookup source properties for CAND from SOURCES list."
+(defsubst consult--multi-source (sources cand)
+  "Lookup source for CAND from SOURCES list."
   (cdr (assq (- (aref cand 0) consult--tofu-char) sources)))
 
 (defun consult--multi-annotate (sources max-len)
@@ -1540,38 +1564,43 @@ KEYMAP is a command-specific keymap."
 
 MAX-LEN is the maximum candidate length."
   (lambda (cand)
-    (concat
-     (make-string (- (+ max-len (next-single-char-property-change 0 'invisible cand))
-                     (length cand))
-                  32)
-     (plist-get (consult--multi-properties sources cand) :name))))
+    (let ((src (consult--multi-source sources cand)))
+      (concat
+       (propertize " "
+                   'display
+                   `(space :align-to (+ left ,max-len)))
+       (if-let (annotate (plist-get src :annotate))
+           (funcall annotate (cdr (get-text-property 0 'consult-multi cand)))
+         (plist-get src :name))))))
 
 (defun consult--multi-lookup (sources)
   "Lookup function used by `consult--multi' with SOURCES."
   (lambda (_ candidates cand)
-    (cond
-     ((member cand candidates) (cons (substring cand 1)
-                                     (consult--multi-properties sources cand)))
-     ((not (string-blank-p cand)) (list cand)))))
+    (if-let (found (member cand candidates))
+        (cons (cdr (get-text-property 0 'consult-multi (car found)))
+              (consult--multi-source sources cand))
+      (unless (string-blank-p cand)
+        (list cand)))))
 
 (defun consult--multi-candidates (sources)
   "Return candidates from SOURCES for `consult--multi'."
   (let ((max-len 0) (candidates))
-    (dolist (src sources (cons (+ 4 max-len) (nreverse candidates)))
+    (dolist (src sources (cons (+ 3 max-len) (nreverse candidates)))
       (let* ((type (car src))
              (props (cdr src))
              (face (plist-get props :face))
              (cat (plist-get props :category))
              (items (plist-get props :items))
              (items (if (functionp items) (funcall items) items)))
-        (dolist (cand items)
-          (let* ((str (concat (char-to-string (+ consult--tofu-char type)) cand))
-                 (len (length str)))
-            (add-text-properties 0 1 (list 'invisible t 'consult-multi cat) str)
-            (put-text-property 1 len 'face face str)
+        (dolist (item items)
+          (let* ((cand (concat (char-to-string (+ consult--tofu-char type)) item))
+                 (len (length cand)))
+            (add-text-properties 0 1 (list 'invisible t 'consult-multi (cons cat item))
+                                 cand)
+            (put-text-property 1 len 'face face cand)
             (when (> len max-len)
               (setq max-len len))
-            (push str candidates)))))))
+            (push cand candidates)))))))
 
 (defun consult--multi-preprocess (sources)
   "Preprocess SOURCES, filter by predicate."
@@ -1586,21 +1615,43 @@ MAX-LEN is the maximum candidate length."
                       sources)))
 
 (defun consult--multi (prompt sources &rest options)
-  "Select from candidates taken from multiple SOURCES.
+  "Select from candidates taken from an alist of SOURCES.
 
 PROMPT is the minibuffer prompt.
-OPTIONS is the plist of options."
+OPTIONS is the plist of options passed to `consult--read'.
+
+The function returns the selected candidate in the form (cons candidate
+source-value). The source alist contains (character . source) pairs, where the
+character is used for narrowing and disambiguation of candidates. The source can
+either be the symbol of a source variable or a source value. Source values must
+be plists with the following fields:
+
+Required source fields:
+* :name - Name of the source, used for narrowing and annotation
+* :category - Completion category
+* :items - List of candidate strings or function returning list of strings
+
+Optional source fields:
+* :predicate - Function which must return t if the source is enabled.
+* :face - Face used for highlighting the candidates
+* :narrow - Pair (character . string) to use for narrowing instead of the key
+* :annotate - Annotation function for the source candidates.
+* :history - Name of history variable to add selected candidate.
+* Arbitrary other fields specific to your use case."
   (let* ((sources (consult--multi-preprocess sources))
-         (candidates (let ((consult--memo))
-                       (consult--multi-candidates sources))))
-    (apply #'consult--read prompt
-           (cdr candidates)
-           :category  'consult-multi
-           :predicate (consult--multi-predicate sources)
-           :narrow    (consult--multi-narrow sources)
-           :annotate  (consult--multi-annotate sources (car candidates))
-           :lookup    (consult--multi-lookup sources)
-           options)))
+         (candidates (let ((consult--cache))
+                       (consult--multi-candidates sources)))
+         (selected (apply #'consult--read prompt
+                          (cdr candidates)
+                          :category  'consult-multi
+                          :predicate (consult--multi-predicate sources)
+                          :narrow    (consult--multi-narrow sources)
+                          :annotate  (consult--multi-annotate sources (car candidates))
+                          :lookup    (consult--multi-lookup sources)
+                          options)))
+    (when-let (history (plist-get (cdr selected) :history))
+      (add-to-history history (car selected)))
+    selected))
 
 ;;;; Internal API: consult--prompt
 
@@ -1615,7 +1666,7 @@ HISTORY is the symbol of the history variable.
 INITIAL is initial input.
 DEFAULT is the default selected value.
 ADD-HISTORY is a list of items to add to the history.
-PREVIEW is a preview function.
+PREVIEW is a preview function, see `consult--with-preview'.
 PREVIEW-KEY are the preview keys (nil, 'any, a single key or a list of keys).
 KEYMAP is a command-specific keymap."
   (minibuffer-with-setup-hook
@@ -1856,7 +1907,9 @@ The symbol at point is added to the future history."
          (candidates)
          (line (line-number-at-pos (point-min) consult-line-numbers-widen))
          (curr-line (line-number-at-pos (point) consult-line-numbers-widen))
-         (line-width (length (number-to-string (line-number-at-pos (point-max) consult-line-numbers-widen))))
+         (line-width (length (number-to-string (line-number-at-pos
+                                                (point-max)
+                                                consult-line-numbers-widen))))
          (default-cand-dist most-positive-fixnum))
     (consult--each-line beg end
       (let ((str (buffer-substring beg end)))
@@ -1897,14 +1950,16 @@ CAND is the currently selected candidate."
             (end (length cand))
             ;; Use consult-location completion category when filtering lines
             (filter (consult--completion-filter 'consult-location nil)))
-        ;; Find match end position, remove characters from line end until matching fails
+        ;; Find match end position, remove characters from line end until
+        ;; matching fails
         (let ((step 16))
           (while (> step 0)
             (while (and (> (- end step) 0)
                         (funcall filter input (list (substring cand 0 (- end step)))))
               (setq end (- end step)))
             (setq step (/ step 2))))
-        ;; Find match beginning position, remove characters from line beginning until matching fails
+        ;; Find match beginning position, remove characters from line beginning
+        ;; until matching fails
         (when (eq consult-line-point-placement 'match-beginning)
           (let ((step 16))
             (while (> step 0)
@@ -1932,16 +1987,13 @@ The symbol at point and the last `isearch-string' is added to the future history
       :sort nil
       :default-top nil
       :require-match t
-      :add-history (list
-                    (thing-at-point 'symbol)
-                    (when isearch-string
-                      (if isearch-regexp
-                          isearch-string
-                        (regexp-quote isearch-string))))
+      ;; Always add last isearch string to future history
+      :add-history (list (thing-at-point 'symbol) isearch-string)
       :history '(:input consult--line-history)
       :lookup #'consult--line-match
       :default (car candidates)
-      :initial initial
+      ;; Add isearch-string as initial input if starting from isearch
+      :initial (or initial (and isearch-mode isearch-string))
       :preview (consult--preview-position)))))
 
 ;;;;; Command: consult-keep-lines
@@ -1992,7 +2044,8 @@ The symbol at point and the last `isearch-string' is added to the future history
               (when font-lock-mode (font-lock-mode -1))
               (if restore
                   (atomic-change-group
-                    (let ((inhibit-modification-hooks t)) ;; Disable modification hooks for performance
+                    ;; Disable modification hooks for performance
+                    (let ((inhibit-modification-hooks t))
                       (consult--keep-lines-replace filtered-content)))
                 ;; No undo recording, modification hooks, buffer modified-status
                 (with-silent-modifications
@@ -2212,7 +2265,9 @@ The arguments and expected return value are as specified for
     "\\(-global\\)?-mode$" ""
     (if (eq mode 'c-mode)
         "cc"
-      (symbol-name mode)))))
+      (symbol-name mode))
+    'fixedcase)
+   'fixedcase))
 
 (defun consult--mode-command-candidates (modes)
   "Extract commands from MODES.
@@ -2529,7 +2584,8 @@ This function is derived from `register-read-with-preview'."
 	 (help-chars (seq-remove #'get-register (cons help-char help-event-list))))
     (unwind-protect
         (while (not reg)
-	  (while (memq (read-key (propertize (caddr (assq action action-list)) 'face 'minibuffer-prompt))
+	  (while (memq (read-key (propertize (caddr (assq action action-list))
+                                             'face 'minibuffer-prompt))
 		       help-chars)
             (funcall preview))
           (cond
@@ -2909,32 +2965,23 @@ The command supports previewing the currently selected theme."
 
 ;;;;; Command: consult-buffer
 
-(defmacro consult--define-memo (name &rest body)
-  "Define memoizing function with NAME and BODY."
-  (declare (indent 1))
-  `(defun ,name ()
-     (or (alist-get ',name consult--memo)
-         (setf (alist-get ',name consult--memo)
-               ,(macroexp-progn body)))))
+(consult--define-cache consult--cached-buffers
+  (append (delq (current-buffer) (buffer-list)) (list (current-buffer))))
 
-(consult--define-memo consult--memo-buffers
-  (let ((curr-buf (current-buffer)))
-    (append (delq curr-buf (buffer-list)) (list curr-buf))))
+(consult--define-cache consult--cached-buffer-names
+  (mapcar #'buffer-name (consult--cached-buffers)))
 
-(consult--define-memo consult--memo-buffer-names
-  (mapcar #'buffer-name (consult--memo-buffers)))
+(consult--define-cache consult--cached-buffer-file-hash
+  (consult--string-hash (delq nil (mapcar #'buffer-file-name (consult--cached-buffers)))))
 
-(consult--define-memo consult--memo-buffer-file-hash
-  (consult--string-hash (delq nil (mapcar #'buffer-file-name (consult--memo-buffers)))))
-
-(defun consult--source-file-open (file display)
+(defun consult--open-file (file display)
   "Open FILE via DISPLAY function."
   (pcase-exhaustive display
     ('switch-to-buffer (find-file file))
     ('switch-to-buffer-other-window (find-file-other-window file))
     ('switch-to-buffer-other-frame (find-file-other-frame file))))
 
-(defun consult--source-buffer-open (buffer display)
+(defun consult--open-buffer (buffer display)
   "Open BUFFER via DISPLAY function."
   (funcall display buffer))
 
@@ -2942,15 +2989,18 @@ The command supports previewing the currently selected theme."
   `(:name     "Bookmark"
     :category bookmark
     :face     consult-bookmark
+    :history  bookmark-history
     :items    ,#'bookmark-all-names
-    :open     ,#'bookmark-jump))
+    :open     ,#'bookmark-jump)
+  "Bookmark candidate source for `consult-buffer'.")
 
 (defvar consult--source-project-buffer
   `(:name      "Project Buffer"
     :category  buffer
     :face      consult-buffer
+    :history   buffer-name-history
     :narrow    (?p . "Project")
-    :open      ,#'consult--source-buffer-open
+    :open      ,#'consult--open-buffer
     :predicate ,(lambda () consult-project-root-function)
     :items
     ,(lambda ()
@@ -2959,59 +3009,68 @@ The command supports previewing the currently selected theme."
                  (seq-filter (lambda (x)
                                (when-let (file (buffer-file-name x))
                                  (string-prefix-p root file)))
-                             (consult--memo-buffers)))))))
+                             (consult--cached-buffers))))))
+  "Project buffer candidate source for `consult-buffer'.")
 
 (defvar consult--source-project-file
   `(:name      "Project File"
     :category  file
     :face      consult-file
+    :history   file-name-history
     :narrow    (?p . "Project")
-    :open      ,#'consult--source-file-open
+    :open      ,#'consult--open-file
     :predicate ,(lambda () consult-project-root-function)
     :items
     ,(lambda ()
       (when-let (root (funcall consult-project-root-function))
         (let ((len (length root))
               (inv-root (propertize root 'invisible t))
-              (ht (consult--memo-buffer-file-hash)))
+              (ht (consult--cached-buffer-file-hash)))
           (mapcar (lambda (x)
                     (concat inv-root (substring x len)))
                   (seq-filter (lambda (x)
-                                (and (string-prefix-p root x)
-                                     (not (gethash x ht))))
-                              recentf-list)))))))
+                                (and (not (gethash x ht))
+                                     (string-prefix-p root x)))
+                              recentf-list))))))
+  "Project file candidate source for `consult-buffer'.")
 
 (defvar consult--source-hidden-buffer
   `(:name     "Hidden Buffer"
     :category buffer
     :face     consult-buffer
-    :open     ,#'consult--source-buffer-open
+    :history  buffer-name-history
+    :open     ,#'consult--open-buffer
     :items
     ,(lambda ()
        (let ((filter (consult--regexp-filter consult-buffer-filter)))
          (seq-filter (lambda (x) (string-match-p filter x))
-                     (consult--memo-buffer-names))))))
+                     (consult--cached-buffer-names)))))
+  "Hidden buffer candidate source for `consult-buffer'.")
 
 (defvar consult--source-buffer
   `(:name     "Buffer"
     :category buffer
     :face     consult-buffer
-    :open     ,#'consult--source-buffer-open
+    :history  buffer-name-history
+    :open     ,#'consult--open-buffer
     :items
     ,(lambda ()
        (let ((filter (consult--regexp-filter consult-buffer-filter)))
          (seq-remove (lambda (x) (string-match-p filter x))
-                     (consult--memo-buffer-names))))))
+                     (consult--cached-buffer-names)))))
+  "Buffer candidate source for `consult-buffer'.")
 
 (defvar consult--source-file
   `(:name     "File"
     :category file
     :face     consult-file
-    :open     ,#'consult--source-file-open
+    :history  file-name-history
+    :open     ,#'consult--open-file
     :items
     ,(lambda ()
-       (let ((ht (consult--memo-buffer-file-hash)))
-         (seq-remove (lambda (x) (gethash x ht)) recentf-list)))))
+       (let ((ht (consult--cached-buffer-file-hash)))
+         (seq-remove (lambda (x) (gethash x ht)) recentf-list))))
+  "Recent file candidate source for `consult-buffer'.")
 
 (defun consult--buffer (display)
   "Backend implementation of `consult-buffer' with DISPLAY function."
@@ -3024,16 +3083,17 @@ The command supports previewing the currently selected theme."
    (lambda (cand restore)
      (when cand
        (let ((name (car cand))
-             (action (or (plist-get (cdr cand) :open) #'consult--source-buffer-open)))
-       (cond
-        (restore (funcall action name display))
-        ;; In order to avoid slowness and unnecessary complexity, we
-        ;; only preview buffers. Loading recent files, bookmarks or
-        ;; views can result in expensive operations.
-        ((and (eq action #'consult--source-buffer-open)
-              (or (eq display #'switch-to-buffer) (eq display #'switch-to-buffer-other-window))
-              (get-buffer name))
-         (funcall display name 'norecord))))))))
+             (action (or (plist-get (cdr cand) :open) #'consult--open-buffer)))
+         (cond
+          (restore (funcall action name display))
+          ;; In order to avoid slowness and unnecessary complexity, we
+          ;; only preview buffers. Loading recent files, bookmarks or
+          ;; views can result in expensive operations.
+          ((and (eq action #'consult--open-buffer)
+                (or (eq display #'switch-to-buffer)
+                    (eq display #'switch-to-buffer-other-window))
+                (get-buffer name))
+           (funcall display name 'norecord))))))))
 
 ;;;###autoload
 (defun consult-buffer ()
@@ -3043,8 +3103,8 @@ The command supports recent files, bookmarks, views and project files as virtual
 buffers. Buffers are previewed. Furthermore narrowing to buffers (b), files (f),
 bookmarks (m) and project files (p) is supported via the corresponding keys. In
 order to determine the project-specific files and buffers, the
-`consult-project-root-function' is used. See `consult-buffer-sources' for the
-configuration of the virtual buffer sources."
+`consult-project-root-function' is used. See `consult-buffer-sources' and
+`consult--multi' for the configuration of the virtual buffer sources."
   (interactive)
   (consult--buffer #'switch-to-buffer))
 
@@ -3180,7 +3240,9 @@ Prepend PREFIX in front of all items."
          (items (imenu--make-index-alist t)))
     (setq items (remove imenu--rescan-item items))
     ;; Fix toplevel items, e.g., emacs-lisp-mode toplevel items are functions
-    (when-let (toplevel (cdr (seq-find (lambda (x) (derived-mode-p (car x))) consult-imenu-toplevel)))
+    (when-let (toplevel (cdr (seq-find (lambda (x)
+                                         (derived-mode-p (car x)))
+                                       consult-imenu-toplevel)))
       (let ((tops (seq-remove (lambda (x) (listp (cdr x))) items))
             (rest (seq-filter (lambda (x) (listp (cdr x))) items)))
         (setq items (append rest (and tops (list (cons toplevel tops)))))))

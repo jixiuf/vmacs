@@ -197,8 +197,8 @@ The command supports recent files, bookmarks, views and project files as virtual
 buffers. Buffers are previewed. Furthermore narrowing to buffers (b), files (f),
 bookmarks (m) and project files (p) is supported via the corresponding keys. In
 order to determine the project-specific files and buffers, the
-`consult-project-root-function' is used. See `consult-buffer-sources' for the
-configuration of the virtual buffer sources." t nil)
+`consult-project-root-function' is used. See `consult-buffer-sources' and
+`consult--multi' for the configuration of the virtual buffer sources." t nil)
 
 (autoload 'consult-buffer-other-window "consult" "\
 Variant of `consult-buffer' which opens in other window." t nil)

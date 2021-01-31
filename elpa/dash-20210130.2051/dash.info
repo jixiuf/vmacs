@@ -2749,7 +2749,7 @@ offered in a separate package: ‘dash-functional‘.
           (-map (-cut funcall <> 5) `(1+ 1- ,(lambda (x) (/ 1.0 x))))
               ⇒ '(6 4 0.2)
           (-map (-cut <> 1 2 3) '(list vector string))
-              ⇒ '((1 2 3) [1 2 3] "\^A\^B\^C")
+              ⇒ '((1 2 3) [1 2 3] "\1\2\3")
 
  -- Function: -not (pred)
      Take a unary predicate PRED and return a unary predicate that
@@ -4782,19 +4782,19 @@ Ref: -on97342
 Ref: -flip97868
 Ref: -const98180
 Ref: -cut98519
-Ref: -not99005
-Ref: -orfn99315
-Ref: -andfn99749
-Ref: -iteratefn100244
-Ref: -fixfn100947
-Ref: -prodfn102510
-Node: Development103570
-Node: Contribute103923
-Node: Change log104933
-Node: Contributors112471
-Node: FDL114489
-Node: GPL139809
-Node: Index177558
+Ref: -not99002
+Ref: -orfn99312
+Ref: -andfn99746
+Ref: -iteratefn100241
+Ref: -fixfn100944
+Ref: -prodfn102507
+Node: Development103567
+Node: Contribute103920
+Node: Change log104930
+Node: Contributors112468
+Node: FDL114486
+Node: GPL139806
+Node: Index177555
 
 End Tag Table
 

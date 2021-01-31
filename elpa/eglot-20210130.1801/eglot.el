@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210129.1627
-;; Package-Commit: d5b840bdd62dd8682b7b20585010d7056b1b8490
+;; Package-Version: 20210130.1801
+;; Package-Commit: eac52646df030ae6907a137a68ac22c324027545
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -2556,7 +2556,8 @@ at point.  With prefix argument, prompt for ACTION-KIND."
                                when (cdr (assoc 'eglot-lsp-diag
                                                 (eglot--diag-data diag)))
                                collect it)]
-                   ,@(when action-kind `(:only [,action-kind]))))))
+                   ,@(when action-kind `(:only [,action-kind]))))
+           :deferred t))
          (menu-items
           (or (cl-loop for action across actions
                        ;; Do filtering ourselves, in case the `:only'

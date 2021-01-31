@@ -596,6 +596,12 @@ evil-collection-magit affects.")
     (dolist (change evil-collection-magit-popup-changes)
       (apply #'evil-collection-magit-change-popup-key change))
     (with-eval-after-load 'forge
+      ;; When `forge' is loaded, it maps `forge-dispatch' to ' key which is
+      ;; set for `magit-submodule', wiping it so we add it back after `forge'
+      ;; loads.
+      (transient-append-suffix 'magit-dispatch "M"
+        '("'" "Submodule" magit-submodule))
+      ;; Clear `forge' key and re-add back in as "@".
       (transient-remove-suffix 'magit-dispatch 'forge-dispatch)
       (transient-append-suffix 'magit-dispatch "!"
         '("@" "Forge" forge-dispatch)))
@@ -604,13 +610,7 @@ evil-collection-magit affects.")
 (defun evil-collection-magit-revert-popups ()
   "Revert popup keys changed by evil-collection-magit."
   (put 'magit-dispatch 'transient--layout evil-collection-magit-dispatch-popup-backup)
-  (when evil-collection-magit-popup-keys-changed
-    (dolist (change evil-collection-magit-popup-changes)
-      (evil-collection-magit-change-popup-key
-       (nth 0 change) (nth 2 change) (nth 1 change)))
-    (with-eval-after-load 'forge
-      (transient-suffix-put 'magit-dispatch "@" :key "'"))
-    (setq evil-collection-magit-popup-keys-changed nil)))
+  (setq evil-collection-magit-popup-keys-changed nil))
 
 ;;;###autoload
 (defun evil-collection-magit-init ()
