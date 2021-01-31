@@ -126,17 +126,17 @@
   ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
   (kbd "C-a") 'dired-smart-beginning-of-line
   ;; C-gC-g 退出编辑或C-cC-c保存修改
-  "i" 'wdired-change-to-wdired-mode
+  ;; "i" 'wdired-change-to-wdired-mode
   "\M-o" 'dired-omit-mode ;不显示一些不重要的文件
   "L" 'dired-add-to-load-path-or-load-it
   "v" 'add-dir-local-variable
   "," 'dired
   "f" 'open-in-filemanager
   "r" 'revert-buffer
-  "gr" 'revert-buffer
   "gg" 'dired-beginning-of-buffer
   "G" 'dired-end-of-buffer
   )
+(with-eval-after-load 'wdired (evil-set-initial-state 'wdired-mode 'insert))
 
 (define-key dired-mode-map "y" nil)     ;给evil-mode 的y让位
 (define-key dired-mode-map "g" nil)     ;给evil-mode 的gg让位
