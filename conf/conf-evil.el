@@ -140,6 +140,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; (define-key evil-normal-state-map  (kbd "M-.") nil)
 
 (define-key evil-motion-state-map (kbd "C-y") nil)
+(define-key evil-normal-state-map [remap yank-pop] nil)
 (define-key evil-normal-state-map  (kbd "C-.") nil)
 (define-key evil-normal-state-map (kbd "DEL") nil) ;backupspace
 (define-key evil-normal-state-map "m" nil)

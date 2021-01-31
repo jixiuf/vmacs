@@ -2,8 +2,7 @@
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
 (require 'consult nil t)
-(declare-function magit-toplevel "magit")
-(autoload 'magit-toplevel "magit" "magit toplevel " nil)
+(require 'magit)
 
 (defvar git-repos-files-cache (make-hash-table :test 'equal))
 (defun vmacs--git-files (&optional n dir )
@@ -36,17 +35,34 @@
             (setq result-list (append result-list list))))))
     result-list))
 
+
 ;;;###autoload
-(defun vmacs-switch-buffer ()
-  "Open `recent-list' item in a new buffer.
-The user's $HOME directory is abbreviated as a tilde."
-  (interactive)
-  (let ((recentf-list (append  recentf-list
-                               vmacs-dired-history
-                               (vmacs--git-files 0 "~/repos/vmacs")
-                               (vmacs--git-files 0 "~/repos/dotfiles")
-                               (vmacs--git-files 1 nil))))
-    (consult--buffer #'switch-to-buffer #'find-file #'bookmark-jump)))
+(defvar vmacs-consult--source-git
+  `(:name     "GitFile"
+              :narrow   ?g
+              :category file
+              :face     consult-file
+              :history  file-name-history
+              :open     ,#'consult--open-file
+              :items
+              ,(lambda ()
+                 (require 'lazy-buffer)
+                 (append (vmacs--git-files 0 "~/repos/vmacs")
+                         (vmacs--git-files 0 "~/repos/dotfiles")
+                         (vmacs--git-files 1 nil))))
+  "Recent file candidate source for `consult-buffer'.")
+
+;;;###autoload
+(defvar vmacs-consult--source-dired
+  `(:name     "Dired"
+              :narrow   ?d
+              :category file
+              :face     consult-file
+              :history  vmacs-dired-history
+              :open     ,#'consult--open-file
+              :items
+              ,(lambda()(require 'vmacs-dired-history) vmacs-dired-history))
+  "Recent dired candidate source for `consult-buffer'.")
 
 ;;
 (setq vmacs-ignore-buffers
