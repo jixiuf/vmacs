@@ -12,6 +12,7 @@
 
 (require 'evil)
 (setq evil-collection-key-blacklist '("SPC"))
+(setq evil-collection-company-use-tng nil)
 (when (require 'evil-collection nil t) (evil-collection-init))
 
 ;; minor-mode
