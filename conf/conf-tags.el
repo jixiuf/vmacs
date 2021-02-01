@@ -1,18 +1,19 @@
 ;;; -*- coding:utf-8 -*-
+
 (setq eglot-confirm-server-initiated-edits nil)
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
 (defun vmacs-lsp-hook()
-  ;; (lsp-deferred)
-  ;; (add-hook 'before-save-hook #'lsp-organize-imports 10 t)
-  ;; (add-hook 'before-save-hook #'lsp-format-buffer 20 t)
-  (add-hook 'before-save-hook #'vmacs-eglot-organize-imports 29 t);before hook有时无效，只好After
-  ;; (add-hook 'before-save-hook #'eglot-organize-imports -100 t)
-  (add-hook 'before-save-hook #'eglot-format-buffer 30 t))
+  ;; The depth of -10 places this before eglot's willSave notification,
+  ;; so that that notification reports the actual contents that will be saved.
+  (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t);before hook有时无效，只好After
+  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
-  (add-hook mod 'eglot-ensure))
+  (add-hook mod #'eglot-ensure)
+  (add-hook mod #'vmacs-lsp-hook))
+
 (dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
 (with-eval-after-load 'eglot
   ;; brew install llvm
