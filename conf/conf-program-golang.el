@@ -2,13 +2,13 @@
 ;; go get  golang.org/x/tools/cmd/gopls
 
 ;; go install golang.org/x/tools/cmd/goimports
-(let ((gopath (getenv "GOPATH")))
-  (when
-      (dolist (path  (parse-colon-path gopath))
-        (setq exec-path (delete-dups  (cons (concat path  "/bin") exec-path))))))
+;; (let ((gopath (getenv "GOPATH")))
+;;   (when
+;;       (dolist (path  (parse-colon-path gopath))
+;;         (setq exec-path (delete-dups  (cons (concat path  "/bin") exec-path))))))
 
-(when (executable-find "gofmt") (setq-default gofmt-command (executable-find "gofmt")))
-(when (executable-find "goimports") (setq-default gofmt-command (executable-find "goimports")))
+;; (when (executable-find "gofmt") (setq-default gofmt-command (executable-find "gofmt")))
+;; (when (executable-find "goimports") (setq-default gofmt-command (executable-find "goimports")))
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (defun vmacs-go-mode-hook()
