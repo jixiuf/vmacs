@@ -468,6 +468,27 @@ Size of private unicode plane b.")
 
 ;;;; Helper functions and macros
 
+(defmacro consult--minibuffer-with-setup-hook (fun &rest body)
+  "Variant of `minibuffer-with-setup-hook' using a symbol and `fset'.
+
+This macro is only needed to prevent memory leaking issues with
+the upstream `minibuffer-with-setup-hook' macro.
+FUN is the hook function and BODY opens the minibuffer."
+  (declare (indent 1) (debug t))
+  (let ((hook (make-symbol "hook"))
+        (append))
+    (when (eq (car-safe fun) :append)
+      (setq append '(t) fun (cadr fun)))
+    `(let ((,hook (make-symbol "consult--minibuffer-setup")))
+       (fset ,hook (lambda ()
+                     (remove-hook 'minibuffer-setup-hook ,hook)
+                     (funcall ,fun)))
+       (unwind-protect
+           (progn
+             (add-hook 'minibuffer-setup-hook ,hook ,@append)
+             ,@body)
+         (remove-hook 'minibuffer-setup-hook ,hook)))))
+
 (defmacro consult--define-cache (name &rest body)
   "Define cached value with NAME and BODY."
   (declare (indent 1))
@@ -476,7 +497,7 @@ Size of private unicode plane b.")
          (setf (alist-get ',name consult--cache)
                ,(macroexp-progn body)))))
 
-(defsubst consult--completion-filter (category highlight)
+(defun consult--completion-filter (category highlight)
   "Return filter function used by completion system.
 
 CATEGORY is the completion category.
@@ -689,7 +710,7 @@ KEY is the key function."
   (when (and jit-lock-mode (< (buffer-size) consult-fontify-max-size))
     (jit-lock-fontify-now)))
 
-(defsubst consult--fontify-region (start end)
+(defun consult--fontify-region (start end)
   "Ensure that region between START and END is fontified."
   (when jit-lock-mode
     (jit-lock-fontify-now start end)))
@@ -708,10 +729,11 @@ KEY is the key function."
 
 (defmacro consult--with-increased-gc (&rest body)
   "Temporarily increase the gc limit in BODY to optimize for throughput."
-  `(let* ((overwrite (> consult--gc-threshold gc-cons-threshold))
-          (gc-cons-threshold (if overwrite consult--gc-threshold gc-cons-threshold))
-          (gc-cons-percentage (if overwrite consult--gc-percentage gc-cons-percentage)))
-     ,@body))
+  (let ((overwrite (make-symbol "overwrite")))
+    `(let* ((,overwrite (> consult--gc-threshold gc-cons-threshold))
+            (gc-cons-threshold (if ,overwrite consult--gc-threshold gc-cons-threshold))
+            (gc-cons-percentage (if ,overwrite consult--gc-percentage gc-cons-percentage)))
+       ,@body)))
 
 (defun consult--count-lines (pos)
   "Move to position POS and return number of lines."
@@ -728,7 +750,7 @@ KEY is the key function."
 ;; number, such that the user can search for numbers with `consult-line', we
 ;; encode the line number as unicode characters in the supplementary private use
 ;; plane b. By doing that, it is unlikely that accidential matching occurs.
-(defsubst consult--encode-location (marker)
+(defun consult--encode-location (marker)
   "Generate unique string for MARKER.
 DISPLAY is the string to display instead of the unique string."
   (let ((str "") (n marker))
@@ -738,7 +760,7 @@ DISPLAY is the string to display instead of the unique string."
              (and (>= n consult--tofu-range) (setq n (/ n consult--tofu-range)))))
     str))
 
-(defsubst consult--line-number-prefix (marker line width)
+(defun consult--line-number-prefix (marker line width)
   "Format LINE number prefix number with padding.
 
 MARKER and LINE are added as 'consult-location text property.
@@ -766,7 +788,7 @@ Since the line number is part of the candidate it will be matched-on during comp
                str))
             candidates)))
 
-(defsubst consult--region-with-cursor (begin end marker)
+(defun consult--region-with-cursor (begin end marker)
   "Return region string with a marking at the cursor position.
 
 BEGIN is the begin position.
@@ -779,7 +801,7 @@ MARKER is the cursor position."
                          'face 'consult-preview-cursor str)
       str)))
 
-(defsubst consult--line-with-cursor (marker)
+(defun consult--line-with-cursor (marker)
   "Return current line where the cursor MARKER is highlighted."
   (consult--region-with-cursor
    (line-beginning-position)
@@ -924,7 +946,7 @@ FACE is the cursor face."
 
 See consult--with-preview for the arguments PREVIEW-KEY, PREVIEW, TRANSFORM and CANDIDATE."
   (let ((input "") (selected))
-    (minibuffer-with-setup-hook
+    (consult--minibuffer-with-setup-hook
         (if (and preview preview-key)
             (lambda ()
               (setq consult--preview-function
@@ -1066,7 +1088,7 @@ to make it available for commands with narrowing."
 (defun consult--with-async-1 (async fun)
   "Setup ASYNC for FUN."
   (if (not (functionp async)) (funcall fun (lambda (_) async))
-    (minibuffer-with-setup-hook
+    (consult--minibuffer-with-setup-hook
         (lambda ()
           (funcall async 'setup)
           ;; Push input string to request refresh.
@@ -1334,9 +1356,11 @@ The refresh happens after a DELAY, defaulting to `consult-async-refresh-delay'."
     (save-match-data
       (let ((opts))
         (when (string-match " +--\\( +\\|$\\)" input)
-          ;; split-string-and-unquote fails if the quotes are invalid. Ignore it.
-          (setq opts (ignore-errors (split-string-and-unquote (substring input (match-end 0))))
-                input (substring input 0 (match-beginning 0))))
+          ;; split-string-and-unquote modifies the match data
+          ;; and fails if the quotes are invalid. Ignore it.
+          (setq opts (substring input (match-end 0))
+                input (substring input 0 (match-beginning 0))
+                opts (ignore-errors (split-string-and-unquote opts))))
         (mapcan (lambda (x)
                   (if (string= x "OPTS")
                       opts
@@ -1500,7 +1524,7 @@ KEYMAP is a command-specific keymap."
    (sort t)
    (default-top t)
    (lookup (lambda (_input _cands x) x)))
-  (minibuffer-with-setup-hook
+  (consult--minibuffer-with-setup-hook
       (:append (lambda () (apply #'consult--read-setup prompt candidates options)))
     (consult--with-async (async candidates)
       ;; NOTE: Do not unnecessarily let-bind the lambdas to avoid
@@ -1555,10 +1579,11 @@ KEYMAP is a command-specific keymap."
 (defun consult--multi-narrow (sources)
   "Return narrow list used by `consult--multi' with SOURCES."
   (delq nil (mapcar (lambda (src)
-                      (let ((narrow (plist-get src :narrow)))
+                      (let ((narrow (plist-get src :narrow))
+                            (name (plist-get src :name)))
                         (cond
                          ((consp narrow) narrow)
-                         (narrow (cons narrow (plist-get src :name))))))
+                         ((and narrow name) (cons narrow name)))))
                     sources)))
 
 (defun consult--multi-annotate (sources max-len)
@@ -1566,14 +1591,13 @@ KEYMAP is a command-specific keymap."
 
 MAX-LEN is the maximum candidate length."
   (lambda (cand)
-    (let ((src (consult--multi-source sources cand)))
-      (concat
-       (propertize " "
-                   'display
-                   `(space :align-to (+ left ,max-len)))
-       (if-let (annotate (plist-get src :annotate))
-           (funcall annotate (cdr (get-text-property 0 'consult-multi cand)))
-         (plist-get src :name))))))
+    (let* ((src (consult--multi-source sources cand))
+           (annotate (plist-get src :annotate))
+           (ann (if annotate
+                    (funcall annotate (cdr (get-text-property 0 'consult-multi cand)))
+                  (plist-get src :name))))
+      (when ann
+        (concat (propertize " " 'display `(space :align-to (+ left ,max-len))) ann)))))
 
 (defun consult--multi-lookup (sources)
   "Lookup function used by `consult--multi' with SOURCES."
@@ -1624,21 +1648,22 @@ variables or source values. Source values must be plists with the following
 fields:
 
 Required source fields:
-* :name - Name of the source, used for narrowing and annotation.
 * :category - Completion category.
 * :items - List of candidate strings or function returning list of strings.
 
 Optional source fields:
+* :name - Name of the source, used for narrowing and annotation.
 * :narrow - Narrowing character or (character . string) pair.
 * :predicate - Function which must return t if the source is enabled.
 * :face - Face used for highlighting the candidates.
-* :narrow - Pair (character . string) to use for narrowing instead of the key.
-* :annotate - Annotation function for the source candidates.
+* :annotate - Annotation function called for each candidate, returns string.
 * :history - Name of history variable to add selected candidate.
 * Arbitrary other fields specific to your use case."
   (let* ((sources (consult--multi-preprocess sources))
-         (candidates (let ((consult--cache))
-                       (consult--multi-candidates sources)))
+         (candidates
+          (consult--with-increased-gc
+           (let ((consult--cache))
+             (consult--multi-candidates sources))))
          (selected (apply #'consult--read prompt
                           (cdr candidates)
                           :category  'consult-multi
@@ -1667,7 +1692,7 @@ ADD-HISTORY is a list of items to add to the history.
 PREVIEW is a preview function, see `consult--with-preview'.
 PREVIEW-KEY are the preview keys (nil, 'any, a single key or a list of keys).
 KEYMAP is a command-specific keymap."
-  (minibuffer-with-setup-hook
+  (consult--minibuffer-with-setup-hook
       (:append (lambda ()
                  (consult--setup-keymap keymap nil nil preview-key)
                  (consult--add-history add-history)))
@@ -1996,7 +2021,7 @@ The symbol at point and the last `isearch-string' is added to the future history
 
 ;;;;; Command: consult-keep-lines
 
-(defsubst consult--keep-lines-replace (content &optional pos)
+(defun consult--keep-lines-replace (content &optional pos)
   "Replace buffer content with CONTENT and move point to POS."
   (delete-region (point-min) (point-max))
   (insert content)
