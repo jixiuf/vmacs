@@ -4,8 +4,8 @@
 
 ;; Author: Omar Antolín Camarena <omar@matem.unam.mx>
 ;; Keywords: convenience
-;; Package-Version: 20210130.2001
-;; Package-Commit: e993fec7a77de7a3b27eed678255169937579088
+;; Package-Version: 20210131.254
+;; Package-Commit: 68f8d81af9979838509c0931212ce4cf61bfe01d
 ;; Version: 0.1
 ;; Homepage: https://github.com/oantolin/embark
 ;; Package-Requires: ((emacs "25.1") (embark "0.9") (consult "0.1"))
@@ -212,12 +212,8 @@ The elements of LINES are assumed to be values of category `consult-line'."
 
 This function takes a target of type `consult-multi' (from
 Consult's `consult-multi' category) and transforms it to its
-actual type and also removes its uniqueness prefix."
-  (if-let (cat (get-text-property 0 'consult-multi target))
-      (cons cat (substring target (next-single-char-property-change
-                                   0 'consult-multi target)))
-    ;; new buffer case, don't remove first char
-    (cons 'buffer target)))
+actual type."
+  (or (get-text-property 0 'consult-multi target) (cons 'general target)))
 
 (setf (alist-get 'consult-multi embark-transformer-alist)
       'embark-consult-refine-multi-type)

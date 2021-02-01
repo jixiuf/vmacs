@@ -42,6 +42,7 @@ Special features
 * Live previews::                Preview the currently selected candidate
 * Narrowing to subsets::         Restricting the completion to a candidate subset
 * Asynchronous search::          Filtering asynchronously generated candidate lists
+* Multiple sources::             Combining candidates from different sources
 * Embark integration::           Actions, Grep/Occur-buffer export
 
 Configuration
@@ -150,8 +151,8 @@ File: consult.info,  Node: Virtual Buffers,  Next: Editing,  Up: Available comma
         • p Project (only available if ‘consult-project-root-function’
           is configured as shown in the *note example configuration:
           Use-package example.)
-        • Arbitrary other sources can be configured via
-          ‘consult-buffer-sources’
+        • Arbitrary *note other sources: Multiple sources. can be
+          configured via ‘consult-buffer-sources’
    • ‘consult-bookmark’: Select or create bookmark.  You might consider
      the powerful ‘consult-buffer’ instead as an alternative, which
      includes bookmarks.  However ‘consult-bookmark’ supports preview of
@@ -373,15 +374,17 @@ additional narrowing capabilities to candidate subsets and
 asynchronously generated candidate lists.  This functionality is
 provided by the internal ‘consult--read’ function, which is used by most
 Consult commands.  The ‘consult--read’ function is a thin wrapper around
-‘completing-read’.  This allows Consult to work with different
-completion systems in the backend, while still offering more advanced
-features.
+‘completing-read’.  In order to support multiple candidate sources there
+exists the high-level function ‘consult--multi’.  The architecture of
+Consult allows it to work with different completion systems in the
+backend, while still offering advanced features.
 
 * Menu:
 
 * Live previews::                Preview the currently selected candidate
 * Narrowing to subsets::         Restricting the completion to a candidate subset
 * Asynchronous search::          Filtering asynchronously generated candidate lists
+* Multiple sources::             Combining candidates from different sources
 * Embark integration::           Actions, Grep/Occur-buffer export
 
 
@@ -414,9 +417,9 @@ File: consult.info,  Node: Narrowing to subsets,  Next: Asynchronous search,  Pr
 
 Consult has special support to narrow to candidate subsets.  This
 functionality is useful if the list of candidates consists of candidates
-of multiple types or candidates from multiple sources, like the
-‘consult-buffer’ command, which shows both buffers and recently opened
-files.
+of multiple types or candidates from *note multiple sources: Multiple
+sources, like the ‘consult-buffer’ command, which shows both buffers and
+recently opened files.
 
    When you use the ‘consult-buffer’ command, you can press ‘b SPC’ and
 the list of candidates will be restricted such that only buffers are
@@ -433,7 +436,7 @@ is the ‘consult-narrow-help’ command which can be bound to a key in the
 configuration: Use-package example.
 
 
-File: consult.info,  Node: Asynchronous search,  Next: Embark integration,  Prev: Narrowing to subsets,  Up: Special features
+File: consult.info,  Node: Asynchronous search,  Next: Multiple sources,  Prev: Narrowing to subsets,  Up: Special features
 
 3.3 Asynchronous search
 =======================
@@ -486,13 +489,73 @@ the leading space), you can access the buffer using ‘consult-buffer’ and
 buffer.
 
 
-File: consult.info,  Node: Embark integration,  Prev: Asynchronous search,  Up: Special features
+File: consult.info,  Node: Multiple sources,  Next: Embark integration,  Prev: Asynchronous search,  Up: Special features
 
-3.4 Embark integration
+3.4 Multiple sources
+====================
+
+Consult allows combining multiple synchronous candidate sources.  This
+feature is used by the ‘consult-buffer’ command to present buffer-like
+candidates in a single menu for quick access.  By default
+‘consult-buffer’ includes buffers, bookmarks, recent files and
+project-specific buffers and files.  It is possible to configure the
+list of sources via the ‘consult-buffer-sources’ variable.  Arbitrary
+custom sources can be defined.
+
+   As an example, the bookmark source is defined as follows:
+
+     (defvar consult--source-bookmark
+       `(:name     "Bookmark"
+         :narrow   ?m
+         :category bookmark
+         :face     consult-bookmark
+         :history  bookmark-history
+         :items    ,#'bookmark-all-names
+         :open     ,#'bookmark-jump))
+
+   Required source fields:
+   • ‘:name’ Name of the source, used for narrowing and annotation.
+   • ‘:category’ Completion category.
+   • ‘:items’ List of candidate strings or function returning list of
+     strings.
+
+   Optional source fields:
+   • ‘:narrow’ Narrowing character or ‘(character . string)’ pair.
+   • ‘:predicate’ Function which must return t if the source is enabled.
+   • ‘:face’ Face used for highlighting the candidates.
+   • ‘:narrow’ Pair ‘(character . string)’ to use for narrowing instead
+     of the key.
+   • ‘:annotate’ Annotation function for the source candidates.
+   • ‘:history’ Name of history variable to add selected candidate.
+   • Arbitrary other fields specific to your use case.
+
+   Sources can be added directly to the ‘consult-buffer-source’ list for
+convenience.  For example views can be added to the list of virtual
+buffers from a library like <https://github.com/minad/bookmark-view/>.
+
+     (add-to-list 'consult-buffer-sources
+                   (list :name     "View"
+                         :narrow   ?v
+                         :category 'bookmark
+                         :face     'font-lock-keyword-face
+                         :history  'bookmark-view-history
+                         :open     #'bookmark-jump
+                         :items    #'bookmark-view-names)
+                   'append)
+
+   For more details, see the documentation of ‘consult-buffer’ and of
+the internal ‘consult--multi’ API.  The ‘consult--multi’ function can be
+used to create new multi-source commands, but is part of the internal
+API as of now, since some details may still change.
+
+
+File: consult.info,  Node: Embark integration,  Prev: Multiple sources,  Up: Special features
+
+3.5 Embark integration
 ======================
 
-*NOTE*: Please install the ‘embark-consult’ package from MELPA, which
-provides Consult-specific Embark actions and the Occur buffer export.
+*NOTE*: Install the ‘embark-consult’ package from MELPA, which provides
+Consult-specific Embark actions and the Occur buffer export.
 
    Embark is a versatile package which offers context dependent actions,
 comparable to a context menu.  See the Embark manual
@@ -617,6 +680,7 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
        ;; `consult-register-store' and the Emacs built-ins.
        (setq register-preview-delay 0
              register-preview-function #'consult-register-format)
+
        ;; Optionally tweak the register preview window.
        ;; This adds zebra stripes, sorting and hides the mode line of the window.
        (advice-add #'register-preview :override #'consult-register-window)
@@ -635,6 +699,7 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
        ;; Optionally configure the narrowing key.
        ;; Both < and C-+ work reasonably well.
        (setq consult-narrow-key "<") ;; (kbd "C-+")
+
        ;; Optionally make narrowing help available in the minibuffer.
        ;; Probably not needed if you are using which-key.
        ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
@@ -643,13 +708,13 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
        ;; for example add views to the list of virtual buffers
        ;; from a library like https://github.com/minad/bookmark-view/.
        ;; (add-to-list 'consult-buffer-sources
-       ;;               (list ?v
-       ;;                    :name     "View"
-       ;;                    :category 'bookmark
-       ;;                    :face     'font-lock-keyword-face
-       ;;                    :history  'bookmark-view-history
-       ;;                    :open     #'bookmark-jump
-       ;;                    :items    #'bookmark-view-names)
+       ;;               (list :name     "View"
+       ;;                     :narrow   ?v
+       ;;                     :category 'bookmark
+       ;;                     :face     'font-lock-keyword-face
+       ;;                     :history  'bookmark-view-history
+       ;;                     :open     #'bookmark-jump
+       ;;                     :items    #'bookmark-view-names)
        ;;              'append)
 
        ;; Optionally configure a function which returns the project root directory.
@@ -806,8 +871,8 @@ File: consult.info,  Node: Contributions,  Next: Acknowledgements,  Prev: Recomm
 ***************
 
 Consult is intended to be a community effort, please participate in the
-discussions.  Contributions are welcome.  If you have a proposal, please
-take a look first at the Consult issue tracker
+discussions.  Contributions are welcome.  If you have a proposal, take a
+look first at the Consult issue tracker
 (https://github.com/consult/issues) and the Consult wishlist
 (https://github.com/minad/consult/issues/6).
 
@@ -818,7 +883,7 @@ Prescient in case you are using any of those packages.
 
    Please provide the necessary important information with your bug
 report, e.g., the Emacs version, your operating system and the package
-manager you are using.  Please try to reproduce the issue by starting a
+manager you are using.  Try to reproduce the issue by starting a
 barebone Emacs instance with ‘emacs -Q’ on the command line.  Then
 execute the following code in the scratch buffer.  This way we can
 exclude side effects due to configuration settings.
@@ -876,30 +941,31 @@ removed, such that the commands are compatible with the
 
 Tag Table:
 Node: Top205
-Node: Introduction2183
-Node: Available commands5060
-Node: Virtual Buffers6287
-Node: Editing7682
-Node: Register8106
-Node: Navigation9911
-Node: Search10969
-Node: Grep and Find12812
-Node: Compilation errors14926
-Node: Histories15828
-Node: Modes16465
-Node: Miscellaneous16948
-Node: Special features18037
-Node: Live previews18998
-Node: Narrowing to subsets20051
-Node: Asynchronous search21358
-Node: Embark integration23699
-Node: Configuration25493
-Node: Use-package example26847
-Node: Custom variables32796
-Node: Fine-tuning36367
-Node: Recommended packages38383
-Node: Contributions40236
-Node: Acknowledgements41671
+Node: Introduction2260
+Node: Available commands5137
+Node: Virtual Buffers6364
+Node: Editing7784
+Node: Register8208
+Node: Navigation10013
+Node: Search11071
+Node: Grep and Find12914
+Node: Compilation errors15028
+Node: Histories15930
+Node: Modes16567
+Node: Miscellaneous17050
+Node: Special features18139
+Node: Live previews19297
+Node: Narrowing to subsets20350
+Node: Asynchronous search21681
+Node: Multiple sources24020
+Node: Embark integration26665
+Node: Configuration28449
+Node: Use-package example29803
+Node: Custom variables35770
+Node: Fine-tuning39341
+Node: Recommended packages41357
+Node: Contributions43210
+Node: Acknowledgements44631
 
 End Tag Table
 
