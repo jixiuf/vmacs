@@ -1,7 +1,5 @@
 ;;; -*- coding:utf-8 -*-
 (setq eglot-confirm-server-initiated-edits nil)
-(setq eglot-autoshutdown nil)
-(setq eglot-sync-connect 0)
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))

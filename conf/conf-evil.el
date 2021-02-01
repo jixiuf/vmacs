@@ -9,6 +9,80 @@
 ;; You can disable it for %, f, F, t and T with the following:
 ;; (evil-set-command-property #'evil-jump-item :jump nil)
 
+(setq-default
+ evil-want-keybinding nil
+
+ ;; evil-search-module 'isearch        ;可以用C-w yank word
+ evil-undo-system 'undo-tree
+ evil-disable-insert-state-bindings t
+ evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
+;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
+ evil-ex-search-highlight-all t
+ evil-ex-search-persistent-highlight nil
+ evil-toggle-key "<f15>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
+ evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
+ evil-want-C-w-delete nil
+ evil-want-abbrev-expand-on-insert-exit nil
+ evil-want-C-i-jump nil
+ evil-cross-lines t
+ evil-want-fine-undo t                  ;undo更细化,否则从N->I->N 中所有的修改作为一个undo
+ evil-symbol-word-search t              ;# search for symbol not word
+ evil-flash-delay 0.5                   ;default 2
+ evil-ex-search-case 'sensitive
+ ;; C-e ,到行尾时,光标的位置是在最后一个字符后,还是在字符上
+ evil-move-beyond-eol  t
+ evil-move-cursor-back nil)
+
+
+;; (setq evil-highlight-closing-paren-at-point-states nil)
+(setq-default
+ evil-default-cursor '(t "white")
+ evil-emacs-state-cursor  '("gray" box)
+ evil-normal-state-cursor '("green" box)
+ evil-visual-state-cursor '("cyan" hbar)
+ evil-insert-state-cursor '("orange" (bar . 3))
+ evil-motion-state-cursor '("red" box))
+
+(setq-default evil-buffer-regexps
+              '(("**testing snippet:" . insert)
+                ("*compile*" . normal)
+                ;; ("*Org Src" . insert)
+                ("*Org Export Dispatcher*" . insert)
+                ("COMMIT_EDITMSG" . insert)
+                ("*Async Shell Command*" . normal)
+                ("^ \\*load\\*")))
+
+(defun vmacs-calc-hook()
+  (require 'calc-bin)
+  ;; 默认calc 的移位移位操作是接32位的， 可以bw(calc-word-size) 来改成64位
+  (calc-word-size 128))
+
+(add-hook 'calc-mode-hook 'vmacs-calc-hook)
+
+;; (), {}, [], <>, '', "", ` `, or “” by default
+;; 不论是何种 ，都会将最近的配对进行操作
+(setq-default evil-textobj-anyblock-blocks
+              '(("(" . ")")
+                ("{" . "}")
+                ("\\[" . "\\]")
+                ("<" . ">")
+                ("'" . "'")
+                ("\"" . "\"")
+                ("`" . "`")
+                ("“" . "”")
+                ("［" . "］")           ;全角
+                ("（" . "）")           ;全角
+                ("{" . "}")             ;全角
+                ))
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (setq-local evil-textobj-anyblock-blocks
+                        '(("(" . ")")
+                          ("{" . "}")
+                          ("\\[" . "\\]")
+                          ("\"" . "\"")))))
+
+
 
 (require 'evil)
 (setq evil-collection-key-blacklist '("SPC"))
@@ -36,6 +110,11 @@
 ;; 更新 evil-overriding-maps ,因为org-agenda-mode-map 变量初始为空keymap,在org-agenda-mode内才往里添加绑定
 (add-hook 'org-agenda-mode-hook #'evil-normalize-keymaps)
 
+(evil-collection-define-key 'normal 'org-agenda-mode-map
+      "j" 'evil-next-line
+    "k" 'evil-previous-line
+    ":" 'evil-ex
+    "r" 'org-agenda-redo)
 
 
 ;; (setq display-line-numbers-current-absolute t)
@@ -100,11 +179,6 @@ execute emacs native `repeat' default binding to`C-xz'"
         (evil-change-to-initial-state)) ;如果初始化state不是normal ，按一次 转到初始状态
       ))))
 
-(evil-collection-define-key 'normal 'org-agenda-mode-map
-      "j" 'evil-next-line
-    "k" 'evil-previous-line
-    ":" 'evil-ex
-    "r" 'org-agenda-redo)
 
 
 ;; (define-key evil-ex-completion-map (kbd "M-p") 'previous-history-element) ;
@@ -356,6 +430,25 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-outer-text-objects-map "e" 'evil-a-symbol)
 (define-key evil-inner-text-objects-map "e" 'evil-inner-symbol)
 
+(global-set-key (kbd "<f17>") 'evil-normal-state) ;mac karabiner用来控制输入法
+(define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见isearch-pre-command-hook
+(global-set-key (kbd "<f18>") 'evil-insert-state) ;mac karabiner用来控制输入法
+(define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见isearch-pre-command-hook
+(global-set-key (kbd "<f16>") 'vmacs-toggle-input-method)
+(global-set-key (kbd "<f19>") nil) ;mac karabiner用来控制输入法 ,rime f19 send escape
+(define-key isearch-mode-map (kbd "<f19>") nil) ;详见isearch-pre-command-hook
+(defun vmacs-toggle-input-method ()
+  "when toggle on input method, switch to evil-insert-state if possible.
+when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
+  (interactive)
+  (if (not current-input-method)
+      (if (not (string= evil-state "insert"))
+          (evil-insert-state)
+        (call-interactively #'toggle-input-method)
+        )
+    (call-interactively #'toggle-input-method)
+    )
+  )
 
 (provide 'conf-evil)
 

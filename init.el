@@ -7,7 +7,6 @@
 
 (when (< emacs-major-version 27) (package-initialize))
 
-(require 'conf-evil-dump)
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 (require 'conf-space-tab)
@@ -80,7 +79,6 @@
   (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
   (require 'conf-tmp nil t)
   (require 'conf-vterm)
-  (when (eq system-type 'darwin) (require 'conf-evil-input-method))
   (require 'server)
   (unless (server-running-p) (server-start))
   (when (> emacs-major-version 27) (load-theme 'modus-vivendi)))
