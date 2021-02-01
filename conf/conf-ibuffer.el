@@ -23,31 +23,18 @@
 ;;设置默认不显示maybe-show-predicates的buffer (即隐藏上面Hidden分组里的内容)
 (setq ibuffer-default-display-maybe-show-predicates nil)
 
-(define-key ibuffer-mode-map (kbd "M-=") 'ibuffer-ediff-merge)
-(define-key ibuffer-mode-map (kbd "q") 'vmacs-kill-buffer-dwim)
-;; (define-key ibuffer-mode-map (kbd "C-x C-f") 'ido-find-file)
-(define-key ibuffer-mode-map "r" 'ibuffer-update)
-(define-key ibuffer-mode-map "g" 'ibuffer-toggle-maybe-show)
-(define-key ibuffer-mode-map "n" 'ibuffer-forward-filter-group)
-(define-key ibuffer-mode-map "p" 'ibuffer-backward-filter-group)
-;;隐藏所有以*helm开头的buffer
-;;(add-to-list 'ibuffer-never-show-predicates "^\\*helm")
-;;ibuffer分组
+(evil-collection-define-key 'normal 'ibuffer-mode-map
+  "gr" 'ibuffer-filter-disable
+  (kbd "M-=") 'ibuffer-ediff-merge
+  "gt" 'ibuffer-toggle-maybe-show
+  "/" 'ibuffer-filter-by-name)
+
 (setq ibuffer-saved-filter-groups
       '(("Default"
-         ;; ("Mail" (or (mode . mew-summary-mode) (mode . mew-draft-mode)(mode . mew-message-mode)))
-         ;; ("VC"  (or (name . "magit-") (name . "^\\*vc")(mode . diff-mode) (mode . vc-dir-mode)))
-         ;; ("Magit "  (name . "magit:"))
          ("Files"  (or (mode . dired-mode) (visiting-file . "^.*$")))
          ("Shell"  (or (mode . shell-mode) (mode . vterm-mode)))
          ("Emacs"  (or (name . "^\\*.*$") (name . "magit")))
-         ;; ("Dired"  (mode . dired-mode))
-         ;; ("Go"  (mode . go-mode))
-         ;; ("Python"  (mode . python-mode))
-         ;; ("EL"  (mode . emacs-lisp-mode))
-
-         ("Hidden(g则不显示此分组)"  (name . "^ "))
-         )))
+         ("Hidden(g则不显示此分组)"  (name . "^ ")))))
 
 (add-hook 'ibuffer-mode-hook
           (lambda ()
@@ -63,8 +50,6 @@
   (ibuffer))
 
 
-;;;; other
-(setq ibuffer-filter-group-name-face 'font-lock-doc-face)
 ;; 可读性好的size
 (define-ibuffer-column size-h
   (:name "Size" :inline t)
