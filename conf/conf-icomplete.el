@@ -86,8 +86,8 @@
 (setq consult-project-root-function #'vc-root-dir)
 (setq consult-async-default-split "#")
 (with-eval-after-load 'consult
-  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git)
-  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired))
+  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
+  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t))
 
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
