@@ -3,8 +3,8 @@
 ;; Copyright (C) 2018-2020 Free Software Foundation, Inc.
 
 ;; Version: 1.7
-;; Package-Version: 20210201.104
-;; Package-Commit: 50b0e8485e76a0b89ff067db22f58e8d88d76f83
+;; Package-Version: 20210201.1820
+;; Package-Commit: 2fc0db852d784be61b40496fbb12b7976eb2ef19
 ;; Author: João Távora <joaotavora@gmail.com>
 ;; Maintainer: João Távora <joaotavora@gmail.com>
 ;; URL: https://github.com/joaotavora/eglot
@@ -61,6 +61,7 @@
 (require 'imenu)
 (require 'cl-lib)
 (require 'project)
+(require 'seq)
 (require 'url-parse)
 (require 'url-util)
 (require 'pcase)
@@ -98,11 +99,10 @@
 
 (defvar eglot-server-programs '((rust-mode . (eglot-rls "rls"))
                                 (python-mode . ("pyls"))
-                                ((js-mode
-                                  typescript-mode)
-                                 . ("javascript-typescript-stdio"))
+                                ((js-mode typescript-mode)
+                                 . ("typescript-language-server" "--stdio"))
                                 (sh-mode . ("bash-language-server" "start"))
-                                (php-mode
+                                ((php-mode phps-mode)
                                  . ("php" "vendor/felixfbecker/\
 language-server/bin/php-language-server.php"))
                                 ((c++-mode c-mode) . ("ccls"))
@@ -273,12 +273,11 @@ let the buffer grow forever."
       (Position (:line :character))
       (Range (:start :end))
       (Registration (:id :method) (:registerOptions))
-      (Registration (:id :method) (:registerOptions))
       (ResponseError (:code :message) (:data))
       (ShowMessageParams (:type :message))
       (ShowMessageRequestParams (:type :message) (:actions))
       (SignatureHelp (:signatures) (:activeSignature :activeParameter))
-      (SignatureInformation (:label) (:documentation :parameters))
+      (SignatureInformation (:label) (:documentation :parameters :activeParameter))
       (SymbolInformation (:name :kind :location)
                          (:deprecated :containerName))
       (DocumentSymbol (:name :range :selectionRange :kind)
@@ -1208,30 +1207,29 @@ Doubles as an indicator of snippet support."
 You could add, for instance, the symbol
 `:documentHighlightProvider' to prevent automatic highlighting
 under cursor."
-  :type '(repeat
-          (choice
-           (const :tag "Documentation on hover" :hoverProvider)
-           (const :tag "Code completion" :completionProvider)
-           (const :tag "Function signature help" :signatureHelpProvider)
-           (const :tag "Go to definition" :definitionProvider)
-           (const :tag "Go to type definition" :typeDefinitionProvider)
-           (const :tag "Go to implementation" :implementationProvider)
-           (const :tag "Go to declaration" :implementationProvider)
-           (const :tag "Find references" :referencesProvider)
-           (const :tag "Highlight symbols automatically" :documentHighlightProvider)
-           (const :tag "List symbols in buffer" :documentSymbolProvider)
-           (const :tag "List symbols in workspace" :workspaceSymbolProvider)
-           (const :tag "Execute code actions" :codeActionProvider)
-           (const :tag "Code lens" :codeLensProvider)
-           (const :tag "Format buffer" :documentFormattingProvider)
-           (const :tag "Format portion of buffer" :documentRangeFormattingProvider)
-           (const :tag "On-type formatting" :documentOnTypeFormattingProvider)
-           (const :tag "Rename symbol" :renameProvider)
-           (const :tag "Highlight links in document" :documentLinkProvider)
-           (const :tag "Decorate color references" :colorProvider)
-           (const :tag "Fold regions of buffer" :foldingRangeProvider)
-           (const :tag "Execute custom commands" :executeCommandProvider)
-           (symbol :tag "Other"))))
+  :type '(set
+          :tag "Tick the ones you're not interested in"
+          (const :tag "Documentation on hover" :hoverProvider)
+          (const :tag "Code completion" :completionProvider)
+          (const :tag "Function signature help" :signatureHelpProvider)
+          (const :tag "Go to definition" :definitionProvider)
+          (const :tag "Go to type definition" :typeDefinitionProvider)
+          (const :tag "Go to implementation" :implementationProvider)
+          (const :tag "Go to declaration" :implementationProvider)
+          (const :tag "Find references" :referencesProvider)
+          (const :tag "Highlight symbols automatically" :documentHighlightProvider)
+          (const :tag "List symbols in buffer" :documentSymbolProvider)
+          (const :tag "List symbols in workspace" :workspaceSymbolProvider)
+          (const :tag "Execute code actions" :codeActionProvider)
+          (const :tag "Code lens" :codeLensProvider)
+          (const :tag "Format buffer" :documentFormattingProvider)
+          (const :tag "Format portion of buffer" :documentRangeFormattingProvider)
+          (const :tag "On-type formatting" :documentOnTypeFormattingProvider)
+          (const :tag "Rename symbol" :renameProvider)
+          (const :tag "Highlight links in document" :documentLinkProvider)
+          (const :tag "Decorate color references" :colorProvider)
+          (const :tag "Fold regions of buffer" :foldingRangeProvider)
+          (const :tag "Execute custom commands" :executeCommandProvider)))
 
 (defun eglot--server-capable (&rest feats)
   "Determine if current server is capable of FEATS."
@@ -1368,7 +1366,7 @@ Use `eglot-managed-p' to determine if current buffer is managed.")
     (eglot--setq-saving eldoc-documentation-strategy
                         #'eldoc-documentation-enthusiast)
     (eglot--setq-saving xref-prompt-for-identifier nil)
-    (eglot--setq-saving flymake-diagnostic-functions '(eglot-flymake-backend t))
+    (eglot--setq-saving flymake-diagnostic-functions '(eglot-flymake-backend))
     (eglot--setq-saving company-backends '(company-capf))
     (eglot--setq-saving company-tooltip-align-annotations t)
     (when (assoc 'flex completion-styles-alist)
@@ -2267,14 +2265,15 @@ is not active."
                          (if (vectorp contents) contents (list contents)) "\n")))
     (when (or heading (cl-plusp (length body))) (concat heading body))))
 
-(defun eglot--sig-info (sigs active-sig active-param)
+(defun eglot--sig-info (sigs active-sig sig-help-active-param)
   (cl-loop
    for (sig . moresigs) on (append sigs nil) for i from 0
    concat
-   (eglot--dbind ((SignatureInformation) label documentation parameters) sig
+   (eglot--dbind ((SignatureInformation) label documentation parameters activeParameter) sig
      (with-temp-buffer
        (save-excursion (insert label))
-       (let (params-start params-end)
+       (let ((active-param (or activeParameter sig-help-active-param))
+             params-start params-end)
          ;; Ad-hoc attempt to parse label as <name>(<params>)
          (when (looking-at "\\([^(]+\\)(\\([^)]+\\))")
            (setq params-start (match-beginning 2) params-end (match-end 2))
@@ -2674,10 +2673,9 @@ at point.  With prefix argument, prompt for ACTION-KIND."
      with grammar = '((:**      "\\*\\*/?"              eglot--glob-emit-**)
                       (:*       "\\*"                   eglot--glob-emit-*)
                       (:?       "\\?"                   eglot--glob-emit-?)
-                      (:/       "/"                     eglot--glob-emit-self)
                       (:{}      "{[^][/*{}]+}"          eglot--glob-emit-{})
                       (:range   "\\[\\^?[^][/,*{}]+\\]" eglot--glob-emit-range)
-                      (:literal "[^][/,*?{}]+"          eglot--glob-emit-self))
+                      (:literal "[^][,*?{}]+"           eglot--glob-emit-self))
      until (eobp)
      collect (cl-loop
               for (_token regexp emitter) in grammar
@@ -2689,7 +2687,8 @@ at point.  With prefix argument, prompt for ACTION-KIND."
   "Convert GLOB into Elisp function.  Maybe BYTE-COMPILE it.
 If NOERROR, return predicate, else erroring function."
   (let* ((states (eglot--glob-parse glob))
-         (body `(with-temp-buffer
+         (body `(with-current-buffer (get-buffer-create " *eglot-glob-matcher*")
+                  (erase-buffer)
                   (save-excursion (insert string))
                   (cl-labels ,(cl-loop for (this that) on states
                                        for (self emit text) = this

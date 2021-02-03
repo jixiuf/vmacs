@@ -58,12 +58,6 @@ The command respects narrowing and the settings
 (autoload 'consult-recent-file "consult" "\
 Find recent using `completing-read'." t nil)
 
-(autoload 'consult-recent-file-other-frame "consult" "\
-Find recent using `completing-read'." t nil)
-
-(autoload 'consult-recent-file-other-window "consult" "\
-Find recent using `completing-read'." t nil)
-
 (autoload 'consult-file-externally "consult" "\
 Open FILE externally using the default application of the system.
 

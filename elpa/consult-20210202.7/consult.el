@@ -4,7 +4,7 @@
 ;; Maintainer: Daniel Mendler
 ;; Created: 2020
 ;; License: GPL-3.0-or-later
-;; Version: 0.3
+;; Version: 0.4
 ;; Package-Requires: ((emacs "26.1"))
 ;; Homepage: https://github.com/minad/consult
 
@@ -130,7 +130,7 @@ applies to asynchronous commands, e.g., `consult-grep'."
     (term-mode   . term-input-ring))
   "Alist of (mode . history) pairs of mode histories.
 The histories can be rings or lists."
-  :type '(list (cons symbol symbol)))
+  :type '(alist :key-type symbol :value-type symbol))
 
 (defcustom consult-themes nil
   "List of themes to be presented for selection.
@@ -178,7 +178,9 @@ for navigation commands like `consult-line'."
                         (?t . "Types")
                         (?v . "Variables"))))
   "Narrowing keys used by `consult-imenu'."
-  :type 'alist)
+  :type '(alist :key-type symbol
+                :value-type (alist :key-type character
+                                   :value-type string)))
 
 (defcustom consult-imenu-toplevel
   '((emacs-lisp-mode . "Functions"))
@@ -187,7 +189,7 @@ for navigation commands like `consult-line'."
 The imenu representation provided by the backend usually puts
 functions directly at the toplevel. `consult-imenu' moves them instead
 under the category specified by this variable."
-  :type 'alist)
+  :type '(alist :key-type symbol :value-type string))
 
 (defcustom consult-buffer-filter
   '("^ ")
@@ -207,7 +209,7 @@ with a space character."
   "Sources used by `consult-buffer'.
 
 See `consult--multi' for a description of the source values."
-  :type 'list)
+  :type '(repeat symbol))
 
 (defcustom consult-mode-command-filter
   '(;; Filter commands
@@ -274,7 +276,7 @@ See `consult--multi' for a description of the source values."
   "Register narrowing configuration.
 
 Each element of the list must have the form '(char name predicate)."
-  :type 'list)
+  :type '(repeat (list character string function)))
 
 (defcustom consult-bookmark-narrow
   `((?f "File" #'bookmark-default-handler)
@@ -288,7 +290,7 @@ Each element of the list must have the form '(char name predicate)."
   "Bookmark narrowing configuration.
 
 Each element of the list must have the form '(char name handler)."
-  :type 'list)
+  :type '(repeat (list character string function)))
 
 (defcustom consult-config nil
   "Command configuration alists, which allows fine-grained configuration.
@@ -297,7 +299,7 @@ The options set here will be passed to `consult--read', when called
 from the corresponding command. Note that the options depend on the
 private `consult--read' API and should not be considered as stable as
 the public API."
-  :type '(list (cons symbol plist)))
+  :type '(alist :key-type symbol :value-type plist))
 
 ;;;; Faces
 
@@ -1119,20 +1121,20 @@ Depending on the argument, the caller context differ.
 'destroy Destroy the internal state.
 'flush   Flush the list of candidates.
 'refresh Request UI refresh.
-'get     Get the list of candidates.
+nil      Get the list of candidates.
 List     Append the list to the list of candidates.
 String   The input string, called when the user enters something."
   (let ((candidates))
     (lambda (action)
       (pcase-exhaustive action
+        ('nil candidates)
         ((or (pred stringp) 'setup 'destroy) nil)
         ('flush (setq candidates nil))
-        ('get candidates)
         ('refresh
          (when-let (win (active-minibuffer-window))
            (with-selected-window win
              (run-hooks 'consult--completion-refresh-hook))))
-        ((pred listp) (setq candidates (nconc candidates action)))))))
+        ((pred consp) (setq candidates (nconc candidates action)))))))
 
 (defun consult--async-split-string (str)
   "Split STR in async input and filtering part.
@@ -1309,7 +1311,7 @@ The DEBOUNCE delay defaults to `consult-async-input-debounce'."
 The refresh happens immediately when candidates are pushed."
   (lambda (action)
     (pcase action
-      ((or (pred listp) (pred stringp) 'flush)
+      ((or (pred consp) (pred stringp) 'flush)
        (prog1 (funcall async action)
          (funcall async 'refresh)))
       (_ (funcall async action)))))
@@ -1321,7 +1323,7 @@ The refresh happens after a DELAY, defaulting to `consult-async-refresh-delay'."
   (let ((timer) (refresh t) (delay (or delay consult-async-refresh-delay)))
     (lambda (action)
       (pcase action
-        ((or (pred listp) (pred stringp) 'refresh 'flush)
+        ((or (pred consp) (pred stringp) 'refresh 'flush)
          (setq refresh t))
         ('destroy (cancel-timer timer))
         ('setup
@@ -1339,7 +1341,7 @@ The refresh happens after a DELAY, defaulting to `consult-async-refresh-delay'."
         (action-var (make-symbol "action")))
     `(let ((,async-var ,async))
        (lambda (,action-var)
-         (funcall ,async-var (if (listp ,action-var) (,@transform ,action-var) ,action-var))))))
+         (funcall ,async-var (if (consp ,action-var) (,@transform ,action-var) ,action-var))))))
 
 (defun consult--async-map (async fun)
   "Map candidates of ASYNC by FUN."
@@ -1535,7 +1537,7 @@ KEYMAP is a command-specific keymap."
       (let ((result
              (consult--with-preview preview-key preview
                                     (lambda (input cand)
-                                      (funcall lookup input (funcall async 'get) cand))
+                                      (funcall lookup input (funcall async nil) cand))
                                     (apply-partially #'run-hook-with-args-until-success
                                                      'consult--completion-candidate-hook)
                (completing-read prompt
@@ -1546,7 +1548,7 @@ KEYMAP is a command-specific keymap."
                                         ,@(when category `((category . ,category)))
                                         ,@(unless sort '((cycle-sort-function . identity)
                                                          (display-sort-function . identity))))
-                                    (complete-with-action action (funcall async 'get) str pred)))
+                                    (complete-with-action action (funcall async nil) str pred)))
                                 predicate require-match initial
                                 (if (symbolp history) history (cadr history))
                                 default))))
@@ -1649,7 +1651,7 @@ fields:
 
 Required source fields:
 * :category - Completion category.
-* :items - List of candidate strings or function returning list of strings.
+* :items - List of strings to select from or function returning list of strings.
 
 Optional source fields:
 * :name - Name of the source, used for narrowing and annotation.
@@ -1658,7 +1660,8 @@ Optional source fields:
 * :face - Face used for highlighting the candidates.
 * :annotate - Annotation function called for each candidate, returns string.
 * :history - Name of history variable to add selected candidate.
-* Arbitrary other fields specific to your use case."
+* Other source fields can be added specifically to the use case. The `consult-buffer'
+  command uses the :open function to open an item from the source."
   (let* ((sources (consult--multi-preprocess sources))
          (candidates
           (consult--with-increased-gc
@@ -2190,34 +2193,19 @@ The command respects narrowing and the settings
 
 ;;;;; Command: consult-recent-file
 
-(defun consult--recent-file-read ()
-  "Read recent file via `completing-read'."
-  (consult--read
-   "Find recent file: "
-   (or (mapcar #'abbreviate-file-name recentf-list)
-       (user-error "No recent files"))
-   :sort nil
-   :require-match t
-   :category 'file
-   :history 'file-name-history))
-
 ;;;###autoload
 (defun consult-recent-file ()
   "Find recent using `completing-read'."
   (interactive)
-  (find-file (consult--recent-file-read)))
-
-;;;###autoload
-(defun consult-recent-file-other-frame ()
-  "Find recent using `completing-read'."
-  (interactive)
-  (find-file-other-frame (consult--recent-file-read)))
-
-;;;###autoload
-(defun consult-recent-file-other-window ()
-  "Find recent using `completing-read'."
-  (interactive)
-  (find-file-other-window (consult--recent-file-read)))
+  (find-file
+   (consult--read
+    "Find recent file: "
+    (or (mapcar #'abbreviate-file-name recentf-list)
+        (user-error "No recent files"))
+    :sort nil
+    :require-match t
+    :category 'file
+    :history 'file-name-history)))
 
 ;;;;; Command: consult-file-externally
 

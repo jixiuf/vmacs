@@ -1,8 +1,8 @@
-(define-package "evil-collection" "20210131.2357" "A set of keybindings for Evil mode"
+(define-package "evil-collection" "20210201.803" "A set of keybindings for Evil mode"
   '((emacs "25.1")
     (evil "1.2.13")
     (annalist "1.0"))
-  :commit "6bdbcccf1e4f51c75f5cf54b3dc27419b32fe608" :authors
+  :commit "be33708835ddbac6dad2d7ff1dde17f3d712a993" :authors
   '(("James Nguyen" . "james@jojojames.com"))
   :maintainer
   '("James Nguyen" . "james@jojojames.com")

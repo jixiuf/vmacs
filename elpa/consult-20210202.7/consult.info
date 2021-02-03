@@ -153,13 +153,13 @@ File: consult.info,  Node: Virtual Buffers,  Next: Editing,  Up: Available comma
           Use-package example.)
         • Arbitrary *note other sources: Multiple sources. can be
           configured via ‘consult-buffer-sources’
-   • ‘consult-bookmark’: Select or create bookmark.  You might consider
-     the powerful ‘consult-buffer’ instead as an alternative, which
-     includes bookmarks.  However ‘consult-bookmark’ supports preview of
-     bookmarks and narrowing.
-   • ‘consult-recent-file’ (‘-other-window’, ‘-other-frame’): Select a
-     recent files.  You might prefer the more powerful ‘consult-buffer’
-     instead, which includes recent files.
+   • ‘consult-bookmark’: Select or create bookmark.  You might use the
+     powerful ‘consult-buffer’ as an alternative, which can include a
+     bookmark virtual buffer source.  But note that ‘consult-bookmark’
+     supports preview of bookmarks and narrowing.
+   • ‘consult-recent-file’: Select from recent files.  You might prefer
+     the more powerful ‘consult-buffer’ instead, which can include
+     recent files as a virtual buffer source.
 
 
 File: consult.info,  Node: Editing,  Next: Register,  Prev: Virtual Buffers,  Up: Available commands
@@ -267,22 +267,22 @@ File: consult.info,  Node: Grep and Find,  Next: Compilation errors,  Prev: Sear
 =================
 
    • ‘consult-grep’, ‘consult-ripgrep’, ‘consult-git-grep’: Search for
-     regular expression in current directory.  Grep is invoked
-     asynchronously, while you enter the search term.  You are required
-     to enter at least ‘consult-async-min-input’ characters in order for
-     the search to get started.  The input string is split into two
-     parts, if the first character is a punctuation character, like ‘#’.
-     For example ‘#grep-regexp#filter-string’, is split at the second
-     ‘#’.  The string "grep-regexp" is passed to Grep, the
-     "filter-string" is passed to the _fast_ Emacs filtering to further
-     narrow down the list of matches.  This is particularily useful if
-     you are using an advanced completion style like orderless.
-     ‘consult-grep’ supports preview.  If
-     ‘consult-project-root-function’ is *note configured: Use-package
-     example. and the function returns non-nil, ‘consult-grep’ searches
-     the current project directory.  Otherwise the ‘default-directory’
-     is searched.  If ‘consult-grep’ is invoked with prefix argument,
-     you can specify the directory manually, i.e., ‘C-u M-s g’.
+     regular expression in files.  Grep is invoked asynchronously, while
+     you enter the search term.  You are required to enter at least
+     ‘consult-async-min-input’ characters in order for the search to get
+     started.  The input string is split into two parts, if the first
+     character is a punctuation character, like ‘#’.  For example
+     ‘#grep-regexp#filter-string’, is split at the second ‘#’.  The
+     string "grep-regexp" is passed to Grep, the "filter-string" is
+     passed to the _fast_ Emacs filtering to further narrow down the
+     list of matches.  This is particularily useful if you are using an
+     advanced completion style like orderless.  ‘consult-grep’ supports
+     preview.  If the ‘consult-project-root-function’ is *note
+     configured: Use-package example. and returns non-nil,
+     ‘consult-grep’ searches the current project directory.  Otherwise
+     the ‘default-directory’ is searched.  If ‘consult-grep’ is invoked
+     with prefix argument ‘C-u M-s g’, you can specify the directory
+     manually.
    • ‘consult-find’, ‘consult-locate’: Find file by matching the path
      against a regexp.  Like ‘consult-grep’ either the project root or
      the current directory is used as root directory for the search.
@@ -515,8 +515,8 @@ custom sources can be defined.
 
    Required source fields:
    • ‘:category’ Completion category.
-   • ‘:items’ List of candidate strings or function returning list of
-     strings.
+   • ‘:items’ List of strings to select from or function returning list
+     of strings.
 
    Optional source fields:
    • ‘:name’ Name of the source, used for narrowing and annotation.
@@ -526,7 +526,9 @@ custom sources can be defined.
    • ‘:annotate’ Annotation function called for each candidate, returns
      string.
    • ‘:history’ Name of history variable to add selected candidate.
-   • Arbitrary other fields specific to your use case.
+   • Other source fields can be added specifically to the use case.  The
+     ‘consult-buffer’ command uses the ‘:open’ function to open an item
+     from the source.
 
    Sources can be added directly to the ‘consult-buffer-source’ list for
 convenience.  For example views can be added to the list of virtual
@@ -679,7 +681,8 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
               ("M-g o" . consult-outline)
               ("M-g m" . consult-mark)
               ("M-g k" . consult-global-mark)
-              ("M-g i" . consult-project-imenu) ;; Alternative: consult-imenu
+              ("M-g i" . consult-imenu)
+              ("M-g I" . consult-project-imenu)
               ("M-g e" . consult-error)
               ;; M-s bindings (search-map)
               ("M-s f" . consult-find)                  ;; alt. consult-locate, find-fd
@@ -751,7 +754,11 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
        ;;              'append)
 
        ;; Optionally configure a function which returns the project root directory.
-       ;; You can either use `projectile-project-root', `project-roots' or `vc-root-dir'.
+       ;; There are multiple reasonable alternatives to chose from:
+       ;; * projectile-project-root
+       ;; * vc-root-dir
+       ;; * project-roots
+       ;; * locate-dominating-file
        (autoload 'projectile-project-root "projectile")
        (setq consult-project-root-function #'projectile-project-root)
        ;; (setq consult-project-root-function
@@ -759,6 +766,8 @@ File: consult.info,  Node: Use-package example,  Next: Custom variables,  Up: Co
        ;;         (when-let (project (project-current))
        ;;           (car (project-roots project)))))
        ;; (setq consult-project-root-function #'vc-root-dir)
+       ;; (setq consult-project-root-function
+       ;;       (lambda () (locate-dominating-file "." ".git")))
      )
 
      ;; Optionally add the `consult-flycheck' command.
@@ -977,28 +986,28 @@ Node: Top205
 Node: Introduction2260
 Node: Available commands5137
 Node: Virtual Buffers6364
-Node: Editing7784
-Node: Register8208
-Node: Navigation10013
-Node: Search11071
-Node: Grep and Find12914
-Node: Compilation errors15028
-Node: Histories15930
-Node: Modes16567
-Node: Miscellaneous17050
-Node: Special features18139
-Node: Live previews19297
-Node: Narrowing to subsets20350
-Node: Asynchronous search21681
-Node: Multiple sources24020
-Node: Embark integration27674
-Node: Configuration29458
-Node: Use-package example30812
-Node: Custom variables36779
-Node: Fine-tuning40350
-Node: Recommended packages42366
-Node: Contributions44219
-Node: Acknowledgements45640
+Node: Editing7794
+Node: Register8218
+Node: Navigation10023
+Node: Search11081
+Node: Grep and Find12924
+Node: Compilation errors15012
+Node: Histories15914
+Node: Modes16551
+Node: Miscellaneous17034
+Node: Special features18123
+Node: Live previews19281
+Node: Narrowing to subsets20334
+Node: Asynchronous search21665
+Node: Multiple sources24004
+Node: Embark integration27783
+Node: Configuration29567
+Node: Use-package example30921
+Node: Custom variables37108
+Node: Fine-tuning40679
+Node: Recommended packages42695
+Node: Contributions44548
+Node: Acknowledgements45969
 
 End Tag Table
 
