@@ -49,7 +49,7 @@
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4
 (setq display-buffer-alist
       '(
-        ( "^v?term.*"
+        ( "^v?term .*"
          ;; (display-buffer-reuse-window )
          ;; (inhibit-same-window . t)
          (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
