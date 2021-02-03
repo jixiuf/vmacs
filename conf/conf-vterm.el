@@ -76,7 +76,6 @@
 (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
 
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
-(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
 ;; (define-key vterm-mode-map (kbd "C-l")   #'vterm-clear)
 (define-key vterm-mode-map (kbd "C-c C-e")   #'compilation-shell-minor-mode)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
