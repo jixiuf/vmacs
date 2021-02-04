@@ -95,7 +95,7 @@
 (vmacs-leader "gg" #'(lambda()(interactive) (consult-ripgrep default-directory)))
 (vmacs-leader "gt" #'consult-ripgrep)
 (vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep default-directory (thing-at-point 'symbol))))
-(vmacs-leader "g," #'(lambda()(interactive) (consult-ripgrep nil (thing-at-point 'symbol)) ))
+(vmacs-leader "g," #'(lambda()(interactive) (consult-ripgrep (vc-root-dir) (thing-at-point 'symbol)) ))
 (vmacs-define-key  'global "g/" 'consult-focus-lines nil 'normal)
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
