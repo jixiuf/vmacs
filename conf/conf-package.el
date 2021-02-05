@@ -22,7 +22,7 @@ Return a list of installed packages or nil for every skipped package."
    packages))
 
 
-(ensure-package-installed package-selected-packages)
+(add-hook 'after-init-hook (lambda() (ensure-package-installed package-selected-packages)))
 
 (provide 'conf-package)
 
