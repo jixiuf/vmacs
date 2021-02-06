@@ -69,11 +69,8 @@
 (define-key vterm-mode-map (kbd "s-C-M-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
-(define-key vterm-mode-map (kbd "C-l") #'vterm-clear)
 
 ;; C－s 停止滚屏 C-q恢复滚屏
-(define-key vterm-mode-map (kbd "C-s")   #'vterm-copy-mode)
-(define-key vterm-copy-mode-map (kbd "C-s")   #'vterm-copy-mode)
 (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
 
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
@@ -83,7 +80,9 @@
 
 (evil-collection-define-key 'insert 'vterm-mode-map
   (kbd "C-r") 'vmacs-vterm-self-insert
+  (kbd "C-l") #'vterm-clear
   (kbd "C-g") 'vterm-ctrl-g)
+
 (evil-collection-define-key 'normal 'vterm-mode-map
   (kbd "C-g") 'vterm-ctrl-g
   (kbd "C-p") 'vmacs-vterm-self-insert
