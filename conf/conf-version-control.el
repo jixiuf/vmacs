@@ -40,8 +40,6 @@
  vc-follow-symlinks t
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
- ;;VC 的很多操作是调用外部命令,它选项会提示命令的相应信息,如运行了哪个命令
- vc-command-messages nil
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
  vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
  ;; svn diff --help
@@ -50,47 +48,7 @@
  ;; --ignore-eol-style: 忽略行尾样式的改变。
  vc-svn-diff-switches '("-x --ignore-eol-style")
  diff-switches "-ubB"
- ediff-window-setup-function 'ediff-setup-windows-plain)
-;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
-;;现在想生成一个补丁文件,将这个补丁文件应用到a 上,就会变成b
-;;生成这个补丁文件的命令是diff
-;; diff -ubB a b>a.patch  (-u指定生成的格式,-b忽略空格-B忽略空格引起的差异)
-;;这样在当前目录下会生成a.patch的文件,
-;;这样你可以将你的补丁文件发布到网上,别人拿到你的补丁及a文件 放在同一个目录
-;;patch -p0 <a.patch a  这样打上补丁后,a中的内容就与b中的内容无异
-;;可是你后悔了,不起打这个补丁,想就a恢复原样
-;;patch -R <a.patch a  这样a文件就变成了最初的模样了.
-;;diff mode 像Compilation mode 一样,可以用C-x` `C-cC-c' 在各个条目间跳转
-
-
-;; Alternatively, if you’d rather stick with Subversion’s built-in diff tool,
-;; you can pass Subversion-specific diff switches by setting
-;; `vc-svn-diff-switches` to a string or list of strings.
-;; For example, to tell `svn diff` to ignore EOL conventions and other whitespace, use
-(when (equal system-type 'windows-nt) (setq-default vc-git-program (expand-file-name "~/.emacs.d/binw32/gitsh.exe")))
-
-
-(with-eval-after-load 'vc-hooks
-  (define-key vc-prefix-map (kbd "\^?") 'vc-diff) ;C-xvBackSpace
-  (define-key vc-prefix-map (kbd "M-=") 'vc-ediff)
-  (define-key vc-prefix-map (kbd "F") 'vc-pull) ;;C-xvF
-  (define-key vc-prefix-map (kbd "f") 'vc-pull) ;;C-xvf
-  )
-
-(with-eval-after-load 'vc-dir
-  (define-key vc-dir-mode-map (kbd "F") 'vc-pull) ;;fetch ,git pull ,
-  (define-key vc-dir-mode-map (kbd "r") 'revert-buffer) ;;fetch ,git pull ,
-  (define-key vc-dir-mode-map (kbd "R") 'vc-revert) ;;fetch ,git pull ,
-  (define-key vc-dir-mode-map (kbd "d") 'vc-diff);and =
-  (define-key vc-dir-mode-map ":" 'vc-command)
-  ;; (define-key vc-dir-mode-map "^" 'vc-up-dir) ;到上层目录
-  ;; (define-key vc-dir-mode-map "u" 'vc-up-dir) ;到上层目录
-  (define-key vc-dir-mode-map  [?\H-m] 'vc-dir-unmark);;原来u的命令，现在C-m
-  (define-key vc-dir-mode-map "c" 'vc-dir);; change to another vc dir
-  ;; (define-key vc-dir-mode-map "r" 'vc-revert);; change to another vc dir
  )
-
-
 
 
 ;; c-xvl列出当前文件的历史版本
@@ -108,6 +66,25 @@
         (ad-set-arg 0 (if (< pos1 pos2) pos1 pos2))
         (ad-set-arg 1 (if (> pos1 pos2) pos1 pos2))))
     ad-do-it))
+
+;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
+;;现在想生成一个补丁文件,将这个补丁文件应用到a 上,就会变成b
+;;生成这个补丁文件的命令是diff
+;; diff -ubB a b>a.patch  (-u指定生成的格式,-b忽略空格-B忽略空格引起的差异)
+;;这样在当前目录下会生成a.patch的文件,
+;;这样你可以将你的补丁文件发布到网上,别人拿到你的补丁及a文件 放在同一个目录
+;;patch -p0 <a.patch a  这样打上补丁后,a中的内容就与b中的内容无异
+;;可是你后悔了,不起打这个补丁,想就a恢复原样
+;;patch -R <a.patch a  这样a文件就变成了最初的模样了.
+;;diff mode 像Compilation mode 一样,可以用C-x` `C-cC-c' 在各个条目间跳转
+
+
+;; Alternatively, if you’d rather stick with Subversion’s built-in diff tool,
+;; you can pass Subversion-specific diff switches by setting
+;; `vc-svn-diff-switches` to a string or list of strings.
+;; For example, to tell `svn diff` to ignore EOL conventions and other whitespace, use
+;; (when (equal system-type 'windows-nt) (setq-default vc-git-program (expand-file-name "~/.emacs.d/binw32/gitsh.exe")))
+
 
 ;;;; comments
 ;; C-x v v     vc-next-action -- perform the next logical control operation on file 会根据当前文件状态决定该做什么
