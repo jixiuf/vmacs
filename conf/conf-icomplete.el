@@ -86,6 +86,7 @@
 (setq consult-project-root-function #'vc-root-dir)
 (setq consult-async-default-split "#")
 (with-eval-after-load 'consult
+  (setq consult-ripgrep-command (format "%s %s"consult-ripgrep-command " -z"))
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t))
 
