@@ -124,7 +124,6 @@
   (kbd "C-s") 'consult-focus-lines
   "z"  'consult-hide-lines
   ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
-  (kbd "C-a") 'dired-smart-beginning-of-line
   ;; C-gC-g 退出编辑或C-cC-c保存修改
   ;; "i" 'wdired-change-to-wdired-mode
   "\M-o" 'dired-omit-mode ;不显示一些不重要的文件
@@ -133,14 +132,8 @@
   "," 'dired
   "f" 'open-in-filemanager
   "r" 'revert-buffer
-  "gg" 'dired-beginning-of-buffer
-  "G" 'dired-end-of-buffer
   )
 (with-eval-after-load 'wdired (evil-set-initial-state 'wdired-mode 'insert))
-
-(define-key dired-mode-map "y" nil)     ;给evil-mode 的y让位
-(define-key dired-mode-map "g" nil)     ;给evil-mode 的gg让位
-;; (define-key dired-mode-map "r" 'revert-buffer)
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state
@@ -148,7 +141,6 @@
 
 
 (with-eval-after-load 'wdired
-  (define-key wdired-mode-map (kbd "C-a") 'dired-smart-beginning-of-line)
   (define-key wdired-mode-map (kbd "C-g") 'wdired-abort-changes))
 
 ;;; dired-x 增强的dired功能
@@ -156,11 +148,9 @@
   (add-hook 'dired-mode-hook 'dired-omit-mode);;M-o toggle 是否显示忽略的文件
   ;; 默认这些后缀的文件 不显示，M-o后才显示
   (setq dired-omit-files (concat dired-omit-files "\\|^.*~$\\|^#.*#$\\|^\\.svn$\\|.DS_Store\\|\\.ccls-cache"))
-  (setq dired-omit-extensions
-        (append dired-omit-extensions (list ".beam" ".swp"  "CVS/"))))
+  )
 
-(with-eval-after-load 'dired-aux
-  (add-to-list 'dired-compress-files-alist '("\\.tgz\\'" . "tar -c %i | gzip -c9 > %o")))
+(with-eval-after-load 'dired-aux (add-to-list 'dired-compress-files-alist '("\\.tgz\\'" . "tar -c %i | gzip -c9 > %o")))
 ;; 根据后缀名对文件进行着色
 (require 'dired-filetype-face)
 
