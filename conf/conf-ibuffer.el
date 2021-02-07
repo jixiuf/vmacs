@@ -27,6 +27,7 @@
   "gr" 'ibuffer-filter-disable
   (kbd "M-=") 'ibuffer-ediff-merge
   "gt" 'ibuffer-toggle-maybe-show
+  "r" 'ibuffer-update
   "/" 'ibuffer-filter-by-name)
 
 (setq ibuffer-saved-filter-groups
