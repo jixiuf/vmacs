@@ -99,11 +99,6 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
-  ;; 在  *vc-change-log* 中默认=绑定在 log-view-diff 使用diff 进行比较 ，此处默认改为使用ediff 进行比较，
-  ;; = ediff ,and M-= diff ,in *vc-change-log*
-  (define-key log-view-mode-map (kbd "M-=") 'log-view-ediff);;/使用ediff 进行比较
-  (define-key log-view-mode-map (kbd "g") nil) ;;给evil-mode g让位
-
   ;; log-view-diff 默认绑定在=上
   (defadvice log-view-diff (around diff-marked-two-entity activate compile)
     (let (pos1 pos2 (marked-entities (log-view-get-marked)))
