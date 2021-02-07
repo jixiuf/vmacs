@@ -78,6 +78,7 @@
   (if (and (string-prefix-p consult-async-default-split (minibuffer-contents))
            (= 2 (length (split-string (minibuffer-contents) consult-async-default-split))))
       (insert consult-async-default-split)
+    (when (looking-back consult-async-default-split) (delete-char -1))
     (insert " ")))
 
 (define-key icomplete-minibuffer-map (kbd "SPC") 'vmacs-minibuffer-space)
