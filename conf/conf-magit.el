@@ -1,5 +1,4 @@
 (setq magit-git-executable (executable-find "git"))
-(setq-default evil-magit-use-y-for-yank t)
 (setq-default
  magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的Recent commits列表有没有办法增加作者列
  ;; slow ,if t
@@ -11,7 +10,6 @@
  magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace to toggle
  magit-section-highlight-hook nil       ;不必hightlight,光标移动的时候，默认会显示当前section区域
  magit-section-unhighlight-hook nil)                         ;
-(define-key magit-mode-map (kbd "C-w") nil)
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
 (defun vmacs-magit-status-list()
   (interactive)
@@ -44,24 +42,19 @@
 (define-key magit-mode-map (kbd "F") 'magit-fetch)
 ;; (transient-suffix-put 'magit-pull "p" :key "f")
 (transient-remove-suffix 'magit-pull "f")
-(transient-append-suffix 'magit-pull "u"
-  '("f"  magit-pull-from-pushremote))
+(transient-append-suffix 'magit-pull "u" '("f"  magit-pull-from-pushremote))
 
-(transient-insert-suffix 'magit-pull "F"
-     '("a"  "all remotes" magit-fetch-all))
+(transient-insert-suffix 'magit-pull "F" '("a"  "all remotes" magit-fetch-all))
 ;; (transient-insert-suffix 'magit-pull "F"
 ;;      '("e"  "elsewhere" magit-fetch-other))
-(transient-insert-suffix 'magit-pull "F"
-  '("p" magit-fetch-from-pushremote))
-(transient-insert-suffix 'magit-pull "F"
-  '("U" magit-fetch-from-upstream))
+(transient-insert-suffix 'magit-pull "F" '("p" magit-fetch-from-pushremote))
+(transient-insert-suffix 'magit-pull "F" '("U" magit-fetch-from-upstream))
 
 ;; (transient-append-suffix 'magit-fetch "f"
 ;;      '("f" "Full from pushremote" magit-pull))
 
 ;; (require 'evil-magit)
-(transient-insert-suffix 'magit-revert "o"
-  '("_" "Revert no commit" magit-revert-no-commit))
+(transient-insert-suffix 'magit-revert "o" '("_" "Revert no commit" magit-revert-no-commit))
 
 
 
@@ -73,23 +66,17 @@
 (define-key transient-map        "q" 'transient-quit-one)
 (define-key transient-edit-map   "q" 'transient-quit-one)
 (define-key transient-sticky-map "q" 'transient-quit-seq)
-;;(setq evil-window-map  ctl-w-map)
 (evil-collection-define-key 'normal 'magit-mode-map
   "v"  'magit-push
        "C-w"  evil-window-map
        "gw" 'toggle-diff-whitespace
-       "gm"  'magit-toggle-margin
-  )
+       "gm"  'magit-toggle-margin)
 
 
 (defun vmacs-magit-mode-hook()
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
-  ;; (define-key magit-status-mode-map "q" #'ignore)
-  ;; Magit supports some WIP modes where it will automatically create WIP refs
-  ;; just before a potentially destructive action in a repository
-  ;; 避免不小心删掉未提交的代码
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
   ;; brew install git-delta
@@ -97,12 +84,6 @@
     (unless (file-remote-p dir)
       (delete (cons dir 0) magit-repository-directories)
       (add-to-list 'magit-repository-directories  (cons dir 0)))))
-
-
-;; (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
-;; (vmacs-leader-for-major-mode  'magit-status-mode "k" 'vmacs-magit-kill-buffers)
-;; (vmacs-leader-for-major-mode  'magit-revision-mode "k" 'magit-mode-bury-buffer)
-;; (vmacs-leader-for-major-mode  'magit-log-mode "k" 'magit-mode-bury-buffer)
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
