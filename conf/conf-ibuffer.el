@@ -23,12 +23,14 @@
 ;;设置默认不显示maybe-show-predicates的buffer (即隐藏上面Hidden分组里的内容)
 (setq ibuffer-default-display-maybe-show-predicates nil)
 
-(evil-collection-define-key 'normal 'ibuffer-mode-map
-  "gr" 'ibuffer-filter-disable
-  (kbd "M-=") 'ibuffer-ediff-merge
-  "gt" 'ibuffer-toggle-maybe-show
-  "r" 'ibuffer-update
-  "/" 'ibuffer-filter-by-name)
+(with-eval-after-load 'evil-collection-ibuffer
+  (run-with-timer 0.01 nil '(lambda()
+                              (evil-collection-define-key 'normal 'ibuffer-mode-map
+                                "gr" 'ibuffer-filter-disable
+                                (kbd "M-=") 'ibuffer-ediff-merge
+                                "gt" 'ibuffer-toggle-maybe-show
+                                "r" 'ibuffer-update
+                                "/" 'ibuffer-filter-by-name))))
 
 (setq ibuffer-saved-filter-groups
       '(("Default"
