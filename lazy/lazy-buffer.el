@@ -43,7 +43,7 @@
               :category file
               :face     consult-file
               :history  file-name-history
-              :open     ,#'consult--open-file
+              :action   ,#'consult--file-action
               :items
               ,(lambda ()
                  (require 'lazy-buffer)
@@ -59,7 +59,7 @@
               :category file
               :face     consult-file
               :history  vmacs-dired-history
-              :open     ,#'consult--open-file
+              :action   ,#'consult--file-action
               :items
               ,(lambda()(require 'vmacs-dired-history) vmacs-dired-history))
   "Recent dired candidate source for `consult-buffer'.")
