@@ -21,12 +21,13 @@
 (vmacs-leader (kbd "v=") 'vc-diff)
 (vmacs-leader (kbd "=") 'vc-diff)
 (vmacs-leader (kbd "+") 'vc-ediff)
+(vmacs-leader (kbd "vb") 'vc-retrieve-tag) ;change branch/tag
+(vmacs-leader (kbd "vt") 'vc-create-tag)
 
 (vmacs-leader (kbd "vj") 'magit-status) ;like dired-jump
 (vmacs-leader (kbd "vu") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader (kbd "vp") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader (kbd "vs") 'magit-file-dispatch)
-(vmacs-leader (kbd "vb") 'magit-file-dispatch) ;space-vb[n/p] 查看此文件上/下一个版本
+(vmacs-leader (kbd "vs") 'magit-file-dispatch)      ;space-vs[n/p] 查看此文件上/下一个版本
 (vmacs-leader (kbd "ve") 'magit-commit-extend)
 (vmacs-leader (kbd "va") 'magit-commit-amend)
 
@@ -36,12 +37,15 @@
 (setq-default
  ;; 只让vc支持git svn , 可以加快vc的一些处理
  vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+ vc-find-revision-no-save t
  log-edit-hook nil
  vc-follow-symlinks t
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
  vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
+ vc-git-print-log-follow nil
+ ;; vc-git-revision-complete-only-branches
  ;; svn diff --help
  ;; -b (--ignore-space-change): 忽略空白数量的修改。
  ;; -w (--ignore-all-space): 忽略所有的空白。
