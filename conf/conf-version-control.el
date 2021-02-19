@@ -19,6 +19,7 @@
 (vmacs-leader (kbd "vg") 'vc-annotate)
 (vmacs-leader (kbd "vd") 'vc-dir)
 (vmacs-leader (kbd "v=") 'vc-diff)
+(vmacs-leader (kbd "vh") 'vc-root-diff)
 (vmacs-leader (kbd "=") 'vc-diff)
 (vmacs-leader (kbd "+") 'vc-ediff)
 (vmacs-leader (kbd "vb") 'vc-retrieve-tag) ;change branch/tag
