@@ -17,7 +17,7 @@
 (vmacs-leader (kbd "v+") 'vc-update)
 (vmacs-leader (kbd "vf") 'vmacs-magit-pull-default)
 (vmacs-leader (kbd "vg") 'vc-annotate)
-(vmacs-leader (kbd "vd") 'vc-dir)
+(vmacs-leader (kbd "vd") '(lambda()(interactive) (vc-dir (vc-root-dir))))
 (vmacs-leader (kbd "v=") 'vc-diff)
 (vmacs-leader (kbd "vh") 'vc-root-diff)
 (vmacs-leader (kbd "=") 'vc-diff)
