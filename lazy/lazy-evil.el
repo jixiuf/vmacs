@@ -144,7 +144,7 @@ if not,it will call `evil-use-register' which default bind on `\"' "
    ((string-match-p "*Org Agenda" (buffer-name))
     (call-interactively 'org-agenda-set-tags)
     )
-   ((derived-mode-p  org-mode)
+   ((derived-mode-p  'org-mode)
     (call-interactively 'org-ctrl-c-ctrl-c)
     )
    (magit-blob-mode
