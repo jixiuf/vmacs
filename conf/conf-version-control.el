@@ -35,7 +35,7 @@
 
 (setq-default
  ;; 只让vc支持git svn , 可以加快vc的一些处理
- vc-handled-backends '(Git SVN)         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+ vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
  log-edit-hook nil
  vc-follow-symlinks t
  vc-annotate-background-mode nil
