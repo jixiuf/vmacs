@@ -1,9 +1,9 @@
 (setq magit-git-executable (executable-find "git"))
 (setq-default
  magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的Recent commits列表有没有办法增加作者列
+ magit-commit-show-diff nil
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
- magit-diff-show-diffstat nil
  magit-diff-highlight-hunk-body nil
  magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename的log也能看到
  magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
@@ -22,6 +22,7 @@
 
 (define-key magit-mode-map "," #'vmacs-magit-status-list)
 
+(remove-hook 'server-switch-hook 'magit-commit-diff)
 
 
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
