@@ -80,6 +80,8 @@
 
 (evil-collection-define-key 'insert 'vterm-mode-map
   (kbd "C-r") 'vmacs-vterm-self-insert
+  (kbd "C-u") 'universal-argument
+  (kbd "C-\\") 'toggle-input-method
   (kbd "C-l") #'vterm-clear
   (kbd "C-g") 'vterm-ctrl-g)
 
