@@ -14,19 +14,19 @@
    (add-to-list 'load-path "~/repos/vterm-toggle"))
 
 
-(when (file-directory-p "~/repos/marginalia")
-  (add-to-list 'load-path "~/repos/marginalia"))
+;; (when (file-directory-p "~/repos/marginalia")
+;;   (add-to-list 'load-path "~/repos/marginalia"))
 
-(when (file-directory-p "~/repos/embark")
-  (add-to-list 'load-path "~/repos/embark"))
-(when (file-directory-p "~/repos/consult")
-  (add-to-list 'load-path "~/repos/consult")
-  (require 'consult)
-  )
-(when (file-directory-p "~/repos/icomplete-vertical")
-  (add-to-list 'load-path "~/repos/icomplete-vertical"))
-(when (file-directory-p "~/repos/evil")
-  (add-to-list 'load-path "~/repos/evil"))
+;; (when (file-directory-p "~/repos/embark")
+;;   (add-to-list 'load-path "~/repos/embark"))
+;; (when (file-directory-p "~/repos/consult")
+;;   (add-to-list 'load-path "~/repos/consult")
+;;   (require 'consult)
+;;   )
+;; (when (file-directory-p "~/repos/icomplete-vertical")
+;;   (add-to-list 'load-path "~/repos/icomplete-vertical"))
+;; (when (file-directory-p "~/repos/evil")
+;;   (add-to-list 'load-path "~/repos/evil"))
 
 (provide 'conf-tmp-before)
 
