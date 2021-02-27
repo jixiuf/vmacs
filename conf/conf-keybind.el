@@ -86,6 +86,7 @@
 
 (global-set-key  (kbd "s-C-M-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
+(vmacs-leader "p" 'list-packages)
 
 
 
