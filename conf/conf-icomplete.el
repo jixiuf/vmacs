@@ -59,18 +59,12 @@
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embar-collect)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (define-key icomplete-minibuffer-map (kbd "C-c C-e") 'embark-live-occur)
-  (define-key embark-collect-mode-map (kbd "h") nil)
-  (define-key embark-collect-mode-map (kbd "v") nil)
-  (define-key embark-collect-mode-map (kbd "e") nil)
-  (define-key embark-collect-mode-map (kbd "g") nil)
   (defun vmacs-embark-collect-mode-hook ()
     (evil-local-mode)
     (evil-define-key 'normal 'local "/" #'consult-focus-lines)
     (evil-define-key 'normal 'local "z" #'consult-hide-lines)
     (evil-define-key 'normal 'local "r" #'consult-reset-lines))
-  (add-hook 'embark-collect-mode-hook 'vmacs-embark-collect-mode-hook)
-
-  )
+  (add-hook 'tabulated-list-mode-hook 'vmacs-embark-collect-mode-hook))
 
 
 (defun vmacs-minibuffer-space ()
