@@ -102,6 +102,8 @@
 (vmacs-define-key  'global "g/" 'consult-focus-lines nil 'normal)
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
+(global-set-key (kbd "<help> a") 'consult-apropos)
+
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
