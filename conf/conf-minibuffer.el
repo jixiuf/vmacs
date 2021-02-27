@@ -31,8 +31,8 @@ Monospaced font whihc is fixed idth and height is recommended."
   :group 'minibuffer)
 
 (defun vmacs-minibuffer-hook()
-  ;; (set (make-local-variable 'buffer-face-mode-face) 'vmacs-minibuffer-font)
-  ;; (buffer-face-mode t)
+  (set (make-local-variable 'buffer-face-mode-face) 'vmacs-minibuffer-font)
+  (buffer-face-mode t)
   (local-set-key (kbd "<C-m>") 'exit-minibuffer)
   (local-set-key (kbd "<C-h>") 'backward-delete-char-untabify)
   (local-set-key (kbd "C-l") 'backward-kill-word)
@@ -61,23 +61,25 @@ Monospaced font whihc is fixed idth and height is recommended."
 ;; ;; ;; 把minibuffer 搬到一个特定的frame上
 (setq mini-frame-resize-max-height max-mini-window-height)
 (setq mini-frame-completions-focus 'minibuffer)
-(setq mini-frame-internal-border-color "gray70")
+(setq mini-frame-internal-border-color "green")
 (when (and (not noninteractive) (require 'mini-frame nil t)) ;batch 模式下miniframe 有问题
   ;; (setq mini-frame-ignore-commands nil)
-  (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
-  (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-change-regex)
-  (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-hide-matched)
+  (add-to-list 'mini-frame-ignore-commands 'consult-focus-lines)
+  (add-to-list 'mini-frame-ignore-commands 'consult-hide-lines)
+  ;; (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
+  ;; (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-change-regex)
+  ;; (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-hide-matched)
 
 
   (setq mini-frame-show-parameters
         '((top . 0.4)
           (width . 1.0)
           (left . 0.5)
-          (min-height .  5)
+          (min-height .  2)
           (height . 15)
           (minibuffer-exit . t)
-          (font . "Sarasa Mono CL-22")
-          (alpha . 100)
+          ;; (font . "Sarasa Mono CL-22")
+          (alpha . 90)
           ;; (left-fringe . 10 )
           (cursor-color . "Yellow")
           (background-color . "#2a3a4a")
