@@ -9,8 +9,8 @@
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
 
-(setq icomplete-prospects-height 15)
-(setq icomplete-separator "\n")
+(setq icomplete-prospects-height 2)
+(setq icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
 
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
@@ -36,7 +36,7 @@
 
 
 (icomplete-mode 1)
-(when (require 'icomplete-vertical nil t) (icomplete-vertical-mode))
+(require 'icomplete-vertical nil t)
 
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
@@ -84,54 +84,52 @@
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t))
 
-;; (print (macroexpand-1 '(with-mode-off icomplete-vertical-mode  (find-file-at-point))))
-(defmacro with-mode-off (mode &rest body)
-  (declare (indent defun)
-           (doc-string 3))
-  (macroexp-let2 nil mode-p `(bound-and-true-p ,mode)
-    `(progn
-       (when ,mode-p (,mode -1))
-       (unwind-protect
-           (progn ,@body)
-         (when ,mode-p (,mode 1))))))
 
-;; (print (macroexpand-1 '(icomplete-horizontal find-file  (find-file-at-point))))
-;; (icomplete-horizontal find-file  (find-file-at-point))
-(defmacro icomplete-horizontal (fun-name &rest body)
-  (declare (indent defun)
-           (doc-string 3))
-  (let ((fun (intern (format "icomplete-horizontal-%s" fun-name))))
-    `(defun ,fun()
-       (interactive)
-       (with-mode-off icomplete-vertical-mode
-         (let ((icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
-               (icomplete-prospects-height 2))
-           ,@body)))))
-
-(vmacs-leader (kbd "fh") (icomplete-horizontal find-home (let ((default-directory "~/"))(call-interactively 'find-file))))
-(vmacs-leader (kbd "ft") (icomplete-horizontal find-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
+(vmacs-leader (kbd "ft") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 (setq ffap-machine-p-known 'accept)  ; no pinging
-(vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
+;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
+(vmacs-leader (kbd "ff") #'find-file-at-point)
 
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "gG" #'consult-grep)
-(vmacs-leader "gg" #'(lambda()(interactive) (consult-ripgrep default-directory)))
+(vmacs-leader "gg" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory)))
 (vmacs-leader "gt" #'consult-ripgrep)
-(vmacs-leader "g." #'(lambda()(interactive) (consult-ripgrep default-directory (thing-at-point 'symbol))))
-(vmacs-leader "g," #'(lambda()(interactive) (consult-ripgrep (vc-root-dir) (thing-at-point 'symbol)) ))
+(vmacs-leader "g." (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (thing-at-point 'symbol))))
+(vmacs-leader "g," (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir) (thing-at-point 'symbol)) ))
 (vmacs-define-key  'global "g/" 'consult-focus-lines nil 'normal)
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
-
 (defadvice yank-pop (around icomplete-mode (arg) activate)
   (interactive "p")
-  (let ((icomplete-separator (concat "\n" (propertize (make-string 60 ?— ) 'face 'vertical-border) "\n ")))
+  (let ((icomplete-separator (concat
+                              (propertize "\n" 'face '(:height 1))
+                              (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
+                                          'display '(space :align-to right))
+                              (propertize "\n" 'face '(:height 1)))))
     ad-do-it))
 
+(defun vmacs-icomplete-mode-hook()
+  (if (cl-find this-command '(consult-ripgrep-root-symbol
+                              consult-ripgrep-default-symbol
+                              yank-pop consult-imenu consult-line
+                              consult-ripgrep execute-extended-command
+                              project-switch-project vmacs-magit-status-list
+                              consult-ripgrep-default consult-grep
+                              magit-status
+                              dired consult-buffer consult-buffer-other-window))
+      (with-mode-on icomplete-vertical-mode
+        (setq-local icomplete-separator "\n")
+        (setq-local icomplete-prospects-height 15))
+    (with-mode-off icomplete-vertical-mode
+      (setq-local icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
+      (setq-local icomplete-prospects-height 2))))
+
+(add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
 
 
 (provide 'conf-icomplete)
