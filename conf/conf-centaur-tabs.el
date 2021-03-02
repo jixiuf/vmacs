@@ -114,41 +114,11 @@
 ;; (setq centaur-tabs-hide-tab-function #'vmacs-hide-tab-p)
 
 
-
-;; ;; term 分组下 默认选中前一个tab
-;; (defun vmacs-centaur-tabs-buffer-track-killed ()
-;;   "Hook run just before actually killing a buffer.
-;; In Awesome-Tab mode, try to switch to a buffer in the current tab bar,
-;; after the current buffer has been killed.  Try first the buffer in tab
-;; after the current one, then the buffer in tab before.  On success, put
-;; the sibling buffer in front of the buffer list, so it will be selected
-;; first."
-;;   (when (or (string-match-p "\\*scratch-.*" (buffer-name))
-;;             (derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode))
-;;     (and (eq header-line-format centaur-tabs-header-line-format)
-;;          (eq centaur-tabs-current-tabset-function 'centaur-tabs-buffer-tabs)
-;;          (eq (current-buffer) (window-buffer (selected-window)))
-;;          (let ((bl (centaur-tabs-tab-values (centaur-tabs-current-tabset)))
-;;                (b  (current-buffer))
-;;                found sibling)
-;;            (while (and bl (not found))
-;;              (if (eq b (car bl))
-;;                  (setq found t)
-;;                (setq sibling (car bl)))
-;;              (setq bl (cdr bl)))
-;;            (when (and (setq sibling (or sibling (car bl) ))
-;;                       (buffer-live-p sibling))
-;;              ;; Move sibling buffer in front of the buffer list.
-;;              (save-current-buffer
-;;                (switch-to-buffer sibling)))))))
-
-
-;; (defun vmacs-awesometab-hook()
-;;   ;; 直接去除自动选下一个tab的hook,让它默认
-;;   (remove-hook 'kill-buffer-hook 'centaur-tabs-buffer-track-killed)
-;;   (add-hook 'kill-buffer-hook 'vmacs-centaur-tabs-buffer-track-killed))
-
-;; (add-hook 'centaur-tabs-mode-hook #'vmacs-awesometab-hook)
+(defun vmacs-awesometab-hook()
+  ;; 直接去除自动选下一个tab的hook,让它默认
+  ;; (add-hook 'kill-buffer-hook 'vmacs-centaur-tabs-buffer-track-killed)
+  (remove-hook 'kill-buffer-hook 'centaur-tabs-buffer-track-killed))
+(add-hook 'centaur-tabs-mode-hook #'vmacs-awesometab-hook)
 
 
 ;; ;; Copied from s.el
