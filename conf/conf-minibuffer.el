@@ -66,20 +66,20 @@ Monospaced font whihc is fixed idth and height is recommended."
   ;; (setq mini-frame-ignore-commands nil)
   (add-to-list 'mini-frame-ignore-commands 'consult-focus-lines)
   (add-to-list 'mini-frame-ignore-commands 'consult-hide-lines)
-  ;; (add-to-list 'mini-frame-ignore-commands 'dired-narrow)
+  (add-to-list 'mini-frame-ignore-commands 'evil-ex-search-forward)
   ;; (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-change-regex)
   ;; (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-hide-matched)
 
 
   (setq mini-frame-show-parameters
         '((top . 0.4)
-          (width . 1.0)
+          (width . 0.9)
           (left . 0.5)
           (min-height .  2)
           (height . 15)
           (minibuffer-exit . t)
           ;; (font . "Sarasa Mono CL-22")
-          (alpha . 90)
+          (alpha . 95)
           ;; (left-fringe . 10 )
           (cursor-color . "Yellow")
           (background-color . "#2a3a4a")
