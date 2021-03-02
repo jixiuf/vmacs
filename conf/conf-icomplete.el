@@ -127,7 +127,7 @@
         (setq-local icomplete-separator "\n")
         (setq-local icomplete-prospects-height 15))
     (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode -1))
-    (setq-local icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
+    (setq-local icomplete-separator (propertize " ☯" 'face  '(foreground-color . "white")))
     (setq-local icomplete-prospects-height 2)))
 
 (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
