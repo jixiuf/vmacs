@@ -290,15 +290,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader (kbd "u") 'backward-up-list)
 (vmacs-leader (kbd "t") 'org-agenda)
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
-(evil-define-key 'normal 'global  (kbd "<SPC>fo") 'ff-find-other-file) ;头文件与源文件间快速切换
 (vmacs-leader (kbd "m") 'execute-extended-command)
 (vmacs-leader (kbd "wl") 'git-link)
-(vmacs-leader (kbd "wi") 'imenu)
-(vmacs-leader (kbd "fh") #'(lambda()(interactive)(let ((default-directory "~/"))(call-interactively 'find-file))))
-(vmacs-leader (kbd "ft") #'(lambda()(interactive)(let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-
-(setq ffap-machine-p-known 'accept)  ; no pinging
-(vmacs-leader (kbd "ff") 'find-file-at-point)
 
 
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)

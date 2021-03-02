@@ -11,7 +11,7 @@
 
 (setq icomplete-prospects-height 15)
 (setq icomplete-separator "\n")
-;; (setq icomplete-separator (propertize " ☯ " 'face  '(foreground-color . "SlateBlue1")))
+
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
 (when (require 'orderless nil t)
@@ -77,13 +77,41 @@
 
 (define-key icomplete-minibuffer-map (kbd "SPC") 'vmacs-minibuffer-space)
 
-(fset 'imenu 'consult-imenu)
 (setq consult-project-root-function #'vc-root-dir)
 (with-eval-after-load 'consult
   (with-eval-after-load 'embark (require 'embark-consult nil t))
   (setq consult-ripgrep-command (format "%s %s"consult-ripgrep-command " -z"))
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t))
+
+;; (print (macroexpand-1 '(with-mode-off icomplete-vertical-mode  (find-file-at-point))))
+(defmacro with-mode-off (mode &rest body)
+  (declare (indent defun)
+           (doc-string 3))
+  (macroexp-let2 nil mode-p `(bound-and-true-p ,mode)
+    `(progn
+       (when ,mode-p (,mode -1))
+       (unwind-protect
+           (progn ,@body)
+         (when ,mode-p (,mode 1))))))
+
+;; (print (macroexpand-1 '(icomplete-horizontal find-file  (find-file-at-point))))
+;; (icomplete-horizontal find-file  (find-file-at-point))
+(defmacro icomplete-horizontal (fun-name &rest body)
+  (declare (indent defun)
+           (doc-string 3))
+  (let ((fun (intern (format "icomplete-horizontal-%s" fun-name))))
+    `(defun ,fun()
+       (interactive)
+       (with-mode-off icomplete-vertical-mode
+         (let ((icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
+               (icomplete-prospects-height 2))
+           ,@body)))))
+
+(vmacs-leader (kbd "fh") (icomplete-horizontal find-home (let ((default-directory "~/"))(call-interactively 'find-file))))
+(vmacs-leader (kbd "ft") (icomplete-horizontal find-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(setq ffap-machine-p-known 'accept)  ; no pinging
+(vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
 
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
@@ -96,6 +124,7 @@
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (global-set-key (kbd "<help> a") 'consult-apropos)
+(vmacs-leader (kbd "wi") 'consult-imenu)
 
 
 (defadvice yank-pop (around icomplete-mode (arg) activate)
