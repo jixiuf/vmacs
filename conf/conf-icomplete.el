@@ -122,12 +122,13 @@
                               consult-ripgrep-default consult-grep
                               magit-status
                               dired consult-buffer consult-buffer-other-window))
-      (with-mode-on icomplete-vertical-mode
+      (progn
+        (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode 1))
         (setq-local icomplete-separator "\n")
         (setq-local icomplete-prospects-height 15))
-    (with-mode-off icomplete-vertical-mode
-      (setq-local icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
-      (setq-local icomplete-prospects-height 2))))
+    (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode -1))
+    (setq-local icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
+    (setq-local icomplete-prospects-height 2)))
 
 (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
 
