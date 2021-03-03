@@ -122,6 +122,7 @@
                               consult-ripgrep execute-extended-command
                               project-switch-project vmacs-magit-status-list
                               consult-ripgrep-default consult-grep
+                              evil-project-find-regexp
                               magit-status
                               dired consult-buffer consult-buffer-other-window))
       (progn
