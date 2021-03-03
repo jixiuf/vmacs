@@ -63,8 +63,8 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq mini-frame-internal-border-color "gray80")
 (setq mini-frame-standalone t)
 (when (and (not noninteractive) (require 'mini-frame nil t)) ;batch 模式下miniframe 有问题
-
   (add-to-list 'mini-frame-ignore-functions 'y-or-n-p)
+  (add-to-list 'mini-frame-ignore-functions 'yes-or-no-p)
   (add-to-list 'mini-frame-ignore-commands 'consult-focus-lines)
   (add-to-list 'mini-frame-ignore-commands 'consult-hide-lines)
   (add-to-list 'mini-frame-ignore-commands 'evil-ex-search-forward)
