@@ -82,7 +82,9 @@
   (with-eval-after-load 'embark (require 'embark-consult nil t))
   (setq consult-ripgrep-command (format "%s %s"consult-ripgrep-command " -z"))
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
-  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t))
+  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t)
+  (setq consult-config `((consult-buffer :preview-key ,(kbd "C-v")) ;disable auto preview for consult-buffer
+                        )))
 
 
 (vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
@@ -127,7 +129,9 @@
         (setq-local icomplete-separator "\n")
         (setq-local icomplete-prospects-height 15))
     (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode -1))
-    (setq-local icomplete-separator (propertize " ☯" 'face  '(foreground-color . "white")))
+    ;; https://unicode-table.com/cn/sets/arrow-symbols/
+    (setq-local icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
+    ;; (setq-local icomplete-separator (propertize " ☯ " 'face  '(foreground-color . "lightgreen")))
     (setq-local icomplete-prospects-height 2)))
 
 (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)

@@ -60,16 +60,11 @@ Monospaced font whihc is fixed idth and height is recommended."
 ;;   (add-to-list 'load-path "~/.emacs.d/submodule/mini-frame"))
 ;; ;; ;; 把minibuffer 搬到一个特定的frame上
 (setq mini-frame-resize-max-height max-mini-window-height)
-(setq mini-frame-completions-focus 'minibuffer)
-(setq mini-frame-internal-border-color "green")
+(setq mini-frame-internal-border-color "red")
 (when (and (not noninteractive) (require 'mini-frame nil t)) ;batch 模式下miniframe 有问题
-  ;; (setq mini-frame-ignore-commands nil)
   (add-to-list 'mini-frame-ignore-commands 'consult-focus-lines)
   (add-to-list 'mini-frame-ignore-commands 'consult-hide-lines)
   (add-to-list 'mini-frame-ignore-commands 'evil-ex-search-forward)
-  ;; (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-change-regex)
-  ;; (add-to-list 'mini-frame-ignore-commands 'vmacs-rg-rerun-hide-matched)
-
 
   (setq mini-frame-show-parameters
         '((top . 0.4)
@@ -81,8 +76,9 @@ Monospaced font whihc is fixed idth and height is recommended."
           ;; (font . "Sarasa Mono CL-22")
           (alpha . 95)
           ;; (left-fringe . 10 )
+          (internal-border-width . 8)
           (cursor-color . "Yellow")
-          (background-color . "#2a3a4a")
+          (background-color . "Blue4")
           (background-mode . 'dark)))
   (mini-frame-mode 1))
 
