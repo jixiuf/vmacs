@@ -121,9 +121,11 @@
                               yank-pop consult-imenu consult-line
                               consult-ripgrep execute-extended-command
                               project-switch-project vmacs-magit-status-list
+                              project-or-external-find-file
                               consult-ripgrep-default consult-grep
                               evil-project-find-regexp
                               magit-status
+                              xref-find-references
                               dired consult-buffer consult-buffer-other-window))
       (progn
         (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode 1))
