@@ -92,6 +92,7 @@
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
 (vmacs-leader (kbd "ff") #'find-file-at-point)
+(vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file "~/Documents/dropbox/http.txt")))
 
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
