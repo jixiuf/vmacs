@@ -11,7 +11,7 @@
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-clear-scrollback-when-clearing t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
-(setq vterm-buffer-name-string "vterm %s")
+(setq vterm-buffer-name-string "*vterm* %s")
 
 (require 'vterm)
 (require 'vterm-toggle)
