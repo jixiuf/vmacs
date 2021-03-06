@@ -183,7 +183,7 @@
 
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 
-(global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
+;; (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
 
 (provide 'conf-common)
 
