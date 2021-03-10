@@ -153,7 +153,6 @@
 (with-eval-after-load 'dired-aux (add-to-list 'dired-compress-files-alist '("\\.tgz\\'" . "tar -c %i | gzip -c9 > %o")))
 ;; 根据后缀名对文件进行着色
 (require 'dired-filetype-face)
-
 ;; 实现按文件大小 时间 扩展名 名称排序，默认绑定在s上如ss 按size排序
 ;;; 排序
 ;;;do sorting
@@ -172,6 +171,13 @@
 
 (require 'dired-async nil t)
 
+(defun dired-next-line (arg)
+  (interactive "^p")
+  (beginning-of-line)
+  (forward-line arg)
+  (while (and (not (eobp)) (not (bobp)) (invisible-p (point)))
+    (forward-line arg))
+  (dired-move-to-filename))
 
 (provide 'conf-dired)
 
