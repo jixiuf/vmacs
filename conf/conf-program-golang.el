@@ -12,6 +12,8 @@
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (defun vmacs-go-mode-hook()
+  (evil-collection-define-key 'normal 'go-mode-map "gd" )
+
   (setq eglot-workspace-configuration
         ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
         '((:gopls . (:usePlaceholders t :completeUnimported  t ;; :staticcheck t
