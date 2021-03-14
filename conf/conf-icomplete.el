@@ -69,6 +69,7 @@
 
 (defun vmacs-minibuffer-space ()
   (interactive)
+  (require 'consult)
   (if (and (string-prefix-p consult-async-default-split (minibuffer-contents))
            (= 2 (length (split-string (minibuffer-contents) consult-async-default-split))))
       (insert consult-async-default-split)
