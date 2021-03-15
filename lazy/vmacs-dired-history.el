@@ -86,8 +86,7 @@
 Argument DIR directory."
   (setq dir (abbreviate-file-name (expand-file-name dir)))
   (unless (or (member dir vmacs-dired-history-ignore-directory)
-              (string-match-p "/vendor/" dir)
-              (string-match-p "go/pkg/mod" dir))
+              (string-match-p "/vendor/" dir))
     (unless vmacs-dired-history--cleanup-p
       (setq vmacs-dired-history--cleanup-p t)
       (let ((tmp-history ))
