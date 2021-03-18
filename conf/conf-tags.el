@@ -1,6 +1,7 @@
 ;;; -*- coding:utf-8 -*-
 
 (setq eglot-confirm-server-initiated-edits nil)
+(setq eglot-sync-connect 0)
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
@@ -36,7 +37,7 @@
 (define-key evil-motion-state-map "gc" 'eglot-find-declaration)
 (define-key evil-normal-state-map "gi" 'eglot-find-implementation)
 (define-key evil-motion-state-map "gt" 'eglot-find-typeDefinition)
-(define-key evil-motion-state-map "gs" 'eglot-reconnect)
+(define-key evil-motion-state-map "gs" '(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
 (define-key evil-normal-state-map "gh" 'eglot-code-actions)
 (define-key evil-normal-state-map "gp" 'evil-project-find-regexp)
 (define-key evil-normal-state-map "gP" 'project-or-external-find-file)
