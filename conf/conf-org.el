@@ -183,9 +183,9 @@ Monospaced font whihc is fixed idth and height is recommended."
   ;; (create-frame-font-large-mac)
   ;; 不起作用
   (face-remap-add-relative 'default 'vmacs-org-font)
-  (evil-define-key 'normal 'local (kbd "gw") 'novel-fill)
-  ;; (local-set-key [(tab)]       'smart-tab)
-  ;; (local-set-key (kbd "TAB")   'smart-tab)
+  (evil-collection-define-key 'normal 'org-mode-map
+    "C-k" nil
+    "gw" 'novel-fill)
   )
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
