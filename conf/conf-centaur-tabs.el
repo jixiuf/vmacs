@@ -113,12 +113,7 @@
 
 ;; (setq centaur-tabs-hide-tab-function #'vmacs-hide-tab-p)
 
-
-(defun vmacs-awesometab-hook()
-  ;; 直接去除自动选下一个tab的hook,让它默认
-  ;; (add-hook 'kill-buffer-hook 'vmacs-centaur-tabs-buffer-track-killed)
-  (remove-hook 'kill-buffer-hook 'centaur-tabs-buffer-track-killed))
-(add-hook 'centaur-tabs-mode-hook #'vmacs-awesometab-hook)
+(add-hook 'after-init-hook (lambda() (remove-hook 'kill-buffer-hook 'centaur-tabs-buffer-track-killed)))
 
 
 ;; ;; Copied from s.el
