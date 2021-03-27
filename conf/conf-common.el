@@ -161,12 +161,6 @@
 (define-key evil-motion-state-map (kbd "C-e") 'smart-end-of-line)
 
 (global-set-key "\C-k" 'vmacs-kill-region-or-line)
-(with-eval-after-load 'org
-  (define-key org-mode-map "\C-k" 'vmacs-kill-region-or-org-kill-line)
-  (define-key org-mode-map "\C-a" 'org-mode-smart-beginning-of-line)
-  (define-key org-mode-map "\C-e" 'org-mode-smart-end-of-line))
-
-
 (global-set-key "\M-;" 'vmacs-comment-dwim-line)
 
 (global-set-key "\C-x\C-v" 'switch-to-scratch-buffer)
