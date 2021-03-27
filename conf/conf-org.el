@@ -8,6 +8,7 @@
 (vmacs-leader (kbd "T") 'org-capture)  ;新加一个todo 条目等
 (define-key evil-normal-state-map "mt" 'org-capture)
 (setq verb-auto-kill-response-buffers t)
+(defun uid() (completing-read "uid: " '("10064589" "545473")))
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
   (define-key org-mode-map (kbd "C-c C-u") #'verb-export-request-on-point-curl)
