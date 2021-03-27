@@ -108,36 +108,38 @@
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
-(defadvice yank-pop (around icomplete-mode (arg) activate)
-  (interactive "p")
-  (let ((icomplete-separator (concat
-                              (propertize "\n" 'face '(:height 1))
-                              (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
-                                          'display '(space :align-to right))
-                              (propertize "\n" 'face '(:height 1)))))
-    ad-do-it))
+(global-set-key [remap yank-pop] 'consult-yank-pop)
 
 (defun vmacs-icomplete-mode-hook()
-  (if (cl-find this-command '(consult-ripgrep-root-symbol
-                              consult-ripgrep-default-symbol
-                              yank-pop consult-imenu consult-line
-                              consult-ripgrep execute-extended-command
-                              project-switch-project vmacs-magit-status-list
-                              project-or-external-find-file
-                              consult-ripgrep-default consult-grep
-                              evil-project-find-regexp
-                              magit-status
-                              xref-find-references
-                              dired consult-buffer consult-buffer-other-window))
-      (progn
-        (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode 1))
-        (setq-local icomplete-separator "\n")
-        (setq-local icomplete-prospects-height 15))
+  (cond
+   ((cl-find this-command '(consult-ripgrep-root-symbol
+                            consult-ripgrep-default-symbol
+                            consult-imenu consult-line
+                            consult-ripgrep execute-extended-command
+                            project-switch-project vmacs-magit-status-list
+                            project-or-external-find-file
+                            consult-ripgrep-default consult-grep
+                            evil-project-find-regexp
+                            magit-status
+                            xref-find-references
+                            dired consult-buffer consult-buffer-other-window))
+    (progn
+      (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode 1))
+      (setq-local icomplete-separator "\n")
+      (setq-local icomplete-prospects-height 15)))
+   ((cl-find this-command '(yank-pop consult-yank-pop))
+    (setq-local icomplete-prospects-height 15)
+    (setq-local icomplete-separator (concat
+                                     (propertize "\n" 'face '(:height 1))
+                                     (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
+                                                 'display '(space :align-to right))
+                                     (propertize "\n" 'face '(:height 1))))
+    )
+   (t
     (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode -1))
-    ;; https://unicode-table.com/cn/sets/arrow-symbols/
     (setq-local icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
-    ;; (setq-local icomplete-separator (propertize " ☯ " 'face  '(foreground-color . "lightgreen")))
-    (setq-local icomplete-prospects-height 2)))
+    (setq-local icomplete-prospects-height 2))))
+
 
 (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
 
