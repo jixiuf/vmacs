@@ -7,52 +7,22 @@
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出todo list等
 (vmacs-leader (kbd "T") 'org-capture)  ;新加一个todo 条目等
 (define-key evil-normal-state-map "mt" 'org-capture)
+(setq verb-auto-kill-response-buffers t)
 (with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
+  (define-key org-mode-map (kbd "C-c C-u") #'verb-export-request-on-point-curl)
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
   (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
-(setq verb-auto-kill-response-buffers t)
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
-(defun vmacs-verb-handler-json ()
-  "Standard handler for the \"application/json\" text content type."
-  (when verb-json-use-mode
-    (funcall verb-json-use-mode))
-  (when (< (oref verb-http-response body-bytes)
-           (or verb-json-max-pretty-print-size 0))
-    (unwind-protect
-        (unless (zerop (buffer-size))
-          (vmacs-json-pretty))
-      (buffer-enable-undo))
-    (goto-char (point-min))))
-
-(setq verb-content-type-handlers
-  '(;; Text handlers
-    ("text/html" html-mode)
-    ("\\(application\\|text\\)/xml" xml-mode)
-    ("application/xhtml\\+xml" xml-mode)
-    ("application/json" vmacs-verb-handler-json)
-    ("application/javascript" js-mode)
-    ("application/css" css-mode)
-    ("text/plain" text-mode)
-    ;; Binary handlers
-    ("application/pdf" doc-view-mode t)
-    ("image/png" image-mode t)
-    ("image/svg\\+xml" image-mode t)
-    ("image/x-windows-bmp" image-mode t)
-    ("image/gif" image-mode t)
-    ("image/jpe?g" image-mode t)))
-
-(define-key org-mode-map (kbd "C-c C-u") #'verb-export-request-on-point-curl)
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
    (verb . t)))
+
 ;; https://github.com/zweifisch/ob-http
 (with-eval-after-load 'org-src
-
   (add-to-list 'org-src-lang-modes (cons "go" 'go))
   (add-to-list 'org-src-lang-modes (cons "golang" 'go))
   (setq org-src-ask-before-returning-to-edit-buffer nil)
@@ -60,9 +30,6 @@
   (define-key org-src-mode-map "\C-x\C-s" 'org-edit-src-exit))
 
 ;; (run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
-
-
-;; (define-key global-map [(control meta ?r)] 'org-agenda)
 
 (setq-default
  ;; inhibit-startup-screen t;隐藏启动显示画面
@@ -142,11 +109,8 @@
        (concat "- \t.,:!?;'\")}\\["  "[:nonascii:]")
        " \t\r\n,\"'"
        "."
-       1)
+       1))
 
-
-
- )
 ;; How to automatically save all org files after marking a repeating item as DONE in the org agenda?
 (add-hook 'org-trigger-hook 'save-buffer)
 (with-eval-after-load 'org-agenda
@@ -177,15 +141,17 @@
   "The default font for vterm buffer.
 Monospaced font whihc is fixed idth and height is recommended."
   :group 'vterm)
+(evil-collection-define-key 'normal 'outline-mode-map
+   (kbd "C-k" ) nil
+    (kbd "C-j" ) nil
+    "gw" 'novel-fill)
 
 (defun vmacs-novel-mode-hook()
   (vmacs-org-mode-hook)
   ;; (create-frame-font-large-mac)
   ;; 不起作用
   (face-remap-add-relative 'default 'vmacs-org-font)
-  (evil-collection-define-key 'normal 'org-mode-map
-    "C-k" nil
-    "gw" 'novel-fill)
+
   )
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
@@ -246,6 +212,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 ;;可以 通过VISIBILITY 属性设置某一个节点的可视化状态，如：
 ;;                         ** adef
+
 ;;                         ** abc
 ;;                         :PROPERTIES:
 ;;                         :VISIBILITY: children
