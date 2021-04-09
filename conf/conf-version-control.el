@@ -10,27 +10,27 @@
   (evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map))
 (evil-define-key 'normal diff-mode-map (kbd "t") #'toggle-diff-whitespace)
 
-(vmacs-leader (kbd "vv") 'vmacs-vc-next-action)
-(vmacs-leader (kbd "vr") 'vc-revert)
-(vmacs-leader (kbd "vl") 'vc-print-log)
-(vmacs-leader (kbd "vL") 'vc-print-root-log)
-(vmacs-leader (kbd "v+") 'vc-update)
-(vmacs-leader (kbd "vf") 'vmacs-magit-pull-default)
-(vmacs-leader (kbd "vg") 'vc-annotate)
-(vmacs-leader (kbd "vd") '(lambda()(interactive) (vc-dir (vc-root-dir))))
-(vmacs-leader (kbd "v=") 'vc-diff)
-(vmacs-leader (kbd "vh") 'vc-root-diff)
-(vmacs-leader (kbd "=") 'vc-diff)
-(vmacs-leader (kbd "+") 'vc-ediff)
-(vmacs-leader (kbd "vb") 'vc-retrieve-tag) ;change branch/tag
-(vmacs-leader (kbd "vt") 'vc-create-tag)
+(vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
+(vmacs-leader (kbd "vr") #'vc-revert)
+(vmacs-leader (kbd "vl") #'vc-print-log)
+(vmacs-leader (kbd "vL") #'vc-print-root-log)
+(vmacs-leader (kbd "v+") #'vc-update)
+(vmacs-leader (kbd "vf") #'vmacs-magit-pull-default)
+(vmacs-leader (kbd "vg") #'vc-annotate)
+(vmacs-leader (kbd "vd") #'(lambda()(interactive) (vc-dir (vc-root-dir))))
+(vmacs-leader (kbd "v=") #'vc-diff)
+(vmacs-leader (kbd "vh") #'vc-root-diff)
+(vmacs-leader (kbd "=") #'vc-diff)
+(vmacs-leader (kbd "+") #'vc-ediff)
+(vmacs-leader (kbd "vb") #'vc-retrieve-tag) ;change branch/tag
+(vmacs-leader (kbd "vt") #'vc-create-tag)
 
-(vmacs-leader (kbd "vj") 'magit-status) ;like dired-jump
-(vmacs-leader (kbd "vu") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader (kbd "vp") 'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader (kbd "vs") 'magit-file-dispatch)      ;space-vs[n/p] 查看此文件上/下一个版本
-(vmacs-leader (kbd "ve") 'magit-commit-extend)
-(vmacs-leader (kbd "va") 'magit-commit-amend)
+(vmacs-leader (kbd "vj") #'magit-status) ;like dired-jump
+(vmacs-leader (kbd "vu") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
+(vmacs-leader (kbd "vp") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
+(vmacs-leader (kbd "vs") #'magit-file-dispatch)      ;space-vs[n/p] 查看此文件上/下一个版本
+(vmacs-leader (kbd "ve") #'magit-commit-extend)
+(vmacs-leader (kbd "va") #'magit-commit-amend)
 
 
 

@@ -1,6 +1,7 @@
 (require 'package)
   (setq package-archives
-        '(("melpa-cn" . "http://mirrors.163.com/elpa/melpa/")
+        ;; '(("melpa-cn" . "http://mirrors.163.com/elpa/melpa/")
+        '(("melpa-cn" .  "http://melpa.org/packages/")
           ("nognu-cn" . "http://mirrors.163.com/elpa/nongnu/")
           ("gnu-cn"   . "http://mirrors.163.com/elpa/gnu/")))
 

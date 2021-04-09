@@ -74,19 +74,19 @@
  ;; 默认先最大化。
 ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 
-(defun term-enable-mouse-scroll(&optional f) ;
-  (with-selected-frame f
-    (when (and (equal system-type 'darwin) (not (display-graphic-p)))
-      (require 'mouse) ;; needed for iterm2 compatibility
-      (xterm-mouse-mode t)
-      (global-set-key [mouse-4] '(lambda ()
-                                   (interactive)
-                                   (scroll-down 1)))
-      (global-set-key [mouse-5] '(lambda ()
-                                   (interactive)
-                                   (scroll-up 1))))))
-(when (equal window-system 'ns)
-  (add-hook 'after-make-frame-functions 'term-enable-mouse-scroll))
+;; (defun term-enable-mouse-scroll(&optional f) ;
+;;   (with-selected-frame f
+;;     (when (and (equal system-type 'darwin) (not (display-graphic-p)))
+;;       (require 'mouse) ;; needed for iterm2 compatibility
+;;       (xterm-mouse-mode t)
+;;       (global-set-key [mouse-4] '(lambda ()
+;;                                    (interactive)
+;;                                    (scroll-down 1)))
+;;       (global-set-key [mouse-5] '(lambda ()
+;;                                    (interactive)
+;;                                    (scroll-up 1))))))
+;; (when (equal window-system 'ns)
+;;   (add-hook 'after-make-frame-functions #'term-enable-mouse-scroll))
 
 (provide 'conf-macos)
 

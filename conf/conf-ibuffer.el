@@ -24,7 +24,7 @@
 (setq ibuffer-default-display-maybe-show-predicates nil)
 
 (with-eval-after-load 'evil-collection-ibuffer
-  (run-with-timer 0.01 nil '(lambda()
+  (run-with-timer 0.01 nil #'(lambda()
                               (evil-collection-define-key 'normal 'ibuffer-mode-map
                                 "gr" 'ibuffer-filter-disable
                                 (kbd "M-=") 'ibuffer-ediff-merge
@@ -39,7 +39,7 @@
          ("Emacs"  (or (name . "^\\*.*$") (name . "magit")))
          ("Hidden(g则不显示此分组)"  (name . "^ ")))))
 
-(add-hook 'ibuffer-mode-hook
+(add-hook #'ibuffer-mode-hook
           (lambda ()
             ;; (ibuffer-auto-mode t)       ;自动更新*Ibuffer* buffer
             (ibuffer-switch-to-saved-filter-groups "Default")))
