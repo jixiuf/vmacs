@@ -1,4 +1,4 @@
- ;;; Code:
+;;; Code:
 (require 'icomplete)
 
 ;; (setq icomplete-max-delay-chars 3)
@@ -10,7 +10,12 @@
 (setq icomplete-tidy-shadowed-file-names t)
 
 (setq icomplete-prospects-height 2)
-(setq icomplete-separator (propertize " ☯" 'face  '(foreground-color . "SlateBlue1")))
+;; (concat
+;;                                      (propertize "\n" 'face '(:height 1))
+;;                                      (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
+;;                                                  'display '(space :align-to right))
+;;                                      (propertize "\n" 'face '(:height 1)))
+(setq icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
 
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
@@ -36,7 +41,7 @@
 
 
 (icomplete-mode 1)
-(require 'icomplete-vertical nil t)
+;; (require 'icomplete-vertical nil t)
 
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
@@ -108,7 +113,7 @@
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
-(global-set-key [remap yank-pop] 'consult-yank-pop)
+;; (global-set-key [remap yank-pop] 'consult-yank-pop)
 
 (defun vmacs-icomplete-mode-hook()
   (cond
@@ -118,6 +123,7 @@
                             consult-ripgrep execute-extended-command
                             project-switch-project vmacs-magit-status-list
                             project-or-external-find-file
+                            yank-pop
                             consult-ripgrep-default consult-grep
                             evil-project-find-regexp
                             magit-status
@@ -126,20 +132,11 @@
     (progn
       (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode 1))
       (setq-local icomplete-separator "\n")
-      (setq-local icomplete-prospects-height 15)))
-   ((cl-find this-command '(yank-pop consult-yank-pop))
-    (setq-local icomplete-prospects-height 15)
-    (setq-local icomplete-separator (concat
-                                     (propertize "\n" 'face '(:height 1))
-                                     (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
-                                                 'display '(space :align-to right))
-                                     (propertize "\n" 'face '(:height 1))))
-    )
+      (setq-local icomplete-prospects-height 25)))
    (t
     (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode -1))
     (setq-local icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
     (setq-local icomplete-prospects-height 2))))
-
 
 (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
 
