@@ -6,7 +6,7 @@
   (yas-global-mode 1))
 
 (setq-default yas-prompt-functions '(yas-completing-prompt))
-(define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
+;; (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
 
 (defun vmacs-autoinsert-yas-expand()
   "Replace text in yasnippet template."
