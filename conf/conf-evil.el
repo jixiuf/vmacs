@@ -297,8 +297,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "\\" 'just-one-space-or-delete-horizontal-space)
 
 
-(global-set-key (kbd "C-s") 'evil-search-forward)
-(global-set-key (kbd "C-r") 'evil-search-backward)
 (vmacs-leader (kbd "y") 'evil-paste-before) ;default P
 
 ;; 默认visual选中即复制到剪切版，去掉这个功能
