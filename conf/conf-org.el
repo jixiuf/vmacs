@@ -139,6 +139,10 @@
   (modify-syntax-entry ?？ "." ) ;; 识别中文标点
   (modify-syntax-entry ?、 "." ) ;; 识别中文标点
   (modify-syntax-entry ?； "." ) ;; 识别中文标点
+  (push '("[X]" . ?✅) prettify-symbols-alist)
+  (push '("[ ]" . ?❎) prettify-symbols-alist)
+  (prettify-symbols-mode 1)
+
   ;; (iimage-mode 1)
   ;; (auto-fill-mode 1)
   ;; (paragraph-indent-minor-mode 1)
