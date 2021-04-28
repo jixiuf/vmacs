@@ -41,10 +41,11 @@ export CPPFLAGS="${CFLAGS}"
 export CFLAGS
 export LDFLAGS
 export PKG_CONFIG_PATH
-export PATH
 
-export LDFLAGS="${LDFLAGS}-L/usr/local/lib/gcc/9 "
-export PATH=$PATH:/usr/local/opt/gnu-sed/libexec/gnubin
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
+export LDFLAGS="-L/usr/local/lib/gcc/10"
 
 if [ $# -gt 0  ]; then
     git clean -fdx;
@@ -52,25 +53,14 @@ if [ $# -gt 0  ]; then
     CC='clang' \
     ./configure \
     --disable-silent-rules \
+    --with-native-compilation \
     --enable-locallisppath=/usr/local/share/emacs/site-lisp \
     --prefix=${prefix} \
-    --with-gnutls \
-    --without-x \
-    --without-dbus \
-    --without-imagemagick \
     --with-modules \
     --with-ns \
-    --with-xml2 \
     --disable-ns-self-contained;
 fi
-# # CC=/usr/local/opt/gcc/bin/gcc-9 \
-# export CC="gcc-9"
-# export CPP="cpp-9"
-# --with-xwidgets \
-# ./configure -C
-# cd lisp;make autoload
-# git clean -fdx
-# make bootstrap -j 4
+export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
 make -j 12
 # make bootstrap BYTE_COMPILE_EXTRA_FLAGS='--eval "(setq comp-speed 0)"'
 echo more info see INSTALL.REPO when compile error
@@ -82,14 +72,14 @@ function catch_errors() {
 trap catch_errors ERR;
 
 make install
-rm -rf ${prefix}/Emacs.app
-cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
-mv -f ${prefix}/bin/emacs ${prefix}/bin/emacsbak
-cat >${prefix}/bin/emacs << EOS
-#!/bin/bash
-exec ${prefix}/Emacs.app/Contents/MacOS/Emacs "\$@"
-EOS
+# rm -rf ${prefix}/Emacs.app
+# cp -rf nextstep/Emacs.app  ${prefix}/Emacs.app
+# mv -f ${prefix}/bin/emacs ${prefix}/bin/emacsbak
+# cat >${prefix}/bin/emacs << EOS
+# #!/bin/bash
+# find ~/.emacs.d/eln-cache -type f -size -1  -exec rm -f {} \;
+# LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0 exec ${prefix}/bin/emacs "\$@"
+# #exec ${prefix}/Emacs.app/Contents/MacOS/Emacs "\$@"
+# EOS
 
 chmod 755 ${prefix}/bin/emacs
-
-make -C ~/.emacs.d dump
