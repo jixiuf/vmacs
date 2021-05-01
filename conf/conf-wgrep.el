@@ -34,13 +34,14 @@
 
 (evil-collection-define-key 'normal 'grep-mode-map
    "/" #'consult-focus-lines
+   "l" #'evil-forward-char
    "z" #'consult-hide-lines
    "r" #'consult-reset-lines
    "i" #'evil-insert-state)
 
 
 (defun enable-wgrep-when-entry-insert()
-  (when (derived-mode-p  'rg-mode 'grep-mode 'embark-collect-mode)
+  (when (derived-mode-p  'grep-mode)
     (require 'wgrep) (wgrep-change-to-wgrep-mode)))
 
 (add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
