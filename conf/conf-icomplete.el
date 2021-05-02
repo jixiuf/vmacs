@@ -99,6 +99,7 @@
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
 (vmacs-leader (kbd "ff") #'find-file-at-point)
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
+(vmacs-leader (kbd "fm") #'mu4e)
 
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
