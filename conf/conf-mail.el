@@ -1,5 +1,8 @@
 ;; brew install isync # for mbsync
 ;; brew install mu
+;; https://rakhim.org/fastmail-setup-with-emacs-mu4e-and-mbsync-on-macos/
+;; mu index --maildir=~/maildir
+;; mu find hello
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
 (when (require 'mu4e nil t)
   (setq
@@ -16,7 +19,10 @@
   ;; by pressing U
   (setq mu4e-get-mail-command  "mbsync -a")
   )
-
+;; (setq
+;;    message-send-mail-function   'smtpmail-send-it
+;;    smtpmail-default-smtp-server "smtp.exmail.qq.com"
+;;    smtpmail-smtp-server         "smtp.exmail.qq.com")
 
 (provide 'conf-mail)
 
