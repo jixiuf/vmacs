@@ -13,12 +13,16 @@
    mu4e-headers-date-format "%Y-%m-%d"
    mu4e-change-filenames-when-moving t
    mu4e-attachment-dir "~/Downloads/mail"
+   mu4e-update-interval 300
+   mu4e-split-view 'single-window
    )
 
   ;; this setting allows to re-sync and re-index mail
   ;; by pressing U
   (setq mu4e-get-mail-command  "mbsync -a")
-  )
+(evil-collection-define-key 'normal 'mu4e-headers-mode-map
+   "," #'mu4e~headers-jump-to-maildir)
+
 ;; (setq
 ;;    message-send-mail-function   'smtpmail-send-it
 ;;    smtpmail-default-smtp-server "smtp.exmail.qq.com"
