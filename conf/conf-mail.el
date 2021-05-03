@@ -18,8 +18,12 @@
    mu4e-completing-read-function #'completing-read
    ;; this setting allows to re-sync and re-index mail by pressing U
    mu4e-get-mail-command  "mbsync -a"
-   ;; mu4e-use-fancy-chars t
-   )
+   mu4e-maildir-shortcuts '(("/luojilab/inbox" . ?l)
+                            ("/139/inbox" . ?1)
+                            ("/drafts" . ?d)
+                            ("/sent" . ?s)
+                            ("/trash" . ?t)
+                            ("/qq/inbox" . ?q)))
 
   (evil-collection-define-key 'normal 'mu4e-headers-mode-map
     "," #'mu4e~headers-jump-to-maildir))
