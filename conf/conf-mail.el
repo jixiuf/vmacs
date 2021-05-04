@@ -3,7 +3,14 @@
 ;; https://rakhim.org/fastmail-setup-with-emacs-mu4e-and-mbsync-on-macos/
 ;; mu index --maildir=~/maildir
 ;; mu find hello
+
+;; ~/.authinfo
+;; machine smtp.exmail.qq.com login jixiufeng@luojilab.com password mypass
+;; machine smtp.qq.com login jixiuf@qq.com password mypass
+;; machine smtp.139.com login jixiuf@139.com password mypass
+
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
+  "gu" #'mu4e-update-mail-and-index
   "," #'mu4e~headers-jump-to-maildir)
 (setq
  mu4e-headers-skip-duplicates t
@@ -28,11 +35,12 @@
 
 (setq message-send-mail-function  #'smtpmail-send-it)
 (setq smtpmail-stream-type        'ssl)
+(mu4e-bookmarks)
 (setq mu4e-contexts
-      `( ,(make-mu4e-context
-           :name "private(QQ)"
-           :enter-func (lambda () (mu4e-message "Entering private(QQ) context"))
-           :leave-func (lambda () (mu4e-message "Leaving private(QQ) context"))
+      `(,(make-mu4e-context
+           :name "qq"
+           :enter-func (lambda () (mu4e-message "Entering qq context"))
+           ;; :leave-func (lambda () (mu4e-message "Leaving qq context"))
            ;; we match based on the contact-fields of the message
            :match-func (lambda (msg)
                          (when msg
@@ -49,9 +57,29 @@
                    (smtpmail-auth-credentials  . "~/.authinfo")
                    (smtpmail-smtp-server       . "smtp.qq.com")
                    ))
+        ,(make-mu4e-context
+           :name "10086(139)"
+           :enter-func (lambda () (mu4e-message "Entering 10086(139) context"))
+           ;; :leave-func (lambda () (mu4e-message "Leaving qq context"))
+           ;; we match based on the contact-fields of the message
+           :match-func (lambda (msg)
+                         (when msg
+                           (mu4e-message-contact-field-matches msg
+                                                               '(:to :from :cc :bcc) (concat "jixiuf" "@139.com" ))))
+           :vars '(( user-mail-address      . (concat "jixiuf" "@" "139.com"  ))
+                   (user-full-name     . "jixiuf10086" )
+                   ;; (message-send-mail-function . #'smtpmail-send-it)
+                   (smtpmail-smtp-user         . "jixiuf@139.com")
+                   (user-mail-address          . "jixiuf@139.com")
+                   (smtpmail-smtp-service      . 465)
+                   ;;  ;; machine smtp.exmail.qq.com login jixiufeng@luojilab.com password mypassword
+                   ;;  ;; machine smtp.qq.com login jixiuf@qq.com password mypassword
+                   (smtpmail-auth-credentials  . "~/.authinfo")
+                   (smtpmail-smtp-server       . "smtp.139.com")
+                   ))
          ,(make-mu4e-context
            :name "luojilab"
-           :enter-func (lambda () (mu4e-message "Switch to the Luojilab context"))
+           :enter-func (lambda () (mu4e-message "Switch to the luojilab context"))
            :match-func (lambda (msg)
                          (when msg
                            (mu4e-message-contact-field-matches msg
