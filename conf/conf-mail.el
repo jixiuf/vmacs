@@ -21,17 +21,19 @@
  mu4e-headers-date-format "%Y-%m-%d"
  mu4e-change-filenames-when-moving t
  mu4e-attachment-dir "~/Downloads/"
- mu4e-update-interval 30
+ mu4e-update-interval 300
  mu4e-split-view 'single-window
  mu4e-completing-read-function #'completing-read
+ mu4e-compose-context-policy 'ask
+ mu4e-context-policy 'pick-first
  ;; this setting allows to re-sync and re-index mail by pressing U
  mu4e-get-mail-command  "mbsync -a"
- mu4e-maildir-shortcuts '(("/luojilab/inbox" . ?l)
-                          ("/139/inbox" . ?1)
-                          ("/drafts" . ?d)
-                          ("/sent" . ?s)
-                          ("/trash" . ?t)
-                          ("/qq/inbox" . ?q)))
+ ;; mu4e-maildir-shortcuts '(("/luojilab/inbox" . ?l)
+ ;;                          ("/139/inbox" . ?1)
+ ;;                          ("/qq/inbox" . ?q))
+ )
+
+(add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
@@ -58,6 +60,7 @@
       send-mail-function 'smtpmail-send-it
       message-sendmail-f-is-evil t
       message-sendmail-extra-arguments '("--read-envelope-from")
+       message-sendmail-envelope-from 'header
       message-send-mail-function 'message-send-mail-with-sendmail)
   (add-hook 'message-send-mail-hook #'vmacs-choose-msmtp-account)
 
@@ -88,7 +91,10 @@
           :match-func (lambda (msg)
                         (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc) (concat "jixiuf" "@139.com" ))))
           :vars '((smtpmail-smtp-user         . "jixiuf@139.com")
-                  (user-mail-address          . "jixiuf@139.com")))
+                  (user-mail-address          . "jixiuf@139.com")
+                  (mu4e-sent-folder      . "/139/&XfJT0ZAB-")
+                  (mu4e-drafts-folder    . "/139/&g0l6P3ux-")
+                  (mu4e-trash-folder     . "/139/&XfJSIJZk-")))
         ,(make-mu4e-context
           :name "luojilab"
           :enter-func (lambda () (mu4e-message "Switch to the luojilab context"))
