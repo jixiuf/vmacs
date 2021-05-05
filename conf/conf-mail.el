@@ -13,9 +13,13 @@
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
   "gu" #'mu4e-update-mail-and-index
   "," #'mu4e~headers-jump-to-maildir)
+;; 配置环境变量 XAPIAN_CJK_NGRAM 为 1，
+;; 这样使用 mu find 可以搜索任意单个中文字符。
+(setenv "XAPIAN_CJK_NGRAM" "yes")
 (setq
  mu4e-headers-skip-duplicates t
  mu4e-view-show-images t
+ ;; mu4e-view-image-max-width 800
  mu4e-view-show-addresses t
  mu4e-date-format "%Y-%m-%d"
  mu4e-headers-date-format "%Y-%m-%d"
@@ -28,12 +32,16 @@
  mu4e-context-policy 'pick-first
  ;; this setting allows to re-sync and re-index mail by pressing U
  mu4e-get-mail-command  "mbsync -a"
+ mu4e-confirm-quit nil
+;; Why would I want to leave my message open after I've sent it?
  ;; mu4e-maildir-shortcuts '(("/luojilab/inbox" . ?l)
  ;;                          ("/139/inbox" . ?1)
  ;;                          ("/qq/inbox" . ?q))
  )
-
 (add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox or maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
+(add-to-list 'mu4e-bookmarks '(:name "qq" :query "maildir:/qq/inbox  AND NOT flag:trashed" :key ?q))
+(add-to-list 'mu4e-bookmarks '(:name "luojilab" :query "maildir:/luojilab/inbox  AND NOT flag:trashed" :key ?l))
+(add-to-list 'mu4e-bookmarks '(:name "139(10086)" :query "maildir:/139/inbox  AND NOT flag:trashed" :key ?1))
 (add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\" or maildir:/luojilab/\"Sent Messages\" or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
 (add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\" or maildir:/luojilab/\"Deleted Messages\" or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
 (add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts or maildir:/luojilab/Drafts or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
@@ -62,6 +70,7 @@
       sendmail-program "/usr/local/bin/msmtp"
       send-mail-function 'smtpmail-send-it
       message-sendmail-f-is-evil t
+      message-kill-buffer-on-exit t
       message-sendmail-extra-arguments '("--read-envelope-from")
        message-sendmail-envelope-from 'header
       message-send-mail-function 'message-send-mail-with-sendmail)
@@ -120,8 +129,12 @@
 ;;  user-mail-address  "jixiufeng@luojilab.com"
 ;;  smtpmail-stream-type 'ssl
 ;;  smtpmail-smtp-server         "smtp.exmail.qq.com")
+(require 'mu4e-alert)
+(mu4e-alert-set-default-style 'notifier)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 
-  (provide 'conf-mail)
+
+(provide 'conf-mail)
 
   ;; Local Variables:
   ;; coding: utf-8
