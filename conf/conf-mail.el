@@ -33,7 +33,7 @@
  ;;                          ("/qq/inbox" . ?q))
  )
 
-(add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
+(add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox or maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
