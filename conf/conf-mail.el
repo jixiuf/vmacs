@@ -34,6 +34,9 @@
  )
 
 (add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox or maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
+(add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\" or maildir:/luojilab/\"Sent Messages\" or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
+(add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\" or maildir:/luojilab/\"Deleted Messages\" or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
+(add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts or maildir:/luojilab/Drafts or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
