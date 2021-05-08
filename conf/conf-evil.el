@@ -425,8 +425,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (global-set-key (kbd "<f18>") 'evil-insert-state) ;mac karabiner用来控制输入法
 (define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见isearch-pre-command-hook
 (global-set-key (kbd "<f16>") 'vmacs-toggle-input-method)
-(global-set-key (kbd "<f19>") nil) ;mac karabiner用来控制输入法 ,rime f19 send escape
-(define-key isearch-mode-map (kbd "<f19>") nil) ;详见isearch-pre-command-hook
+(global-set-key (kbd "<f19>") #'ignore) ;mac karabiner用来控制输入法 ,rime f19 send escape
+(define-key isearch-mode-map (kbd "<f19>") #'ignore) ;详见isearch-pre-command-hook
 (defun vmacs-toggle-input-method ()
   "when toggle on input method, switch to evil-insert-state if possible.
 when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
