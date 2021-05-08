@@ -9,9 +9,12 @@
 ;; machine smtp.exmail.qq.com login jixiufeng@luojilab.com password mypass
 ;; machine smtp.qq.com login jixiuf@qq.com password mypass
 ;; machine smtp.139.com login jixiuf@139.com password mypass
+(defun vmacs-mu4e-update-mail-and-index (&optional prefix)
+  (interactive "P")
+  (if prefix (mu4e-update-mail-and-index) (mu4e-update-index)))
 
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
-  "gu" #'mu4e-update-mail-and-index
+  "gu" #'vmacs-mu4e-update-mail-and-index
   "," #'mu4e~headers-jump-to-maildir)
 ;; 配置环境变量 XAPIAN_CJK_NGRAM 为 1，
 ;; 这样使用 mu find 可以搜索任意单个中文字符。
