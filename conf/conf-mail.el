@@ -14,8 +14,10 @@
   (if prefix (mu4e-update-mail-and-index) (mu4e-update-index)))
 
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
-  "gu" #'vmacs-mu4e-update-mail-and-index
-  "," #'mu4e~headers-jump-to-maildir)
+  "r" #'mu4e-headers-mark-for-read
+  "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)))
+  "!" #'mu4e-headers-mark-for-refile
+  "gu" #'vmacs-mu4e-update-mail-and-index)
 ;; 配置环境变量 XAPIAN_CJK_NGRAM 为 1，
 ;; 这样使用 mu find 可以搜索任意单个中文字符。
 (setenv "XAPIAN_CJK_NGRAM" "yes")
@@ -48,6 +50,7 @@
 (add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\" or maildir:/luojilab/\"Sent Messages\" or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
 (add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\" or maildir:/luojilab/\"Deleted Messages\" or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
 (add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts or maildir:/luojilab/Drafts or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
+(add-to-list 'mu4e-bookmarks '(:name "trash" :query "(maildir:/qq/Junk or maildir:/luojilab/Junk or maildir:/139/&XfJSIJZk-)" :key ?j))
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
