@@ -17,9 +17,12 @@
   "r" #'mu4e-headers-mark-for-read
   "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)))
   "!" #'mu4e-headers-mark-for-refile
+  (kbd "M-n") #'mu4e-headers-next-unread
+  (kbd "M-p") #'mu4e-headers-prev-unread
   "gh" #'mu4e-headers-query-prev
   "gl" #'mu4e-headers-query-next
   "gu" #'vmacs-mu4e-update-mail-and-index)
+
 ;; 配置环境变量 XAPIAN_CJK_NGRAM 为 1，
 ;; 这样使用 mu find 可以搜索任意单个中文字符。
 (setenv "XAPIAN_CJK_NGRAM" "yes")
