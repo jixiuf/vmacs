@@ -120,15 +120,35 @@
                   (mu4e-drafts-folder    . "/luojilab/Drafts")
                   (mu4e-trash-folder     . "/luojilab/Deleted Messages")))))
 
-;; (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+(defun mu4e-goodies~break-cjk-word (word)
+  "Break CJK word into list of bi-grams like: 我爱你 -> 我爱 爱你"
+  (if (or (<= (length word) 2)
+          (equal (length word) (string-bytes word))) ; only ascii chars
+      word
+    (let ((pos nil)
+          (char-list nil)
+          (br-word nil))
+      (if (setq pos (string-match ":" word))     ; like: "s:abc"
+          (concat (substring word 0 (+ 1 pos))
+                  (mu4e-goodies~break-cjk-word (substring word (+ 1 pos))))
+        (if (memq 'ascii (find-charset-string word)) ; ascii mixed with others like: abc你好
+            word
+          (progn
+            (setq char-list (split-string word "" t))
+            (while (cdr char-list)
+              (setq br-word (concat br-word (concat (car char-list) (cadr char-list)) " "))
+              (setq char-list (cdr char-list)))
+            br-word))))))
 
-;; (setq
-;;  smtpmail-default-smtp-server "smtp.exmail.qq.com"
-;;  smtpmail-smtp-service 465
-;;  smtpmail-smtp-user "jixiufeng@luojilab.com"
-;;  user-mail-address  "jixiufeng@luojilab.com"
-;;  smtpmail-stream-type 'ssl
-;;  smtpmail-smtp-server         "smtp.exmail.qq.com")
+(defun mu4e-goodies~break-cjk-query (expr)
+  "Break CJK strings into bi-grams in query."
+  (let ((word-list (split-string expr " " t))
+        (new ""))
+    (dolist (word word-list new)
+      (setq new (concat new (mu4e-goodies~break-cjk-word word) " ")))))
+
+(setq mu4e-query-rewrite-function 'mu4e-goodies~break-cjk-query)
+
 (require 'mu4e-alert)
 (mu4e-alert-set-default-style 'notifier)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
