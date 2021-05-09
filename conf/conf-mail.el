@@ -9,9 +9,9 @@
 ;; machine smtp.exmail.qq.com login jixiufeng@luojilab.com password mypass
 ;; machine smtp.qq.com login jixiuf@qq.com password mypass
 ;; machine smtp.139.com login jixiuf@139.com password mypass
-(defun vmacs-mu4e-update-mail-and-index (&optional prefix)
-  (interactive "P")
-  (if prefix (mu4e-update-mail-and-index) (mu4e-update-index)))
+(defun vmacs-mu4e-update-mail-and-index ()
+  (interactive)
+  (if current-prefix-arg (mu4e-update-mail-and-index t) (mu4e-update-index)))
 
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
   "r" #'mu4e-headers-mark-for-read
@@ -22,7 +22,10 @@
   "gh" #'mu4e-headers-query-prev
   "gl" #'mu4e-headers-query-next
   "gu" #'vmacs-mu4e-update-mail-and-index)
+(defun vmacs-view-in-eww (msg) (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
+(add-to-list 'mu4e-view-actions '("eww view" . vmacs-view-in-eww) t)         ;ae
 (add-to-list 'mu4e-view-actions '("brower" . mu4e-action-view-in-browser) t) ;keybind ab
+;; as 查看当前thread 的列表
 
 ;; 配置环境变量 XAPIAN_CJK_NGRAM 为 1，
 ;; 这样使用 mu find 可以搜索任意单个中文字符。
@@ -168,13 +171,13 @@
 
 ;; https://github.com/jeremy-compostella/org-msg
 (require 'org-msg)
-(setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
-	  org-msg-startup "hidestars indent inlineimages"
-	  org-msg-default-alternatives '((new		. (text html))
+(setq org-msg-options "html-postamble:nil  H:2 num:t ^:{} toc:nil author:nil email:nil \\n:t"
+      org-msg-startup " inlineimages"
+      org-msg-default-alternatives '((new		. (text html))
                                      (reply-to-html	. (text html))
                                      (reply-to-text	. (text)))
-	  org-msg-signature ""
-	  org-msg-convert-citation t)
+      org-msg-posting-style nil
+      org-msg-convert-citation t)
 (org-msg-mode)
 
 (provide 'conf-mail)
