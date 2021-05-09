@@ -93,6 +93,7 @@
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
 ;; 设置一些mode的初始state
 (evil-set-initial-state 'log-edit-mode 'insert)
+(evil-set-initial-state 'org-msg-edit-mode 'insert)
 (evil-set-initial-state 'org-agenda-mode 'normal)
 
 
