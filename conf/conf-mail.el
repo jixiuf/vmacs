@@ -166,15 +166,16 @@
 (mu4e-alert-set-default-style 'notifier)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 
-(defun vmacs-mail-htmlize-and-send ()
-  "When in an org-mu4e-compose-org-mode message, htmlize and send it."
-  (interactive)
-  (when (member 'org~mu4e-mime-switch-headers-or-body post-command-hook)
-    (require 'org-mime)
-    (org-mime-htmlize)
-    (message-send-and-exit)))
-
-(add-hook 'org-ctrl-c-ctrl-c-hook 'vmacs-mail-htmlize-and-send t)
+;; https://github.com/jeremy-compostella/org-msg
+(require 'org-msg)
+(setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+	  org-msg-startup "hidestars indent inlineimages"
+	  org-msg-default-alternatives '((new		. (text html))
+                                     (reply-to-html	. (text html))
+                                     (reply-to-text	. (text)))
+	  org-msg-signature ""
+	  org-msg-convert-citation t)
+(org-msg-mode)
 
 (provide 'conf-mail)
 
