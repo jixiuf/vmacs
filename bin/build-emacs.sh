@@ -45,7 +45,7 @@ export PKG_CONFIG_PATH
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 
-export LDFLAGS="-L/usr/local/lib/gcc/10"
+export LDFLAGS="-L/usr/local/lib/gcc/11"
 
 if [ $# -gt 0  ]; then
     git clean -fdx;
