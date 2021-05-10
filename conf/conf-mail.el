@@ -35,8 +35,8 @@
  mu4e-view-show-images t
  ;; mu4e-view-image-max-width 800
  mu4e-view-show-addresses t
- mu4e-date-format "%Y-%m-%d"
- mu4e-headers-date-format "%Y-%m-%d"
+ mu4e-date-format "%y-%m-%d"
+ mu4e-headers-date-format "%y-%m-%d"
  mu4e-change-filenames-when-moving t
  mu4e-attachment-dir "~/Downloads/"
  mu4e-update-interval 300

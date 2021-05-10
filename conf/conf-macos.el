@@ -21,7 +21,7 @@
 (setq exec-path-from-shell-check-startup-files nil) ;
 (setq exec-path-from-shell-arguments '("-l" )) ;remove -i read form .zshenv
 
-
+(setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0")
 ;; (setq-default server-auth-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-socket-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-name "emacs-server-file")
