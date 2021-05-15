@@ -32,6 +32,8 @@
 (setenv "XAPIAN_CJK_NGRAM" "yes")
 (setq
  mu4e-headers-skip-duplicates t
+ mu4e-compose-keep-self-cc t
+ mu4e-index-lazy-check t
  mu4e-view-show-images t
  ;; mu4e-view-image-max-width 800
  mu4e-view-show-addresses t
