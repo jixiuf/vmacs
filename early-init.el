@@ -27,9 +27,9 @@
             (setq file-name-handler-alist file-name-handler-alist-old
                   gc-cons-threshold 800000
                   gc-cons-percentage 0.1)
-	        (garbage-collect)
-	        (message "Load time %.06f" (float-time (time-since my/start-time))))
-	      t)
+            (garbage-collect)
+            (message "Load time %.06f" (float-time (time-since my/start-time))))
+          t)
 
 (setq-default
  ;; user-full-name ""                ;记得改成你的名字
@@ -54,6 +54,7 @@
             ",hangul:Sarasa Mono CL:size=18"
             ",latin:Sarasa Mono CL:size=18"))
 
+(add-hook 'after-init-hook #'(lambda() (dolist (face '(fixed-pitch)) (set-face-attribute `,face nil :font "Sarasa Mono CL-18"))))
 
 (setq-default initial-frame-alist
               '((alpha . 85)
@@ -75,4 +76,3 @@
 
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
-
