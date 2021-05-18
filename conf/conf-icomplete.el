@@ -132,11 +132,11 @@
                             xref-find-references
                             dired consult-buffer consult-buffer-other-window))
     (progn
-      (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode 1))
+      (when (bound-and-true-p icomplete-vertical-mode)(icomplete-vertical-mode 1))
       (setq-local icomplete-separator "\n")
       (setq-local icomplete-prospects-height 25)))
    (t
-    (when (boundp icomplete-vertical-mode)(icomplete-vertical-mode -1))
+    (when (bound-and-true-p icomplete-vertical-mode)(icomplete-vertical-mode -1))
     (setq-local icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
     (setq-local icomplete-prospects-height 2))))
 

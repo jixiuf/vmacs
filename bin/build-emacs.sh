@@ -46,6 +46,15 @@ export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:${PATH}"
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 
 export LDFLAGS="-L/usr/local/lib/gcc/11"
+export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
+# make bootstrap BYTE_COMPILE_EXTRA_FLAGS='--eval "(setq comp-speed 0)"'
+echo more info see INSTALL.REPO when compile error
+function catch_errors() {
+    echo "script aborted, because of errors";
+    exit $?;
+}
+
+trap catch_errors ERR;
 
 if [ $# -gt 0  ]; then
     git clean -fdx;
@@ -60,16 +69,7 @@ if [ $# -gt 0  ]; then
     --with-ns \
     --disable-ns-self-contained;
 fi
-export INSTALL="/usr/local/opt/coreutils/libexec/gnubin/install -c"
 make -j 12
-# make bootstrap BYTE_COMPILE_EXTRA_FLAGS='--eval "(setq comp-speed 0)"'
-echo more info see INSTALL.REPO when compile error
-function catch_errors() {
-    echo "script aborted, because of errors";
-    exit $?;
-}
-
-trap catch_errors ERR;
 
 make install
 # rm -rf ${prefix}/Emacs.app
