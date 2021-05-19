@@ -76,3 +76,5 @@
 
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
+
+(setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin19/11.1.0")
