@@ -2,6 +2,7 @@
 cd `dirname $0`
 
 ulimit -n 50000
+export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin19/11.1.0
 
 function call_emacs(){
     # echo "with emacs:$EMACSCMD"
@@ -84,6 +85,3 @@ if [ ! -z $EMACSCMD ]; then
     call_emacs $@
     exit
 fi
-
-
-
