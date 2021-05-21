@@ -36,6 +36,7 @@
 
 ;; 允许emacs 直接编辑 OSX下的 .plist文件
 ;; Allow editing of binary .plist files.
+(require 'jka-cmpr-hook)
 (add-to-list 'jka-compr-compression-info-list
              ["\\.plist$"
               "converting text XML to binary plist"
@@ -53,7 +54,8 @@
                "converting binary applescript to text applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") ("-d")
                nil t "FasdUAS"])
 ;;It is necessary to perform an update!
-(jka-compr-update)
+;; (add-hook 'after-init-hook #'jka-compr-update)
+(run-with-timer 0.01 nil #'jka-compr-update)
 
 
 ;; f11 (toggle-frame-fullscreen) default
@@ -70,22 +72,6 @@
 ;; Mac就不会移动Emacs窗口到单独的工作区, 最终解决Mac平台下原生全屏窗口导致 `make-frame' 左右滑动闪烁的问题.
 (setq ns-use-native-fullscreen nil)
 (setq ns-use-fullscreen-animation nil)
- ;; 默认先最大化。
-;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-
-;; (defun term-enable-mouse-scroll(&optional f) ;
-;;   (with-selected-frame f
-;;     (when (and (equal system-type 'darwin) (not (display-graphic-p)))
-;;       (require 'mouse) ;; needed for iterm2 compatibility
-;;       (xterm-mouse-mode t)
-;;       (global-set-key [mouse-4] '(lambda ()
-;;                                    (interactive)
-;;                                    (scroll-down 1)))
-;;       (global-set-key [mouse-5] '(lambda ()
-;;                                    (interactive)
-;;                                    (scroll-up 1))))))
-;; (when (equal window-system 'ns)
-;;   (add-hook 'after-make-frame-functions #'term-enable-mouse-scroll))
 
 (provide 'conf-macos)
 
