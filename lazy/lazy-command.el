@@ -665,8 +665,7 @@ end tell" (expand-file-name default-directory))))
 ;;;###autoload
 (defun consult-hide-lines ()
   (interactive)
-  (consult-focus-lines nil (consult--completion-filter 'consult-location nil) "! "))
-
+  (consult-focus-lines nil #'(lambda (pattern cands) (consult--completion-filter-dispatch pattern cands 'consult-location nil)) "! "))
 ;;;###autoload
 (defun consult-reset-lines ()
   (interactive)
