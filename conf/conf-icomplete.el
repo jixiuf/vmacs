@@ -123,6 +123,8 @@
                             consult-ripgrep-default-symbol
                             consult-imenu consult-line
                             consult-ripgrep execute-extended-command
+                            describe-function
+                            describe-variable
                             project-switch-project vmacs-magit-status-list
                             project-or-external-find-file
                             yank-pop
