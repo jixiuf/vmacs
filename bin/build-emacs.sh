@@ -75,7 +75,7 @@ cp -rpf nextstep/Emacs.app  ${prefix}/Emacs.app
 mv -f ${prefix}/bin/emacs ${prefix}/bin/emacsbak
 cat >${prefix}/bin/emacs << EOS
 #!/bin/bash
-export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin19/11.1.0
+export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin19/11.1.0:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin20/11.1.0
 exec ${prefix}/Emacs.app/Contents/MacOS/Emacs "\$@"
 EOS
 
