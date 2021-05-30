@@ -52,7 +52,7 @@
   (project-find-regexp (or string (regexp-quote (thing-at-point 'symbol)))))
 
 (setq evil-goto-definition-functions
-      '(evil-goto-definition-xref  evil-project-find-regexp evil-goto-definition-imenu evil-goto-definition-semantic evil-goto-definition-search))
+      '(evil-goto-definition-xref  evil-project-find-regexp evil-goto-definition-imenu  evil-goto-definition-search))
 
 (with-eval-after-load 'xref
   (setq xref-search-program 'ripgrep)     ;project-find-regexp
