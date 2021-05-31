@@ -118,6 +118,14 @@
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
+(defun vmacs-icomplete()
+  (setq-local truncate-lines t)
+  ;;  remove the truncated lines indicator
+  ;; (setq-default fringe-indicator-alist (assq-delete-all 'truncation fringe-indicator-alist))
+  )
+
+(add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete)
+
 (provide 'conf-icomplete)
 
 ;; Local Variables:
