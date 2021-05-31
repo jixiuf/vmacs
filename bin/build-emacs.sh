@@ -64,8 +64,7 @@ if [ $# -gt 0  ]; then
     --with-native-compilation \
     --prefix=${prefix} \
     --with-modules \
-    --with-ns \
-    -g3 -O2
+    --with-ns
 fi
 make -j 12
 
