@@ -41,7 +41,8 @@
 
 
 (icomplete-mode 1)
-;; (require 'icomplete-vertical nil t)
+(icomplete-vertical-mode 1)
+;; (setq icomplete-scroll t)
 
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
@@ -57,6 +58,8 @@
 
 (when (require 'embark nil t)
   (when (require 'marginalia nil t) (marginalia-mode 1))
+  ;; (setq marginalia-margin-min 18)
+
   (setq embark-collect-initial-view-alist '((t . list)))
   (global-set-key (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
@@ -114,36 +117,6 @@
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
-
-;; (global-set-key [remap yank-pop] 'consult-yank-pop)
-
-(defun vmacs-icomplete-mode-hook()
-  (cond
-   ((cl-find this-command '(consult-ripgrep-root-symbol
-                            consult-ripgrep-default-symbol
-                            consult-imenu consult-line
-                            consult-ripgrep execute-extended-command
-                            describe-function
-                            describe-variable
-                            project-switch-project vmacs-magit-status-list
-                            project-or-external-find-file
-                            yank-pop
-                            consult-ripgrep-default consult-grep
-                            evil-project-find-regexp
-                            magit-status
-                            xref-find-references
-                            dired consult-buffer consult-buffer-other-window))
-    (progn
-      (when (bound-and-true-p icomplete-vertical-mode)(icomplete-vertical-mode 1))
-      (setq-local icomplete-separator "\n")
-      (setq-local icomplete-prospects-height 25)))
-   (t
-    (when (bound-and-true-p icomplete-vertical-mode)(icomplete-vertical-mode -1))
-    (setq-local icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
-    (setq-local icomplete-prospects-height 2))))
-
-(add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete-mode-hook)
-
 
 (provide 'conf-icomplete)
 
