@@ -54,7 +54,8 @@
 
 (defun vmacs-find-def()
   (interactive)
-  (save-some-buffers)
+  (let ((buffer-save-without-query t))
+    (save-some-buffers))
   (call-interactively #'evil-goto-definition))
 
 (setq evil-goto-definition-functions
