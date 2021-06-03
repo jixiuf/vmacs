@@ -2,7 +2,7 @@
 cd `dirname $0`
 
 ulimit -n 50000
-# export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin19/11.1.0
+export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin19/11.1.0:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin20/11.1.0
 
 function call_emacs(){
     # echo "with emacs:$EMACSCMD"
@@ -27,19 +27,6 @@ if [ ! -z $EMACSCMD ] && [ `$EMACSCMD --version 2>&1| head -n 1|awk -F ' ' '{pri
     ALTERNATE_EDITOR=""
 fi
 
-
-if [  -z $EMACSCMD ] && [ -x "$HOME/bin/gccemacs"  ] && [ `$HOME/bin/gccemacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'`  != "22" ]; then
-    EMACSCMD="$HOME/bin/gccemacs"
-    call_emacs $@
-    exit
-fi
-
-#  if EMACSCLIENT is empty
-if [  -z $EMACSCMD ] && [ -x "$HOME/bin/emacs"  ] && [ `$HOME/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'`  != "22" ]; then
-    EMACSCMD="$HOME/bin/emacs"
-    call_emacs $@
-    exit
-fi
 
 
 if [  -z $EMACSCMD ] && [ -x "/usr/local/bin/emacs"  ] && [ `/usr/local/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'` != "22" ]; then
