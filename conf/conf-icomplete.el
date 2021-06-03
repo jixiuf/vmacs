@@ -98,7 +98,8 @@
 (vmacs-leader (kbd "ft") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
-(vmacs-leader (kbd "ff") #'find-file-at-point)
+(vmacs-leader (kbd "ff") #'find-file)
+(global-set-key (kbd "C-x C-f") #'find-file-at-point)
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
 (autoload #'mu4e-headers-search-bookmark  "mu4e" t)
 (vmacs-leader (kbd "fm") #'(lambda()(interactive) (mu4e-headers-search-bookmark)(mu4e)))
