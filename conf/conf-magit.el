@@ -51,11 +51,6 @@
 (transient-insert-suffix 'magit-pull "F" '("p" magit-fetch-from-pushremote))
 (transient-insert-suffix 'magit-pull "F" '("U" magit-fetch-from-upstream))
 
-;; (transient-append-suffix 'magit-fetch "f"
-;;      '("f" "Full from pushremote" magit-pull))
-
-;; (require 'evil-magit)
-(transient-insert-suffix 'magit-revert "o" '("_" "Revert no commit" magit-revert-no-commit))
 
 
 
