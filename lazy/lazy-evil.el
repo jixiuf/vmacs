@@ -7,6 +7,7 @@
 
 (defun go-back-after-mark-region()
   (when (and evil-mark-funs-marker
+             (not (eq this-command 'evil-delete))
              (not mark-active))
     (evil-jump-backward)
     (setq evil-mark-funs-marker nil)))
