@@ -23,19 +23,38 @@
   (setq completion-styles (cons 'orderless completion-styles)) ;把orderless放到completion-styles 开头
   ;; 默认按空格开隔的每个关键字支持regexp/literal/initialism 3种算法
   (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism ))
-  (defun without-if-$! (pattern _index _total)
-    (when (or (string-prefix-p "$" pattern) ;如果以! 或$ 开头，则表示否定，即不包含此关键字
-              (string-prefix-p "!" pattern))
-      `(orderless-without-literal . ,(substring pattern 1))))
-  (defun flex-if-comma (pattern _index _total) ;如果以逗号结尾，则以flex 算法匹配此组件
-    (when (string-suffix-p "," pattern)
-      `(orderless-flex . ,(substring pattern 0 -1))))
-  (defun literal-if-= (pattern _index _total) ;如果以=结尾，则以literal  算法匹配此关键字
-    (when (or (string-suffix-p "=" pattern)
-              (string-suffix-p "-" pattern)
-              (string-suffix-p ";" pattern))
-      `(orderless-literal . ,(substring pattern 0 -1))))
-  (setq orderless-style-dispatchers '(literal-if-= flex-if-comma without-if-$!)))
+    ;; Recognizes the following patterns:
+  ;; * ;flex flex;
+  ;; * =literal literal=
+  ;; * `initialism initialism`
+  ;; * !without-literal without-literal!
+  ;; * .ext (file extension)
+  ;; * regexp$ (regexp matching at end)
+  (defun vmacs-orderless-dispatch (pattern _index _total)
+    (cond
+     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+     ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
+     ;; File extensions
+     ((string-match-p "\\`\\.." pattern) `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
+     ;; Ignore single !
+     ((string= "!" pattern) `(orderless-literal . ""))
+     ;; Without literal
+     ((string-prefix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 1)))
+     ((string-suffix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 0 -1)))
+     ((string-prefix-p "@" pattern) `(orderless-without-literal . ,(substring pattern 1)))
+     ((string-suffix-p "@" pattern) `(orderless-without-literal . ,(substring pattern 0 -1)))
+     ;; Initialism matching
+     ((string-prefix-p "`" pattern) `(orderless-initialism . ,(substring pattern 1)))
+     ((string-suffix-p "`" pattern) `(orderless-initialism . ,(substring pattern 0 -1)))
+     ;; Literal matching
+     ((string-prefix-p "=" pattern) `(orderless-literal . ,(substring pattern 1)))
+     ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))
+     ((string-prefix-p "," pattern) `(orderless-literal . ,(substring pattern 1)))
+     ((string-suffix-p "," pattern) `(orderless-literal . ,(substring pattern 0 -1)))
+     ;; Flex matching
+     ((string-prefix-p ";" pattern) `(orderless-flex . ,(substring pattern 1)))
+     ((string-suffix-p ";" pattern) `(orderless-flex . ,(substring pattern 0 -1)))))
+  (setq orderless-style-dispatchers '(vmacs-orderless-dispatch)))
 
 
 
