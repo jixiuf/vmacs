@@ -20,7 +20,7 @@
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
 (when (require 'orderless nil t)
-  (setq completion-styles (cons 'orderless completion-styles)) ;把orderless放到completion-styles 开头
+  (setq completion-styles '(basic partial-completion initials orderless))
   ;; 默认按空格开隔的每个关键字支持regexp/literal/initialism 3种算法
   (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism ))
     ;; Recognizes the following patterns:
