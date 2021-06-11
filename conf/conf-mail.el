@@ -19,6 +19,7 @@
   "!" #'mu4e-headers-mark-for-refile
   (kbd "M-n") #'mu4e-headers-next-unread
   (kbd "M-p") #'mu4e-headers-prev-unread
+  "i" #'vmacs-read-all
   "gh" #'mu4e-headers-query-prev
   "gl" #'mu4e-headers-query-next
   "gu" #'vmacs-mu4e-update-mail-and-index)
@@ -181,6 +182,9 @@
       org-msg-posting-style nil
       org-msg-convert-citation t)
 (org-msg-mode)
+
+(fset 'vmacs-read-all
+   (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y] 0 "%d"))
 
 (provide 'conf-mail)
 
