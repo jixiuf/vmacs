@@ -12,6 +12,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auth-sources
+   '("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" macos-keychain-internet macos-keychain-generic))
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/cache/backup_files/" t)))
  '(auto-save-visited-interval 5)
  '(auto-save-visited-mode t)

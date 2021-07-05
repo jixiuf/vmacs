@@ -67,39 +67,13 @@
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
-;; Choose account label to feed msmtp -a option based on From header
-;; in Message buffer; This function must be added to
-;; message-send-mail-hook for on-the-fly change of From address before
-;; sending message since message-send-mail-hook is processed right
-;; before sending message.
-(defun vmacs-choose-msmtp-account ()
-  (when (message-mail-p)
-	(save-excursion
-      (let* ((from (save-restriction
-                     (message-narrow-to-headers)
-                     (message-fetch-field "from")))
-             (account
-              (cond ((string-match (concat "jixiufeng" "@luojilab.com") from) "luojilab")
-                    ((string-match "@139.com" from) "139")
-                    ((string-match (concat "jixiuf" "@qq.com") from) "qq"))))
-        (setq message-sendmail-extra-arguments (list '"-a" account))))))
 
 ;; 通过msmtp 支持多账号发送
 (setq mail-user-agent 'mu4e-user-agent
-      sendmail-program "/usr/local/bin/msmtp"
-      send-mail-function 'smtpmail-send-it
+      message-send-mail-function 'smtpmail-send-it
       message-sendmail-f-is-evil t
       message-kill-buffer-on-exit t
-      message-sendmail-extra-arguments '("--read-envelope-from")
-       message-sendmail-envelope-from 'header
-      message-send-mail-function 'message-send-mail-with-sendmail)
-  (add-hook 'message-send-mail-hook #'vmacs-choose-msmtp-account)
-
-
-
-;; (setq message-send-mail-function  #'smtpmail-send-it)
-;; (setq smtpmail-stream-type        'ssl)
-;; (setq smtpmail-auth-credentials   "~/.authinfo")
+      )
 
 (setq mu4e-contexts
       `(,(make-mu4e-context
@@ -110,6 +84,10 @@
           :match-func (lambda (msg)
                         (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc) (concat "jixiuf" "@" "qq.com"  ))))
           :vars '((smtpmail-smtp-user    . "jixiuf@qq.com")
+                  (smtpmail-smtp-server  . "smtp.qq.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type  . ssl)
+                  (user-full-name        . "jixiuf@qq.com")
                   (user-mail-address     . "jixiuf@qq.com")
                   (mu4e-sent-folder      . "/qq/Sent Messages")
                   (mu4e-drafts-folder    . "/qq/Drafts")
@@ -121,8 +99,12 @@
           ;; we match based on the contact-fields of the message
           :match-func (lambda (msg)
                         (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc) (concat "jixiuf" "@139.com" ))))
-          :vars '((smtpmail-smtp-user         . "jixiuf@139.com")
-                  (user-mail-address          . "jixiuf@139.com")
+          :vars '((smtpmail-smtp-user    . "jixiuf@139.com")
+                  (smtpmail-smtp-server  . "smtp.139.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type  . ssl)
+                  (user-mail-address     . "jixiuf@139.com")
+                  (user-full-name        . "jixiuf@139.com")
                   (mu4e-sent-folder      . "/139/&XfJT0ZAB-")
                   (mu4e-drafts-folder    . "/139/&g0l6P3ux-")
                   (mu4e-trash-folder     . "/139/&XfJSIJZk-")))
@@ -133,6 +115,10 @@
                         (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc)  "@luojilab.com")))
           :vars '(
                   (smtpmail-smtp-user    . "jixiufeng@luojilab.com")
+                  (smtpmail-smtp-server  . "smtp.exmail.qq.com")
+                  (user-full-name        . "jixiufeng@luojilab.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type  . ssl)
                   (user-mail-address     . "jixiufeng@luojilab.com")
                   (mu4e-sent-folder      . "/luojilab/Sent Messages")
                   (mu4e-refile-folder    . "/luojilab/Archive")
