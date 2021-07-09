@@ -27,6 +27,16 @@
   (local-set-key (kbd "C-c i") 'go-goto-imports)
   (local-set-key (kbd "C-c g") 'golang-setter-getter))
 
+(require 'project)
+
+(defun project-find-go-module (dir)
+  (when-let ((root (locate-dominating-file dir "go.mod")))
+    (cons 'go-module root)))
+
+(cl-defmethod project-root ((project (head go-module)))
+  (cdr project))
+
+(add-hook 'project-find-functions #'project-find-go-module)
 
 (provide 'conf-program-golang)
 
