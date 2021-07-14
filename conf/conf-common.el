@@ -52,7 +52,7 @@
  ;; find-file-visit-truename t
 
  send-mail-function 'sendmail-send-it
- mail-addrbook-file (expand-file-name "mail_address" dropbox-dir)
+ ;; mail-addrbook-file (expand-file-name "mail_address" dropbox-dir)
 
  ;; after this shell-command can use zsh alias
  ;; shell-file-name "zsh"
