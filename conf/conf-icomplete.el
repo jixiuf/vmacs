@@ -121,7 +121,7 @@
 (global-set-key (kbd "C-x C-f") #'find-file-at-point)
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
 (autoload #'mu4e-headers-search-bookmark  "mu4e" t)
-(vmacs-leader (kbd "fm") #'(lambda()(interactive) (mu4e-headers-search-bookmark)(mu4e)))
+(vmacs-leader (kbd "i") #'(lambda()(interactive) (mu4e-headers-search-bookmark)(mu4e)))
 
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
