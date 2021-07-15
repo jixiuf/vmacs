@@ -32,7 +32,7 @@
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit))
 
-(evil-collection-define-key 'normal 'grep-mode-map
+(evil-collection-define-key '(normal visual) 'grep-mode-map
    "/" #'consult-focus-lines
    "l" #'evil-forward-char
    "z" #'consult-hide-lines
