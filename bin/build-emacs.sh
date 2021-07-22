@@ -2,7 +2,7 @@
 workingdir=`dirname $0`
 # instead usr/include
 # sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
-
+export FD_SETSIZE=10240
 
 # export PATH=/usr/local/opt/gcc/bin:$PATH
 prefix=/usr/local/emacs
