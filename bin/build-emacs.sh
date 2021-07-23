@@ -2,7 +2,6 @@
 workingdir=`dirname $0`
 # instead usr/include
 # sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
-export FD_SETSIZE=10240
 
 # export PATH=/usr/local/opt/gcc/bin:$PATH
 prefix=/usr/local/emacs
@@ -28,7 +27,7 @@ libs=(
     /usr/local/opt/libtasn1
     /usr/local/opt/p11-kit
 )
-CFLAGS=""
+CFLAGS="-D FD_SETSIZE=10240"
 LDFLAGS=""
 PKG_CONFIG_PATH=""
 for dir in "${libs[@]}"; do
