@@ -56,6 +56,10 @@
      ((string-suffix-p ";" pattern) `(orderless-flex . ,(substring pattern 0 -1)))))
   (setq orderless-style-dispatchers '(vmacs-orderless-dispatch)))
 
+(defun completion--regex-pinyin (str)
+  (require 'pinyinlib)
+  (orderless-regexp (pinyinlib-build-regexp-string str)))
+(add-to-list 'orderless-matching-styles 'completion--regex-pinyin)
 
 
 

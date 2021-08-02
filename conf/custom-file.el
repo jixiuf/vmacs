@@ -39,7 +39,7 @@
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
  '(package-selected-packages
-   '(org-msg clhs mu4e-alert marginalia vterm-toggle evil-collection verb embark-consult orderless eglot undo-tree magit-libgit docker-tramp ox-gfm centaur-tabs htmlize git-link evil dockerfile-mode iedit osx-dictionary magit gitconfig-mode dired-filetype-face golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell git-commit go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
+   '(pinyinlib org-msg clhs mu4e-alert marginalia vterm-toggle evil-collection verb embark-consult orderless eglot undo-tree magit-libgit docker-tramp ox-gfm centaur-tabs htmlize git-link evil dockerfile-mode iedit osx-dictionary magit gitconfig-mode dired-filetype-face golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell git-commit go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((checkdoc-minor-mode . t)
