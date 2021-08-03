@@ -1,8 +1,9 @@
 ;; brew install isync # for mbsync
-;; brew install mu msmtp terminal-notifier
+;; brew install mu  terminal-notifier
 ;;
 ;; https://rakhim.org/fastmail-setup-with-emacs-mu4e-and-mbsync-on-macos/
-;; mu index --maildir=~/maildir
+;; mu init --maildir=~/maildir
+;; mu index
 ;; mu find hello
 
 ;; ~/.authinfo
