@@ -177,6 +177,21 @@
 (vmacs-leader (kbd "x,") 'goto-last-change-reverse)
 
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
+;; Quick edit (for use with hammerspoon quick edit)
+(defun meain/quick-edit-end ()
+  "Util function to be executed on qed completion."
+  (interactive)
+  (mark-whole-buffer)
+  (call-interactively 'kill-ring-save)
+  (kill-current-buffer))
+(defun meain/quick-edit ()
+  "Util function for use with hammerspoon quick edit functionality."
+  (interactive)
+  (let ((qed-buffer-name (concat "*scratch*" )))
+    (switch-to-buffer (generate-new-buffer qed-buffer-name t))
+    (sit-for 0.01)
+    (evil-paste-after 1)
+    (gfm-mode)))
 
 ;; (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
 
