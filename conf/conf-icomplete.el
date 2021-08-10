@@ -56,6 +56,7 @@
      ((string-suffix-p ";" pattern) `(orderless-flex . ,(substring pattern 0 -1)))))
   (setq orderless-style-dispatchers '(vmacs-orderless-dispatch)))
 
+;; 支持拼间首字母过滤中文， 不必切输入法
 (defun completion--regex-pinyin (str)
   (require 'pinyinlib)
   (orderless-regexp (pinyinlib-build-regexp-string str)))
