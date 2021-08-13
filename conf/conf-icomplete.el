@@ -8,7 +8,6 @@
 (setq icomplete-hide-common-prefix nil)
 (setq icomplete-in-buffer t)
 (setq icomplete-tidy-shadowed-file-names t)
-
 (setq icomplete-prospects-height 2)
 ;; (concat
 ;;                                      (propertize "\n" 'face '(:height 1))
@@ -97,6 +96,7 @@
   (add-hook 'tabulated-list-mode-hook 'vmacs-embark-collect-mode-hook))
 
 
+(setq consult-async-split-style 'perl)
 (defun vmacs-minibuffer-space ()
   (interactive)
   (require 'consult)
