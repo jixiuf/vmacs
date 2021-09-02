@@ -1,4 +1,4 @@
 #!/bin/sh
-rm -f ~/Library/Caches/Homebrew/emacs-plus@28--git
+rm -rf ~/Library/Caches/Homebrew/emacs-plus@28--git
 ln -sf ~/repos/emacs ~/Library/Caches/Homebrew/emacs-plus@28--git
 brew install --with-native-comp emacs-plus@28
