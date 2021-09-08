@@ -1,9 +1,8 @@
 (require 'package)
-  (setq package-archives
-        '(("melpa-cn" . "http://mirrors.163.com/elpa/melpa/")
-        ;; '(("melpa-cn" .  "http://melpa.org/packages/")
-          ("nognu-cn" . "http://mirrors.163.com/elpa/nongnu/")
-          ("gnu-cn"   . "http://mirrors.163.com/elpa/gnu/")))
+(setq package-archives
+      '(("melpa-cn" .  "http://melpa.org/packages/")
+        ("nognu-cn" .  "http://elpa.nongnu.org/nongnu/")
+        ("gnu-cn"   .  "http://elpa.gnu.org/packages/")))
 
 (or (file-exists-p package-user-dir) (package-refresh-contents))
 ;; (package-initialize)
