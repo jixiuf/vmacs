@@ -8,6 +8,7 @@
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
 (setq-default vterm-max-scrollback (- 20000 42))
 (setq-default vterm-enable-manipulate-selection-data-by-osc52 t)
+(setq-default vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=no ..")
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-clear-scrollback-when-clearing t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
