@@ -11,6 +11,10 @@
  magit-section-highlight-hook nil       ;不必hightlight,光标移动的时候，默认会显示当前section区域
  magit-section-unhighlight-hook nil)                         ;
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
+
+;; recent commit always expand when i open magit status
+(setf (alist-get 'unpushed magit-section-initial-visibility-alist) 'show)
+
 (defun vmacs-magit-status-list()
   (interactive)
   (let (list)
