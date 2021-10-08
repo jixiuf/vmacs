@@ -111,7 +111,7 @@
 (setq consult-project-root-function #'vc-root-dir)
 (with-eval-after-load 'consult
   (with-eval-after-load 'embark (require 'embark-consult nil t))
-  (setq consult-ripgrep-command (format "%s %s"consult-ripgrep-command " -z"))
+  (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t)
   (setq consult-config `((consult-buffer :preview-key ,(kbd "C-v")) ;disable auto preview for consult-buffer
