@@ -72,6 +72,8 @@
          (display-buffer-same-window ))
         ("\\*Embark Collect"
          (display-buffer-same-window ))
+        ("\\*Embark "
+         (display-buffer-same-window ))
         ("\\*xref\\*"
          (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
          )
