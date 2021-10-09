@@ -85,11 +85,20 @@
 
   (setq embark-collect-initial-view-alist '((t . list)))
   (global-set-key (kbd "C-o") #'embark-act)
-  (global-set-key (kbd "M-.") #'embark-dwim)
-  (evil-define-key 'normal 'global (kbd "M-.") #'embark-dwim)
+  ;; (global-set-key (kbd "M-.") #'embark-dwim)
+  ;; (evil-define-key 'normal 'global (kbd "M-.") #'embark-dwim) ;
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
+  (setf (alist-get 'xref-location embark-exporters-alist) #'vmacs-embark-consult-export-grep)
+  (defun vmacs-embark-consult-export-grep(lines)
+    (let* ((default-directory (car xref--project-root-memo))
+           (file (car (split-string (car lines) ":")))
+           (search-root (locate-dominating-file default-directory file)))
+      (when search-root
+        (setq default-directory search-root))
+      (embark-consult-export-grep lines)))
+
   (defun vmacs-embark-collect-mode-hook ()
     (evil-local-mode)
     (evil-define-key 'normal 'local "/" #'consult-focus-lines)
