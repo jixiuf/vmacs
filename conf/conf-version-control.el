@@ -12,7 +12,7 @@
 
 (vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
 (vmacs-leader (kbd "vr") #'vc-revert)
-(vmacs-leader (kbd "vl") #'vc-print-log)
+(vmacs-leader (kbd "vl") #'magit-log-buffer-file)
 (vmacs-leader (kbd "vL") #'vc-print-root-log)
 (vmacs-leader (kbd "v+") #'vc-update)
 (vmacs-leader (kbd "vf") #'vmacs-magit-pull-default)
