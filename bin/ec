@@ -1,9 +1,14 @@
 #!/bin/bash
 # check starting emacs daemon
 
+socket_file=$(lsof -c Emacs -c emacs | grep server | grep -v eln-cache|tr -s " " | cut -d' ' -f8)
+socket_file_switch=""
+if [[ $socket_file != "" ]]; then
+    socket_file_switch=" -s $socket_file "
+fi
 function call_emacsclient(){
-    echo $EMACSCLIENT
-    framecnt=`$EMACSCLIENT --eval "(gui-frame-cnt)"`
+    # echo $EMACSCLIENT
+    framecnt=`$EMACSCLIENT $socket_file_switch --eval "(gui-frame-cnt)"`
     # echo $framecnt
     if [ $framecnt = "0" ]; then
         if [ 0 -eq "$#" ]; then        # 无文件名参数则不是在编辑文件，只打开一个窗口就可以了
@@ -18,7 +23,7 @@ function call_emacsclient(){
 '
 
         else
-            $EMACSCLIENT -c  "$@"        # -c 创建一个新窗口，等待此文件编辑完成
+            $EMACSCLIENT $socket_file_switch -c  "$@"        # -c 创建一个新窗口，等待此文件编辑完成
         fi
     else                            # 如果emacs 已经有emacsclient窗口了，则不再打开新的窗口，只把原窗口前置
         # https://developer.apple.com/library/mac/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_classes.html#//apple_ref/doc/uid/TP40000983-CH216-SW51
@@ -36,7 +41,7 @@ function call_emacsclient(){
         # end if
 
         if [ 0 -ne "$#" ]; then        # 有文件名才执行emacsclient命令
-            $EMACSCLIENT "$@"
+            $EMACSCLIENT $socket_file_switch "$@"
         # else
         #     # $EMACSCLIENT --no-wait
         fi
