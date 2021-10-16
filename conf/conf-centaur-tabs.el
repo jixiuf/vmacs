@@ -27,7 +27,7 @@
                           ))
                      (buffer-name))
      "Debug")
-    ((string-match-p (rx (or
+    ((and (string-match-p (rx (or
                           "\*Async-native-compile-log\*"
                           "\*Helm"
                           "\*company-documentation\*"
@@ -69,6 +69,8 @@
                           "\*Messages\*"
                           ))
                      (buffer-name))
+          (not (string-match-p "\.el$" (buffer-name)) )
+          )
      "Emacs")
     ;; ((not (vmacs-show-tabbar-p)) nil)
     (t "Common"))))
