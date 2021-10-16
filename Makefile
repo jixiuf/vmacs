@@ -12,6 +12,7 @@ EMACSNATIVE ?= LIBRARY_PATH=$(LIBRARY_PATH) $(EMACSGCCCMD) --batch --quick -L . 
 
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init-base.el
+all:clean update-autoload-cookie deps
 dump: clean update-autoload-cookie deps
 # @ln -sf  `pwd`/post-receive .git/hooks/
 # @ln -sf  `pwd`/pre-push .git/hooks/ #
@@ -37,19 +38,6 @@ compile:lib
 	   touch ./elpa/.elpa_compiled_by_make;\
 	fi
 	make update-autoload-cookie
-native:
-# $(BATCH) --eval '(native-compile-async "~/.emacs.d/elpa/" 5)'
-# @-rm -rf ~/.emacs.d/eln-cache
-	mkdir -p ~/.emacs.d/eln-cache/
-	find ./elpa -name "*.el" |sed "s|.*/|~/.emacs.d/eln-cache/*/|g"|grep -v "pkg.el"|grep -v autoloads.el|sed 's|.el$$|-*|g' | xargs -I@ sh -c "rm -f @"
-	find ./lazy -name "*.el" |sed "s|.*/|~/.emacs.d/eln-cache/*/|g"|sed 's|.el$$|-*|g' | xargs -I@ sh -c "rm -f @"
-	for dir in $$HOME/.emacs.d/elpa/*; do \
-		rm -f $$dir/*.elc ; \
-		pushd $$dir; \
-		$(EMACSNATIVE)   $$(printf '%s\n' $$dir/*.el | grep -v autoloads.el|grep -v pkg.el) || true; \
-		popd ;\
-	done
-	$(EMACSNATIVE)   $$HOME/.emacs.d/lazy/*.el || true;
 update-autoload-cookie:
 	@echo "生成 lisp/update-autoload-cookie.el"
 	@-rm lisp/lazy-loaddefs.el
@@ -61,7 +49,7 @@ clean:
 	@rm -rf ./lazy/*.elc
 	@rm -rf ./conf/*.elc
 	@rm -rf *.elc
-	find elpa -name "*eln-x86_64-apple-darwin18.7.0-ecc4586396ba93a9" -exec rm  -rf {} \;
+#	find elpa -name "*eln-x86_64-apple-darwin18.7.0-ecc4586396ba93a9" -exec rm  -rf {} \;
 clean-elpa:
 	find elpa -name "*.elc" -exec rm {} \;
 

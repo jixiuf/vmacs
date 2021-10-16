@@ -48,7 +48,6 @@
 (require 'lazy-camelize)
 (require 'lazy-dired-sort)
 (require 'lazy-dired)
-(require 'lazy-json)
 ;; (require 'lazy-minibuffer)
 (require 'lazy-novel-mode)
 (require 'lazy-open-in-file-manager)
