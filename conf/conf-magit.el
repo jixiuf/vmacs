@@ -106,18 +106,14 @@
     (unless (equal magit-buffer-file-name (buffer-file-name prev-buffer))
       (kill-buffer prev-buffer))))
 
-(defun vmacs-magit-find-file-at-point ()
-  "View FILE from REV at point."
-  (interactive)
-  (let ((file (magit-current-file))
-        (rev (or (magit-branch-or-commit-at-point)
-                 (magit-get-current-branch))))
-    (if (and file rev )
-        (magit-find-file rev file)
-      (call-interactively #'magit-find-file))))
 
+;;在magit-log-buffer-file 产生的log buffer中
+;; return : 查看当前commit 的diff
+;; 有选择区域 则查看区域内的diff
+;; C-u 则打开当前对应的版本的文件
+(define-key magit-commit-section-map  [return] 'vmacs-magit-diff-range)
+(define-key magit-commit-section-map  [C-return] 'magit-show-commit) ;old return
 
-(transient-append-suffix 'magit-branch "l" '("v" "View REV at point" vmacs-magit-find-file-at-point))
 (vmacs-leader (kbd "vm") 'vmacs-magit-blob-toggle) ;类似于time machine
 (define-key magit-blob-mode-map (kbd "M-n") 'magit-blob-next)
 (define-key magit-blob-mode-map (kbd "M-p") 'magit-blob-previous)

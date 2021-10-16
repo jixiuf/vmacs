@@ -78,5 +78,41 @@
     (magit-blob-previous)
     (message "magit timemachine ...")))
 
+;;在magit-log-buffer-file 产生的log buffer中
+;; return : 查看当前commit 的diff
+;; 有选择区域 则查看区域内的diff
+;; C-u 则打开当前对应的版本的文件
+;;;###autoload
+(defun vmacs-magit-diff-range (rev-or-range &optional args files range-p)
+  "Show differences between two commits for current file."
+  (interactive
+   (pcase-let* ((mcommit (magit-section-value-if 'module-commit))
+                (atpoint (or mcommit
+                             (thing-at-point 'git-revision t)
+                             (magit-branch-or-commit-at-point)))
+                (range-p (region-active-p))
+                (`(,args ,files) (magit-diff-arguments)))
+     (list (or (and (not range-p) atpoint)
+               (magit-diff-read-range-or-commit "Diff for range"))
+           args files range-p)))
+  (if range-p
+      (magit-diff-setup-buffer rev-or-range nil args (or (list (magit-current-file) files)))
+    (let ((file (magit-current-file)))
+      (if (and current-prefix-arg file)
+          (magit-find-file rev-or-range file)
+        (call-interactively #'magit-show-commit)))
+    ))
+;; ;;;###autoload
+;; (defun vmacs-magit-find-file-at-point ()
+;;   "View FILE from REV at point."
+;;   (interactive)
+;;   (let ((file (magit-current-file))
+;;         (rev (or (magit-branch-or-commit-at-point)
+;;                  (magit-get-current-branch))))
+;;     (if (and file rev )
+;;         (magit-find-file rev file)
+;;       (call-interactively #'magit-find-file))))
+
+
 
 (provide 'lazy-magit)
