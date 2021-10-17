@@ -5,7 +5,7 @@
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
  magit-diff-highlight-hunk-body nil
- magit-keep-region-overlay t
+ magit-section-keep-region-overlay t
  magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename的log也能看到
  magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1
  magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace to toggle
