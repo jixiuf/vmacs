@@ -66,13 +66,17 @@
 ;;             ",hangul:Sarasa Mono CL:size=18"
 ;;             ",latin:Sarasa Mono CL:size=18"))
 
-(add-hook 'after-init-hook #'(lambda()
-                               ;; 当font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
-                               ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
-                               (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-                               (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
-                               (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono CL")
-                               ))
+(defun vmacs-set-font()
+  ;; 当font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
+  ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
+  ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
+  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
+  (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono CL" :height 1.0))
+
+(vmacs-set-font)
+(add-hook 'after-init-hook #'vmacs-set-font)
 
 (setq-default initial-frame-alist
               '((alpha . 85)
