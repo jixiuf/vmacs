@@ -4,6 +4,17 @@
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 ;; https://emacs-china.org/t/macos-emacs-28-native-comp/12201/70?u=jixiuf
 ;; (setq comp-deferred-compilation-black-list '("yasnippet" "org-re-reveal" "tramp"))
+;; aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
+;; 你你你你你你你你你你你你你你你你你你你你|
+;; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,|
+;; 。。。。。。。。。。。。。。。。。。。。|
+;; 1111111111111111111111111111111111111111|
+;; 東東東東東東東東東東東東東東東東東東東東|
+;; ここここここここここここここここここここ|
+;; ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
+;; 😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀|
+;; 까까까까까까까까까까까까까까까까까까까까|
+
 (defconst my/start-time (current-time))
 
 
@@ -44,24 +55,31 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(create-fontset-from-fontset-spec
-    (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
-            ",han:Sarasa Mono CL:size=18"
-            ",symbol:Apple Color Emoji:size=18" ;😀
-            ",cjk-misc:Sarasa Mono CL:size=18"
-            ",bopomofo:Sarasa Mono CL:size=18"
-            ",kana:Sarasa Mono CL:size=18"
-            ",hangul:Sarasa Mono CL:size=18"
-            ",latin:Sarasa Mono CL:size=18"))
 
-(add-hook 'after-init-hook #'(lambda() (dolist (face '(fixed-pitch)) (set-face-attribute `,face nil :font "Sarasa Mono CL-18"))))
+;; (create-fontset-from-fontset-spec
+;;     (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
+;;             ",han:Sarasa Mono CL:size=18"
+;;             ",symbol:Apple Color Emoji:size=18" ;😀
+;;             ",cjk-misc:Sarasa Mono CL:size=18"
+;;             ",bopomofo:Sarasa Mono CL:size=18"
+;;             ",kana:Sarasa Mono CL:size=18"
+;;             ",hangul:Sarasa Mono CL:size=18"
+;;             ",latin:Sarasa Mono CL:size=18"))
+
+(add-hook 'after-init-hook #'(lambda()
+                               ;; 当font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
+                               ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
+                               (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+                               (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
+                               (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono CL")
+                               ))
 
 (setq-default initial-frame-alist
               '((alpha . 85)
                 (height . 43)
-                (width . 120)
+                (width . 159)
                 ;; (font . "Sarasa Mono CL-18")
-                (font . "fontset-mac")
+                (font . "Sarasa Mono CL-18")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;
