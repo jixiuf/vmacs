@@ -83,7 +83,7 @@
                 (height . 43)
                 (width . 159)
                 ;; (font . "Sarasa Mono CL-18")
-                (font . "Sarasa Mono CL-18")
+                (font . "Sarasa Mono CL-19")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;
