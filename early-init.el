@@ -71,7 +71,7 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
-  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
+  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji-15")
   (set-fontset-font "fontset-default" 'symbol "Apple Symbols")
   (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono CL" :height 1.0))
 
