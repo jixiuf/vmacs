@@ -92,7 +92,7 @@
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (setf (alist-get 'xref-location embark-exporters-alist) #'vmacs-embark-consult-export-grep)
   (defun vmacs-embark-consult-export-grep(lines)
-    (let* ((default-directory (car xref--project-root-memo))
+    (let* ((default-directory default-directory)
            (file (car (split-string (car lines) ":")))
            (search-root (locate-dominating-file default-directory file)))
       (when search-root
