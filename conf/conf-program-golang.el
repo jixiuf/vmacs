@@ -17,7 +17,11 @@
   (setq eglot-workspace-configuration
         ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
         '((:gopls . (:usePlaceholders t :completeUnimported  t  :staticcheck t
+                                      :semanticTokens t
                                       :directoryFilters ["-/vendor/"]
+                                      :analyses  (:unusedparams t :unusedwrite t)
+                                      :annotations (:bounds t :escape t :inline t :nil t)
+                                      :allExperiments t
                                       ;; :buildFlags ["-mod=readonly"]
                                       :allowImplicitNetworkAccess t
                                       :experimentalWorkspaceModule  t
