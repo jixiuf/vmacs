@@ -2,7 +2,7 @@
 # key: str
 # expand-env: ((yas/indent-line 'fixed))
 # --
-func (this ${1:Class}) String() string {
-	data, _ := json.Marshal(this)
+func (${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} ${1:Class}) String() string {
+	data, _ := json.Marshal(${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))})
 	return string(data)
 }
