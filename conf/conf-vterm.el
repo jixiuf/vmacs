@@ -42,14 +42,15 @@
 
 (defun vmacs-vterm-kill-line()
   (interactive)
-  (save-excursion
-    (let ((beg (point))
-          (end (vterm--get-end-of-line)))
+  (let ((succ (vterm-goto-char (point)))
+        (beg (point))
+        (end (vterm--get-end-of-line)))
+    (save-excursion
       (goto-char end)
       (when (looking-back "[ \t\n]+" beg t)
         (setq end (match-beginning 0)))
-      (when (> end beg) (kill-ring-save beg end))))
-  (vterm-send-C-k))
+      (when (> end beg) (kill-ring-save beg end)))
+    (when succ (vterm-send-C-k))))
 
 (defun vmacs-vterm-self-insert()
   (interactive)
@@ -103,6 +104,7 @@
   (kbd "C-g") 'vterm-ctrl-g
   (kbd "C-p") 'vmacs-vterm-self-insert
   (kbd "C-n") 'vmacs-vterm-self-insert
+  (kbd "C-k")   #'vmacs-vterm-kill-line
   (kbd "C-r") 'vmacs-vterm-self-insert
   (kbd "C-y") 'vterm-yank
   (kbd "C-/") 'vterm-undo
