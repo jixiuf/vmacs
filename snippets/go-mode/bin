@@ -1,0 +1,7 @@
+func (${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} ${1:Class}) MarshalBinary() (data []byte, err error) {
+	return
+}
+
+func (${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} *$1) UnmarshalBinary(data []byte) (err error) {
+	return 
+}
