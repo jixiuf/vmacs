@@ -1,8 +1,11 @@
 # -*- mode: snippet -*-
 # name: testmain
 # key: testmain
-# contributor : @atotto
 # --
+import(
+    "testing"
+	"gitlab.luojilab.com/zeroteam/common/detclib"
+)
 func TestMain(m *testing.M) {
 	setup()
 	ret := m.Run()
@@ -13,7 +16,7 @@ func TestMain(m *testing.M) {
 }
 
 func setup() {
-	$1
+	detclib.TestMode=true
 }
 
 func teardown() {
