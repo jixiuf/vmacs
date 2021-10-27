@@ -40,6 +40,17 @@
         (evil-normal-state)))))
 
 
+(defun vmacs-vterm-kill-line()
+  (interactive)
+  (save-excursion
+    (let ((beg (point))
+          (end (vterm--get-end-of-line)))
+      (goto-char end)
+      (when (looking-back "[ \t\n]+" beg t)
+        (setq end (match-beginning 0)))
+      (when (> end beg) (kill-ring-save beg end))))
+  (vterm-send-C-k))
+
 (defun vmacs-vterm-self-insert()
   (interactive)
   (unless (evil-insert-state-p)
@@ -70,6 +81,8 @@
 (define-key vterm-mode-map (kbd "s-C-M-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
+(define-key vterm-mode-map (kbd "C-k")   #'vmacs-vterm-kill-line)
+
 
 ;; C－s 停止滚屏 C-q恢复滚屏
 (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
