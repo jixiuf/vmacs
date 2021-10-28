@@ -2,9 +2,8 @@
 # key: clone
 # expand-env: ((yas/indent-line 'fixed))
 # --
-func (this *${1:Class}) Clone() cachemap.Cloneable {
-      var result  $1
-      result = *this
-      $2
-      return &result
+func (${2:${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}} ${1:Class}) Clone() cachemap.Cloneable {
+      var result  $1  = $2
+      $3
+      return result
 }

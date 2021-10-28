@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: glog.Warning
+# name: ctx.Warning
 # key: warn
 # --
-glog.Warning(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
+ctx.Warningln(${1:""}${1:$(if (string-match "%" yas-text) "," "\)")
 }$2${1:$(if (string-match "%" yas-text) "\)" "")}
