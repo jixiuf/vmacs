@@ -15,7 +15,7 @@ type $1Req struct {
 // //@Param msg  	query    string     	true  "this is message" default(hello)
 // @Param X-Uid  	header    int    	true   "用户id(header)" default(10064589)
 // @Param X-Av  	header    string    	true   "版本号" default(10.0.0)
-// @Router /${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} [get,post]
+// @Router /${1:$(progn (require 'lazy-camelize) (underscore yas/text))} [get,post]
 // @Success 200 {object} $1Req
 func (end *${2:$1}Endpoint) $1(c engine.Context) {
 	var req $1Req

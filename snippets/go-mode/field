@@ -3,6 +3,6 @@
 # key: f
 # --
 
- // @Param ${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))}  	query    ${2:$(swagger-type yas/text)}     	true  "$7" default($8)
-${1:Field}    ${2:int64}    \`${3:form:"${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))}" } ${4:json:"${1:$(un-camelcase-string yas/text)}"} ${5:toml:"${1:$(un-camelcase-string yas/text)}"} ${6:yaml:"${1:$(un-camelcase-string yas/text)}"} ${7:bson:"${1:$(un-camelcase-string yas/text)}"}\` // ${7:${1:$(un-camelcase-string yas/text)}}
+ // @Param ${1:$(progn (require 'lazy-camelize) (underscore yas/text))}  	query    ${2:$(swagger-type yas/text)}     	true  "$7" default($8)
+${1:Field}    ${2:int64}    \`${3:form:"${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))}" } ${4:json:"${1:$(un-camelcase-string yas/text)}"} ${5:toml:"${1:$(un-camelcase-string yas/text)}"} ${6:yaml:"${1:$(un-camelcase-string yas/text)}"} ${7:bson:"${1:$(un-camelcase-string yas/text)}"}\` // ${8:${1:$(un-camelcase-string yas/text)}}
 $0

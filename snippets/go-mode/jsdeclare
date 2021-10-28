@@ -2,11 +2,11 @@
 # name: jsondeclare
 # key: jsd
 # --
-func (${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} ${1:Class}) MarshalJSON() (data []byte, err error) {
+func (${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))} ${1:Class}) MarshalJSON() (data []byte, err error) {
     $0
     return
 }
 
-func (${1:$(progn (require 'lazy-camelize) (un-camelcase-string yas/text))} *$1) UnmarshalJSON(data []byte) (err error){
+func (${1:$(camelize-method yas/text)} *$1) UnmarshalJSON(data []byte) (err error){
     return
 }

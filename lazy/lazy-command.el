@@ -1,26 +1,24 @@
 ;;; -*- lexical-binding: t; -*-
 ;; -*- coding:utf-8 -*-
-;; eval-when-compile
-(eval-when-compile
-  (require 'savehist)
-  (require  'cl-seq)
-  (require  'ediff)
-  (require  'vc-hooks)
-  (require 'recentf)
-  (require 'saveplace)
-  (require  'log-edit)
-  (require  'org)
-  (require  'ibuffer)
-  (require  'log-view)
-  (require 'cc-mode)
-  (require 'lazy-camelize)
-  ;;(require 'hippie-exp)
-  )
+;; ;; eval-when-compile
+;; (eval-when-compile
+;;   (require 'savehist)
+;;   (require  'cl-seq)
+;;   (require  'ediff)
+;;   (require  'vc-hooks)
+;;   (require 'recentf)
+;;   (require 'saveplace)
+;;   (require  'log-edit)
+;;   (require  'org)
+;;   (require  'ibuffer)
+;;   (require  'log-view)
+;;   (require 'cc-mode)
+;;   ;;(require 'hippie-exp)
+;;   )
 
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
-(declare-function upcase-first-char "lazy-camelize")
 
 ;;;###autoload
 (defun vmacs-idle-timer()
