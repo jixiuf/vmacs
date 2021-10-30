@@ -13,7 +13,7 @@ import (
 	"time"
     
 	"gitlab.luojilab.com/${10:`(file-name-nondirectory (directory-file-name (file-name-directory (expand-file-name "../../../"))))`}/${11:`(file-name-nondirectory (directory-file-name (file-name-directory (expand-file-name "../../"))))`}/dao"
-	"gitlab.luojilab.com/$10/$11/models"
+	"gitlab.luojilab.com/$10/$11/${12:models}"
 	"gitlab.luojilab.com/zeroteam/common/context"
 	"gitlab.luojilab.com/zeroteam/common/storage"
 )
@@ -62,7 +62,7 @@ func (this *$1$3DB) MultiGet(ctx context.IContext, keys, valuesMap interface{}) 
 		}
 	}
 	sql += " )"
-	var tmpResult []models.$5
+	var tmpResult []$12.$5
 	err:=this.dao.DB().NewSessionAutoClose(ctx).SQL(sql).Find(&tmpResult)
 	result := valuesMap.(map[$1$3Key]$9)
 	for idx, c := range tmpResult {
@@ -75,7 +75,7 @@ func (this *$1$3DB) MultiGet(ctx context.IContext, keys, valuesMap interface{}) 
 func (this *$1$3DB) Get(ctx context.IContext, key, object interface{}) error {
     k:=key.($1$3Key)
 
-	var tmpResult models.$5
+	var tmpResult $12.$5
 	has, err := this.dao.DB().NewSessionAutoClose(ctx).Where("${1:$(underscore yas/text)}=?",k.$1).
     Where("${3:$(underscore yas/text)}=?", k.$3).Cols("$8").Get(&tmpResult)
 	if err != nil {

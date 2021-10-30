@@ -1,5 +1,6 @@
 ;; config for yasnippet
 (require 'yasnippet)
+(require 'lazy-camelize)
 ;; batch 模式下不启用yas
 (if (and noninteractive (not (vmacs-dumping-p)))
   (yas-global-mode -1)
