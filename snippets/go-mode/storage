@@ -1,151 +1,61 @@
 # -*- mode: snippet -*-
 # name: storage
-# key: storage 
+# key: storage
 # --
+
 $0 //  package `(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`
 
-// ${1:$(camelize-method yas/text "_")}$3Storage storage.Storage// ${1:$(underscore yas/text)}+${3:$(underscore yas/text)} 反查$8
-// ${1:$(camelize-method yas/text "_")}$3Storage=`(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`.New$1$3Storage() 
+// ${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}$3Storage storage.Storage// ${1:$(underscore yas/text)}+${3:$(underscore yas/text)} 反查$8
+// ${1:$(camelize-method yas/text )}$3Storage=`(file-name-nondirectory (directory-file-name (file-name-directory default-directory)))`.New$1$3Storage() 
 import (
 	"errors"
 	"fmt"
-	"strconv"
-	"strings"
-    "sync"
 	"time"
     
-	"github.com/golang/glog"
-	"gitlab.luojilab.com/igetserver/`(file-name-nondirectory (directory-file-name (file-name-directory (expand-file-name "../../"))))`/dao"
-	"gitlab.luojilab.com/igetserver/`(file-name-nondirectory (directory-file-name (file-name-directory (expand-file-name "../../"))))`/models"
-	"gitlab.luojilab.com/igetserver/common/context"
-	"gitlab.luojilab.com/igetserver/storage"
+	"gitlab.luojilab.com/${10:`(file-name-nondirectory (directory-file-name (file-name-directory (expand-file-name "../../../"))))`}/${11:`(file-name-nondirectory (directory-file-name (file-name-directory (expand-file-name "../../"))))`}/dao"
+	"gitlab.luojilab.com/$10/$11/models"
+	"gitlab.luojilab.com/zeroteam/common/context"
+	"gitlab.luojilab.com/zeroteam/common/storage"
 )
-var instance$1$3Storage storage.Storage
-var instance$1$3StorageOnce sync.Once
 func New$1$3Storage() storage.Storage {
-    instance$1$3StorageOnce.Do(func(){
-        keyPrefix := dao.KEY_PREFIX_${5:$(camelize yas/text)}_$1_$3_REF
-        defaultExpireTime := time.Duration(0)
-        encoding := storage.${9:$(camelize yas/text)}Encoding{}
-        backup := new$1$3DB(New$5Dao())
+        keyPrefix := "$11:${5:$(underscore yas/text)}:${1:$(underscore yas/text)}-${3:$(underscore yas/text)}"
+	    redisClient := dao.GetRedis${11:$(upcase-first-char yas/text)}()
+        redixExpiration := time.Hour*24
+        backup := new$1$3DB(New$5Dao(false))
 
-        proxy, err := dao.GetStorageProxyMgr().NewStorage(backup, keyPrefix, defaultExpireTime,
-            encoding, func() interface{} { return new($9) }, dao.IsBenchMarkFalse)
-        if err != nil {
-            panic(err)
-        }
-        innerCacheSize := 1024 * 1024 * 200
-
-        instance$1$3Storage  = storage.NewBigCacheStorageProxy(keyPrefix, time.Hour*24*30, encoding,
-            func() interface{} { return new($9) },
-            innerCacheSize, proxy)
-    }) 
-	return instance$1$3Storage
-}
-func CacheDelete$5${8:$(camelize yas/text)}By$1$3(ctx *context.Context,$1 $2, $3 $4) (err error) {
-   return New$1$3Storage().Delete(ctx,$1$3Key{$1:$1,$3:$3})
-}
-func Get$5${8:$(camelize yas/text)}By$1$3(ctx *context.Context,$1 $2, $3 $4) ($8 $9,err error) {
-   err= New$1$3Storage().Get(ctx,$1$3Key{$1:$1,$3:$3},&$8)
-   return
-}
-func MultiGet$5${8:$(camelize yas/text)}By$1$3(ctx *context.Context,keys []$1$3Key) (result map[$1$3Key]$9,err error) {
-   result=make(map[$1$3Key]$9)
-   var sKeys []storage.Key
-    for _,key:=   range keys{
-      sKeys=append(sKeys,key)
-    }
-    tmpResult:=make(map[storage.Key]interface{})
-   err= New$1$3Storage().MultiGet(ctx,sKeys,tmpResult)
-   if err!=nil{
-      return 
-   }
-    for key,ele:=   range tmpResult{
-        p,ok:=ele.(*$9)
-        if ok{
-           if k,ok:= key.($1$3Key);ok{
-               result[k]=$9(*p)
-            }else{
-            
-}
-        }
-    }
-   return
+        return redisClient.NewStorage(keyPrefix, redixExpiration,storage.WithBackupStorage(backup))
 }
 
 
 type $1$3Key struct{
-     $1 $2 \`json:"${1:$(underscore yas/text)}"\`
-     $3 $4  \`json:"${3:$(underscore yas/text)}"\`
+     ${1:Field1} ${2:int64} \`json:"${1:$(underscore yas/text)}"\`
+     ${3:Field2} ${4:int64}  \`json:"${3:$(underscore yas/text)}"\`
 }
 func (this $1$3Key)String()string{
 	return fmt.Sprintf("%d-%d", this.$1,this.$3)
 }
-func (this $1$3Key) MarshalText() (text []byte, err error) {
-	return []byte(this.String()), nil
-}
-func (this $1$3Key) MarshalJSON() ([]byte, error) {
-	return []byte("\\"" + this.String() + "\\""), nil
-}
-
-func (this *$1$3Key) UnmarshalJSON(b []byte) error {
-	if b == nil {
-		return nil
-	}
-	s := string(b)
-	s = strings.Trim(s, "\\"")
-
-	if s == "" {
-		return nil
-	}
-	return this.ParseKey(s)
-}
-
-func (this *$1$3Key) ParseKey(key string) (err error) {
-	tokens := strings.Split(key, "-")
-	if len(tokens) != 2 {
-		err = errors.New("key format error:" + key)
-		return
-	}
-     
-	tmp${1:$(underscore yas/text)}, err := strconv.ParseInt(tokens[0], 10, 0)
-	if err != nil {
-		return
-	}
-    this.$1=$2(tmp${1:$(underscore yas/text)})
-
-    
-	tmp${3:$(underscore yas/text)}, err := strconv.ParseInt(tokens[1], 10, 0)
-	if err != nil {
-		return
-	}
-    this.$3=$4(tmp${3:$(underscore yas/text)})
-
-	return
-}
-func (this ${1:Field1}${3:Field2}Key) GetKey($1 ${2:int64}, $3 ${4:int64}) (key storage.Key) {
-	return $1$3Key{$1:$2($1),$3:$4($3)}
-}
-
 
 type $1$3DB struct {
-	storage.StorageEmpty
+	storage.StorageAdapter
 	dao *${5:Models}Dao
 }
 
 func new$1$3DB(dao *$5Dao) *$1$3DB {
-	return &$1$3DB{StorageEmpty: storage.StorageEmpty{}, dao: dao}
+	return &$1$3DB{dao: dao}
 }
 
-func (this *$1$3DB) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap interface{}) error {
-	if len(keys) == 0 {
+func (this *$1$3DB) MultiGet(ctx context.IContext, keys, valuesMap interface{}) error {
+    ks,ok:=keys.([]$1$3Key)
+    if !ok{
+       return errors.New("keys must be []$1$3Key")
+    }
+	if len(ks) == 0 {
 		return nil
 	}
 
 	var sql string = "select ${8:id},${1:$(underscore yas/text)},${3:$(underscore yas/text)} from ${5:$(underscore yas/text)} where ( "
-	for idx, key := range keys {
-		k:=key.($1$3Key)
-		if idx == len(keys)-1 {
+	for idx, k := range ks {
+		if idx == len(ks)-1 {
 			sql += fmt.Sprintf("(${1:$(underscore yas/text)}=%d and ${3:$(underscore yas/text)}=%d)", k.$1,k.$3)
 		} else {
 			sql += fmt.Sprintf("(${1:$(underscore yas/text)}=%d and ${3:$(underscore yas/text)}=%d) or ", k.$1,k.$3)
@@ -153,31 +63,31 @@ func (this *$1$3DB) MultiGet(ctx *context.Context, keys []storage.Key, valuesMap
 	}
 	sql += " )"
 	var tmpResult []models.$5
-	err:=this.dao.DB().NewSession(ctx).SQL(sql).Find(&tmpResult)
-	result := valuesMap.(map[storage.Key]interface{})
+	err:=this.dao.DB().NewSessionAutoClose(ctx).SQL(sql).Find(&tmpResult)
+	result := valuesMap.(map[$1$3Key]$9)
 	for idx, c := range tmpResult {
-		result[$1$3Key{$1:$2(c.$1), $3:$4(c.$3)}] = &(tmpResult[idx].${8:$(camelize yas/text)})
+		result[$1$3Key{$1:$2(c.$1), $3:$4(c.$3)}] = tmpResult[idx].${8:$(camelize yas/text)}
 	}
 	return err
 }
 
 // Get ...
-func (this *$1$3DB) Get(ctx *context.Context, key storage.Key, object interface{}) error {
+func (this *$1$3DB) Get(ctx context.IContext, key, object interface{}) error {
     k:=key.($1$3Key)
 
 	var tmpResult models.$5
-	has, err := this.dao.DB().NewSession(ctx).Where("${1:$(underscore yas/text)}=?",k.$1).
+	has, err := this.dao.DB().NewSessionAutoClose(ctx).Where("${1:$(underscore yas/text)}=?",k.$1).
     Where("${3:$(underscore yas/text)}=?", k.$3).Cols("$8").Get(&tmpResult)
 	if err != nil {
 		return err
 	}
 	if !has {
-		return storage.EmptyObjectError{Key: key.String()}
+		return this.ErrorNotFound(key)
 	}
 
 	result, ok := object.(*${9:int64})
 	if !ok {
-		glog.Error("$1$3DB.Get cast *int64 error")
+		ctx.Error("$1$3DB.Get cast *int64 error")
 		return errors.New("$1$3DB.Get cast *int64 error")
 	}
 
