@@ -77,6 +77,16 @@
  tramp-verbose 1
  find-function-C-source-directory "~/repos/emacs/src/"
  )
+;; Increase undo limits. Why?
+;; .. ability to go far back in history can be useful, modern systems have sufficient memory.
+;; Limit of 64mb.
+(setq undo-limit 6710886400)
+;; Strong limit of 1.5x (96mb)
+(setq undo-strong-limit 100663296)
+;; Outer limit of 10x (960mb).
+;; Note that the default is x100), but this seems too high.
+(setq undo-outer-limit 1006632960)
+
 ;; (require 'display-fill-column-indicator nil t)
 ;; (when (featurep 'display-fill-column-indicator)
   ;; (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
