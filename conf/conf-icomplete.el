@@ -91,13 +91,22 @@
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (setf (alist-get 'xref-location embark-exporters-alist) #'vmacs-embark-consult-export-grep)
+
   (defun vmacs-embark-consult-export-grep(lines)
+    (dolist (buf (buffer-list))
+      (when (string-prefix-p "*grep" (buffer-name buf))
+        (kill-buffer buf)))
     (let* ((default-directory default-directory)
-           (file (car (split-string (car lines) ":")))
-           (search-root (locate-dominating-file default-directory file)))
-      (when search-root
-        (setq default-directory search-root))
-      (embark-consult-export-grep lines)))
+           dir file)
+      (cl-find-if
+       (lambda (line)
+         (setq file (car (split-string line ":")))
+         (unless (file-name-absolute-p file)
+           (setq dir (locate-dominating-file default-directory file))
+           (when dir (setq default-directory dir)))
+         ) lines)
+      (embark-consult-export-grep lines)
+      (rename-buffer  "*grep*" t)))
 
   (defun vmacs-embark-collect-mode-hook ()
     (evil-local-mode)
