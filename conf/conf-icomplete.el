@@ -91,7 +91,7 @@
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (setf (alist-get 'xref-location embark-exporters-alist) #'vmacs-embark-consult-export-grep)
-
+  (setf (alist-get 'consult-grep embark-exporters-alist) #'vmacs-embark-consult-export-grep)
   (defun vmacs-embark-consult-export-grep(lines)
     (dolist (buf (buffer-list))
       (when (string-prefix-p "*grep" (buffer-name buf))
