@@ -76,7 +76,7 @@
     (t "Common"))))
 (setq centaur-tabs-adjust-buffer-order 'left)
 (centaur-tabs-enable-buffer-reordering)
-(setq centaur-tabs-label-fixed-length 30)
+;; (setq centaur-tabs-label-fixed-length 30)
 (centaur-tabs-mode t)
 
 (add-hook 'after-init-hook (lambda() (remove-hook 'kill-buffer-hook 'centaur-tabs-buffer-track-killed)))
