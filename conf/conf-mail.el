@@ -43,7 +43,7 @@
  mu4e-headers-date-format "%y-%m-%d"
  mu4e-change-filenames-when-moving t
  mu4e-attachment-dir "~/Downloads/"
- mu4e-update-interval 300
+ mu4e-update-interval 500
  mu4e-index-update-in-background t
  mu4e-split-view 'single-window
  mu4e-completing-read-function #'completing-read
