@@ -66,9 +66,11 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
-  (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji-15")
-  (set-fontset-font "fontset-default" 'symbol "Apple Symbols")
-  (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono CL" :height 1.0))
+  (set-fontset-font t 'emoji "Apple Color Emoji-15")
+  (set-fontset-font t 'symbol "Apple Symbols")
+  (set-face-attribute 'default nil :font "Sarasa Mono CL" :height 200)
+  (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono CL" :height 1.0)
+  )
 
 (vmacs-set-font)
 (add-hook 'after-init-hook #'vmacs-set-font)
@@ -77,8 +79,8 @@
               '((alpha . 85)
                 (height . 43)
                 (width . 159)
-                ;; (font . "Sarasa Mono CL-18")
-                (font . "Sarasa Mono CL-19")
+                ;; (font . "Sarasa Mono CL")
+                ;; (font . "Sarasa Mono CL-22")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;
