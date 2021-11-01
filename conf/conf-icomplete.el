@@ -90,24 +90,6 @@
   (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
-  (setf (alist-get 'xref-location embark-exporters-alist) #'vmacs-embark-consult-export-grep)
-  (setf (alist-get 'consult-grep embark-exporters-alist) #'vmacs-embark-consult-export-grep)
-  (defun vmacs-embark-consult-export-grep(lines)
-    (dolist (buf (buffer-list))
-      (when (string-prefix-p "*grep" (buffer-name buf))
-        (kill-buffer buf)))
-    (let* ((default-directory default-directory)
-           dir file)
-      (cl-find-if
-       (lambda (line)
-         (setq file (car (split-string line ":")))
-         (unless (file-name-absolute-p file)
-           (setq dir (locate-dominating-file default-directory file))
-           (when dir (setq default-directory dir)))
-         ) lines)
-      (embark-consult-export-grep lines)
-      (rename-buffer  "*grep*" t)))
-
   (defun vmacs-embark-collect-mode-hook ()
     (evil-local-mode)
     (evil-define-key 'normal 'local "/" #'consult-focus-lines)
@@ -130,12 +112,31 @@
 
 (setq consult-project-root-function #'vc-root-dir)
 (with-eval-after-load 'consult
-  (with-eval-after-load 'embark (require 'embark-consult nil t))
+  (with-eval-after-load 'embark
+    (require 'embark-consult nil t)
+    (setf (alist-get 'xref-location embark-exporters-alist) #'vmacs-embark-consult-export-grep)
+    (setf (alist-get 'consult-grep embark-exporters-alist) #'vmacs-embark-consult-export-grep)
+    (defun vmacs-embark-consult-export-grep(lines)
+      (dolist (buf (buffer-list))
+        (when (string-prefix-p "*grep" (buffer-name buf))
+          (kill-buffer buf)))
+      (let* ((default-directory default-directory)
+             dir file)
+        (cl-find-if
+         (lambda (line)
+           (setq file (car (split-string line ":")))
+           (unless (file-name-absolute-p file)
+             (setq dir (locate-dominating-file default-directory file))
+             (when dir (setq default-directory dir)))
+           ) lines)
+        (embark-consult-export-grep lines)
+        (rename-buffer  "*grep*" t)))
+    )
   (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t)
   (setq consult-config `((consult-buffer :preview-key ,(kbd "C-v")) ;disable auto preview for consult-buffer
-                        )))
+                         )))
 
 
 (vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
