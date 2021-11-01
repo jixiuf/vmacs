@@ -2,8 +2,6 @@
 ;; \ \ / / '_ ` _ \ / _` |/ __/ __|
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
-;; https://emacs-china.org/t/macos-emacs-28-native-comp/12201/70?u=jixiuf
-;; (setq comp-deferred-compilation-black-list '("yasnippet" "org-re-reveal" "tramp"))
 ;; |aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
 ;; |你你你你你你你你你你你你你你你你你你你你|
 ;; |,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,|
@@ -16,9 +14,6 @@
 ;; |까까까까까까까까까까까까까까까까까까까까|
 
 (defconst my/start-time (current-time))
-
-
-
 
 (defmacro mt (&rest body)
   "Measure the time it takes to evaluate BODY."
