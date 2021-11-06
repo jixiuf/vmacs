@@ -121,6 +121,7 @@
   "u" 'dired-up-directory ;上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
   "/" 'consult-focus-lines
+  "G" #'(lambda()(interactive) (call-interactively #'evil-goto-line) (dired-previous-line 1))
   (kbd "C-s") 'consult-focus-lines
   "z"  'consult-hide-lines
   ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
@@ -173,11 +174,25 @@
 
 (defun dired-next-line (arg)
   (interactive "^p")
-  (beginning-of-line)
-  (forward-line arg)
-  (while (and (not (eobp)) (not (bobp)) (invisible-p (point)))
-    (forward-line arg))
-  (dired-move-to-filename))
+  (let ((old-line (line-number-at-pos)))
+    (beginning-of-line)
+    (forward-line arg)
+    (while (and (not (eobp)) (not (bobp)) (invisible-p (point)))
+      (forward-line arg))
+    (dired-move-to-filename)
+    (when (= 2 (line-number-at-pos))
+      (if (> arg 0)
+          (dired-next-line 1)
+        (dired-next-line -1)
+        (back-to-indentation)
+        ))
+    (when (and (= 1 old-line) (< arg 0))
+      (goto-char (1- (point-max)))
+      (dired-move-to-filename))
+
+    (when (and (eobp) (> arg 0))
+      (goto-char (point-min))
+      (back-to-indentation))))
 
 (provide 'conf-dired)
 
