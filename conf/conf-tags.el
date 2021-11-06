@@ -3,7 +3,7 @@
 (setq eglot-confirm-server-initiated-edits nil)
 (setq eglot-sync-connect 0)
 ;; :documentHighlightProvider 禁用高亮光标下的单词
-(setq eglot-ignored-server-capabilites '(:documentHighlightProvider))
+(setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
 (defun vmacs-lsp-hook()
   ;; The depth of -10 places this before eglot's willSave notification,
