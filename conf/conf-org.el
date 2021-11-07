@@ -166,7 +166,9 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
-
+;; C-cC-xC-i C-cC-xC-o
+(add-hook 'org-clock-in-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-in")))
+(add-hook 'org-clock-out-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-out")))
 
 
 
