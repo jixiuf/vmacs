@@ -116,7 +116,7 @@
                         (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc)  "@luojilab.com")))
           :vars '(
                   (smtpmail-smtp-user    . "jixiufeng@luojilab.com")
-                  (smtpmail-smtp-server  . "smtp.exmail.qq.com")
+                  (smtpmail-smtp-server  . "smtp.feishu.cn")
                   (user-full-name        . "jixiufeng@luojilab.com")
                   (smtpmail-smtp-service . 465)
                   (smtpmail-stream-type  . ssl)
