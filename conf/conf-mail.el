@@ -20,12 +20,24 @@
   "!" #'mu4e-headers-mark-for-refile
   (kbd "M-n") #'mu4e-headers-next-unread
   (kbd "M-p") #'mu4e-headers-prev-unread
+  (kbd "C-c C-c") #'vmacs-mu4e-brower
   "i" #'vmacs-read-all
   "gh" #'mu4e-headers-query-prev
   "gl" #'mu4e-headers-query-next
   "gu" #'vmacs-mu4e-update-mail-and-index)
 
-(when (fboundp 'xwidget-webkit-browse-url) (setq browse-url-browser-function 'xwidget-webkit-browse-url))
+(defun vmacs-mu4e-brower (&optional msg)
+  (interactive)
+  (let ((browse-url-browser-function browse-url-browser-function))
+    (when (fboundp 'xwidget-webkit-browse-url)
+      (setq browse-url-browser-function 'xwidget-webkit-browse-url))
+    (mu4e-action-view-in-browser (or msg (mu4e-message-at-point)))
+    ))
+(setq mu4e-view-actions
+      '( ("capture message"  . mu4e-action-capture-message)
+         ("view in browser"  . vmacs-mu4e-brower)
+         ("show this thread" . mu4e-action-show-thread)))
+
 
 (defun vmacs-xwidget-hook()
   ;; (set-frame-parameter nil 'alpha 100)
