@@ -367,6 +367,8 @@ Move point to end-of-line ,if point was already at that position,
        (call-interactively 'kill-buffer-and-window))
      ( (derived-mode-p 'Info-mode)
        (call-interactively 'kill-buffer-and-window))
+     ( (derived-mode-p 'xwidget-webkit-mode)
+       (call-interactively 'kill-this-buffer))
      ( (derived-mode-p 'special-mode)
        (if (get-buffer-process buf)
            (bury-buffer-and-window)
