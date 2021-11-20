@@ -24,8 +24,7 @@
   "gh" #'mu4e-headers-query-prev
   "gl" #'mu4e-headers-query-next
   "gu" #'vmacs-mu4e-update-mail-and-index)
-(defun vmacs-view-in-eww (msg) (eww-browse-url (concat "file://" (mu4e~write-body-to-html msg))))
-(add-to-list 'mu4e-view-actions '("eww view" . vmacs-view-in-eww) t)         ;ae
+(when (fboundp 'xwidget-webkit-browse-url) (setq browse-url-browser-function 'xwidget-webkit-browse-url))
 (add-to-list 'mu4e-view-actions '("brower" . mu4e-action-view-in-browser) t) ;keybind ab
 ;; as 查看当前thread 的列表
 
