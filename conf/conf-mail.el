@@ -28,9 +28,9 @@
 (when (fboundp 'xwidget-webkit-browse-url) (setq browse-url-browser-function 'xwidget-webkit-browse-url))
 
 (defun vmacs-xwidget-hook()
+  ;; (set-frame-parameter nil 'alpha 100)
   (dolist(x (get-buffer-xwidgets (current-buffer)))
     (set-xwidget-query-on-exit-flag x nil)))
-
 (add-hook 'xwidget-webkit-mode-hook 'vmacs-xwidget-hook)
 
 ;; as 查看当前thread 的列表

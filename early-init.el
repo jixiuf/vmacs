@@ -76,7 +76,7 @@
 (add-hook 'after-init-hook #'vmacs-set-font)
 
 (setq-default initial-frame-alist
-              '((alpha . 85)
+              '((alpha . 88)
                 (height . 43)
                 (width . 159)
                 ;; (font . "Sarasa Mono CL")
