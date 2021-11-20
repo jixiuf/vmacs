@@ -24,8 +24,15 @@
   "gh" #'mu4e-headers-query-prev
   "gl" #'mu4e-headers-query-next
   "gu" #'vmacs-mu4e-update-mail-and-index)
+
 (when (fboundp 'xwidget-webkit-browse-url) (setq browse-url-browser-function 'xwidget-webkit-browse-url))
-(add-to-list 'mu4e-view-actions '("brower" . mu4e-action-view-in-browser) t) ;keybind ab
+
+(defun vmacs-xwidget-hook()
+  (dolist(x (get-buffer-xwidgets (current-buffer)))
+    (set-xwidget-query-on-exit-flag x nil)))
+
+(add-hook 'xwidget-webkit-mode-hook 'vmacs-xwidget-hook)
+
 ;; as 查看当前thread 的列表
 
 ;; 配置环境变量 XAPIAN_CJK_NGRAM 为 1，
