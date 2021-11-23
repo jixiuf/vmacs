@@ -124,6 +124,7 @@
 
          ("\\.go.txt$" . go-mode)
          ("\\.go\\'" . go-mode)
+         ("\\.go.tpl\\'" . go-mode)
 
          ("\\.yaws$" . nxml-mode)
 
