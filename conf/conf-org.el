@@ -80,13 +80,21 @@
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-;; ;;  源代码语法高亮
-(add-to-list 'org-latex-packages-alist '("" "minted"))
-(setq org-latex-listings 'minted)
+(setq org-latex-listings t)             ;https://mirrors.rit.edu/CTAN/macros/latex/contrib/listings/listings.pdf
+(add-to-list 'org-latex-packages-alist '("" "listings"))
+(add-to-list 'org-latex-packages-alist '("" "xcolor"))
+(setq org-latex-listings-options
+      '(("basicstyle" "\\small")
+        ("commentstyle" "\\color{violet}")
+        ("frame" "lines")              ;none, leftline, topline, bottomline, lines (top and bottom), single for single frames, or shadowbox.
+        ("keywordstyle" "\\color{black}\\bfseries\\underbar")))
+
 ;; (add-to-list 'org-latex-minted-langs '(go "go")) ;pygmentize -L lexers|grep go
 ;; (add-to-list 'org-latex-minted-langs '(ditaa "text"))
 ;; (add-to-list 'org-latex-minted-langs '(plantuml "text"))
 
+;; ;;  源代码语法高亮
+;; (add-to-list 'org-latex-packages-alist '("" "minted"))
 ;;\usemintedstyle{name} #pygmentize -L styles #选不同的style
 (setq org-latex-minted-options ;https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/minted/minted.pdf
       '(
