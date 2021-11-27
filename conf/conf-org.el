@@ -80,29 +80,33 @@
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-(setq org-latex-listings t)             ;https://mirrors.rit.edu/CTAN/macros/latex/contrib/listings/listings.pdf
-(add-to-list 'org-latex-packages-alist '("" "listings"))
-(add-to-list 'org-latex-packages-alist '("" "xcolor"))
-(setq org-latex-listings-options
-      '(("basicstyle" "\\small")
-        ("commentstyle" "\\color{violet}")
-        ("frame" "lines")              ;none, leftline, topline, bottomline, lines (top and bottom), single for single frames, or shadowbox.
-        ("keywordstyle" "\\color{black}\\bfseries\\underbar")))
+;; (setq org-latex-listings t)             ;https://mirrors.rit.edu/CTAN/macros/latex/contrib/listings/listings.pdf
+;; (add-to-list 'org-latex-packages-alist '("" "listings"))
+;; (add-to-list 'org-latex-packages-alist '("" "xcolor"))
+;; (setq org-latex-listings-options
+;;       '(("basicstyle" "\\small")
+;;         ("commentstyle" "\\color{violet}")
+;;         ("frame" "lines")              ;none, leftline, topline, bottomline, lines (top and bottom), single for single frames, or shadowbox.
+;;         ("keywordstyle" "\\color{black}\\bfseries\\underbar")))
 
 ;; (add-to-list 'org-latex-minted-langs '(go "go")) ;pygmentize -L lexers|grep go
 ;; (add-to-list 'org-latex-minted-langs '(ditaa "text"))
 ;; (add-to-list 'org-latex-minted-langs '(plantuml "text"))
 
 ;; ;;  源代码语法高亮
-;; (add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
 ;;\usemintedstyle{name} #pygmentize -L styles #选不同的style
 (setq org-latex-minted-options ;https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/minted/minted.pdf
       '(
-        ("frame=single")                 ;代码块首尾加 none | leftline | topline | bottomline | lines=上下有线 | single=框
+        ("frame=lines")                 ;代码块首尾加 none | leftline | topline | bottomline | lines=上下有线 | single=框
         ;;  ("framesep=2mm") ; frame 与内容之间的间距
-        ("linenos=true");显示行号 ,frame=single有框隔着 不会出现复制代码不方便
+        ;; ("linenos=true");显示行号 ,frame=single有框隔着 不会出现复制代码不方便
         ;; ("bgcolor" "green")
         ("breaklines" "true")           ;长行 换行展示
+        ;; ("breaksymbolleft" "")          ;default 􏰀→
+        ;; ("breakanywheresymbolpre" "")
+        ;; ("breakbeforesymbolpre" "")
         ("breakanywhere" "true")        ;默认只在空白等地方换行，若一直无空白，则后面内容trunc掉了
         ("autogobble" "true") ;; 缩进相关
         ("showtabs" "false")
