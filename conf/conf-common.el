@@ -92,10 +92,6 @@
   ;; (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
 ;; (when (boundp 'global-so-long-mode) (global-so-long-mode))
 
-;; path /Library/TeX/texbin
-(setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
-                              "xelatex -interaction nonstopmode %f"))
-
 (fset 'yes-or-no-p 'y-or-n-p) ;; 把Yes用y代替
 
 ;;(put 'dired-find-alternate-file 'disabled nil)

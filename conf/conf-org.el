@@ -41,8 +41,77 @@
 
 (run-with-idle-timer 300 t 'show-todo-list-after-init) ;idle 300=5*60s,show todo list
 
+;; path /Library/TeX/texbin
+;; https://github.com/kimim/kimim-emacs#org-to-pdf
+;; https://mirrors.tuna.tsinghua.edu.cn/CTAN/language/chinese/ctex/ctex.pdf
+;; brew install mactex-no-gui
+;; sudo tlmgr init-usertree
+;; sudo tlmgr --usermode install ctex titlesec enumitem ms fontspec abstract    \
+;;                          zhnumber fandol lastpage pdftexcmds infwarerr  \
+;;                          minted fvextra etoolbox fancyvrb upquote       \
+;;                          lineno catchfile xstring framed float          \
+;;                          grffile wrapfig ulem lettrine minifp           \
+;;                          capt-of xcolor svg koma-script trimspaces      \
+;;                          titling layaureo parskip extsizes pgf          \
+;;                          moderncv microtype
+;; sudo fmtutil-sys --all
+
+;;  语法高亮包minted 它用到了python 的pygments
+;;  brew install pygments
+
+(require 'ox-latex)
+(setq org-latex-compiler "xelatex")
+;; 下面用到的 minted（语法高亮 需要 -shell-escape  参数，它用到了python 的pygments ，故传参需要）
+;; minted(语法高亮) 需要 -8bit 否则tab 会显示为^^I 则minted.pdf 的FAQ
+;; 详见 https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/minted/minted.pdf
+(setq org-latex-pdf-process '("xelatex  -8bit -shell-escape -interaction nonstopmode %f"
+                              "xelatex  -8bit -shell-escape -interaction nonstopmode %f"))
+;; (setq org-latex-pdf-process
+;;   '("xelatex -8bit -shell-escape -interaction nonstopmode -output-directory %o %f"))
+(setq org-latex-default-class "ctexart") ;(原默认:article)
+(add-to-list 'org-latex-classes         ;默认提供了article/report/book,article=工作论文写作而设计,以及报告类、出书类相应的版式
+             ;; 可以通过此指令 指定使用哪个  #+LATEX_CLASS: ctexart
+             ;; 或用 org-latex-default-class 指定默认值(原默认:article)
+             '("ctexart"                ;ctexart 对应ctex版的article,需要使用上面注释中的tlmgr 安装ctex 待 中文模版
+               "\\documentclass[11pt]{ctexart}"   ;中文更友好(如日期格式等) https://mirrors.tuna.tsinghua.edu.cn/CTAN/language/chinese/ctex/ctex.pdf
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+;; ;;  源代码语法高亮
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted)
+;; (add-to-list 'org-latex-minted-langs '(go "go")) ;pygmentize -L lexers|grep go
+;; (add-to-list 'org-latex-minted-langs '(ditaa "text"))
+;; (add-to-list 'org-latex-minted-langs '(plantuml "text"))
+
+;;\usemintedstyle{name} #pygmentize -L styles #选不同的style
+(setq org-latex-minted-options ;https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/minted/minted.pdf
+      '(
+        ("frame=single")                 ;代码块首尾加 none | leftline | topline | bottomline | lines=上下有线 | single=框
+        ;;  ("framesep=2mm") ; frame 与内容之间的间距
+        ("linenos=true");显示行号 ,frame=single有框隔着 不会出现复制代码不方便
+        ;; ("bgcolor" "green")
+        ("breaklines" "true")           ;长行 换行展示
+        ("breakanywhere" "true")        ;默认只在空白等地方换行，若一直无空白，则后面内容trunc掉了
+        ("autogobble" "true") ;; 缩进相关
+        ("showtabs" "false")
+        ;; ("style=zenburn" )          ;default:"default" ;pygmentize -L styles
+        ;; ("gobble=2") ;; 自动移除每行前n个字符
+        ;; ("tabsize=16")
+        ;; ("showspaces" "true") ;; 显示空白字符
+        ;; ("fontsize" "\\small")
+        ;;  ("mathescape=true")
+        ;;  ("numbersep=5pt")
+        ))
+
+
 (setq-default
  ;; inhibit-startup-screen t;隐藏启动显示画面
+ org-src-window-setup 'current-window   ;C-c'
+ org-src-preserve-indentation t
  calendar-date-style 'iso
  calendar-day-abbrev-array ["七" "一" "二" "三" "四" "五" "六"]
  calendar-day-name-array ["七" "一" "二" "三" "四" "五" "六"]
