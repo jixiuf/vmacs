@@ -60,6 +60,8 @@
                           "\*Gofmt Errors\*"
                           "\*Ediff"
                           "\*sdcv\*"
+                          "\*Org PDF LaTex Output\*"
+                          "\*Org Export"
                           "\*osx-dictionary\*"
                           "\*Messages\*"
                           ))
