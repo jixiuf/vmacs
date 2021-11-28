@@ -1,0 +1,4 @@
+#name : long table
+#key: longtab
+# --
+#+ATTR_LATEX: :environment longtable % 当tab 的高度很高时使用
