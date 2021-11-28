@@ -1,0 +1,7 @@
+#name : latex table  resize for export to latex
+#key: t
+# --
+#+LaTeX: \resizebox{\textwidth}{!}{  % graphicx 包的功能 实现内容缩放到整行内容相同
+|$1|$2|
+|-$0
+#+LaTeX: }
