@@ -93,10 +93,16 @@ linktoc=all
 %\\setCJKsansfont{微软雅黑} % sets the sans font
 %\\setCJKmonofont{Consolas} % otherwise FangSong is not found
 
+% https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/geometry/geometry.pdf
+\\usepackage{geometry} % 控制页面边距，
+\\geometry{a4paper,left=1.5cm,right=1.5cm,top=0.5cm,bottom=1cm} % scale=0.8 是设置可用区比例
+
+% https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/enumitem/enumitem.pdf
 \\usepackage{enumitem} % 设置 列表的上下间距 ，这几个值调大有效果，0依然很大
 \\setlist[1]{labelindent=\\parindent} % < Usually a good idea
-\\setlist[itemize]{nosep, topsep=0, partopsep=0,parsep=0 ,itemsep=0}
-\\setlist[enumerate]{nosep,topsep=0pt, partopsep=0pt,parsep=0pt ,itemsep=0pt}
+\\setlist[itemize]{topsep=0, partopsep=0,parsep=0 ,itemsep=0}
+\\setlist[enumerate]{topsep=0pt, partopsep=0pt,parsep=0pt ,itemsep=0pt}
+
 "
                         ("\\section{%s}" . "\\section*{%s}")
                         ("\\subsection{%s}" . "\\subsection*{%s}")
