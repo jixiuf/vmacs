@@ -69,6 +69,7 @@
 ;; 可以通过此指令 指定使用哪个  #+LATEX_CLASS: ctexart
 ;; 或用 org-latex-default-class 指定默认值(原默认:article)
 ;; ;中文更友好(如日期格式等) https://mirrors.tuna.tsinghua.edu.cn/CTAN/language/chinese/ctex/ctex.pdf
+;; https://github.com/kimim/kimim-emacs/blob/master/site-lisp/latex-classes.el
 (progn
   (setq class-ctexart '("ctexart"                ;ctexart 对应ctex版的article,需要使用上面注释中的tlmgr 安装ctex 待 中文模版
                         "
