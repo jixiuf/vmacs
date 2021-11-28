@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: figure
+# key: fig
+# binding: C-c y f
+# condition: (or (= (current-column) 3) (= (current-column) 0))
+# --
+#+attr_latex: width=$1\textwidth
+#+ATTR_HTML: width="$2%"
+#+caption: $3
+`(org-insert-link '(4))`
+$0
