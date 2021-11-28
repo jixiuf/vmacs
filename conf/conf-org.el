@@ -95,7 +95,7 @@ linktoc=all
 
 % https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/geometry/geometry.pdf
 \\usepackage{geometry} % 控制页面边距，
-\\geometry{a4paper,left=1.5cm,right=1.5cm,top=0.5cm,bottom=1cm} % scale=0.8 是设置可用区比例
+\\geometry{a4paper,left=1.5cm,right=1.5cm,top=1.5cm,bottom=1cm} % scale=0.8 是设置可用区比例
 
 % https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/enumitem/enumitem.pdf
 \\usepackage{enumitem} % 设置 列表的上下间距 ，这几个值调大有效果，0依然很大
