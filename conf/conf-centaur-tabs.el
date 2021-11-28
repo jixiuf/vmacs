@@ -30,6 +30,7 @@
     ((and (string-match-p (rx (or
                           "\*Async-native-compile-log\*"
                           "\*Helm"
+                          "magit-process"
                           "\*company-documentation\*"
                           "\*helm"
                           "\*eaf"
