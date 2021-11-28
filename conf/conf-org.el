@@ -74,37 +74,29 @@
                         "
 \\documentclass[10pt,a4paper,UTF8]{ctexart}
 \\ctexset{today=small} % 日期格式 small|big|old small=2021 年 6 月 20 日
-\\CTEXsetup[format={\\Large\\bfseries}]{section}
-\\renewcommand{\\abstractname}{摘要}
-\\renewcommand\\refname{参考文献}
+\\renewcommand\\thesection{\\chinese{section}、} % H1 的序号用 中文一二三
+\\renewcommand\\thesubsection{\\arabic{section}.\\arabic{subsection}.} % H2 阿拉伯数字
+\\renewcommand\\thesubsubsection{\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}} % H3阿拉伯数字
+
 \\usepackage{hyperref} % 超链接的样式
 \\hypersetup{hidelinks}
-\\hypersetup{colorlinks = true, urlcolor = blue, linkcolor = blue, citecolor = blue}
-\\usepackage{geometry}
-\\usepackage{titlesec}
-\\usepackage{enumitem}
-\\usepackage{abstract}
-\\renewcommand\\thesection{\\chinese{section}、}
-\\renewcommand\\thesubsection{\\arabic{section}.\\arabic{subsection}.}
-\\renewcommand\\thesubsubsection{\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}}
-\\usepackage{fancyhdr, lastpage}
-\\fancypagestyle{plain}{
-    \\fancyhf{}
-    \\fancyfoot[C]{\\thepage}
-    \\renewcommand{\\headrulewidth}{0pt}
+\\hypersetup{
+colorlinks = true,
+linkcolor=blue,
+urlcolor=blue,
+citecolor=[rgb]{0,0.47,0.68},
+filecolor=[rgb]{0,0.37,0.53},
+linktoc=all
 }
-\\usepackage[backend=biber,style=gb7714-2015,hyperref=true,
-backref=true, maxcitenames=3, url=true]{biblatex}
+
 %\\setCJKmainfont{微软雅黑} % sets the roman font
 %\\setCJKsansfont{微软雅黑} % sets the sans font
 %\\setCJKmonofont{Consolas} % otherwise FangSong is not found
-\\pagestyle{plain}
-\\setlist[1]{labelindent=\\parindent,nosep,leftmargin= *}
-\\geometry{a4paper,scale=0.8}
-\\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
-\\setlength{\\baselineskip}{20pt}
-\\setlength{\\parskip}{5pt}
-\\DeclareRobustCommand\\nobreakspace{\\leavevmode\\nobreak\\ }
+
+\\usepackage{enumitem} % 设置 列表的上下间距 ，这几个值调大有效果，0依然很大
+\\setlist[1]{labelindent=\\parindent} % < Usually a good idea
+\\setlist[itemize]{nosep, topsep=0, partopsep=0,parsep=0 ,itemsep=0}
+\\setlist[enumerate]{nosep,topsep=0pt, partopsep=0pt,parsep=0pt ,itemsep=0pt}
 "
                         ("\\section{%s}" . "\\section*{%s}")
                         ("\\subsection{%s}" . "\\subsection*{%s}")
