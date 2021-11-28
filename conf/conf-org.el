@@ -101,8 +101,8 @@ linktoc=all
 % https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/enumitem/enumitem.pdf
 \\usepackage{enumitem} % 设置 列表的上下间距 ，这几个值调大有效果，0依然很大
 \\setlist[1]{labelindent=\\parindent} % < Usually a good idea
-\\setlist[itemize]{topsep=0, partopsep=0,parsep=0 ,itemsep=0}
-\\setlist[enumerate]{topsep=0pt, partopsep=0pt,parsep=0pt ,itemsep=0pt}
+\\setlist[itemize]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
+\\setlist[enumerate]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 
 "
                         ("\\section{%s}" . "\\section*{%s}")
