@@ -66,19 +66,57 @@
 ;; 详见 https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/minted/minted.pdf
 (setq org-latex-pdf-process '("xelatex  -8bit -shell-escape -interaction nonstopmode %f"
                               "xelatex  -8bit -shell-escape -interaction nonstopmode %f"))
-;; (setq org-latex-pdf-process
-;;   '("xelatex -8bit -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;; 可以通过此指令 指定使用哪个  #+LATEX_CLASS: ctexart
+;; 或用 org-latex-default-class 指定默认值(原默认:article)
+;; ;中文更友好(如日期格式等) https://mirrors.tuna.tsinghua.edu.cn/CTAN/language/chinese/ctex/ctex.pdf
+(progn
+  (setq class-ctexart '("ctexart"                ;ctexart 对应ctex版的article,需要使用上面注释中的tlmgr 安装ctex 待 中文模版
+                        "
+\\documentclass[10pt,a4paper,UTF8]{ctexart}
+\\ctexset{today=small} % 日期格式 small|big|old small=2021 年 6 月 20 日
+\\CTEXsetup[format={\\Large\\bfseries}]{section}
+\\renewcommand{\\abstractname}{摘要}
+\\renewcommand\\refname{参考文献}
+\\usepackage{hyperref} % 超链接的样式
+\\hypersetup{hidelinks}
+\\hypersetup{colorlinks = true, urlcolor = blue, linkcolor = blue, citecolor = blue}
+\\usepackage{geometry}
+\\usepackage{titlesec}
+\\usepackage{enumitem}
+\\usepackage{abstract}
+\\renewcommand\\thesection{\\chinese{section}、}
+\\renewcommand\\thesubsection{\\arabic{section}.\\arabic{subsection}.}
+\\renewcommand\\thesubsubsection{\\arabic{section}.\\arabic{subsection}.\\arabic{subsubsection}}
+\\usepackage{fancyhdr, lastpage}
+\\fancypagestyle{plain}{
+    \\fancyhf{}
+    \\fancyfoot[C]{\\thepage}
+    \\renewcommand{\\headrulewidth}{0pt}
+}
+\\usepackage[backend=biber,style=gb7714-2015,hyperref=true,
+backref=true, maxcitenames=3, url=true]{biblatex}
+%\\setCJKmainfont{微软雅黑} % sets the roman font
+%\\setCJKsansfont{微软雅黑} % sets the sans font
+%\\setCJKmonofont{Consolas} % otherwise FangSong is not found
+\\pagestyle{plain}
+\\setlist[1]{labelindent=\\parindent,nosep,leftmargin= *}
+\\geometry{a4paper,scale=0.8}
+\\geometry{a4paper,left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\\setlength{\\baselineskip}{20pt}
+\\setlength{\\parskip}{5pt}
+\\DeclareRobustCommand\\nobreakspace{\\leavevmode\\nobreak\\ }
+"
+                        ("\\section{%s}" . "\\section*{%s}")
+                        ("\\subsection{%s}" . "\\subsection*{%s}")
+                        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;; ;默认提供了article/report/book,article=工作论文写作而设计,以及报告类、出书类相应的版式
+(setq org-latex-classes nil)           ;for debug
+(add-to-list 'org-latex-classes class-ctexart))
+
 (setq org-latex-default-class "ctexart") ;(原默认:article)
-(add-to-list 'org-latex-classes         ;默认提供了article/report/book,article=工作论文写作而设计,以及报告类、出书类相应的版式
-             ;; 可以通过此指令 指定使用哪个  #+LATEX_CLASS: ctexart
-             ;; 或用 org-latex-default-class 指定默认值(原默认:article)
-             '("ctexart"                ;ctexart 对应ctex版的article,需要使用上面注释中的tlmgr 安装ctex 待 中文模版
-               "\\documentclass[11pt]{ctexart}"   ;中文更友好(如日期格式等) https://mirrors.tuna.tsinghua.edu.cn/CTAN/language/chinese/ctex/ctex.pdf
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
 
 ;; (setq org-latex-listings t)             ;https://mirrors.rit.edu/CTAN/macros/latex/contrib/listings/listings.pdf
 ;; (add-to-list 'org-latex-packages-alist '("" "listings"))
@@ -99,6 +137,7 @@
 ;;\usemintedstyle{name} #pygmentize -L styles #选不同的style
 (setq org-latex-minted-options ;https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/minted/minted.pdf
       '(
+        ("fontsize" "\\small")
         ("frame=lines")                 ;代码块首尾加 none | leftline | topline | bottomline | lines=上下有线 | single=框
         ;;  ("framesep=2mm") ; frame 与内容之间的间距
         ;; ("linenos=true");显示行号 ,frame=single有框隔着 不会出现复制代码不方便
@@ -114,7 +153,6 @@
         ;; ("gobble=2") ;; 自动移除每行前n个字符
         ;; ("tabsize=16")
         ;; ("showspaces" "true") ;; 显示空白字符
-        ;; ("fontsize" "\\small")
         ;;  ("mathescape=true")
         ;;  ("numbersep=5pt")
         ))
