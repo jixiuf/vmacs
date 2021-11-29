@@ -94,6 +94,9 @@ linktoc=all
 %\\setCJKsansfont{微软雅黑} % sets the sans font
 %\\setCJKmonofont{Consolas} % otherwise FangSong is not found
 
+\\usepackage{adjustbox} %  缩放table会用到  #+LATEX: \adjustbox{max width=\linewidth}{ tablehere  #+LATEX: \end{adjustbox}
+
+
 % https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/geometry/geometry.pdf
 \\usepackage{geometry} % 控制页面边距，
 \\geometry{a4paper,left=1.5cm,right=1.5cm,top=1.5cm,bottom=1cm} % scale=0.8 是设置可用区比例
