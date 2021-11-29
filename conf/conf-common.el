@@ -120,8 +120,6 @@
 
          ("\\.go.txt$" . go-mode)
          ("\\.go\\'" . go-mode)
-         ("\\.go.tpl\\'" . go-mode)
-         ("\\.go.tmpl\\'" . go-mode)
 
          ("\\.yaws$" . nxml-mode)
 
