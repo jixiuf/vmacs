@@ -95,7 +95,7 @@ linktoc=all
 %\\setCJKmonofont{Consolas} % otherwise FangSong is not found
 
 \\usepackage{adjustbox} %  缩放table会用到  #+LATEX: \adjustbox{max width=\linewidth}{ tablehere  #+LATEX: \end{adjustbox}
-
+\\usepackage{caption} % 图表 加一句话标题
 
 % https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/geometry/geometry.pdf
 \\usepackage{geometry} % 控制页面边距，

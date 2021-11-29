@@ -1,10 +1,10 @@
 #name : latex table  resize for export to latex
 #key: t
 # --
-#+LATEX: \caption{${1:标题}}
-#+LATEX: \adjustbox{max width=\linewidth}{   % need \usepackage{adjustbox}
+#+LATEX: \adjustbox{max width=\linewidth}{
 |/|<|<>|
 |-|--|----|
-| |$2 |$3 |
+| |$3 |$4 |
 |-$0
 #+LaTeX: }
+#+LaTex: \captionof{table}{${1:标题}}
