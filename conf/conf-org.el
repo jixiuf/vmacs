@@ -116,6 +116,8 @@ linktoc=all
 ;; ;默认提供了article/report/book,article=工作论文写作而设计,以及报告类、出书类相应的版式
 (setq org-latex-classes nil)           ;for debug
 (add-to-list 'org-latex-classes class-ctexart))
+;; #+LATEX_HEADER: \usepackage{fontspec}
+;; #+LATEX_HEADER: \setmainfont{PingFang SC}
 
 (setq org-latex-default-class "ctexart") ;(原默认:article)
 
