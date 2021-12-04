@@ -3,14 +3,20 @@
 ;; https://gitlab.com/liberime/liberime
 ;; RIME_PATH=~/repos/squirrel/librime/ make liberime
 ;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
-;; ;; (setq rime-user-data-dir "~/.emacs.d/cache/rime")
+;; (setq rime-user-data-dir "~/.emacs.d/cache/rime")
 ;; (setq default-input-method "rime")
 ;; (setq rime-show-candidate 'posframe)
-;; (setq rime-disable-predicates
+;; (setq rime-disable-predicates           ;临时英文模式
 ;;       '(rime-predicate-evil-mode-p
-;;         rime-predicate-prog-in-code-p
+;;         rime-predicate-prog-in-code-p   ;在 prog-mode 和 conf-mode 中除了注释和引号内字符串之外的区域
+;;         ;; rime-predicate-in-code-string-p ;在代码的字符串中，不含注释的字符串。
+;;         rime-predicate-space-after-cc-p ;在中文字符且有空格之后
+;;         ;; rime-predicate-space-after-ascii-p ;在任意英文字符且有空格之后
 ;;         rime-predicate-after-alphabet-char-p
+;;         rime-predicate-after-ascii-char-p
 ;;         ;; rime-predicate-auto-english-p
+;;         ;; rime-predicate-current-uppercase-letter-p
+;;         ;; rime-predicate-punctuation-after-space-cc-p
 ;;         ))
 ;; (setq rime-inline-predicates '(rime-predicate-space-after-cc-p))
 ;; (require 'rime)
@@ -25,6 +31,7 @@
 ;;   (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=U.S." ))
 
 ;; (global-set-key (kbd "C-\\") 'toggle-input-method)
+;; (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
 
 ;; ;; 输入法进入normal state时，关闭输入法的中文模式
 ;; (add-hook 'evil-motion-state-entry-hook 'disable-input-method-hook)
