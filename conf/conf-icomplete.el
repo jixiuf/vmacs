@@ -84,10 +84,9 @@
   ;; (setq marginalia-margin-min 18)
 
   (setq embark-collect-initial-view-alist '((t . list)))
-  (global-set-key (kbd "C-o") #'embark-act)
-  ;; (global-set-key (kbd "M-.") #'embark-dwim)
-  ;; (evil-define-key 'normal 'global (kbd "M-.") #'embark-dwim) ;
-  (define-key icomplete-minibuffer-map (kbd "C-o") 'embark-act)
+  (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
+
+  (define-key icomplete-minibuffer-map (kbd "C-t") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (defun vmacs-embark-collect-mode-hook ()

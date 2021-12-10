@@ -1,4 +1,3 @@
-(featurep 'evil)
 (global-set-key (kbd "s-,") 'vterm-toggle)
 (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
 (define-key special-mode-map " " nil)
@@ -44,21 +43,11 @@
 (global-set-key  (kbd "s-o") 'other-window)
 (global-set-key  (kbd "s-C-M-o") 'other-window)
 
-(global-set-key  [C-M-s-268632079] 'other-window)
-
-;; (global-set-key  (kbd "s-n") 'vmacs-split-window-or-other-window)
-;; (global-set-key  (kbd "s-C-M-n") 'vmacs-split-window-or-other-window)
-;; (global-set-key  (kbd "s-p") 'vmacs-split-window-or-prev-window)
-;; (global-set-key  (kbd "s-C-M-p") 'vmacs-split-window-or-prev-window)
-
-
 (global-set-key [C-M-s-return] 'vmacs-window-rotate)
 
 
 
 
-(global-set-key  (kbd "C-,") 'scroll-other-window-down)
-(global-set-key  (kbd "C-.") 'scroll-other-window)
 (global-set-key  (kbd "C-\\") 'hippie-expand)
 
 ;; (global-set-key  (kbd "s-q") 'delete-frame)

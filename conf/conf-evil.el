@@ -252,6 +252,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-normal-state-map "," 'repeat)
 (define-key evil-visual-state-map "," 'repeat)
 (define-key evil-motion-state-map "," 'repeat) ;
+(define-key evil-normal-state-map (kbd "M-,") 'scroll-other-window-down)
+(define-key evil-normal-state-map (kbd "M-.") 'scroll-other-window)
 
 (define-key evil-ex-completion-map (kbd "<C-m>") 'exit-minibuffer)
 
