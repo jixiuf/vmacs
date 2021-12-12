@@ -107,7 +107,7 @@ linktoc=all
 \\setlist[itemize]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 \\setlist[enumerate]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 
-\\usepackage[table]{xcolor}
+\\usepackage[table]{xcolor} % 表格按行使用不同的颜色 表头上使用 #+LATEX: \rowcolors[]{2}{blue!10}{blue!25}
 
 "
                         ("\\section{%s}" . "\\section*{%s}")
