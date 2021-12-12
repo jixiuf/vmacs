@@ -107,6 +107,8 @@ linktoc=all
 \\setlist[itemize]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 \\setlist[enumerate]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 
+\\usepackage[table]{xcolor}
+
 "
                         ("\\section{%s}" . "\\section*{%s}")
                         ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -293,6 +295,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 
 
+;; 见 org-export-options-alist 对应哪些全局变量
 ;; #+OPTIONS:   H:2 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
 
 ;; H:         set the number of headline levels for export
