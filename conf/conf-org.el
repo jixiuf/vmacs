@@ -94,7 +94,7 @@ linktoc=all
 %\\setCJKsansfont{微软雅黑} % sets the sans font
 %\\setCJKmonofont{Consolas} % otherwise FangSong is not found
 
-\\usepackage{adjustbox} %  缩放table会用到  #+LATEX: \adjustbox{max width=\linewidth}{ tablehere  #+LATEX: \end{adjustbox}
+\\usepackage{adjustbox} %  缩放table会用到  #+LATEX: \\adjustbox{max width=\\linewidth}{ tablehere  #+LATEX: \\end{adjustbox}
 \\usepackage{caption} % 图表 加一句话标题
 
 % https://ctan.math.utah.edu/ctan/tex-archive/macros/latex/contrib/geometry/geometry.pdf
@@ -107,7 +107,7 @@ linktoc=all
 \\setlist[itemize]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 \\setlist[enumerate]{topsep=5pt, partopsep=0,parsep=1pt ,itemsep=1pt}
 
-\\usepackage[table]{xcolor} % 表格按行使用不同的颜色 表头上使用 #+LATEX: \rowcolors[]{2}{blue!10}{blue!25}
+\\usepackage[table]{xcolor} % 表格按行使用不同的颜色 表头上使用 #+LATEX: \\rowcolors[]{2}{blue!10}{blue!25}
 
 "
                         ("\\section{%s}" . "\\section*{%s}")
