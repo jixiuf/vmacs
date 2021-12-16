@@ -1,3 +1,3 @@
 func init() {
-	 ${1:detclib.TestMode=true}
+     $0
 }
