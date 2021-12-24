@@ -14,6 +14,10 @@
   (interactive)
   (if current-prefix-arg (mu4e-update-mail-and-index t) (mu4e-update-index)))
 
+(evil-collection-define-key 'normal 'mu4e-view-mode-map
+  (kbd "M-n") #'mu4e-view-headers-next-unread
+  (kbd "M-p") #'mu4e-view-headers-prev-unread
+  )
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
   "r" #'mu4e-headers-mark-for-read
   "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)))
