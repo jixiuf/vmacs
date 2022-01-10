@@ -23,7 +23,7 @@
                    (directoryFilters . ["-vendor"])
                    (analyses . ((unusedparams . t) (unusedwrite . t)))
                    (annotations . ((bounds . t) (escape . t) (inline . t) (nil . t)))
-                   (buildFlags . ["-mod=mod"])
+                   ;; (buildFlags . ["-mod=mod"])
                    (allowImplicitNetworkAccess . t)
                    (experimentalWorkspaceModule  . t)
                    (allowModfileModifications . t)))))
