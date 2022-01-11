@@ -29,6 +29,7 @@
  '(flycheck-check-syntax-automatically '(save mode-enabled))
  '(flycheck-idle-change-delay 1)
  '(global-auto-revert-mode t)
+ '(global-hl-line-mode t)
  '(helm-minibuffer-history-key "C-r")
  '(ivy-posframe-border-width 10)
  '(lsp-auto-guess-root t)
