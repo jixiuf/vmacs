@@ -57,7 +57,7 @@
 
 
   ;; 一般性的配置在conf/conf-common.el中
-  (require 'conf-centaur-tabs)
+  (require 'conf-tabs)
   ;; (with-eval-after-load 'eshell (require 'conf-eshell)) ;
   ;; (with-eval-after-load 'term (require 'conf-term)) ;
 
