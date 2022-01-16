@@ -5,7 +5,13 @@
 (setq tab-line-close-button-show nil)  ;; do not show close button
 ;; (setq tab-line-separator nil)  ;; set it to empty
 ;; (setq tab-line-tabs-buffer-group-function #'vmacs-tab-line-buffer-group)
-;; (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
+(setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
+(defun vmacs-tabline-same-mode-buffer() (setq tab-line-tabs-function #'tab-line-tabs-mode-buffers))
+(defun vmacs-tabline-window-buffer() (setq tab-line-tabs-function #'tab-line-tabs-window-buffers))
+;; only enable group by same mode buffers for vterm
+(add-hook 'vterm-toggle-show-hook #'vmacs-tabline-same-mode-buffer)
+(add-hook 'vterm-toggle-hide-hook #'vmacs-tabline-window-buffer)
+
 
 
 
