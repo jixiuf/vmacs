@@ -42,6 +42,7 @@
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 
+(when (boundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
 (setq-default
  inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭scratch消息提示
