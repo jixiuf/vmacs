@@ -59,6 +59,7 @@
   (let ((buffer-save-without-query t))
     (basic-save-buffer))
   (call-interactively #'evil-goto-definition))
+(evil-add-command-properties #'vmacs-find-def :jump t)
 
 (setq evil-goto-definition-functions
       '(evil-goto-definition-xref  evil-project-find-regexp evil-goto-definition-imenu  evil-goto-definition-search))
