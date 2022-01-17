@@ -3,11 +3,11 @@
 (global-set-key  (kbd "s-C-M-j") 'tab-line-switch-to-next-tab)
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
 (setq tab-line-close-button-show nil)  ;; do not show close button
-;; (setq tab-line-separator nil)  ;; set it to empty
+(setq tab-line-separator (propertize " ▶" 'face  '(foreground-color . "#81d8d0")))
 ;; (setq tab-line-tabs-buffer-group-function #'vmacs-tab-line-buffer-group)
 (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
-(defun vmacs-tabline-same-mode-buffer() (setq tab-line-tabs-function #'tab-line-tabs-mode-buffers))
-(defun vmacs-tabline-window-buffer() (setq tab-line-tabs-function #'tab-line-tabs-window-buffers))
+(defun vmacs-tabline-same-mode-buffer() (setq tab-line-tabs-function #'tab-line-tabs-mode-buffers) (force-mode-line-update))
+(defun vmacs-tabline-window-buffer() (setq tab-line-tabs-function #'tab-line-tabs-window-buffers)(force-mode-line-update))
 ;; only enable group by same mode buffers for vterm
 (add-hook 'vterm-toggle-show-hook #'vmacs-tabline-same-mode-buffer)
 (add-hook 'vterm-toggle-hide-hook #'vmacs-tabline-window-buffer)
