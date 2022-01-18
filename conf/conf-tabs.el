@@ -4,63 +4,62 @@
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator (propertize " ▶" 'face  '(foreground-color . "cyan")))
-;; (setq tab-line-tabs-buffer-group-function #'vmacs-tab-line-buffer-group)
-;; (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
 (defun vmacs-tabline-same-mode-buffer() (setq tab-line-tabs-function #'tab-line-tabs-mode-buffers) (force-mode-line-update))
 (defun vmacs-tabline-window-buffer() (setq tab-line-tabs-function #'tab-line-tabs-window-buffers)(force-mode-line-update))
 ;; only enable group by same mode buffers for vterm
 (add-hook 'vterm-toggle-show-hook #'vmacs-tabline-same-mode-buffer)
 (add-hook 'vterm-toggle-hide-hook #'vmacs-tabline-window-buffer)
 
-;; (setq tab-line-tabs-buffer-list-function #'vmacs-tab-line-tabs-buffer-list)
-(defun vmacs-tab-line-tabs-buffer-list ()
-  (seq-remove #'vmacs-tab-filter (tab-line-tabs-buffer-list)))
+
+(defadvice tab-line-tabs-window-buffers (around skip-buffer activate)
+  "Return a list of tabs that should be displayed in the tab line
+but skip uninterested buffers."
+  (let ((buffers ad-do-it))
+    (if (vmacs-tab-filter (current-buffer))
+        (setq ad-return-value (seq-filter #'vmacs-tab-filter buffers))
+      (setq ad-return-value (seq-remove #'vmacs-tab-filter buffers)))))
 
 (defun vmacs-tab-filter(&optional buf)
   (string-match-p (rx (or
                        "\*Async-native-compile-log\*"
-                       "\*Helm"
                        "magit-process"
                        "\*company-documentation\*"
-                       "\*helm"
-                       "\*eaf"
-                       "\*eldoc"
-                       "\*Launch "
-                       "*dap-"
-                       "*EGLOT "
-                       "\*Flymake log\*"
-                       "\*gopls::stderr\*"
-                       "\*gopls\*"
-                       "\*Compile-Log\*"
-                       "*Backtrace*"
-                       "*Package-Lint*"
-                       "\*sdcv\*"
-                       "\*tramp"
-                       "\*lsp-log\*"
-                       "\*tramp"
-                       "\*ccls"
-                       "\*vc"
-                       "\*xref"
-                       "\*Warnings*"
-                       "\*Http"
+                       "\*eaf" "\*eldoc" "\*Launch " "*dap-"
+                       "*EGLOT " "\*Flymake log\*"
+                       "\*gopls::stderr\*" "\*gopls\*"
+                       "\*Compile-Log\*" "*Backtrace*"
+                       "*Package-Lint*" "\*sdcv\*" "\*tramp"
+                       "\*lsp-log\*" "\*tramp" "\*Ibuffer\*"
+                       "\*Help\*" "\*ccls" "\*vc"
+                       "\*xref" "\*Warnings*" "\*Http"
                        "\*Async Shell Command\*"
                        "\*Shell Command Output\*"
-                       "\*Calculator\*"
-                       "\*Calc "
+                       "\*Calculator\*" "\*Calc "
                        "\*Flycheck error messages\*"
                        "\*Gofmt Errors\*"
-                       "\*Ediff"
-                       "\*sdcv\*"
+                       "\*Ediff" "\*sdcv\*"
                        "\*Org PDF LaTex Output\*"
                        "\*Org Export"
-                       "\*osx-dictionary\*"
-                       "\*Messages\*"
+                       "\*osx-dictionary\*" "\*Messages\*"
                        ))
                   (buffer-name buf)))
 
+;; switch-to-prev-buffer 与 switch-to-next-buffer 时 skip 特定的buffers
+;;而 tab-line-switch-to-prev/next-tab 恰好使用了上面两个函数
 (defun vmacs-switch-to-prev-buffer-skip(win buf bury-or-kill)
-  (vmacs-tab-filter buf))
-;; (setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
+  (when (member this-command '(tab-line-switch-to-prev-tab tab-line-switch-to-next-tab))
+    (if (vmacs-tab-filter (current-buffer))
+        (not (vmacs-tab-filter buf))
+      (vmacs-tab-filter buf))))
+(setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
+
+;; (setq tab-line-tabs-buffer-group-function #'vmacs-tab-line-buffer-group)
+;; (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
+;; (setq tab-line-tabs-buffer-list-function #'vmacs-tab-line-tabs-buffer-list)
+;; (defun vmacs-tab-line-tabs-buffer-list ()
+;;   (seq-remove #'vmacs-tab-filter (tab-line-tabs-buffer-list)))
+
+
 
 ;; (setq-default centaur-tabs-hide-tabs-hooks   nil)
 ;; (setq-default centaur-tabs-cycle-scope 'tabs)
