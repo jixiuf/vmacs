@@ -11,6 +11,7 @@
 (add-hook 'vterm-toggle-hide-hook #'vmacs-tabline-window-buffer)
 
 
+
 (defadvice tab-line-tabs-window-buffers (around skip-buffer activate)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
@@ -22,7 +23,7 @@ but skip uninterested buffers."
 (defun vmacs-tab-filter(&optional buf)
   (string-match-p (rx (or
                        "\*Async-native-compile-log\*"
-                       "magit-process"
+                       "magit"
                        "\*company-documentation\*"
                        "\*eaf" "\*eldoc" "\*Launch " "*dap-"
                        "*EGLOT " "\*Flymake log\*"
@@ -52,6 +53,21 @@ but skip uninterested buffers."
         (not (vmacs-tab-filter buf))
       (vmacs-tab-filter buf))))
 (setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
+
+;; 最多打开10个文件
+(defun vmacs-prevent-open-too-much-files()
+  (let* ((buffers (tab-line-tabs-window-buffers))
+         (buffer-save-without-query t)
+         (len (length buffers))
+         (max 9) (i 0))
+    (dolist (buffer buffers)
+      (when (and (< i (- len max)) (>= len mac))
+        (when (buffer-live-p buffer)
+          (with-current-buffer buffer
+            (basic-save-buffer)
+            (kill-buffer buffer))))
+      (setq i (1+ i)))))
+(add-hook 'find-file-hook #'vmacs-prevent-open-too-much-files)
 
 ;; (setq tab-line-tabs-buffer-group-function #'vmacs-tab-line-buffer-group)
 ;; (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
