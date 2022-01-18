@@ -95,3 +95,8 @@
 
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
+(setq modus-themes-hl-line  '(intense accented))
+;; (setq modus-themes-tabs-accented nil)
+;; 几个不错的颜色 https://www.zhihu.com/question/497851000/answer/2249878929
+(setq modus-themes-vivendi-color-overrides
+      '((bg-tab-active . "#407d52")))
