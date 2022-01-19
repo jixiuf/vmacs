@@ -1,26 +1,45 @@
 (global-tab-line-mode t)
-(global-set-key  (kbd "s-C-M-k") 'tab-line-switch-to-prev-tab)
-(global-set-key  (kbd "s-C-M-j") 'tab-line-switch-to-next-tab)
+(global-set-key  (kbd "s-C-M-k") 'previous-buffer) ;H-k default C-x left
+(global-set-key  (kbd "s-C-M-j") 'next-buffer)     ;H-j default C-x right
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator (propertize " ▶" 'face  '(foreground-color . "cyan")))
-(defun vmacs-tabline-same-mode-buffer() (setq tab-line-tabs-function #'tab-line-tabs-mode-buffers) (force-mode-line-update))
-(defun vmacs-tabline-window-buffer() (setq tab-line-tabs-function #'tab-line-tabs-window-buffers)(force-mode-line-update))
-;; only enable group by same mode buffers for vterm
-(add-hook 'vterm-toggle-show-hook #'vmacs-tabline-same-mode-buffer)
-(add-hook 'vterm-toggle-hide-hook #'vmacs-tabline-window-buffer)
 
-
+(setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
+;; switch-to-prev-buffer 与 switch-to-next-buffer 时 skip 特定的buffers
+;;而 tab-line-switch-to-prev/next-tab 恰好使用了上面两个函数
+(defun vmacs-switch-to-prev-buffer-skip(win buf bury-or-kill)
+  (when (member this-command '(next-buffer previous-buffer
+                                           tab-line-switch-to-prev-tab
+                                           tab-line-switch-to-next-tab))
+    (cond
+     ((vmacs-vterm-p)                ;当前buffer是vterm
+      (not (vmacs-vterm-p buf)))     ;若buf 不是vterm,则skip
+     ((vmacs-boring-buffer-p (current-buffer))
+      (not (vmacs-boring-buffer-p buf)))
+     (t                                 ;当前buffer是正常buffer
+      (or (vmacs-boring-buffer-p buf)   ;若buf 是boring buf 或vterm，则跳过
+          (vmacs-vterm-p buf))))))
 
 (defadvice tab-line-tabs-window-buffers (around skip-buffer activate)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
   (let ((buffers ad-do-it))
-    (if (vmacs-tab-filter (current-buffer))
-        (setq ad-return-value (seq-filter #'vmacs-tab-filter buffers))
-      (setq ad-return-value (seq-remove #'vmacs-tab-filter buffers)))))
+    (cond
+     ((vmacs-vterm-p)               ;当前buffer是vterm
+      ;; 只返回vterm buffer 作为当前tab group 的tab
+      (setq ad-return-value (seq-filter #'vmacs-vterm-p buffers)))
+     ((vmacs-boring-buffer-p (current-buffer))
+      (setq ad-return-value (seq-filter #'vmacs-boring-buffer-p buffers)))
+     (t
+      ;; skip boring buffer 及vterm
+      (setq buffers (seq-remove #'vmacs-boring-buffer-p buffers))
+      (setq ad-return-value  (seq-remove #'vmacs-vterm-p buffers))))))
 
-(defun vmacs-tab-filter(&optional buf)
+(defun vmacs-vterm-p(&optional buf)
+  (eq (buffer-local-value 'major-mode (or buf (current-buffer))) 'vterm-mode))
+
+(defun vmacs-boring-buffer-p(&optional buf)
   (string-match-p (rx (or
                        "\*Async-native-compile-log\*"
                        "magit"
@@ -45,14 +64,7 @@ but skip uninterested buffers."
                        ))
                   (buffer-name buf)))
 
-;; switch-to-prev-buffer 与 switch-to-next-buffer 时 skip 特定的buffers
-;;而 tab-line-switch-to-prev/next-tab 恰好使用了上面两个函数
-(defun vmacs-switch-to-prev-buffer-skip(win buf bury-or-kill)
-  (when (member this-command '(tab-line-switch-to-prev-tab tab-line-switch-to-next-tab))
-    (if (vmacs-tab-filter (current-buffer))
-        (not (vmacs-tab-filter buf))
-      (vmacs-tab-filter buf))))
-(setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
+
 
 ;; 最多打开10个文件
 (defun vmacs-prevent-open-too-much-files()
@@ -73,7 +85,7 @@ but skip uninterested buffers."
 ;; (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
 ;; (setq tab-line-tabs-buffer-list-function #'vmacs-tab-line-tabs-buffer-list)
 ;; (defun vmacs-tab-line-tabs-buffer-list ()
-;;   (seq-remove #'vmacs-tab-filter (tab-line-tabs-buffer-list)))
+;;   (seq-remove #'vmacs-boring-buffer-p (tab-line-tabs-buffer-list)))
 
 
 
