@@ -61,10 +61,10 @@ but skip uninterested buffers."
          (len (length buffers))
          (max 9) (i 0))
     (dolist (buffer buffers)
-      (when (and (< i (- len max)) (>= len mac))
+      (when (and (< i (- len max)) (>= len max))
         (when (buffer-live-p buffer)
           (with-current-buffer buffer
-            (basic-save-buffer)
+            (when (buffer-file-name buffer) (basic-save-buffer))
             (kill-buffer buffer))))
       (setq i (1+ i)))))
 (add-hook 'find-file-hook #'vmacs-prevent-open-too-much-files)
