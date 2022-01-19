@@ -66,7 +66,11 @@
  '(transient-levels-file "~/.emacs.d/cache/transient/levels.el")
  '(transient-values-file "~/.emacs.d/cache/transient/values.el")
  '(uniquify-buffer-name-style 'forward nil (uniquify))
- '(warning-suppress-types '((eglot) (comp) (comp) (yasnippet backquote-change)))
+ '(warning-suppress-types
+   '((comp)
+     (initialization)
+     (eglot)
+     (yasnippet backquote-change)))
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places 'bottom-only)
  '(window-divider-default-right-width 1)
