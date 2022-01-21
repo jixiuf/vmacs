@@ -1,6 +1,6 @@
 (global-tab-line-mode t)
-(global-set-key  (kbd "s-C-M-k") 'previous-buffer) ;H-k default C-x left
-(global-set-key  (kbd "s-C-M-j") 'next-buffer)     ;H-j default C-x right
+(global-set-key  (kbd "s-C-M-j") 'previous-buffer) ;H-k default C-x left
+(global-set-key  (kbd "s-C-M-k") 'next-buffer)     ;H-j default C-x right
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator (propertize " ▶" 'face  '(foreground-color . "cyan")))
@@ -24,7 +24,7 @@
 (defadvice tab-line-tabs-window-buffers (around skip-buffer activate)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
-  (let ((buffers ad-do-it))
+  (let ((buffers (reverse ad-do-it)))
     (cond
      ((vmacs-vterm-p)               ;当前buffer是vterm
       ;; 只返回vterm buffer 作为当前tab group 的tab
