@@ -21,7 +21,7 @@
 (add-hook 'vterm-toggle-hide-hook #'evil-normal-state)
 (setq vterm-toggle-fullscreen-p t)
 (setq vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
-(setq vterm-toggle-hide-method 'bury-all-vterm-buffer)
+;; (setq vterm-toggle-hide-method 'bury-all-vterm-buffer)
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
