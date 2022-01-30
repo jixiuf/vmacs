@@ -42,7 +42,7 @@ but skip uninterested buffers."
     (cond
      ((vmacs-vterm-p)               ;当前buffer是vterm
       ;; 只返回vterm buffer 作为当前tab group 的tab
-      (setq ad-return-value (seq-filter #'vmacs-vterm-p (reverse (buffer-list)))))
+      (setq ad-return-value (seq-filter #'vmacs-vterm-p buffers)))
      ((vmacs-boring-buffer-p (current-buffer))
       (setq ad-return-value (seq-filter #'vmacs-boring-buffer-p buffers)))
      (t

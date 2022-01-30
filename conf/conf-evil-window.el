@@ -49,21 +49,21 @@
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4
 (setq display-buffer-alist
       '(
-        ( "^*v?term*.*"
-         ;; (display-buffer-reuse-window )
-         ;; (inhibit-same-window . t)
-         (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
-         ;; (dedicated . t) ;dedicated is supported in emacs27
-         ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-         (direction . bottom)
-         (side . bottom)
-         (window-height . 0.3)
-         ;; (display-buffer-reuse-window display-buffer-at-bottom)
-         ;; (inhibit-same-window . t)
-         ;; (reusable-frames . nil)
-         ;; (side . bottom)
-         ;; (window-height . 1)
-         )
+        ;; ( "^*v?term*.*"
+        ;;  ;; (display-buffer-reuse-window )
+        ;;  ;; (inhibit-same-window . t)
+        ;;  (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
+        ;;  ;; (dedicated . t) ;dedicated is supported in emacs27
+        ;;  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+        ;;  (direction . bottom)
+        ;;  (side . bottom)
+        ;;  (window-height . 0.3)
+        ;;  ;; (display-buffer-reuse-window display-buffer-at-bottom)
+        ;;  ;; (inhibit-same-window . t)
+        ;;  ;; (reusable-frames . nil)
+        ;;  ;; (side . bottom)
+        ;;  ;; (window-height . 1)
+        ;;  )
         ((lambda (bufname _)
            (memq this-command '( next-error previous-error compile-goto-error)))
          (display-buffer-same-window )
