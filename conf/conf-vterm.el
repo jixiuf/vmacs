@@ -112,6 +112,7 @@
   "G" 'vterm-eob)
 
 (defun vmacs-vterm-hook()
+  (evil-define-key 'insert 'local   (kbd "<escape>") 'vterm--self-insert)
   (let ((p (get-buffer-process (current-buffer))))
     (when p (set-process-query-on-exit-flag p nil))))
 
