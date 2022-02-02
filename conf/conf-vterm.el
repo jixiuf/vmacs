@@ -22,6 +22,11 @@
 (setq vterm-toggle-fullscreen-p t)
 (setq vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
 ;; (setq vterm-toggle-hide-method 'bury-all-vterm-buffer)
+;; 使用swith-to-buffer 来hide vterm,以确保使用共同的window,与tabline 更好的兼容
+;; 主要是维护buffer-list,以确保下次切回来，仍是最近使用的vterm
+(add-hook 'vterm-toggle-hide-hook #'(lambda() (switch-to-buffer (current-buffer))))
+(setq vterm-toggle-hide-method nil)
+
 
 (defun vterm-ctrl-g ()
   "vterm ctrl-g"
