@@ -12,25 +12,40 @@
 
 (add-hook 'go-mode-hook 'vmacs-go-mode-hook)
 (defun vmacs-go-mode-hook()
+  (local-set-key (kbd "C-c i") 'go-goto-imports)
+  (local-set-key (kbd "C-c g") 'golang-setter-getter)
   (evil-collection-define-key 'normal 'go-mode-map "gd" )
-
-  (setq eglot-workspace-configuration
-        ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
-        '((:gopls .
-                  ((usePlaceholders . t)
-                   (completeUnimported . t) ;;
-                   (staticcheck . t)
-                   (directoryFilters . ["-vendor"])
-                   (analyses . ((unusedparams . t) (unusedwrite . t)))
-                   (annotations . ((bounds . t) (escape . t) (inline . t) (nil . t)))
-                   ;; (buildFlags . ["-mod=mod"])
-                   (allowImplicitNetworkAccess . t)
-                   (experimentalWorkspaceModule  . t)
-                   (allowModfileModifications . t)))))
+  (if (locate-dominating-file default-directory "vendor")
+      (setq eglot-workspace-configuration
+            ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
+            '((:gopls .
+                      ((usePlaceholders . t)
+                       (completeUnimported . t) ;;
+                       (staticcheck . t)
+                       (directoryFilters . ["-vendor"])
+                       (analyses . ((unusedparams . t) (unusedwrite . t)))
+                       (annotations . ((bounds . t) (escape . t) (inline . t) (nil . t)))
+                       (codelenses . ((vendor . t)))
+                       (buildFlags . ["-mod=readonly"])
+                       (allowImplicitNetworkAccess . t)
+                       (experimentalWorkspaceModule  . t)
+                       (allowModfileModifications . t)))))
+    (setq eglot-workspace-configuration
+          ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
+          '((:gopls .
+                    ((usePlaceholders . t)
+                     (completeUnimported . t) ;;
+                     (staticcheck . t)
+                     (directoryFilters . ["-vendor"])
+                     (analyses . ((unusedparams . t) (unusedwrite . t)))
+                     (annotations . ((bounds . t) (escape . t) (inline . t) (nil . t)))
+                     ;; (buildFlags . ["-mod=mod"])
+                     (allowImplicitNetworkAccess . t)
+                     (experimentalWorkspaceModule  . t)
+                     (allowModfileModifications . t))))))
   ;; (setq require-final-newline nil)
   ;; (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为symbol，还不是word
-  (local-set-key (kbd "C-c i") 'go-goto-imports)
-  (local-set-key (kbd "C-c g") 'golang-setter-getter))
+  )
 
 (require 'project)
 
