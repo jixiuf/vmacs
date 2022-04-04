@@ -103,6 +103,7 @@
  dired-recursive-deletes 'always       ;always表示不加询问
  dired-dwim-target t                   ;Dired试着猜处默认的目标目录
  dired-listing-switches "-alht"
+ dired-kill-when-opening-new-dired-buffer t
  )
 
 ;; (if (equal system-type 'gnu/linux)
