@@ -134,6 +134,7 @@
   "," 'dired
   "f" 'open-in-filemanager
   "r" 'revert-buffer
+  (kbd "<mouse-2>")     #'dired-mouse-find-file
   )
 (with-eval-after-load 'wdired (evil-set-initial-state 'wdired-mode 'insert))
 
