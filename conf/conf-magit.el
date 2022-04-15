@@ -67,11 +67,6 @@
 (define-key transient-map        "q" 'transient-quit-one)
 (define-key transient-edit-map   "q" 'transient-quit-one)
 (define-key transient-sticky-map "q" 'transient-quit-seq)
-(evil-collection-define-key 'normal 'magit-mode-map
-  "v"  'magit-push
-       "C-w"  evil-window-map
-       "gw" 'toggle-diff-whitespace
-       "gm"  'magit-toggle-margin)
 
 
 (defun vmacs-magit-mode-hook()
@@ -80,6 +75,12 @@
   ;; (magit-auto-revert-mode -1)
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
+  (evil-collection-define-key 'normal 'magit-mode-map
+    "v"  'magit-push
+    "C-w"  evil-window-map
+    "gw" 'toggle-diff-whitespace
+    "gm"  'magit-toggle-margin)
+
   ;; brew install git-delta
   (let ((dir (abbreviate-file-name (file-truename (directory-file-name (magit-toplevel))))))
     (unless (file-remote-p dir)
