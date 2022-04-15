@@ -177,6 +177,7 @@
 (defun vterm-edit-command-buffer ()
   (let ((buffer (get-buffer-create "vterm-edit-command")))
     (with-current-buffer buffer
+      (erase-buffer)
       (insert-buffer-substring
        vterm-edit-command--vterm-buffer
        vterm-edit-command--begin-point
