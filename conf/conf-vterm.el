@@ -7,6 +7,7 @@
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
 (setq-default vterm-max-scrollback (- 20000 42))
+(setq vterm-min-window-width 10)
 (setq-default vterm-enable-manipulate-selection-data-by-osc52 t)
 (setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=no ")
 (setq vterm-toggle-cd-auto-create-buffer t)
@@ -98,6 +99,12 @@
 ;; (define-key vterm-mode-map (kbd "C-l")   #'vterm-clear)
 (define-key vterm-mode-map (kbd "C-c C-e")   #'compilation-shell-minor-mode)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
+(evil-define-operator evil-vterm-delete-char (beg end type register)
+  "Delete previous character."
+  :motion evil-forward-char
+  (interactive "<R><x>")
+  (evil-collection-vterm-delete beg end type register))
+
 
 (evil-collection-define-key 'insert 'vterm-mode-map
   (kbd "C-r") 'vmacs-vterm-self-insert
@@ -114,7 +121,9 @@
   (kbd "C-r") 'vmacs-vterm-self-insert
   (kbd "C-y") 'vterm-yank
   (kbd "C-/") 'vterm-undo
+  "x" 'evil-vterm-delete-char
   "G" 'vterm-eob)
+(evil-collection-define-key 'visual 'vterm-mode-map "x" 'evil-vterm-delete-char)
 
 (defun vmacs-vterm-hook()
   (evil-define-key 'insert 'local   (kbd "<escape>") 'vterm--self-insert)
