@@ -146,16 +146,84 @@
 
 (add-hook 'vterm-toggle-after-remote-login-function 'vterm-toggle-after-ssh-login)
 
-(defun zsh-find-file-hook()
-  (when (string-prefix-p "/tmp/zsh" (buffer-file-name))
-    (setq truncate-lines nil)
-    (local-set-key (kbd "C-c C-k") #'server-edit-abort)
-    (local-set-key (kbd "C-c C-c") #'vmacs-kill-buffer-dwim)))
+(define-key vterm-mode-map (kbd "C-x C-e") 'vterm-edit-command-action)
+(define-key vterm-mode-map (kbd "C-c e") 'vterm-edit-command-action)
 
-(add-hook #'sh-mode-hook #'zsh-find-file-hook)
+(defun vterm-edit-command-action ()
+  (interactive)
+  (let* ((delete-trailing-lines t)
+         (vtermbuf (current-buffer))
+         (begin (vterm--get-prompt-point))
+         (buffer (get-buffer-create "vterm-edit-command"))
+         (n (length (filter-buffer-substring begin (point))))
+         foreground
+         (content (filter-buffer-substring
+                   begin (point-max))))
+    (with-current-buffer buffer
+      (setq vterm-edit-vterm-buffer vtermbuf)
+      (erase-buffer)
+      (insert content)
+      (delete-trailing-whitespace)
+      (goto-char (1+ n))
+      ;; delete zsh auto-suggest candidates
+      (setq foreground (plist-get (get-text-property (point) 'font-lock-face) :foreground ))
+      (when (equal foreground  (face-background 'vterm-color-black nil 'default))
+        (delete-region (point) (point-max)))
+      (sh-mode)
+      (vterm-edit-command-mode)
+      (evil-insert-state)
+      (setq-local header-line-format
+                  (substitute-command-keys
+                   (concat "Edit, then "
+                           (mapconcat
+                            'identity
+                            (list "\\[vterm-edit-command-commit]: Finish"
+                                  "\\[vterm-edit-command-abort]: Abort"
+                                  )
+                            ", "))))
+      (split-window-sensibly)
+      (switch-to-buffer-other-window buffer)))
+  )
 
-(define-key vterm-mode-map (kbd "C-x C-e") #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
-(define-key vterm-mode-map (kbd "C-c e")  #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
-(define-key vterm-mode-map (kbd "C-c '")  #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
+(defun vterm-edit-command-commit ()
+  (interactive)
+  (let ((delete-trailing-lines t)
+        content)
+    (delete-trailing-whitespace)
+    (goto-char (point-max))
+    (when (looking-back "\n") (backward-delete-char 1))
+    (setq content (buffer-string))
+    (with-current-buffer vterm-edit-vterm-buffer
+      (vterm-send-key "a" nil nil t)
+      (vterm-send-key "k" nil nil t t)
+      (unless (vterm--at-prompt-p)
+        (vterm-send-C-c))
+      (vterm-send-string content)))
+  (vterm-edit-command-abort))
+
+(defun vterm-edit-command-abort ()
+  (interactive)
+  (kill-buffer-and-window))
+
+(defvar vterm-edit-command-mode-map
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap (kbd "C-c C-c") #'vterm-edit-command-commit)
+    (define-key keymap (kbd "C-c C-k") #'vterm-edit-command-abort)
+    keymap))
+
+(define-minor-mode vterm-edit-command-mode
+  "Vterm Edit Command Mode")
+
+;; (defun zsh-find-file-hook()
+;;   (when (string-prefix-p "/tmp/zsh" (buffer-file-name))
+;;     (setq truncate-lines nil)
+;;     (local-set-key (kbd "C-c C-k") #'server-edit-abort)
+;;     (local-set-key (kbd "C-c C-c") #'vmacs-kill-buffer-dwim)))
+
+;; (add-hook #'sh-mode-hook #'zsh-find-file-hook)
+
+;; (define-key vterm-mode-map (kbd "C-x C-e") #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
+;; (define-key vterm-mode-map (kbd "C-c e")  #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
+;; (define-key vterm-mode-map (kbd "C-c '")  #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
 
 (provide 'conf-vterm)
