@@ -146,66 +146,16 @@
 
 (add-hook 'vterm-toggle-after-remote-login-function 'vterm-toggle-after-ssh-login)
 
+(defun zsh-find-file-hook()
+  (when (string-prefix-p "/tmp/zsh" (buffer-file-name))
+    (setq truncate-lines nil)
+    (local-set-key (kbd "C-c C-k") #'server-edit-abort)
+    (local-set-key (kbd "C-c C-c") #'vmacs-kill-buffer-dwim)))
 
+(add-hook #'sh-mode-hook #'zsh-find-file-hook)
 
-(define-key vterm-mode-map (kbd "C-x C-e") 'vterm-edit-command-action)
-(define-key vterm-mode-map (kbd "C-c e") 'vterm-edit-command-action)
-
-(defun vterm-edit-command-action ()
-  (interactive)
-  (let* ((vterm-buffer (current-buffer))
-         (begin-point (vterm--get-prompt-point))
-         (end-point (point)))
-    (setq vterm-edit-command--vterm-buffer vterm-buffer)
-    (setq vterm-edit-command--begin-point begin-point)
-    (setq vterm-edit-command--end-point end-point)
-    (kill-ring-save begin-point end-point)
-    (vterm-edit-command-buffer)))
-
-(defun vterm-edit-command-commit ()
-  (interactive)
-  (let ((content (buffer-string)))
-    (with-current-buffer vterm-edit-command--vterm-buffer
-      (vterm-delete-region vterm-edit-command--begin-point vterm-edit-command--end-point)
-      (vterm-send-string content)))
-  (vterm-edit-command-abort))
-
-(defun vterm-edit-command-abort ()
-  (interactive)
-  (kill-buffer-and-window))
-
-(defvar vterm-edit-command-mode-map
-  (let ((keymap (make-sparse-keymap)))
-    (define-key keymap (kbd "C-c C-c") #'vterm-edit-command-commit)
-    (define-key keymap (kbd "C-c C-k") #'vterm-edit-command-abort)
-    keymap))
-
-(define-minor-mode vterm-edit-command-mode
-  "Vterm Edit Command Mode")
-
-(defun vterm-edit-command-buffer ()
-  (let ((buffer (get-buffer-create "vterm-edit-command")))
-    (with-current-buffer buffer
-      (erase-buffer)
-      (insert-buffer-substring
-       vterm-edit-command--vterm-buffer
-       vterm-edit-command--begin-point
-       vterm-edit-command--end-point)
-      (vterm--remove-fake-newlines)
-      (sh-mode)
-      (vterm-edit-command-mode)
-      (evil-insert-state)
-      (setq-local header-line-format
-                  (substitute-command-keys
-                   (concat "Edit, then "
-                           (mapconcat
-                            'identity
-                            (list "\\[vterm-edit-command-commit]: Finish"
-                                  "\\[vterm-edit-command-abort]: Abort"
-                                  )
-                            ", "))))
-      (split-window-sensibly)
-      (switch-to-buffer-other-window buffer))))
-
+(define-key vterm-mode-map (kbd "C-x C-e") #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
+(define-key vterm-mode-map (kbd "C-c e")  #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
+(define-key vterm-mode-map (kbd "C-c '")  #'(lambda () (interactive) (vterm-send-string (kbd "C-x C-e"))))
 
 (provide 'conf-vterm)

@@ -338,6 +338,7 @@ Move point to end-of-line ,if point was already at that position,
      ((and (featurep 'server)
            (boundp 'server-buffer-clients)
            server-buffer-clients)
+      (save-buffer)
       (server-edit))
      ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
       (kill-this-buffer)

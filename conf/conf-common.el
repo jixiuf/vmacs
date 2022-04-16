@@ -139,6 +139,7 @@
 (setq-default auto-mode-alist
       (append
        '(("\\.pyx" . python-mode)
+         ("zsh" . sh-mode)
          ("SConstruct" . python-mode)
          ("\\.yml$" . yaml-mode)
          ("\\.yaml$" . yaml-mode)
