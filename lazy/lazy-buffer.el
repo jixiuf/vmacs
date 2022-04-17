@@ -52,17 +52,6 @@
                          (vmacs--git-files 1 nil))))
   "Recent file candidate source for `consult-buffer'.")
 
-;;;###autoload
-(defvar vmacs-consult--source-dired
-  `(:name     "Dired"
-              :narrow   ?d
-              :category file
-              :face     consult-file
-              :history  vmacs-dired-history
-              :action   ,#'consult--file-action
-              :items
-              ,(lambda()(require 'vmacs-dired-history) vmacs-dired-history))
-  "Recent dired candidate source for `consult-buffer'.")
 
 ;;
 (setq vmacs-ignore-buffers

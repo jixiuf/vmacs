@@ -132,7 +132,7 @@
         (rename-buffer  "*grep*" t)))
     )
   (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
-  (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
+  ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t)
   (setq consult-config `((consult-buffer :preview-key ,(kbd "C-v")) ;disable auto preview for consult-buffer
                          )))
@@ -163,6 +163,16 @@
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
+(setq-default consult-dir-sources
+              '(consult-dir--source-default
+                consult-dir--source-project
+                consult-dir--source-recentf
+                consult-dir--source-bookmark))
+(define-key minibuffer-local-completion-map (kbd "C-M-s-j") #'consult-dir)
+(define-key minibuffer-local-completion-map (kbd "C-M-s-l") #'consult-dir-jump-file) ;locate
+(define-key global-map (kbd "C-x d") #'consult-dir)
+(setq consult-dir-shadow-filenames nil)
+(setq consult-dir-default-command #'(lambda () (interactive)(dired default-directory)))
 
 (defun vmacs-icomplete()
   (setq-local truncate-lines t)
