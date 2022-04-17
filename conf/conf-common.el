@@ -123,7 +123,7 @@
 ;; Outer limit of 10x (960mb).
 ;; Note that the default is x100), but this seems too high.
 (setq undo-outer-limit 1006632960)
-
+(setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/cache/undo")))
 ;; (require 'display-fill-column-indicator nil t)
 ;; (when (featurep 'display-fill-column-indicator)
   ;; (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
