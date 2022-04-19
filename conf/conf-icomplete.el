@@ -129,8 +129,10 @@
              (when dir (setq default-directory dir)))
            ) lines)
         (embark-consult-export-grep lines)
-        (rename-buffer  "*grep*" t)))
+        ))
     )
+  (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
+
   (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (add-to-list 'consult-buffer-sources 'vmacs-consult--source-git t)
