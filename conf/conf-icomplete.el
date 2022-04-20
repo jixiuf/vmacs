@@ -165,8 +165,10 @@
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
+(require 'consult-dired-history)
 (setq-default consult-dir-sources
-              '(consult-dir--source-default
+              '(consult-dir--source-dired
+                consult-dir--source-default
                 consult-dir--source-project
                 consult-dir--source-recentf
                 consult-dir--source-bookmark))
