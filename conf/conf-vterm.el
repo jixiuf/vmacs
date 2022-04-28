@@ -114,6 +114,7 @@
   (kbd "C-g") 'vterm-ctrl-g)
 
 (evil-collection-define-key 'normal 'vterm-mode-map
+  "s" nil                               ;unbind s
   (kbd "C-g") 'vterm-ctrl-g
   (kbd "C-p") 'vmacs-vterm-self-insert
   (kbd "C-n") 'vmacs-vterm-self-insert

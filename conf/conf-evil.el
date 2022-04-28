@@ -13,7 +13,7 @@
  evil-want-keybinding nil
 
  ;; evil-search-module 'isearch        ;可以用C-w yank word
- evil-undo-system 'undo-tree
+ evil-undo-system 'undo-redo
  evil-disable-insert-state-bindings t
  evil-search-module 'evil-search        ;可以用gn 命令，需要取舍
 ;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
@@ -284,7 +284,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader (kbd "nw") 'widen)
 (vmacs-leader (kbd "nn") 'narrow-to-region)
 
-(vmacs-leader (kbd "xu") 'undo-tree-visualize)
+(vmacs-leader (kbd "xu") 'vundo)
 (vmacs-leader (kbd "xv") 'switch-to-scratch-buffer)
 (vmacs-leader (kbd "<RET>r") 'revert-buffer-with-coding-system) ;C-x<RET>r
 (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(

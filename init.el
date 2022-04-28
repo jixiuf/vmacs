@@ -72,7 +72,6 @@
   (require 'conf-version-control)
   (with-eval-after-load 'magit (require 'conf-magit))
 
-  (global-undo-tree-mode t)
   (global-font-lock-mode)
   (transient-mark-mode 1)
   (save-place-mode t)

@@ -62,7 +62,6 @@
 (when (vmacs-dumping-p)
   ;; disable undo-tree to prevent from segfaulting when loading the dump
   (message "dumping vmacs")
-  (global-undo-tree-mode -1)
   (setq load-path-backup load-path)
   (setq vmacs-dumping-state 'dumped)
   (garbage-collect))
