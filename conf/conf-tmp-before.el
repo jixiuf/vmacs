@@ -1,5 +1,14 @@
  ;; (when (file-directory-p "~/repos/emacs-libvterm")
  ;;   (add-to-list 'load-path "~/repos/emacs-libvterm"))
+
+;; (add-to-list 'load-path "~/repos/emacs-application-framework")
+;; (require 'eaf)
+;; (require 'eaf-browser)
+;; (require 'eaf-git)
+;; (setq eaf-browser-continue-where-left-off t)
+;; (setq eaf-browser-enable-adblocker t)
+;; (setq browse-url-browser-function 'eaf-open-browser)
+
 ;;  (when (file-directory-p "~/repos/Emacs-wgrep")
 ;;    (add-to-list 'load-path "~/repos/Emacs-wgrep"))
 
