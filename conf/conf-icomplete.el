@@ -165,13 +165,28 @@
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
-(require 'consult-dired-history)
+
+;; Track opened directories
+(defun recentf-track-opened-dir ()
+  (and default-directory
+       (recentf-add-file default-directory)))
+
+(add-hook 'dired-mode-hook #'recentf-track-opened-dir)
+
+;; Track closed directories
+(advice-add 'recentf-track-closed-file :override
+            (defun recentf-track-closed-advice ()
+              (cond (buffer-file-name (recentf-remove-if-non-kept buffer-file-name))
+                    ((equal major-mode 'dired-mode)
+                     (recentf-remove-if-non-kept default-directory)))))
+
+;; (require 'consult-dired-history)
 (setq-default consult-dir-sources
-              '(consult-dir--source-dired
-                consult-dir--source-default
-                consult-dir--source-project
+              '(consult-dir--source-default
                 consult-dir--source-recentf
+                consult-dir--source-project
                 consult-dir--source-bookmark))
+
 (define-key minibuffer-local-completion-map (kbd "C-M-s-j") #'consult-dir)
 (define-key minibuffer-local-completion-map (kbd "C-M-s-l") #'consult-dir-jump-file) ;locate
 (define-key global-map (kbd "C-x d") #'consult-dir)
