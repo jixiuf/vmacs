@@ -90,6 +90,7 @@
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-k")   #'vmacs-vterm-kill-line)
+(define-key vterm-mode-map (kbd "C-q")   #'vterm-send-next-key)
 
 
 ;; C－s 停止滚屏 C-q恢复滚屏
