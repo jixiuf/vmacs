@@ -3,6 +3,7 @@
 (setq eglot-confirm-server-initiated-edits nil)
 (setq eglot-autoshutdown nil)
 (setq eglot-sync-connect 0)
+(setq eglot-events-buffer-size 0)
 (setq eglot-extend-to-xref t)
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
