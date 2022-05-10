@@ -73,7 +73,7 @@ Move point to beginning-of-line ,if point was already at that position,
   (interactive)
   (cond
    ((derived-mode-p 'vterm-mode)
-    (vterm-beginning-of-line))
+    (call-interactively #'vterm-beginning-of-line))
    ((derived-mode-p 'eshell-mode)
     (let ((oldpos (point)))
       (eshell-bol)

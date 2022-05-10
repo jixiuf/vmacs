@@ -9,7 +9,7 @@
 (setq-default vterm-max-scrollback (- 20000 42))
 (setq vterm-min-window-width 10)
 (setq-default vterm-enable-manipulate-selection-data-by-osc52 t)
-(setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=no ")
+(setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=yes ")
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-clear-scrollback-when-clearing t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
