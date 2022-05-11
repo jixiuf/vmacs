@@ -45,7 +45,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(vundo consult-dir vterm-toggle pinyinlib org-msg mu4e-alert marginalia evil-collection verb embark-consult orderless eglot magit-libgit docker-tramp ox-gfm htmlize git-link evil dockerfile-mode iedit osx-dictionary magit dired-filetype-face golden-ratio-scroll-screen company evil-textobj-anyblock exec-path-from-shell go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
+   '(kind-icon cape corfu vundo consult-dir vterm-toggle pinyinlib org-msg mu4e-alert marginalia evil-collection verb embark-consult orderless eglot magit-libgit docker-tramp ox-gfm htmlize git-link evil dockerfile-mode iedit osx-dictionary magit dired-filetype-face golden-ratio-scroll-screen evil-textobj-anyblock exec-path-from-shell go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((checkdoc-minor-mode . t)

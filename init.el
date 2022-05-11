@@ -47,12 +47,12 @@
 
   ;; (require 'conf-helm)            ;
   ;; (require 'conf-ivy)
-;; (require 'conf-rg)
-(require 'conf-wgrep)
+  ;; (require 'conf-rg)
+  (require 'conf-wgrep)
   ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
   ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
-(when (require 'mu4e nil t) (require 'conf-mail))
+  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+  (when (require 'mu4e nil t) (require 'conf-mail))
 
 
 
@@ -64,7 +64,8 @@
   ;; gpg 自动加密解密文件相关
   (require 'conf-tags)                    ;ctags gtags 相关，代码跳转
   ;; (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
-  (require 'conf-company-mode)            ;补全
+  ;; (require 'conf-company-mode)            ;补全
+  (require 'conf-corfu)            ;补全
   (with-eval-after-load 'go-mode (require 'conf-program-golang))
   (with-eval-after-load 'python (require 'conf-program-python))
   ;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))

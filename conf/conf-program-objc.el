@@ -3,10 +3,10 @@
 (add-hook 'objc-mode-hook 'vmacs-objc-mode-hook)
 
 (defun vmacs-objc-mode-hook()
-  (company-mode 1)
+  ;; (company-mode 1)
   (local-set-key "]" 'objc-surround)
-  (setq-local company-backends
-              '( company-clang  company-semantic  company-files  company-keywords company-dabbrev))
+  ;; (setq-local company-backends
+  ;;             '( company-clang  company-semantic  company-files  company-keywords company-dabbrev))
   (when (equal system-type 'darwin)
     ;; Forgot what this was for..think some os x issues.
     (setenv "LC_CTYPE" "UTF-8"))

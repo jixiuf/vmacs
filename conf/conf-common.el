@@ -103,7 +103,7 @@
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
  recentf-max-saved-items 300
  ring-bell-function 'ignore
- savehist-additional-variables '(magit-repository-directories kill-ring)
+ savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否wrap显示
  display-line-numbers 'absolute
