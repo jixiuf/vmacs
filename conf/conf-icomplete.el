@@ -6,7 +6,7 @@
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-(setq icomplete-in-buffer t)
+(setq icomplete-in-buffer nil)
 (setq icomplete-tidy-shadowed-file-names t)
 (setq icomplete-prospects-height 2)
 ;; (concat
