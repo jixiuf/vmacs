@@ -7,12 +7,14 @@
 (define-key corfu-map (kbd "SPC") #'corfu-insert-separator)
 (define-key corfu-map (kbd "C-j") #'corfu-next)
 (define-key corfu-map (kbd "C-k") #'corfu-previous)
+(define-key corfu-map (kbd "M-.") #'corfu-first)
+(define-key corfu-map (kbd "M-,") #'corfu-last)
 
 (setq completion-category-overrides '((eglot (styles orderless))))
 
 (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
 (setq corfu-auto t)                 ;; Enable auto completion
-(setq corfu-separator ?\s)          ;; Orderless field separator
+;; (setq corfu-separator ?\s)          ;; Orderless field separator
 (setq corfu-quit-no-match 'separator) ;; or t
 ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
 ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
@@ -39,9 +41,10 @@
 ;;     (corfu-mode 1)))
 
 ;; (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
-
 (add-to-list 'completion-at-point-functions #'cape-file)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+(add-to-list 'completion-at-point-functions #'cape-symbol)
+
 (global-set-key (kbd "C-.") #'completion-at-point)
 
 (provide 'conf-corfu)

@@ -33,19 +33,19 @@
 (vmacs-leader (kbd ",") 'evil-jump-backward)  ;space, 回到上一个书签
 (vmacs-leader (kbd ".") 'evil-jump-forward)      ;space. 下一个书签
 
+(define-key evil-normal-state-map "gp" #'evil-project-find-regexp)
+(define-key evil-normal-state-map "gP" #'project-or-external-find-file)
 (define-key evil-motion-state-map "g." #'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 ;; (define-key evil-motion-state-map "gr" 'lsp-find-references)
-(define-key evil-motion-state-map "gR" #'eglot-rename)
 (define-key evil-motion-state-map "gd" #'vmacs-find-def)
 (define-key evil-motion-state-map "gr" #'xref-find-references)
+(define-key evil-motion-state-map "gR" #'eglot-rename)
 (define-key evil-motion-state-map "gc" #'eglot-find-declaration)
 (define-key evil-normal-state-map "gi" #'eglot-find-implementation)
 (define-key evil-motion-state-map "gt" #'eglot-find-typeDefinition)
 (define-key evil-motion-state-map "gs" #'eglot-reconnect)
 (define-key evil-motion-state-map "gS" #'(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
 (define-key evil-normal-state-map "gh" #'eglot-code-actions)
-(define-key evil-normal-state-map "gp" #'evil-project-find-regexp)
-(define-key evil-normal-state-map "gP" #'project-or-external-find-file)
 ;;
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
