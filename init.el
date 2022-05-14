@@ -62,7 +62,7 @@
   ;; (with-eval-after-load 'term (require 'conf-term)) ;
 
   ;; gpg 自动加密解密文件相关
-  (require 'conf-tags)                    ;ctags gtags 相关，代码跳转
+  (require 'conf-lsp)
   ;; (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
   ;; (require 'conf-company-mode)            ;补全
   (require 'conf-corfu)            ;补全
