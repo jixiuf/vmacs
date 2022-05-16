@@ -9,6 +9,13 @@
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
 (defun vmacs-lsp-hook()
+  ;; (add-to-list 'completion-at-point-functions #'cape-file)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  ;; (add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;; (setq-local completion-at-point-functions
+  ;;             (list
+  ;;              (cape-capf-buster
+  ;;               (cape-super-capf #'cape-file #'cape-dabbrev #'eglot-completion-at-point) 'equal)))
   ;; The depth of -10 places this before eglot's willSave notification,
   ;; so that that notification reports the actual contents that will be saved.
   (hs-minor-mode 1)
