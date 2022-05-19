@@ -191,7 +191,7 @@
 (define-key minibuffer-local-completion-map (kbd "C-M-s-l") #'consult-dir-jump-file) ;locate
 (define-key global-map (kbd "C-x d") #'consult-dir)
 (setq consult-dir-shadow-filenames nil)
-(setq consult-dir-default-command #'(lambda () (interactive)(dired default-directory)))
+(setq consult-dir-default-command #'consult-dir-dired)
 
 (defun vmacs-icomplete()
   (setq-local truncate-lines t)
