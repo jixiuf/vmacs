@@ -19,4 +19,4 @@
       (mapconcat 'identity (list "Keyword Arguments:" formatted-args) indent))))
 
 (add-hook 'python-mode-hook
-          '(lambda () (set (make-local-variable 'yas-indent-line) 'fixed)))
+          #'(lambda () (set (make-local-variable 'yas-indent-line) 'fixed)))
