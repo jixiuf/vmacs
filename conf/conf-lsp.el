@@ -59,10 +59,13 @@
 
 (defun vmacs-find-def()
   (interactive)
-  (let ((buffer-save-without-query t))
-    (when buffer-file-name
-      (basic-save-buffer)))
+  (when (and eglot--managed-mode
+             eglot--change-idle-timer)
+    (cancel-timer eglot--change-idle-timer)
+    (eglot--signal-textDocument/didChange)
+    (setq eglot--change-idle-timer nil))
   (call-interactively #'evil-goto-definition))
+
 (evil-add-command-properties #'vmacs-find-def :jump t)
 
 (setq evil-goto-definition-functions
