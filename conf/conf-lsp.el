@@ -14,13 +14,14 @@
   (hs-minor-mode 1)
   ;; (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t);before hook有时无效，只好After
   ;; (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
+  (evil-define-key 'normal 'local  "=" #'eglot-format-buffer)
   )
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
   (add-hook mod #'eglot-ensure)
   (add-hook mod #'vmacs-lsp-hook))
 
-(dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
+;; (dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
 (with-eval-after-load 'eglot
   ;; brew install llvm
   ;;clangd https://clangd.llvm.org/installation.html
@@ -44,6 +45,7 @@
 (define-key evil-motion-state-map "gc" #'eglot-find-declaration)
 (define-key evil-normal-state-map "gi" #'eglot-find-implementation)
 (define-key evil-motion-state-map "gt" #'eglot-find-typeDefinition)
+
 (define-key evil-motion-state-map "gs" #'eglot-reconnect)
 (define-key evil-motion-state-map "gS" #'(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
 (define-key evil-normal-state-map "gh" #'eglot-code-actions)
@@ -59,7 +61,8 @@
 (defun vmacs-find-def()
   (interactive)
   (let ((buffer-save-without-query t))
-    (basic-save-buffer))
+    (when buffer-file-name
+      (basic-save-buffer)))
   (call-interactively #'evil-goto-definition))
 (evil-add-command-properties #'vmacs-find-def :jump t)
 
