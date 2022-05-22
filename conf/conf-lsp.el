@@ -9,19 +9,26 @@
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
 (defun vmacs-lsp-hook()
-  ;; The depth of -10 places this before eglot's willSave notification,
-  ;; so that that notification reports the actual contents that will be saved.
+  (eglot-ensure)
   (hs-minor-mode 1)
-  ;; (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t);before hook有时无效，只好After
-  ;; (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
   (evil-define-key 'normal 'local  "=" #'eglot-format-buffer)
-  )
+  (evil-define-key 'normal 'local "gd" #'vmacs-find-def)
+  (evil-define-key 'normal 'local "gR" #'eglot-rename)
+  (evil-define-key 'normal 'local "gc" #'eglot-find-declaration)
+  (evil-define-key 'normal 'local "gi" #'eglot-find-implementation)
+  (evil-define-key 'normal 'local "gt" #'eglot-find-typeDefinition)
+  (evil-define-key 'normal 'local "gs" #'eglot-reconnect)
+  (evil-define-key 'normal 'local "gS" #'(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
+  (evil-define-key 'normal 'local "gh" #'eglot-code-actions)
+  (unless (eq major-mode 'go-mode)      ;go 暂时用goimports,no block ui
+    ;; The depth of -10 places this before eglot's willSave notification,
+    ;; so that that notification reports the actual contents that will be saved.
+    (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
-  (add-hook mod #'eglot-ensure)
   (add-hook mod #'vmacs-lsp-hook))
 
-;; (dolist (mod '(go-mode-hook)) (add-hook mod 'vmacs-lsp-hook))
 (with-eval-after-load 'eglot
   ;; brew install llvm
   ;;clangd https://clangd.llvm.org/installation.html
@@ -41,14 +48,6 @@
 ;; (define-key evil-motion-state-map "gr" 'lsp-find-references)
 (define-key evil-motion-state-map "gd" #'vmacs-find-def)
 (define-key evil-motion-state-map "gr" #'xref-find-references)
-(define-key evil-motion-state-map "gR" #'eglot-rename)
-(define-key evil-motion-state-map "gc" #'eglot-find-declaration)
-(define-key evil-normal-state-map "gi" #'eglot-find-implementation)
-(define-key evil-motion-state-map "gt" #'eglot-find-typeDefinition)
-
-(define-key evil-motion-state-map "gs" #'eglot-reconnect)
-(define-key evil-motion-state-map "gS" #'(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
-(define-key evil-normal-state-map "gh" #'eglot-code-actions)
 ;;
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)

@@ -25,7 +25,6 @@
   (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
   (local-set-key (kbd "C-c i") 'go-goto-imports)
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
-  (evil-collection-define-key 'normal 'go-mode-map "gd" )
   (setq eglot-workspace-configuration
         ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
         '((:gopls .
