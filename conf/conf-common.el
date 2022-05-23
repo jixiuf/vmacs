@@ -170,7 +170,7 @@
          ("\\.rel$" . erlang-mode)
          ("\\.app$" . erlang-mode)
          ("\\.app.src$" . erlang-mode)
-         ("\\.ahk$\\|\\.AHK$" . xahk-mode)
+         ("\\.ahk$\\|\\.AHK$" . ahk-mode)
          ("\\.bat$"   . batch-mode)
          ("\\.cmd$"   . batch-mode)
          ("\\.pl$"   . cperl-mode)
