@@ -59,6 +59,7 @@
 
 (defun vmacs-find-def()
   (interactive)
+  (require 'eglot)
   (when (and eglot--managed-mode
              eglot--change-idle-timer)
     (cancel-timer eglot--change-idle-timer)
