@@ -22,14 +22,15 @@
   (when (boundp 'load-path-backup)
     (setq load-path load-path-backup)))
 
+(setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
+(require 'custom-file)
+
 (require 'conf-package)
 (require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
 (require 'conf-minibuffer)
 (require 'conf-icomplete)
 (require 'conf-keybind)
 ;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
-(setq custom-file (concat user-emacs-directory "conf/custom-file.el"))
-(require 'custom-file)
 ;; (require 'vmacs-theme)
 
 

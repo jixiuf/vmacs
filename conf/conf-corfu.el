@@ -2,6 +2,10 @@
 (global-corfu-mode)
 (corfu-history-mode)
 (require 'kind-icon)
+(unless (display-graphic-p)
+  (require 'corfu-popup)
+  (corfu-popup-mode +1))
+
 (setq kind-icon-default-face 'corfu-default)
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
 (define-key corfu-map (kbd "SPC") #'corfu-insert-separator)
