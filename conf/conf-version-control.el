@@ -332,7 +332,7 @@
 (provide 'conf-version-control)
 
 ;; Local Variables:
-;; coding: utf-8
+;; coding: utf-8-unix
 ;; End:
 
 ;;; conf-version-control.el ends here.

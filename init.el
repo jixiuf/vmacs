@@ -80,7 +80,7 @@
   (recentf-mode 1)
   (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
   (require 'conf-tmp nil t)
-  (require 'conf-vterm)
+  (unless (eq system-type 'windows-nt) (require 'conf-vterm))
   (require 'server)
   (unless (server-running-p) (server-start))
   (when (> emacs-major-version 27) (load-theme 'modus-vivendi)))
