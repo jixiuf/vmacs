@@ -64,8 +64,10 @@
 
 (setq-default initial-frame-alist
               '((alpha . 93)
-                (height . 43)
-                (width . 159)
+                (top . 1)
+                (left . 1)
+                (height . 30)
+                (width . 100)
                 ;; (font . "Sarasa Mono CL")
                 ;; (font . "Sarasa Mono CL-22")
                 (ns-appearance . dark)
