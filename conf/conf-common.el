@@ -34,11 +34,7 @@
             content)))
 (poem-update)
 
-(defvar  dropbox-dir (expand-file-name "~/Documents/dropbox"))
-(when (equal system-type 'darwin)
-  (when (or (not (file-exists-p dropbox-dir))
-            (not (file-symlink-p dropbox-dir)))
-    (start-process "lndropbox" "*Messages*" "ln"  "-f" "-s" (expand-file-name "~/Library/Mobile Documents/com~apple~CloudDocs/") dropbox-dir)))
+(defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 
