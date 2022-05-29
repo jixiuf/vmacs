@@ -1,4 +1,3 @@
-;;; -*- lexical-binding: t; -*-
 ;; https://github.com/saibing/tools
 ;; go get  golang.org/x/tools/cmd/gopls
 
@@ -21,11 +20,9 @@
       gofmt-command nil
       (format "%s -w %s" gofmt-command buffer-file-name))
      nil)))
-(setq gofmt-show-errors 'echo)
+
 (defun vmacs-go-mode-hook()
-  ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
- (add-hook 'before-save-hook 'gofmt-before-save nil t)
-  ;; (add-hook 'before-save-hook 'gofmt-async nil t)
+  (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
   (local-set-key (kbd "C-c i") 'go-goto-imports)
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
   (setq eglot-workspace-configuration
@@ -58,71 +55,6 @@
   (cdr project))
 
 (add-hook 'project-find-functions #'project-find-go-module)
-;; 尝试以异步的方式执行gofmt ,扫行时copy 至临时文件，生成patch文件
-;; 生成后，检测文件有没有被再次编辑，有的话放弃此次gofmt
-(defun gofmt-async ()
-  "Format the current buffer according to the formatting tool.
-
-The tool used can be set via ‘gofmt-command’ (default: gofmt) and additional
-arguments can be set as a list via ‘gofmt-args’."
-  (interactive)
-  (let ((tmpfile (make-nearby-temp-file "gofmt" nil ""))
-        (tmpfile2 (make-nearby-temp-file "gofmt" nil ""))
-        (patchbuf (generate-new-buffer "*Gofmt patch*"))
-        (coding-system-for-read 'utf-8)
-        (coding-system-for-write 'utf-8)
-        (buf (current-buffer))
-        our-gofmt-args)
-    (unwind-protect
-        (save-restriction
-          (widen)
-          (write-region nil nil tmpfile)
-          (write-region nil nil tmpfile2)
-
-          (when (and (gofmt--is-goimports-p) buffer-file-name)
-            (setq our-gofmt-args
-                  (append our-gofmt-args
-                          ;; srcdir, despite its name, supports
-                          ;; accepting a full path, and some features
-                          ;; of goimports rely on knowing the full
-                          ;; name.
-                          (list "-srcdir" (file-local-name
-                                           (file-truename buffer-file-name))))))
-          (setq our-gofmt-args
-                (append our-gofmt-args gofmt-args
-                        (list "-w" (file-local-name tmpfile))))
-          (message "Calling gofmt: %s %s" gofmt-command our-gofmt-args)
-          ;; We're using errbuf for the mixed stdout and stderr output. This
-          ;; is not an issue because gofmt -w does not produce any stdout
-          ;; output in case of success.
-          (setq proc (apply #'start-file-process gofmt-command  nil gofmt-command  our-gofmt-args))
-          (set-buffer-modified-p nil)
-          (set-process-sentinel
-           proc #'(lambda(p msg)
-                    (when (string-prefix-p  "finished" msg)
-                      (let ((local-copy (file-local-copy tmpfile))
-                            diff-proc)
-                        (unwind-protect
-                            (let ((content (buffer-string)))
-                              (setq diff-proc
-                                    (start-process "gmftm-diff"
-                                                   patchbuf "diff" "-n"
-                                                   tmpfile2 (or local-copy tmpfile)))
-                              (set-process-sentinel
-                               diff-proc
-                               #'(lambda(p msg)
-                                   (unless (string-prefix-p  "finished" msg)
-                                     (with-current-buffer buf
-                                       (unless (buffer-modified-p)
-                                         (go--apply-rcs-patch patchbuf)
-                                         (basic-save-buffer)
-                                         (message "Applied gofmt")))
-                                     )
-                                   (kill-buffer patchbuf)
-                                   (delete-file tmpfile)
-                                   (delete-file tmpfile2))))
-                          (when local-copy (delete-file local-copy)))))
-                    ))))))
 
 (provide 'conf-program-golang)
 
