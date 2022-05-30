@@ -1,53 +1,39 @@
 ;;; -*- coding:utf-8 -*-
 
-(require 'lsp-bridge)
-(setq lsp-bridge-completion-provider 'corfu)
-(setq corfu-on-exact-match 'quit)
-(setq lsp-bridge-enable-auto-import t)
-(global-lsp-bridge-mode)
-
-
-;; (setq eglot-confirm-server-initiated-edits nil)
-;; (setq eglot-autoshutdown nil)
-;; (setq eglot-sync-connect 0)
-;; (setq eglot-events-buffer-size 0)
-;; (setq eglot-extend-to-xref t)
-;; ;; :documentHighlightProvider 禁用高亮光标下的单词
-;; (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
-;; (defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
+(setq eglot-confirm-server-initiated-edits nil)
+(setq eglot-autoshutdown nil)
+(setq eglot-sync-connect 0)
+(setq eglot-events-buffer-size 0)
+(setq eglot-extend-to-xref t)
+;; :documentHighlightProvider 禁用高亮光标下的单词
+(setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
+(defun vmacs-eglot-organize-imports() (call-interactively 'eglot-code-action-organize-imports))
 (defun vmacs-lsp-hook()
-  ;; (eglot-ensure)
+  (eglot-ensure)
   (hs-minor-mode 1)
-  (evil-define-key 'normal 'local "gd" #'lsp-bridge-find-def)
-  (evil-define-key 'normal 'local "gr" #'lsp-bridge-find-references)
-  (evil-define-key 'normal 'local "gi" #'lsp-bridge-find-impl)
-  (evil-define-key 'normal 'local "gs" #'lsp-bridge-restart-process)
-  (evil-define-key 'normal 'local "gR" #'lsp-bridge-rename)
-  (evil-define-key 'normal 'local (kbd "C-h C-h") #'lsp-bridge-lookup-documentation)
-  ;; (evil-define-key 'normal 'local  "=" #'eglot-format-buffer)
-  ;; (evil-define-key 'normal 'local "gd" #'vmacs-find-def)
-  ;; (evil-define-key 'normal 'local "gR" #'eglot-rename)
-  ;; (evil-define-key 'normal 'local "gc" #'eglot-find-declaration)
-  ;; (evil-define-key 'normal 'local "gi" #'eglot-find-implementation)
-  ;; (evil-define-key 'normal 'local "gt" #'eglot-find-typeDefinition)
-  ;; (evil-define-key 'normal 'local "gs" #'eglot-reconnect)
-  ;; (evil-define-key 'normal 'local "gS" #'(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
-  ;; (evil-define-key 'normal 'local "gh" #'eglot-code-actions)
+  (evil-define-key 'normal 'local  "=" #'eglot-format-buffer)
+  (evil-define-key 'normal 'local "gd" #'vmacs-find-def)
+  (evil-define-key 'normal 'local "gR" #'eglot-rename)
+  (evil-define-key 'normal 'local "gc" #'eglot-find-declaration)
+  (evil-define-key 'normal 'local "gi" #'eglot-find-implementation)
+  (evil-define-key 'normal 'local "gt" #'eglot-find-typeDefinition)
+  (evil-define-key 'normal 'local "gs" #'eglot-reconnect)
+  (evil-define-key 'normal 'local "gS" #'(lambda()(interactive)(call-interactively #'eglot-shutdown-all)(call-interactively #'eglot)))
+  (evil-define-key 'normal 'local "gh" #'eglot-code-actions)
   (unless (eq major-mode 'go-mode)      ;go 暂时用goimports,no block ui
     ;; The depth of -10 places this before eglot's willSave notification,
     ;; so that that notification reports the actual contents that will be saved.
-    ;; (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
-    ;; (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
-    ))
+    (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t)))
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-mode-hook c-mode-hook ))
   (add-hook mod #'vmacs-lsp-hook))
 
-;; (with-eval-after-load 'eglot
-;;   ;; brew install llvm
-;;   ;;clangd https://clangd.llvm.org/installation.html
-;;   ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
-;;   (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd")))
+(with-eval-after-load 'eglot
+  ;; brew install llvm
+  ;;clangd https://clangd.llvm.org/installation.html
+  ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
+  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd")))
 
 (define-key evil-normal-state-map "gf" 'evil-jump-forward)
 (define-key evil-normal-state-map "gb" 'evil-jump-backward)
@@ -60,8 +46,8 @@
 (define-key evil-normal-state-map "gP" #'project-or-external-find-file)
 (define-key evil-motion-state-map "g." #'evil-jump-to-tag) ;对 xref-find-definitions 进行了包装
 ;; (define-key evil-motion-state-map "gr" 'lsp-find-references)
-;; (define-key evil-motion-state-map "gd" #'vmacs-find-def)
-;; (define-key evil-motion-state-map "gr" #'xref-find-references)
+(define-key evil-motion-state-map "gd" #'vmacs-find-def)
+(define-key evil-motion-state-map "gr" #'xref-find-references)
 ;;
 ;; ;; (define-key evil-motion-state-map "gd" 'evil-goto-definition);evil default,see evil-goto-definition-functions
 ;; (define-key evil-motion-state-map "gi" 'lsp-find-implementation)
@@ -71,17 +57,17 @@
   (when current-prefix-arg (setq string (project--read-regexp)))
   (project-find-regexp (or string (regexp-quote (thing-at-point 'symbol)))))
 
-;; (defun vmacs-find-def()
-;;   (interactive)
-;;   (require 'eglot)
-;;   (when (and eglot--managed-mode
-;;              eglot--change-idle-timer)
-;;     (cancel-timer eglot--change-idle-timer)
-;;     (eglot--signal-textDocument/didChange)
-;;     (setq eglot--change-idle-timer nil))
-;;   (call-interactively #'evil-goto-definition))
+(defun vmacs-find-def()
+  (interactive)
+  (require 'eglot)
+  (when (and eglot--managed-mode
+             eglot--change-idle-timer)
+    (cancel-timer eglot--change-idle-timer)
+    (eglot--signal-textDocument/didChange)
+    (setq eglot--change-idle-timer nil))
+  (call-interactively #'evil-goto-definition))
 
-;; (evil-add-command-properties #'vmacs-find-def :jump t)
+(evil-add-command-properties #'vmacs-find-def :jump t)
 
 (setq evil-goto-definition-functions
       '(evil-goto-definition-xref  evil-project-find-regexp evil-goto-definition-imenu  evil-goto-definition-search))

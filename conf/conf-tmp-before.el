@@ -1,5 +1,5 @@
- (when (file-directory-p "~/repos/lsp-bridge/")
-   (add-to-list 'load-path "~/repos/lsp-bridge/"))
+ ;; (when (file-directory-p "~/repos/emacs-libvterm")
+ ;;   (add-to-list 'load-path "~/repos/emacs-libvterm"))
 
 ;; (add-to-list 'load-path "~/repos/emacs-application-framework")
 ;; (require 'eaf)
