@@ -1,4 +1,4 @@
-;; https://github.com/saibing/tools
+;;; -*- lexical-binding: t; -*-
 ;; go get  golang.org/x/tools/cmd/gopls
 
 ;; go install golang.org/x/tools/cmd/goimports
@@ -14,15 +14,16 @@
 ;; 采用after-save-hook 触发，此时文件已经实质落盘,异步执行，不卡UI
 (defun vmacs-auto-gofmt()
   (when (and buffer-file-name
-         (eq major-mode 'go-mode))
-    (set-process-query-on-exit-flag
-     (start-process-shell-command
-      gofmt-command nil
-      (format "%s -w %s" gofmt-command buffer-file-name))
-     nil)))
+             (eq major-mode 'go-mode))
+    (let ((proc (start-process-shell-command
+                 gofmt-command nil
+                 (format "%s -w %s" gofmt-command buffer-file-name))))
+      (set-process-query-on-exit-flag proc nil))))
 
 (defun vmacs-go-mode-hook()
-  (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
+  (setq gofmt-show-errors 'buffer)
+  (add-hook 'before-save-hook 'gofmt-before-save nil t)
+  ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
   (local-set-key (kbd "C-c i") 'go-goto-imports)
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
   (setq eglot-workspace-configuration
