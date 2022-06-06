@@ -126,12 +126,15 @@
     (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
-  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode  magit-status-mode))
-      (if (member major-mode '(vterm-mode))
-          (setq display-line-numbers 'absolute)
-          (setq display-line-numbers nil)
-          )
-    (setq display-line-numbers 'visual)))
+  (message "%s" (buffer-name))
+  (cond ((member major-mode '(vterm-mode))
+         (setq display-line-numbers 'absolute)
+         )
+        ((member major-mode '(term-mode eshell-mode ansi-term-mode magit-status-mode fundamental-mode))
+         (setq display-line-numbers nil))
+        ((member (buffer-name) '(" *acm-buffer*"  " *acm-doc-buffer*"))
+         (setq display-line-numbers nil))
+        (t (setq display-line-numbers 'visual))))
 
 
 (add-hook 'evil-insert-state-entry-hook 'vmacs-change-line-number-abs)
