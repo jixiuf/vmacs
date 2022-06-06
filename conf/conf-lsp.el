@@ -1,11 +1,10 @@
 ;;; -*- coding:utf-8 -*-
 
 (require 'lsp-bridge)
+(setq lsp-bridge-completion-provider 'corfu)
+(setq corfu-on-exact-match 'quit)
 (setq lsp-bridge-enable-auto-import t)
 (global-lsp-bridge-mode)
-(with-eval-after-load 'acm
-  (define-key acm-mode-map (kbd "C-j") 'acm-select-next)
-  (define-key acm-mode-map (kbd "C-k") 'acm-select-prev))
 
 
 ;; (setq eglot-confirm-server-initiated-edits nil)
