@@ -18,7 +18,7 @@
         (setq default-directory git-dir)
         (setq list (gethash git-dir  git-repos-files-cache))
         (when (or (not list) current-prefix-arg) ;prefix则会刷新缓存
-          (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
+          (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v snippets|grep -v reveal|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
           (puthash git-dir list git-repos-files-cache))
 
         (setq result-list (append result-list list))))
@@ -30,7 +30,7 @@
             (setq default-directory magit-repo)
             (setq list (gethash magit-repo  git-repos-files-cache))
             (when (or (not list) current-prefix-arg)
-              (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
+              (setq list (split-string (shell-command-to-string (format "git ls-files --full-name --|grep -v snippets|grep -v reveal|sed \"s|^|%s/|g\"" default-directory)) "\n" t))
               (puthash magit-repo list git-repos-files-cache))
             (setq result-list (append result-list list))))))
     result-list))
