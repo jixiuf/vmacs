@@ -126,7 +126,6 @@
     (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
-  (message "%s" (buffer-name))
   (cond ((member major-mode '(vterm-mode))
          (setq display-line-numbers 'absolute)
          )
