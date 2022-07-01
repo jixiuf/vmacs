@@ -1,5 +1,6 @@
 ;;; Code:
 (require 'icomplete)
+(require 'recentf)
 
 ;; (setq icomplete-max-delay-chars 3)
 (setq icomplete-delay-completions-threshold 2000)
