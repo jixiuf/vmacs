@@ -4,7 +4,7 @@
  'vmacs
  '(fill-column-indicator ((t (:inherit shadow :stipple nil :foreground "gray35" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal))))
  '(default ((t (:background "#202020" :foreground "#eeeeec" ))))
- '(fixed-pitch ((t (:inherit default :family "Sarasa Mono CL"))))
+ '(fixed-pitch ((t (:inherit default :family "Sarasa Mono SC Nerd"))))
  '(centaur-tabs-selected-modified ((t (:inherit default :background "honeydew4" :foreground "white"))))
  '(centaur-tabs-default ((t (:inherit default :background "#202020" :foreground "#202020" :box nil :overline nil :height 1.1))))
  '(centaur-tabs-selected ((t (:inherit default :background "gray70" :foreground "black" :box nil :overline nil :height 1.1))))

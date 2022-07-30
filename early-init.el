@@ -53,13 +53,13 @@
 
 ;; (create-fontset-from-fontset-spec
 ;;     (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
-;;             ",han:Sarasa Mono CL:size=18"
+;;             ",han:Sarasa Mono SC Nerd:size=18"
 ;;             ",symbol:Apple Color Emoji:size=18" ;😀
-;;             ",cjk-misc:Sarasa Mono CL:size=18"
-;;             ",bopomofo:Sarasa Mono CL:size=18"
-;;             ",kana:Sarasa Mono CL:size=18"
-;;             ",hangul:Sarasa Mono CL:size=18"
-;;             ",latin:Sarasa Mono CL:size=18"))
+;;             ",cjk-misc:Sarasa Mono SC Nerd:size=18"
+;;             ",bopomofo:Sarasa Mono SC Nerd:size=18"
+;;             ",kana:Sarasa Mono SC Nerd:size=18"
+;;             ",hangul:Sarasa Mono SC Nerd:size=18"
+;;             ",latin:Sarasa Mono SC Nerd:size=18"))
 
 
 (setq-default initial-frame-alist
@@ -68,8 +68,8 @@
                 (left . 1)
                 (height . 30)
                 (width . 100)
-                ;; (font . "Sarasa Mono CL")
-                ;; (font . "Sarasa Mono CL-22")
+                ;; (font . "Sarasa Mono SC Nerd")
+                ;; (font . "Sarasa Mono SC Nerd-22")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;

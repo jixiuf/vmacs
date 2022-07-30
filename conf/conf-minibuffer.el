@@ -79,7 +79,7 @@ Monospaced font whihc is fixed idth and height is recommended."
           (min-height .  2)
           (height . 15)
           (minibuffer-exit . t)
-          ;; (font . "Sarasa Mono CL-22")
+          ;; (font . "Sarasa Mono SC Nerd-22")
           (alpha . 100)
           ;; (left-fringe . 10 )
           (cursor-color . "Yellow")

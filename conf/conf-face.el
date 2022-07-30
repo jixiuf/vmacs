@@ -2,7 +2,7 @@
 ;;  这个工具不错 https://blindwith.science/2019/07/443.html/
 ;; here are 20 hanzi and 40 english chars, see if they are the same width
 ;;
-;; Sarasa Mono CL-18 等高等宽字体  更纱黑体
+;; Sarasa Mono SC Nerd-18 等高等宽字体  更纱黑体
 ;; https://ericzhuochen.com/blog/post/emacs-1-font/
 ;; https://github.com/be5invis/Sarasa-Gothic
 ;; ;; 1l0oOLiI

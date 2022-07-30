@@ -1,0 +1,4 @@
+https://github.com/laishulu/Sarasa-Mono-SC-Nerd
+
+brew tap laishulu/cask-fonts
+brew install --cask font-sarasa-nerd
