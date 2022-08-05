@@ -10,7 +10,7 @@ function call_emacsclient(){
     # echo $EMACSCLIENT
     framecnt=`$EMACSCLIENT $socket_file_switch --eval "(gui-frame-cnt)"`
     # echo $framecnt
-    if [ $framecnt = "0" ]; then
+    if [ "$framecnt" = "0" ]; then
         if [ 0 -eq "$#" ]; then        # 无文件名参数则不是在编辑文件，只打开一个窗口就可以了
             $EMACSCLIENT -c --no-wait
             # 前置emacsclient 窗口
