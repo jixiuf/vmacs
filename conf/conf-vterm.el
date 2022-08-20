@@ -57,7 +57,7 @@
       (when (looking-back "[ \t\n]+" beg t)
         (setq end (match-beginning 0)))
       (when (> end beg) (kill-ring-save beg end)))
-    (when succ (vterm-send-C-k))))
+    (when succ (vterm-send-key "k" nil nil :ctrl))))
 
 (defun vmacs-vterm-self-insert()
   (interactive)
@@ -96,7 +96,7 @@
 ;; C－s 停止滚屏 C-q恢复滚屏
 (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
 
-(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm-send-C-c)
+(define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm--self-insert)
 ;; (define-key vterm-mode-map (kbd "C-l")   #'vterm-clear)
 (define-key vterm-mode-map (kbd "C-c C-e")   #'compilation-shell-minor-mode)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
@@ -199,7 +199,7 @@
       (vterm-send-key "a" nil nil t)
       (vterm-send-key "k" nil nil t t)
       (unless (vterm--at-prompt-p)
-        (vterm-send-C-c))
+        (vterm-send-key "c" nil nil t))
       (vterm-send-string content)))
   (vterm-edit-command-abort))
 
