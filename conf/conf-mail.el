@@ -20,7 +20,7 @@
   )
 (evil-collection-define-key 'normal 'mu4e-headers-mode-map
   "r" #'mu4e-headers-mark-for-read
-  "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)))
+  "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t))
   "!" #'mu4e-headers-mark-for-refile
   (kbd "M-n") #'mu4e-headers-next-unread
   (kbd "M-p") #'mu4e-headers-prev-unread
