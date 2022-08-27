@@ -38,6 +38,16 @@ if [  -z $EMACSCMD ] && [ -x "/usr/local/bin/emacs"  ] && [ `/usr/local/bin/emac
     call_emacs $@
     exit
 fi
+if [  -z $EMACSCMD ] && [ -x "/usr/local/opt/emacs-plus@29/bin/emacs"  ] && [ `/usr/local/opt/emacs-plus@29/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'` != "22" ]; then
+    if [ `file /usr/local/opt/emacs-plus@29/bin/emacs|grep shell|wc -l` -eq 1 ]; then
+        EMACSCMD=`cat /usr/local/opt/emacs-plus@29/bin/emacs|grep exec|cut -d " " -f 2`
+    else
+        EMACSCMD="/usr/local/opt/emacs-plus@29/bin/emacs"
+    fi
+    call_emacs $@
+    exit
+fi
+
 if [  -z $EMACSCMD ] && [ -x "/usr/local/emacs/bin/emacs"  ] && [ `/usr/local/emacs/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'` != "22" ]; then
     if [ `file /usr/local/emacs/bin/emacs|grep shell|wc -l` -eq 1 ]; then
         EMACSCMD=`cat /usr/local/emacs/bin/emacs|grep exec|cut -d " " -f 2`
