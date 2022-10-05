@@ -458,7 +458,10 @@ end tell"))
 
 (defun compile-go-test-current()
   (interactive)
-  (setq compile-command (concat "go test -v -test.run "  (go--function-name t)))
+  (let ((funname (go--function-name t)))
+    (if (string-prefix-p "Bench" funname)
+        (setq compile-command (format "go test -v -bench=%s -test.run %s"  funname funname))
+      (setq compile-command (concat "go test -v -test.run "  funname))))
   (call-interactively 'vterm-compile))
 
 
