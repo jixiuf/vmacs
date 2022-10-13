@@ -11,9 +11,12 @@
 ;; (setq completion-pcm-word-delimiters "-_/:| ")
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
 (setq completions-format 'one-column)   ; *Completions* buffer M-v跳到*Completions* buffer
+(setq completions-header-format nil)
+(setq max-mini-window-height 10)        ;selectrum-num-candidates-displayed 受影响
+(setq completions-max-height 10)
+;; (setq completion-auto-select nil)
 (setq completions-detailed t)
 (setq completion-show-help nil) ;*Completions* show help
-(setq max-mini-window-height 20)        ;selectrum-num-candidates-displayed 受影响
 (setq eldoc-echo-area-use-multiline-p 3)
 (setq resize-mini-windows 'grow-only)
 ;; (setq read-answer-short t)
