@@ -171,6 +171,16 @@
 (global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
+
+(defun vmacs-recentf-keep-p (file)
+  "Return non-nil if FILE should be kept in the recent list.
+It handles the case of remote files as well."
+  (cond
+   ((file-remote-p file nil t) (file-readable-p file))
+   ((file-remote-p file) nil)           ;不记录tramp path
+   ((file-readable-p file))))
+(setq recentf-keep '(vmacs-recentf-keep-p))
+
 ;; Track opened directories
 (defun recentf-track-opened-dir ()
   (and default-directory
