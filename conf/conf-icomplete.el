@@ -237,6 +237,7 @@ It handles the case of remote files as well."
               '(consult-dir--source-default
                 consult-dir--source-recentf
                 consult-dir--source-project
+                consult-dir--source-tramp-ssh
                 consult-dir--source-bookmark))
 
 (define-key minibuffer-local-completion-map (kbd "C-M-s-j") #'consult-dir)
