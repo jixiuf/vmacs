@@ -14,7 +14,6 @@
 (define-key corfu-map (kbd "M-.") #'corfu-first)
 (define-key corfu-map (kbd "M-,") #'corfu-last)
 
-(setq completion-category-overrides '((eglot (styles orderless))))
 
 (setq corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
 (setq corfu-auto t)                 ;; Enable auto completion

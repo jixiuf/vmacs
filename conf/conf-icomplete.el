@@ -1,3 +1,4 @@
+  ;; -*- lexical-binding: t -*-
 ;;; Code:
 (require 'icomplete)
 (require 'recentf)
@@ -30,44 +31,80 @@
   ;; * !without-literal without-literal!
   ;; * .ext (file extension)
   ;; * regexp$ (regexp matching at end)
+  ;; https://github.com/minad/consult/wiki
+  (defun fix-dollar (args)
+    (if (string-suffix-p "$" (car args))
+        (list (format "%s[%c-%c]*$"
+                      (substring (car args) 0 -1)
+                      consult--tofu-char
+                      (+ consult--tofu-char consult--tofu-range -1)))
+      args))
+  (advice-add #'orderless-regexp :filter-args #'fix-dollar)
+  ;; (advice-add #'prescient-regexp-regexp :filter-args #'fix-dollar)
+  (defun +orderless--suffix-regexp ()
+    (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+        (format "[%c-%c]*$"
+                consult--tofu-char
+                (+ consult--tofu-char consult--tofu-range -1))
+      "$"))
+  (defvar +orderless-dispatch-alist
+    '((?% . char-fold-to-regexp)
+      (?! . orderless-without-literal)
+      (?`. orderless-initialism)
+      (?= . orderless-literal)
+      (?~ . orderless-flex)))
+  ;; * ~flex flex~
+  ;; * =literal literal=
+  ;; * %char-fold char-fold%
+  ;; * `initialism initialism`
+  ;; * !without-literal without-literal!
+  ;; * .ext (file extension)
+  ;; * regexp$ (regexp matching at end)
   (defun vmacs-orderless-dispatch (pattern _index _total)
     (cond
      ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-     ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x100000-\x10FFFD]*$")))
+     ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) (+orderless--suffix-regexp))))
      ;; File extensions
-     ((string-match-p "\\`\\.." pattern) `(orderless-regexp . ,(concat "\\." (substring pattern 1) "[\x100000-\x10FFFD]*$")))
+     ((and (or minibuffer-completing-file-name
+               (derived-mode-p 'eshell-mode))
+           (string-match-p "\\`\\.." pattern))
+      `(orderless-regexp . ,(concat "\\." (substring pattern 1) (+orderless--suffix-regexp))))
      ;; Ignore single !
      ((string= "!" pattern) `(orderless-literal . ""))
-     ;; Without literal
-     ((string-prefix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 1)))
-     ((string-suffix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 0 -1)))
-     ((string-prefix-p "@" pattern) `(orderless-without-literal . ,(substring pattern 1)))
-     ((string-suffix-p "@" pattern) `(orderless-without-literal . ,(substring pattern 0 -1)))
-     ;; Initialism matching
-     ((string-prefix-p "`" pattern) `(orderless-initialism . ,(substring pattern 1)))
-     ((string-suffix-p "`" pattern) `(orderless-initialism . ,(substring pattern 0 -1)))
-     ;; Literal matching
-     ((string-prefix-p "=" pattern) `(orderless-literal . ,(substring pattern 1)))
-     ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))
-     ((string-prefix-p "," pattern) `(orderless-literal . ,(substring pattern 1)))
-     ((string-suffix-p "," pattern) `(orderless-literal . ,(substring pattern 0 -1)))
-     ;; Flex matching
-     ((string-prefix-p ";" pattern) `(orderless-flex . ,(substring pattern 1)))
-     ((string-suffix-p ";" pattern) `(orderless-flex . ,(substring pattern 0 -1)))))
-  (setq orderless-style-dispatchers '(vmacs-orderless-dispatch)))
+     ;; Prefix and suffix
+     ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
+          (cons (cdr x) (substring pattern 1))
+        (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
+          (cons (cdr x) (substring pattern 0 -1)))))))
 
-;; 支持拼间首字母过滤中文， 不必切输入法
-(defun completion--regex-pinyin (str)
-  (require 'pinyinlib)
-  (orderless-regexp (pinyinlib-build-regexp-string str)))
-(add-to-list 'orderless-matching-styles 'completion--regex-pinyin)
+  (setq orderless-style-dispatchers '(vmacs-orderless-dispatch))
+
+  ;; Define orderless style with initialism by default
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+  (setq completion-category-overrides '(
+                                        (eglot (styles orderless))
+                                        (file (styles partial-completion)) ;; partial-completion is tried first
+                                        ;; enable initialism by default for symbols
+                                        (command (styles +orderless-with-initialism))
+                                        (variable (styles +orderless-with-initialism))
+                                        (symbol (styles +orderless-with-initialism))
+                                        ))
+
+  ;; 支持拼间首字母过滤中文， 不必切输入法
+  (defun completion--regex-pinyin (str)
+    (require 'pinyinlib)
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin)
+  (setq orderless-component-separator #'orderless-escapable-split-on-space) ;; allow escaping space with \
+  )
+
 
 
 
 (icomplete-mode 1)
 (icomplete-vertical-mode 1)
 ;; (setq icomplete-scroll t)
-
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
