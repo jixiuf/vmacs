@@ -45,10 +45,12 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(cape corfu-terminal kind-icon corfu vundo consult-dir vterm-toggle pinyinlib org-msg mu4e-alert marginalia evil-collection verb embark-consult orderless eglot magit-libgit docker-tramp ox-gfm htmlize git-link evil dockerfile-mode iedit osx-dictionary magit dired-filetype-face golden-ratio-scroll-screen evil-textobj-anyblock exec-path-from-shell go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
+   '(cape corfu-terminal kind-icon corfu vundo consult-dir vterm-toggle pinyinlib org-msg mu4e-alert marginalia evil-collection verb embark-consult orderless eglot magit-libgit ox-gfm htmlize git-link evil dockerfile-mode iedit osx-dictionary magit dired-filetype-face golden-ratio-scroll-screen evil-textobj-anyblock exec-path-from-shell go-mode golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor yaml-mode yasnippet))
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
-   '((checkdoc-minor-mode . t)
+   '((diff-add-log-use-relative-names . t)
+     (vc-git-annotate-switches . "-w")
+     (checkdoc-minor-mode . t)
      (flycheck-disabled-checkers emacs-lisp-checkdoc)
      (git-commit-major-mode . git-commit-elisp-text-mode)
      (projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
