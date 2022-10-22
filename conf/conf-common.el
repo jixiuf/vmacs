@@ -208,7 +208,7 @@
 (global-set-key "\C-k" 'vmacs-kill-region-or-line)
 (global-set-key "\M-;" 'vmacs-comment-dwim-line)
 
-(global-set-key "\C-x\C-v" 'switch-to-scratch-buffer)
+(global-set-key "\C-x\C-v" 'scratch-buffer)
 
 (global-set-key (kbd "C-c w") 'browse-url-at-point)
 

@@ -287,7 +287,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader (kbd "nn") 'narrow-to-region)
 
 (vmacs-leader (kbd "xu") 'vundo)
-(vmacs-leader (kbd "xv") 'switch-to-scratch-buffer)
+(vmacs-leader (kbd "xv") 'scratch-buffer)
 (vmacs-leader (kbd "<RET>r") 'revert-buffer-with-coding-system) ;C-x<RET>r
 (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x

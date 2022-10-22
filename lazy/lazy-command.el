@@ -181,20 +181,20 @@ Move point to end-of-line ,if point was already at that position,
 ;;             (goto-char m-end)
 ;;             )))))
 
-;; 绑定在C-xC-v上，切换成*scratch* 中，若已经在*scratch*中，则切换成上一个buffer
-;;;###autoload
-(defun switch-to-scratch-buffer ()
-  "Toggle between *scratch* buffer and the current buffer.
-     If the *scratch* buffer does not exist, create it."
-  (interactive)
-  (let ((scratch-buffer-name  "*scratch*"))
-    (if (equal (buffer-name (current-buffer)) scratch-buffer-name)
-        (switch-to-buffer (other-buffer))
-      (with-current-buffer
-          (switch-to-buffer  scratch-buffer-name)
-        ;; (when (functionp prev-major-mode) (funcall prev-major-mode ))
-        (when (equal major-mode 'fundamental-mode )(emacs-lisp-mode))
-        (goto-char (point-max))))))
+;; ;; 绑定在C-xC-v上，切换成*scratch* 中，若已经在*scratch*中，则切换成上一个buffer
+;; ;;;###autoload
+;; (defun switch-to-scratch-buffer ()
+;;   "Toggle between *scratch* buffer and the current buffer.
+;;      If the *scratch* buffer does not exist, create it."
+;;   (interactive)
+;;   (let ((scratch-buffer-name  "*scratch*"))
+;;     (if (equal (buffer-name (current-buffer)) scratch-buffer-name)
+;;         (switch-to-buffer (other-buffer))
+;;       (with-current-buffer
+;;           (switch-to-buffer  scratch-buffer-name)
+;;         ;; (when (functionp prev-major-mode) (funcall prev-major-mode ))
+;;         (when (equal major-mode 'fundamental-mode )(emacs-lisp-mode))
+;;         (goto-char (point-max))))))
 
 
 ;; ;;;###autoload
