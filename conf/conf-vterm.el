@@ -57,7 +57,7 @@
       (when (looking-back "[ \t\n]+" beg t)
         (setq end (match-beginning 0)))
       (when (> end beg) (kill-ring-save beg end)))
-    (when succ (vterm-send-key "k" nil nil :ctrl))))
+    (vterm-send-key "k" nil nil :ctrl)))
 
 (defun vmacs-vterm-self-insert()
   (interactive)
