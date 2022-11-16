@@ -11,14 +11,22 @@
 (vmacs-leader (kbd "1") 'vmacs-delete-other-windows) ;只保留当前窗口
 (vmacs-leader (kbd "0") 'vmacs-delete-window)        ;删除当前窗口
 
-(defun vmacs-delete-window()
+(defun vmacs-kill-buffer-delete-window()
+  (cl-letf (((symbol-function #'delete-window)
+             #'vmacs-delete-window))
+    (kill-buffer-and-window)))
+
+(defvar vmacs--delete-window (symbol-function #'delete-window))
+(defun vmacs-delete-window(&optional win)
   (interactive)
-  (let ((main-win (window-at-x-y 20 20)))
-    (if (eq main-win (get-buffer-window))
+  (let ((main-win (window-at-x-y 20 20))
+        (win (or win (selected-window)))
+        )
+    (if (eq main-win win)
         (progn
-          (set-window-buffer main-win (window-buffer (next-window)))
-          (delete-window (next-window)))
-      (call-interactively #'delete-window))))
+          (set-window-buffer main-win (window-buffer (next-window win)))
+          (funcall vmacs--delete-window (next-window win)))
+      (funcall vmacs--delete-window win))))
 
 (defun vmacs-delete-other-windows()
   (interactive)
