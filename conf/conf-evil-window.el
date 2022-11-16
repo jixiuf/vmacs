@@ -8,8 +8,25 @@
 (vmacs-leader (kbd "4") 'toggle-split-window)
 (global-set-key  (kbd "C-M-s-\\") #'toggle-split-window)
 (vmacs-leader (kbd "4") 'toggle-split-window)
-(vmacs-leader (kbd "1") 'delete-other-windows) ;只保留当前窗口
-(vmacs-leader (kbd "0") 'delete-window)        ;删除当前窗口
+(vmacs-leader (kbd "1") 'vmacs-delete-other-windows) ;只保留当前窗口
+(vmacs-leader (kbd "0") 'vmacs-delete-window)        ;删除当前窗口
+
+(defun vmacs-delete-window()
+  (interactive)
+  (let ((main-win (window-at-x-y 20 20)))
+    (if (eq main-win (get-buffer-window))
+        (progn
+          (set-window-buffer main-win (window-buffer (next-window)))
+          (delete-window (next-window)))
+      (call-interactively #'delete-window))))
+
+(defun vmacs-delete-other-windows()
+  (interactive)
+  (let ((main-win (window-at-x-y 20 20)))
+    (if (eq main-win (get-buffer-window))
+        (delete-other-windows)
+      (set-window-buffer main-win (current-buffer))
+      (delete-other-windows main-win))))
 
 ;; 尽量保证光标所在的窗口最大
 ;; 黄金分隔 多窗口操作时
