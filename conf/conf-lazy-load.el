@@ -7,12 +7,14 @@
 ;; 只需要加载.emacs.d/lisp/lazy-loaddefs.el,就可以于加载了放在lazy/目录下的所有el文件
 (setq source-directory user-emacs-directory)
 (setq generated-autoload-file "lazy-loaddefs.el")
-(setq generated-autoload-file-path (expand-file-name (concat "lisp/" generated-autoload-file) source-directory))
+(setq generated-autoload-file-path (expand-file-name generated-autoload-file source-directory))
 
 (when (or (not (file-exists-p  generated-autoload-file-path))
           noninteractive)
-  (dolist (file (directory-files lazy-load-dir t "\.el$"))
-    (update-file-autoloads file t)))
+  (update-directory-autoloads lazy-load-dir)
+  ;;(dolist (file (directory-files lazy-load-dir t "\.el$"))
+   ;; (update-file-autoloads file t))
+  )
 
 (when (file-exists-p  generated-autoload-file-path)
   (load generated-autoload-file-path t t)

@@ -6,8 +6,9 @@
 
 (or (file-exists-p package-user-dir) (package-refresh-contents))
 ;; (package-initialize)
-(add-hook 'after-init-hook (lambda() (package-install-selected-packages t)
-                             (package-vc-install-selected-packages)))
+(add-hook 'after-init-hook (lambda()
+                             (package-vc-install-selected-packages)
+                             (package-install-selected-packages t)))
 
 (provide 'conf-package)
 
