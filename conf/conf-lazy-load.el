@@ -6,14 +6,14 @@
 ;; 如果想重新生成.emacs.d/lisp/lazy-loaddefs.el,则只需要删除这个文件，重启emacs即可
 ;; 只需要加载.emacs.d/lisp/lazy-loaddefs.el,就可以于加载了放在lazy/目录下的所有el文件
 (setq source-directory user-emacs-directory)
-(setq generated-autoload-file "lazy-loaddefs.el")
+(setq generated-autoload-file "lazy/lazy-loaddefs.el")
 (setq generated-autoload-file-path (expand-file-name generated-autoload-file source-directory))
 
 (when (or (not (file-exists-p  generated-autoload-file-path))
           noninteractive)
-  (update-directory-autoloads lazy-load-dir)
-  ;;(dolist (file (directory-files lazy-load-dir t "\.el$"))
-   ;; (update-file-autoloads file t))
+(loaddefs-generate lazy-load-dir generated-autoload-file-path)
+;  (dolist (file (directory-files lazy-load-dir t "\.el$"))
+ ;   (update-file-autoloads file t))
   )
 
 (when (file-exists-p  generated-autoload-file-path)

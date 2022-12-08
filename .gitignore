@@ -54,3 +54,4 @@ osx-dictionary-cli
 /eaf/
 /.cache/
 /lazy-loaddefs.el
+/lazy/lazy-loaddefs.el
