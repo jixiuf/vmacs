@@ -81,19 +81,23 @@ but skip uninterested buffers."
 
 
 ;; 最多打开10个文件
-;; (defun vmacs-prevent-open-too-much-files()
-;;   (let* ((buffers (tab-line-tabs-window-buffers))
-;;          (buffer-save-without-query t)
-;;          (len (length buffers))
-;;          (max 9) (i 0))
-;;     (dolist (buffer buffers)
-;;       (when (and (< i (- len max)) (>= len max))
-;;         (when (buffer-live-p buffer)
-;;           (with-current-buffer buffer
-;;             (when (buffer-file-name buffer) (basic-save-buffer))
-;;             (kill-buffer buffer))))
-;;       (setq i (1+ i)))))
-;; (add-hook 'find-file-hook #'vmacs-prevent-open-too-much-files)
+(defun vmacs-prevent-open-too-much-files()
+  (let* ((buffers (reverse (tab-line-tabs-window-buffers)))
+         (buffer-save-without-query t)
+         (len (length buffers))
+         (max 9) (i 0))
+    (dolist (buffer buffers)
+      (when (and (< i (- len max)) (>= len max))
+        (when (and (buffer-live-p buffer)
+                   (not (member (buffer-name buffer) '("*scratch*"))))
+          (with-current-buffer buffer
+            (when (buffer-file-name buffer)
+              (basic-save-buffer))
+            (message "kill %s" (buffer-name buffer))
+            (kill-buffer buffer))))
+      (setq i (1+ i)))))
+
+(add-hook 'find-file-hook #'vmacs-prevent-open-too-much-files)
 
 ;; (setq tab-line-tabs-buffer-group-function #'vmacs-tab-line-buffer-group)
 ;; (setq tab-line-tabs-function #'tab-line-tabs-buffer-groups)
