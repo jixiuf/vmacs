@@ -37,53 +37,53 @@
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'js (require 'conf-program-js))
 
-(when (vmacs-not-dumping-p)
-  (when (eq system-type 'darwin)
-    (require 'exec-path-from-shell)
-    (exec-path-from-shell-initialize))
-  (with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
+;; (when (vmacs-not-dumping-p)
+(when (eq system-type 'darwin)
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
+(with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
 
 
 
-  ;; (require 'conf-helm)            ;
-  ;; (require 'conf-ivy)
-  ;; (require 'conf-rg)
-  (require 'conf-wgrep)
-  ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
-  ;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
-  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
-  (when (require 'mu4e nil t) (require 'conf-mail))
+;; (require 'conf-helm)            ;
+;; (require 'conf-ivy)
+;; (require 'conf-rg)
+(require 'conf-wgrep)
+;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
+;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+(when (require 'mu4e nil t) (require 'conf-mail))
 
 
 
-  ;; 一般性的配置在conf/conf-common.el中
-  (require 'conf-tabs)
-  ;; (with-eval-after-load 'eshell (require 'conf-eshell)) ;
-  ;; (with-eval-after-load 'term (require 'conf-term)) ;
+;; 一般性的配置在conf/conf-common.el中
+(require 'conf-tabs)
+;; (with-eval-after-load 'eshell (require 'conf-eshell)) ;
+;; (with-eval-after-load 'term (require 'conf-term)) ;
 
-  ;; gpg 自动加密解密文件相关
-  (require 'conf-lsp)
-  ;; (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
-  ;; (require 'conf-company-mode)            ;补全
-  (require 'conf-corfu)            ;补全
-  (with-eval-after-load 'go-mode (require 'conf-program-golang))
-  (with-eval-after-load 'python (require 'conf-program-python))
-  ;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
+;; gpg 自动加密解密文件相关
+(require 'conf-lsp)
+;; (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
+;; (require 'conf-company-mode)            ;补全
+(require 'conf-corfu)            ;补全
+(with-eval-after-load 'go-mode (require 'conf-program-golang))
+(with-eval-after-load 'python (require 'conf-program-python))
+;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
 
-  (require 'conf-version-control)
-  (with-eval-after-load 'magit (require 'conf-magit))
+(require 'conf-version-control)
+(with-eval-after-load 'magit (require 'conf-magit))
 
-  (global-font-lock-mode)
-  (transient-mark-mode 1)
-  (save-place-mode t)
-  (savehist-mode 1)
-  (recentf-mode 1)
-  (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
-  (require 'conf-tmp nil t)
-  (unless (eq system-type 'windows-nt) (require 'conf-vterm))
-  (require 'server)
-  (unless (server-running-p) (server-start))
-  (when (> emacs-major-version 27) (load-theme 'modus-vivendi)))
+(global-font-lock-mode)
+(transient-mark-mode 1)
+(save-place-mode t)
+(savehist-mode 1)
+(recentf-mode 1)
+(run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
+(require 'conf-tmp nil t)
+(unless (eq system-type 'windows-nt) (require 'conf-vterm))
+(require 'server)
+(unless (server-running-p) (server-start))
+(when (> emacs-major-version 27) (load-theme 'modus-vivendi))
 
 ;; Local Variables:
 ;; coding: utf-8
