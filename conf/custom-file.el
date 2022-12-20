@@ -46,6 +46,8 @@
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
    '(embark-consult vundo osx-dictionary golden-ratio-scroll-screen yasnippet yaml-mode verb org-msg marginalia iedit go-mode git-link exec-path-from-shell dired-filetype-face cape evil-textobj-anyblock evil-collection evil embark consult-dir mu4e-alert orderless kind-icon vterm vterm-toggle consult consult-dir yaml-mode exec-path-from-shell vterm-toggle osx-dictionary orderless golden-ratio-scroll-screen marginalia evil-collection verb yasnippet embark org-msg mu4e-alert iedit cape consult-dir consult vterm kind-icon git-link go-mode vundo dired-filetype-face evil-textobj-anyblock evil corfu pinyinlib ox-gfm htmlize magit golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor))
+ '(proced-enable-color-flag t)
+ '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
    '((diff-add-log-use-relative-names . t)
