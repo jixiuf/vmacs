@@ -457,9 +457,15 @@ end tell
 end tell"))
     (start-process "compile-dwim-xcode:build" nil "osascript" "-e" cmd)))
 
+
 (defun compile-go-test-current()
   (interactive)
-  (let ((funname (go--function-name t)))
+  (let ((funname ""))
+    (save-excursion
+      (end-of-line)
+      (when (re-search-backward "func " nil t)
+        (forward-sexp 2)
+        (setq  funname (thing-at-point 'symbol))))
     (if (string-prefix-p "Bench" funname)
         (setq compile-command (format "go test -v -bench=%s -test.run %s"  funname funname))
       (setq compile-command (concat "go test -v -test.run "  funname))))
