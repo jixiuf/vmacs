@@ -66,7 +66,8 @@
 ;; (with-eval-after-load 'eglot (define-key eglot-mode-map (kbd "C-h .") 'eglot-help-at-point))
 ;; (require 'conf-company-mode)            ;补全
 (require 'conf-corfu)            ;补全
-(with-eval-after-load 'go-mode (require 'conf-program-golang))
+;; (with-eval-after-load 'go-mode (require 'conf-program-golang))
+(with-eval-after-load 'go-ts-mode (require 'conf-program-golang))
 (with-eval-after-load 'python (require 'conf-program-python))
 ;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
 

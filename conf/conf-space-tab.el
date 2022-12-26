@@ -18,7 +18,7 @@
                                ojbc-mode-hook sh-mode-hook yaml-mode-hook
                                makefile-mode-hook makefile-bsdmake-mode-hook
                                protobuf-mode-hook objc-mode-hook lua-mode-hook nxml-mode-hook
-                               gitconfig-mode-hook go-mode-hook js-mode-hook
+                               gitconfig-mode-hook go-ts-hook go-mode-hook js-mode-hook
                                cperl-mode-hook emacs-lisp-mode-hook erlang-mode-hook))
   (add-hook hook 'whitespace-mode))
 

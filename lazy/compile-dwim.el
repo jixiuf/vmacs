@@ -91,6 +91,7 @@ Its value should be 'always or list like (filename run compile).")
         compile-go-test-current)
 
     (go (or (name . "\\.go$")
+            (mode . go-ts-mode)
             (mode . go-mode))
         (compile-dwim-make)
         "go run %n.go")
