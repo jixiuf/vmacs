@@ -6,7 +6,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mu4e-related-face ((t (:inherit default :foreground "#bfebe0" :slant italic)))))
+ )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -45,7 +45,31 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(embark-consult vundo osx-dictionary golden-ratio-scroll-screen yasnippet yaml-mode verb org-msg marginalia iedit go-mode git-link exec-path-from-shell dired-filetype-face cape evil-textobj-anyblock evil-collection evil embark consult-dir mu4e-alert orderless kind-icon vterm vterm-toggle consult consult-dir yaml-mode exec-path-from-shell vterm-toggle osx-dictionary orderless golden-ratio-scroll-screen marginalia evil-collection verb yasnippet embark org-msg mu4e-alert iedit cape consult-dir consult vterm kind-icon git-link go-mode vundo dired-filetype-face evil-textobj-anyblock evil corfu pinyinlib ox-gfm htmlize magit golden-ratio lua-mode markdown-mode protobuf-mode wgrep with-editor))
+   '(consult-dir cape consult corfu dired-filetype-face embark embark-consult evil evil-collection evil-textobj-anyblock exec-path-from-shell git-link go-mode golden-ratio golden-ratio-scroll-screen htmlize iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yaml-mode yasnippet))
+ '(package-vc-selected-packages
+   '((vterm-toggle)
+     (vterm)
+     (kind-icon)
+     (orderless)
+     (mu4e-alert)
+     (consult-dir)
+     (consult)
+     (evil)
+     (evil-collection)
+     (evil-textobj-anyblock)
+     (cape)
+     (dired-filetype-face)
+     (exec-path-from-shell)
+     (git-link)
+     (iedit)
+     (marginalia)
+     (org-msg)
+     (verb)
+     (yaml-mode)
+     (yasnippet)
+     (golden-ratio-scroll-screen)
+     (osx-dictionary)
+     (vundo)))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
