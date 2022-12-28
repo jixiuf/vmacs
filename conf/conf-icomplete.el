@@ -195,6 +195,7 @@
 (autoload #'mu4e-headers-search-bookmark  "mu4e" t)
 (vmacs-leader (kbd "i") #'(lambda()(interactive)(shell-command "killall mbsync") (mu4e-headers-search-bookmark)(mu4e)))
 
+(autoload #'consult-buffer  "consult" t)
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
