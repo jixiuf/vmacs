@@ -93,6 +93,8 @@
            (memq this-command '( next-error previous-error compile-goto-error)))
          (display-buffer-same-window )
          (inhibit-same-window . nil))
+        ("\\*grep\\*"
+         (display-buffer-same-window ))
         ("\\*rg\\*"
          (display-buffer-same-window ))
         ("\\*Embark Collect"
