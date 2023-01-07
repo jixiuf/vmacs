@@ -92,6 +92,7 @@
  '(transient-levels-file "~/.emacs.d/cache/transient/levels.el")
  '(transient-values-file "~/.emacs.d/cache/transient/values.el")
  '(uniquify-buffer-name-style 'forward nil (uniquify))
+ '(warning-suppress-log-types '((with-editor)))
  '(warning-suppress-types
    '((comp)
      (initialization)
