@@ -15,7 +15,7 @@
 
 ;; 只对特定的major mode 启用ethan-wspace-mode,因为在makefile 中启用会有bug
 (dolist (hook '(java-mode-hook c++-mode-hook python-mode-hook c-mode-hook org-mode-hook perl-mode-hook
-                               ojbc-mode-hook sh-mode-hook yaml-mode-hook
+                               ojbc-mode-hook sh-mode-hook yaml-ts-mode-hook
                                makefile-mode-hook makefile-bsdmake-mode-hook
                                protobuf-mode-hook objc-mode-hook lua-mode-hook nxml-mode-hook
                                gitconfig-mode-hook go-ts-hook go-mode-hook js-mode-hook
