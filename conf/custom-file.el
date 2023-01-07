@@ -45,7 +45,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(consult-dir cape consult corfu dired-filetype-face embark embark-consult evil evil-collection evil-textobj-anyblock exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen htmlize iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yaml-mode yasnippet))
+   '(evil-collection consult-dir mu4e-alert orderless kind-icon vterm vterm-toggle vterm vterm-toggle consult-dir cape consult corfu dired-filetype-face embark embark-consult evil evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen htmlize iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yaml-mode yasnippet))
  '(package-vc-selected-packages
    '((vterm-toggle)
      (vterm)
@@ -56,7 +56,6 @@
      (consult)
      (evil)
      (evil-collection)
-     (evil-textobj-anyblock)
      (cape)
      (dired-filetype-face)
      (exec-path-from-shell)

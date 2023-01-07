@@ -61,26 +61,26 @@
 
 ;; (), {}, [], <>, '', "", ` `, or “” by default
 ;; 不论是何种 ，都会将最近的配对进行操作
-(setq-default evil-textobj-anyblock-blocks
-              '(("(" . ")")
-                ("{" . "}")
-                ("\\[" . "\\]")
-                ("<" . ">")
-                ("'" . "'")
-                ("\"" . "\"")
-                ("`" . "`")
-                ("“" . "”")
-                ("［" . "］")           ;全角
-                ("（" . "）")           ;全角
-                ("{" . "}")             ;全角
-                ))
-(add-hook 'emacs-lisp-mode-hook
-          (lambda ()
-            (setq-local evil-textobj-anyblock-blocks
-                        '(("(" . ")")
-                          ("{" . "}")
-                          ("\\[" . "\\]")
-                          ("\"" . "\"")))))
+;; (setq-default evil-textobj-anyblock-blocks
+;;               '(("(" . ")")
+;;                 ("{" . "}")
+;;                 ("\\[" . "\\]")
+;;                 ("<" . ">")
+;;                 ("'" . "'")
+;;                 ("\"" . "\"")
+;;                 ("`" . "`")
+;;                 ("“" . "”")
+;;                 ("［" . "］")           ;全角
+;;                 ("（" . "）")           ;全角
+;;                 ("{" . "}")             ;全角
+;;                 ))
+;; (add-hook 'emacs-lisp-mode-hook
+;;           (lambda ()
+;;             (setq-local evil-textobj-anyblock-blocks
+;;                         '(("(" . ")")
+;;                           ("{" . "}")
+;;                           ("\\[" . "\\]")
+;;                           ("\"" . "\"")))))
 
 
 
@@ -261,8 +261,8 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-ex-completion-map (kbd "<C-m>") 'exit-minibuffer)
 
 ;; dib dab绑定
-(define-key evil-inner-text-objects-map "b" 'evil-textobj-anyblock-inner-block)
-(define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
+;; (define-key evil-inner-text-objects-map "b" 'evil-textobj-anyblock-inner-block)
+;; (define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
 (vmacs-leader (kbd "o") 'other-window)
 
 (autoload 'dired-jump "dired" "" t)
