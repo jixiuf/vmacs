@@ -45,11 +45,10 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(evil-collection consult-dir mu4e-alert orderless kind-icon vterm vterm-toggle vterm vterm-toggle consult-dir cape consult corfu dired-filetype-face embark embark-consult evil evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen htmlize iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yaml-mode yasnippet))
+   '(cape consult consult-dir corfu dired-filetype-face embark embark-consult evil evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen htmlize iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yaml-mode yasnippet ))
  '(package-vc-selected-packages
    '((vterm-toggle)
      (vterm)
-     (kind-icon)
      (orderless)
      (mu4e-alert)
      (consult-dir)
