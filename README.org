@@ -1,8 +1,2 @@
 #+OPTIONS:   H:2 num:nil toc:t \n:t @:t ::t |:t ^:t -:t f:t *:t <:t
 #+TITLE: vmacs
-
-基于evil-mode 提供一个适合vim emacs双修者,下载即可用的emacs配置集
-
-* github.com 找出丢失的commit
-https://api.github.com/repos/jixiuf/vmacs/events
-https://api.github.com/repos/jixiuf/vmacs/commits/be863594db2d75d4ac4c0dfe9bd5c9c03ec2f03f
