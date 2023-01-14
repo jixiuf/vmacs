@@ -177,9 +177,46 @@
         '(consult--source-buffer
           consult--source-recent-file
           vmacs-consult--source-git))
+  (defun vmacs-consult--source-recentf-items ()
+    (let ((ht (consult--buffer-file-hash))
+          file-name-handler-alist ;; No Tramp slowdown please.
+          items)
+      (dolist (file recentf-list (nreverse items))
+        ;; Emacs 29 abbreviates file paths by default, see
+        ;; `recentf-filename-handlers'.
+        (unless (eq (aref file 0) ?/)
+          (setq file (expand-file-name file)))
+        (unless (gethash file ht)
+          (push (propertize
+                 (vmacs-short-filename file)
+                 'multi-category `(file . ,file))
+                items)))))
 
-  (setq consult-config `((consult-buffer :preview-key ,(kbd "C-v")) ;disable auto preview for consult-buffer
-                         )))
+  (defun vmacs-short-filename(file)
+    "return filename with one parent directory.
+/a/b/c/d-> c/d"
+    (let* ((file (directory-file-name file))
+           (filename (file-name-nondirectory file))
+           (dir (file-name-directory file))
+           short-name)
+      (setq short-name
+            (if dir
+                (format "%s/%s" (file-name-nondirectory
+                                 (directory-file-name dir))
+                        filename)
+              filename))
+      (propertize short-name 'multi-category `(file . ,file))))
+
+  (plist-put consult--source-recent-file
+             :items #'vmacs-consult--source-recentf-items)
+
+  (consult-customize
+   consult-buffer
+   ;; my/command-wrapping-consult    ;; disable auto previews inside my command
+   :preview-key '(:debounce 0.4 any)) ;; Option 1: Delay preview
+  ;; :preview-key (kbd "M-."))      ;; Option 2: Manual preview
+
+  )
 
 
 (vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
@@ -247,6 +284,18 @@ It handles the case of remote files as well."
 (define-key global-map (kbd "C-x d") #'consult-dir)
 (setq consult-dir-shadow-filenames nil)
 (setq consult-dir-default-command #'consult-dir-dired)
+(with-eval-after-load 'consult-dir
+  (defvar consult-dir--source-project-items (plist-get consult-dir--source-project :items))
+  (plist-put consult-dir--source-project
+             :items #'(lambda() (mapcar #'vmacs-short-filename  (funcall consult-dir--source-project-items))))
+  (plist-put consult-dir--source-recentf
+             :items #'(lambda() (mapcar #'vmacs-short-filename  (consult-dir--recentf-dirs))))
+  (plist-put consult-dir--source-default
+             :items #'(lambda() (mapcar #'vmacs-short-filename  (consult-dir--default-dirs))))
+
+  )
+
+
 
 (defun vmacs-icomplete()
   (setq-local truncate-lines t)
