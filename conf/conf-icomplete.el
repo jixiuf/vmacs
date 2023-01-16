@@ -118,7 +118,13 @@
 
 
 (when (require 'embark nil t)
-  (when (require 'marginalia nil t) (marginalia-mode 1))
+  (when (require 'marginalia nil t)
+    (marginalia-mode 1)
+    (advice-add 'marginalia--annotate-local-file :override
+                (defun marginalia--annotate-local-file-advice (cand)
+                  (marginalia--fields
+                   ((marginalia--full-candidate cand)
+                    :face 'marginalia-size )))))
   ;; (setq marginalia-margin-min 18)
 
   (setq embark-collect-initial-view-alist '((t . list)))
@@ -197,14 +203,16 @@
 /a/b/c/d-> c/d"
     (let* ((file (directory-file-name file))
            (filename (file-name-nondirectory file))
-           (dir (file-name-directory file))
+           ;; (dir (file-name-directory file))
            short-name)
-      (setq short-name
-            (if dir
-                (format "%s/%s" (file-name-nondirectory
-                                 (directory-file-name dir))
-                        filename)
-              filename))
+      (setq short-name filename
+            ;; 这段是想实现 只展示最后 1级目录/文件.ext 的功能
+            ;; (if dir
+            ;;     (format "%s/%s" (file-name-nondirectory
+            ;;                      (directory-file-name dir))
+            ;;             filename)
+            ;;   filename)
+            )
       (propertize short-name 'multi-category `(file . ,file))))
 
   (plist-put consult--source-recent-file
