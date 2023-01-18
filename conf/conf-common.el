@@ -97,7 +97,7 @@
  recentf-exclude  `("\\.elc$" ,(regexp-quote (concat user-emacs-directory "cache/" ))
                     "/cache/recentf"
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
- recentf-max-saved-items 300
+ recentf-max-saved-items 1000
  ring-bell-function 'ignore
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
