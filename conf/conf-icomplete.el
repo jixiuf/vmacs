@@ -127,7 +127,7 @@
                     :face 'marginalia-size )))))
   ;; (setq marginalia-margin-min 18)
 
-  (setq embark-collect-initial-view-alist '((t . list)))
+  ;; (setq embark-collect-initial-view-alist '((t . list)))
   (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
 
   (define-key icomplete-minibuffer-map (kbd "C-t") 'embark-act)
@@ -280,12 +280,13 @@ It handles the case of remote files as well."
 ;;                      (recentf-remove-if-non-kept default-directory)))))
 
 ;; (require 'consult-dired-history)
+(setq consult-dir-project-list-function #'(lambda()nil)) ;不使用consult-dir--source-project
+;; (setq consult-dir-project-list-function #'consult-dir-project-dirs)
 (setq-default consult-dir-sources
               '(consult-dir--source-default
                 consult-dir--source-recentf
-                consult-dir--source-project
-                consult-dir--source-tramp-ssh
-                consult-dir--source-bookmark))
+                ;; consult-dir--source-project
+                consult-dir--source-tramp-ssh))
 
 (define-key minibuffer-local-completion-map (kbd "C-M-s-j") #'consult-dir)
 (define-key minibuffer-local-completion-map (kbd "C-M-s-l") #'consult-dir-jump-file) ;locate
