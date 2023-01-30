@@ -7,54 +7,8 @@
 ;; C-xC-f /-:you@remotehost|sudo:remotehost:/path/to/file RET
 
 ;;; 当切换到root 用户时，为作区别 ，外观显红色
-(with-eval-after-load 'tramp
-  (add-to-list 'tramp-remote-path "/usr/local/go/bin")
-
-
-  ;;  跳板机 堡垒机脚本
-;; ~/bin/jump
-;; #!/usr/bin/expect
-;; # 支持 ./jump user@host:port  此种情况下，其实只host有用，但为了emacs tramp 使用支持此种格式
-;; # 支持 ./jump host
-;; # 支持 ./jump  交互模式
-;; spawn ssh jixiufeng@agw.luojilab.com
-;; expect "jixiufeng@agw.luojilab.com's password:"
-;; send "yourpassword\r"
-;; expect "Input:*"
-;; # user@host:port,这里真正有用的是hosst
-;; set address [lindex $argv 0]
-;; if { $address != ""} {
-;;     set tokens [split $address  "@"]
-;;     set hostport  [lindex $tokens 1]
-;;     # 没有user@ 只有hostport的情况
-;;     if { $hostport == "" } {
-;;         set hostport  [lindex $tokens 0]
-;;     }
-;;     set host  [lindex [split $hostport  ":"] 0]
-;;     send "$host\r"
-;;     expect "1\]$host*Input:*"
-;;     send "1\r"
-;;     expect "*"
-;;     interact
-;; } else {
-;;     expect "*"
-;;     interact
-  ;; }
-
-  (add-to-list 'tramp-default-method-alist '("BJ-APM-PROD-04" "admin" "jump"))
-
-  (add-to-list 'tramp-methods
-               '("jump"
-                 (tramp-login-program "jump")
-                 (tramp-login-args
-                  (("%h")))
-                 (tramp-async-args
-                  (("%h")))
-                 (tramp-remote-shell "/bin/sh")
-                 (tramp-remote-shell-login
-                  ("-l"))
-                 (tramp-remote-shell-args
-                  ("-c")))))
+;; (with-eval-after-load 'tramp
+;;   (add-to-list 'tramp-remote-path "/usr/local/go/bin"))
 
 (defface toggle-to-root-header-face
   '((t (:foreground "white" :background "red3")))
