@@ -121,13 +121,13 @@
 
 ;; (setq display-line-numbers-current-absolute t)
 (defun vmacs-change-line-number-abs()
-  (if (member major-mode '(term-mode eshell-mode ansi-term-mode  magit-status-mode ))
+  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode  magit-status-mode ))
       (setq display-line-numbers nil)
     (setq display-line-numbers 'absolute)))
 
 (defun vmacs-change-line-number-relative()
   (cond ((member major-mode '(vterm-mode))
-         (setq display-line-numbers 'absolute)
+         (setq display-line-numbers nil)
          )
         ((member major-mode '(term-mode eshell-mode ansi-term-mode magit-status-mode fundamental-mode))
          (setq display-line-numbers nil))

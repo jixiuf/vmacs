@@ -45,7 +45,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(corfu cape consult consult-dir dired-filetype-face embark embark-consult evil evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
+   '(corfu cape consult-dir dired-filetype-face embark embark-consult evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((vterm-toggle)
      (vterm)
