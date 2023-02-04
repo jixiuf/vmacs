@@ -177,7 +177,7 @@
     )
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
-  (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
+  ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (setq consult-buffer-sources
         '(consult--source-buffer
@@ -234,7 +234,7 @@
 (vmacs-leader (kbd "ff") #'find-file)
 (global-set-key (kbd "C-x C-f") #'find-file-at-point)
 (global-set-key (kbd "C-x r b") #'consult-bookmark)
-(global-set-key (kbd "C-x r x" ) #'consult-register)(global-set-key (kbd "C-x r b") #'consult-bookmark)
+(global-set-key (kbd "C-x r x" ) #'consult-register)
 
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
 (autoload #'mu4e-headers-search-bookmark  "mu4e" t)
