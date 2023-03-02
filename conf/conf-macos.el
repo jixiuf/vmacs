@@ -8,8 +8,9 @@
   (when (>= emacs-major-version 29)
     (set-fontset-font t 'emoji "Apple Color Emoji-17"))
   (set-fontset-font t 'symbol "Apple Symbols")
-  (set-face-attribute 'default nil :font "Sarasa Mono SC Nerd" :height 220)
-  (set-face-attribute 'fixed-pitch nil :font "Sarasa Mono SC Nerd" :height 1.0)
+    ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
+  (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 220)
+  (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
   )
 
 (vmacs-set-font)
