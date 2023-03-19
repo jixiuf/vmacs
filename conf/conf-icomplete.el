@@ -114,7 +114,8 @@
 (define-key icomplete-minibuffer-map (kbd "C-.") 'next-history-element)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-minibuffer-map (kbd "C-e") #'(lambda(&optional argv)(interactive)(if (eolp) (call-interactively #'icomplete-fido-exit) (end-of-line))) )
-
+;; for consult-rg 忽略gitignore
+(define-key icomplete-minibuffer-map (kbd "C-u") #'(lambda()(interactive) (insert " -- -uuu")))
 
 
 (when (require 'embark nil t)
