@@ -23,7 +23,7 @@
       (when (file-exists-p (car ele))
         (add-to-list 'list ele)))
     (setq magit-repository-directories list))
-  (magit-status-internal (magit-read-repository)))
+  (magit-status (magit-read-repository)))
 
 (define-key magit-mode-map "," #'vmacs-magit-status-list)
 
