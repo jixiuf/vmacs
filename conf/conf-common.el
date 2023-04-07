@@ -34,6 +34,10 @@
             content)))
 (poem-update)
 
+(require 'pangu-spacing)
+(global-pangu-spacing-mode 1)
+ (setq pangu-spacing-real-insert-separtor t)
+
 (defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
@@ -41,14 +45,14 @@
 (when (boundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
 (setq-default
  inhibit-startup-screen t;隐藏启动显示画面
- initial-scratch-message nil;关闭scratch消息提示
+ initial-scratch-message nil;关闭 scratch 消息提示
  initial-major-mode 'emacs-lisp-mode ;scratch init mode
- initial-buffer-choice t                ;默认打开scratch buffer
+ initial-buffer-choice t                ;默认打开 scratch buffer
  ;; initial-buffer-choice "~/"
 
 
- use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用minibuffer
- ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的username@localhost
+ use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
+ ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
  frame-title-format '("%e" (:eval (poem-get 'content)) "%e " evil-mode-line-format "「"mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   "%f  GNU/Emacs")
 
  ;;  mode-line 上显示当前文件是什么系统的文件(windows 的换行符是\n\r)
@@ -72,8 +76,8 @@
  remote-file-name-inhibit-cache 60 ;60s default 10s
  backup-by-copying t    ;自动备份
  delete-old-versions t ; 自动删除旧的备份文件
- kept-new-versions 10   ; 保留最近的6个备份文件
- kept-old-versions 10   ; 保留最早的2个备份文件
+ kept-new-versions 10   ; 保留最近的 6 个备份文件
+ kept-old-versions 10   ; 保留最早的 2 个备份文件
  version-control t    ; 多次备份
  ;; create-lockfiles nil
  vc-make-backup-files t
@@ -81,7 +85,7 @@
  pulse-iterations 3
  large-file-warning-threshold (* 1024 1024 50)       ;打开大文件时不必警告
 
- ;; 改成true package 生成 autoload 有问题
+ ;; 改成 true package 生成 autoload 有问题
  ;; find-file-visit-truename t
 
  send-mail-function 'sendmail-send-it
@@ -91,8 +95,8 @@
  ;; shell-file-name "zsh"
  ;; shell-command-switch "-ic"
 
- ;;注意这两个变量是与recentf相关的,把它放在这里,是因为
- ;;觉得recentf与filecache作用有相通之处,
+ ;;注意这两个变量是与 recentf 相关的,把它放在这里,是因为
+ ;;觉得 recentf 与 filecache 作用有相通之处,
  ;;匹配这些表达示的文件，不会被加入到最近打开的文件中
  recentf-exclude  `("\\.elc$" ,(regexp-quote (concat user-emacs-directory "cache/" ))
                     "/cache/recentf"
@@ -101,7 +105,7 @@
  ring-bell-function 'ignore
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
- truncate-lines t ;一行过长时 是否wrap显示
+ truncate-lines t ;一行过长时 是否 wrap 显示
  display-line-numbers 'absolute
  fill-column 100
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
@@ -129,12 +133,12 @@
   ;; (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
 ;; (when (boundp 'global-so-long-mode) (global-so-long-mode))
 
-(fset 'yes-or-no-p 'y-or-n-p) ;; 把Yes用y代替
+(fset 'yes-or-no-p 'y-or-n-p) ;; 把 Yes 用 y 代替
 
 ;;(put 'dired-find-alternate-file 'disabled nil)
-(put 'narrow-to-region 'disabled nil);; 启用narrow-to-region ,不再警告
+(put 'narrow-to-region 'disabled nil);; 启用 narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
-;; after-init-hook 所有配置文件都加载完之后才会运行此hook
+;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq-default auto-mode-alist
       (append
@@ -214,7 +218,7 @@
 
 
 ;;; goto-last change
-;;快速跳转到当前buffer最后一次修改的位置 利用了undo定位最后一次在何处做了修改
+;;快速跳转到当前 buffer 最后一次修改的位置 利用了 undo 定位最后一次在何处做了修改
 ;; (autoload 'goto-last-change "goto-last-change" "Set point to the position of the last change." t)
 (autoload 'goto-last-change-reverse "goto-chg.el" "goto last change reverse" t)
 (vmacs-leader (kbd "x/") 'goto-last-change)

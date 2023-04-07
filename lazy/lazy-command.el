@@ -363,7 +363,7 @@ Move point to end-of-line ,if point was already at that position,
      ( (derived-mode-p 'calc-mode)
        (call-interactively 'calc-quit))
      ( (derived-mode-p 'mu4e-view-mode)
-       (call-interactively 'mu4e~view-quit-buffer))
+       (call-interactively 'mu4e~view-quit))
      ( (derived-mode-p 'diff-mode)
        (call-interactively 'vmacs-kill-buffer-delete-window))
      ( (derived-mode-p 'Info-mode)

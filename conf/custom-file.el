@@ -1,5 +1,5 @@
 (provide 'custom-file)
-;;下面的值是通过Emacs的custom 系统关于外观的设置,如无必要不要手动修改
+;;下面的值是通过 Emacs 的 custom 系统关于外观的设置,如无必要不要手动修改
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -45,7 +45,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(corfu cape consult-dir dired-filetype-face embark embark-consult evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
+   '(pangu-spacing gptel corfu cape consult-dir dired-filetype-face embark embark-consult evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
