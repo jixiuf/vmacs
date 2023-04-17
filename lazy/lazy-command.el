@@ -28,17 +28,17 @@
   (recentf-save-list)
   (require 'saveplace)
   (save-place-kill-emacs-hook)
-  ;;recentf-save-list里有bug会导致cursor恢复成默认color,而不能与evil配置的cursor相配
+  ;;recentf-save-list 里有 bug 会导致 cursor 恢复成默认 color,而不能与 evil 配置的 cursor 相配
   (evil-refresh-cursor)
 
   (message ""))
 
 
-;;vim 有o 与O 命令，用于在下一行与上一行插入一个空行，并定位光标到空格后
+;;vim 有 o 与 O 命令，用于在下一行与上一行插入一个空行，并定位光标到空格后
 ;; 此功能类似，当光标在行首时，则在上一行添加空行，当在行尾时，则在下一行添加空行
 ;; 否则将当前行分成两行
-;; 即只需要与C-a与C-e命令合并使用即可实现o O的功能，
-;; 即C-aC-j=o,C-eC-j=O(假如此命令绑定到C-j的话)
+;; 即只需要与 C-a 与 C-e 命令合并使用即可实现 o O 的功能，
+;; 即 C-aC-j=o,C-eC-j=O(假如此命令绑定到 C-j 的话)
 ;;;###autoload
 (defun open-line-or-new-line-dep-pos()
   "binding this to `C-j' if point is at head of line then
@@ -64,7 +64,7 @@ open-line if point is at end of line , new-line-and-indent"
 
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
-;; 一般绑在C-a上
+;; 一般绑在 C-a 上
 ;;;###autoload
 (defun smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
@@ -88,7 +88,7 @@ Move point to beginning-of-line ,if point was already at that position,
 
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
-;; 一般绑在C-a上
+;; 一般绑在 C-a 上
 ;;;###autoload
 (defun org-mode-smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
@@ -99,10 +99,10 @@ Move point to beginning-of-line ,if point was already at that position,
     (org-beginning-of-line)
     (and (= oldpos (point))
          (back-to-indentation) )))
-;; 一般绑定在C-e上，跳转到行尾
+;; 一般绑定在 C-e 上，跳转到行尾
 ;; 如果当前行是个非常长的行，以至于一屏显示不下，
 ;; 则此命令只会向后移动一屏的距离而不是移到行尾
-;; C-uC-e则直接跳到行尾
+;; C-uC-e 则直接跳到行尾
 ;;;###autoload
 (defun smart-end-of-line(&optional arg)
   "like `org-end-of-line' move point to
@@ -127,7 +127,7 @@ Move point to end-of-line ,if point was already at end of line (ignore white spa
     )
   )
 
-;; 同smart-end-of-line
+;; 同 smart-end-of-line
 ;;;###autoload
 (defun org-mode-smart-end-of-line()
   "Move point to first non-whitespace character or end-of-line.
@@ -181,7 +181,7 @@ Move point to end-of-line ,if point was already at that position,
 ;;             (goto-char m-end)
 ;;             )))))
 
-;; ;; 绑定在C-xC-v上，切换成*scratch* 中，若已经在*scratch*中，则切换成上一个buffer
+;; ;; 绑定在 C-xC-v 上，切换成*scratch* 中，若已经在*scratch*中，则切换成上一个 buffer
 ;; ;;;###autoload
 ;; (defun switch-to-scratch-buffer ()
 ;;   "Toggle between *scratch* buffer and the current buffer.
@@ -225,11 +225,11 @@ Move point to end-of-line ,if point was already at that position,
 ;;         (setq begin (region-beginning)
 ;;               end (region-end))))
 ;;     (message "searching  %s ... using stardicr" (buffer-substring begin end))
-;;     (shell-command "notify-send \"`sdcv -n -u '朗道英汉字典5.0' %s`\"" (buffer-substring begin end) )
-;;     (message "finished searching  朗道英汉字典5.0'")
+;;     (shell-command "notify-send \"`sdcv -n -u '朗道英汉字典 5.0' %s`\"" (buffer-substring begin end) )
+;;     (message "finished searching  朗道英汉字典 5.0'")
 ;;     ))
 
-;; linux 上使用星际译王的命令行版sdcv 进行翻译
+;; linux 上使用星际译王的命令行版 sdcv 进行翻译
 ;;;###autoload
 (defun sdcv-to-buffer ()
   "Search dict in region or world."
@@ -281,7 +281,7 @@ Move point to end-of-line ,if point was already at that position,
 ;;     (goto-char p)                       ;go back to init pos
 ;;     e))
 
-;;如果有选中区域,则kill选区,否则删除当前行
+;;如果有选中区域,则 kill 选区,否则删除当前行
 ;;注意当前行并不代表整行,它只删除光标到行尾的内容,也就是默认情况下
 ;;C-k 所具有的功能
 ;;;###autoload
@@ -310,7 +310,7 @@ Move point to end-of-line ,if point was already at that position,
     (org-kill-line arg)
     )
   )
-;; ;;;;(global-unset-key "\C-w")  ;C-k 现在完全具有C-w的功能, 所以取消C-w的键定义
+;; ;;;;(global-unset-key "\C-w")  ;C-k 现在完全具有 C-w 的功能, 所以取消 C-w 的键定义
 ;; (defvar vmacs-trailing-whitespace-modes '(c++-mode c-mode haskell-mode emacs-lisp-mode scheme-mode erlang-mode))
 ;; ;;;###autoload
 ;; (defun vmacs-trailing-whitespace-hook ()
@@ -324,8 +324,8 @@ Move point to end-of-line ,if point was already at that position,
 ;;   (when (member major-mode vmacs-untabify-modes)
 ;;     (untabify (point-min) (point-max))))
 
-;; kill buffer的包装，对于emacsclient连上来的buffer,则表示编辑完了
-;; 退出emacsclient,否则就是普通的关闭文件
+;; kill buffer 的包装，对于 emacsclient 连上来的 buffer,则表示编辑完了
+;; 退出 emacsclient,否则就是普通的关闭文件
 (autoload 'server-edit "server")
 ;;;###autoload
 (defun vmacs-kill-buffer-dwim(&optional buf)
@@ -363,7 +363,7 @@ Move point to end-of-line ,if point was already at that position,
      ( (derived-mode-p 'calc-mode)
        (call-interactively 'calc-quit))
      ( (derived-mode-p 'mu4e-view-mode)
-       (call-interactively 'mu4e~view-quit))
+       (call-interactively 'mu4e-view-quit))
      ( (derived-mode-p 'diff-mode)
        (call-interactively 'vmacs-kill-buffer-delete-window))
      ( (derived-mode-p 'Info-mode)
@@ -458,7 +458,7 @@ Move point to end-of-line ,if point was already at that position,
 ;;     )
 ;;   )
 
-;; 在当前行任何位置输入分号都在行尾添加分号，除非本行有for 这个关键字，
+;; 在当前行任何位置输入分号都在行尾添加分号，除非本行有 for 这个关键字，
 ;; 如果行尾已经有分号则删除行尾的分号，将其插入到当前位置,就是说输入两次分号则不在行尾插入而是像正常情况一样.
 ;;;###autoload
 (defun vmacs-append-semicolon-at-eol(&optional _arg)
@@ -475,7 +475,7 @@ Move point to end-of-line ,if point was already at that position,
             (goto-char (+ semicolon_end_of_line b))
             (delete-char 1) )
           (insert ";") )
-      ;;在整行内容中搜索有没有关键字for的存在,或者当前位置已经是行尾,直接插入分号
+      ;;在整行内容中搜索有没有关键字 for 的存在,或者当前位置已经是行尾,直接插入分号
       (if   (or (string-match "^[ \t]*$" (buffer-substring init_position e))
                 (string-match "\\bfor\\b" line_str))
           (insert ";")
@@ -499,9 +499,9 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
     (comment-dwim arg)))
 
 ;; "run ediff with marked buffer in ibuffer mode
-;; 如果有两个marked 的buffer,对这两个进行ediff ,默认在merge 模式,
-;; `C-u'的话,即普通的ediff,不进行merge
-;; 如果是mark了三个buffer ,则会让你选哪一个是ancestor(祖先),然后进行三方合并
+;; 如果有两个 marked 的 buffer,对这两个进行 ediff ,默认在 merge 模式,
+;; `C-u'的话,即普通的 ediff,不进行 merge
+;; 如果是 mark 了三个 buffer ,则会让你选哪一个是 ancestor(祖先),然后进行三方合并
 ;; `C-u'的话,不进行合并,仅进行三方合并"
 ;;;###autoload
 (defun ibuffer-ediff-merge(&optional arg)
@@ -557,7 +557,7 @@ Replaces default behaviour of comment-dwim, when it inserts comment at the end o
   (while (search-forward "\n" nil t)
     (replace-match "\r\n")))
 
-;; mac上打开iterm2，并cd到当前编辑的文件所在目录
+;; mac 上打开 iterm2，并 cd 到当前编辑的文件所在目录
 ;;;###autoload
 (defun cd-iterm2()
   (interactive)
@@ -618,7 +618,7 @@ end tell
 " (expand-file-name default-directory))))
     (ns-do-applescript cmd)))
 
-;; mac上打开iterm2，并cd到当前编辑的文件所在目录
+;; mac 上打开 iterm2，并 cd 到当前编辑的文件所在目录
 ;;;###autoload
 (defun cd-iterm2-new-tab()
   (interactive)
@@ -766,8 +766,8 @@ end tell" (expand-file-name default-directory))))
 ;;     (tool-bar-mode 1)
 ;;     )
 ;;   )
-;; ;;让hipperextend不仅可以匹配开头,也可以匹配字符串的内部
-;; ;;将这个函数加入到hippie-expand-try-functions-list中，
+;; ;;让 hipperextend 不仅可以匹配开头,也可以匹配字符串的内部
+;; ;;将这个函数加入到 hippie-expand-try-functions-list 中，
 ;; ;;;###autoload
 ;; (defun try-vmacs-dabbrev-substring (old)
 ;;   (let ((old-fun (symbol-function 'he-dabbrev-search)))
