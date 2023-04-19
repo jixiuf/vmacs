@@ -22,7 +22,7 @@
 
 (when (require 'orderless nil t)
   (setq completion-styles '(orderless basic partial-completion initials))
-  ;; 默认按空格开隔的每个关键字支持regexp/literal/initialism 3种算法
+  ;; 默认按空格开隔的每个关键字支持 regexp/literal/initialism 3 种算法
   (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism ))
     ;; Recognizes the following patterns:
   ;; * ;flex flex;
@@ -114,7 +114,7 @@
 (define-key icomplete-minibuffer-map (kbd "C-.") 'next-history-element)
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-minibuffer-map (kbd "C-e") #'(lambda(&optional argv)(interactive)(if (eolp) (call-interactively #'icomplete-fido-exit) (end-of-line))) )
-;; for consult-rg 忽略gitignore
+;; for consult-rg 忽略 gitignore
 (define-key icomplete-minibuffer-map (kbd "C-u") #'(lambda()(interactive) (insert " -- -uuu")))
 
 
@@ -174,6 +174,7 @@
              (when dir (setq default-directory dir)))
            ) lines)
         (embark-consult-export-grep lines)
+        (define-key embark-region-map [( return)]  #'gptel-send)
         ))
     )
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
@@ -207,7 +208,7 @@
            ;; (dir (file-name-directory file))
            short-name)
       (setq short-name filename
-            ;; 这段是想实现 只展示最后 1级目录/文件.ext 的功能
+            ;; 这段是想实现 只展示最后 1 级目录/文件.ext 的功能
             ;; (if dir
             ;;     (format "%s/%s" (file-name-nondirectory
             ;;                      (directory-file-name dir))
@@ -262,7 +263,7 @@
 It handles the case of remote files as well."
   (cond
    ((file-remote-p file nil t) (file-readable-p file))
-   ((file-remote-p file) nil)           ;不记录tramp path
+   ((file-remote-p file) nil)           ;不记录 tramp path
    ((file-readable-p file))))
 (setq recentf-keep '(vmacs-recentf-keep-p))
 
@@ -281,7 +282,7 @@ It handles the case of remote files as well."
 ;;                      (recentf-remove-if-non-kept default-directory)))))
 
 ;; (require 'consult-dired-history)
-(setq consult-dir-project-list-function #'(lambda()nil)) ;不使用consult-dir--source-project
+(setq consult-dir-project-list-function #'(lambda()nil)) ;不使用 consult-dir--source-project
 ;; (setq consult-dir-project-list-function #'consult-dir-project-dirs)
 (setq-default consult-dir-sources
               '(consult-dir--source-default
