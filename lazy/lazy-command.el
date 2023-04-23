@@ -323,6 +323,30 @@ Move point to end-of-line ,if point was already at that position,
 ;; (defun vmacs-untabify-hook ()
 ;;   (when (member major-mode vmacs-untabify-modes)
 ;;     (untabify (point-min) (point-max))))
+(defvar my-scratch-backup-directory "~/.emacs.d/cache/scratch-backups/")
+(when (not (file-exists-p my-scratch-backup-directory)) (make-directory my-scratch-backup-directory t))
+
+;; 将 *scratch* 内容写入指定目录下的备份文件
+(defun backup-scratch ()
+  (let* ((backup-file (format-time-string "scratch-%Y-%m-%d-%H-%M-%S.el"))
+         (backup-path (concat my-scratch-backup-directory backup-file)))
+    (with-current-buffer "*scratch*"
+      (write-region (point-min) (point-max) backup-path nil 'silent))
+    backup-file))
+
+;; 删除指定目录下 3 天前的临时文件
+(defun delete-old-scratch-backups ()
+  (let ((max-age (* 3 24 60 60)) ; 3 天的时间戳
+        (now (float-time)))
+    (dolist (file (directory-files my-scratch-backup-directory t "scratch-.*\\.el$"))
+      (when (and (file-regular-p file)
+                 (> (- now (float-time (nth 5 (file-attributes file))))
+                    max-age))
+        (delete-file file)
+        (message "Deleted old scratch backup: %s" file)))))
+
+;; 定时执行删除任务
+(run-with-timer 0 (* 24 60 60) #'delete-old-scratch-backups)
 
 ;; kill buffer 的包装，对于 emacsclient 连上来的 buffer,则表示编辑完了
 ;; 退出 emacsclient,否则就是普通的关闭文件
@@ -333,7 +357,8 @@ Move point to end-of-line ,if point was already at that position,
   (with-current-buffer (or buf (current-buffer))
     (cond
      ((equal (buffer-name buf) "*scratch*")
-      (copy-region-as-kill (point-min)(point-max))
+      (backup-scratch)
+      ;; (copy-region-as-kill (point-min)(point-max))
       (kill-this-buffer))
      ((and (featurep 'server)
            (boundp 'server-buffer-clients)
