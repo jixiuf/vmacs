@@ -31,7 +31,7 @@
 (add-hook 'window-setup-hook
           (lambda ()
             (setq file-name-handler-alist file-name-handler-alist-old
-                  gc-cons-threshold 800000
+                  gc-cons-threshold (* 64 1024 1024)
                   gc-cons-percentage 0.1)
             (garbage-collect)
             (message "Load time %.06f" (float-time (time-since my/start-time))))
@@ -41,7 +41,7 @@
  ;; user-full-name ""                ;记得改成你的名字
  ;; user-login-name "jixiuf"
  user-mail-address (concat "jixiuf" "@" "qq.com"))
-(setq load-prefer-newer t)              ;当el文件比elc文件新的时候,则加载el,即尽量Load最新文件文件
+(setq load-prefer-newer t)              ;当 el 文件比 elc 文件新的时候,则加载 el,即尽量 Load 最新文件文件
 ;; By default Emacs will initiate GC every 0.76 MB allocated (gc-cons-threshold == 800000).
 ;; If we increase this to 20 MB (gc-cons-threshold == 20000000) we get:
 (setq read-process-output-max (* 3 1024 1024)) ;; 3mb default 4k

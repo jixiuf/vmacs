@@ -1,6 +1,8 @@
 (global-tab-line-mode t)
 (global-set-key  (kbd "s-C-M-j") 'vmacs-prev-tab) ;H-k default C-x left
 (global-set-key  (kbd "s-C-M-k") 'vmacs-next-tab)     ;H-j default C-x right
+(global-set-key  (kbd "s-j") 'vmacs-prev-tab) ;H-k default C-x left
+(global-set-key  (kbd "s-k") 'vmacs-next-tab)     ;H-j default C-x right
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
@@ -19,7 +21,7 @@
       (call-interactively 'next-buffer))))
 
 (setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
-;; switch-to-prev-buffer 与 switch-to-next-buffer 时 skip 特定的buffers
+;; switch-to-prev-buffer 与 switch-to-next-buffer 时 skip 特定的 buffers
 ;;而 tab-line-switch-to-prev/next-tab 恰好使用了上面两个函数
 (defun vmacs-switch-to-prev-buffer-skip(win buf bury-or-kill)
   (when (member this-command '(next-buffer previous-buffer
@@ -28,25 +30,25 @@
                                            tab-line-switch-to-prev-tab
                                            tab-line-switch-to-next-tab))
     (cond
-     ((vmacs-vterm-p)                ;当前buffer是vterm
-      (not (vmacs-vterm-p buf)))     ;若buf 不是vterm,则skip
+     ((vmacs-vterm-p)                ;当前 buffer 是 vterm
+      (not (vmacs-vterm-p buf)))     ;若 buf 不是 vterm,则 skip
      ((vmacs-boring-buffer-p (current-buffer))
       (not (vmacs-boring-buffer-p buf)))
-     (t                                 ;当前buffer是正常buffer
-      (or (vmacs-boring-buffer-p buf)   ;若buf 是boring buf 或vterm，则跳过
+     (t                                 ;当前 buffer 是正常 buffer
+      (or (vmacs-boring-buffer-p buf)   ;若 buf 是 boring buf 或 vterm，则跳过
           (vmacs-vterm-p buf))))))
 (defadvice tab-line-tabs-window-buffers (around skip-buffer activate)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
   (let ((buffers (reverse ad-do-it)))
     (cond
-     ((vmacs-vterm-p)               ;当前buffer是vterm
-      ;; 只返回vterm buffer 作为当前tab group 的tab
+     ((vmacs-vterm-p)               ;当前 buffer 是 vterm
+      ;; 只返回 vterm buffer 作为当前 tab group 的 tab
       (setq ad-return-value (seq-filter #'vmacs-vterm-p buffers)))
      ((vmacs-boring-buffer-p (current-buffer))
       (setq ad-return-value (seq-filter #'vmacs-boring-buffer-p buffers)))
      (t
-      ;; skip boring buffer 及vterm
+      ;; skip boring buffer 及 vterm
       (setq buffers (seq-remove #'vmacs-boring-buffer-p buffers))
       (setq ad-return-value  (seq-remove #'vmacs-vterm-p buffers))))))
 
@@ -80,7 +82,7 @@ but skip uninterested buffers."
 
 
 
-;; 最多打开10个文件
+;; 最多打开 10 个文件
 (defun vmacs-prevent-open-too-much-files()
   (let* ((buffers (reverse (tab-line-tabs-window-buffers)))
          (buffer-save-without-query t)
@@ -115,7 +117,7 @@ but skip uninterested buffers."
 ;; (require 'centaur-tabs)
 ;; (vmacs-leader (kbd "e") 'centaur-tabs-forward-group)
 
-;; ;; 只为eshell-mode term-mode 启用centaur-tabs
+;; ;; 只为 eshell-mode term-mode 启用 centaur-tabs
 
 ;; (setq centaur-tabs-buffer-groups-function 'vmacs-centaur-tabs-buffer-groups)
 

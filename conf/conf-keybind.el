@@ -1,5 +1,7 @@
 (global-set-key (kbd "s-,") 'vterm-toggle)
+(global-set-key (kbd "s-M-C-,") 'vterm-toggle)
 (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
+(global-set-key  (kbd "s-M-C-t") 'vterm-toggle-cd)
 (define-key special-mode-map " " nil)
 
 ;; (global-set-key [(tab)]       'smart-tab)
@@ -62,18 +64,23 @@
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 
 (global-set-key (kbd "s-C-M-i")  'project-find-file)
+(global-set-key (kbd "s-i")  'project-find-file)
 (global-set-key (kbd "s-C-M-I")  'project-or-external-find-file)
+(global-set-key (kbd "s-I")  'project-or-external-find-file)
 (autoload 'dap-debug "dap-mode" nil t)
 (global-set-key (kbd "<f6>")  'dap-debug)
 (global-set-key (kbd "<f7>")  'dap-disconnect)
 
 
 (global-set-key  (kbd "s-C-M-u") 'vmacs-prev-buffer)
+(global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "s-C-M-w") 'vmacs-kill-buffer-dwim)
 
 (global-set-key  (kbd "s-C-M-h") 'vmacs-undo-kill-buffer)
+;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)
 
@@ -86,12 +93,12 @@
 
 (global-set-key (kbd "C-;") 'iedit-mode)
 
-;; C-x esc esc 可以查看global-set-key 究竟bind哪个key
-;; 默认Emacs 把TAB==`C-i'
+;; C-x esc esc 可以查看 global-set-key 究竟 bind 哪个 key
+;; 默认 Emacs 把 TAB==`C-i'
 ;;            RET==`C-m'
 ;;            ESC==`C-['
 ;;这样可以进行绑定的键好像少了一些,
-;;下面的方法可以实现将`C-i' `C-m'绑定与`TAB' `RET'不同的func
+;;下面的方法可以实现将`C-i' `C-m'绑定与`TAB' `RET'不同的 func
 ;; (defun vmacs-translate-keybind(&optional f) ;
 ;;   (with-selected-frame (or f (selected-frame))
 ;;     (when (display-graphic-p)
@@ -103,8 +110,8 @@
 ;; (add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
 ;; (require 'bind-map)
 
-;; iterm2下实同一些 终端下本没有的按键
-;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在mac上的安装及一些相应配置/#orgheadline15
+;; iterm2 下实同一些 终端下本没有的按键
+;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在 mac 上的安装及一些相应配置/#orgheadline15
 ;; (defun iterm2-keybind-mapping()
 ;;   (global-set-key (kbd "C-[ [ 1 a") (key-binding(kbd "C-<backspace>"))) ;== "M-[ a a" iterm2 map to ctrl-backspace
 ;;   ;; (global-set-key (kbd "C-[ [ 1 c") 'hippie-expand)   ; iterm map to ctrl-return
@@ -123,7 +130,7 @@
 ;;   (global-set-key (kbd "C-[ [ 1 l") (key-binding (kbd "C-<f3>") ))   ;iterm2 map to ctrl-f3
 
 ;;   (global-set-key (kbd "C-[ [ 1 b") (key-binding (kbd "C-<f2>") )) ; map to ctrl-f2
-;;   ) ;iterm2特有的配置
+;;   ) ;iterm2 特有的配置
 ;; ;; (iterm2-keybind-mapping)
 ;; (add-hook 'after-init-hook 'iterm2-keybind-mapping)
 

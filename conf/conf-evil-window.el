@@ -1,12 +1,13 @@
 ;; 窗口相关操作，
-;; 当分屏时，默认的emacs是C-x 2 ,C-x 3 两个窗口中显示的内容都是同一个buffer
-;; 此处则在新开的窗口中显示不同的buffer
+;; 当分屏时，默认的 emacs 是 C-x 2 ,C-x 3 两个窗口中显示的内容都是同一个 buffer
+;; 此处则在新开的窗口中显示不同的 buffer
 (vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
 (vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏
 (global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
 (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
 (vmacs-leader (kbd "4") 'toggle-split-window)
 (global-set-key  (kbd "C-M-s-\\") #'toggle-split-window)
+(global-set-key  (kbd "s-\\") #'toggle-split-window)
 (vmacs-leader (kbd "4") 'toggle-split-window)
 (vmacs-leader (kbd "1") 'vmacs-delete-other-windows) ;只保留当前窗口
 (vmacs-leader (kbd "0") 'vmacs-delete-window)        ;删除当前窗口

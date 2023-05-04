@@ -55,3 +55,4 @@ osx-dictionary-cli
 /.cache/
 /lazy-loaddefs.el
 /lazy/lazy-loaddefs.el
+/chatgpt/history

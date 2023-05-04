@@ -1,0 +1,7 @@
+# key: ai
+# name: src (#+BEGIN_SRC chatgpt-shell ...)
+# --
+
+#+BEGIN_SRC chatgpt-shell 
+$0
+#+END_SRC

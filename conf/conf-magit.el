@@ -1,15 +1,15 @@
 (setq magit-git-executable (executable-find "git"))
 (setq-default
- magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的Recent commits列表有没有办法增加作者列
+ magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的 Recent commits 列表有没有办法增加作者列
  magit-commit-show-diff nil
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
  magit-diff-highlight-hunk-body nil
  magit-section-keep-region-overlay t
- magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename的log也能看到
+ magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename 的 log 也能看到
  magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1
  magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace to toggle
- magit-section-highlight-hook nil       ;不必hightlight,光标移动的时候，默认会显示当前section区域
+ magit-section-highlight-hook nil       ;不必 hightlight,光标移动的时候，默认会显示当前 section 区域
  magit-section-unhighlight-hook nil)
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
 
@@ -108,22 +108,24 @@
       (kill-buffer prev-buffer))))
 
 
-;;在magit-log-buffer-file 产生的log buffer中
-;; return : 查看当前commit 的diff
-;; 有选择区域 则查看区域内的diff
+;;在 magit-log-buffer-file 产生的 log buffer 中
+;; return : 查看当前 commit 的 diff
+;; 有选择区域 则查看区域内的 diff
 ;; C-u 则打开当前对应的版本的文件
 (define-key magit-commit-section-map  [return] 'vmacs-magit-diff-range)
 (define-key magit-commit-section-map  [C-return] 'magit-show-commit) ;old return
 
-(vmacs-leader (kbd "vm") 'vmacs-magit-blob-toggle) ;类似于time machine
+(vmacs-leader (kbd "vm") 'vmacs-magit-blob-toggle) ;类似于 time machine
 (define-key magit-blob-mode-map (kbd "M-n") 'magit-blob-next)
 (define-key magit-blob-mode-map (kbd "M-p") 'magit-blob-previous)
 (define-key magit-blob-mode-map (kbd "C-c C-c") 'vmacs-magit-blob-save)
 (define-key magit-blob-mode-map (kbd "s-w") 'vmacs-magit-blob-quit)
+(define-key magit-blob-mode-map (kbd "s-C-M-w") 'vmacs-magit-blob-quit)
 (global-set-key (kbd "M-p") 'magit-blob-previous)
 (global-set-key (kbd "M-n") 'magit-blob-next)
 
 (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
+(define-key magit-status-mode-map (kbd "s-C-M-w") 'vmacs-magit-kill-buffers)
 (defun vmacs-magit-kill-buffers ()
   "Restore window configuration and kill all Magit buffers."
   (interactive)

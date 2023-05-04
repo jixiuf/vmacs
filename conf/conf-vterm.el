@@ -13,7 +13,7 @@
 (setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=yes ")
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-clear-scrollback-when-clearing t)
-(setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认regex 相当于没定义，term-bol无法正常中转到开头处
+(setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq vterm-buffer-name-string "*vterm* %s")
 
 (require 'vterm)
@@ -24,8 +24,8 @@
 (setq vterm-toggle-fullscreen-p t)
 (setq vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
 ;; (setq vterm-toggle-hide-method 'bury-all-vterm-buffer)
-;; 使用swith-to-buffer 来hide vterm,以确保使用共同的window,与tabline 更好的兼容
-;; 主要是维护buffer-list,以确保下次切回来，仍是最近使用的vterm
+;; 使用 swith-to-buffer 来 hide vterm,以确保使用共同的 window,与 tabline 更好的兼容
+;; 主要是维护 buffer-list,以确保下次切回来，仍是最近使用的 vterm
 (add-hook 'vterm-toggle-hide-hook #'(lambda() (switch-to-buffer (current-buffer))))
 (setq vterm-toggle-hide-method nil)
 
@@ -88,6 +88,7 @@
   (skip-chars-backward "\n[:space:]"))
 
 (define-key vterm-mode-map (kbd "s-C-M-u") 'vterm-toggle)
+(define-key vterm-mode-map (kbd "s-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-k")   #'vmacs-vterm-kill-line)
@@ -95,7 +96,7 @@
 (define-key vterm-mode-map (kbd "M-:")   #'eval-expression)
 
 
-;; C－s 停止滚屏 C-q恢复滚屏
+;; C－s 停止滚屏 C-q 恢复滚屏
 (define-key vterm-mode-map [(control return)]   #'vterm-toggle-insert-cd)
 
 (define-key vterm-copy-mode-map (kbd "C-c C-c")   #'vterm--self-insert)

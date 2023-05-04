@@ -10,16 +10,17 @@
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
 (require 'conf-space-tab)
-(eval-after-load 'ibuffer '(require 'conf-ibuffer)) ;绑定在space l 上，用于列出当前打开的哪些文件
+(eval-after-load 'ibuffer '(require 'conf-ibuffer)) ;绑定在 space l 上，用于列出当前打开的哪些文件
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
 (with-eval-after-load 'css-mode (require 'conf-css))
 (with-eval-after-load 'lua (require 'conf-program-lua))
+(with-eval-after-load 'chatgpt-shell (require 'conf-ai))
 (require 'conf-face)
 ;; (when (executable-find "gpg") (require 'conf-gpg))
 (with-eval-after-load 'sql (require 'conf-sql))
 
 (require 'conf-evil)
-;; mac 上处理evil-mode 与中文输入法
+;; mac 上处理 evil-mode 与中文输入法
 (require 'conf-evil-window)       ;窗口
 (require 'conf-evil-clipboard)
 ;; (require 'conf-bm)              ; 可视化书签功能与跳转功能
@@ -41,7 +42,7 @@
 (when (eq system-type 'darwin)
   (require 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
-(with-eval-after-load 'dired (require 'conf-dired)) ;emacs文件浏览器，directory 管理理
+(with-eval-after-load 'dired (require 'conf-dired)) ;emacs 文件浏览器，directory 管理理
 
 
 
@@ -49,14 +50,14 @@
 ;; (require 'conf-ivy)
 ;; (require 'conf-rg)
 (require 'conf-wgrep)
-;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用ido的配置
-;; mac 或linux上启用sudo ，用于切换成root或别的用户来编辑当前文件或目录
+;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用 ido 的配置
+;; mac 或 linux 上启用 sudo ，用于切换成 root 或别的用户来编辑当前文件或目录
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
 (when (require 'mu4e nil t) (require 'conf-mail))
 
 
 
-;; 一般性的配置在conf/conf-common.el中
+;; 一般性的配置在 conf/conf-common.el 中
 (require 'conf-tabs)
 ;; (with-eval-after-load 'eshell (require 'conf-eshell)) ;
 ;; (with-eval-after-load 'term (require 'conf-term)) ;

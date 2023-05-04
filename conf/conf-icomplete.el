@@ -239,8 +239,9 @@
 (global-set-key (kbd "C-x r x" ) #'consult-register)
 
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
-(autoload #'mu4e-headers-search-bookmark  "mu4e" t)
-(vmacs-leader (kbd "i") #'(lambda()(interactive)(shell-command "killall mbsync") (mu4e-search-bookmark)(mu4e t)))
+
+(autoload #'mu4e-search-bookmark  "mu4e" t)
+(vmacs-leader (kbd "i") #'(lambda()(interactive)(shell-command "killall mbsync" nil nil) (mu4e-search-bookmark)(mu4e t)))
 
 (autoload #'consult-buffer  "consult" t)
 (vmacs-leader " " 'consult-buffer)
@@ -291,7 +292,9 @@ It handles the case of remote files as well."
                 consult-dir--source-tramp-ssh))
 
 (define-key minibuffer-local-completion-map (kbd "C-M-s-j") #'consult-dir)
+(define-key minibuffer-local-completion-map (kbd "s-j") #'consult-dir)
 (define-key minibuffer-local-completion-map (kbd "C-M-s-l") #'consult-dir-jump-file) ;locate
+(define-key minibuffer-local-completion-map (kbd "s-l") #'consult-dir-jump-file) ;locate
 (define-key global-map (kbd "C-x d") #'consult-dir)
 (setq consult-dir-shadow-filenames nil)
 (setq consult-dir-default-command #'consult-dir-dired)
