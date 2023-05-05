@@ -28,6 +28,7 @@
 
 
 (when (eq system-type 'darwin) (require 'conf-macos))
+(when (eq system-type 'gnu/linux) (require 'conf-linux))
 (when (eq system-type 'windows-nt) (require 'conf-w32))
 (with-eval-after-load 'iedit (require 'conf-iedit))
 (require 'conf-common)
