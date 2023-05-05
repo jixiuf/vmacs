@@ -28,6 +28,8 @@
 
 
 (global-set-key  (kbd "s-M-C-q") 'save-buffers-kill-emacs)
+(global-set-key  (kbd "s-M-C-c") 'kill-ring-save)
+(global-set-key  (kbd "s-M-C-v") 'yank)
 
 
 
