@@ -14,13 +14,20 @@
   (string-trim (shell-command-to-string "ibus engine")))
 
 (add-hook 'evil-normal-state-entry-hook #'switch-to-english-input-method)
-(defun on-toggle-input-method()
+(defun linux-toggle-input-method()
   (interactive)
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
     (switch-to-rime-input-method)
     (evil-insert-state)))
-(global-set-key (kbd "<f15>") 'vmacs-toggle-input-method)
+
+(global-set-key (kbd "C-<SPC>") #'linux-toggle-input-method)
+(define-key isearch-mode-map (kbd  "C-<SPC>") #'linux-toggle-input-method)
+(with-eval-after-load 'vterm
+  (define-key vterm-mode-map (kbd "C-<SPC>")   #'linux-toggle-input-method))
+
+
+(global-set-key  (kbd "s-M-C-q") 'save-buffers-kill-emacs)
 
 
 
