@@ -17,9 +17,9 @@
 (add-hook 'after-init-hook #'vmacs-set-font)
 
 ;; (global-set-key (kbd "s-=") 'create-frame-font-big-mac)
-;; (global-set-key [C-M-s-backspace] 'create-frame-font-large-mac)
+;; (global-set-key [C-s-backspace] 'create-frame-font-large-mac)
 ;; (global-set-key (kbd "s--") 'create-frame-font-small-mac)
-;; (global-set-key (kbd "C-M-s-9") 'create-frame-font-middle-mac) ;s-9
+;; (global-set-key (kbd "C-s-9") 'create-frame-font-middle-mac) ;s-9
 ;; (global-set-key (kbd "s-0") 'create-frame-font-mac)
 
 ;; ;; pip install jieba

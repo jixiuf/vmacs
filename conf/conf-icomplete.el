@@ -291,9 +291,9 @@ It handles the case of remote files as well."
                 ;; consult-dir--source-project
                 consult-dir--source-tramp-ssh))
 
-(define-key minibuffer-local-completion-map (kbd "C-M-s-j") #'consult-dir)
+(define-key minibuffer-local-completion-map (kbd "C-s-j") #'consult-dir)
 (define-key minibuffer-local-completion-map (kbd "s-j") #'consult-dir)
-(define-key minibuffer-local-completion-map (kbd "C-M-s-l") #'consult-dir-jump-file) ;locate
+(define-key minibuffer-local-completion-map (kbd "C-s-l") #'consult-dir-jump-file) ;locate
 (define-key minibuffer-local-completion-map (kbd "s-l") #'consult-dir-jump-file) ;locate
 (define-key global-map (kbd "C-x d") #'consult-dir)
 (setq consult-dir-shadow-filenames nil)

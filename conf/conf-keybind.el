@@ -1,7 +1,7 @@
 (global-set-key (kbd "s-,") 'vterm-toggle)
-(global-set-key (kbd "s-M-C-,") 'vterm-toggle)
+(global-set-key (kbd "s-C-,") 'vterm-toggle)
 (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
-(global-set-key  (kbd "s-M-C-t") 'vterm-toggle-cd)
+(global-set-key  (kbd "s-C-t") 'vterm-toggle-cd)
 (define-key special-mode-map " " nil)
 
 ;; (global-set-key [(tab)]       'smart-tab)
@@ -43,9 +43,9 @@
 
 (global-set-key  (kbd "s-l") 'delete-other-windows)
 (global-set-key  (kbd "s-o") 'other-window)
-(global-set-key  (kbd "s-C-M-o") 'other-window)
+(global-set-key  (kbd "s-C-o") 'other-window)
 
-(global-set-key [C-M-s-return] 'vmacs-window-rotate)
+(global-set-key [C-s-return] 'vmacs-window-rotate)
 
 
 
@@ -56,30 +56,30 @@
 ;; (global-set-key  (kbd "s-C-S-M-q") 'delete-frame)
 ;; (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
-(global-set-key  (kbd "s-C-M-1") 'delete-other-windows) ;hyper-1
-(global-set-key  (kbd "s-C-M-2") 'vmacs-split-window-vertically) ;hyper-2
+(global-set-key  (kbd "s-C-1") 'delete-other-windows) ;hyper-1
+(global-set-key  (kbd "s-C-2") 'vmacs-split-window-vertically) ;hyper-2
 (global-set-key  (kbd "s-2") 'vmacs-split-window-vertically)
-(global-set-key  (kbd "s-C-M-3") 'vmacs-split-window-horizontally) ;hyper-2
+(global-set-key  (kbd "s-C-3") 'vmacs-split-window-horizontally) ;hyper-2
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 
-(global-set-key (kbd "s-C-M-i")  'project-find-file)
+(global-set-key (kbd "s-C-i")  'project-find-file)
 (global-set-key (kbd "s-i")  'project-find-file)
-(global-set-key (kbd "s-C-M-I")  'project-or-external-find-file)
+(global-set-key (kbd "s-C-I")  'project-or-external-find-file)
 (global-set-key (kbd "s-I")  'project-or-external-find-file)
 (autoload 'dap-debug "dap-mode" nil t)
 (global-set-key (kbd "<f6>")  'dap-debug)
 (global-set-key (kbd "<f7>")  'dap-disconnect)
 
 
-(global-set-key  (kbd "s-C-M-u") 'vmacs-prev-buffer)
+(global-set-key  (kbd "s-C-u") 'vmacs-prev-buffer)
 (global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
-(global-set-key (kbd "s-C-M-w") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
 
-(global-set-key  (kbd "s-C-M-h") 'vmacs-undo-kill-buffer)
+(global-set-key  (kbd "s-C-h") 'vmacs-undo-kill-buffer)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)

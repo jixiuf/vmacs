@@ -1,6 +1,6 @@
 (global-tab-line-mode t)
-(global-set-key  (kbd "s-C-M-j") 'vmacs-prev-tab) ;H-k default C-x left
-(global-set-key  (kbd "s-C-M-k") 'vmacs-next-tab)     ;H-j default C-x right
+(global-set-key  (kbd "s-C-j") 'vmacs-prev-tab) ;H-k default C-x left
+(global-set-key  (kbd "s-C-k") 'vmacs-next-tab)     ;H-j default C-x right
 (global-set-key  (kbd "s-j") 'vmacs-prev-tab) ;H-k default C-x left
 (global-set-key  (kbd "s-k") 'vmacs-next-tab)     ;H-j default C-x right
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
