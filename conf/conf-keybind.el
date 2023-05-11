@@ -45,7 +45,7 @@
 (global-set-key  (kbd "s-o") 'other-window)
 (global-set-key  (kbd "s-C-o") 'other-window)
 
-(global-set-key [C-s-return] 'vmacs-window-rotate)
+(global-set-key [s-C-return] 'vmacs-window-rotate)
 
 
 

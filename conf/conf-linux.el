@@ -13,7 +13,7 @@
 (defun get-input-method-state()
   (string-trim (shell-command-to-string "ibus engine")))
 
-(add-hook 'evil-normal-state-entry-hook #'switch-to-english-input-method)
+;;(add-hook 'evil-normal-state-entry-hook #'switch-to-english-input-method)
 (defun linux-toggle-input-method()
   (interactive)
   (if (string-equal (get-input-method-state) "rime")
@@ -27,9 +27,9 @@
   (define-key vterm-mode-map (kbd "C-<SPC>")   #'linux-toggle-input-method))
 
 
-(global-set-key  (kbd "s-M-C-q") 'save-buffers-kill-emacs)
-(global-set-key  (kbd "s-M-C-c") 'kill-ring-save)
-(global-set-key  (kbd "s-M-C-v") 'yank)
+(global-set-key  (kbd "s-C-q") 'save-buffers-kill-emacs)
+(global-set-key  (kbd "s-C-c") 'kill-ring-save)
+(global-set-key  (kbd "s-C-v") 'yank)
 
 (defun vmacs-set-font()
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析

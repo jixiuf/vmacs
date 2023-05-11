@@ -61,9 +61,9 @@
 ;;   (define-key eshell-mode-map (kbd "M-j") 'eshell-next-prompt)
 ;;   (define-key eshell-mode-map (kbd "C-t") 'vmacs-eshell-term-new)
 ;;   (define-key eshell-mode-map (kbd "s-t") 'vmacs-eshell-term-new)
-;;   (define-key eshell-mode-map (kbd "C-s-t") 'vmacs-eshell-term-new)
-;;   ;; (define-key eshell-mode-map (kbd "C-s-n") 'vmscs-eshell-next)
-;;   ;; (define-key eshell-mode-map (kbd "C-s-p") 'vmscs-eshell-prev)
+;;   (define-key eshell-mode-map (kbd "s-C-t") 'vmacs-eshell-term-new)
+;;   ;; (define-key eshell-mode-map (kbd "s-C-n") 'vmscs-eshell-next)
+;;   ;; (define-key eshell-mode-map (kbd "s-C-p") 'vmscs-eshell-prev)
 
 ;;   (define-key eshell-mode-map (kbd "M-.") 'eshell-insert-last-cmd-argument)
 
