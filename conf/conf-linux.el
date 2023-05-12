@@ -2,18 +2,25 @@
 ;; ibus engine
 ;; xkb:us::eng  or rime
 ;; ibus engine rime  # 将输入法更改为
+(defvar ime 'fcitx5)
 (defun switch-to-english-input-method ()
   "Switch to English input method."
   (interactive)
-  (call-process "ibus" nil nil nil "engine" "xkb:us::eng"))
+  (if (eq ime 'fcitx5)
+      (call-process "fcitx5-remote" nil nil nil "-s" "keyboard-us")
+    (call-process "ibus" nil nil nil "engine" "xkb:us::eng")))
 (defun switch-to-rime-input-method ()
   "Switch to English input method."
   (interactive)
-  (call-process "ibus" nil nil nil "engine" "rime"))
+  (if (eq ime 'fcitx5)
+      (call-process "fcitx5-remote" nil nil nil "-s" "rime")
+    (call-process "ibus" nil nil nil "engine" "rime")))
 (defun get-input-method-state()
-  (string-trim (shell-command-to-string "ibus engine")))
+  (if (eq ime 'fcitx5)
+      (string-trim (shell-command-to-string "fcitx5-remote -n"))
+    (string-trim (shell-command-to-string "ibus engine"))))
 
-;;(add-hook 'evil-normal-state-entry-hook #'switch-to-english-input-method)
+(add-hook 'evil-normal-state-entry-hook #'switch-to-english-input-method)
 (defun linux-toggle-input-method()
   (interactive)
   (if (string-equal (get-input-method-state) "rime")
@@ -46,6 +53,12 @@
 
 (vmacs-set-font)
 (add-hook 'after-init-hook #'vmacs-set-font)
+(defun vmacs-on-save-sway-config()
+  (let ((file (buffer-file-name)))
+    (when (and file )
+      (string-equal (file-name-nondirectory file) "sway.tpl")
+      (shell-command "make"))))
+(add-hook 'after-save-hook 'vmacs-on-save-sway-config)
 
 
 (provide 'conf-linux)
