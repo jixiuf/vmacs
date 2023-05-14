@@ -2,7 +2,7 @@
 ;; ibus engine
 ;; xkb:us::eng  or rime
 ;; ibus engine rime  # 将输入法更改为
-(defvar ime 'fcitx5)
+(defvar ime 'ibus)
 (defun switch-to-english-input-method ()
   "Switch to English input method."
   (interactive)
@@ -55,8 +55,8 @@
 (add-hook 'after-init-hook #'vmacs-set-font)
 (defun vmacs-on-save-sway-config()
   (let ((file (buffer-file-name)))
-    (when (and file )
-      (string-equal (file-name-nondirectory file) "sway.tpl")
+    (when (and file
+               (string-equal (file-name-nondirectory file) "sway.tpl"))
       (shell-command "make"))))
 (add-hook 'after-save-hook 'vmacs-on-save-sway-config)
 
