@@ -2,7 +2,7 @@
 ;; ibus engine
 ;; xkb:us::eng  or rime
 ;; ibus engine rime  # 将输入法更改为
-(defvar ime 'ibus)
+(defvar ime (if (executable-find "fcitx5") 'fcitx5 'ibuf))
 (defun switch-to-english-input-method ()
   "Switch to English input method."
   (interactive)
@@ -28,10 +28,10 @@
     (switch-to-rime-input-method)
     (evil-insert-state)))
 
-(global-set-key (kbd "C-<SPC>") #'linux-toggle-input-method)
-(define-key isearch-mode-map (kbd  "C-<SPC>") #'linux-toggle-input-method)
+(global-set-key (kbd "C-s-<SPC>") #'linux-toggle-input-method)
+(define-key isearch-mode-map (kbd  "C-s-<SPC>") #'linux-toggle-input-method)
 (with-eval-after-load 'vterm
-  (define-key vterm-mode-map (kbd "C-<SPC>")   #'linux-toggle-input-method))
+  (define-key vterm-mode-map (kbd "C-s-<SPC>")   #'linux-toggle-input-method))
 
 
 (global-set-key  (kbd "s-C-q") 'save-buffers-kill-emacs)
@@ -56,7 +56,7 @@
 (defun vmacs-on-save-sway-config()
   (let ((file (buffer-file-name)))
     (when (and file
-               (string-equal (file-name-nondirectory file) "sway.tpl"))
+               (string-equal (file-name-nondirectory file) "sway.conf"))
       (shell-command "make"))))
 (add-hook 'after-save-hook 'vmacs-on-save-sway-config)
 
