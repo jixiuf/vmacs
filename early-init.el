@@ -49,7 +49,6 @@
 ;; 禁用工具栏，滚运条 菜单栏
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-;; (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 ;; (create-fontset-from-fontset-spec
 ;;     (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
@@ -62,28 +61,15 @@
 ;;             ",latin:Sarasa Mono SC Nerd:size=18"))
 
 
-(setq-default initial-frame-alist
-              '((alpha . 93)
-                (top . 1)
-                (left . 1)
-                (height . 30)
-                (width . 100)
-                ;; (font . "Sarasa Mono SC Nerd")
-                ;; (font . "Sarasa Mono SC Nerd-22")
-                (ns-appearance . dark)
-                (foreground-color . "#ffffff")
-                (background-color . "#000000") ;;
-                ;; (foreground-color . "#eeeeec")
-                ;; (background-color . "#202020") ;;
-                ;; (background-mode . dark)
-                ;; (left . 20)
-                ;; (top . 80)
-                ))
-
 (setq-default default-frame-alist initial-frame-alist)
 
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
 (setq modus-themes-hl-line  '(intense accented))
+(load "~/.emacs.d/init-base.el")
+(when (eq system-type 'darwin) (require 'conf-macos))
+(when (eq system-type 'gnu/linux) (require 'conf-linux))
+(when (eq system-type 'windows-nt) (require 'conf-w32))
+
 ;; (setq modus-themes-tabs-accented nil)
 ;; 几个不错的颜色 https://www.zhihu.com/question/497851000/answer/2249878929

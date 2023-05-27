@@ -1,6 +1,6 @@
 ;;; Code:
 
-;; ~/.emacs.d/conf/目录加到load-path中
+;; ~/.emacs.d/conf/目录加到 load-path 中
 (add-to-list 'load-path (concat user-emacs-directory "conf/"))
 (defvar lazy-load-dir (concat user-emacs-directory "lazy"))
 (add-to-list 'load-path lazy-load-dir)
@@ -14,10 +14,10 @@
 (require 'conf-tmp-before nil t)
 
 ;; (when (vmacs-not-dumping-p)
-;;   ;; 如果当前不是在dumping的过程中，则尝试从load-path-back中恢复load-path
-;;   ;; 因为在dumping 之后会将dumping结束时的load-path 存到load-path-backup中
-;;   ;; 而从dump文件启动后的load-path 并不与dump结束的镜像里的load-path一致
-;;   ;; 需要借助load-path-backup 来恢复
+;;   ;; 如果当前不是在 dumping 的过程中，则尝试从 load-path-back 中恢复 load-path
+;;   ;; 因为在 dumping 之后会将 dumping 结束时的 load-path 存到 load-path-backup 中
+;;   ;; 而从 dump 文件启动后的 load-path 并不与 dump 结束的镜像里的 load-path 一致
+;;   ;; 需要借助 load-path-backup 来恢复
 ;;   (when (boundp 'load-path-backup)
 ;;     (setq load-path load-path-backup)))
 
@@ -25,11 +25,9 @@
 (require 'custom-file)
 
 (require 'conf-package)
-(require 'conf-lazy-load)               ;autoload相关，加快emacs启动速度
+(require 'conf-lazy-load)               ;autoload 相关，加快 emacs 启动速度
 (require 'conf-minibuffer)
-(require 'conf-icomplete)
-(require 'conf-keybind)
-;; custom-set-variables custom-set-faces 相关配置存放在custom-file指定的文件内
+;; custom-set-variables custom-set-faces 相关配置存放在 custom-file 指定的文件内
 ;; (require 'vmacs-theme)
 
 

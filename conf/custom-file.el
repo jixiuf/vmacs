@@ -21,6 +21,7 @@
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(centaur-tab-background-color "#202020")
+ '(chatgpt-shell-streaming nil)
  '(column-number-mode nil)
  '(connection-local-criteria-alist
    '(((:application eshell)
@@ -118,6 +119,24 @@
  '(flycheck-idle-change-delay 1)
  '(global-auto-revert-mode t)
  '(helm-minibuffer-history-key "C-r")
+ '(ignored-local-variable-values
+   '((eval add-hook 'after-save-hook
+           (lambda nil
+             (shell-command
+              (concat markdown-command " README.md > README.html")))
+           nil 'local)
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (shell-command "pkill --signal RTMIN+13 waybar"))
+           nil 'local)
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (shell-command "pkill --signal RTMIN+11 waybar"))
+           nil 'local)
+     (eval add-hook 'before-save-hook 'time-stamp)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           'bh/ensure-in-vc-or-check-in t)))
  '(ivy-posframe-border-width 10)
  '(lsp-auto-guess-root t)
  '(lsp-enable-symbol-highlighting nil)
@@ -138,7 +157,12 @@
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
-   '((diff-add-log-use-relative-names . t)
+   '((eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
+               (shell-command "make"))
+           t)
+     (diff-add-log-use-relative-names . t)
      (vc-git-annotate-switches . "-w")
      (checkdoc-minor-mode . t)
      (flycheck-disabled-checkers emacs-lisp-checkdoc)

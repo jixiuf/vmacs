@@ -3,9 +3,9 @@
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 
-(load "~/.emacs.d/init-base.el")
 
-(when (< emacs-major-version 27) (package-initialize))
+(require 'conf-icomplete)
+(require 'conf-keybind)
 
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
@@ -27,9 +27,6 @@
 
 
 
-(when (eq system-type 'darwin) (require 'conf-macos))
-(when (eq system-type 'gnu/linux) (require 'conf-linux))
-(when (eq system-type 'windows-nt) (require 'conf-w32))
 (with-eval-after-load 'iedit (require 'conf-iedit))
 (require 'conf-common)
 (with-eval-after-load 'org (require 'conf-org))

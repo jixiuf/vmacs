@@ -38,6 +38,19 @@
 (global-set-key  (kbd "s-C-c") 'kill-ring-save)
 (global-set-key  (kbd "s-C-v") 'yank)
 
+(when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+(setq-default initial-frame-alist
+              '((alpha . 93)
+                ;; (top . 1)
+                ;; (left . 1)
+                ;; (height . 20)
+                ;; (width . 120)
+                (font . "Sarasa Term SC Nerd-15")
+                (ns-appearance . dark)
+                (foreground-color . "#ffffff")
+                (background-color . "#000000") ;;
+                ))
+
 (defun vmacs-set-font()
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
@@ -47,7 +60,7 @@
   ;;   (set-fontset-font t 'emoji "Apple Color Emoji-17"))
   ;; (set-fontset-font t 'symbol "Apple Symbols")
     ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
-  (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 180)
+  ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 180)
   (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
   )
 
