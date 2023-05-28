@@ -5,27 +5,27 @@
 ;; https://github.com/syl20bnr/dotemacs/blob/master/init-package/init-evil.el
 ;;
 
-;; 如果不想让某些命令jump ,则可以通过这种方式实现
+;; 如果不想让某些命令 jump ,则可以通过这种方式实现
 ;; You can disable it for %, f, F, t and T with the following:
 ;; (evil-set-command-property #'evil-jump-item :jump nil)
 
 (setq-default
  evil-want-keybinding nil
 
- ;; evil-search-module 'isearch        ;可以用C-w yank word
+ ;; evil-search-module 'isearch        ;可以用 C-w yank word
  evil-undo-system 'undo-redo
  evil-disable-insert-state-bindings t
- evil-search-module 'isearch        ;可以用gn 命令，需要取舍
-;; gn 命令的用法 / search 之后，可以用dgn 或cgn 对search到的第一个内容进行处理，然后用.去重复之
+ evil-search-module 'isearch        ;可以用 gn 命令，需要取舍
+;; gn 命令的用法 / search 之后，可以用 dgn 或 cgn 对 search 到的第一个内容进行处理，然后用.去重复之
  evil-ex-search-highlight-all t
  evil-ex-search-persistent-highlight nil
- evil-toggle-key "<f15>"                ;用不到了 绑定到一个不常用的键,在emacs与normal间切换
- evil-want-visual-char-semi-exclusive t ; 当v 选择到行尾时是否包含换行符
+ evil-toggle-key "<f15>"                ;用不到了 绑定到一个不常用的键,在 emacs 与 normal 间切换
+ evil-want-visual-char-semi-exclusive t ; 当 v 选择到行尾时是否包含换行符
  evil-want-C-w-delete nil
  evil-want-abbrev-expand-on-insert-exit nil
  evil-want-C-i-jump nil
  evil-cross-lines t
- evil-want-fine-undo t                  ;undo更细化,否则从N->I->N 中所有的修改作为一个undo
+ evil-want-fine-undo t                  ;undo 更细化,否则从 N->I->N 中所有的修改作为一个 undo
  evil-symbol-word-search t              ;# search for symbol not word
  evil-flash-delay 0.5                   ;default 2
  evil-ex-search-case 'sensitive
@@ -54,7 +54,7 @@
 
 (defun vmacs-calc-hook()
   (require 'calc-bin)
-  ;; 默认calc 的移位移位操作是接32位的， 可以bw(calc-word-size) 来改成64位
+  ;; 默认 calc 的移位移位操作是接 32 位的， 可以 bw(calc-word-size) 来改成 64 位
   (calc-word-size 128))
 
 (add-hook 'calc-mode-hook 'vmacs-calc-hook)
@@ -91,14 +91,14 @@
 
 ;; minor-mode
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
-;; 设置一些mode的初始state
+;; 设置一些 mode 的初始 state
 (evil-set-initial-state 'log-edit-mode 'insert)
  ;; (evil-set-initial-state 'sh-mode 'insert)
 (evil-set-initial-state 'org-msg-edit-mode 'insert)
 (evil-set-initial-state 'org-agenda-mode 'normal)
 
 
-;; evil-overriding-maps中的按键绑定 优先级高于evil-mode
+;; evil-overriding-maps 中的按键绑定 优先级高于 evil-mode
 ;; (add-to-list 'evil-overriding-maps '(grep-mode-map . nil))
 (add-to-list 'evil-overriding-maps '(org-agenda-mode-map . nil))
 (evil-set-custom-state-maps 'evil-overriding-maps
@@ -109,7 +109,7 @@
 
 ;; evil-normalize-keymaps forces an update of all Evil keymaps
 ;; (add-hook 'magit-blob-mode-hook #'evil-normalize-keymaps)
-;; 更新 evil-overriding-maps ,因为org-agenda-mode-map 变量初始为空keymap,在org-agenda-mode内才往里添加绑定
+;; 更新 evil-overriding-maps ,因为 org-agenda-mode-map 变量初始为空 keymap,在 org-agenda-mode 内才往里添加绑定
 (add-hook 'org-agenda-mode-hook #'evil-normalize-keymaps)
 
 (evil-collection-define-key 'normal 'org-agenda-mode-map
@@ -142,8 +142,8 @@
 
 (evil-mode 1)
 
-;; emacs 自带的repeat 绑定在C-xz上， 这个advice ,奖 repeat 的功能 与evil 里的","功能合
-;; 2为1,一起绑定在","紧临evil-repeat"." 如此一来， 跟编辑相关的repeat用"." ,跟光标移动相关的
+;; emacs 自带的 repeat 绑定在 C-xz 上， 这个 advice ,奖 repeat 的功能 与 evil 里的","功能合
+;; 2 为 1,一起绑定在","紧临 evil-repeat"." 如此一来， 跟编辑相关的 repeat 用"." ,跟光标移动相关的
 ;; 可以用","
 (defadvice repeat(around evil-repeat-find-char-reverse activate)
   "if last-command is `evil-find-char' or
@@ -162,7 +162,7 @@ execute emacs native `repeat' default binding to`C-xz'"
         (setq this-command 'evil-repeat-find-char-reverse))
     ad-do-it))
 
-;; ctrl-g 时，回到normal状态
+;; ctrl-g 时，回到 normal 状态
 (defadvice keyboard-quit (before evil-insert-to-nornal-state activate)
   "C-g back to normal state"
   (when  (evil-insert-state-p)
@@ -179,8 +179,8 @@ execute emacs native `repeat' default binding to`C-xz'"
       (evil-motion-state))
      (t
       (if (equal last-command 'keyboard-quit)
-          (evil-normal-state)           ;如果初始化state不是normal ，按两次才允许转到normal state
-        (evil-change-to-initial-state)) ;如果初始化state不是normal ，按一次 转到初始状态
+          (evil-normal-state)           ;如果初始化 state 不是 normal ，按两次才允许转到 normal state
+        (evil-change-to-initial-state)) ;如果初始化 state 不是 normal ，按一次 转到初始状态
       ))))
 
 
@@ -260,7 +260,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (define-key evil-ex-completion-map (kbd "<C-m>") 'exit-minibuffer)
 
-;; dib dab绑定
+;; dib dab 绑定
 ;; (define-key evil-inner-text-objects-map "b" 'evil-textobj-anyblock-inner-block)
 ;; (define-key evil-outer-text-objects-map "b" 'evil-textobj-anyblock-a-block)
 (vmacs-leader (kbd "o") 'other-window)
@@ -305,7 +305,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 
 (vmacs-leader (kbd "y") 'evil-paste-before) ;default P
 
-;; 默认visual选中即复制到剪切版，去掉这个功能
+;; 默认 visual 选中即复制到剪切版，去掉这个功能
 (fset 'evil-visual-update-x-selection 'ignore)
 
 
@@ -346,10 +346,10 @@ execute emacs native `repeat' default binding to`C-xz'"
 (global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
 
 ;; 与选中区域有关的配置
-;; 因为v 用于向后移动一个symbol的距离
-(define-key evil-motion-state-map "sv" 'evil-visual-char) ;==v开始选中区域
+;; 因为 v 用于向后移动一个 symbol 的距离
+(define-key evil-motion-state-map "sv" 'evil-visual-char) ;==v 开始选中区域
 (define-key evil-motion-state-map "sm" 'evil-visual-line) ;==V 开始行选中
-;; 因为C-v用于滚屏，故mv==原vim的C-v
+;; 因为 C-v 用于滚屏，故 mv==原 vim 的 C-v
 (define-key evil-normal-state-map "mv" 'evil-visual-block) ;==vim.C-v 开始矩形操作，然后移动位置，就可得到选区
 
 (define-key evil-visual-state-map "n" 'rectangle-number-lines) ;C-xrN
@@ -361,47 +361,47 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-visual-state-map "X" 'evil-visual-exchange-corners)
 ;; 有一种需要是
 ;; 当我取消选中后 我希望光标停留在选中前光标所在的位置而不是在选区的开头或结尾处
-(define-key evil-normal-state-map "mf" 'evil-mark-defun) ;mark-defun 相当于C-M-h
-(define-key evil-normal-state-map "mh" 'evil-M-h)        ;相当于M-h
-(define-key evil-normal-state-map "mxh" 'evil-mark-whole-buffer) ;相当于C-xh
-(define-key evil-normal-state-map "mb" 'evil-mark-whole-buffer);相当于C-xh
+(define-key evil-normal-state-map "mf" 'evil-mark-defun) ;mark-defun 相当于 C-M-h
+(define-key evil-normal-state-map "mh" 'evil-M-h)        ;相当于 M-h
+(define-key evil-normal-state-map "mxh" 'evil-mark-whole-buffer) ;相当于 C-xh
+(define-key evil-normal-state-map "mb" 'evil-mark-whole-buffer);相当于 C-xh
 
 ;; http://vimcdoc.sourceforge.net/doc/motion.html
 ;; vim 里有
-;; |w|向前一个word|
-;; |b|向后一个word|
-;; |W|向前一个WORD|
-;; |B|向后一个WORD|
-;;|dw|删除光标后的一个word|
-;;|daw|删除光标下的一个word,包括空格|  delete a word
-;;|diw|删除光标下的一个word,不包括空格| delete inner word
+;; |w|向前一个 word|
+;; |b|向后一个 word|
+;; |W|向前一个 WORD|
+;; |B|向后一个 WORD|
+;;|dw|删除光标后的一个 word|
+;;|daw|删除光标下的一个 word,包括空格|  delete a word
+;;|diw|删除光标下的一个 word,不包括空格| delete inner word
 
-;; WORD是中间没有空格的一串字符
-;; 与emacs中的symbol类似但是不同
+;; WORD 是中间没有空格的一串字符
+;; 与 emacs 中的 symbol 类似但是不同
 
-;; 下面实现向前向后移动一个symbol,
-;; |e|向前移动一个symbol,光标停在下个symbol的开始处|
-;; |r|向前移动一个symbol,光标停在下个symbol的结束处|
+;; 下面实现向前向后移动一个 symbol,
+;; |e|向前移动一个 symbol,光标停在下个 symbol 的开始处|
+;; |r|向前移动一个 symbol,光标停在下个 symbol 的结束处|
 
-;; |v|向后移动一个symbol,光标停在下个symbol的开始处|
-;; |R|向后移动一个symbol,光标停在下个symbol的结束处|
+;; |v|向后移动一个 symbol,光标停在下个 symbol 的开始处|
+;; |R|向后移动一个 symbol,光标停在下个 symbol 的结束处|
 
-;; |de|删除一个symbol,不包含空格，==die|
-;; |dae|删除一个symbol,含空格|
-;; |die|删除一个symbol,不含空格|
+;; |de|删除一个 symbol,不包含空格，==die|
+;; |dae|删除一个 symbol,含空格|
+;; |die|删除一个 symbol,不含空格|
 ;;
 ;;
-;; 这里占用了vim 原有的绑定，包括 e r R v
-;; 其中原来的e我觉得用下不大
-;; emacs更倾向于在word 或symbol的开头后进行操作，
-;; 所以基本上移动到word或symbol的开后进行操作就足够了
-;; 而我很少用vim的 r R进行替换操作,所以这两个键被占用了对我没有太大的影响
+;; 这里占用了 vim 原有的绑定，包括 e r R v
+;; 其中原来的 e 我觉得用下不大
+;; emacs 更倾向于在 word 或 symbol 的开头后进行操作，
+;; 所以基本上移动到 word 或 symbol 的开后进行操作就足够了
+;; 而我很少用 vim 的 r R 进行替换操作,所以这两个键被占用了对我没有太大的影响
 
-;; 而影响较大的是v键被占用了，v的功能是开始选中一片区域
-;; 之所以占用这个功能是，是我觉得向后移动到symbol的操作是个很常用的操作
-;; 我如果持续向后移动，只需要一直按住v就可以了
-;; 而所有的选中区域的功能我绑定到了别的键上即sv,
-;; 我把s键扩展成了一系列功能键
+;; 而影响较大的是 v 键被占用了，v的功能是开始选中一片区域
+;; 之所以占用这个功能是，是我觉得向后移动到 symbol 的操作是个很常用的操作
+;; 我如果持续向后移动，只需要一直按住 v 就可以了
+;; 而所有的选中区域的功能我绑定到了别的键上即 sv,
+;; 我把 s 键扩展成了一系列功能键
 
 
 ;; e ,r 移动
@@ -426,13 +426,15 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key evil-outer-text-objects-map "e" 'evil-a-symbol)
 (define-key evil-inner-text-objects-map "e" 'evil-inner-symbol)
 
-(global-set-key (kbd "<f17>") 'evil-normal-state) ;mac karabiner用来控制输入法
-(define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见isearch-pre-command-hook
-(global-set-key (kbd "<f18>") 'evil-insert-state) ;mac karabiner用来控制输入法
-(define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见isearch-pre-command-hook
+(global-set-key (kbd "<f17>") 'evil-normal-state) ;mac karabiner 用来控制输入法
+(define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见 isearch-pre-command-hook
+(global-set-key (kbd "<f18>") 'evil-insert-state) ;mac karabiner 用来控制输入法
+(define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见 isearch-pre-command-hook
 (global-set-key (kbd "<f16>") 'vmacs-toggle-input-method)
-(global-set-key (kbd "<f19>") #'ignore) ;mac karabiner用来控制输入法 ,rime f19 send escape
-(define-key isearch-mode-map (kbd "<f19>") #'ignore) ;详见isearch-pre-command-hook
+(global-set-key (kbd "<f15>") 'keyboard-quit)
+(global-set-key [Launch6] 'keyboard-quit) ;f15 for linux
+(global-set-key (kbd "<f19>") #'ignore) ;mac karabiner 用来控制输入法 ,rime f19 send escape
+(define-key isearch-mode-map (kbd "<f19>") #'ignore) ;详见 isearch-pre-command-hook
 (defun vmacs-toggle-input-method ()
   "when toggle on input method, switch to evil-insert-state if possible.
 when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"

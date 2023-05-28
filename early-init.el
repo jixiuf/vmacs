@@ -50,17 +50,6 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
-;; (create-fontset-from-fontset-spec
-;;     (concat "-*-*-*-*-*--*-*-*-*-*-*-fontset-mac"
-;;             ",han:Sarasa Mono SC Nerd:size=18"
-;;             ",symbol:Apple Color Emoji:size=18" ;😀
-;;             ",cjk-misc:Sarasa Mono SC Nerd:size=18"
-;;             ",bopomofo:Sarasa Mono SC Nerd:size=18"
-;;             ",kana:Sarasa Mono SC Nerd:size=18"
-;;             ",hangul:Sarasa Mono SC Nerd:size=18"
-;;             ",latin:Sarasa Mono SC Nerd:size=18"))
-
-
 (setq-default default-frame-alist initial-frame-alist)
 
 (setq-default mode-line-format nil)

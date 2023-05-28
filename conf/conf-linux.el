@@ -28,11 +28,10 @@
     (switch-to-rime-input-method)
     (evil-insert-state)))
 
-(global-set-key (kbd "M-s-<SPC>") #'linux-toggle-input-method)
-(define-key isearch-mode-map (kbd  "M-s-<SPC>") #'linux-toggle-input-method)
+(global-set-key (kbd "C-s-<SPC>") #'linux-toggle-input-method)
+(define-key isearch-mode-map (kbd  "C-s-<SPC>") #'linux-toggle-input-method)
 (with-eval-after-load 'vterm
-  (define-key vterm-mode-map (kbd "M-s-<SPC>")   #'linux-toggle-input-method))
-
+  (define-key vterm-mode-map (kbd "C-s-<SPC>")   #'linux-toggle-input-method))
 
 (global-set-key  (kbd "s-C-q") 'save-buffers-kill-emacs)
 (global-set-key  (kbd "s-C-c") 'kill-ring-save)
@@ -41,10 +40,6 @@
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (setq-default initial-frame-alist
               '((alpha . 93)
-                ;; (top . 1)
-                ;; (left . 1)
-                ;; (height . 20)
-                ;; (width . 120)
                 (font . "Sarasa Term SC Nerd-15")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")

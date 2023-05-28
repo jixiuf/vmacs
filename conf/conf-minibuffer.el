@@ -1,18 +1,18 @@
 ;; -*- lexical-binding: t -*-
-(setq enable-recursive-minibuffers t)        ;在minibuffer 中也可以再次使用minibuffer
+(setq enable-recursive-minibuffers t)        ;在 minibuffer 中也可以再次使用 minibuffer
 (setq history-delete-duplicates t)          ;minibuffer 删除重复历史
 (setq minibuffer-prompt-properties;minibuffer prompt 只读，且不允许光标进入其中
               '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 (setq read-buffer-completion-ignore-case nil)
 (setq read-file-name-completion-ignore-case nil)
-(setq completion-ignore-case nil)      ;company-capf匹配时不区分大小写
+(setq completion-ignore-case nil)      ;company-capf 匹配时不区分大小写
 
 (setq completion-cycle-threshold 3)
 ;; (setq completion-flex-nospace t)              ;default t
 (setq completion-pcm-complete-word-inserts-delimiters t) ;partial-completion in completion-styles
 ;; (setq completion-pcm-word-delimiters "-_/:| ")
 (setq completion-auto-help nil)         ;不主动弹出 *Completions*
-(setq completions-format 'one-column)   ; *Completions* buffer M-v跳到*Completions* buffer
+(setq completions-format 'one-column)   ; *Completions* buffer M-v 跳到*Completions* buffer
 (setq completions-header-format nil)
 (setq max-mini-window-height 10)        ;selectrum-num-candidates-displayed 受影响
 (setq completions-max-height 10)
@@ -23,9 +23,9 @@
 (setq resize-mini-windows 'grow-only)
 ;; (setq read-answer-short t)
 (setq minibuffer-eldef-shorten-default t)
-(minibuffer-electric-default-mode 1)    ;当输入内容后，prompt的default值就会被隐藏
+(minibuffer-electric-default-mode 1)    ;当输入内容后，prompt 的 default 值就会被隐藏
 (file-name-shadow-mode 1)
-(minibuffer-depth-indicate-mode 1)                   ;显示minibuffer深度
+(minibuffer-depth-indicate-mode 1)                   ;显示 minibuffer 深度
 
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
@@ -45,7 +45,8 @@ Monospaced font whihc is fixed idth and height is recommended."
   (local-set-key [escape] 'abort-recursive-edit)
   (local-set-key (kbd "TAB") 'minibuffer-complete)
   (local-set-key (kbd "<tab>") 'minibuffer-complete)
-  (local-set-key  (kbd "<f19>") #'ignore) ;详见isearch-pre-command-hook
+  (local-set-key  (kbd "<f19>") #'ignore) ;详见 isearch-pre-command-hook
+  (local-set-key [Launch6] 'abort-recursive-edit) ;f15 for linux
 
   ;; (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
   (define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
@@ -66,11 +67,11 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 ;; (when (file-directory-p "~/.emacs.d/submodule/mini-frame")
 ;;   (add-to-list 'load-path "~/.emacs.d/submodule/mini-frame"))
-;; ;; ;; 把minibuffer 搬到一个特定的frame上
+;; ;; ;; 把 minibuffer 搬到一个特定的 frame 上
 (setq mini-frame-resize-max-height max-mini-window-height)
 (setq mini-frame-internal-border-color "gray80")
 (setq mini-frame-standalone t)
-(when (and (not noninteractive) (require 'mini-frame nil t)) ;batch 模式下miniframe 有问题
+(when (and (not noninteractive) (require 'mini-frame nil t)) ;batch 模式下 miniframe 有问题
   (add-to-list 'mini-frame-ignore-functions 'y-or-n-p)
   (add-to-list 'mini-frame-ignore-functions 'yes-or-no-p)
   (add-to-list 'mini-frame-ignore-commands 'consult-focus-lines)
