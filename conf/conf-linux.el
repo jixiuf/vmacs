@@ -45,10 +45,10 @@
                 (font . "Sarasa Term SC Nerd-15")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
-                (background-color . "#000000") ;;
-                ))
+                (background-color . "#000000")))
+(setq-default default-frame-alist initial-frame-alist)
 
-(defun vmacs-set-font()
+(defun vmacs-set-font(&optional f)
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
@@ -56,21 +56,14 @@
   ;; (when (>= emacs-major-version 29)
   ;;   (set-fontset-font t 'emoji "Apple Color Emoji-17"))
   ;; (set-fontset-font t 'symbol "Apple Symbols")
-    ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
+  ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
   ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 180)
-  (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
-  )
+  (with-selected-frame (or f (selected-frame))
+    ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd-15")
+    (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)))
 
-(vmacs-set-font)
 (add-hook 'after-init-hook #'vmacs-set-font)
-(defun vmacs-on-save-sway-config()
-  (let ((file (buffer-file-name)))
-    (when (and file
-               (string-equal (file-name-nondirectory file) "sway.conf"))
-      (shell-command "make"))))
-(add-hook 'after-save-hook 'vmacs-on-save-sway-config)
-
-
+(add-hook 'after-make-frame-functions #'vmacs-set-font)
 (provide 'conf-linux)
 
 ;; Local Variables:
