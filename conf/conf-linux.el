@@ -1,3 +1,5 @@
+(setq pop-up-frames t)
+
 ;; 获取当前输入法
 ;; ibus engine
 ;; xkb:us::eng  or rime
