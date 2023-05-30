@@ -1,16 +1,39 @@
 ;; 窗口相关操作，
 ;; 当分屏时，默认的 emacs 是 C-x 2 ,C-x 3 两个窗口中显示的内容都是同一个 buffer
 ;; 此处则在新开的窗口中显示不同的 buffer
-(vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
-(vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏
-(global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
-(global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
-(vmacs-leader (kbd "4") 'toggle-split-window)
-(global-set-key  (kbd "s-C-\\") #'toggle-split-window)
-(global-set-key  (kbd "s-\\") #'toggle-split-window)
-(vmacs-leader (kbd "4") 'toggle-split-window)
-(vmacs-leader (kbd "1") 'vmacs-delete-other-windows) ;只保留当前窗口
-(vmacs-leader (kbd "0") 'vmacs-delete-window)        ;删除当前窗口
+(when (eq system-type 'darwin)
+  (vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
+  (vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏
+  (global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
+  (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
+  (vmacs-leader (kbd "4") 'toggle-split-window)
+  (global-set-key  (kbd "s-C-\\") #'toggle-split-window)
+  (global-set-key  (kbd "s-\\") #'toggle-split-window)
+  (vmacs-leader (kbd "4") 'toggle-split-window)
+  (vmacs-leader (kbd "1") 'vmacs-delete-other-windows) ;只保留当前窗口
+  (vmacs-leader (kbd "0") 'vmacs-delete-window)        ;删除当前窗口
+  )
+
+(when (eq system-type 'gnu/linux)
+  (vmacs-leader (kbd "2") 'vmacs-split-frame-vertically) ;横着分屏
+  (vmacs-leader (kbd "3") 'vmacs-split-frame-horizontally) ;竖着分屏
+  (global-set-key (kbd "C-x 2")  'vmacs-split-frame-vertically)
+  (global-set-key (kbd "C-x 3")  'vmacs-split-frame-horizontally)
+  ;; (vmacs-leader (kbd "4") 'toggle-split-window)
+  ;; (global-set-key  (kbd "s-C-\\") #'toggle-split-window)
+  ;; (global-set-key  (kbd "s-\\") #'toggle-split-window)
+  ;; (vmacs-leader (kbd "4") 'toggle-split-window)
+  (vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
+  (vmacs-leader (kbd "0") 'delete-frame)        ;删除当前窗口
+  )
+
+(defun vmacs-delete-other-frame()
+  (interactive)
+  (let ((curframe (selected-frame)))
+    (dolist (f (frame-list))
+      (unless (equal f curframe)
+        (delete-frame f)))))
+
 
 (defun vmacs-kill-buffer-delete-window()
   (cl-letf (((symbol-function #'delete-window)
@@ -74,43 +97,31 @@
 ;; ;; fix window splitting behavior when possible
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4
 (setq display-buffer-alist
-      '(
-        ( "^*v?term*.*"
-         (display-buffer-same-window )
-         (inhibit-same-window . nil)
-         ;; (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
-         ;; (dedicated . t) ;dedicated is supported in emacs27
-         ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-         ;; (direction . bottom)
-         ;; (side . bottom)
-         ;; (window-height . 0.3)
-         ;; (display-buffer-reuse-window display-buffer-at-bottom)
-         ;; (inhibit-same-window . t)
-         ;; (reusable-frames . nil)
-         ;; (side . bottom)
-         ;; (window-height . 1)
-         )
-        ((lambda (bufname _)
+      '(((lambda (bufname _)
            (memq this-command '( next-error previous-error compile-goto-error)))
          (display-buffer-same-window )
          (inhibit-same-window . nil))
-        ("\\*grep\\*"
-         (display-buffer-same-window ))
-        ("\\*rg\\*"
-         (display-buffer-same-window ))
-        ("\\*Embark Collect"
-         (display-buffer-same-window ))
-        ("\\*Embark "
-         (display-buffer-same-window ))
-        ("\\*xref\\*"
-         (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
-         )
-        ("\\*Annotate .*"
-         (display-buffer-same-window ))
+        (vmacs-same-window-buffer
+         (display-buffer-same-window)
+         (inhibit-same-window . nil))
+        ;; ("\\*xref\\*"
+        ;;  (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
+        ;;  )
         ;; default
         ;; (".*" (display-buffer-pop-up-window))
         )
       )
+(when (eq system-type 'gnu/linux)
+  (add-to-list 'display-buffer-alist '(".*" (display-buffer--maybe-pop-up-frame)) t))
+
+(defun vmacs-same-window-buffer(bufname _)
+  (or
+   (string-match-p (rx (or
+                        "*Agenda Commands*"
+                        "*Org Agenda*"
+                       "*grep*"))
+                  bufname)
+   (string-prefix-p "*Annotate " bufname)))
 
 ;; 左右分屏
 (defun vmacs-display-buffer-pop-up-horizontally (buffer alist)

@@ -1,4 +1,6 @@
-(setq pop-up-frames t)
+(setq pop-up-frames nil)
+(setq pop-up-windows nil)
+(setq display-buffer-reuse-frames t)
 
 ;; 获取当前输入法
 ;; ibus engine

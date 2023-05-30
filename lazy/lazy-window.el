@@ -19,6 +19,18 @@
   (set-window-buffer (next-window) (other-buffer))
   )
 
+;;;###autoload
+(defun vmacs-split-frame-vertically()
+  "for sway"
+  (interactive)
+  (call-process "swaymsg" nil nil nil "splitv")
+  (make-frame))
+;;;###autoload
+(defun vmacs-split-frame-horizontally()
+  "for sway"
+  (interactive)
+  (call-process "swaymsg" nil nil nil "splith")
+  (make-frame))
 
 ;;----------------------------------------------------------------------------
 ;; Rearrange split windows

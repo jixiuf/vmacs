@@ -1,8 +1,8 @@
 ;; config for yasnippet
 (require 'yasnippet)
 (require 'lazy-camelize)
-;; batch 模式下不启用yas
-(if (and noninteractive (not (vmacs-dumping-p)))
+;; batch 模式下不启用 yas
+(if (and noninteractive )
   (yas-global-mode -1)
   (yas-global-mode 1))
 
@@ -16,7 +16,7 @@
 ;;; auto-insert
 (setq-default auto-insert-directory (concat user-emacs-directory "auto-insert-template/"))
   ;;; Adds hook to find-files-hook
-(if (and noninteractive (not (vmacs-dumping-p)))
+(if (and noninteractive )
     (auto-insert-mode -1)
   (auto-insert-mode 1))
 
