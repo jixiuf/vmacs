@@ -119,8 +119,9 @@
    (string-match-p (rx (or
                         "*Agenda Commands*"
                         "*Org Agenda*"
-                       "*grep*"))
-                  bufname)
+                        "*grep*"))
+                   bufname)
+   (string-prefix-p "*Embark " bufname)
    (string-prefix-p "*Annotate " bufname)))
 
 ;; 左右分屏
