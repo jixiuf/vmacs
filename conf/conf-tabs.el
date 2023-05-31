@@ -5,7 +5,8 @@
 (global-set-key  (kbd "s-k") 'vmacs-next-tab)     ;H-j default C-x right
 (setq tab-line-new-button-show nil)  ;; do not show add-new button
 (setq tab-line-close-button-show nil)  ;; do not show close button
-(setq tab-line-separator (propertize "▶" 'face  '(inherit 'tab-line-tab-inactive  :foreground  "SeaGreen3")))
+(setq tab-line-separator (propertize "▶" 'face  `(:inherit tab-line-tab-inactive :foreground "SeaGreen3")))
+
 (defun vmacs-prev-tab()
   (interactive)
   (let ((buffers (tab-line-tabs-window-buffers)))
