@@ -76,6 +76,8 @@
 (global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
 
 (global-set-key  (kbd "s-C-h") 'vmacs-undo-kill-buffer)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)

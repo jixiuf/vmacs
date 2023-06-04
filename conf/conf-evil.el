@@ -21,7 +21,7 @@
  evil-ex-search-persistent-highlight nil
  evil-toggle-key "<f15>"                ;用不到了 绑定到一个不常用的键,在 emacs 与 normal 间切换
  evil-want-visual-char-semi-exclusive t ; 当 v 选择到行尾时是否包含换行符
- evil-want-C-w-delete t
+ evil-want-C-w-delete nil
  evil-want-abbrev-expand-on-insert-exit nil
  evil-want-C-i-jump nil
  evil-cross-lines t
@@ -114,7 +114,6 @@
 
 (evil-collection-define-key 'normal 'org-agenda-mode-map
       "j" 'evil-next-line
-      "C-w" nil
     "k" 'evil-previous-line
     ":" 'evil-ex
     "r" 'org-agenda-redo)
@@ -426,9 +425,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; dae die
 (define-key evil-outer-text-objects-map "e" 'evil-a-symbol)
 (define-key evil-inner-text-objects-map "e" 'evil-inner-symbol)
-
-(global-set-key (kbd "C-w") #'vmacs-kill-buffer-dwim)
-(define-key evil-normal-state-map (kbd "C-w") #'vmacs-kill-buffer-dwim)
 
 (global-set-key (kbd "<f17>") 'evil-normal-state) ;mac karabiner 用来控制输入法
 (define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见 isearch-pre-command-hook

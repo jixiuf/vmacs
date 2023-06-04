@@ -76,8 +76,8 @@
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
   (evil-collection-define-key 'normal 'magit-mode-map
-    (kbd "C-w") 'vmacs-magit-kill-buffers
     "v"  'magit-push
+    "C-w"  evil-window-map
     "gw" 'toggle-diff-whitespace
     "gm"  'magit-toggle-margin)
 
@@ -119,11 +119,13 @@
 (define-key magit-blob-mode-map (kbd "M-n") 'magit-blob-next)
 (define-key magit-blob-mode-map (kbd "M-p") 'magit-blob-previous)
 (define-key magit-blob-mode-map (kbd "C-c C-c") 'vmacs-magit-blob-save)
-(define-key magit-blob-mode-map (kbd "C-w") 'vmacs-magit-blob-quit)
+(define-key magit-blob-mode-map (kbd "s-w") 'vmacs-magit-blob-quit)
+(define-key magit-blob-mode-map (kbd "s-C-w") 'vmacs-magit-blob-quit)
 (global-set-key (kbd "M-p") 'magit-blob-previous)
 (global-set-key (kbd "M-n") 'magit-blob-next)
 
-(define-key magit-status-mode-map (kbd "C-w") 'vmacs-magit-kill-buffers)
+(define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
+(define-key magit-status-mode-map (kbd "s-C-w") 'vmacs-magit-kill-buffers)
 (defun vmacs-magit-kill-buffers ()
   "Restore window configuration and kill all Magit buffers."
   (interactive)
