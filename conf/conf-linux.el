@@ -1,14 +1,3 @@
-(setq pop-up-frames nil)
-(setq pop-up-windows nil)
-(setq display-buffer-reuse-frames t)
-;; (setq pop-up-frames 'graphic-only)
-(setq org-agenda-window-setup 'current-window)
-(setq org-src-window-setup 'current-window)
-;; kill frames when a buffer is buried, makes most things play nice with
-;; frames
-(setq frame-auto-hide-function 'delete-frame)
-
-
 ;; 获取当前输入法
 ;; ibus engine
 ;; xkb:us::eng  or rime
