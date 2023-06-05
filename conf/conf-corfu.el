@@ -48,7 +48,7 @@
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (add-to-list 'completion-at-point-functions #'cape-symbol)
 
-(global-set-key (kbd "C-.") #'completion-at-point)
+;; (global-set-key (kbd "C-.") #'completion-at-point)
 
 (provide 'conf-corfu)
 

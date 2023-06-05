@@ -1,9 +1,7 @@
 (global-tab-line-mode t)
-(global-set-key  (kbd "s-C-j") 'vmacs-prev-tab) ;H-k default C-x left
-(global-set-key  (kbd "s-C-k") 'vmacs-next-tab)     ;H-j default C-x right
-(global-set-key  (kbd "s-j") 'vmacs-prev-tab) ;H-k default C-x left
-(global-set-key  (kbd "s-k") 'vmacs-next-tab)     ;H-j default C-x right
-(setq tab-line-new-button-show nil)  ;; do not show add-new button
+(global-set-key  (kbd "C-,") 'vmacs-next-tab)
+(global-set-key  (kbd "C-.") 'vmacs-prev-tab)
+(setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator (propertize "▶" 'face  `(:inherit tab-line-tab-inactive :foreground "SeaGreen3")))
 
