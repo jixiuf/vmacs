@@ -120,25 +120,25 @@
 
 
 ;; (setq display-line-numbers-current-absolute t)
-(defun vmacs-change-line-number-abs()
-  (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode  magit-status-mode ))
-      (setq display-line-numbers nil)
-    (setq display-line-numbers 'absolute)))
+;; (defun vmacs-change-line-number-abs()
+;;   (if (member major-mode '(vterm-mode term-mode eshell-mode ansi-term-mode  magit-status-mode ))
+;;       (setq display-line-numbers nil)
+;;     (setq display-line-numbers 'absolute)))
 
-(defun vmacs-change-line-number-relative()
-  (cond ((member major-mode '(vterm-mode))
-         (setq display-line-numbers nil)
-         )
-        ((member major-mode '(term-mode eshell-mode ansi-term-mode magit-status-mode fundamental-mode))
-         (setq display-line-numbers nil))
-        ((member (buffer-name) '(" *acm-buffer*"  " *acm-doc-buffer*"))
-         (setq display-line-numbers nil))
-        (t (setq display-line-numbers 'visual))))
+;; (defun vmacs-change-line-number-relative()
+;;   (cond ((member major-mode '(vterm-mode))
+;;          (setq display-line-numbers nil)
+;;          )
+;;         ((member major-mode '(term-mode eshell-mode ansi-term-mode magit-status-mode fundamental-mode))
+;;          (setq display-line-numbers nil))
+;;         ((member (buffer-name) '(" *acm-buffer*"  " *acm-doc-buffer*"))
+;;          (setq display-line-numbers nil))
+;;         (t (setq display-line-numbers 'visual))))
 
 
-(add-hook 'evil-insert-state-entry-hook 'vmacs-change-line-number-abs)
-(add-hook 'evil-normal-state-entry-hook 'vmacs-change-line-number-relative)
-(add-hook 'evil-motion-state-entry-hook 'vmacs-change-line-number-relative)
+;; (add-hook 'evil-insert-state-entry-hook 'vmacs-change-line-number-abs)
+;; (add-hook 'evil-normal-state-entry-hook 'vmacs-change-line-number-relative)
+;; (add-hook 'evil-motion-state-entry-hook 'vmacs-change-line-number-relative)
 
 (evil-mode 1)
 

@@ -106,7 +106,7 @@
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否 wrap 显示
- display-line-numbers 'absolute
+ ;; display-line-numbers 'absolute
  fill-column 100
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  tramp-shell-prompt-pattern (concat "\\(?:^\\|\r\\)" "[^]#@$%>\n]*#?[]#$@%>] *\\(\e\\[[0-9;]*[a-zA-Z-.] *\\)*")
