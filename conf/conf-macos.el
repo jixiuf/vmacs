@@ -12,21 +12,22 @@
                 (background-color . "#000000") ;;
                 ))
 
-(defun vmacs-set-font()
+(defun vmacs-set-font(&optional f)
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
-  (when (>= emacs-major-version 29)
-    (set-fontset-font t 'emoji "Apple Color Emoji-17"))
-  (set-fontset-font t 'symbol "Apple Symbols")
+  (with-selected-frame (or f (selected-frame))
+    (when (>= emacs-major-version 29)
+      (set-fontset-font t 'emoji "Apple Color Emoji-17"))
+    (set-fontset-font t 'symbol "Apple Symbols")
     ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
-  (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 220)
-  (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
-  )
+    (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 220)
+    (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
+    ))
 
-(vmacs-set-font)
 (add-hook 'after-init-hook #'vmacs-set-font)
+(add-hook 'after-make-frame-functions #'vmacs-set-font)
 
 ;; (global-set-key (kbd "s-=") 'create-frame-font-big-mac)
 ;; (global-set-key [s-C-backspace] 'create-frame-font-large-mac)
