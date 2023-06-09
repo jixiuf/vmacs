@@ -12,6 +12,8 @@
                 (background-color . "#000000") ;;
                 ))
 
+(setq-default default-frame-alist initial-frame-alist)
+
 (defun vmacs-set-font(&optional f)
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
