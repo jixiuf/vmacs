@@ -2,7 +2,7 @@
 cd `dirname $0`
 
 ulimit -n 50000
-export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/current:/usr/local/opt/gcc/lib/gcc/current/gcc/x86_64-apple-darwin20/12
+export LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/current:/usr/local/opt/gcc/lib/gcc/current/gcc/x86_64-apple-darwin20/13
 
 function call_emacs(){
     # echo "with emacs:$EMACSCMD"
