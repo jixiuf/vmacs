@@ -21,7 +21,7 @@
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
  '(centaur-tab-background-color "#202020")
- '(chatgpt-shell-streaming nil)
+ '(chatgpt-shell-streaming t)
  '(column-number-mode nil)
  '(connection-local-criteria-alist
    '(((:application eshell)
