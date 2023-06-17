@@ -4,12 +4,12 @@
 (defun poem-update ()
   "Download poem from `jinrishici.com`"
   (let ((url-request-extra-headers
-	 '(("X-User-Token" . "FRxxhlAYg8JbQpdr7xIeHNpew7b2vLIr"))))
+         '(("X-User-Token" . "FRxxhlAYg8JbQpdr7xIeHNpew7b2vLIr"))))
     (ignore-errors
       (url-retrieve
        "https://v2.jinrishici.com/sentence"
        (lambda (status)
-	 (write-region url-http-end-of-headers (point-max) poem-file)))))
+         (write-region url-http-end-of-headers (point-max) poem-file)))))
   (setq poem-cache nil))
 
 (defun poem-get (prop)
@@ -36,7 +36,7 @@
 
 (require 'pangu-spacing)
 (global-pangu-spacing-mode 1)
- (setq pangu-spacing-real-insert-separtor t)
+(setq pangu-spacing-real-insert-separtor t)
 
 (defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
@@ -53,7 +53,7 @@
 
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
- frame-title-format '("%e" (:eval (poem-get 'content)) "%e " evil-mode-line-format "「"mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   "%f  GNU/Emacs")
+ frame-title-format '("%e" (:eval (poem-get 'content)) "%e " evil-mode-line-format "「"mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   "%f  GNU/Emacs<" (:eval (expand-file-name default-directory)) ">")
 
  ;;  mode-line 上显示当前文件是什么系统的文件(windows 的换行符是\n\r)
  eol-mnemonic-dos "[w32]"
@@ -130,7 +130,7 @@
 ;; (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/cache/undo")))
 ;; (require 'display-fill-column-indicator nil t)
 ;; (when (featurep 'display-fill-column-indicator)
-  ;; (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
+;; (add-hook 'find-file-hook #'display-fill-column-indicator--turn-on))
 ;; (when (boundp 'global-so-long-mode) (global-so-long-mode))
 
 (fset 'yes-or-no-p 'y-or-n-p) ;; 把 Yes 用 y 代替
@@ -141,51 +141,51 @@
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq-default auto-mode-alist
-      (append
-       '(("\\.pyx" . python-mode)
-         ("zsh" . sh-mode)
-         ("SConstruct" . python-mode)
-         ("\\.yml$" . yaml-ts-mode)
-         ("\\.yaml$" . yaml-ts-mode)
-         ("\\.lua$" . lua-mode)
-         ("\\.scpt\\'" . applescript-mode)
-         ("\\.applescript$" . applescript-mode)
-         ;; ("crontab\\'" . crontab-mode)
-         ;; ("\\.cron\\(tab\\)?\\'" . crontab-mode)
-         ;; ("cron\\(tab\\)?\\."    . crontab-mode)
-         ("\\.mxml" . nxml-mode)
-         ("\\.as" . actionscript-mode)
-         ("\\.proto\\'" . protobuf-mode)
-         ("\\.thrift" . thrift-mode)
-         ("\\.md" . markdown-mode)
-         ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
+              (append
+               '(("\\.pyx" . python-mode)
+                 ("zsh" . sh-mode)
+                 ("SConstruct" . python-mode)
+                 ("\\.yml$" . yaml-ts-mode)
+                 ("\\.yaml$" . yaml-ts-mode)
+                 ("\\.lua$" . lua-mode)
+                 ("\\.scpt\\'" . applescript-mode)
+                 ("\\.applescript$" . applescript-mode)
+                 ;; ("crontab\\'" . crontab-mode)
+                 ;; ("\\.cron\\(tab\\)?\\'" . crontab-mode)
+                 ;; ("cron\\(tab\\)?\\."    . crontab-mode)
+                 ("\\.mxml" . nxml-mode)
+                 ("\\.as" . actionscript-mode)
+                 ("\\.proto\\'" . protobuf-mode)
+                 ("\\.thrift" . thrift-mode)
+                 ("\\.md" . markdown-mode)
+                 ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
-         ("\\.go.txt$" . go-ts-mode)
-         ("\\.go\\'" . go-ts-mode)
+                 ("\\.go.txt$" . go-ts-mode)
+                 ("\\.go\\'" . go-ts-mode)
 
-         ("\\.yaws$" . nxml-mode)
+                 ("\\.yaws$" . nxml-mode)
 
-         ("\\.hrl$" . erlang-mode)
-         ("\\.erl$" . erlang-mode)
-         ("\\.rel$" . erlang-mode)
-         ("\\.app$" . erlang-mode)
-         ("\\.app.src$" . erlang-mode)
-         ("\\.ahk$\\|\\.AHK$" . ahk-mode)
-         ("\\.bat$"   . batch-mode)
-         ("\\.cmd$"   . batch-mode)
-         ("\\.pl$"   . cperl-mode)
-         ("\\.pm$"   . cperl-mode)
-         ("\\.perl$" . cperl-mode)
-         ("\\.sqlo$"  . oracle-mode)
-         ("\\.sqlm$"  . mysql-mode)
-         ("\\.sqlms$"  . sqlserver-mode)
-         ("\\.js$"  . js-mode)
-         ("\\.pac$" . js-mode)
-         ;; ("\\.js$"  . js3-mode)
-         ("\\.txt$" . novel-mode)
-         ("\\.mm$" . objc-mode)
-         )
-       auto-mode-alist))
+                 ("\\.hrl$" . erlang-mode)
+                 ("\\.erl$" . erlang-mode)
+                 ("\\.rel$" . erlang-mode)
+                 ("\\.app$" . erlang-mode)
+                 ("\\.app.src$" . erlang-mode)
+                 ("\\.ahk$\\|\\.AHK$" . ahk-mode)
+                 ("\\.bat$"   . batch-mode)
+                 ("\\.cmd$"   . batch-mode)
+                 ("\\.pl$"   . cperl-mode)
+                 ("\\.pm$"   . cperl-mode)
+                 ("\\.perl$" . cperl-mode)
+                 ("\\.sqlo$"  . oracle-mode)
+                 ("\\.sqlm$"  . mysql-mode)
+                 ("\\.sqlms$"  . sqlserver-mode)
+                 ("\\.js$"  . js-mode)
+                 ("\\.pac$" . js-mode)
+                 ;; ("\\.js$"  . js3-mode)
+                 ("\\.txt$" . novel-mode)
+                 ("\\.mm$" . objc-mode)
+                 )
+               auto-mode-alist))
 
 (add-to-list 'magic-mode-alist
              `(,(lambda ()
@@ -194,7 +194,7 @@
                        (or (re-search-forward "@\\<interface\\>"
                                               magic-mode-regexp-match-limit t)
                            (re-search-forward "@\\<protocol\\>"
-                                          magic-mode-regexp-match-limit t))))
+                                              magic-mode-regexp-match-limit t))))
                . objc-mode))
 
 (add-to-list 'magic-mode-alist
