@@ -18,14 +18,14 @@
 ;;     continue connecting?” TRAMP (目前)并不知道 如何处理这些问题，
 ;;     所以你必须确保你可以在不被提问的情况下正常登录(前面那 个问题
 ;;     通常是在第一次连接到某个远程主机的时候会被问到的)。
-;; 但是 有时有bug ,执行命令不成功 有可能导致文件内容插入一些错误输出
+;; 但是 有时有 bug ,执行命令不成功 有可能导致文件内容插入一些错误输出
 
-;;当在本机或远程机 以普通用户打开某个文件或dired时，调用此命令，则切换到root 打开此文件 ，再次调用则切换回去
+;;当在本机或远程机 以普通用户打开某个文件或 dired 时，调用此命令，则切换到 root 打开此文件 ，再次调用则切换回去
 ;;;###autoload
 (defun toggle-read-only-file-with-sudo (&optional argv)
   (interactive "P")
   (let* ((old-pos (point))
-         (fname (expand-file-name (or buffer-file-name dired-directory)) )
+         (fname (expand-file-name (or buffer-file-name dired-directory default-directory)) )
          (local-hostname (system-name)))
     (when fname
       (cond
@@ -47,7 +47,7 @@
                 (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist))
               (message "%s" fname)))))
 
-       ((string-match (concat "^/sudo:.*@" (regexp-quote local-hostname)) fname) ;用sudo 打开了本机的文件
+       ((string-match (concat "^/sudo:.*@" (regexp-quote local-hostname)) fname) ;用 sudo 打开了本机的文件
         (with-parsed-tramp-file-name fname nil (setq fname localname)))
 
        (t                               ;默认正常打开本机文件
