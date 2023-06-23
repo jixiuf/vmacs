@@ -7,7 +7,7 @@
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
 (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
 (setq-default vterm-max-scrollback (- 20000 42))
-(setq-default vterm-min-window-width 10)
+(setq-default vterm-min-window-width 70)
 (setq-default vterm-copy-mode-remove-fake-newlines t)
 (setq-default vterm-enable-manipulate-selection-data-by-osc52 t)
 (setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=yes ")
