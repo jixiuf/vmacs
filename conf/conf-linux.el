@@ -39,7 +39,8 @@
 
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (setq-default initial-frame-alist
-              '((alpha . 93)
+              '((alpha-background . 70)
+
                 (font . "Sarasa Term SC Nerd-15")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
@@ -54,7 +55,7 @@
   ;; (when (>= emacs-major-version 29)
   ;;   (set-fontset-font t 'emoji "Apple Color Emoji-17"))
   ;; (set-fontset-font t 'symbol "Apple Symbols")
-  ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
+  ;; https://github.com/laishulu/Sarasa-Term-SC-erd
   ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 180)
   (with-selected-frame (or f (selected-frame))
     ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd-15")
