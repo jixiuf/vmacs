@@ -315,12 +315,12 @@ that alist."
 (defun compile-dwim-compile (force &optional sentinel)
   (interactive "P")
   (if (not (buffer-file-name))
-      (call-interactively 'vterm-compile)
+      (call-interactively 'alactritty-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'compile))
           match exe spec cancel)
       (if (null cmds)
-          (call-interactively 'vterm-compile)
+          (call-interactively 'alactritty-compile)
         (setq match (assoc (car cmds) compile-dwim-alist))
         (when (and (not force)
                    (setq exe (compile-dwim-conf 'exe match)))
@@ -341,7 +341,7 @@ that alist."
                         compile-history (nconc cmds compile-history))
                   (if sentinel
                       (add-hook 'compilation-finish-functions sentinel))
-                  (call-interactively 'vterm-compile)
+                  (call-interactively 'alactritty-compile)
                   (add-to-list 'compile-dwim-cache
                                (cons 'compile compile-command)))
               (eval cmds)
@@ -366,7 +366,19 @@ that alist."
     (when (= (prefix-numeric-value current-prefix-arg) 1)
       (vterm-send-return))))
 
-;; (defun vterm-compile ()
+(defun alactritty-compile ()
+  (interactive)
+  (if (eq system-type 'darwin)
+      (call-interactively #'vterm-compile)
+    (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
+    (call-process "wl-copy" nil nil nil compile-command)
+    ;; /usr/include/linux/input-event-codes.h
+    ;; ydotool key  29:1 22:1 22:0 38:1 38:0 21:1 21:0 29:0 28:1 28:0
+    ;; C-u C-l C-y Enter
+    (call-process "ydotool" nil nil nil "key" "29:1" "22:1" "22:0" "38:1" "38:0" "21:1" "21:0" "29:0" "28:1" "28:0")
+    ))
+
+;; (defun alactritty-compile ()
 ;;   (interactive)
 ;;   (let ((vterm-toggle-use-dedicated-buffer t)
 ;;         (vterm-toggle--vterm-dedicated-buffer vterm-compile-dedidated-buffer))
@@ -383,12 +395,12 @@ that alist."
 (defun compile-dwim-run ()
   (interactive)
   (if (not (buffer-file-name))
-      (call-interactively 'vterm-compile)
+      (call-interactively 'alactritty-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'run))
           match exe spec cancel)
       (if (null cmds)
-          (call-interactively 'vterm-compile)
+          (call-interactively 'alactritty-compile)
         (setq match (assoc (car cmds) compile-dwim-alist))
         (when (setq exe (compile-dwim-conf 'exe match))
           (setq spec (compile-dwim-spec (car match))
@@ -408,7 +420,7 @@ that alist."
                 (progn
                   (setq compile-command (car cmds)
                         compile-history (nconc cmds compile-history))
-                  (call-interactively 'vterm-compile)
+                  (call-interactively 'alactritty-compile)
                   (add-to-list 'compile-dwim-cache
                                (cons 'run compile-command)))
               (eval cmds))))))))
@@ -432,7 +444,7 @@ if found return the directory or nil"
     (when project-root
       (setq default-directory project-root)
       (setq compile-command (concat "make --directory=" project-root)))
-    (call-interactively 'vterm-compile)))
+    (call-interactively 'alactritty-compile)))
 
 ;; http://eastmanreference.com/complete-list-of-applescript-key-codes/
 ;; 15 =R
@@ -469,7 +481,7 @@ end tell"))
     (if (string-prefix-p "Bench" funname)
         (setq compile-command (format "go test -v -bench=%s -test.run %s"  funname funname))
       (setq compile-command (concat "go test -v -test.run "  funname))))
-  (call-interactively 'vterm-compile))
+  (call-interactively 'alactritty-compile))
 
 
 (provide 'compile-dwim)
