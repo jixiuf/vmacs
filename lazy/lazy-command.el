@@ -691,11 +691,14 @@ end tell" (expand-file-name default-directory))))
 ;;;###autoload
 (defun consult-hide-lines ()
   (interactive)
-  (consult-focus-lines nil #'(lambda (pattern cands) (consult--completion-filter-dispatch pattern cands 'consult-location nil)) "! "))
+  (consult-focus-lines (lambda (pattern cands)
+           ;; Use consult-location completion category when filtering lines
+           (consult--completion-filter-dispatch
+            pattern cands 'consult-location nil)) nil "! "))
 ;;;###autoload
 (defun consult-reset-lines ()
   (interactive)
-  (consult-focus-lines t))
+  (consult-focus-lines nil t))
 
 
 ;; ;; this macro works
