@@ -371,11 +371,13 @@ that alist."
   (if (eq system-type 'darwin)
       (call-interactively #'vterm-compile)
     (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
-    (call-process "wl-copy" nil nil nil compile-command)
+    (call-process "wl-copy" nil nil nil "--primary" compile-command)
     ;; /usr/include/linux/input-event-codes.h
     ;; ydotool key  29:1 22:1 22:0 38:1 38:0 21:1 21:0 29:0 28:1 28:0
     ;; C-u C-l C-y Enter
-    (call-process "ydotool" nil nil nil "key" "29:1" "22:1" "22:0" "38:1" "38:0" "21:1" "21:0" "29:0" "28:1" "28:0")
+                    ;; keyd do C-u C-S-v enter C-l
+    (call-process "keyd" nil nil nil "do" "C-u" "C-l" "C-S-v" "enter")
+    ;; (call-process "ydotool" nil nil nil "key" "29:1" "22:1" "22:0" "38:1" "38:0" "21:1" "21:0" "29:0" "28:1" "28:0")
     ))
 
 ;; (defun alactritty-compile ()
