@@ -376,7 +376,7 @@ that alist."
     ;; ydotool key  29:1 22:1 22:0 38:1 38:0 21:1 21:0 29:0 28:1 28:0
     ;; C-u C-l C-y Enter
                     ;; keyd do C-u C-S-v enter C-l
-    (call-process "keyd" nil nil nil "do" "C-u" "C-l" "C-S-v" "enter")
+    (call-process "keyd" nil nil nil "do" "C-g" "C-u" "C-S-l" "C-l" "C-S-v" "enter")
     ;; (call-process "ydotool" nil nil nil "key" "29:1" "22:1" "22:0" "38:1" "38:0" "21:1" "21:0" "29:0" "28:1" "28:0")
     ))
 
