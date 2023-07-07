@@ -371,13 +371,12 @@ that alist."
   (if (eq system-type 'darwin)
       (call-interactively #'vterm-compile)
     (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
-    (call-process "wl-copy" nil nil nil "--primary" compile-command)
+    ;; (call-process "wl-copy" nil nil nil "--primary"  (format "cd %s" (expand-file-name default-directory)))
+    ;; (call-process "ydotool" nil nil nil "key" "28:1" "28:0") ;return
+    (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     ;; /usr/include/linux/input-event-codes.h
-    ;; ydotool key  29:1 22:1 22:0 38:1 38:0 21:1 21:0 29:0 28:1 28:0
-    ;; C-u C-l C-y Enter
-                    ;; keyd do C-u C-S-v enter C-l
-    (call-process "keyd" nil nil nil "do" "C-g" "C-u" "C-S-l" "C-l" "C-S-v" "enter")
-    ;; (call-process "ydotool" nil nil nil "key" "29:1" "22:1" "22:0" "38:1" "38:0" "21:1" "21:0" "29:0" "28:1" "28:0")
+    ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" "C-S-l" "C-l" "C-S-v" "enter")
+    (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0" "42:1"  "38:1" "38:0" "42:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
     ))
 
 ;; (defun alactritty-compile ()
