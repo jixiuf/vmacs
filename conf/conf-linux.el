@@ -20,7 +20,16 @@
       (string-trim (shell-command-to-string "fcitx5-remote -n"))
     (string-trim (shell-command-to-string "ibus engine"))))
 
-(add-hook 'evil-normal-state-entry-hook #'switch-to-english-input-method)
+(defadvice evil-normal-state (before input-method activate)
+  "C-g back to normal state"
+  (when (member this-command '(evil-normal-state keyboard-quit))
+    (switch-to-english-input-method)))
+
+(defun vmacs-evil-input()
+  (switch-to-english-input-method)
+  (print evil-state))
+;; (add-hook 'evil-normal-state-entry-hook #'vmacs-evil-input)
+;; (add-hook 'evil-insert-state-exit-hook #'vmacs-evil-input)
 (defun linux-toggle-input-method()
   (interactive)
   (if (string-equal (get-input-method-state) "rime")
