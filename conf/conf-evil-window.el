@@ -109,6 +109,9 @@
 ;;   (add-to-list 'display-buffer-alist '(".*" (display-buffer--maybe-pop-up-frame)) t))
 
 (defun vmacs-same-window-buffer(bufname _)
+  (when (bufferp bufname)
+  (setq  bufname (buffer-name bufname))
+    )
   (or
    (string-match-p (rx (or
                         "*Agenda Commands*"
