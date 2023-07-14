@@ -22,7 +22,7 @@
 
 (defadvice evil-normal-state (before input-method activate)
   "C-g back to normal state"
-  (when (member this-command '(evil-normal-state keyboard-quit))
+  (when (member this-command '(evil-force-normal-state evil-normal-state keyboard-quit))
     (switch-to-english-input-method)))
 
 (defun vmacs-evil-input()
