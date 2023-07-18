@@ -34,10 +34,6 @@
             content)))
 (poem-update)
 
-(require 'pangu-spacing)
-(global-pangu-spacing-mode 1)
-(setq pangu-spacing-real-insert-separtor t)
-
 (defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
