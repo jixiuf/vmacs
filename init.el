@@ -16,7 +16,7 @@
 (with-eval-after-load 'lua (require 'conf-program-lua))
 (with-eval-after-load 'chatgpt-shell (require 'conf-ai))
 (require 'conf-face)
-;; (when (executable-find "gpg") (require 'conf-gpg))
+(when (executable-find "gpg") (require 'conf-gpg))
 (with-eval-after-load 'sql (require 'conf-sql))
 
 (require 'conf-evil)

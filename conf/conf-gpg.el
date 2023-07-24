@@ -21,18 +21,22 @@
 
 ;; 生成公钥私钥
 ;; gpg --gen-key 其间会让输入用户名 邮箱等,可以用不同的邮箱来代表公钥私钥
+;; gpg --export --full-gen-key # 生成可以用于签名、加密、认证的命令,如用于ssh
 
 ;; gpg --list-keys #查看公钥
 ;; gpg --list-secret-keys # 查看私钥
 ;; 导出公钥
-;; gpg --export -a mailorname >pub.key #-a 表示 ascii 码可打印形式 mailorname 为刚才输入的用户名与邮箱
+;; gpg --export -a jixiuf >pub.key #-a 表示 ascii 码可打印形式 mailorname 为刚才输入的用户名与邮箱
+;; 1 gpg --export-ssh-key <key id> > .ssh/id_rsa.pub
+;; gpg --export-ssh-key jixiuf > .ssh/id_rsa.pub # 导出ssh 用公钥
 ;; 导出私钥
 ;; gpg --export-secret-keys -a mailorname>pri.key
+
 
 ;; 导入  公钥或私钥
 ;; gpg --import file.key
 
-
+;; gpg -e -r jixiufeng .authinfo  # 生成 .authinfo.gpg
 ;; gpg -ea -r jixiuf message.txt
 ;; gpg -ear jixiuf message.txt
 ;; -e 表示加密，-a 表示加密后为 ascii 可打印文件 生成的文件后缀名会为 asc,否则为 gpg 二进制文件
@@ -100,13 +104,14 @@
 ;;; easypg，emacs 自带
 (require 'epa-file)
 (epa-file-enable)
-;; 总是使用对称加密
-;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
-(setq-default epa-file-select-keys nil)
-(setq-default epa-file-encrypt-to nil) ;默认用哪个公钥私钥解密
-;; -*- epa-file-encrypt-to: ("your@email.address") -*-
-;; 允许缓存密码，否则编辑时每次保存都要输入密码
-(setq-default epa-file-cache-passphrase-for-symmetric-encryption t)
+(setf epg-pinentry-mode 'loopback)
+;; ;; 总是使用对称加密
+;; ;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
+;; (setq-default epa-file-select-keys t)
+;; (setq-default epa-file-encrypt-to nil) ;默认用哪个公钥私钥解密
+;; ;; -*- epa-file-encrypt-to: ("your@email.address") -*-
+;; ;; 允许缓存密码，否则编辑时每次保存都要输入密码
+;; (setq-default epa-file-cache-passphrase-for-symmetric-encryption nil)
 
 ;; (setq-default epa-file-inhibit-auto-save nil)
 
