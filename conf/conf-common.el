@@ -142,6 +142,7 @@
                  ("zsh" . sh-mode)
                  ("SConstruct" . python-mode)
                  ("\\.yml$" . yaml-ts-mode)
+                 ("authinfo.gpg" . authinfo-mode)
                  ("\\.yaml$" . yaml-ts-mode)
                  ("\\.lua$" . lua-mode)
                  ("\\.scpt\\'" . applescript-mode)
