@@ -23,8 +23,9 @@
 ;; gpg --gen-key 其间会让输入用户名 邮箱等,可以用不同的邮箱来代表公钥私钥
 ;; gpg --export --full-gen-key # 生成可以用于签名、加密、认证的命令,如用于ssh
 
-;; gpg --list-keys #查看公钥
-;; gpg --list-secret-keys # 查看私钥
+;; gpg --list-keys   #查看公钥 or -k
+;; gpg --list-secret-keys # 查看私钥 or -K
+;; gpg -K --with-keygrip
 ;; 导出公钥
 ;; gpg --export -a jixiuf >pub.key #-a 表示 ascii 码可打印形式 mailorname 为刚才输入的用户名与邮箱
 ;; 1 gpg --export-ssh-key <key id> > .ssh/id_rsa.pub
