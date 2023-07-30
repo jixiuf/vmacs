@@ -81,12 +81,12 @@
  )
 (add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox or maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
 (add-to-list 'mu4e-bookmarks '(:name "qq" :query "maildir:/qq/inbox  AND NOT flag:trashed" :key ?q))
-(add-to-list 'mu4e-bookmarks '(:name "luojilab" :query "maildir:/luojilab/inbox  AND NOT flag:trashed" :key ?l))
+;; (add-to-list 'mu4e-bookmarks '(:name "luojilab" :query "maildir:/luojilab/inbox  AND NOT flag:trashed" :key ?l))
 (add-to-list 'mu4e-bookmarks '(:name "139(10086)" :query "maildir:/139/inbox  AND NOT flag:trashed" :key ?1))
-(add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\" or maildir:/luojilab/\"Sent Messages\" or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
-(add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\" or maildir:/luojilab/\"Deleted Messages\" or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
-(add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts or maildir:/luojilab/Drafts or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
-(add-to-list 'mu4e-bookmarks '(:name "trash" :query "(maildir:/qq/Junk or maildir:/luojilab/Junk or maildir:/139/&XfJSIJZk-)" :key ?j))
+(add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\"  or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
+(add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\"  or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
+(add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts  or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
+(add-to-list 'mu4e-bookmarks '(:name "trash" :query "(maildir:/qq/Junk or  maildir:/139/&XfJSIJZk-)" :key ?j))
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
@@ -131,22 +131,23 @@
                   (mu4e-sent-folder      . "/139/&XfJT0ZAB-")
                   (mu4e-drafts-folder    . "/139/&g0l6P3ux-")
                   (mu4e-trash-folder     . "/139/&XfJSIJZk-")))
-        ,(make-mu4e-context
-          :name "luojilab"
-          :enter-func (lambda () (mu4e-message "Switch to the luojilab context"))
-          :match-func (lambda (msg)
-                        (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc)  "@luojilab.com")))
-          :vars '(
-                  (smtpmail-smtp-user    . "jixiufeng@luojilab.com")
-                  (smtpmail-smtp-server  . "smtp.feishu.cn")
-                  (user-full-name        . "jixiufeng@luojilab.com")
-                  (smtpmail-smtp-service . 465)
-                  (smtpmail-stream-type  . ssl)
-                  (user-mail-address     . "jixiufeng@luojilab.com")
-                  (mu4e-sent-folder      . "/luojilab/Sent Messages")
-                  (mu4e-refile-folder    . "/luojilab/Archive")
-                  (mu4e-drafts-folder    . "/luojilab/Drafts")
-                  (mu4e-trash-folder     . "/luojilab/Deleted Messages")))))
+        ;; ,(make-mu4e-context
+        ;;   :name "luojilab"
+        ;;   :enter-func (lambda () (mu4e-message "Switch to the luojilab context"))
+        ;;   :match-func (lambda (msg)
+        ;;                 (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc)  "@luojilab.com")))
+        ;;   :vars '(
+        ;;           (smtpmail-smtp-user    . "jixiufeng@luojilab.com")
+        ;;           (smtpmail-smtp-server  . "smtp.feishu.cn")
+        ;;           (user-full-name        . "jixiufeng@luojilab.com")
+        ;;           (smtpmail-smtp-service . 465)
+        ;;           (smtpmail-stream-type  . ssl)
+        ;;           (user-mail-address     . "jixiufeng@luojilab.com")
+        ;;           (mu4e-sent-folder      . "/luojilab/Sent Messages")
+        ;;           (mu4e-refile-folder    . "/luojilab/Archive")
+        ;;           (mu4e-drafts-folder    . "/luojilab/Drafts")
+        ;;           (mu4e-trash-folder     . "/luojilab/Deleted Messages")))
+        ))
 
 (defun mu4e-goodies~break-cjk-word (word)
   "Break CJK word into list of bi-grams like: 我爱你 -> 我爱 爱你"
