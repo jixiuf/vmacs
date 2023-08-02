@@ -14,7 +14,7 @@
  magit-section-unhighlight-hook nil)
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
 
-;; (add-to-list 'magit-process-password-prompt-regexps "请输入 ssh 密钥.*密码：: $")
+(add-to-list 'magit-process-password-prompt-regexps "输入密码：")
 
 ;; recent commit always expand when i open magit status
 (setf (alist-get 'unpushed magit-section-initial-visibility-alist) 'show)
