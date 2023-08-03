@@ -64,14 +64,19 @@
   (let* ((filename (buffer-file-name))
          (root (substring filename 0 (string-match-p "\\(?:/src/\\)" filename)))
          (pkg-path-cmd (concat "go list -f '{{ .Dir }}' " (file-name-directory filename))) ; Generate command to get the package path
-         (pkg-path-output (shell-command-to-string pkg-path-cmd)))
+         (mod-path-cmd (concat "go list -m")) ; Generate command to get the mod path
+         (pkg-path-output (shell-command-to-string pkg-path-cmd))
+         (mod-path-output (shell-command-to-string mod-path-cmd))
+         )
     (setq pkg-path (substring pkg-path-output 0 -1)) ; Remove the trailing newline from pkg-path
-    (setq pkg-path (substring pkg-path (+ 5 (length root )))) ; Remove the trailing newline from pkg-path
+    (setq mod-path (substring mod-path-output 0 -1)) ; Remove the trailing newline from pkg-path
+    (setq pkg-path (substring pkg-path (+ 5 (length root ))))
+    (setq pkg-path (format"\"%s%s\"" (file-name-parent-directory mod-path) pkg-path) )
     (when (not (string= pkg-path ""))
-      (kill-new (format"\"%s\"" pkg-path))
-      (message pkg-path)
-      ))) ; Copy the package path to the clipboard
+      (kill-new pkg-path)
+      (message pkg-path))))
 
+(file-name-parent-directory)
 (provide 'conf-program-golang)
 
 ;; Local Variables:
