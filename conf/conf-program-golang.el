@@ -76,7 +76,6 @@
       (kill-new pkg-path)
       (message pkg-path))))
 
-(file-name-parent-directory)
 (provide 'conf-program-golang)
 
 ;; Local Variables:
