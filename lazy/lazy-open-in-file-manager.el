@@ -3,16 +3,16 @@
 
 ;; 你可能需要调整你的文件管理器， 这只是个demo for linux
  ;; linux下文件管理器太多
-(defsubst open-directory-with-pcmanfm()
+(defsubst open-directory-with-nautilus()
   "a pcmanfm file manager for linux"
-  (start-process "pcmanfm"  nil "pcmanfm" (expand-file-name  default-directory)))
+  (start-process "nautilus"  nil "nautilus" (expand-file-name  default-directory)))
 
 ;;;###autoload
 (defun open-in-filemanager()
   (interactive)
   (when (eq system-type 'darwin) (reveal-in-osx-finder))
   (when (eq system-type 'windows-nt) (explorer-open))
-  (when (eq system-type 'gnu/linux) (open-directory-with-pcmanfm)))
+  (when (eq system-type 'gnu/linux) (open-directory-with-nautilus)))
 
 
 (defun w32explore (file)
@@ -41,7 +41,7 @@ In a dired buffer, it will open the current directory."
 	 ;; Create a full path if filename-at-point is non-nil
 	 (filename-at-point (if filename-at-point
 				(expand-file-name filename-at-point) ; full path
-			      nil)) ; if nil, return nil
+                  nil)) ; if nil, return nil
 	 dir file)		   ; let* definition part ends here.
 
     ;; Conditionals: The first one that is non-nil is executed.
@@ -72,7 +72,7 @@ In a dired buffer, it will open the current directory."
 This function runs the actual AppleScript."
   (let* ((revealpath (if file		   ; Define revealpath local variable.
 			 (concat dir file) ; dir/file if file name available.
-		       dir))		   ; dir only if not.
+               dir))		   ; dir only if not.
 	 (script			   ; Define script variable using revealpath and text.
 	  (concat
 	   "set thePath to POSIX file \"" revealpath "\"\n"
