@@ -432,6 +432,7 @@ execute emacs native `repeat' default binding to`C-xz'"
 (define-key isearch-mode-map (kbd "<f18>") 'evil-insert-state) ;详见 isearch-pre-command-hook
 (global-set-key (kbd "<f16>") 'vmacs-toggle-input-method)
 (global-set-key (kbd "<f15>") 'keyboard-quit)
+(global-set-key [C-Launch6] 'keyboard-quit)
 (global-set-key [Launch6] 'keyboard-quit) ;f15 for linux
 (global-set-key (kbd "<f19>") #'ignore) ;mac karabiner 用来控制输入法 ,rime f19 send escape
 (define-key isearch-mode-map (kbd "<f19>") #'ignore) ;详见 isearch-pre-command-hook
