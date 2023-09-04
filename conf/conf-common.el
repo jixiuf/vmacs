@@ -157,6 +157,7 @@
                  ("\\.md" . markdown-mode)
                  ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
+                 ("\\.go$" . rust-ts-mode)
                  ("\\.go.txt$" . go-ts-mode)
                  ("\\.go\\'" . go-ts-mode)
 

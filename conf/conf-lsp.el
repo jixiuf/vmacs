@@ -28,7 +28,7 @@
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
   )
 
-(dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook go-mode-hook c-mode-hook ))
+(dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))
   (add-hook mod #'vmacs-lsp-hook))
 
 (with-eval-after-load 'eglot
