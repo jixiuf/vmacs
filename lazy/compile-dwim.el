@@ -95,6 +95,10 @@ Its value should be 'always or list like (filename run compile).")
             (mode . go-mode))
         (compile-dwim-make)
         "go run %n.go")
+    (rust (or (name . "\\.rs$")
+            (mode . rust-ts-mode))
+        "cargo build"
+        "cargo run")
 
     (as (or (name . "\\.as$")
             (mode . actionscript-mode))

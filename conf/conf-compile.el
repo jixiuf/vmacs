@@ -15,7 +15,8 @@
     "C-j" 'compilation-display-error        ;old C-o
     "r" 'recompile))
 
-(global-set-key (kbd "C-c C-k") 'compile-dwim-run)
+(global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
+(global-set-key (kbd "C-c C-r") 'compile-dwim-run)
 (vmacs-leader (kbd "<f5>") 'compile-dwim-compile)
 (vmacs-leader (kbd "<f6>") 'compile-dwim-run)
 (vmacs-leader (kbd "<f7>") 'recompile)
