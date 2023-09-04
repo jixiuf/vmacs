@@ -23,17 +23,19 @@
 (defun vmacs-split-frame-vertically()
   "for sway"
   (interactive)
-(when (eq system-type 'gnu/linux)
-  (call-process "swaymsg" nil nil nil "splitv")
-  )
+  (when (eq system-type 'gnu/linux)
+    (if (string-equal (getenv "XDG_CURRENT_DESKTOP") "Hyprland")
+        (call-process "hyprctl" nil nil nil "dispatch" "layoutmsg" "preselect" "d")
+      (call-process "swaymsg" nil nil nil "splitv")))
   (make-frame))
 ;;;###autoload
 (defun vmacs-split-frame-horizontally()
   "for sway"
   (interactive)
   (when (eq system-type 'gnu/linux)
-    (call-process "swaymsg" nil nil nil "splith")
-  )
+    (if (string-equal (getenv "XDG_CURRENT_DESKTOP") "Hyprland")
+        (call-process "hyprctl" nil nil nil "dispatch" "layoutmsg" "preselect" "r")
+    (call-process "swaymsg" nil nil nil "splith")))
   (make-frame))
 
 ;;----------------------------------------------------------------------------
@@ -83,8 +85,8 @@
   (interactive)
   (let* ((wlist (window-list))
          (cur-win (car wlist))
-        (blist (mapcar #'(lambda (w) (window-buffer w))
-                       (window-list))))
+         (blist (mapcar #'(lambda (w) (window-buffer w))
+                        (window-list))))
     (setq blist (append (cdr blist) (list (car blist))))
     (while (and wlist blist)
       (set-window-buffer (car wlist) (car blist))
