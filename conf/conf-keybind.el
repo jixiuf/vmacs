@@ -83,8 +83,7 @@
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)
-
-
+(vmacs-leader (kbd "wd") 'fanyi-dwim2)
 
 (defadvice keyboard-quit (before bury-boring-windows activate)
   (when (equal last-command 'keyboard-quit)

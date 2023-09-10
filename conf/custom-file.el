@@ -153,7 +153,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(ob-chatgpt-shell chatgpt-shell corfu cape consult-dir dired-filetype-face embark embark-consult evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg osx-dictionary ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
+   '(fanyi chatgpt-shell corfu cape consult-dir dired-filetype-face embark embark-consult evil-collection exec-path-from-shell git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")

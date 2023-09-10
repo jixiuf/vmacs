@@ -99,7 +99,6 @@ Its value should be 'always or list like (filename run compile).")
             (mode . rust-ts-mode))
         "cargo build"
         "cargo run")
-
     (as (or (name . "\\.as$")
             (mode . actionscript-mode))
         (compile-dwim-make)

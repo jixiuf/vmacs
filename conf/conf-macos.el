@@ -39,8 +39,6 @@
 
 ;; ;; pip install jieba
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)
-(with-eval-after-load 'conf-macro
-  (vmacs-leader (kbd "wd") 'osx-dictionary-search-pointer))
 
 ;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
 ;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
