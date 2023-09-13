@@ -46,8 +46,6 @@ Monospaced font whihc is fixed idth and height is recommended."
   (local-set-key (kbd "TAB") 'minibuffer-complete)
   (local-set-key (kbd "<tab>") 'minibuffer-complete)
   (local-set-key  (kbd "<f19>") #'ignore) ;详见 isearch-pre-command-hook
-  (local-set-key [Launch6] 'abort-recursive-edit) ;f15 for linux
-  (local-set-key [C-Launch6] 'abort-recursive-edit) ;f15 for linux
 
   ;; (define-key minibuffer-local-completion-map (kbd "C-e") 'minibuffer-complete)
   (define-key minibuffer-local-map (kbd "M-p") 'previous-history-element)
