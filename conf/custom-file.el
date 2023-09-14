@@ -161,6 +161,11 @@
    '((eval add-hook
            (make-local-variable 'after-save-hook)
            #'(lambda nil
+               (shell-command "systemctl --user restart waybar" nil nil))
+           t)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
                (shell-command "systemctl --user restart xremap"))
            t)
      (eval add-hook
