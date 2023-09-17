@@ -143,9 +143,11 @@
  '(lsp-enable-symbol-highlighting nil)
  '(lsp-restart 'auto-restart)
  '(magit-commit-ask-to-stage t)
+ '(magit-log-margin '(t "%y-%m-%d %H:%M " magit-log-margin-width t 6))
  '(magit-no-confirm
    '(reverse rename abort-merge resect-bisect kill-process stage-all-changes unstage-all-changes))
  '(magit-save-repository-buffers 'dontask)
+ '(magit-status-margin '(t "%y-%m-%d %H:%M " magit-log-margin-width t 6))
  '(modus-themes-scale-1 1.2)
  '(modus-themes-scale-2 1.3)
  '(modus-themes-scale-3 1.4)

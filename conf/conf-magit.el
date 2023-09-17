@@ -1,7 +1,6 @@
 (setq magit-git-executable (executable-find "git"))
 (setq-default
  transient-default-level 5
- magit-status-margin '(t age magit-log-margin-width t 10) ;magit-status 中的 Recent commits 列表有没有办法增加作者列
  magit-commit-show-diff nil
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
