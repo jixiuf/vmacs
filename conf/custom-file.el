@@ -163,6 +163,11 @@
    '((eval add-hook
            (make-local-variable 'after-save-hook)
            #'(lambda nil
+               (shell-command "systemctl --user restart waybar" nil nil))
+           t)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
                (shell-command "gpg -d authorized_keys.gpg>authorized_keys"))
            t)
      (eval add-hook
