@@ -51,7 +51,7 @@
 
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (setq-default initial-frame-alist
-              '((alpha-background . 70)
+              '((alpha-background . 75)
 
                 (font . "Sarasa Term SC Nerd-15")
                 (ns-appearance . dark)
