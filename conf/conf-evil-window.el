@@ -56,34 +56,34 @@
 
 ;; 尽量保证光标所在的窗口最大
 ;; 黄金分隔 多窗口操作时
-(golden-ratio-mode 1)
+;; (golden-ratio-mode 1)
 ;; Work with ediff and helm
-(setq golden-ratio-adjust-factor 0.91)
-(setq golden-ratio-extra-commands
-      (append golden-ratio-extra-commands
-              '(
-                dap-hydra/dap-ui-locals
-                dap-ui-locals
-                evil-window-left
-                evil-window-right
-                evil-window-up
-                evil-window-down
-                avy-goto-char-timer
-                avy-goto-word-1
-                avy-goto-char-timer
-                evil-window-rotate-downwards
-                vmacs-split-window-or-other-window
-                vmacs-split-window-or-prev-window
-                magit-show-commit
-                magit-stash-show
-                avy-goto-word-1
-                ace-jump-mode-pop-mark)))
+;; (setq golden-ratio-adjust-factor 0.91)
+;; (setq golden-ratio-extra-commands
+;;       (append golden-ratio-extra-commands
+;;               '(
+;;                 dap-hydra/dap-ui-locals
+;;                 dap-ui-locals
+;;                 evil-window-left
+;;                 evil-window-right
+;;                 evil-window-up
+;;                 evil-window-down
+;;                 avy-goto-char-timer
+;;                 avy-goto-word-1
+;;                 avy-goto-char-timer
+;;                 evil-window-rotate-downwards
+;;                 vmacs-split-window-or-other-window
+;;                 vmacs-split-window-or-prev-window
+;;                 magit-show-commit
+;;                 magit-stash-show
+;;                 avy-goto-word-1
+;;                 ace-jump-mode-pop-mark)))
 
-(defun vmacs-evil-window-cmd-p ()
-  (when (symbolp last-command)
-    (string-prefix-p "evil-window-" (symbol-name last-command))))
+;; (defun vmacs-evil-window-cmd-p ()
+;;   (when (symbolp last-command)
+;;     (string-prefix-p "evil-window-" (symbol-name last-command))))
 
-(add-to-list 'golden-ratio-inhibit-functions 'vmacs-evil-window-cmd-p)
+;; (add-to-list 'golden-ratio-inhibit-functions 'vmacs-evil-window-cmd-p)
 
 ;; (setq pop-up-windows t)                    ; display-buffer: avoid splitting
 ;; (setq even-window-sizes nil)               ; display-buffer: avoid resizing
