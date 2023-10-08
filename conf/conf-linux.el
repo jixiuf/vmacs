@@ -62,17 +62,13 @@
 (defun vmacs-set-font(&optional f)
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
-  ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
-  ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
-  ;; (when (>= emacs-major-version 29)
-  ;;   (set-fontset-font t 'emoji "Apple Color Emoji-17"))
-  ;; (set-fontset-font t 'symbol "Apple Symbols")
-  ;; https://github.com/laishulu/Sarasa-Term-SC-erd
-  ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 180)
+  ;; 👉
+  ;; emerge -av media-fonts/noto-emoji
+  (set-fontset-font "fontset-default" 'emoji "Noto Color Emoji")
+  (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji")
   (with-selected-frame (or f (selected-frame))
     ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd-15")
     (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)))
-
 (add-hook 'after-init-hook #'vmacs-set-font)
 (add-hook 'after-make-frame-functions #'vmacs-set-font)
 (provide 'conf-linux)
