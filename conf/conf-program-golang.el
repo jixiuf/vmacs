@@ -20,9 +20,28 @@
 ;;       (format "%s -w %s" gofmt-command buffer-file-name))
 ;;      nil)))
 
+(with-eval-after-load 'dape
+  (setq dape-key-prefix  "\C-c\C-c")
+  (setq dape-buffers-on-start  '(dape-info))
+  (add-to-list 'dape-configs
+               `(delve
+                 modes (go-mode go-ts-mode)
+                 command "dlv"
+                 command-args ("dap" "--listen" "127.0.0.1:55878")
+                 command-cwd dape-cwd-fn
+                 host "127.0.0.1"
+                 port 55878
+                 :type "debug"
+                 :request "launch"
+                 :cwd dape-cwd-fn
+                 :program dape-cwd-fn)))
+
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
   ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
+  (local-set-key  (kbd "C-c C-r") 'dape)
+  (local-set-key dape-key-prefix dape-global-map)
+
   (local-set-key (kbd "C-c i") 'go-goto-imports)
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
   (local-set-key (kbd "C-c p") 'go-get-package-path)
