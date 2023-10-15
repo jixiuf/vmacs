@@ -318,12 +318,12 @@ that alist."
 (defun compile-dwim-compile (force &optional sentinel)
   (interactive "P")
   (if (not (buffer-file-name))
-      (call-interactively 'alactritty-compile)
+      (call-interactively 'wezterm-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'compile))
           match exe spec cancel)
       (if (null cmds)
-          (call-interactively 'alactritty-compile)
+          (call-interactively 'wezterm-compile)
         (setq match (assoc (car cmds) compile-dwim-alist))
         (when (and (not force)
                    (setq exe (compile-dwim-conf 'exe match)))
@@ -344,7 +344,7 @@ that alist."
                         compile-history (nconc cmds compile-history))
                   (if sentinel
                       (add-hook 'compilation-finish-functions sentinel))
-                  (call-interactively 'alactritty-compile)
+                  (call-interactively 'wezterm-compile)
                   (add-to-list 'compile-dwim-cache
                                (cons 'compile compile-command)))
               (eval cmds)
@@ -369,23 +369,25 @@ that alist."
     (when (= (prefix-numeric-value current-prefix-arg) 1)
       (vterm-send-return))))
 
-(defun alactritty-compile ()
+(defun wezterm-compile ()
   (interactive)
   (if (eq system-type 'darwin)
       (call-interactively #'vterm-compile)
     (if (string-equal (getenv "XDG_CURRENT_DESKTOP") "Hyprland")
-        (call-process "hypr-run-or-raise" nil nil nil "--maximize" "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(hypr-cwd||echo $HOME) --class=dterm")
+        (call-process "hypr-run-or-raise" nil nil nil "--cd" "--floating"  "dterm|Alacritty|kitty|org.wezfurlong.wezterm" "--" "wezterm start --cwd=$(hypr-cwd||echo $HOME) --class=dterm")
         (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
     )
     ;; (call-process "wl-copy" nil nil nil "--primary"  (format "cd %s" (expand-file-name default-directory)))
     ;; (call-process "ydotool" nil nil nil "key" "28:1" "28:0") ;return
     (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     ;; /usr/include/linux/input-event-codes.h
+    ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" C-l" "C-S-v" "enter")
+    (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
     ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" "C-S-l" "C-l" "C-S-v" "enter")
-    (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0" "42:1"  "38:1" "38:0" "42:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
+    ;; (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0" "42:1"  "38:1" "38:0" "42:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
     ))
 
-;; (defun alactritty-compile ()
+;; (defun wezterm-compile ()
 ;;   (interactive)
 ;;   (let ((vterm-toggle-use-dedicated-buffer t)
 ;;         (vterm-toggle--vterm-dedicated-buffer vterm-compile-dedidated-buffer))
@@ -402,12 +404,12 @@ that alist."
 (defun compile-dwim-run ()
   (interactive)
   (if (not (buffer-file-name))
-      (call-interactively 'alactritty-compile)
+      (call-interactively 'wezterm-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'run))
           match exe spec cancel)
       (if (null cmds)
-          (call-interactively 'alactritty-compile)
+          (call-interactively 'wezterm-compile)
         (setq match (assoc (car cmds) compile-dwim-alist))
         (when (setq exe (compile-dwim-conf 'exe match))
           (setq spec (compile-dwim-spec (car match))
@@ -427,7 +429,7 @@ that alist."
                 (progn
                   (setq compile-command (car cmds)
                         compile-history (nconc cmds compile-history))
-                  (call-interactively 'alactritty-compile)
+                  (call-interactively 'wezterm-compile)
                   (add-to-list 'compile-dwim-cache
                                (cons 'run compile-command)))
               (eval cmds))))))))
@@ -451,7 +453,7 @@ if found return the directory or nil"
     (when project-root
       (setq default-directory project-root)
       (setq compile-command (concat "make --directory=" project-root)))
-    (call-interactively 'alactritty-compile)))
+    (call-interactively 'wezterm-compile)))
 
 ;; http://eastmanreference.com/complete-list-of-applescript-key-codes/
 ;; 15 =R
@@ -488,7 +490,7 @@ end tell"))
     (if (string-prefix-p "Bench" funname)
         (setq compile-command (format "go test -v -bench=%s -test.run %s"  funname funname))
       (setq compile-command (concat "go test -v -test.run "  funname))))
-  (call-interactively 'alactritty-compile))
+  (call-interactively 'wezterm-compile))
 
 
 (provide 'compile-dwim)
