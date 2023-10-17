@@ -10,6 +10,7 @@
 ;; (with-eval-after-load 'tramp
 ;;   (add-to-list 'tramp-remote-path "/usr/local/go/bin"))
 
+(setq tramp-default-user "root")
 (defface toggle-to-root-header-face
   '((t (:foreground "white" :background "red3")))
   "*Face use to display header-lines for files opened as root."

@@ -40,6 +40,7 @@
   (setq go-ts-mode-indent-offset 4)
   ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
   (local-set-key  (kbd "C-c C-r") 'dape)
+  (require 'dape)
   (local-set-key dape-key-prefix dape-global-map)
 
   (local-set-key (kbd "C-c i") 'go-goto-imports)
