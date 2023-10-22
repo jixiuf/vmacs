@@ -24,7 +24,7 @@
   "for sway"
   (interactive)
   (when (eq system-type 'gnu/linux)
-    (if (string-equal (getenv "XDG_CURRENT_DESKTOP") "Hyprland")
+    (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
         (call-process "hyprctl" nil nil nil "dispatch" "layoutmsg" "preselect" "d")
       (call-process "swaymsg" nil nil nil "splitv")))
   (make-frame))
@@ -33,7 +33,7 @@
   "for sway"
   (interactive)
   (when (eq system-type 'gnu/linux)
-    (if (string-equal (getenv "XDG_CURRENT_DESKTOP") "Hyprland")
+    (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
         (call-process "hyprctl" nil nil nil "dispatch" "layoutmsg" "preselect" "r")
     (call-process "swaymsg" nil nil nil "splith")))
   (make-frame))

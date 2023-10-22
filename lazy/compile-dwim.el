@@ -373,7 +373,7 @@ that alist."
   (interactive)
   (if (eq system-type 'darwin)
       (call-interactively #'vterm-compile)
-    (if (string-equal (getenv "XDG_CURRENT_DESKTOP") "Hyprland")
+    (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
         (call-process "hypr-run-or-raise" nil nil nil "--cd" "--floating"  "dterm|Alacritty|kitty|org.wezfurlong.wezterm" "--" "wezterm start --cwd=$(hypr-cwd||echo $HOME) --class=dterm")
         (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
     )
