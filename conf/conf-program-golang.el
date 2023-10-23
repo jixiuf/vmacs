@@ -23,18 +23,75 @@
 (with-eval-after-load 'dape
   (setq dape-key-prefix  "\C-c\C-c")
   (setq dape-buffers-on-start  '(dape-info))
+  (defun go-func-name-at-point ()
+    (interactive)
+    (save-excursion
+      (end-of-line)
+      (beginning-of-defun)
+      (when (re-search-forward "^func[[:space:]]+\\([[:alnum:]_]+\\)" nil t)
+        (match-string 1))))
+
+  (setq treesit-go-tests-query
+        (treesit-query-compile
+         'go
+         '((function_declaration
+            name: (identifier) @testname
+            parameters: (parameter_list :anchor (parameter_declaration type: (pointer_type) @type :anchor))
+            (:match "*testing.\\(T\\|M\\)" @type) (:match "^Test.+$" @testname)) @parent)))
+  (defun vmacs-query-go-test-nodes ()
+    (when (treesit-ready-p 'go)
+      (treesit-query-capture (treesit-buffer-root-node) treesit-go-tests-query)))
+  (defvar vmacs-go-tests-hist nil)
+  (defun vmacs-completing-read-go-tests ()
+    (let* ((test-matches (vmacs-query-go-test-nodes))
+           (test-name-matches (cl-remove-if-not (lambda (match) (eq (car match) 'testname)) test-matches))
+           (test-names (mapcar (lambda (match) (treesit-node-text (cdr match))) test-name-matches)))
+      (completing-read "Test:" test-names nil t nil vmacs-go-tests-hist (go-func-name-at-point))))
+
+
+  (defun vmacs-dape--select-go-args ()
+    (if (string-suffix-p "_test.go"   (buffer-name))
+        (when-let* ((test-name (vmacs-completing-read-go-tests))
+                    (test-regexp (concat "^" test-name "$")))
+          (if test-name
+              `["-test.run" ,test-regexp]
+            (error "No test selected")))
+  (if  current-prefix-arg
+      (vconcat (split-string (read-shell-command "args: " nil
+                                                   (if (equal (car compile-history) "")
+                                                       '(compile-history . 1)
+                                                     'compile-history))))
+    [])))
+
+  ;; https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
+  (defun vmacs-dape-test-p ()
+    (if (string-suffix-p "_test.go"   (buffer-name))
+        "test" "debug"))
+
+  (defun vmacs-dape-relative-dir ()
+    "Return the file directory relative to dape's cwd. This is used by Delve debugger."
+    (if (string-suffix-p "_test.go"   (buffer-name))
+        (concat "./" (file-relative-name
+                      default-directory (funcall dape-cwd-fn)))
+      (funcall dape-cwd-fn)))
+
+  ;; inside your dape-config
   (add-to-list 'dape-configs
                `(delve
                  modes (go-mode go-ts-mode)
                  command "dlv"
-                 command-args ("dap" "--listen" "127.0.0.1:55878")
                  command-cwd dape-cwd-fn
+                 command-args ("dap" "--listen" "127.0.0.1:55878")
                  host "127.0.0.1"
                  port 55878
-                 :type "debug"
+                 :type "go"
+                 :name "go-debug"
                  :request "launch"
+                 :mode vmacs-dape-test-p
                  :cwd dape-cwd-fn
-                 :program dape-cwd-fn)))
+                 :program vmacs-dape-relative-dir
+                 :args vmacs-dape--select-go-args))
+  )
 
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
