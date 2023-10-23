@@ -21,19 +21,13 @@
 ;;      nil)))
 
 (with-eval-after-load 'dape
-  (setq dape-key-prefix  "\C-c\C-c")
+  ;; (setq dape-key-prefix  "\C-c\C-c")
   (setq dape-buffers-on-start  '(dape-info))
-  (defun go-func-name-at-point ()
-    (interactive)
-    (save-excursion
-      (end-of-line)
-      (beginning-of-defun)
-      (when (re-search-forward "^func[[:space:]]+\\([[:alnum:]_]+\\)" nil t)
-        (match-string 1))))
 
   (defun vmacs-dape--select-go-args ()
+    (require 'which-func)
     (if (string-suffix-p "_test.go"   (buffer-name))
-        (when-let* ((test-name (go-func-name-at-point))
+        (when-let* ((test-name (which-function))
                     (test-regexp (concat "^" test-name "$")))
           (if test-name
               `["-test.run" ,test-regexp]
@@ -78,13 +72,27 @@
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
   ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
-  (local-set-key  (kbd "C-c C-r") 'dape)
   (require 'dape)
   (local-set-key dape-key-prefix dape-global-map)
+  (local-set-key (kbd "C-c d") 'dape)
+  (local-set-key (kbd "C-c n") 'dape-next)
+  (local-set-key (kbd "C-c e") 'dape-expression-breakpoint)
+  (local-set-key (kbd "C-c s") 'dape-step-in)
+  (local-set-key (kbd "C-c o") 'dape-step-out)
+  (local-set-key (kbd "C-c c") 'dape-continue)
+  (local-set-key (kbd "C-c r") 'dape-restart)
+  (local-set-key (kbd "C-c R") 'dape-repl)
+  (local-set-key (kbd "C-c q") 'dape-quit)
+  (local-set-key (kbd "C-c p") 'dape-pause)
+  (local-set-key (kbd "C-c c") 'dape-continue)
+  (local-set-key (kbd "C-c w") 'dape-watch-dwim)
+  (local-set-key (kbd "C-c b") 'dape-toggle-breakpoint)
+  (local-set-key (kbd "C-c C-c") 'dape-toggle-breakpoint)
+  (local-set-key (kbd "C-c B") 'dape-remove-all-breakpoints)
 
-  (local-set-key (kbd "C-c i") 'go-goto-imports)
+
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
-  (local-set-key (kbd "C-c p") 'go-get-package-path)
+  (local-set-key (kbd "C-c C-p") 'go-get-package-path)
 
   (setq eglot-workspace-configuration
         ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
