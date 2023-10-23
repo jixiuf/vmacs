@@ -31,37 +31,19 @@
       (when (re-search-forward "^func[[:space:]]+\\([[:alnum:]_]+\\)" nil t)
         (match-string 1))))
 
-  (setq treesit-go-tests-query
-        (treesit-query-compile
-         'go
-         '((function_declaration
-            name: (identifier) @testname
-            parameters: (parameter_list :anchor (parameter_declaration type: (pointer_type) @type :anchor))
-            (:match "*testing.\\(T\\|M\\)" @type) (:match "^Test.+$" @testname)) @parent)))
-  (defun vmacs-query-go-test-nodes ()
-    (when (treesit-ready-p 'go)
-      (treesit-query-capture (treesit-buffer-root-node) treesit-go-tests-query)))
-  (defvar vmacs-go-tests-hist nil)
-  (defun vmacs-completing-read-go-tests ()
-    (let* ((test-matches (vmacs-query-go-test-nodes))
-           (test-name-matches (cl-remove-if-not (lambda (match) (eq (car match) 'testname)) test-matches))
-           (test-names (mapcar (lambda (match) (treesit-node-text (cdr match))) test-name-matches)))
-      (completing-read "Test:" test-names nil t nil vmacs-go-tests-hist (go-func-name-at-point))))
-
-
   (defun vmacs-dape--select-go-args ()
     (if (string-suffix-p "_test.go"   (buffer-name))
-        (when-let* ((test-name (vmacs-completing-read-go-tests))
+        (when-let* ((test-name (go-func-name-at-point))
                     (test-regexp (concat "^" test-name "$")))
           (if test-name
               `["-test.run" ,test-regexp]
             (error "No test selected")))
-  (if  current-prefix-arg
-      (vconcat (split-string (read-shell-command "args: " nil
-                                                   (if (equal (car compile-history) "")
-                                                       '(compile-history . 1)
-                                                     'compile-history))))
-    [])))
+      (if  current-prefix-arg
+          (vconcat (split-string (read-shell-command "args: " nil
+                                                     (if (equal (car compile-history) "")
+                                                         '(compile-history . 1)
+                                                       'compile-history))))
+        [])))
 
   ;; https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
   (defun vmacs-dape-test-p ()
