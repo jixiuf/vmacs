@@ -251,8 +251,8 @@
     (goto-char (point-max))
     (skip-chars-backward " \t\n")
     (forward-char 1)
-    ))
-
+    (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
+    (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim)))
 
 (add-hook 'find-file-hook #'vmacs-pager)
 
