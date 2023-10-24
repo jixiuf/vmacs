@@ -240,6 +240,21 @@
     (gfm-mode)))
 
 ;; (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
+(defun vmacs-pager()
+  (when (string-prefix-p "*pager" (buffer-name))
+    (require 'ansi-color)
+    (require 'ansi-osc)
+    (save-place-local-mode -1)
+    (ansi-osc-apply-on-region  (point-min)(point-max))
+    (ansi-color-apply-on-region (point-min)(point-max))
+    (set-buffer-modified-p nil)
+    (goto-char (point-max))
+    (skip-chars-backward " \t\n")
+    (forward-char 1)
+    ))
+
+
+(add-hook 'find-file-hook #'vmacs-pager)
 
 (provide 'conf-common)
 
