@@ -250,11 +250,15 @@
     (set-buffer-modified-p nil)
     (goto-char (point-max))
     (skip-chars-backward " \t\n")
+    (delete-file (buffer-file-name))
     (forward-char 1)
     (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
     (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim)))
-
 (add-hook 'find-file-hook #'vmacs-pager)
+
+(evil-collection-define-key 'normal 'woman-mode-map
+  "q" #'save-buffers-kill-terminal)
+
 
 (provide 'conf-common)
 
