@@ -87,7 +87,7 @@ Its value should be 'always or list like (filename run compile).")
          ;; "mxmlc %f"
          "lua %n.lua")
     (go (name . "_test\\.go$")
-        "go test"
+        compile-go-test-current
         compile-go-test-current)
 
     (go (or (name . "\\.go$")
@@ -481,15 +481,12 @@ end tell"))
 
 (defun compile-go-test-current()
   (interactive)
-  (let ((funname ""))
-    (save-excursion
-      (end-of-line)
-      (when (re-search-backward "func " nil t)
-        (forward-sexp 2)
-        (setq  funname (thing-at-point 'symbol))))
+  (require 'which-func)
+  (let ((funname (which-function)))
+
     (if (string-prefix-p "Bench" funname)
-        (setq compile-command (format "go test -v -bench=%s -test.run %s"  funname funname))
-      (setq compile-command (concat "go test -v -test.run "  funname))))
+        (setq compile-command (format "go test -v -bench=%s -test.run ^%s$"  funname funname))
+      (setq compile-command (concat "go test -v -test.run ^"  funname "$"))))
   (call-interactively 'wezterm-compile))
 
 
