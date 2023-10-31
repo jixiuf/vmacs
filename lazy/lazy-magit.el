@@ -5,12 +5,21 @@
 ;;;###autoload
 (defun toggle-diff-whitespace()
   (interactive)
-  (if  (equal vc-git-diff-switches t)
-      (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
+  (cond
+   ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
+      (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
+   ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space"))
     (setq vc-git-diff-switches t))
-  (if (equal magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff"))
-      (setq magit-buffer-diff-args '("--no-ext-diff"))
-    (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff")))
+   (t
+    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))))
+
+  (cond
+   ((equal magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff"))
+    (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space" "--no-ext-diff")))
+   ((equal magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space" "--no-ext-diff"))
+    (setq magit-buffer-diff-args '("--no-ext-diff")))
+   (t
+    (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff"))))
 
 
   (if  (and (boundp 'vc-svn-diff-switches)(equal vc-svn-diff-switches t))
