@@ -196,6 +196,11 @@
       (goto-char (point-min))
       (back-to-indentation))))
 
+(with-eval-after-load 'doc-view
+  (evil-collection-define-key 'normal 'doc-view-mode-map
+    (kbd "C-v") #'doc-view-next-page
+    (kbd "M-v") #'doc-view-previous-page))
+
 (provide 'conf-dired)
 
 ;; Local Variables:
