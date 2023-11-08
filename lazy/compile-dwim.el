@@ -382,7 +382,10 @@ that alist."
     (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     ;; /usr/include/linux/input-event-codes.h
     ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" C-l" "C-S-v" "enter")
-    (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
+    (with-temp-buffer
+      (insert "key ctrl+g ctrl+u ctrl+l ctrl+shift+v enter")
+      (call-process-region (point-min)(point-max) "dotoolc" t))
+    ;; (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
     ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" "C-S-l" "C-l" "C-S-v" "enter")
     ;; (call-process "ydotool" nil nil nil "key" "29:1" "34:1" "34:0" "22:1" "22:0" "42:1"  "38:1" "38:0" "42:0"  "38:1" "38:0" "42:1" "47:1" "47:0" "42:0" "29:0" "28:1" "28:0")
     ))
