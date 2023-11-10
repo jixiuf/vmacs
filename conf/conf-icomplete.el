@@ -248,6 +248,7 @@
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
 (vmacs-leader "gh" #'consult-grep)
+(vmacs-leader "gr" #'grep)
 (vmacs-leader "gg" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory)))
 (vmacs-leader "gt" #'consult-ripgrep)
 (vmacs-leader "g." (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b"))))
@@ -255,7 +256,6 @@
 (vmacs-define-key  'global "g/" 'consult-focus-lines nil 'normal)
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
-(global-set-key (kbd "<help> a") 'consult-apropos)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
 
