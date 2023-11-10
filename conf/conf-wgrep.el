@@ -1,4 +1,10 @@
 ;; (add-hook 'grep-setup-hook 'grep-mode-fun)
+;; Then M-g n or M-g p for the next/previous match.
+;; With (repeat-mode) consequent next/previous are just n and p.
+(repeat-mode 1)
+(setq grep-command "rg -nS --no-heading "
+      grep-use-null-device nil)
+
 (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
               wgrep-too-many-file-length 1
               ;; wgrep-enable-key "i"
