@@ -374,7 +374,7 @@ that alist."
   (if (eq system-type 'darwin)
       (call-interactively #'vterm-compile)
     (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
-        (call-process "hypr-run-or-raise" nil nil nil "--cd" "--floating"  "dterm|Alacritty|kitty|org.wezfurlong.wezterm" "--" "term.sh --cwd=$(hypr-cwd||echo $HOME) --class=dterm")
+        (call-process "hypr-run-or-raise" nil nil nil "--cd" "--floating"  "dterm|Alacritty|kitty|org.wezfurlong.wezterm" "--" "term.sh --working-directory=$(hypr-cwd||echo $HOME) --class=dterm")
         (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
     )
     ;; (call-process "wl-copy" nil nil nil "--primary"  (format "cd %s" (expand-file-name default-directory)))
