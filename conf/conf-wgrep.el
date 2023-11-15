@@ -1,7 +1,7 @@
 ;; (add-hook 'grep-setup-hook 'grep-mode-fun)
 ;; Then M-g n or M-g p for the next/previous match.
 ;; With (repeat-mode) consequent next/previous are just n and p.
-(repeat-mode 1)
+;; (repeat-mode 1)
 (setq grep-command "rg -nS --no-heading "
       grep-use-null-device nil)
 
