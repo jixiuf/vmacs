@@ -37,13 +37,11 @@
     (switch-to-rime-input-method)
     (evil-insert-state)))
 
-(global-set-key (kbd "C-s-<SPC>") #'linux-toggle-input-method)
-(global-set-key (kbd "C-<SPC>") #'linux-toggle-input-method)
-(define-key isearch-mode-map (kbd  "C-s-<SPC>") #'linux-toggle-input-method)
-(define-key isearch-mode-map (kbd  "C-<SPC>") #'linux-toggle-input-method)
+
+(global-set-key (kbd "<f11>") #'linux-toggle-input-method)
+(define-key isearch-mode-map (kbd  "<f11>") #'linux-toggle-input-method)
 (with-eval-after-load 'vterm
-  (define-key vterm-mode-map (kbd "C-s-<SPC>")   #'linux-toggle-input-method)
-  (define-key vterm-mode-map (kbd "C-<SPC>")   #'linux-toggle-input-method))
+  (define-key vterm-mode-map (kbd "<f11>")   #'linux-toggle-input-method))
 
 (global-set-key  (kbd "s-C-q") 'save-buffers-kill-emacs)
 (global-set-key  (kbd "s-C-c") 'kill-ring-save)
