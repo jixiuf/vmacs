@@ -373,14 +373,11 @@ that alist."
   (interactive)
   (if (eq system-type 'darwin)
       (call-interactively #'vterm-compile)
-    (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
-        (call-process "hypr-run-or-raise" nil nil nil "--cd" "--floating"  "dterm|Alacritty|kitty|org.wezfurlong.wezterm" "--" "term.sh --working-directory=$(hypr-cwd||echo $HOME) --class=dterm")
-        (call-process "sway-run-or-raise" nil nil nil "--cd" "--floating-only" "--" "dterm" "alacritty --working-directory=$(sway-cwd||echo $HOME) --class=dterm")
-    )
     ;; (call-process "wl-copy" nil nil nil "--primary"  (format "cd %s" (expand-file-name default-directory)))
     ;; (call-process "ydotool" nil nil nil "key" "28:1" "28:0") ;return
     ;; (call-process "wl-copy" nil nil nil "--primary"  compile-command)
-    (shell-command (format "echo \"%s\"|wl-copy --primary ;echo key ctrl+g ctrl+u ctrl+l ctrl+shift+v enter|dotoolc" compile-command) "scratch" "scratch")
+    (call-process "sh" nil nil nil "-c"
+                  (format "hypr-run-or-raise --cd --floating 'dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh --working-directory=$(hypr-cwd||echo $HOME) --class=dterm;echo \"%s\"|wl-copy --primary ;echo key ctrl+g ctrl+u ctrl+l ctrl+shift+v enter|dotoolc" compile-command))
     ;; /usr/include/linux/input-event-codes.h
     ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" C-l" "C-S-v" "enter")
     ;; (with-temp-buffer
