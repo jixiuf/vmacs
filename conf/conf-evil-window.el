@@ -20,7 +20,8 @@
 (vmacs-leader (kbd "3") 'vmacs-split-frame-horizontally) ;竖着分屏
 (vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
 (vmacs-leader (kbd "0") 'vmacs-delete-frame)        ;删除当前窗口
-(vmacs-leader (kbd "m") 'vmacs-toggle-max-window)
+(vmacs-leader (kbd "C-s-m") 'vmacs-toggle-max-window)
+(global-set-key (kbd "C-s-m") 'vmacs-toggle-max-window)
 (defvar vmacs--max-window nil)
 (defun vmacs-toggle-max-window()
   (interactive)
