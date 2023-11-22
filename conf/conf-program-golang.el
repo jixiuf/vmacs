@@ -22,6 +22,12 @@
 
 (with-eval-after-load 'dape
   ;; (setq dape-key-prefix  "\C-c\C-c")
+  (setq dape-info-display-buffer-action
+        '((display-buffer-in-direction)
+          . ((direction . left)
+             (window-width . 50)
+             )))
+
   (setq dape-buffers-on-start  '(dape-info))
 
   (defun vmacs-dape--select-go-args ()

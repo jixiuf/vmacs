@@ -12,21 +12,41 @@
 ;; 当分屏时，默认的 emacs 是 C-x 2 ,C-x 3 两个窗口中显示的内容都是同一个 buffer
 ;; 此处则在新开的窗口中显示不同的 buffer
 
-  (global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
-  (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
-  (vmacs-leader (kbd "4") 'toggle-split-window)
+(global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
+(global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
+(vmacs-leader (kbd "4") 'toggle-split-window)
 
-  (vmacs-leader (kbd "2") 'vmacs-split-frame-vertically) ;横着分屏
-  (vmacs-leader (kbd "3") 'vmacs-split-frame-horizontally) ;竖着分屏
-  (vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
-  (vmacs-leader (kbd "0") 'delete-frame)        ;删除当前窗口
+(vmacs-leader (kbd "2") 'vmacs-split-frame-vertically) ;横着分屏
+(vmacs-leader (kbd "3") 'vmacs-split-frame-horizontally) ;竖着分屏
+(vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
+(vmacs-leader (kbd "0") 'vmacs-delete-frame)        ;删除当前窗口
+(vmacs-leader (kbd "m") 'vmacs-toggle-max-window)
+(defvar vmacs--max-window nil)
+(defun vmacs-toggle-max-window()
+  (interactive)
+  (if vmacs--max-window
+      (progn
+        (set-window-configuration vmacs--max-window)
+        (setq vmacs--max-window nil)
+        )
+    (setq vmacs--max-window (current-window-configuration))
+    (delete-other-windows)))
+
+(defun vmacs-delete-frame()
+  (interactive)
+  (if (= (gui-frame-cnt) 1)
+        (call-interactively #'delete-window)
+      (delete-frame)))
 
 (defun vmacs-delete-other-frame()
   (interactive)
-  (let ((curframe (selected-frame)))
-    (dolist (f (frame-list))
-      (unless (equal f curframe)
-        (delete-frame f)))))
+  (let ((curframe (selected-frame))
+        (fs (frame-list)))
+    (if (= (gui-frame-cnt) 1)
+        (vmacs-delete-other-windows)
+      (dolist (f fs)
+        (unless (equal f curframe)
+          (delete-frame f))))))
 
 
 (defun vmacs-kill-buffer-delete-window()
@@ -110,7 +130,7 @@
 
 (defun vmacs-same-window-buffer(bufname _)
   (when (bufferp bufname)
-  (setq  bufname (buffer-name bufname))
+    (setq  bufname (buffer-name bufname))
     )
   (or
    (string-match-p (rx (or
