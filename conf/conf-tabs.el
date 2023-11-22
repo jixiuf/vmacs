@@ -59,7 +59,6 @@ but skip uninterested buffers."
                        "\*Async-native-compile-log\*"
                        "magit"
                        "^lua_*"
-                       "*pager"
                        "\*company-documentation\*"
                        "\*eaf" "\*eldoc" "\*Launch " "*dap-"
                        "*EGLOT " "\*Flymake log\*"
@@ -86,7 +85,6 @@ but skip uninterested buffers."
 ;; 最多打开 10 个文件
 (defun vmacs-prevent-open-too-much-files()
   (when (string-match-p "/tmp/pager/" (buffer-file-name))
-    (tab-line-mode -1)
     (setq truncate-lines nil)
     )
   (let* ((buffers (reverse (tab-line-tabs-window-buffers)))
