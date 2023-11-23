@@ -22,10 +22,11 @@
 
 (with-eval-after-load 'dape
   ;; (setq dape-key-prefix  "\C-c\C-c")
+(setq dape-on-start-hooks '(dape-info))
   (setq dape-info-display-buffer-action
         '((display-buffer-in-direction)
           . ((direction . left)
-             (window-width . 50)
+             (window-width . 52)
              )))
 
   (setq dape-buffers-on-start  '(dape-info))

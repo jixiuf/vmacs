@@ -461,7 +461,11 @@ Move point to end-of-line ,if point was already at that position,
   "kill all buffer which not showing in window."
   (interactive)
   (mapc 'kill-buffer
-        (cl-remove-if 'get-buffer-window (buffer-list)))
+        (cl-remove-if (lambda(buf)
+                        (or (get-buffer-window buf)
+                            (string-prefix-p " " (buffer-name buf))))
+                      (buffer-list)))
+
   (message "all other buffers are killed."))
 
 ;;;###autoload

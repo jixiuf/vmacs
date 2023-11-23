@@ -16,8 +16,8 @@
 (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
 (vmacs-leader (kbd "4") 'toggle-split-window)
 
-(vmacs-leader (kbd "2") 'vmacs-split-frame-vertically) ;横着分屏
-(vmacs-leader (kbd "3") 'vmacs-split-frame-horizontally) ;竖着分屏
+(vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
+(vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏
 (vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
 (vmacs-leader (kbd "0") 'vmacs-delete-frame)        ;删除当前窗口
 (vmacs-leader (kbd "C-s-m") 'vmacs-toggle-max-window)
@@ -25,13 +25,13 @@
 (defvar vmacs--max-window nil)
 (defun vmacs-toggle-max-window()
   (interactive)
-  (if vmacs--max-window
+  (if (> (length (window-list)) 1)
       (progn
-        (set-window-configuration vmacs--max-window)
-        (setq vmacs--max-window nil)
-        )
-    (setq vmacs--max-window (current-window-configuration))
-    (delete-other-windows)))
+        (setq vmacs--max-window (current-window-configuration))
+        (vmacs-delete-other-frame))
+    (when vmacs--max-window
+      (set-window-configuration vmacs--max-window)
+      (setq vmacs--max-window nil))))
 
 (defun vmacs-delete-frame()
   (interactive)
@@ -58,7 +58,7 @@
 (defvar vmacs--delete-window (symbol-function #'delete-window))
 (defun vmacs-delete-window(&optional win)
   (interactive)
-  (let ((main-win (window-at-x-y 20 20))
+  (let ((main-win (window-at-x-y (- (/ (frame-pixel-width) 2) 20) 20))
         (win (or win (selected-window)))
         )
     (if (eq main-win win)
