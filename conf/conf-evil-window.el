@@ -33,6 +33,28 @@
       (set-window-configuration vmacs--max-window)
       (setq vmacs--max-window nil))))
 
+(global-set-key (kbd "C-s-o") 'vmacs-other-window)
+(defvar vmacs-window-status nil)
+(defun vmacs-focus()
+  (if (frame-focus-state)
+      (unless (and vmacs-window-status
+                   (window-live-p vmacs-window-status))
+        (setq vmacs-window-status (selected-window)))
+    ;; (setq vmacs-window-status (selected-window))
+    (setq vmacs-window-status nil)))
+(add-function :after after-focus-change-function #'vmacs-focus)
+
+(defun vmacs-other-window()
+  (interactive)
+  (select-window (next-window))
+  (when (eq (selected-window) vmacs-window-status)
+    (call-process "hyprctl" nil nil nil "--batch"
+                  "dispatch cyclenext; dispatch bringactivetotop"))
+  (unless (and vmacs-window-status
+               (window-live-p vmacs-window-status))
+    (setq vmacs-window-status (selected-window))))
+
+
 (defun vmacs-delete-frame()
   (interactive)
   (if (= (gui-frame-cnt) 1)

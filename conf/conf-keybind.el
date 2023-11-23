@@ -41,10 +41,6 @@
 (global-set-key  (kbd "s-z") 'undo)
 (global-set-key  (kbd "s-r") 'compile-dwim-compile)
 
-(global-set-key  (kbd "s-l") 'delete-other-windows)
-(global-set-key  (kbd "s-o") 'other-window)
-(global-set-key  (kbd "s-C-o") 'other-window)
-
 (global-set-key [s-C-return] 'vmacs-window-rotate)
 
 
@@ -67,19 +63,16 @@
 (global-set-key (kbd "s-i")  'project-find-file)
 (global-set-key (kbd "s-C-I")  'project-or-external-find-file)
 (global-set-key (kbd "s-I")  'project-or-external-find-file)
-(autoload 'dap-debug "dap-mode" nil t)
-(global-set-key (kbd "<f6>")  'dap-debug)
-(global-set-key (kbd "<f7>")  'dap-disconnect)
 
 
-(global-set-key  (kbd "s-C-u") 'vmacs-prev-buffer)
-(global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
+;; (global-set-key  (kbd "s-C-u") 'vmacs-prev-buffer)
+;; (global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
+(global-set-key  (kbd "s-C-u") 'vmacs-undo-kill-buffer)
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
 
-(global-set-key  (kbd "s-C-h") 'vmacs-undo-kill-buffer)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)
