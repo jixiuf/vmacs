@@ -19,24 +19,31 @@
 (global-set-key (kbd "C-s-h") 'move-border-left)
 (global-set-key (kbd "C-s-l") 'move-border-right)
 
+(global-set-key [s-C-backspace] 'toggle-split-window)
 (vmacs-leader (kbd "4") 'toggle-split-window)
 
 (vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
 (vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏
 (vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
 (vmacs-leader (kbd "0") 'vmacs-delete-frame)        ;删除当前窗口
-(vmacs-leader (kbd "C-s-m") 'vmacs-toggle-max-window)
-(global-set-key (kbd "C-s-m") 'vmacs-toggle-max-window)
-(defvar vmacs--max-window nil)
-(defun vmacs-toggle-max-window()
+(vmacs-leader (kbd "C-s-m") 'vmacs-fullscreen)
+(global-set-key (kbd "C-s-m") 'vmacs-fullscreen)
+(defvar vmacs--fullscreen-window-configuration nil)
+(defun vmacs-fullscreen()
   (interactive)
-  (if (> (length (window-list)) 1)
+  (if (and (eq this-command 'vmacs-fullscreen)
+           (eq last-command 'vmacs-fullscreen)
+           (not (string-equal "1" (string-trim (shell-command-to-string "ws_id=$(hyprctl activeworkspace -j|jq -r '.id');hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l")))))
       (progn
-        (setq vmacs--max-window (current-window-configuration))
-        (vmacs-delete-other-frame))
-    (when vmacs--max-window
-      (set-window-configuration vmacs--max-window)
-      (setq vmacs--max-window nil))))
+        (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")
+        (setq this-command 'hypr-fullscreen))
+    (if (> (length (window-list)) 1)
+        (progn
+          (setq vmacs--fullscreen-window-configuration (current-window-configuration))
+          (vmacs-delete-other-frame))
+      (when vmacs--fullscreen-window-configuration
+        (set-window-configuration vmacs--fullscreen-window-configuration)
+        (setq vmacs--fullscreen-window-configuration nil)))))
 
 (global-set-key (kbd "C-s-o") 'vmacs-other-window)
 (defvar vmacs-window-status nil)

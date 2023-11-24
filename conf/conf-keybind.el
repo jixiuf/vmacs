@@ -32,25 +32,12 @@
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 
 
-(global-set-key (kbd "s-m") 'toggle-frame-maximized) ;cmd-m
 (global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
 ;; (global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
-
 (global-set-key  (kbd "s-s") 'evil-write-all)
-
 (global-set-key  (kbd "s-z") 'undo)
 (global-set-key  (kbd "s-r") 'compile-dwim-compile)
-
-(global-set-key [s-C-return] 'vmacs-window-rotate)
-
-
-
-
 (global-set-key  (kbd "C-\\") 'hippie-expand)
-
-;; (global-set-key  (kbd "s-q") 'delete-frame)
-;; (global-set-key  (kbd "s-C-S-M-q") 'delete-frame)
-;; (global-set-key  (kbd "s-w") 'delete-window)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
 (global-set-key  (kbd "s-C-1") 'delete-other-windows) ;hyper-1
 (global-set-key  (kbd "s-C-2") 'vmacs-split-window-vertically) ;hyper-2
@@ -58,7 +45,6 @@
 (global-set-key  (kbd "s-C-3") 'vmacs-split-window-horizontally) ;hyper-2
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
-
 (global-set-key (kbd "s-C-i")  'project-find-file)
 (global-set-key (kbd "s-i")  'project-find-file)
 (global-set-key (kbd "s-C-I")  'project-or-external-find-file)
