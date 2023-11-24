@@ -14,6 +14,11 @@
 
 (global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
 (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
+(global-set-key (kbd "C-s-k") 'move-border-up)
+(global-set-key (kbd "C-s-j") 'move-border-down)
+(global-set-key (kbd "C-s-h") 'move-border-left)
+(global-set-key (kbd "C-s-l") 'move-border-right)
+
 (vmacs-leader (kbd "4") 'toggle-split-window)
 
 (vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
