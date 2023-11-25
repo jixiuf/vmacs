@@ -27,10 +27,12 @@
   (interactive)
   (isearch-printing-char ?\!))
 (global-set-key (kbd "C-1")   (lambda()
-                                  (interactive)
-                                  (if (region-active-p)
-                                      (call-interactively 'shell-command-on-region)
-                                    (call-interactively 'shell-command))))
+                                (interactive)
+                                (if (region-active-p)
+                                    (call-interactively 'evil-shell-command)
+                                  (if (eq major-mode 'dired-mode)
+                                      (call-interactively 'dired-do-shell-command)
+                                      (call-interactively 'shell-command)))))
 
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
