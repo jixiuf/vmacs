@@ -26,7 +26,12 @@
 (defun vmacs-isearch-insert-shift1()
   (interactive)
   (isearch-printing-char ?\!))
-(global-set-key (kbd "C-1")   #'(lambda() (interactive)(insert "!")))
+(global-set-key (kbd "C-1")   (lambda()
+                                  (interactive)
+                                  (if (region-active-p)
+                                      (call-interactively 'shell-command-on-region)
+                                    (call-interactively 'shell-command))))
+
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
