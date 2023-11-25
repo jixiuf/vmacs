@@ -78,6 +78,7 @@
 
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
+  (eldoc-mode)
   ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
   (require 'dape)
   (local-set-key dape-key-prefix dape-global-map)
@@ -87,14 +88,14 @@
   (local-set-key (kbd "C-c o") 'dape-step-out)
   (local-set-key (kbd "C-c c") 'dape-continue)
   (local-set-key (kbd "C-c r") 'dape-restart)
-  (local-set-key (kbd "C-c t") 'dape-repl)
+  (local-set-key (kbd "C-c v") 'dape-repl)
   (local-set-key (kbd "C-c q") 'dape-quit)
   (local-set-key (kbd "C-c p") 'dape-pause)
   (local-set-key (kbd "C-c c") 'dape-continue)
   (local-set-key (kbd "C-c w") 'dape-watch-dwim)
   (local-set-key (kbd "C-c e") 'dape-breakpoint-expression)
   (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
-  (local-set-key (kbd "C-c B") 'dape-breakpoint-remove-all)
+  (local-set-key (kbd "C-c b") 'dape-breakpoint-remove-all)
 
 
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
