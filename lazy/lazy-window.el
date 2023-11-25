@@ -112,7 +112,7 @@
   "General function covering move-border-up and move-border-down. If DIR is
      t, then move up, otherwise move down."
   (interactive)
-  (if (null arg) (setq arg 3))
+  (if (null arg) (setq arg 2))
   (let ((top-edge (nth 1 (window-edges))))
     (if (win-xor (= top-edge 0) dir)
         (shrink-window arg nil)
