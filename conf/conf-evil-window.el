@@ -85,6 +85,7 @@
 
 
 (defun vmacs-kill-buffer-delete-window()
+  (interactive)
   (cl-letf (((symbol-function #'delete-window)
              #'vmacs-delete-window))
     (kill-buffer-and-window)))
