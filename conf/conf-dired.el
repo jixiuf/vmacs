@@ -122,6 +122,7 @@
   "u" 'dired-up-directory ;上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
   "/" 'consult-focus-lines
+  "C" 'dired-rsync
   "G" #'(lambda()(interactive) (call-interactively #'evil-goto-line) (dired-previous-line 1))
   (kbd "C-s") 'consult-focus-lines
   "z"  'consult-hide-lines
