@@ -22,14 +22,8 @@
 
 (with-eval-after-load 'dape
   ;; (setq dape-key-prefix  "\C-c\C-c")
-(setq dape-on-start-hooks '(dape-info))
-  (setq dape-info-display-buffer-action
-        '((display-buffer-in-direction)
-          . ((direction . left)
-             (window-width . 52)
-             )))
-
-  (setq dape-buffers-on-start  '(dape-info))
+  (setq dape-buffer-window-arrangment 'gud)
+  (setq dape-on-start-hooks '())
   ;; inside your dape-config
   (add-to-list 'dape-configs
                `(delve
