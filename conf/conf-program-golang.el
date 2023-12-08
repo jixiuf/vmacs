@@ -25,6 +25,7 @@
   (setq dape-buffer-window-arrangment 'gud)
   (setq dape-on-start-hooks '())
   ;; inside your dape-config
+  (setq dape-configs (assq-delete-all 'dlv dape-configs))
   (add-to-list 'dape-configs
                `(delve
                  modes (go-mode go-ts-mode)
