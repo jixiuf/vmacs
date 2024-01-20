@@ -202,6 +202,26 @@
     (kbd "C-v") #'doc-view-next-page
     (kbd "M-v") #'doc-view-previous-page))
 
+(defun xdg-open (&optional filename)
+  (interactive)
+  (let ((process-connection-type))
+    (start-process
+     "" nil (cond ((eq system-type 'gnu/linux) "xdg-open")
+                  ((eq system-type 'darwin) "open")
+                  ((eq system-type 'windows-nt) "start")
+                  (t "")) (expand-file-name
+                  (or filename (dired-file-name-at-point))))))
+
+(defun find-file-auto (orig-fun &rest args)
+  (let ((filename (car args)))
+    (if (cl-find-if
+         (lambda (regexp) (string-match regexp filename))
+         '("\\.pdf\\'" "\\.mp4\\'" "\\.docx?\\'"))
+        (xdg-open filename)
+      (apply orig-fun args))))
+
+(advice-add 'find-file :around 'find-file-auto)
+
 (provide 'conf-dired)
 
 ;; Local Variables:
