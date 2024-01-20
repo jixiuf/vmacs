@@ -28,9 +28,9 @@
   (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
   (require 'cape)
-  ;; (remove-hook 'completion-at-point-functions 'eglot-completion-at-point)
-  (setq-local completion-at-point-functions
-              (list (cape-capf-super #'codeium-completion-at-point #'eglot-completion-at-point)))
+  ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
+  (add-hook 'completion-at-point-functions
+             (cape-capf-super #'eglot-completion-at-point #'codeium-completion-at-point   ) -100 t )
   )
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))
