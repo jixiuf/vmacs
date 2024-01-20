@@ -46,7 +46,6 @@
 ;; (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
 (add-to-list 'completion-at-point-functions #'cape-file)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-(add-to-list 'completion-at-point-functions #'cape-symbol)
 
 ;; (global-set-key (kbd "C-.") #'completion-at-point)
 

@@ -8,6 +8,7 @@
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (eglot-code-actions nil nil "source.organizeImports" t))
+(setq codeium/metadata/api_key (auth-source-pick-first-password :host "codeium.com"))
 (defun vmacs-lsp-hook()
   (eglot-ensure)
   (hs-minor-mode 1)
@@ -26,6 +27,10 @@
   ;; so that that notification reports the actual contents that will be saved.
   (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
+  (require 'cape)
+  ;; (remove-hook 'completion-at-point-functions 'eglot-completion-at-point)
+  (setq-local completion-at-point-functions
+              (list (cape-capf-super #'codeium-completion-at-point #'eglot-completion-at-point)))
   )
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))
