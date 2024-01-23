@@ -21,6 +21,16 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
+(defun json-unescape ()
+  (interactive)
+  (let* ((start (if (use-region-p) (region-beginning) (point-min)))
+         (end (if (use-region-p) (region-end) (point-max))))
+    (shell-command-on-region start end
+                             "python -c \"import sys, json; data = sys.stdin.read(); result = json.loads(data.strip()); print(result)\""
+                             nil t)))
+
+
+;;;###autoload
 (defun vmacs-idle-timer()
   (require 'savehist)
   (savehist-autosave)
