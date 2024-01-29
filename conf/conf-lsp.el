@@ -29,8 +29,8 @@
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
   (require 'cape)
   ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
-  (add-hook 'completion-at-point-functions
-             (cape-capf-super #'eglot-completion-at-point #'codeium-completion-at-point   ) -100 t )
+  ;; (add-hook 'completion-at-point-functions
+  ;;            (cape-capf-super #'eglot-completion-at-point #'codeium-completion-at-point   ) -100 t )
   )
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))
@@ -86,6 +86,24 @@
     (setq xref-show-xrefs-function #'xref-show-definitions-completing-read)))
 
 
+;; (with-eval-after-load 'dape
+;;   (define-key dape-active-mode (kbd "M-n") 'dape-next)
+;;   (define-key dape-active-mode (kbd "M-j") 'dape-next)
+;;   (define-key dape-active-mode (kbd "M-i") 'dape-step-in)
+;;   (define-key dape-active-mode (kbd "M-h") 'dape-step-out)
+;;   (define-key dape-active-mode (kbd "C-c o") 'dape-step-out)
+;;   (define-key dape-active-mode (kbd "M-c") 'dape-continue)
+;;   (define-key dape-active-mode (kbd "C-c c") 'dape-continue)
+;;   (define-key dape-active-mode (kbd "M-r") 'dape-restart)
+;;   (define-key dape-active-mode (kbd "C-c v") 'dape-repl)
+;;   (define-key dape-active-mode (kbd "C-c q") 'dape-quit)
+;;   (define-key dape-active-mode (kbd "C-c p") 'dape-pause)
+;;   (define-key dape-active-mode (kbd "C-c w") 'dape-watch-dwim)
+;;   (define-key dape-active-mode (kbd "C-c e") 'dape-breakpoint-expression)
+;;   (define-key dape-active-mode (kbd "C-c C-c") 'dape-breakpoint-toggle)
+;;   (define-key dape-active-mode (kbd "C-c b") 'dape-breakpoint-remove-all)
+
+;;   )
 
 
 (provide 'conf-lsp)
