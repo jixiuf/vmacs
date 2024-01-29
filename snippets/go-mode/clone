@@ -3,7 +3,7 @@
 # expand-env: ((yas/indent-line 'fixed))
 # --
 func (${3:${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}} ${2:*}${1:Class}) Clone() $2$1 {
-     ${3:$(progn (when (string-equal (yas-field-value 2) "*") (concat "if " (yas-field-value 3)  "!= nil { return nil}" ) ))}
+     ${3:$(progn (when (string-equal (yas-field-value 2) "*") (concat "if " (yas-field-value 3)  "== nil { return nil}" ) ))}
      var result    = $2$3
      $4return ${2:$(progn (when (string-equal yas/text "*") "&" ))}result
 }
