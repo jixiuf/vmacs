@@ -10,10 +10,9 @@
 
 
   (define-key compilation-mode-map "g" nil)
+  (define-key compilation-mode-map "r" 'recompile)
   (define-key compilation-mode-map "C-o" nil)
-  (evil-define-key 'normal compilation-mode-map
-    "C-j" 'compilation-display-error        ;old C-o
-    "r" 'recompile))
+  )
 
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
 (global-set-key (kbd "C-c C-r") 'compile-dwim-run)

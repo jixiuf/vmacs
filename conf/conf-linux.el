@@ -19,15 +19,17 @@
   (if (eq ime 'fcitx5)
       (string-trim (shell-command-to-string "fcitx5-remote -n"))
     (string-trim (shell-command-to-string "ibus engine"))))
-
-(defadvice evil-normal-state (before input-method activate)
-  "C-g back to normal state"
-  (when (member this-command '(evil-force-normal-state evil-normal-state keyboard-quit))
+;; (defadvice evil-normal-state (before input-method activate)
+;;   "C-g back to normal state"
+;;   (when (member this-command '(evil-force-normal-state evil-normal-state keyboard-quit))
+;;     (switch-to-english-input-method)))
+(defun vmacs-input-method-hook()
+  (when (member this-command '(meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
     (switch-to-english-input-method)))
+(add-hook 'meow-normal-mode-hook #'vmacs-input-method-hook)
 
-(defun vmacs-evil-input()
-  (switch-to-english-input-method)
-  (print evil-state))
+;; (defun vmacs-evil-input()
+;;   (switch-to-english-input-method))
 ;; (add-hook 'evil-normal-state-entry-hook #'vmacs-evil-input)
 ;; (add-hook 'evil-insert-state-exit-hook #'vmacs-evil-input)
 (defun linux-toggle-input-method()
@@ -35,8 +37,7 @@
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
     (switch-to-rime-input-method)
-    (evil-insert-state)))
-
+    (meow-insert)))
 
 (global-set-key (kbd "<f11>") #'linux-toggle-input-method)
 (define-key isearch-mode-map (kbd  "<f11>") #'linux-toggle-input-method)

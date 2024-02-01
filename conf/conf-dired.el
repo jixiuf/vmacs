@@ -118,26 +118,29 @@
 ;;(setq directory-free-space-args "-Pkh")
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (require 'dired)
-(evil-collection-define-key 'normal 'dired-mode-map
-  "u" 'dired-up-directory ;上层目录
+(defvar-keymap  dired-g-map :parent vmacs-g-mode-map
+  "r" #'revert-buffer)
+
+(define-key dired-mode-map "g" dired-g-map)
+(define-key dired-mode-map  "i"  #'wdired-change-to-wdired-mode);上层目录
+(define-key dired-mode-map  "l"  #'forward-char)
+(define-key dired-mode-map  "h"  #'backward-char)
+(define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
-  "/" 'consult-focus-lines
-  "C" 'dired-rsync
-  "G" #'(lambda()(interactive) (call-interactively #'evil-goto-line) (dired-previous-line 1))
-  (kbd "C-s") 'consult-focus-lines
-  "z"  'consult-hide-lines
-  ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
-  ;; C-gC-g 退出编辑或C-cC-c保存修改
-  ;; "i" 'wdired-change-to-wdired-mode
-  "\M-o" 'dired-omit-mode ;不显示一些不重要的文件
-  "L" 'dired-add-to-load-path-or-load-it
-  "v" 'add-dir-local-variable
-  "," 'consult-dir
-  "f" 'open-in-filemanager
-  "r" 'revert-buffer
-  (kbd "<mouse-2>")     #'dired-mouse-find-file
-  )
-(with-eval-after-load 'wdired (evil-set-initial-state 'wdired-mode 'insert))
+(define-key dired-mode-map  "/" 'consult-focus-lines)
+(define-key dired-mode-map  "C" 'dired-rsync)
+(define-key dired-mode-map  "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) )
+(define-key dired-mode-map  (kbd "C-s") 'consult-focus-lines)
+(define-key dired-mode-map  "z"  'consult-hide-lines)
+;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
+;; C-gC-g 退出编辑或C-cC-c保存修改
+;; "i" 'wdired-change-to-wdired-mode
+(define-key dired-mode-map  "\M-o" 'dired-omit-mode );不显示一些不重要的文件
+(define-key dired-mode-map  "L" 'dired-add-to-load-path-or-load-it )
+(define-key dired-mode-map  "v" 'add-dir-local-variable)
+(define-key dired-mode-map  "," 'consult-dir)
+(define-key dired-mode-map  "f" 'open-in-filemanager)
+(define-key dired-mode-map  (kbd "<mouse-2>") #'dired-mouse-find-file)
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state
@@ -198,9 +201,8 @@
       (back-to-indentation))))
 
 (with-eval-after-load 'doc-view
-  (evil-collection-define-key 'normal 'doc-view-mode-map
-    (kbd "C-v") #'doc-view-next-page
-    (kbd "M-v") #'doc-view-previous-page))
+  (define-key doc-view-mode-map    (kbd "C-v") #'doc-view-next-page)
+  (define-key doc-view-mode-map    (kbd "M-v") #'doc-view-previous-page))
 
 (defun xdg-open (&optional filename)
   (interactive)

@@ -19,6 +19,17 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+;;;###autoload
+(defun vmacs-find-def()
+  (interactive)
+  (require 'eglot)
+  (when (and eglot--managed-mode
+             eglot--change-idle-timer)
+    (cancel-timer eglot--change-idle-timer)
+    (eglot--signal-textDocument/didChange)
+    (setq eglot--change-idle-timer nil))
+  (push-mark)
+  (call-interactively #'xref-find-definitions))
 
 ;;;###autoload
 (defun json-unescape ()
@@ -39,7 +50,7 @@
   (require 'saveplace)
   (save-place-kill-emacs-hook)
   ;;recentf-save-list 里有 bug 会导致 cursor 恢复成默认 color,而不能与 evil 配置的 cursor 相配
-  (evil-refresh-cursor)
+  ;; (evil-refresh-cursor)
 
   (message ""))
 

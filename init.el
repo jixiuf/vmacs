@@ -4,6 +4,7 @@
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 
 
+(require 'conf-meow)
 (require 'conf-icomplete)
 (require 'conf-keybind)
 
@@ -19,7 +20,7 @@
 (when (executable-find "gpg") (require 'conf-gpg))
 (with-eval-after-load 'sql (require 'conf-sql))
 
-(require 'conf-evil)
+;; (require 'conf-evil)
 ;; mac 上处理 evil-mode 与中文输入法
 (require 'conf-evil-window)       ;窗口
 (require 'conf-evil-clipboard)
@@ -27,7 +28,7 @@
 
 
 
-(with-eval-after-load 'iedit (require 'conf-iedit))
+;; (with-eval-after-load 'iedit (require 'conf-iedit))
 (require 'conf-common)
 (with-eval-after-load 'org (require 'conf-org))
 
@@ -80,7 +81,7 @@
 (recentf-mode 1)
 (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
 (require 'conf-tmp nil t)
-(unless (eq system-type 'windows-nt) (require 'conf-vterm))
+(when (eq system-type 'darwin) (require 'conf-vterm))
 (require 'server)
 (unless (server-running-p) (server-start))
 (when (> emacs-major-version 27) (load-theme 'modus-vivendi))

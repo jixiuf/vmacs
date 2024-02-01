@@ -34,13 +34,12 @@
 
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
 (define-key magit-mode-map "d" 'magit-section-toggle)
+(define-key magit-mode-map "e" 'magit-delete-thing)
+(define-key magit-mode-map "`" 'magit-process-buffer)
 (define-key magit-mode-map (kbd "TAB") 'magit-diff)
 (define-key magit-mode-map [(tab)]  'magit-diff)
 (transient-suffix-put 'magit-diff "d" :key (kbd "<tab>"))
 
-
-
-(define-key magit-mode-map "e" nil)     ;disable ediff
 ;; (define-key magit-mode-map "v" 'magit-push-popup)
 (define-key magit-mode-map "P" 'magit-section-backward)
 ;; (transient-append-suffix 'magit-push ?v 'magit-push-current-to-pushremote)
@@ -70,6 +69,15 @@
 (define-key transient-edit-map   "q" 'transient-quit-one)
 (define-key transient-sticky-map "q" 'transient-quit-seq)
 
+(define-key magit-mode-map "v"  #'magit-push)
+(defvar magit-g-map (make-sparse-keymap))
+(set-keymap-parent magit-g-map vmacs-g-mode-map)
+(define-key  magit-mode-map "g" magit-g-map)
+(define-key  magit-g-map "w" #'toggle-diff-whitespace)
+(define-key  magit-g-map "m" #'magit-toggle-margin)
+(with-eval-after-load 'diff-mode
+; TODO:
+  (define-key diff-mode-map (kbd "g") magit-g-map))
 
 (defun vmacs-magit-mode-hook()
   ;; (require 'magit-backup)
@@ -77,11 +85,6 @@
   ;; (magit-auto-revert-mode -1)
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
-  (evil-collection-define-key 'normal 'magit-mode-map
-    "v"  'magit-push
-    "C-w"  evil-window-map
-    "gw" 'toggle-diff-whitespace
-    "gm"  'magit-toggle-margin)
 
   ;; brew install git-delta
   (let ((dir (abbreviate-file-name (file-truename (directory-file-name (magit-toplevel))))))

@@ -36,14 +36,11 @@
 
 (with-eval-after-load 'wgrep
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
-  (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit))
-
-(evil-collection-define-key '(normal visual) 'grep-mode-map
-   "/" #'consult-focus-lines
-   "l" #'evil-forward-char
-   "z" #'consult-hide-lines
-   "r" #'consult-reset-lines
-   "i" #'evil-insert-state)
+  (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit)
+  (define-key grep-mode-map "/" #'consult-focus-lines)
+  (define-key grep-mode-map "z" #'consult-hide-lines)
+  (define-key grep-mode-map "r" #'consult-reset-lines)
+  (define-key grep-mode-map "i" #'meow-insert))
 
 
 (defun enable-wgrep-when-entry-insert()

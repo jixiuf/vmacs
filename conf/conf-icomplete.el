@@ -2,6 +2,7 @@
 ;;; Code:
 (require 'icomplete)
 (require 'recentf)
+(require 'consult)
 
 ;; (setq icomplete-max-delay-chars 3)
 (setq icomplete-delay-completions-threshold 2000)
@@ -129,23 +130,22 @@
   ;; (setq marginalia-margin-min 18)
 
   ;; (setq embark-collect-initial-view-alist '((t . list)))
-  (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
+  ;; (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
 
   (define-key icomplete-minibuffer-map (kbd "C-t") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (defun vmacs-embark-collect-mode-hook ()
-    (evil-local-mode)
-    (evil-define-key 'normal 'local "/" #'consult-focus-lines)
-    (evil-define-key 'normal 'local "z" #'consult-hide-lines)
-    (evil-define-key 'normal 'local "r" #'consult-reset-lines))
+    (local-set-key "/" #'consult-focus-lines)
+    (local-set-key  "z" #'consult-hide-lines)
+    (local-set-key "r" #'consult-reset-lines)
+    )
   (add-hook 'tabulated-list-mode-hook 'vmacs-embark-collect-mode-hook))
 
 
 (setq consult-async-split-style 'perl)
 (defun vmacs-minibuffer-space ()
   (interactive)
-  (require 'consult)
   (if (and (string-prefix-p "#" (minibuffer-contents))
            (= 2 (length (split-string (minibuffer-contents) "#"))))
       (insert "#")
@@ -241,9 +241,8 @@
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
 
 (autoload #'mu4e-search-bookmark  "mu4e" t)
-(vmacs-leader (kbd "i") #'(lambda()(interactive)(shell-command "killall mbsync" nil nil) (mu4e-search-bookmark)(mu4e t)))
+(vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (shell-command "killall mbsync" nil nil) (mu4e-search-bookmark)(mu4e t)))
 
-(autoload #'consult-buffer  "consult" t)
 (vmacs-leader " " 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
@@ -253,7 +252,6 @@
 (vmacs-leader "gt" #'consult-ripgrep)
 (vmacs-leader "g." (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b"))))
 (vmacs-leader "g," (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b"))))
-(vmacs-define-key  'global "g/" 'consult-focus-lines nil 'normal)
 (global-set-key [remap goto-line] 'consult-goto-line)
 (global-set-key (kbd "C-c C-s") 'consult-line)
 (vmacs-leader (kbd "wi") 'consult-imenu)

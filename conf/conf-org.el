@@ -6,7 +6,7 @@
 
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
 (vmacs-leader (kbd "T") 'org-capture)  ;新加一个 todo 条目等
-(define-key evil-normal-state-map "mt" 'org-capture)
+;; (define-key evil-normal-state-map "mt" 'org-capture)
 (setq verb-auto-kill-response-buffers t)
 (defun uid() (completing-read "uid: " '("10064589" "545473")))
 (with-eval-after-load 'org
@@ -17,14 +17,14 @@
   (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
-(evil-collection-define-key 'normal 'outline-mode-map
-   (kbd "C-k" ) nil
-    (kbd "C-j" ) nil)
-(evil-collection-define-key 'normal 'org-mode-map
-  "gw" 'novel-fill
-  "\C-k" 'vmacs-kill-region-or-org-kill-line
-  "\C-a" 'org-mode-smart-beginning-of-line
-  "\C-e" 'org-mode-smart-end-of-line)
+;; (evil-collection-define-key 'normal 'outline-mode-map
+;;    (kbd "C-k" ) nil
+;;     (kbd "C-j" ) nil)
+;; (evil-collection-define-key 'normal 'org-mode-map
+;;   "gw" 'novel-fill
+;;   "\C-k" 'vmacs-kill-region-or-org-kill-line
+;;   "\C-a" 'org-mode-smart-beginning-of-line
+;;   "\C-e" 'org-mode-smart-end-of-line)
 
 
 (org-babel-do-load-languages

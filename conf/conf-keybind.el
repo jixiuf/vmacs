@@ -29,7 +29,7 @@
 (global-set-key (kbd "C-1")   (lambda()
                                 (interactive)
                                 (if (region-active-p)
-                                    (call-interactively 'evil-shell-command)
+                                    (call-interactively 'shell-command)
                                   (if (eq major-mode 'dired-mode)
                                       (call-interactively 'dired-do-shell-command)
                                       (call-interactively 'shell-command)))))
@@ -39,10 +39,11 @@
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 
 
-(global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
+;; (global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a
 ;; (global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
-(global-set-key  (kbd "s-s") 'evil-write-all)
+;; (global-set-key  (kbd "s-s") 'evil-write-all)
 (global-set-key  (kbd "s-z") 'undo)
+(global-set-key  (kbd "C-z") 'undo)
 (global-set-key  (kbd "s-r") 'compile-dwim-compile)
 (global-set-key  (kbd "C-\\") 'hippie-expand)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
@@ -65,10 +66,33 @@
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "M-o") 'toggle-camelize)
+(autoload 'golden-ratio-scroll-screen-up "golden-ratio-scroll-screen" "" t)
+(autoload 'golden-ratio-scroll-screen-down "golden-ratio-scroll-screen" "" t)
+(global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up) ;C-v
+;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)
+(global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
+(global-set-key  (kbd "C-2") 'set-mark-command)
+(global-set-key  (kbd "C-3") 'rectangle-mark-mode)
 
+
+(global-set-key (kbd "C-x C-u") #'vundo)
+(vmacs-leader (kbd "l") 'ibuffer)
+(vmacs-leader (kbd "j") 'dired-jump)
+(vmacs-leader (kbd "nw") 'widen)
+(vmacs-leader (kbd "nn") 'narrow-to-region)
+(vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
+(vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
+(vmacs-leader (kbd "u") 'backward-up-list)
+(vmacs-leader (kbd "$") 'toggle-truncate-lines)
+(vmacs-leader (kbd "m") 'execute-extended-command)
+(vmacs-leader (kbd "wc") 'toggle-case-fold)
+(vmacs-leader (kbd "wl") 'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
+(vmacs-leader "s" 'save-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)
+(vmacs-leader "k" ctl-x-r-map)
 (vmacs-leader (kbd "wd") 'fanyi-dwim2)
 
 (defadvice keyboard-quit (before bury-boring-windows activate)

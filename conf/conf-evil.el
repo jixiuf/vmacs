@@ -52,12 +52,6 @@
                 ("*Async Shell Command*" . normal)
                 ("^ \\*load\\*")))
 
-(defun vmacs-calc-hook()
-  (require 'calc-bin)
-  ;; 默认 calc 的移位移位操作是接 32 位的， 可以 bw(calc-word-size) 来改成 64 位
-  (calc-word-size 128))
-
-(add-hook 'calc-mode-hook 'vmacs-calc-hook)
 
 ;; (), {}, [], <>, '', "", ` `, or “” by default
 ;; 不论是何种 ，都会将最近的配对进行操作
@@ -425,7 +419,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 ;; dae die
 (define-key evil-outer-text-objects-map "e" 'evil-a-symbol)
 (define-key evil-inner-text-objects-map "e" 'evil-inner-symbol)
-
 (global-set-key (kbd "<f17>") 'evil-normal-state) ;mac karabiner 用来控制输入法
 (define-key isearch-mode-map (kbd "<f17>") 'evil-normal-state) ;详见 isearch-pre-command-hook
 (global-set-key (kbd "<f18>") 'evil-insert-state) ;mac karabiner 用来控制输入法

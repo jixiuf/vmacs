@@ -14,21 +14,25 @@
   (interactive)
   (if current-prefix-arg (mu4e-update-mail-and-index t) (mu4e-update-index)))
 
-(evil-collection-define-key 'normal 'mu4e-view-mode-map
-  (kbd "M-n") #'mu4e-view-headers-next-unread
-  (kbd "M-p") #'mu4e-view-headers-prev-unread
-  )
-(evil-collection-define-key 'normal 'mu4e-headers-mode-map
-  "r" #'mu4e-headers-mark-for-read
-  "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t))
-  "!" #'mu4e-headers-mark-for-refile
-  (kbd "M-n") #'mu4e-headers-next-unread
-  (kbd "M-p") #'mu4e-headers-prev-unread
-  (kbd "C-c C-c") #'vmacs-mu4e-brower
-  "i" #'vmacs-read-all
-  "gh" #'mu4e-headers-query-prev
-  "gl" #'mu4e-headers-query-next
-  "gu" #'vmacs-mu4e-update-mail-and-index)
+; TODO:
+(define-key mu4e-view-mode-map (kbd "C-j") #'mu4e-view-headers-next)
+(define-key mu4e-view-mode-map (kbd "C-k") #'mu4e-view-headers-prev)
+(define-key mu4e-view-mode-map (kbd "M-n") #'mu4e-view-headers-next-unread)
+(define-key mu4e-view-mode-map (kbd "M-p") #'mu4e-view-headers-prev-unread)
+
+(define-key mu4e-headers-mode-map "r" #'mu4e-headers-mark-for-read)
+(define-key mu4e-headers-mode-map "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t)))
+(define-key mu4e-headers-mode-map "!" #'mu4e-headers-mark-for-refile)
+(define-key mu4e-headers-mode-map (kbd "M-n") #'mu4e-headers-next-unread)
+(define-key mu4e-headers-mode-map (kbd "M-p") #'mu4e-headers-prev-unread)
+(define-key mu4e-headers-mode-map (kbd "C-c C-c") #'vmacs-mu4e-brower)
+(define-key mu4e-headers-mode-map "i" #'vmacs-read-all)
+(defvar-keymap  mu4e-g-map :parent vmacs-g-mode-map
+                "h" #'mu4e-search-prev
+                "l" #'mu4e-search-next
+                "u" #'vmacs-mu4e-update-mail-and-index)
+(define-key  mu4e-headers-mode-map "g" mu4e-g-map)
+
 
 (defun vmacs-mu4e-brower (&optional msg)
   (interactive)

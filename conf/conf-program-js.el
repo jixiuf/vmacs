@@ -6,7 +6,7 @@
   (modify-syntax-entry ?- "_" (syntax-table))  ;还是让 - 作为symbol，
   (modify-syntax-entry ?_ "_" (syntax-table))  ;还是让 _ 作为symbol，
   (hs-minor-mode 1)
-  (evil-define-key 'normal 'local (kbd "<return>") 'evil-toggle-fold)
+  (local-set-key (kbd "<return>") 'hs-toggle-hiding)
   )
 
 (provide 'conf-program-js)

@@ -139,6 +139,8 @@
 ;;(put 'dired-find-alternate-file 'disabled nil)
 (put 'narrow-to-region 'disabled nil);; 启用 narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq-default auto-mode-alist
@@ -209,8 +211,8 @@
 
 (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 (global-set-key (kbd "C-e") 'smart-end-of-line)
-(define-key evil-motion-state-map (kbd "C-a") 'smart-beginning-of-line)
-(define-key evil-motion-state-map (kbd "C-e") 'smart-end-of-line)
+;; (define-key evil-motion-state-map (kbd "C-a") 'smart-beginning-of-line)
+;; (define-key evil-motion-state-map (kbd "C-e") 'smart-end-of-line)
 
 (global-set-key "\C-k" 'vmacs-kill-region-or-line)
 (global-set-key "\M-;" 'vmacs-comment-dwim-line)
@@ -241,7 +243,7 @@
   (let ((qed-buffer-name (concat "*scratch*" )))
     (switch-to-buffer (generate-new-buffer qed-buffer-name t))
     (sit-for 0.01)
-    (evil-paste-after 1)
+    ;; (evil-paste-after 1)
     (gfm-mode)))
 
 ;; (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
@@ -257,12 +259,18 @@
     (skip-chars-backward " \t\n")
     (delete-file (buffer-file-name))
     (forward-char 1)
-    (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
-    (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim)))
+    (local-set-key "q" #'vmacs-kill-buffer-dwim))
+    ;; (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
+    ;; (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim))
+  )
 (add-hook 'find-file-hook #'vmacs-pager)
 
-(evil-collection-define-key 'normal 'woman-mode-map
-  "q" #'save-buffers-kill-terminal)
+(defun vmacs-calc-hook()
+  (require 'calc-bin)
+  ;; 默认 calc 的移位移位操作是接 32 位的， 可以 bw(calc-word-size) 来改成 64 位
+  (calc-word-size 128))
+
+(add-hook 'calc-mode-hook 'vmacs-calc-hook)
 
 
 (provide 'conf-common)

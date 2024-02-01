@@ -6,9 +6,6 @@
 ;; cu （upper） 选择上面的部分，cl (lower) 选下部分
 ;; ca 两部分都要
 ;; cRET 选择光标下的
-(with-eval-after-load 'smerge-mode
-  (evil-define-minor-mode-key 'normal 'smerge-mode (kbd "c") smerge-basic-map))
-(evil-define-key 'normal diff-mode-map (kbd "t") #'toggle-diff-whitespace)
 
 (vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
 (vmacs-leader (kbd "vr") #'vc-revert)
