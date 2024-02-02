@@ -15,7 +15,7 @@
 
 (setq exec-path (delete-dups  (cons "/usr/local/opt/curl/bin" exec-path)))
 (setenv "PATH" (concat "/usr/local/opt/curl/bin" ":" (getenv "PATH") ))
-
+(setq shell-maker-prompt-before-killing-buffer nil)
 (provide 'conf-ai)
 
 ;; Local Variables:
