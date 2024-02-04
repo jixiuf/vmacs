@@ -14,14 +14,7 @@
 (vmacs-leader "," #'pop-global-mark)
 (define-key vmacs-g-mode-map "m" #'push-mark)
 (define-key vmacs-g-mode-map "P" #'project-or-external-find-file)
-;; (define-key vmacs-g-mode-map "c" #'xref-find-references)
 (define-key vmacs-g-mode-map "d" #'vmacs-find-def)
-;; (define-key vmacs-g-mode-map "R" #'eglot-rename)
-;; (define-key vmacs-g-mode-map "c" #'eglot-find-declaration)
-;; (define-key vmacs-g-mode-map "i" #'eglot-find-implementation)
-;; (define-key vmacs-g-mode-map "t" #'eglot-find-typeDefinition)
-;; (define-key vmacs-g-mode-map "s" #'eglot-reconnect)
-;; (define-key vmacs-g-mode-map "h" #'eglot-code-actions)
 (define-key vmacs-g-mode-map "," 'goto-last-change)
 (define-key vmacs-g-mode-map "." 'goto-last-change-reverse)
 (with-eval-after-load 'smerge-mode
@@ -58,7 +51,7 @@
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev)
-   '("<escape>" . ignore))
+   '("<escape>" . keyboard-quit))
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
    '("j" . "s-M-j")
@@ -154,6 +147,10 @@
 (require 'meow)
 (meow-setup)
 (add-to-list 'meow-selection-command-fallback '(meow-save . kill-ring-save))
+(meow-thing-register 'quoted
+                    '(regexp "`\\|'" "`\\|'")
+                    '(regexp "`\\|'" "`\\|'"))
+(add-to-list 'meow-char-thing-table '(?` . quoted))
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
 (add-to-list 'meow-mode-state-list '(text-mode . insert))

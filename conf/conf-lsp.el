@@ -28,6 +28,7 @@
   (defvar-keymap  lsp-g-map :parent vmacs-g-mode-map
                   "=" #'eglot-format
                   "R" #'eglot-rename
+                  "x" #'xref-find-references
                   "c" #'eglot-find-declaration
                   "i" #'eglot-find-implementation
                   "t" #'eglot-find-typeDefinition

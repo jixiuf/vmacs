@@ -74,6 +74,7 @@
 (set-keymap-parent magit-g-map vmacs-g-mode-map)
 (define-key  magit-mode-map "g" magit-g-map)
 (define-key  magit-g-map "w" #'toggle-diff-whitespace)
+(define-key  magit-g-map "r" #'magit-refresh)
 (define-key  magit-g-map "m" #'magit-toggle-margin)
 (with-eval-after-load 'diff-mode
 ; TODO:
