@@ -47,6 +47,12 @@
   (meow-grab))
 
 ;;;###autoload
+(defun meow-negative-find ()
+  (interactive)
+  (let ((current-prefix-arg -1))
+    (call-interactively 'meow-find)))
+
+;;;###autoload
 (defun json-unescape ()
   (interactive)
   (let* ((start (if (use-region-p) (region-beginning) (point-min)))
@@ -96,7 +102,8 @@ open-line if point is at end of line , new-line-and-indent"
                                    evil-move-end-of-line
                                    smart-end-of-line))
         (end-of-line))
-      (newline-and-indent))))
+      (newline-and-indent)))
+  (meow-insert))
 
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处

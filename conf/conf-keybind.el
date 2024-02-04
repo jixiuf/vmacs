@@ -75,6 +75,7 @@
 (global-set-key  (kbd "C-2") 'set-mark-command)
 (global-set-key  (kbd "C-3") 'rectangle-mark-mode)
 (global-set-key  (kbd "C-4") 'vmacs-meow-grab)
+(global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 
 
 (global-set-key (kbd "C-x C-u") #'vundo)

@@ -104,6 +104,7 @@
    '("E" . meow-next-word)
    '("e" . meow-next-symbol)
    '("f" . meow-find)
+   '("F" . meow-negative-find)
    ;; '("g" . meow-cancel-selection)
    '("g" . "C-c g")
    '("G" . end-of-buffer)
@@ -148,6 +149,8 @@
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("'" . repeat)
    '("<escape>" . meow-cancel-selection)))
+
+
 (require 'meow)
 (meow-setup)
 (add-to-list 'meow-selection-command-fallback '(meow-save . kill-ring-save))
