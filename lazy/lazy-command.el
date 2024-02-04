@@ -32,6 +32,21 @@
   (call-interactively #'xref-find-definitions))
 
 ;;;###autoload
+(defun vmacs-meow-insert-secondary()
+  (interactive)
+  (let ((sel (meow--second-sel-get-string)) )
+    (when sel
+      (insert-for-yank sel)
+      )))
+;;;###autoload
+(defun vmacs-meow-grab()
+  (interactive)
+  (when (region-active-p)
+    (when (= (region-end) (point))
+      (meow-reverse)))
+  (meow-grab))
+
+;;;###autoload
 (defun json-unescape ()
   (interactive)
   (let* ((start (if (use-region-p) (region-beginning) (point-min)))
