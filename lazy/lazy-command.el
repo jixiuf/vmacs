@@ -6,6 +6,22 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
+(defun vmacs-meow-iedit()
+  (interactive)
+  (let (mark  (p (point)))
+    (when (region-active-p)
+      (setq mark (mark)))
+    (save-excursion
+      (set-mark (point-max))
+      (goto-char (point-min))
+      (meow-grab)
+      (goto-char p)
+      (if mark
+          (set-mark mark)
+        (call-interactively #'meow-mark-symbol))
+      (call-interactively #'meow-search))))
+
+;;;###autoload
 (defun vmacs-meow-search-symbol()
   (interactive)
   (call-interactively #'meow-mark-symbol)

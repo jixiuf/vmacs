@@ -102,7 +102,7 @@
     (require 'lazy-buffer)
     (bury-boring-windows)))
 
-(global-set-key (kbd "C-;") 'iedit-mode)
+(global-set-key (kbd "C-;") #'vmacs-meow-iedit)
 
 ;; C-x esc esc 可以查看 global-set-key 究竟 bind 哪个 key
 ;; 默认 Emacs 把 TAB==`C-i'

@@ -150,7 +150,7 @@
 
 (require 'meow)
 (meow-setup)
-(define-key   meow-beacon-state-keymap (kbd "<escape>") #'meow-beacon-apply-kmacro)
+(define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . kill-ring-save))
 (meow-thing-register 'quoted
                     '(regexp "`\\|'" "`\\|'")
