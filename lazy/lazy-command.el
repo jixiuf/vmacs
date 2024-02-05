@@ -8,17 +8,21 @@
 ;;;###autoload
 (defun vmacs-meow-iedit()
   (interactive)
-  (let (mark  (p (point)))
-    (when (region-active-p)
-      (setq mark (mark)))
-    (save-excursion
-      (set-mark (point-max))
-      (goto-char (point-min))
-      (meow-grab)
-      (goto-char p)
-      (if mark
-          (set-mark mark)
-        (call-interactively #'meow-mark-symbol))
+  (if (secondary-selection-exist-p)
+      (progn(meow--cancel-second-selection)
+            (meow--cancel-selection))
+    (let* ((bounds (bounds-of-thing-at-point 'symbol))
+           (start (car bounds))
+           (end (cdr bounds)))
+      (if (region-active-p)
+          (meow--push-search (buffer-substring-no-properties
+                              (region-beginning)(region-end)))
+        (meow--push-search (buffer-substring-no-properties start end))
+        (goto-char start))
+      (save-mark-and-excursion
+        (set-mark (point-max))
+        (goto-char (point-min))
+        (meow-grab))
       (call-interactively #'meow-search))))
 
 ;;;###autoload

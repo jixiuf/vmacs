@@ -81,8 +81,12 @@
 (global-set-key (kbd "C-x C-u") #'vundo)
 (vmacs-leader (kbd "l") 'ibuffer)
 (vmacs-leader (kbd "j") 'dired-jump)
-(vmacs-leader (kbd "nw") 'widen)
+(vmacs-leader (kbd "nw") (vmacs-defun vmacs-widen
+                           (meow--cancel-second-selection)
+                           (meow--cancel-selection)
+                           (widen)))
 (vmacs-leader (kbd "nn") 'narrow-to-region)
+(vmacs-leader (kbd "ng") 'vmacs-meow-grab)
 (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "u") 'backward-up-list)
