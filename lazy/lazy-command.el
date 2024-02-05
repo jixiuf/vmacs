@@ -1,24 +1,22 @@
 ;;; -*- lexical-binding: t; -*-
 ;; -*- coding:utf-8 -*-
-;; ;; eval-when-compile
-;; (eval-when-compile
-;;   (require 'savehist)
-;;   (require  'cl-seq)
-;;   (require  'ediff)
-;;   (require  'vc-hooks)
-;;   (require 'recentf)
-;;   (require 'saveplace)
-;;   (require  'log-edit)
-;;   (require  'org)
-;;   (require  'ibuffer)
-;;   (require  'log-view)
-;;   (require 'cc-mode)
-;;   ;;(require 'hippie-exp)
-;;   )
 
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+
+;;;###autoload
+(defun vmacs-meow-search-symbol()
+  (interactive)
+  (call-interactively #'meow-mark-symbol)
+  (call-interactively #'meow-search))
+;;;###autoload
+(defun vmacs-meow-search-symbol-prev()
+  (interactive)
+  (call-interactively #'meow-mark-symbol)
+  (meow-reverse)
+  (call-interactively #'meow-search))
+
 ;;;###autoload
 (defun vmacs-find-def()
   (interactive)

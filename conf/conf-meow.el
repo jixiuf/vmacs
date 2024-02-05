@@ -116,6 +116,8 @@
    '("l" . forward-char)
    '("L" . meow-right-expand)
    '("n" . meow-search)
+   '("*" . vmacs-meow-search-symbol)
+   '("#" . vmacs-meow-search-symbol-prev)
    '("o" . meow-block)
    '("O" . meow-to-block)
    '("p" . meow-yank)
@@ -142,10 +144,13 @@
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("'" . repeat)
    '("<escape>" . meow-cancel-selection)))
+(global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
+(global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
 
 
 (require 'meow)
 (meow-setup)
+(define-key   meow-beacon-state-keymap (kbd "<escape>") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . kill-ring-save))
 (meow-thing-register 'quoted
                     '(regexp "`\\|'" "`\\|'")
