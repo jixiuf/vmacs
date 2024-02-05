@@ -174,10 +174,9 @@
              (when dir (setq default-directory dir)))
            ) lines)
         (embark-consult-export-grep lines)
-        (define-key embark-region-map [( return)]  #'gptel-send)
         ))
     )
-  (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
+  (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t) (local-set-key "g" vmacs-g-mode-map) ))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)

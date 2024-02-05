@@ -7,7 +7,7 @@
 
 (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
               wgrep-too-many-file-length 1
-              ;; wgrep-enable-key "i"
+              wgrep-enable-key "i"
               wgrep-change-readonly-file t)
 
 (defun vmacs-wgrep-finish-edit()
@@ -33,24 +33,15 @@
         (message "Buffer has been saved."))
        (t
         (message "%d buffers have been saved." count))))))
-
+(with-eval-after-load 'grep
+  (set-keymap-parent grep-mode-map meow-normal-state-keymap )
+  (define-key grep-mode-map "/" #'consult-focus-lines)
+  (define-key grep-mode-map "z" #'consult-hide-lines)
+)
 (with-eval-after-load 'wgrep
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit)
-  (define-key grep-mode-map "/" #'consult-focus-lines)
-  (define-key grep-mode-map "z" #'consult-hide-lines)
-  (define-key grep-mode-map "r" #'consult-reset-lines)
-  (define-key grep-mode-map "i" #'meow-insert))
-
-
-(defun enable-wgrep-when-entry-insert()
-  (when (derived-mode-p  'grep-mode)
-    (require 'wgrep) (wgrep-change-to-wgrep-mode)))
-
-(add-hook 'evil-insert-state-entry-hook 'enable-wgrep-when-entry-insert)
-
-
-
+  )
 
 (provide 'conf-wgrep)
 

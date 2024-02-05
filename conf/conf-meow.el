@@ -24,7 +24,7 @@
 (setq meow-keypad-leader-dispatch vmacs-space-leader-mode-map)
 (setq meow-use-clipboard t)
 (setq meow-keypad-self-insert-undefined nil)
-(setq meow-use-cursor-position-hack t)
+;; (setq meow-use-cursor-position-hack t)
 (setq meow-char-thing-table
       '((?r . round)
         (?s . square)
