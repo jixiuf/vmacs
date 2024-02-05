@@ -50,7 +50,6 @@
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
-   '("/" . meow-visit)
    '("k" . meow-prev)
    '("<escape>" . keyboard-quit))
   (meow-leader-define-key
