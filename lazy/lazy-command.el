@@ -17,6 +17,22 @@
       (forward-sexp))
      ((looking-back "\\s)\\|\\]\\|}" 1)
       (backward-list))))))
+;;;###autoload
+(defun vmacs-meow-join()
+  (interactive)
+  (meow-join -1))
+
+;;;###autoload
+(defun meow-set-mark ()
+  "Activate char selection, then move left."
+  (interactive)
+  (if (region-active-p)
+      (thread-first
+        (meow--make-selection '(expand . char) (mark) (point))
+        (meow--select))
+    (thread-first
+      (meow--make-selection '(expand . char) (point) (point))
+      (meow--select))))
 
 ;;;###autoload
 (defun vmacs-meow-iedit()
@@ -72,10 +88,13 @@
 ;;;###autoload
 (defun vmacs-meow-grab()
   (interactive)
-  (when (region-active-p)
+  (save-excursion
+    (unless (region-active-p)
+      (set-mark (point-max))
+      (goto-char (point-min)))
     (when (= (region-end) (point))
-      (meow-reverse)))
-  (meow-grab))
+      (meow-reverse))
+    (meow-grab)))
 
 ;;;###autoload
 (defun meow-negative-find ()

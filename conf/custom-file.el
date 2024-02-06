@@ -25,69 +25,108 @@
  '(chatgpt-shell-streaming t)
  '(column-number-mode nil)
  '(connection-local-criteria-alist
-   '(((:application tramp :protocol "kubernetes") tramp-kubernetes-connection-local-default-profile)
-     ((:application eshell) eshell-connection-default-profile)
+   '(((:application tramp :protocol "kubernetes")
+      tramp-kubernetes-connection-local-default-profile)
+     ((:application eshell)
+      eshell-connection-default-profile)
      ((:application tramp :protocol "flatpak")
-      tramp-container-connection-local-default-flatpak-profile
-      tramp-flatpak-connection-local-default-profile)
-     ((:application tramp :machine "localhost") tramp-connection-local-darwin-ps-profile)
-     ((:application tramp :machine "jxfluoji") tramp-connection-local-darwin-ps-profile)
-     ((:application tramp) tramp-connection-local-default-system-profile
-      tramp-connection-local-default-shell-profile)))
+      tramp-container-connection-local-default-flatpak-profile tramp-flatpak-connection-local-default-profile)
+     ((:application tramp :machine "localhost")
+      tramp-connection-local-darwin-ps-profile)
+     ((:application tramp :machine "jxfluoji")
+      tramp-connection-local-darwin-ps-profile)
+     ((:application tramp)
+      tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
  '(connection-local-profile-alist
    '((tramp-flatpak-connection-local-default-profile
-      (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin"
-                         "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin"
-                         "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin"
-                         "/opt/bin" "/opt/sbin" "/opt/local/bin"))
+      (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
      (tramp-kubernetes-connection-local-default-profile
       (tramp-config-check . tramp-kubernetes--current-context-data)
-      (tramp-extra-expand-args 97 (tramp-kubernetes--container (car tramp-current-connection)) 104
-                               (tramp-kubernetes--pod (car tramp-current-connection)) 120
-                               (tramp-kubernetes--context-namespace (car tramp-current-connection))))
-     (eshell-connection-default-profile (eshell-path-env-list))
+      (tramp-extra-expand-args 97
+                               (tramp-kubernetes--container
+                                (car tramp-current-connection))
+                               104
+                               (tramp-kubernetes--pod
+                                (car tramp-current-connection))
+                               120
+                               (tramp-kubernetes--context-namespace
+                                (car tramp-current-connection))))
+     (eshell-connection-default-profile
+      (eshell-path-env-list))
      (tramp-container-connection-local-default-flatpak-profile
-      (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin"
-                         "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin"
-                         "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin"
-                         "/opt/bin" "/opt/sbin" "/opt/local/bin"))
+      (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
      (tramp-connection-local-darwin-ps-profile
-      (tramp-process-attributes-ps-args "-acxww" "-o"
-                                        "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                        "-o" "state=abcde" "-o"
-                                        "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
-      (tramp-process-attributes-ps-format (pid . number) (euid . number) (user . string)
-                                          (egid . number) (comm . 52) (state . 5) (ppid . number)
-                                          (pgrp . number) (sess . number) (ttname . string)
-                                          (tpgid . number) (minflt . number) (majflt . number)
-                                          (time . tramp-ps-time) (pri . number) (nice . number)
-                                          (vsize . number) (rss . number) (etime . tramp-ps-time)
-                                          (pcpu . number) (pmem . number) (args)))
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state=abcde" "-o" "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . tramp-ps-time)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
      (tramp-connection-local-busybox-ps-profile
-      (tramp-process-attributes-ps-args "-o"
-                                        "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                        "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
-      (tramp-process-attributes-ps-format (pid . number) (user . string) (group . string)
-                                          (comm . 52) (state . 5) (ppid . number) (pgrp . number)
-                                          (ttname . string) (time . tramp-ps-time) (nice . number)
-                                          (etime . tramp-ps-time) (args)))
+      (tramp-process-attributes-ps-args "-o" "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (user . string)
+       (group . string)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (ttname . string)
+       (time . tramp-ps-time)
+       (nice . number)
+       (etime . tramp-ps-time)
+       (args)))
      (tramp-connection-local-bsd-ps-profile
-      (tramp-process-attributes-ps-args "-acxww" "-o"
-                                        "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                        "-o"
-                                        "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
-      (tramp-process-attributes-ps-format (pid . number) (euid . number) (user . string)
-                                          (egid . number) (group . string) (comm . 52)
-                                          (state . string) (ppid . number) (pgrp . number)
-                                          (sess . number) (ttname . string) (tpgid . number)
-                                          (minflt . number) (majflt . number) (time . tramp-ps-time)
-                                          (pri . number) (nice . number) (vsize . number)
-                                          (rss . number) (etime . number) (pcpu . number)
-                                          (pmem . number) (args)))
-     (tramp-connection-local-default-shell-profile (shell-file-name . "/bin/sh")
-                                                   (shell-command-switch . "-c"))
-     (tramp-connection-local-default-system-profile (path-separator . ":")
-                                                    (null-device . "/dev/null"))))
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (group . string)
+       (comm . 52)
+       (state . string)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . number)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-default-shell-profile
+      (shell-file-name . "/bin/sh")
+      (shell-command-switch . "-c"))
+     (tramp-connection-local-default-system-profile
+      (path-separator . ":")
+      (null-device . "/dev/null"))))
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes t)
  '(display-fill-column-indicator t)
@@ -98,14 +137,22 @@
  '(helm-minibuffer-history-key "C-r")
  '(ignored-local-variable-values
    '((eval add-hook 'after-save-hook
-           (lambda nil (shell-command (concat markdown-command " README.md > README.html"))) nil
-           'local)
-     (eval add-hook 'after-save-hook (lambda nil (shell-command "pkill --signal RTMIN+13 waybar"))
+           (lambda nil
+             (shell-command
+              (concat markdown-command " README.md > README.html")))
            nil 'local)
-     (eval add-hook 'after-save-hook (lambda nil (shell-command "pkill --signal RTMIN+11 waybar"))
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (shell-command "pkill --signal RTMIN+13 waybar"))
+           nil 'local)
+     (eval add-hook 'after-save-hook
+           (lambda nil
+             (shell-command "pkill --signal RTMIN+11 waybar"))
            nil 'local)
      (eval add-hook 'before-save-hook 'time-stamp)
-     (eval add-hook (make-local-variable 'after-save-hook) 'bh/ensure-in-vc-or-check-in t)))
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           'bh/ensure-in-vc-or-check-in t)))
  '(ivy-posframe-border-width 10)
  '(lsp-auto-guess-root t)
  '(lsp-enable-symbol-highlighting nil)
@@ -123,32 +170,47 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(cape chatgpt-shell codeium consult-dir corfu dape dired-filetype-face dired-rsync embark
-          embark-consult exec-path-from-shell fanyi git-link golden-ratio golden-ratio-scroll-screen
-          iedit kind-icon lua-mode magit marginalia markdown-mode meow mu4e-alert orderless org-msg
-          ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
+   '(goto-chg cape chatgpt-shell codeium consult-dir corfu dape dired-filetype-face dired-rsync embark embark-consult exec-path-from-shell fanyi git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode meow mu4e-alert orderless org-msg ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((codeium :vc-backend Git :url "https://github.com/Exafunction/codeium.el")))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
-   '((eval add-hook (make-local-variable 'after-save-hook)
-           #'(lambda nil (shell-command "systemctl --user restart waybar" nil nil)) t)
-     (eval add-hook (make-local-variable 'after-save-hook)
-           #'(lambda nil (shell-command "gpg -d authorized_keys.gpg>authorized_keys")) t)
-     (eval add-hook (make-local-variable 'after-save-hook)
-           #'(lambda nil (shell-command "gpg -d config.gpg>config")) t)
-     (eval add-hook (make-local-variable 'after-save-hook)
-           #'(lambda nil (shell-command "systemctl --user restart xremap")) t)
-     (eval add-hook (make-local-variable 'after-save-hook) #'(lambda nil (shell-command "make")) t)
-     (diff-add-log-use-relative-names . t) (vc-git-annotate-switches . "-w")
-     (checkdoc-minor-mode . t) (flycheck-disabled-checkers emacs-lisp-checkdoc)
-     (git-commit-major-mode . git-commit-elisp-text-mode)
-     (projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
-     (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
-     (projectile-project-compilation-cmd . "bear make") (compile-command . "make lint")
-     (projectile-project-run-cmd . "make run")))
+   '((etags-regen-ignores "test/manual/etags/")
+     (etags-regen-regexp-alist
+      (("c" "objc")
+       "/[ \11]*DEFVAR_[A-Z_ \11(]+\"\\([^\"]+\\)\"/\\1/" "/[ \11]*DEFVAR_[A-Z_ \11(]+\"[^\"]+\",[ \11]\\([A-Za-z0-9_]+\\)/\\1/"))
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
+               (shell-command "systemctl --user restart waybar" nil nil))
+           t)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
+               (shell-command "gpg -d authorized_keys.gpg>authorized_keys"))
+           t)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
+               (shell-command "gpg -d config.gpg>config"))
+           t)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
+               (shell-command "systemctl --user restart xremap"))
+           t)
+     (eval add-hook
+           (make-local-variable 'after-save-hook)
+           #'(lambda nil
+               (shell-command "make"))
+           t)
+     (diff-add-log-use-relative-names . t)
+     (vc-git-annotate-switches . "-w")
+     (checkdoc-minor-mode . t)
+     (flycheck-disabled-checkers emacs-lisp-checkdoc)
+     (git-commit-major-mode . git-commit-elisp-text-mode)))
  '(save-place-file "~/.emacs.d/cache/place")
  '(savehist-file "~/.emacs.d/cache/history")
  '(scroll-bar-mode nil)
@@ -160,7 +222,10 @@
  '(uniquify-buffer-name-style 'forward nil (uniquify))
  '(warning-suppress-log-types '((comp) (emacs) (with-editor)))
  '(warning-suppress-types
-   '((comp) (initialization) (eglot) (yasnippet backquote-change)))
+   '((comp)
+     (initialization)
+     (eglot)
+     (yasnippet backquote-change)))
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places 'bottom-only)
  '(window-divider-default-right-width 1)
