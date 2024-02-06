@@ -272,6 +272,14 @@
 
 (add-hook 'calc-mode-hook 'vmacs-calc-hook)
 
+(defun vmacs-backup-enable-predicate (name)
+  "Disable backups for remote files (with Tramp)."
+  (and (normal-backup-enable-predicate name)
+       (not
+        (let ((method (file-remote-p name 'method)))
+          (when method (member method '("ssh" "scp" "sudo")))))))
+
+(setq backup-enable-predicate 'vmacs-backup-enable-predicate)
 
 (provide 'conf-common)
 
