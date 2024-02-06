@@ -22,7 +22,6 @@
 (global-set-key (kbd "C-'")   #'(lambda() (interactive)(insert "\"\"")(backward-char 1)))
 
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
-(global-set-key (kbd "C-8")   #'(lambda() (interactive)(insert "*")))
 (defun vmacs-isearch-insert-shift1()
   (interactive)
   (isearch-printing-char ?\!))

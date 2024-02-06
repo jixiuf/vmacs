@@ -6,6 +6,19 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
+(defun vmacs-meow-reverse()
+  (interactive)
+  (cond
+   ((region-active-p)
+    (call-interactively 'meow-reverse))
+   (t
+    (cond
+     ((looking-at "\\s(\\|\\[\\|{")
+      (forward-sexp))
+     ((looking-back "\\s)\\|\\]\\|}" 1)
+      (backward-list))))))
+
+;;;###autoload
 (defun vmacs-meow-iedit()
   (interactive)
   (if (secondary-selection-exist-p)
