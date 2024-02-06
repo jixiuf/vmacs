@@ -11,6 +11,10 @@
 ;;   (add-to-list 'tramp-remote-path "/usr/local/go/bin"))
 
 (setq tramp-default-user "root")
+(add-to-list 'tramp-default-user-alist '("ssh" "10\\.17\\.1\\.229\\'" "admin"))
+(add-to-list 'tramp-default-user-alist '("ssh" "10\\.17\\.1\\.230\\'" "admin"))
+(add-to-list 'tramp-default-user-alist '("ssh" "10\\.17\\.1\\.30\\'" "admin"))
+
 (defface toggle-to-root-header-face
   '((t (:foreground "white" :background "red3")))
   "*Face use to display header-lines for files opened as root."
