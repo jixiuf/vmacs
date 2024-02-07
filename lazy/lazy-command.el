@@ -66,17 +66,17 @@
   (meow-reverse)
   (call-interactively #'meow-search))
 
-;;;###autoload
-(defun vmacs-find-def()
-  (interactive)
-  (require 'eglot)
-  (when (and eglot--managed-mode
-             eglot--change-idle-timer)
-    (cancel-timer eglot--change-idle-timer)
-    (eglot--signal-textDocument/didChange)
-    (setq eglot--change-idle-timer nil))
-  (push-mark)
-  (call-interactively #'xref-find-definitions))
+;;;; ###autoload
+;; (defun vmacs-find-def()
+;;   (interactive)
+;;   (require 'eglot)
+;;   (when (and eglot--managed-mode
+;;              eglot--change-idle-timer)
+;;     (cancel-timer eglot--change-idle-timer)
+;;     (eglot--signal-textDocument/didChange)
+;;     (setq eglot--change-idle-timer nil))
+;;   (push-mark)
+;;   (call-interactively #'xref-find-definitions))
 
 ;;;###autoload
 (defun vmacs-meow-insert-secondary()

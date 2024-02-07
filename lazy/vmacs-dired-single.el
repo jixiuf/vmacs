@@ -56,6 +56,7 @@
       (when (and (not (eq current-buf buf))
                  (or  (eq 'dired-mode  major-mode)
                       (eq 'diredp-w32-drives-mode major-mode))
+                 (not (file-remote-p default-directory))
                  (or (not (featurep 'server))
                      (not server-buffer-clients)))
         (kill-buffer buf)))))

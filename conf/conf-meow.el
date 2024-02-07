@@ -14,7 +14,7 @@
 (vmacs-leader "," #'pop-global-mark)
 (define-key vmacs-g-mode-map "m" #'push-mark)
 (define-key vmacs-g-mode-map "P" #'project-or-external-find-file)
-(define-key vmacs-g-mode-map "d" #'vmacs-find-def)
+(define-key vmacs-g-mode-map "d" #'xref-find-definitions)
 (define-key vmacs-g-mode-map "," 'goto-last-change)
 (define-key vmacs-g-mode-map "." 'goto-last-change-reverse)
 (with-eval-after-load 'smerge-mode
@@ -114,7 +114,7 @@
    ;; '("K" . meow-prev-expand)
    '("l" . meow-right)
    ;; '("l" . forward-char)
-   ;; '("L" . meow-right-expand)
+   '("L" . meow-right-expand)
    '("n" . meow-search)
    '("*" . vmacs-meow-search-symbol)
    '("#" . vmacs-meow-search-symbol-prev)

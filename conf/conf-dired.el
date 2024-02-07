@@ -128,7 +128,8 @@
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 (define-key dired-mode-map  "/" 'consult-focus-lines)
-(define-key dired-mode-map  "C" 'dired-rsync)
+;; (define-key dired-mode-map  "C" 'dired-rsync)
+
 (define-key dired-mode-map  "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) )
 (define-key dired-mode-map  (kbd "C-s") 'consult-focus-lines)
 (define-key dired-mode-map  "z"  'consult-hide-lines)
@@ -177,6 +178,7 @@
 ;; (require 'vmacs-dired-history)
 
 (require 'dired-async nil t)
+(dired-async-mode 1)
 
 (defun dired-next-line (arg)
   (interactive "^p")
