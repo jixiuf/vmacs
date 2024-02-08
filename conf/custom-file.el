@@ -43,14 +43,14 @@
      (tramp-kubernetes-connection-local-default-profile
       (tramp-config-check . tramp-kubernetes--current-context-data)
       (tramp-extra-expand-args 97
-                               (tramp-kubernetes--container
-                                (car tramp-current-connection))
-                               104
-                               (tramp-kubernetes--pod
-                                (car tramp-current-connection))
-                               120
-                               (tramp-kubernetes--context-namespace
-                                (car tramp-current-connection))))
+			       (tramp-kubernetes--container
+				(car tramp-current-connection))
+			       104
+			       (tramp-kubernetes--pod
+				(car tramp-current-connection))
+			       120
+			       (tramp-kubernetes--context-namespace
+				(car tramp-current-connection))))
      (eshell-connection-default-profile
       (eshell-path-env-list))
      (tramp-container-connection-local-default-flatpak-profile
@@ -137,22 +137,22 @@
  '(helm-minibuffer-history-key "C-r")
  '(ignored-local-variable-values
    '((eval add-hook 'after-save-hook
-           (lambda nil
-             (shell-command
-              (concat markdown-command " README.md > README.html")))
-           nil 'local)
+	   (lambda nil
+	     (shell-command
+	      (concat markdown-command " README.md > README.html")))
+	   nil 'local)
      (eval add-hook 'after-save-hook
-           (lambda nil
-             (shell-command "pkill --signal RTMIN+13 waybar"))
-           nil 'local)
+	   (lambda nil
+	     (shell-command "pkill --signal RTMIN+13 waybar"))
+	   nil 'local)
      (eval add-hook 'after-save-hook
-           (lambda nil
-             (shell-command "pkill --signal RTMIN+11 waybar"))
-           nil 'local)
+	   (lambda nil
+	     (shell-command "pkill --signal RTMIN+11 waybar"))
+	   nil 'local)
      (eval add-hook 'before-save-hook 'time-stamp)
      (eval add-hook
-           (make-local-variable 'after-save-hook)
-           'bh/ensure-in-vc-or-check-in t)))
+	   (make-local-variable 'after-save-hook)
+	   'bh/ensure-in-vc-or-check-in t)))
  '(ivy-posframe-border-width 10)
  '(lsp-auto-guess-root t)
  '(lsp-enable-symbol-highlighting nil)
@@ -182,30 +182,30 @@
       (("c" "objc")
        "/[ \11]*DEFVAR_[A-Z_ \11(]+\"\\([^\"]+\\)\"/\\1/" "/[ \11]*DEFVAR_[A-Z_ \11(]+\"[^\"]+\",[ \11]\\([A-Za-z0-9_]+\\)/\\1/"))
      (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "systemctl --user restart waybar" nil nil))
-           t)
+	   (make-local-variable 'after-save-hook)
+	   #'(lambda nil
+	       (shell-command "systemctl --user restart waybar" nil nil))
+	   t)
      (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "gpg -d authorized_keys.gpg>authorized_keys"))
-           t)
+	   (make-local-variable 'after-save-hook)
+	   #'(lambda nil
+	       (shell-command "gpg -d authorized_keys.gpg>authorized_keys"))
+	   t)
      (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "gpg -d config.gpg>config"))
-           t)
+	   (make-local-variable 'after-save-hook)
+	   #'(lambda nil
+	       (shell-command "gpg -d config.gpg>config"))
+	   t)
      (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "systemctl --user restart xremap"))
-           t)
+	   (make-local-variable 'after-save-hook)
+	   #'(lambda nil
+	       (shell-command "systemctl --user restart xremap"))
+	   t)
      (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "make"))
-           t)
+	   (make-local-variable 'after-save-hook)
+	   #'(lambda nil
+	       (shell-command "make"))
+	   t)
      (diff-add-log-use-relative-names . t)
      (vc-git-annotate-switches . "-w")
      (checkdoc-minor-mode . t)

@@ -4,6 +4,18 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+;;;###autoload
+(defun vmacs-insert-pair(prefix suffix)
+  (if (use-region-p)
+      (let ((beg (region-beginning))
+            (end (region-end)))
+        (goto-char end)
+        (insert suffix)
+        (goto-char beg)
+        (insert prefix))
+    (insert prefix)
+    (insert suffix)
+    (backward-char 1)))
 
 ;;;###autoload
 (defun vmacs-meow-reverse()
@@ -789,9 +801,9 @@ end tell" (expand-file-name default-directory))))
 (defun consult-hide-lines ()
   (interactive)
   (consult-focus-lines (lambda (pattern cands)
-           ;; Use consult-location completion category when filtering lines
-           (consult--completion-filter-dispatch
-            pattern cands 'consult-location nil)) nil "! "))
+                         ;; Use consult-location completion category when filtering lines
+                         (consult--completion-filter-dispatch
+                          pattern cands 'consult-location nil)) nil "! "))
 ;;;###autoload
 (defun consult-reset-lines ()
   (interactive)
