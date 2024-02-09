@@ -37,6 +37,9 @@
   (set-keymap-parent grep-mode-map meow-normal-state-keymap )
   (define-key grep-mode-map "/" #'consult-focus-lines)
   (define-key grep-mode-map "z" #'consult-hide-lines)
+  (require 'wgrep)
+  (defadvice grep-exit-message (after wgrep activate)
+    (wgrep-change-to-wgrep-mode))
 )
 (with-eval-after-load 'wgrep
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)

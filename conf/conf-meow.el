@@ -118,7 +118,7 @@
    '("n" . meow-search)
    '("*" . vmacs-meow-search-symbol)
    '("#" . vmacs-meow-search-symbol-prev)
-   '("o" . meow-open-above)
+   '("o" . meow-open-below)
    '("C-o" . meow-block)
    '("O" . meow-to-block)
    '("p" . meow-yank)

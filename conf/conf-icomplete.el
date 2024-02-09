@@ -174,7 +174,7 @@
              (when dir (setq default-directory dir)))
            ) lines)
         (embark-consult-export-grep lines)
-        ))
+        (wgrep-change-to-wgrep-mode)))
     )
   (defvar-keymap grep-g-map :parent vmacs-g-mode-map
                  "r" #'embark-rerun-collect-or-export)
