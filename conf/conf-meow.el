@@ -162,8 +162,8 @@
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
+(add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
-(vmacs-leader (kbd "ng") 'vmacs-meow-grab)
 
 (provide 'conf-meow)
 
