@@ -5,6 +5,25 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-isearch-repeat (arg)
+  "Repeat the forward search and then exit isearch immediately."
+  (interactive "P")
+  (if (region-active-p)
+      (progn
+        (message "ss")
+        (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
+            (call-interactively #'isearch-backward)
+          (call-interactively #'isearch-forward))
+        (isearch-yank-string (buffer-substring-no-properties
+                              (region-beginning)(region-end))))
+    (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
+        (isearch-repeat-backward)
+      (isearch-repeat-forward))
+    )
+  (isearch-exit)
+  (setq this-command 'meow-search))
+
+;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)
   (if (use-region-p)
       (let ((beg (region-beginning))
@@ -28,7 +47,9 @@
      ((looking-at "\\s(\\|\\[\\|{")
       (forward-sexp))
      ((looking-back "\\s)\\|\\]\\|}" 1)
-      (backward-list))))))
+      (backward-list))
+     (t
+      (call-interactively 'negative-argument))))))
 ;;;###autoload
 (defun vmacs-meow-join()
   (interactive)

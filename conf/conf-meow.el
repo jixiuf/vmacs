@@ -115,7 +115,6 @@
    '("l" . meow-right)
    ;; '("l" . forward-char)
    '("L" . meow-right-expand)
-   '("n" . meow-search)
    '("*" . vmacs-meow-search-symbol)
    '("#" . vmacs-meow-search-symbol-prev)
    '("o" . meow-open-below)
@@ -129,7 +128,10 @@
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
-   '("/" . meow-visit)
+   '("n" . vmacs-isearch-repeat)
+   ;; '("n" . meow-search)
+   '("/" . isearch-forward)
+   '("?" . isearch-backward)
    '("W" . meow-mark-word)
    '("w" . meow-mark-symbol)
    '("C-r" . vmacs-meow-reverse)
@@ -164,6 +166,18 @@
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
+
+(defun meow--post-isearch-function ()
+  (unless isearch-mode-end-hook-quit
+    (when (and isearch-success isearch-match-data)
+      (let ((beg (car isearch-match-data))
+            (end (cadr isearch-match-data)))
+        (thread-first
+          (meow--make-selection '(select . visit)
+                                beg
+                                (if isearch-forward end isearch-other-end))
+          (meow--select (not isearch-forward)))))))
+(add-hook 'isearch-mode-end-hook 'meow--post-isearch-function)
 
 (provide 'conf-meow)
 
