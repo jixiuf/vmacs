@@ -4,24 +4,20 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
-;;;###autoload
-(defun vmacs-isearch-repeat (arg)
-  "Repeat the forward search and then exit isearch immediately."
-  (interactive "P")
-  (if (region-active-p)
-      (progn
-        (message "ss")
-        (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
-            (call-interactively #'isearch-backward)
-          (call-interactively #'isearch-forward))
-        (isearch-yank-string (buffer-substring-no-properties
-                              (region-beginning)(region-end))))
-    (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
-        (isearch-repeat-backward)
-      (isearch-repeat-forward))
-    )
-  (isearch-exit)
-  (setq this-command 'meow-search))
+;; (defun vmacs-isearch-repeat (arg)
+;;   "Repeat the forward search and then exit isearch immediately."
+;;   (interactive "P")
+;;   (if (region-active-p)
+;;       (progn
+;;         (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
+;;             (call-interactively #'isearch-backward)
+;;           (call-interactively #'isearch-forward))
+;;         (isearch-yank-string (buffer-substring-no-properties
+;;                               (region-beginning)(region-end))))
+;;     (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
+;;         (isearch-repeat-backward)
+;;       (isearch-repeat-forward)))
+;;   (isearch-exit))
 
 ;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)
@@ -85,7 +81,7 @@
         (set-mark (point-max))
         (goto-char (point-min))
         (meow-grab))
-      (call-interactively #'meow-search))))
+      (call-interactively #'vmacs-isearch-repeat))))
 
 ;;;###autoload
 (defun vmacs-meow-search-symbol()
