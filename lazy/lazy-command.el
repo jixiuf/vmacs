@@ -4,20 +4,36 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
-;; (defun vmacs-isearch-repeat (arg)
-;;   "Repeat the forward search and then exit isearch immediately."
-;;   (interactive "P")
-;;   (if (region-active-p)
-;;       (progn
-;;         (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
-;;             (call-interactively #'isearch-backward)
-;;           (call-interactively #'isearch-forward))
-;;         (isearch-yank-string (buffer-substring-no-properties
-;;                               (region-beginning)(region-end))))
-;;     (if (xor (meow--with-negative-argument-p arg) (meow--direction-backward-p))
-;;         (isearch-repeat-backward)
-;;       (isearch-repeat-forward)))
-;;   (isearch-exit))
+
+;;;###autoload
+(defun meow-isearch (arg)
+  "Repeat the forward search and then exit isearch immediately."
+  (interactive "P")
+  (let ((case-fold-search nil)          ; always be nil in meow
+        (reverse (xor (meow--with-negative-argument-p arg)
+                      (meow--direction-backward-p)))
+        region-str)
+    (when (region-active-p)
+      (setq region-str (buffer-substring-no-properties
+                        (region-beginning)(region-end)))
+      (when (string-equal isearch-string region-str)
+        (setq region-str nil)))
+    (if region-str
+        (progn
+          (if reverse
+              (call-interactively #'isearch-backward-regexp)
+            (call-interactively #'isearch-forward-regexp))
+          (isearch-yank-string region-str)
+          (isearch-search-and-update))
+      (if reverse
+          (call-interactively #'isearch-repeat-backward)
+        (isearch-repeat-forward))))
+    (isearch-done) ; (isearch-exit)
+    ;; M-x:lazy-highlight-cleanup to cleanup highlight
+    (unless lazy-highlight-cleanup
+      (isearch-lazy-highlight-new-loop))
+  ;; (meow--highlight-regexp-in-buffer isearch-string)
+  )
 
 ;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)

@@ -26,6 +26,17 @@
 (define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
+(setq isearch-lazy-count t)
+(setq lazy-highlight-cleanup nil)
+
+(setq lazy-highlight-buffer t)
+;; (setq lazy-highlight-initial-delay 0)
+;; (setq lazy-highlight-no-delay-length 0)
+(defadvice keyboard-quit (before lazy-highlight-cleanup activate)
+  (require 'isearch)
+  (call-interactively #'lazy-highlight-cleanup)
+  ;; (meow--remove-search-indicator)
+  (meow-cancel-selection))
 
 
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
