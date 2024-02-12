@@ -20,24 +20,16 @@
 
 (define-key isearch-mode-map  (kbd "C-'")   'vmacs-isearch-insert-quote)
 (global-set-key (kbd "C-'") #'(lambda() (interactive)  (vmacs-insert-pair "\"" "\"")))
-(define-key isearch-mode-map  (kbd "M-.")   'isearch-forward-thing-at-point)
 (define-key isearch-mode-map  (kbd "M-n")   'isearch-forward-thing-at-point)
 (define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
 (define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
-(define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
+(define-key isearch-mode-map  (kbd "C-e")   'consult-isearch-history)
 (setq isearch-lazy-count t)
 (setq lazy-highlight-cleanup nil)
-
-(setq lazy-highlight-buffer t)
+;; (setq lazy-highlight-buffer t)
 ;; (setq lazy-highlight-initial-delay 0)
 ;; (setq lazy-highlight-no-delay-length 0)
-(defadvice keyboard-quit (before lazy-highlight-cleanup activate)
-  (require 'isearch)
-  (call-interactively #'lazy-highlight-cleanup)
-  ;; (meow--remove-search-indicator)
-  (meow-cancel-selection))
-
 
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
 (defun vmacs-isearch-insert-shift1()

@@ -1,5 +1,5 @@
- ;; (when (file-directory-p "~/repos/emacs-libvterm")
- ;;   (add-to-list 'load-path "~/repos/emacs-libvterm"))
+ (when (file-directory-p "~/repos/meow")
+   (add-to-list 'load-path "~/repos/meow"))
 
 ;; (add-to-list 'load-path "~/repos/emacs-application-framework")
 ;; (require 'eaf)

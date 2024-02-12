@@ -85,19 +85,16 @@
   (if (secondary-selection-exist-p)
       (progn(meow--cancel-second-selection)
             (meow--cancel-selection))
-    (let* ((bounds (bounds-of-thing-at-point 'symbol))
-           (start (car bounds))
-           (end (cdr bounds)))
-      (if (region-active-p)
-          (meow--push-search (buffer-substring-no-properties
-                              (region-beginning)(region-end)))
-        (meow--push-search (buffer-substring-no-properties start end))
-        (goto-char start))
+    (let* ((match (thing-at-point 'symbol)))
+      (when (region-active-p)
+          (setq match (buffer-substring-no-properties
+                              (region-beginning)(region-end))))
       (save-mark-and-excursion
         (set-mark (point-max))
         (goto-char (point-min))
         (meow-grab))
-      (call-interactively #'vmacs-isearch-repeat))))
+      (meow--search nil  match)
+      )))
 
 ;;;###autoload
 (defun vmacs-meow-search-symbol()

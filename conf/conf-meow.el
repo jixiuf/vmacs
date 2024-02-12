@@ -128,8 +128,8 @@
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
-   '("n" . meow-isearch)
-   '("N" . meow-search)
+   ;; '("n" . meow-isearch)
+   '("n" . meow-search)
    '("/" . isearch-forward)
    '("?" . isearch-backward)
    '("W" . meow-mark-word)
@@ -148,8 +148,8 @@
    '("z" . meow-pop-selection)
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("'" . repeat)
-   '("<escape>" . keyboard-quit)
-   ;; '("<escape>" . meow-cancel-selection)
+   ;; '("<escape>" . keyboard-quit)
+   '("<escape>" . meow-cancel-selection)
    ))
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
@@ -158,7 +158,11 @@
 (require 'meow)
 (meow-setup)
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
-(add-to-list 'meow-selection-command-fallback '(meow-save . kill-ring-save))
+(add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
+(add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
+(add-to-list 'meow-selection-command-fallback '(meow-kill . meow-line)) ;suppert: dd d3d
+(add-to-list 'meow-selection-command-fallback '(meow-change . meow-line)) ;suppert: cc c3c
+
 (meow-thing-register 'quoted
                     '(regexp "`\\|'" "`\\|'")
                     '(regexp "`\\|'" "`\\|'"))
@@ -169,17 +173,17 @@
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
 
-(defun meow--post-isearch-function ()
-  (unless isearch-mode-end-hook-quit
-    (when (and isearch-success isearch-match-data)
-      (let ((beg (car isearch-match-data))
-            (end (cadr isearch-match-data)))
-        (thread-first
-          (meow--make-selection '(select . visit)
-                                beg
-                                (if isearch-forward end isearch-other-end))
-          (meow--select (not isearch-forward)))))))
-(add-hook 'isearch-mode-end-hook 'meow--post-isearch-function)
+;; (defun meow--post-isearch-function ()
+;;   (unless isearch-mode-end-hook-quit
+;;     (when (and isearch-success isearch-match-data)
+;;       (let ((beg (car isearch-match-data))
+;;             (end (cadr isearch-match-data)))
+;;         (thread-first
+;;           (meow--make-selection '(select . visit)
+;;                                 beg
+;;                                 (if isearch-forward end isearch-other-end))
+;;           (meow--select (not isearch-forward)))))))
+;; (add-hook 'isearch-mode-end-hook 'meow--post-isearch-function)
 
 (provide 'conf-meow)
 
