@@ -6,36 +6,6 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
-(defun meow-isearch (arg)
-  "Repeat the forward search and then exit isearch immediately."
-  (interactive "P")
-  (let ((case-fold-search nil)          ; always be nil in meow
-        (reverse (xor (meow--with-negative-argument-p arg)
-                      (meow--direction-backward-p)))
-        region-str)
-    (when (region-active-p)
-      (setq region-str (buffer-substring-no-properties
-                        (region-beginning)(region-end)))
-      (when (string-equal isearch-string region-str)
-        (setq region-str nil)))
-    (if region-str
-        (progn
-          (if reverse
-              (call-interactively #'isearch-backward-regexp)
-            (call-interactively #'isearch-forward-regexp))
-          (isearch-yank-string region-str)
-          (isearch-search-and-update))
-      (if reverse
-          (call-interactively #'isearch-repeat-backward)
-        (isearch-repeat-forward))))
-    (isearch-done) ; (isearch-exit)
-    ;; M-x:lazy-highlight-cleanup to cleanup highlight
-    (unless lazy-highlight-cleanup
-      (isearch-lazy-highlight-new-loop))
-  ;; (meow--highlight-regexp-in-buffer isearch-string)
-  )
-
-;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)
   (if (use-region-p)
       (let ((beg (region-beginning))
@@ -85,28 +55,49 @@
   (if (secondary-selection-exist-p)
       (progn(meow--cancel-second-selection)
             (meow--cancel-selection))
-    (let* ((match (thing-at-point 'symbol)))
-      (when (region-active-p)
-          (setq match (buffer-substring-no-properties
-                              (region-beginning)(region-end))))
-      (save-mark-and-excursion
-        (set-mark (point-max))
-        (goto-char (point-min))
-        (meow-grab))
-      (meow--search nil  match)
-      )))
+    (save-mark-and-excursion
+      (set-mark (point-max))
+      (goto-char (point-min))
+      (meow-grab))
+    (if (region-active-p)
+        (progn(goto-char (region-beginning))
+              (call-interactively #'meow-search))
+      (call-interactively #'meow-mark-symbol))))
 
 ;;;###autoload
 (defun vmacs-meow-search-symbol()
   (interactive)
-  (call-interactively #'meow-mark-symbol)
-  (call-interactively #'meow-search))
+  (let ((symbol (thing-at-point 'symbol))
+        (mark t)
+        region)
+    (when (region-active-p)
+      (setq region (buffer-substring-no-properties
+                    (region-beginning)
+                    (region-end)))
+      (when (string-equal symbol region)
+        (when (> (mark) (point))
+          (exchange-point-and-mark))
+        (setq mark nil)))
+    (when mark
+      (meow-mark-symbol 1)))
+  (meow-search 1))
 ;;;###autoload
 (defun vmacs-meow-search-symbol-prev()
   (interactive)
-  (call-interactively #'meow-mark-symbol)
-  (meow-reverse)
-  (call-interactively #'meow-search))
+  (let ((symbol (thing-at-point 'symbol))
+        (mark t)
+        region)
+    (when (region-active-p)
+      (setq region (buffer-substring-no-properties
+                    (region-beginning)
+                    (region-end)))
+      (when (string-equal symbol region)
+        (when (< (mark) (point))
+          (exchange-point-and-mark))
+        (setq mark nil)))
+    (when mark
+      (meow-mark-symbol -1)))
+  (meow-search 1))
 
 ;;;; ###autoload
 ;; (defun vmacs-find-def()

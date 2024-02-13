@@ -173,24 +173,46 @@
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
 
-(defadvice yank (before vim-p activate)
+(defvar vmacs-meow-save-marker nil)
+;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
+(defadvice meow-save (around old-pos activate compile)
+  "goto origin position after `yy',need fallback (meow-save . meow-line) "
+  (let ((activep (region-active-p)))
+    (when (not activep)
+      (setq vmacs-meow-save-marker (point-marker)))
+    ad-do-it
+    (when (and activep (region-active-p)
+               (eq last-command 'meow-save))
+      (goto-char vmacs-meow-save-marker))))
+
+;; 处理 文件最后一行无换行符时 p针对yy后的行为
+(defadvice kill-ring-save (after kill-whole-line activate compile)
+  "make sure `p' after `yy' a whole line is pasted,even last line doesn't has a newline"
+  (when (and (equal 'line (cdr (meow--selection-type)))
+             (meow--direction-forward-p)
+             (= (point) (point-max)))
+    (with-temp-buffer
+      (insert "\n")
+      (append-next-kill)
+      (kill-region (point-min)(point-max)))))
+
+(defadvice meow-yank (around vim-p-and-auto-selection activate)
   "Make `yank' behave like paste (p) command in vim."
   (when-let ((clip (condition-case nil (current-kill 0 t) (error ""))))
     (set-text-properties 0 (length clip) nil clip)
-    (when (string-suffix-p "\n" clip)
-      (goto-char (line-beginning-position)))))
-
-;; (defun meow--post-isearch-function ()
-;;   (unless isearch-mode-end-hook-quit
-;;     (when (and isearch-success isearch-match-data)
-;;       (let ((beg (car isearch-match-data))
-;;             (end (cadr isearch-match-data)))
-;;         (thread-first
-;;           (meow--make-selection '(select . visit)
-;;                                 beg
-;;                                 (if isearch-forward end isearch-other-end))
-;;           (meow--select (not isearch-forward)))))))
-;; (add-hook 'isearch-mode-end-hook 'meow--post-isearch-function)
+    (let ((linep (string-suffix-p "\n" clip)))
+      (when linep
+        (forward-line)
+        (goto-char (line-beginning-position)))
+      ad-do-it
+      ;; 下面代码 自动选中粘贴的内容，如果粘贴的是整行(即 yy p)
+      ;; 则光标移动到行首（类似vim），否则行尾
+      (run-with-timer 0.1 nil
+                      (lambda(linep)
+                        (exchange-point-and-mark)
+                        (unless linep
+                          (exchange-point-and-mark)))
+                      linep))))
 
 (provide 'conf-meow)
 

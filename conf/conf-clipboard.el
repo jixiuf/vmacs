@@ -149,7 +149,7 @@
 ;;   ;; (global-set-key  (kbd "s-x") 'vmacs-kill-region-or-line)
 ;;   )
 
-(provide 'conf-evil-clipboard)
+(provide 'conf-clipboard)
 
 ;; Local Variables:
 ;; coding: utf-8

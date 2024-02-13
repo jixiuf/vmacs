@@ -23,7 +23,7 @@
 ;; (require 'conf-evil)
 ;; mac 上处理 evil-mode 与中文输入法
 (require 'conf-evil-window)       ;窗口
-(require 'conf-evil-clipboard)
+(require 'conf-clipboard)
 ;; (require 'conf-bm)              ; 可视化书签功能与跳转功能
 
 
