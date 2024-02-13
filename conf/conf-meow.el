@@ -173,6 +173,13 @@
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
 
+(defadvice yank (before vim-p activate)
+  "Make `yank' behave like paste (p) command in vim."
+  (when-let ((clip (condition-case nil (current-kill 0 t) (error ""))))
+    (set-text-properties 0 (length clip) nil clip)
+    (when (string-suffix-p "\n" clip)
+      (goto-char (line-beginning-position)))))
+
 ;; (defun meow--post-isearch-function ()
 ;;   (unless isearch-mode-end-hook-quit
 ;;     (when (and isearch-success isearch-match-data)
