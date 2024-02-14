@@ -24,7 +24,7 @@
 (setq meow-keypad-leader-dispatch vmacs-space-leader-mode-map)
 (setq meow-use-clipboard t)
 (setq meow-keypad-self-insert-undefined nil)
-;; (setq meow-use-cursor-position-hack t)
+(setq meow-use-cursor-position-hack t)  ;a 的行为
 (setq meow-char-thing-table
       '((?r . round)
         (?s . square)
@@ -169,6 +169,11 @@
 (add-to-list 'meow-char-thing-table '(?` . quoted))
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
+(setq meow-keypad-start-keys
+  '((?c . ?c)
+    ;; (?h . ?h)
+    (?x . ?x))
+)
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
@@ -213,6 +218,8 @@
                         (unless linep
                           (exchange-point-and-mark)))
                       linep))))
+
+(global-set-key (kbd "C-h") 'vmacs-meow-reverse)
 
 (provide 'conf-meow)
 
