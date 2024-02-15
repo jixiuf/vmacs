@@ -3,6 +3,7 @@
 (define-key vmacs-g-mode-map "g" #'beginning-of-buffer)
 (define-key vmacs-g-mode-map "/" #'consult-focus-lines)
 (define-key vmacs-g-mode-map "z" #'consult-hide-lines)
+(define-key vmacs-g-mode-map "r" #'revert-buffer)
 (define-key vmacs-g-mode-map "t" #'consult-reset-lines)
 (define-key vmacs-g-mode-map "i" #'meow-insert)
 (define-key vmacs-g-mode-map "n" #'next-error)
@@ -51,6 +52,7 @@
   (meow-motion-overwrite-define-key
    '("j" . meow-next)
    '("k" . meow-prev)
+   '("g" . "C-c g")
    '("<escape>" . keyboard-quit))
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.

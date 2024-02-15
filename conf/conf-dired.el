@@ -118,10 +118,6 @@
 ;;(setq directory-free-space-args "-Pkh")
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (require 'dired)
-(defvar-keymap  dired-g-map :parent vmacs-g-mode-map
-  "r" #'revert-buffer)
-
-(define-key dired-mode-map "g" dired-g-map)
 (define-key dired-mode-map  "i"  #'wdired-change-to-wdired-mode);上层目录
 (define-key dired-mode-map  "l"  #'forward-char)
 (define-key dired-mode-map  "h"  #'backward-char)

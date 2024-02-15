@@ -26,7 +26,7 @@
 (defvar-keymap  ibuffer-g-map :parent vmacs-g-mode-map
                 "t" #'ibuffer-toggle-maybe-show
                 "r" #'ibuffer-filter-disable)
-(define-key  ibuffer-mode-map "g" ibuffer-g-map)
+(define-key  ibuffer-mode-map (kbd "C-c g") ibuffer-g-map)
 (define-key  ibuffer-mode-map "r" 'ibuffer-update)
 (define-key  ibuffer-mode-map "/" 'ibuffer-filter-by-name)
 

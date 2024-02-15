@@ -176,9 +176,7 @@
         (embark-consult-export-grep lines)
         (wgrep-change-to-wgrep-mode)))
     )
-  (defvar-keymap grep-g-map :parent vmacs-g-mode-map
-                 "r" #'embark-rerun-collect-or-export)
-    (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t) (local-set-key "g"  grep-g-map) ))
+    (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
