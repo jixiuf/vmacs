@@ -4,6 +4,36 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+;;;###autoload
+(defun vmacs-meow-append ()
+  "Move to the end of selection, switch to INSERT state."
+  (interactive)
+  (if meow--temp-normal
+      (progn
+        (message "Quit temporary normal mode")
+        (meow--switch-state 'motion))
+    (if (not (region-active-p))
+        (when (and meow-use-cursor-position-hack
+                   (< (point) (line-end-position)))
+          (forward-char 1))
+      (meow--direction-forward)
+      (meow--cancel-selection))
+    (meow--switch-state 'insert)))
+
+;;;###autoload
+(defun meow-search-reverse ()
+  (interactive)
+  (meow-search -1)
+  (meow-search nil))
+
+;;;###autoload
+(defun meow-isearch (arg)
+  (interactive "P")
+  (let ((isearch-wrap-pause 'no))
+    (if (meow--with-negative-argument-p arg)
+        (isearch-backward)
+      (isearch-forward))))
+
 
 ;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)
@@ -32,6 +62,7 @@
       (backward-list))
      (t
       (call-interactively 'negative-argument))))))
+
 ;;;###autoload
 (defun vmacs-meow-join()
   (interactive)

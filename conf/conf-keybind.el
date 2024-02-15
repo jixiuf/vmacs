@@ -1,8 +1,50 @@
-(global-set-key (kbd "s-,") 'vterm-toggle)
-(global-set-key (kbd "s-C-,") 'vterm-toggle)
-(global-set-key  (kbd "s-t") 'vterm-toggle-cd)
-(global-set-key  (kbd "s-C-t") 'vterm-toggle-cd)
-(define-key special-mode-map " " nil)
+;; (global-set-key (kbd "s-,") 'vterm-toggle)
+;; (global-set-key (kbd "s-C-,") 'vterm-toggle)
+;; (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
+;; (global-set-key  (kbd "s-C-t") 'vterm-toggle-cd)
+(defvar-keymap  vmacs-g-mode-map
+ "g" #'beginning-of-buffer
+ "/" #'consult-focus-lines
+ "z" #'consult-hide-lines
+ "r" #'revert-buffer
+ "t" #'consult-reset-lines
+ "i" #'meow-insert
+ "n" #'next-error
+ "p" #'previous-error
+ "b" #'pop-global-mark
+ "k" #'vmacs-meow-grab
+ "u" #'upcase-dwim
+ "U" #'downcase-dwim
+ "m" #'push-mark-command
+ "P" #'project-or-external-find-file
+ "d" #'xref-find-definitions
+ "," 'goto-last-change
+ "." 'goto-last-change-reverse
+ )
+(with-eval-after-load 'smerge-mode
+  (define-key vmacs-g-mode-map "v" smerge-basic-map))
+
+(global-set-key (kbd "C-c g") vmacs-g-mode-map)
+(defvar-keymap  vmacs-normal-mode-map
+   "="  #'meow-indent
+   "G"  #'end-of-buffer
+   "g" vmacs-g-mode-map
+   "n"  #'meow-search
+   "N"  #'meow-search-reverse
+   "/"  #'meow-isearch
+   "z"   #'meow-pop-selection)
+
+(global-set-key (kbd "C-c n") vmacs-normal-mode-map)
+(defvar-keymap  vmacs-motion-mode-map
+   "j"  #'meow-next
+   "k"  #'meow-prev
+   "G"  #'end-of-buffer
+   "g"  vmacs-g-mode-map
+   "/"  #'isearch-forward
+   "z"   #'meow-pop-selection
+   "<escape>"  #'keyboard-quit)
+(global-set-key (kbd "C-c m") vmacs-motion-mode-map)
+
 
 ;; (global-set-key [(tab)]       'smart-tab)
 ;; (global-set-key (kbd "TAB")   'smart-tab)
@@ -24,7 +66,15 @@
 (define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
 (define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
+(define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
+(define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
+(add-hook 'isearch-mode-hook #'push-mark)
+(add-hook 'isearch-mode-hook (lambda() (push-mark) (message "%d" (point)) ))
 (setq isearch-lazy-count t)
+(setq lazy-highlight-cleanup nil)
+(vmacs-leader "," #'pop-global-mark)
+(defadvice pop-global-mark (before deactivate-mark activate)
+  (deactivate-mark))
 
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
 (defun vmacs-isearch-insert-shift1()
@@ -47,7 +97,6 @@
 ;; (global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
 ;; (global-set-key  (kbd "s-s") 'evil-write-all)
 (global-set-key  (kbd "s-z") 'undo)
-(global-set-key  (kbd "C-z") 'undo)
 (global-set-key  (kbd "s-r") 'compile-dwim-compile)
 (global-set-key  (kbd "C-\\") 'hippie-expand)
 (global-set-key  (kbd "s-1") 'delete-other-windows)

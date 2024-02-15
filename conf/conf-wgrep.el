@@ -34,14 +34,16 @@
        (t
         (message "%d buffers have been saved." count))))))
 (with-eval-after-load 'grep
-  (set-keymap-parent grep-mode-map meow-normal-state-keymap )
-  (define-key grep-mode-map "/" #'consult-focus-lines)
-  (define-key grep-mode-map "z" #'consult-hide-lines)
+  (set-keymap-parent grep-mode-map meow-normal-state-keymap)
+  ;; (define-key grep-mode-map (kbd "C-s") #'consult-focus-lines)
+  ;; (define-key grep-mode-map "z" #'consult-hide-lines)
   (require 'wgrep)
   (defadvice grep-exit-message (after wgrep activate)
     (wgrep-change-to-wgrep-mode))
 )
 (with-eval-after-load 'wgrep
+  (define-key wgrep-mode-map (kbd "C-c n/") #'consult-focus-lines)
+  (define-key wgrep-mode-map (kbd "C-c nz") #'consult-hide-lines)
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit)
   (define-key wgrep-mode-map (kbd "C-x C-s") 'vmacs-wgrep-finish-edit)

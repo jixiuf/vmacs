@@ -27,12 +27,9 @@
 (define-key mu4e-headers-mode-map (kbd "M-p") #'mu4e-headers-prev-unread)
 (define-key mu4e-headers-mode-map (kbd "C-c C-c") #'vmacs-mu4e-brower)
 (define-key mu4e-headers-mode-map "i" #'vmacs-read-all)
-(defvar-keymap  mu4e-g-map :parent vmacs-g-mode-map
-                "h" #'mu4e-search-prev
-                "l" #'mu4e-search-next
-                "u" #'vmacs-mu4e-update-mail-and-index)
-(define-key  mu4e-headers-mode-map "g" mu4e-g-map)
-
+(define-key mu4e-headers-mode-map (kbd "C-c gu") #'vmacs-mu4e-update-mail-and-index);gu
+(define-key mu4e-headers-mode-map (kbd "C-c gl") #'mu4e-search-next);gl
+(define-key mu4e-headers-mode-map (kbd "C-c gh") #'mu4e-search-prev);gh
 
 (defun vmacs-mu4e-brower (&optional msg)
   (interactive)

@@ -123,12 +123,12 @@
 (define-key dired-mode-map  "h"  #'backward-char)
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
-(define-key dired-mode-map  "/" 'consult-focus-lines)
 ;; (define-key dired-mode-map  "C" 'dired-rsync)
 
-(define-key dired-mode-map  "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) )
-(define-key dired-mode-map  (kbd "C-s") 'consult-focus-lines)
-(define-key dired-mode-map  "z"  'consult-hide-lines)
+(define-key dired-mode-map  (kbd "C-c m G") #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) )
+(define-key dired-mode-map  (kbd "C-c m /") 'consult-focus-lines)
+(define-key dired-mode-map  (kbd "C-c m z") 'consult-hide-lines)
+(define-key dired-mode-map  (kbd "C-c m j") 'dired-next-line)
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
 ;; C-gC-g 退出编辑或C-cC-c保存修改
 ;; "i" 'wdired-change-to-wdired-mode

@@ -70,15 +70,11 @@
 (define-key transient-sticky-map "q" 'transient-quit-seq)
 
 (define-key magit-mode-map "v"  #'magit-push)
-(defvar magit-g-map (make-sparse-keymap))
-(set-keymap-parent magit-g-map vmacs-g-mode-map)
-(define-key  magit-mode-map "g" magit-g-map)
-(define-key  magit-g-map "w" #'toggle-diff-whitespace)
-(define-key  magit-g-map "r" #'magit-refresh)
-(define-key  magit-g-map "m" #'magit-toggle-margin)
+(define-key  magit-mode-map (kbd "C-c gw") #'toggle-diff-whitespace) ;gw
+(define-key  magit-mode-map (kbd "C-c gr") #'magit-refresh)
+(define-key  magit-mode-map (kbd "C-c gm") #'magit-toggle-margin)
 (with-eval-after-load 'diff-mode
-; TODO:
-  (define-key diff-mode-map (kbd "g") magit-g-map))
+  (define-key  diff-mode-map (kbd "C-c gw") #'toggle-diff-whitespace)) ;gw
 
 (defun vmacs-magit-mode-hook()
   ;; (require 'magit-backup)

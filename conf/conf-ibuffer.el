@@ -23,10 +23,8 @@
 ;;设置默认不显示maybe-show-predicates的buffer (即隐藏上面Hidden分组里的内容)
 (setq ibuffer-default-display-maybe-show-predicates nil)
 
-(defvar-keymap  ibuffer-g-map :parent vmacs-g-mode-map
-                "t" #'ibuffer-toggle-maybe-show
-                "r" #'ibuffer-filter-disable)
-(define-key  ibuffer-mode-map (kbd "C-c g") ibuffer-g-map)
+(define-key  ibuffer-mode-map (kbd "C-c gt") #'ibuffer-g-mapibuffer-toggle-maybe-show) ;gt
+(define-key  ibuffer-mode-map (kbd "C-c gr") #'ibuffer-filter-disable)                 ;gr
 (define-key  ibuffer-mode-map "r" 'ibuffer-update)
 (define-key  ibuffer-mode-map "/" 'ibuffer-filter-by-name)
 
