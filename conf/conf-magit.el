@@ -73,6 +73,7 @@
 (define-key  magit-mode-map (kbd "C-c gw") #'toggle-diff-whitespace) ;gw
 (define-key  magit-mode-map (kbd "C-c gr") #'magit-refresh)
 (define-key  magit-mode-map (kbd "C-c gm") #'magit-toggle-margin)
+(define-key  magit-mode-map (kbd "C-c mz") #'magit-stash)
 (with-eval-after-load 'diff-mode
   (define-key  diff-mode-map (kbd "C-c gw") #'toggle-diff-whitespace)) ;gw
 

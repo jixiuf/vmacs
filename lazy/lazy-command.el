@@ -5,6 +5,59 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-meow-prev (arg)
+  "Move to the prev line.
+
+Will cancel all other selection, except char selection.
+
+Use with universal argument to move to the last line of buffer.
+Use with numeric argument to move multiple lines at once."
+  (interactive "P")
+  (let ((seltype (meow--selection-type)))
+    (cond
+     ((equal seltype '(expand . char)))
+     ((equal seltype '(expand . line)))
+     (t
+      (meow--cancel-selection)))
+    (cond
+     ((meow--with-universal-argument-p arg)
+      (goto-char (point-min)))
+     ((equal seltype '(expand . line))
+      (if (meow--direction-backward-p)
+          (meow-line 1 t)
+          (meow-line -1 t)))
+     (t
+      (setq this-command #'previous-line)
+      (meow--execute-kbd-macro meow--kbd-backward-line)
+      ))))
+(defun vmacs-meow-next (arg)
+  "Move to the next line.
+
+Will cancel all other selection, except char selection.
+
+Use with universal argument to move to the last line of buffer.
+Use with numeric argument to move multiple lines at once."
+  (interactive "P")
+  (let ((seltype (meow--selection-type)))
+    (cond
+     ((equal seltype '(expand . char)))
+     ((equal seltype '(expand . line)))
+     (t
+      (meow--cancel-selection)))
+    (cond
+     ((meow--with-universal-argument-p arg)
+      (goto-char (point-max)))
+     ((equal seltype '(expand . line))
+      (if (meow--direction-backward-p)
+          (meow-line -1 t)
+          (meow-line 1 t)))
+     (t
+      (setq this-command #'next-line)
+      (meow--execute-kbd-macro meow--kbd-forward-line)
+      ))))
+
+
+;;;###autoload
 (defun vmacs-meow-append ()
   "Move to the end of selection, switch to INSERT state."
   (interactive)
