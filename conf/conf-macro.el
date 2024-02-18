@@ -11,6 +11,8 @@
 (defvar vmacs-space-leader-mode-map (make-sparse-keymap) "High precedence keymap.")
 (global-set-key (kbd "C-c d") vmacs-space-leader-mode-map)
 (global-set-key (kbd "C-c d h") help-map)
+(define-key help-map (kbd "C-f") nil)
+(define-key help-map (kbd "C-m") nil)
 
 ;; (define-minor-mode vmacs-leader-mode "Global minor mode for higher precedence evil keybindings." :global t)
 ;; (vmacs-leader-mode)
