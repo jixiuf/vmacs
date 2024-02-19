@@ -1,3 +1,4 @@
+(autoload #'viper-ex  "viper" t)
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-keypad-leader-dispatch vmacs-space-leader-mode-map)
@@ -132,6 +133,7 @@
    '("P" . vmacs-meow-insert-secondary)
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("." . repeat)
+   '(":" . viper-ex)
    '("<escape>" . meow-cancel-selection)
    ))
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
@@ -164,18 +166,18 @@
 
 (defvar vmacs-meow-save-marker nil)
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
-(defadvice meow-save (around old-pos activate compile)
+(define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
   "goto origin position after `yy',need fallback (meow-save . meow-line) "
   (let ((activep (region-active-p)))
     (when (not activep)
       (setq vmacs-meow-save-marker (point-marker)))
-    ad-do-it
+    (apply orig-fun args)
     (when (and activep (region-active-p)
                (eq last-command 'meow-save))
       (goto-char vmacs-meow-save-marker))))
 
 ;; 处理 文件最后一行无换行符时 p针对yy后的行为
-(defadvice kill-ring-save (after kill-whole-line activate compile)
+(defun meow-p-kill-ring-save (beg end &optional region)
   "make sure `p' after `yy' a whole line is pasted,even last line doesn't has a newline"
   (when (and (equal 'line (cdr (meow--selection-type)))
              (meow--direction-forward-p)
@@ -184,8 +186,10 @@
       (insert "\n")
       (append-next-kill)
       (kill-region (point-min)(point-max)))))
+(advice-add 'kill-ring-save :after #'meow-p-kill-ring-save)
 
-(defadvice meow-yank (around vim-p-and-auto-selection activate)
+
+(define-advice meow-yank (:around (orig-fun &rest args) vim-p-and-auto-selection)
   "Make `yank' behave like paste (p) command in vim."
   (when-let ((clip (condition-case nil (current-kill 0 t) (error ""))))
     (set-text-properties 0 (length clip) nil clip)
@@ -193,7 +197,7 @@
       (when linep
         (forward-line)
         (goto-char (line-beginning-position)))
-      ad-do-it
+      (apply orig-fun args)
       ;; 下面代码 自动选中粘贴的内容，如果粘贴的是整行(即 yy p)
       ;; 则光标移动到行首（类似vim），否则行尾
       (run-with-timer 0.1 nil

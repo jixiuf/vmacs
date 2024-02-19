@@ -40,7 +40,6 @@
 ;; 所以针对clipboard的操作，变成 ;;d  ;;p ;;y
 ;; 所以 如果想把内容copy到clipboard 则选中区域后按 ;;y
 
-;; (defadvice evil-use-register(around easy-clipboard activate)
 
 ;; ;; http://wayback.archive.org/web/20150313145313/http://www.codejury.com/bypassing-the-clipboard-in-emacs-evil-mode/
 ;; (setq interprogram-paste-function nil)  ;当paste时是否从clipbloard等系统剪切板 等获取内容，设置成nil表示不获取，只使用kill-ring
@@ -86,28 +85,26 @@
 
 ;; "+yy 设置内容到系统clipboard
 ;; 如果在mac 终端下使用emacs ,则使用pbpaste从clipboard 获取内容
-(defadvice gui-backend-set-selection (around set-clip-from-terminal-on-osx activate)
-  ad-do-it
-  ;; (message "%s %s"  (ad-get-arg 0)  (ad-get-arg 1))
+(define-advice gui-backend-set-selection (:around (orig-fun &rest args) set-clip-from-terminal)
+  (apply orig-fun args)
   (when (and (equal system-type 'gnu/linux)
              (not (display-graphic-p))
              (not (window-system))
-             (equal (ad-get-arg 0) 'CLIPBOARD))
+             (equal (car args) 'CLIPBOARD))
     (let ((process-connection-type nil)   ; ; use pipe
           (default-directory "~/"))
       (let ((proc (start-process "wl-copy" "*Messages*" "wl-copy")))
-        (process-send-string proc (ad-get-arg 1))
+        (process-send-string proc (nth 1 args))
         (process-send-eof proc))))
   (when (and (equal system-type 'darwin)
              (not (display-graphic-p))
              (not (window-system))
-             (equal (ad-get-arg 0) 'CLIPBOARD))
+             (equal (car args) 'CLIPBOARD))
     (let ((process-connection-type nil)   ; ; use pipe
           (default-directory "~/"))
       (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-        (process-send-string proc (ad-get-arg 1))
-        (process-send-eof proc))))
-  )
+        (process-send-string proc (nth 1 args))
+        (process-send-eof proc)))))
 
 
 ;; (defun evil-paste-from-clipboard ()

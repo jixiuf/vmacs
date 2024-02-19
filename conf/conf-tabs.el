@@ -36,20 +36,21 @@
      (t                                 ;当前 buffer 是正常 buffer
       (or (vmacs-boring-buffer-p buf)   ;若 buf 是 boring buf 或 vterm，则跳过
           (vmacs-vterm-p buf))))))
-(defadvice tab-line-tabs-window-buffers (around skip-buffer activate)
+
+(define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) skip-buffer)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
-  (let ((buffers (reverse ad-do-it)))
+  (let ((buffers (reverse (apply orig-fun args))))
     (cond
      ((vmacs-vterm-p)               ;当前 buffer 是 vterm
       ;; 只返回 vterm buffer 作为当前 tab group 的 tab
-      (setq ad-return-value (seq-filter #'vmacs-vterm-p buffers)))
+      (seq-filter #'vmacs-vterm-p buffers))
      ((vmacs-boring-buffer-p (current-buffer))
-      (setq ad-return-value (seq-filter #'vmacs-boring-buffer-p buffers)))
+      (seq-filter #'vmacs-boring-buffer-p buffers))
      (t
       ;; skip boring buffer 及 vterm
       (setq buffers (seq-remove #'vmacs-boring-buffer-p buffers))
-      (setq ad-return-value  (seq-remove #'vmacs-vterm-p buffers))))))
+      (seq-remove #'vmacs-vterm-p buffers)))))
 
 (defun vmacs-vterm-p(&optional buf)
   (eq (buffer-local-value 'major-mode (or buf (current-buffer))) 'vterm-mode))

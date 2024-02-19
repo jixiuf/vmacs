@@ -95,18 +95,18 @@
 ;; (add-hook 'magit-post-refresh-hook 'vmacs-update-repo-revision)
 
 
-(defadvice magit-blob-next (around kill-all-blob-after-quit activate)
+(define-advice magit-blob-next (:around (orig-fun &rest args) kill-all-blob-after-quit)
   "kill last viewed buffer"
   (let ((prev-buffer (current-buffer)))
-    ad-do-it
+    (apply orig-fun args)
     (kill-buffer prev-buffer)
     (unless magit-buffer-file-name
       (user-error "magit timemachine: You have reached the end of time"))))
 
-(defadvice magit-blob-previous (around kill-all-blob-after-quit activate)
+(define-advice magit-blob-previous (:around (orig-fun &rest args) kill-all-blob-after-quit)
   "kill last viewed buffer"
   (let ((prev-buffer (current-buffer)))
-    ad-do-it
+    (apply orig-fun args)
     (unless (equal magit-buffer-file-name (buffer-file-name prev-buffer))
       (kill-buffer prev-buffer))))
 

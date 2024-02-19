@@ -73,8 +73,7 @@
 (setq isearch-lazy-count t)
 (setq lazy-highlight-cleanup nil)
 (vmacs-leader "," #'pop-global-mark)
-(defadvice pop-global-mark (before deactivate-mark activate)
-  (deactivate-mark))
+(advice-add 'pop-global-mark :before #'deactivate-mark)
 
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
 (defun vmacs-isearch-insert-shift1()
@@ -154,10 +153,11 @@
 (vmacs-leader "k" ctl-x-r-map)
 (vmacs-leader (kbd "wd") 'fanyi-dwim2)
 
-(defadvice keyboard-quit (before bury-boring-windows activate)
+(defun vmacs-bury-boring-windows ()
   (when (equal last-command 'keyboard-quit)
-    (require 'lazy-buffer)
     (bury-boring-windows)))
+
+(advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
 (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
 

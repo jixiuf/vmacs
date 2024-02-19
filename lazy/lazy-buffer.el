@@ -83,6 +83,7 @@
 
 
 
+;;;###autoload
 (defun bury-boring-windows(&optional bury-cur-win-if-boring)
   "close boring *Help* windows with `C-g'"
   (let ((opened-windows (window-list))
