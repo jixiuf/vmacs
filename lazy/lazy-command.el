@@ -130,8 +130,13 @@ Use with numeric argument to move multiple lines at once."
 (defun vmacs-meow-iedit()
   (interactive)
   (if (secondary-selection-exist-p)
-      (progn(meow--cancel-second-selection)
-            (meow--cancel-selection))
+      (progn
+        (when (and (meow-insert-mode-p)
+                   (eq meow--beacon-defining-kbd-macro 'quick))
+          (setq meow--beacon-defining-kbd-macro nil)
+          (meow-beacon-insert-exit))
+        (meow--cancel-second-selection)
+        (meow--cancel-selection))
     (let (region)
       (when (region-active-p)
         (setq region (buffer-substring-no-properties
