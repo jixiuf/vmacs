@@ -51,15 +51,17 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async goto-chg cape chatgpt-shell codeium consult-dir corfu dape dired-filetype-face embark embark-consult exec-path-from-shell fanyi git-link golden-ratio golden-ratio-scroll-screen iedit kind-icon lua-mode magit marginalia markdown-mode meow mu4e-alert orderless org-msg ox-gfm pinyinlib protobuf-mode verb vterm vterm-toggle vundo wgrep with-editor yasnippet))
+   '(async cape chatgpt-shell codeium consult-dir corfu dape dired-filetype-face embark embark-consult
+           exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg iedit kind-icon
+           lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg ox-gfm pinyinlib
+           protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((codeium :vc-backend Git :url "https://github.com/Exafunction/codeium.el")))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
  '(safe-local-variable-values
-   '(
-     (eval add-hook (make-local-variable 'after-save-hook)
+   '((eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "systemctl --user restart waybar" nil nil)) t)
      (eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "gpg -d authorized_keys.gpg>authorized_keys")) t)

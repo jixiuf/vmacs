@@ -80,14 +80,6 @@ Use with numeric argument to move multiple lines at once."
   (meow-search -1)
   (meow-search nil))
 
-;;;###autoload
-(defun meow-isearch (arg)
-  (interactive "P")
-  (let ((isearch-wrap-pause 'no))
-    (if (meow--with-negative-argument-p arg)
-        (isearch-backward)
-      (isearch-forward))))
-
 
 ;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)

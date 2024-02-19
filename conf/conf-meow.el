@@ -23,7 +23,6 @@
     (bounds . backward)
     (beginning . backward)
     (end . forward)))
-;; meow-save
 
 
 (defun meow-setup ()
@@ -138,7 +137,7 @@
    ))
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
-(global-set-key (kbd "C-s") #'meow-isearch)
+(global-set-key (kbd "C-s") #'isearch-forward)
 
 
 (require 'meow)
