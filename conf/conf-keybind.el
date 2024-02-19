@@ -63,6 +63,7 @@
 (define-key isearch-mode-map  (kbd "C-'")   'vmacs-isearch-insert-quote)
 (global-set-key (kbd "C-'") #'(lambda() (interactive)  (vmacs-insert-pair "\"" "\"")))
 (define-key isearch-mode-map  (kbd "M-n")   'isearch-forward-thing-at-point)
+(define-key isearch-mode-map  (kbd "M-p")   'consult-isearch-history)
 (define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
 (define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
