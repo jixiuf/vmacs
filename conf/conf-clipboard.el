@@ -59,30 +59,30 @@
 
 ;;; 关于没有选中区域,则默认为选中整行的advice
 ;;;;默认情况下M-w复制一个区域，但是如果没有区域被选中，则复制当前行
-(defadvice kill-ring-save (before slickcopy activate compile)
+(define-advice kill-ring-save (:around (orig-fun &rest args) kill-line)
   "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (message "已选中当前行!")
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
+  (if mark-active
+      (apply orig-fun args)
+    (message "已选中当前行!")
+    (apply orig-fun (list (line-beginning-position)
+                          (line-beginning-position 2)))))
 
 ;; "+p 从系统剪切板paste时会调到此处
 ;; 如果在mac 终端下使用emacs ,则使用pbpaste从clipboard 获取内容
-(defadvice gui-backend-get-selection (around get-clip-from-terminal-on-osx activate)
-  ad-do-it
+(define-advice gui-backend-get-selection (:around (orig-fun &rest args) get-clip-from-terminal)
+  (apply orig-fun args)
   (when (and (equal system-type 'gnu/linux)
              (not (display-graphic-p))
              (not (window-system))
-             (equal (ad-get-arg 0) 'CLIPBOARD))
+             (equal (car args) 'CLIPBOARD))
     (let ((default-directory "~/"))
-      (setq ad-return-value (shell-command-to-string "wl-paste"))))
+      (shell-command-to-string "wl-paste")))
   (when (and (equal system-type 'darwin)
              (not (display-graphic-p))
              (not (window-system))
-             (equal (ad-get-arg 0) 'CLIPBOARD))
+             (equal (car args) 'CLIPBOARD))
     (let ((default-directory "~/"))
-      (setq ad-return-value (shell-command-to-string "pbpaste")))))
+      (shell-command-to-string "pbpaste"))))
 
 ;; "+yy 设置内容到系统clipboard
 ;; 如果在mac 终端下使用emacs ,则使用pbpaste从clipboard 获取内容

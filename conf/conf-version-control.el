@@ -60,14 +60,16 @@
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
   ;; log-view-diff 默认绑定在=上
-  (defadvice log-view-diff (around diff-marked-two-entity activate compile)
+  (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
     (let (pos1 pos2 (marked-entities (log-view-get-marked)))
-      (when (= (length marked-entities) 2)
-        (setq pos1 (progn (log-view-goto-rev (car marked-entities)) (point)))
-        (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities)) (point)))
-        (ad-set-arg 0 (if (< pos1 pos2) pos1 pos2))
-        (ad-set-arg 1 (if (> pos1 pos2) pos1 pos2))))
-    ad-do-it))
+      (if (= (length marked-entities) 2)
+          (progn
+            (setq pos1 (progn (log-view-goto-rev (car marked-entities)) (point)))
+            (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities)) (point)))
+            (apply orig-fun (if (< pos1 pos2) (list pos1 pos2) (list pos2 pos1)) )
+            )
+        (apply orig-fun args))))
+  )
 
 ;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
 ;;现在想生成一个补丁文件,将这个补丁文件应用到a 上,就会变成b

@@ -38,8 +38,8 @@
   ;; (define-key grep-mode-map (kbd "C-s") #'consult-focus-lines)
   ;; (define-key grep-mode-map "z" #'consult-hide-lines)
   (require 'wgrep)
-  (defadvice grep-exit-message (after wgrep activate)
-    (wgrep-change-to-wgrep-mode))
+  (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
+
 )
 (with-eval-after-load 'wgrep
   (define-key wgrep-mode-map (kbd "C-c n/") #'consult-focus-lines)
