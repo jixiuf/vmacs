@@ -148,6 +148,8 @@
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . meow-line)) ;suppert: cc c3c
+(define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
+
 
 (meow-thing-register 'quoted
                     '(regexp "`\\|'" "`\\|'")
