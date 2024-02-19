@@ -132,14 +132,19 @@ Use with numeric argument to move multiple lines at once."
   (if (secondary-selection-exist-p)
       (progn(meow--cancel-second-selection)
             (meow--cancel-selection))
-    (save-mark-and-excursion
-      (set-mark (point-max))
-      (goto-char (point-min))
-      (meow-grab))
-    (if (region-active-p)
-        (progn(goto-char (region-beginning))
-              (call-interactively #'meow-search))
-      (call-interactively #'meow-mark-symbol))))
+    (let (region)
+      (when (region-active-p)
+        (setq region (buffer-substring-no-properties
+                      (region-beginning)(region-end))))
+      (save-mark-and-excursion
+        (set-mark (point-max))
+        (goto-char (point-min))
+        (meow-grab))
+      (if (region-active-p)
+          (progn
+            (goto-char (region-beginning))
+            (meow--search nil region t nil t))
+        (call-interactively #'meow-mark-symbol)))))
 
 ;;;###autoload
 (defun vmacs-meow-search-symbol()
