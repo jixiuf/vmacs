@@ -30,6 +30,7 @@ Use with numeric argument to move multiple lines at once."
       (setq this-command #'previous-line)
       (meow--execute-kbd-macro meow--kbd-backward-line)
       ))))
+;;;###autoload
 (defun vmacs-meow-next (arg)
   "Move to the next line.
 

@@ -1,8 +1,8 @@
 (require 'package)
 (setq package-archives
-      '(("melpa-cn" .  "http://melpa.org/packages/")
-        ("nognu-cn" .  "http://elpa.nongnu.org/nongnu/")
-        ("gnu-cn"   .  "http://elpa.gnu.org/packages/")))
+      '(("melpa-cn" .  "https://melpa.org/packages/")
+        ("nognu-cn" .  "https://elpa.nongnu.org/nongnu/")
+        ("gnu-cn"   .  "https://elpa.gnu.org/packages/")))
 
 (or (file-exists-p package-user-dir) (package-refresh-contents))
 ;; (package-initialize)

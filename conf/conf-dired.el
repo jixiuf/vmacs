@@ -173,8 +173,8 @@
 ;; (setq vmacs-dired-history-max 1000)
 ;; (require 'vmacs-dired-history)
 
-(require 'dired-async nil t)
-(dired-async-mode 1)
+(when (require 'dired-async nil t)
+(dired-async-mode 1))
 
 (defun dired-next-line (arg)
   (interactive "^p")
