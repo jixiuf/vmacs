@@ -26,6 +26,9 @@
 ;; hangul:-*-Apple SD Gothic Neo-normal-normal-normal-*-16-*-*-*-p-0-iso10646-1")
 ;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
 ;; (set-frame-font "fontset-mymac" )
+(custom-theme-set-faces
+ 'modus-vivendi
+ '(secondary-selection ((t (:extend t :foreground "#ffffff")))))
 
 (defface font-lock-todo-face nil
   "Font Lock mode face used to highlight TODO."

@@ -3,7 +3,8 @@
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 
-
+(load-theme 'modus-vivendi)
+(require 'conf-face)
 (require 'conf-meow)
 (require 'conf-icomplete)
 (require 'conf-keybind)
@@ -16,7 +17,6 @@
 (with-eval-after-load 'css-mode (require 'conf-css))
 (with-eval-after-load 'lua (require 'conf-program-lua))
 (with-eval-after-load 'chatgpt-shell (require 'conf-ai))
-(require 'conf-face)
 (when (executable-find "gpg") (require 'conf-gpg))
 (with-eval-after-load 'sql (require 'conf-sql))
 
@@ -84,7 +84,7 @@
 ;; (when (eq system-type 'darwin) (require 'conf-vterm))
 (require 'server)
 (unless (server-running-p) (server-start))
-(load-theme 'modus-vivendi)
+
 
 ;; Local Variables:
 ;; coding: utf-8
