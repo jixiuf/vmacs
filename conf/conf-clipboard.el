@@ -69,43 +69,44 @@
 ;; "+p 从系统剪切板paste时会调到此处
 ;; 如果在mac 终端下使用emacs ,则使用pbpaste从clipboard 获取内容
 (define-advice gui-backend-get-selection (:around (orig-fun &rest args) get-clip-from-terminal)
-  (apply orig-fun args)
-  (when (and (equal system-type 'gnu/linux)
-             (not (display-graphic-p))
-             (not (window-system))
-             (equal (car args) 'CLIPBOARD))
+  (cond
+   ((and (equal system-type 'gnu/linux)
+         (not (display-graphic-p))
+         (not (window-system))
+         (equal (car args) 'CLIPBOARD))
     (let ((default-directory "~/"))
       (shell-command-to-string "wl-paste")))
-  (when (and (equal system-type 'darwin)
-             (not (display-graphic-p))
-             (not (window-system))
-             (equal (car args) 'CLIPBOARD))
+   ((and (equal system-type 'darwin)
+         (not (display-graphic-p))
+         (not (window-system))
+         (equal (car args) 'CLIPBOARD))
     (let ((default-directory "~/"))
-      (shell-command-to-string "pbpaste"))))
+      (shell-command-to-string "pbpaste")))
+   (t (apply orig-fun args))))
 
 ;; "+yy 设置内容到系统clipboard
 ;; 如果在mac 终端下使用emacs ,则使用pbpaste从clipboard 获取内容
 (define-advice gui-backend-set-selection (:around (orig-fun &rest args) set-clip-from-terminal)
-  (apply orig-fun args)
-  (when (and (equal system-type 'gnu/linux)
-             (not (display-graphic-p))
-             (not (window-system))
-             (equal (car args) 'CLIPBOARD))
+  (cond
+   ((and (equal system-type 'gnu/linux)
+         (not (display-graphic-p))
+         (not (window-system))
+         (equal (car args) 'CLIPBOARD))
     (let ((process-connection-type nil)   ; ; use pipe
           (default-directory "~/"))
       (let ((proc (start-process "wl-copy" "*Messages*" "wl-copy")))
         (process-send-string proc (nth 1 args))
         (process-send-eof proc))))
-  (when (and (equal system-type 'darwin)
-             (not (display-graphic-p))
-             (not (window-system))
-             (equal (car args) 'CLIPBOARD))
+   ((and (equal system-type 'darwin)
+         (not (display-graphic-p))
+         (not (window-system))
+         (equal (car args) 'CLIPBOARD))
     (let ((process-connection-type nil)   ; ; use pipe
           (default-directory "~/"))
       (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
         (process-send-string proc (nth 1 args))
-        (process-send-eof proc)))))
-
+        (process-send-eof proc))))
+   (t   (apply orig-fun args))))
 
 ;; (defun evil-paste-from-clipboard ()
 ;;   "Paste text from system clipboard."
