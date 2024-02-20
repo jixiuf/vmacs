@@ -15,6 +15,9 @@
                                       (call-interactively #'json-pretty-print)
                                     (call-interactively #'json-pretty-print-buffer) ) ))
   )
+(add-to-list 'hs-special-modes-alist
+             '(js-mode
+               "\\[\\|{" "\\]\\|}" "/[*/]" nil nil))
 
 (provide 'conf-program-js)
 
