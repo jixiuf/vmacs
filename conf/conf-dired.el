@@ -106,16 +106,6 @@
  dired-kill-when-opening-new-dired-buffer t
  )
 
-;; (if (equal system-type 'gnu/linux)
-;;     (setq dired-listing-switches "--time-style=+%y-%m-%d/%H:%M  --group-directories-first -alhG")
-;;   (setq dired-listing-switches "-alhG"))
-;; (when (eq system-type 'darwin)
-;;   ;; macos 使用emacs自带的ls-lisp来展示文件目录，
-;;   ;; 下文用到lazy-dired-sort 进行排序时，mac自带的ls有些参数不支持
-;;   (require 'ls-lisp)
-;;   (setq-default ls-lisp-use-insert-directory-program nil))
-
-;;(setq directory-free-space-args "-Pkh")
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (require 'dired)
 (define-key dired-mode-map  "i"  #'wdired-change-to-wdired-mode);上层目录
@@ -167,11 +157,6 @@
 ;; 5. s C-s 原来的s 功能 ,C=u s C-s 可手动编辑ls 的命令
 (require 'lazy-dired-sort)
 (require 'vmacs-dired-single)           ;确保只有一个dired buffer的存在
-
-;; 绑定之后，你访问过的dired都会被记录住，当你copy rename 及打开dired时，可以从这些
-;; 已访问的目录中筛选以方便快速访问
-;; (setq vmacs-dired-history-max 1000)
-;; (require 'vmacs-dired-history)
 
 (when (require 'dired-async nil t)
 (dired-async-mode 1))

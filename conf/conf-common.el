@@ -1,39 +1,3 @@
-(defvar poem-file "~/.emacs.d/cache/poem.json")
-(defvar poem-cache nil)
-
-(defun poem-update ()
-  "Download poem from `jinrishici.com`"
-  (let ((url-request-extra-headers
-         '(("X-User-Token" . "FRxxhlAYg8JbQpdr7xIeHNpew7b2vLIr"))))
-    (ignore-errors
-      (url-retrieve
-       "https://v2.jinrishici.com/sentence"
-       (lambda (status)
-         (write-region url-http-end-of-headers (point-max) poem-file)))))
-  (setq poem-cache nil))
-
-(defun poem-get (prop)
-  "Get poem from cache file, PROP can be 'content, 'origin"
-  (ignore-errors
-    (if poem-cache
-        (alist-get prop poem-cache)
-      (with-temp-buffer
-        (insert-file-contents poem-file)
-        (let ((data (alist-get 'data (json-read))))
-          (setq poem-cache data)
-          (alist-get prop data))))))
-
-(defun poem-get-formatted ()
-  (let* ((poem (poem-get 'origin))
-         (lines (alist-get 'content poem))
-         (content (mapconcat #'identity lines "\n")))
-    (format "%s\n%s · %s\n%s"
-            (alist-get 'title poem)
-            (alist-get 'dynasty poem)
-            (alist-get 'author poem)
-            content)))
-(poem-update)
-
 (defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))

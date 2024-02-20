@@ -36,7 +36,7 @@
                                  (message "s-->size x-->ext t-->time n-->name d-->dir first")
                                  ))
 (define-key lazy-dired-sort "n" (lambda () "sort by Name"
-                                 (interactive) (dired-sort-other dired-listing-switches)
+                                 (interactive) (dired-sort-other "-alh")
                                  (message "s-->size x-->ext t-->time n-->name d-->dir first")
                                  ))
 (define-key lazy-dired-sort "d" (lambda () "sort by name grouping Dirs"

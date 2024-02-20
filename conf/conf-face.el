@@ -28,7 +28,7 @@
 ;; (set-frame-font "fontset-mymac" )
 (custom-theme-set-faces
  'modus-vivendi
- '(secondary-selection ((t (:extend t :foreground "#ffffff")))))
+ '(secondary-selection ((t (:extend t :background "gray15")))))
 
 (defface font-lock-todo-face nil
   "Font Lock mode face used to highlight TODO."

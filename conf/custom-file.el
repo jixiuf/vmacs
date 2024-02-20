@@ -52,7 +52,7 @@
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
    '(async cape chatgpt-shell codeium consult-dir corfu dape dired-filetype-face embark embark-consult
-           exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg iedit kind-icon
+           exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg kind-icon
            lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg ox-gfm pinyinlib
            protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(package-vc-selected-packages
