@@ -5,13 +5,21 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
-(defun vmacs-goto-line()
-  (interactive)
-  (if current-prefix-arg
-      (call-interactively #'goto-line)
-    (end-of-buffer)
-    )
-  )
+(defun vmacs-goto-line(arg)
+  "gg:bob G:eof gggg:eof 33gg or go to line 33"
+  (interactive "P")
+  (let ((n (prefix-numeric-value current-prefix-arg))
+        (char (if (integerp last-command-event)
+                  last-command-event
+                (get last-command-event 'ascii-character))))
+    (if (or (< n 0)
+            (eq (point) (point-min)))
+        (if (= n 1)
+            (goto-char (point-max))
+          (goto-line n))
+      (if (and (= char ?G) (= n 1))
+          (goto-char (point-max))
+        (goto-line n)))))
 ;;;###autoload
 (defun meow-expand-or-digit-argument (&optional n)
   (interactive "P")

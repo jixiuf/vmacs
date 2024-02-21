@@ -2,8 +2,9 @@
 ;; (global-set-key (kbd "s-C-,") 'vterm-toggle)
 ;; (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
 ;; (global-set-key  (kbd "s-C-t") 'vterm-toggle-cd)
+(setq widen-automatically nil)         ;for goto-line
 (defvar-keymap  vmacs-g-mode-map
- "g" #'beginning-of-buffer
+ "g" #'vmacs-goto-line
  "/" #'consult-focus-lines
  "z" #'consult-hide-lines
  "r" #'revert-buffer
