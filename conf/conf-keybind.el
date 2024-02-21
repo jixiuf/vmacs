@@ -27,7 +27,7 @@
 (global-set-key (kbd "C-c g") vmacs-g-mode-map)
 (defvar-keymap  vmacs-normal-mode-map
    "="  #'meow-indent
-   "G"  #'end-of-buffer
+   "G"  #'vmacs-goto-line
    "g" vmacs-g-mode-map
    "n"  #'meow-search
    "N"  #'meow-search-reverse
@@ -38,7 +38,7 @@
 (defvar-keymap  vmacs-motion-mode-map
    "j"  #'meow-next
    "k"  #'meow-prev
-   "G"  #'end-of-buffer
+   "G"  #'vmacs-goto-line
    "g"  vmacs-g-mode-map
    "/"  #'isearch-forward
    "z"   #'meow-pop-selection

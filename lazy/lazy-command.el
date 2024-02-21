@@ -5,6 +5,27 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-goto-line()
+  (interactive)
+  (if current-prefix-arg
+      (call-interactively #'goto-line)
+    (end-of-buffer)
+    )
+  )
+;;;###autoload
+(defun meow-expand-or-digit-argument (&optional n)
+  (interactive "P")
+  (let* ((char (if (integerp last-command-event)
+                   last-command-event
+                 (get last-command-event 'ascii-character)))
+         (digit (- (logand char ?\177) ?0)))
+    (if (and meow--expand-nav-function
+             (region-active-p)
+             (meow--selection-type))
+        (meow-expand digit)
+      (call-interactively #'digit-argument))))
+
+;;;###autoload
 (defun vmacs-meow-prev (arg)
   "Move to the prev line.
 
