@@ -3,7 +3,7 @@
 ;; (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
 ;; (global-set-key  (kbd "s-C-t") 'vterm-toggle-cd)
 (setq widen-automatically nil)         ;for goto-line
-(defvar-keymap  vmacs-g-mode-map
+(defvar-keymap  g-mode-map
  "g" #'vmacs-goto-line
  "/" #'consult-focus-lines
  "z" #'consult-hide-lines
@@ -23,28 +23,28 @@
  "." 'goto-last-change-reverse
  )
 (with-eval-after-load 'smerge-mode
-  (define-key vmacs-g-mode-map "v" smerge-basic-map))
+  (define-key g-mode-map "v" smerge-basic-map))
 
-(global-set-key (kbd "C-c g") vmacs-g-mode-map)
+(global-set-key (kbd "C-c G") g-mode-map)
 (defvar-keymap  vmacs-normal-mode-map
    "="  #'meow-indent
    "G"  #'vmacs-goto-line
-   "g" vmacs-g-mode-map
+   "g" g-mode-map
    "n"  #'meow-search
    "N"  #'meow-search-reverse
    "/"  #'isearch-forward
    "z"   #'meow-pop-selection)
 
-(global-set-key (kbd "C-c n") vmacs-normal-mode-map)
+(global-set-key (kbd "C-c N") vmacs-normal-mode-map)
 (defvar-keymap  vmacs-motion-mode-map
    "j"  #'meow-next
    "k"  #'meow-prev
    "G"  #'vmacs-goto-line
-   "g"  vmacs-g-mode-map
+   "g"  g-mode-map
    "/"  #'isearch-forward
    "z"   #'meow-pop-selection
    "<escape>"  #'keyboard-quit)
-(global-set-key (kbd "C-c m") vmacs-motion-mode-map)
+(global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
 
 ;; (global-set-key [(tab)]       'smart-tab)
@@ -130,6 +130,11 @@
 ; (global-set-key  (kbd "C-3") 'rectangle-mark-mode)
 (global-set-key  (kbd "C-4") 'vmacs-meow-grab)
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
+(global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
+(global-set-key (kbd "C-c C-r") 'compile-dwim-run)
+(vmacs-leader (kbd  "<f5>") 'compile-dwim-compile)
+(vmacs-leader "<f6>" 'compile-dwim-run)
+(vmacs-leader "<f7>" 'recompile)
 
 
 (global-set-key (kbd "C-x C-u") #'vundo)

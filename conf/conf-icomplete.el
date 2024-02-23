@@ -242,7 +242,7 @@
 (autoload #'mu4e-search-bookmark  "mu4e" t)
 (vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (shell-command "killall mbsync" nil nil) (mu4e-search-bookmark)(mu4e t)))
 
-(vmacs-leader " " 'consult-buffer)
+(vmacs-leader "<SPC>" 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
 (vmacs-leader "gh" #'consult-grep)

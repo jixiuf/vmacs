@@ -25,7 +25,7 @@
   (add-hook mod #'vmacs-lsp-hook))
 
 (with-eval-after-load 'eglot
-  (defvar-keymap  lsp-g-map :parent vmacs-g-mode-map
+  (defvar-keymap  lsp-g-map :parent g-mode-map
                   "=" #'eglot-format
                   "R" #'eglot-rename
                   "x" #'xref-find-references
@@ -36,7 +36,7 @@
                   "h" #'eglot-code-actions)
   ;; brew install llvm
   ;;clangd https://clangd.llvm.org/installation.html
-  (define-key eglot-mode-map (kbd "C-c g") lsp-g-map)
+  (define-key eglot-mode-map (kbd "C-c G") lsp-g-map)
   (define-key eglot-mode-map (kbd "C-M-\\") #'eglot-format)
   ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
   (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd")))

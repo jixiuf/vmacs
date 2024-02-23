@@ -183,7 +183,7 @@
 
 (global-set-key "\C-x\C-v" 'scratch-buffer)
 
-(global-set-key (kbd "C-c w") 'browse-url-at-point)
+(global-set-key (kbd "C-c w w") 'browse-url-at-point)
 
 
 ;;; goto-last change
@@ -231,6 +231,7 @@
 
 (defun vmacs-calc-hook()
   (require 'calc-bin)
+  (define-key calc-mode-map (kbd "C-c M/") 'calc-divide)
   ;; 默认 calc 的移位移位操作是接 32 位的， 可以 bw(calc-word-size) 来改成 64 位
   (calc-word-size 128))
 

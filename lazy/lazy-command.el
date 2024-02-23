@@ -167,6 +167,8 @@ Use with numeric argument to move multiple lines at once."
         (meow--cancel-second-selection)
         (meow--cancel-selection))
     (let (region)
+      (when  (meow-insert-mode-p)
+        (meow-insert-exit))
       (when (region-active-p)
         (setq region (buffer-substring-no-properties
                       (region-beginning)(region-end))))
