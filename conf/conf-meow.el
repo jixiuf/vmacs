@@ -163,7 +163,8 @@
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
-
+(global-display-line-numbers-mode)
+(meow-setup-line-number)
 (defvar vmacs-meow-save-marker nil)
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
