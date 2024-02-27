@@ -129,7 +129,7 @@
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("." . repeat)
    '(":" . viper-ex)
-   '("<escape>" . meow-cancel-selection)
+   '("<escape>" . meow-pop-all-selection)
    ))
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
@@ -141,6 +141,7 @@
 (meow-setup)
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
+(add-to-list 'meow-selection-command-fallback '(meow-pop-selection . keyboard-quit))
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . meow-line)) ;suppert: cc c3c
@@ -163,17 +164,13 @@
 (meow-global-mode 1)
 (global-display-line-numbers-mode)
 (meow-setup-line-number)
-(defvar vmacs-meow-save-marker nil)
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
   "goto origin position after `yy',need fallback (meow-save . meow-line) "
-  (let ((activep (region-active-p)))
-    (when (not activep)
-      (setq vmacs-meow-save-marker (point-marker)))
+  (let ((region (region-active-p)))
     (apply orig-fun args)
-    (when (and activep (region-active-p)
-               (eq last-command 'meow-save))
-      (goto-char vmacs-meow-save-marker))))
+    (when region
+      (meow-pop-all-selection))))
 
 ;; 处理 文件最后一行无换行符时 p针对yy后的行为
 (defun meow-p-kill-ring-save (beg end &optional region)
