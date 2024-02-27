@@ -242,13 +242,6 @@ Use with numeric argument to move multiple lines at once."
 ;;   (call-interactively #'xref-find-definitions))
 
 ;;;###autoload
-(defun vmacs-meow-insert-secondary()
-  (interactive)
-  (let ((sel (meow--second-sel-get-string)) )
-    (when sel
-      (insert-for-yank sel)
-      )))
-;;;###autoload
 (defun vmacs-meow-grab()
   (interactive)
   (save-excursion

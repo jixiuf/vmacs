@@ -106,6 +106,7 @@
    '("o" . meow-open-below)
    '("C-o" . meow-block)
    '("O" . meow-to-block)
+   '("r" . meow-replace)
    '("p" . meow-replace)
    '("Q" . meow-goto-line)
    '("d" . meow-kill)
@@ -123,10 +124,8 @@
    '("y" . meow-save)
    '("q" . meow-start-kmacro-or-insert-counter)
    '("`" . meow-end-or-call-kmacro)
-
    '("R" . meow-swap-grab)
    '("Y" . meow-sync-grab)
-   '("P" . vmacs-meow-insert-secondary)
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("." . repeat)
    '(":" . viper-ex)

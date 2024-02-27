@@ -146,7 +146,8 @@
                            (widen)))
 (vmacs-leader (kbd "nn") 'narrow-to-region)
 (vmacs-leader (kbd "nf") 'narrow-to-defun)
-(vmacs-leader (kbd "ng") 'vmacs-meow-grab)
+(vmacs-leader (kbd "nb") 'vmacs-meow-grab)
+(vmacs-leader (kbd "ng") 'meow-grab)
 (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "u") 'backward-up-list)
