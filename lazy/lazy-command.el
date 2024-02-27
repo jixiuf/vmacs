@@ -4,6 +4,18 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+
+(defun vmacs-yank-pop()
+  (interactive "*")
+  (cond
+   ((eq last-command 'yank)
+    (call-interactively #'yank-pop)
+    (setq this-command 'yank))
+   ((member last-command '(meow-replace meow-replace-pop))
+    (call-interactively #'meow-replace-pop)
+    (setq this-command #'meow-replace-pop))
+   (t (call-interactively #'yank-pop))))
+
 ;;;###autoload
 (defun vmacs-goto-line(arg)
   "gg:bob G:eof gggg:eof 33gg or go to line 33"

@@ -106,10 +106,8 @@
    '("o" . meow-open-below)
    '("C-o" . meow-block)
    '("O" . meow-to-block)
-   '("p" . meow-yank)
+   '("p" . meow-replace)
    '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("M-r" . meow-replace-pop)
    '("d" . meow-kill)
    '("t" . meow-till)
    '("u" . meow-undo)
@@ -137,6 +135,7 @@
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
 (global-set-key (kbd "C-s") #'isearch-forward)
+(global-set-key (kbd "M-y") #'vmacs-yank-pop)
 
 
 (require 'meow)
@@ -201,12 +200,7 @@
       (apply orig-fun args)
       ;; 下面代码 自动选中粘贴的内容，如果粘贴的是整行(即 yy p)
       ;; 则光标移动到行首（类似vim），否则行尾
-      (run-with-timer 0.1 nil
-                      (lambda(linep)
-                        (exchange-point-and-mark)
-                        (unless linep
-                          (exchange-point-and-mark)))
-                      linep))))
+      (when linep (exchange-point-and-mark)))))
 
 (global-set-key (kbd "C-h") 'negative-argument)
 (global-set-key (kbd "C-u") 'meow-universal-argument)
