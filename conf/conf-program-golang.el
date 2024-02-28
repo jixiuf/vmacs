@@ -30,15 +30,15 @@
                `(delve
                  modes (go-mode go-ts-mode)
                  ensure dape-ensure-command
-                 fn dape-config-autoport
+                 fn (dape-config-autoport dape-config-tramp)
                  command "dlv"
                  command-args ("dap" "--listen" "127.0.0.1::autoport")
-                 command-cwd dape-cwd-fn
+                 command-cwd dape-command-cwd
                  port :autoport
                  :type "debug"
                  :request "launch"
                  :mode (lambda() (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
-                 :cwd dape-cwd-fn
+                 :cwd dape-cwd
                  :program (lambda()(if (string-suffix-p "_test.go"   (buffer-name))
                                        (concat "./" (file-relative-name default-directory (funcall dape-cwd-fn)))
                                      (funcall dape-cwd-fn)))

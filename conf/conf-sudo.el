@@ -14,6 +14,7 @@
 (add-to-list 'tramp-default-user-alist '("ssh" "10\\.17\\.3\\.229\\'" "admin"))
 (add-to-list 'tramp-default-user-alist '("ssh" "10\\.17\\.1\\.230\\'" "admin"))
 (add-to-list 'tramp-default-user-alist '("ssh" "10\\.17\\.1\\.30\\'" "admin"))
+(add-to-list 'tramp-default-user-alist '("ssh" "10\\.1\\.0\\.104\\'" "admin"))
 
 (defface toggle-to-root-header-face
   '((t (:foreground "white" :background "red3")))
