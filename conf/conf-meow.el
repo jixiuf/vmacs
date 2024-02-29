@@ -129,7 +129,7 @@
    '("\\" . just-one-space-or-delete-horizontal-space)
    '("." . repeat)
    '(":" . viper-ex)
-   '("<escape>" . meow-pop-all-selection)
+   '("<escape>" . vmacs-pop-selection)
    ))
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
@@ -141,7 +141,6 @@
 (meow-setup)
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
-(add-to-list 'meow-selection-command-fallback '(meow-pop-selection . keyboard-quit))
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . meow-line)) ;suppert: cc c3c

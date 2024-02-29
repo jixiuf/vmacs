@@ -5,6 +5,14 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 
+;;;###autoload
+(defun vmacs-pop-selection()
+  (interactive)
+  (if current-prefix-arg
+      (meow-pop-all-selection)
+    (meow-cancel-selection)))
+
+;;;###autoload
 (defun vmacs-yank-pop()
   (interactive "*")
   (cond
