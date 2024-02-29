@@ -23,80 +23,22 @@
 
 (when (require 'orderless nil t)
   (setq completion-styles '(orderless basic partial-completion initials))
-  ;; 默认按空格开隔的每个关键字支持 regexp/literal/initialism 3 种算法
-  (setq orderless-matching-styles '(orderless-regexp orderless-literal orderless-initialism ))
-    ;; Recognizes the following patterns:
-  ;; * ;flex flex;
-  ;; * =literal literal=
-  ;; * `initialism initialism`
-  ;; * !without-literal without-literal!
-  ;; * .ext (file extension)
-  ;; * regexp$ (regexp matching at end)
-  ;; https://github.com/minad/consult/wiki
-  (defun fix-dollar (args)
-    (if (string-suffix-p "$" (car args))
-        (list (format "%s[%c-%c]*$"
-                      (substring (car args) 0 -1)
-                      consult--tofu-char
-                      (+ consult--tofu-char consult--tofu-range -1)))
-      args))
-  (advice-add #'orderless-regexp :filter-args #'fix-dollar)
-  ;; (advice-add #'prescient-regexp-regexp :filter-args #'fix-dollar)
-  (defun +orderless--suffix-regexp ()
-    (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-        (format "[%c-%c]*$"
-                consult--tofu-char
-                (+ consult--tofu-char consult--tofu-range -1))
-      "$"))
-  (defvar +orderless-dispatch-alist
-    '((?% . char-fold-to-regexp)
-      (?! . orderless-without-literal)
-      (?`. orderless-initialism)
-      (?= . orderless-literal)
-      (?~ . orderless-flex)))
-  ;; * ~flex flex~
-  ;; * =literal literal=
-  ;; * %char-fold char-fold%
-  ;; * `initialism initialism`
-  ;; * !without-literal without-literal!
-  ;; * .ext (file extension)
-  ;; * regexp$ (regexp matching at end)
-  (defun vmacs-orderless-dispatch (pattern _index _total)
-    (cond
-     ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-     ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) (+orderless--suffix-regexp))))
-     ;; File extensions
-     ((and (or minibuffer-completing-file-name
-               (derived-mode-p 'eshell-mode))
-           (string-match-p "\\`\\.." pattern))
-      `(orderless-regexp . ,(concat "\\." (substring pattern 1) (+orderless--suffix-regexp))))
-     ;; Ignore single !
-     ((string= "!" pattern) `(orderless-literal . ""))
-     ;; Prefix and suffix
-     ((if-let (x (assq (aref pattern 0) +orderless-dispatch-alist))
-          (cons (cdr x) (substring pattern 1))
-        (when-let (x (assq (aref pattern (1- (length pattern))) +orderless-dispatch-alist))
-          (cons (cdr x) (substring pattern 0 -1)))))))
-
-  (setq orderless-style-dispatchers '(vmacs-orderless-dispatch))
-
-  ;; Define orderless style with initialism by default
-  (orderless-define-completion-style +orderless-with-initialism
-    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
-  (setq completion-category-overrides '(
-                                        (eglot (styles orderless))
-                                        (file (styles partial-completion)) ;; partial-completion is tried first
-                                        ;; enable initialism by default for symbols
-                                        (command (styles +orderless-with-initialism))
-                                        (variable (styles +orderless-with-initialism))
-                                        (symbol (styles +orderless-with-initialism))
-                                        ))
-
   ;; 支持拼间首字母过滤中文， 不必切输入法
   (defun completion--regex-pinyin (str)
     (require 'pinyinlib)
     (orderless-regexp (pinyinlib-build-regexp-string str)))
-  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin)
+  ;; 默认按空格开隔的每个关键字支持 regexp/literal/initialism 3 种算法
+  (setq orderless-matching-styles '(completion--regex-pinyin orderless-regexp orderless-literal orderless-initialism ))
+  ;; Define orderless style with initialism by default
+  (orderless-define-completion-style +orderless-with-initialism
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+  (setq completion-category-overrides '((eglot (styles orderless))
+                                        (file (styles partial-completion)) ;; partial-completion is tried first
+                                        ;; enable initialism by default for symbols
+                                        (command (styles +orderless-with-initialism))
+                                        (variable (styles +orderless-with-initialism))
+                                        (symbol (styles +orderless-with-initialism))))
+
   (setq orderless-component-separator #'orderless-escapable-split-on-space) ;; allow escaping space with \
   )
 
