@@ -31,6 +31,7 @@
       (cond
        ((tramp-remote-file-name-p fname local-hostname ) ;打开远程文件
         (with-parsed-tramp-file-name fname nil
+          (unless user (setq user ""))
           (if (string-equal user "root")
               (let*((cache-username (gethash  (intern  host) toggle-with-sudo-history-host-user-alist))
                     (toggle-username (if argv
@@ -39,13 +40,14 @@
 
                 ;; (tramp-make-tramp-file-name method user host localname "")
                 (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist)
-                (setq fname (concat "/ssh:" toggle-username "@" host  ":" localname)))
+                (setq fname (concat "/ssh:" (if (string-empty-p toggle-username) "" (concat toggle-username "@"))
+                                    host  ":" localname)))
             (let*((cache-username (or (gethash  (intern  host) toggle-with-sudo-history-host-user-alist) "root")))
               (if argv
-                  (setq fname (concat "/" method ":" (read-string (concat "username:[" cache-username "]") "" nil cache-username) "@" host ":" localname))
-                (setq fname (concat "/" method ":" user "@" host "|sudo:" "root"  "@" host ":" localname))
-                (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist))
-              (message "%s" fname)))))
+                  (setq fname (concat "/" method ":" (read-string (concat "username:[" cache-username "]") ""
+                                                                  nil cache-username) "@" host ":" localname))
+                (setq fname (concat "/" method ":" (if (string-empty-p user) "" (concat user "@")) host "|sudo:" "root"  "@" host ":" localname))
+                (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist))))))
 
        ((string-match (concat "^/sudo:.*@" (regexp-quote local-hostname)) fname) ;用 sudo 打开了本机的文件
         (with-parsed-tramp-file-name fname nil (setq fname localname)))
@@ -53,6 +55,9 @@
        (t                               ;默认正常打开本机文件
         (let*((cache-username (or (gethash  (intern  local-hostname) toggle-with-sudo-history-host-user-alist) "root")))
           (setq fname (concat "/sudo:" (if argv (read-string (concat "username:[" cache-username "]") "" nil cache-username) "root") "@" local-hostname ":"  fname)))))
+      (when argv
+        (setq fname (read-string ":" fname nil fname)))
+      (message "%s" fname)
       (if (and (featurep 'server) server-buffer-clients)
           (find-file fname)
         (find-alternate-file fname))
