@@ -4,6 +4,12 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+;;;###autoload
+(defun dired-mp4togif()
+  (interactive)
+  (shell-command
+   (concat "mp4togif " (dired-file-name-at-point))
+   "*Messages*" "*Messages*"))
 
 ;;;###autoload
 (defun vmacs-pop-selection()
@@ -1086,6 +1092,7 @@ end tell" (expand-file-name default-directory))))
 ;;       (if (he-string-member result he-tried-table t)
 ;;           (setq result nil)))     ; ignore if bad prefix or already in table
 ;;     result))
+
 
 
 (provide 'lazy-command)
