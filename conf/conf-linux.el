@@ -20,7 +20,7 @@
       (string-trim (shell-command-to-string "fcitx5-remote -n"))
     (string-trim (shell-command-to-string "ibus engine"))))
 (defun vmacs-input-method-hook()
-  (when (member this-command '(meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
+  (when (member this-command '(vmacs-pop-selection meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
     (switch-to-english-input-method)))
 (add-hook 'meow-normal-mode-hook #'vmacs-input-method-hook)
 
