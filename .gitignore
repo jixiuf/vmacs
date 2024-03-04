@@ -57,3 +57,4 @@ osx-dictionary-cli
 /lazy/lazy-loaddefs.el
 /chatgpt/history
 /codeium/codeium_language_server
+/chatgpt/request.json
