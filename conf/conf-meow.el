@@ -161,6 +161,12 @@
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (meow-global-mode 1)
+
+(defun vmacs-meow-frame(&optional f)
+  (with-selected-frame (or f (selected-frame))
+    (meow--prepare-face)))
+
+(add-hook 'after-make-frame-functions #'vmacs-meow-frame)
 (global-display-line-numbers-mode)
 (meow-setup-line-number)
 (add-hook 'meow-insert-exit-hook 'corfu-quit)
