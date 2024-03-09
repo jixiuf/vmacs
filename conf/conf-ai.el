@@ -1,50 +1,34 @@
-(require 'gptel)
-(setq-default
- gptel-prompt-prefix-alist '((markdown-mode . "# ") (org-mode . "* "))
- gptel-default-mode 'org-mode
- ;; gptel-max-tokens 500
- gptel-directives
- '((default . "我是一名go程序言，我的OS是 gentoo with systemd & hyprland wm ,平时使用emacs编辑器,回答问题时，不要重复我的提问，回答尽量简洁，如果你不会，请回答“不会”，")
-   (writing . "你是一个写作助手，请不要带有任何偏见，以客观公正的态度回答问题,现在需要你来帮我协助完善相关方案、提供写作思路")
-   )
- gptel-model "gpt-4-1106-preview"
- gptel-backend (gptel-make-openai
-                   "openai"
-                 :models '("gpt-3.5-turbo" "gpt-3.5-turbo-16k" "gpt-4"
-                           "gpt-4-turbo-preview" "gpt-4-32k" "gpt-4-1106-preview"
-                           "gpt-4-0125-preview")
-                 :stream t
-                 :key 'gptel-api-key
-                 :protocol "http"
-                 :host "192.168.124.26:8081"
-                 ))
-(defun gptel-writing()
-  (interactive)
-  (let ((default-directory "~/Documents/jianguo/jianguo/ai/"))
-    (setq-default gptel-temperature 1.5)
-    (setq-default gptel--system-message (alist-get 'writing gptel-directives))
-    (gptel "*writing*" nil nil t)))
+(setq org-ai-openai-chat-endpoint "http://192.168.124.26:8081/v1/chat/completions")
+(setq org-ai-openai-completion-endpoint "http://192.168.124.26:8081/v1/completions")
+(setq org-ai-openai-image-generation-endpoint "http://192.168.124.26:8081/v1/images/generations")
+(setq org-ai-openai-image-variation-endpoint "http://192.168.124.26:8081/v1/images/variations")
 
-(defun gptel-code()
+(setq org-ai-default-chat-model "gpt-4-1106-preview")
+(setq ai-system-prompts '(
+                          " 我是一名go程序员，我的OS是 gentoo with systemd & hyprland wm ,平时使用emacs编辑器,回答问题时，不要重复我的提问，回答尽量简洁，如果你不会，请回答“不会”，"
+                          ))
+(setq org-ai-default-chat-system-prompt (car ai-system-prompts))
+(setq org-ai-image-directory "~/Documents/jianguo/jianguo/ai/images/")
+(add-hook 'org-mode-hook #'org-ai-mode)
+(defun vmacs-ai()
   (interactive)
-  (let ((default-directory "~/Documents/jianguo/jianguo/ai/"))
-    (setq-default gptel-temperature 0.5)
-    (setq-default gptel--system-message (alist-get 'default gptel-directives))
-    (gptel "*code*" nil nil t)))
+  (let ((default-directory "~/Documents/jianguo/jianguo/ai/")
+        (name "*ai*"))
+    (with-current-buffer (generate-new-buffer name)
+      (org-mode)
+      (yas-minor-mode 1)
+      (insert "ai")
+      (yas-expand-from-trigger-key)
+      (display-buffer (current-buffer) '(pop-to-buffer)))))
 
-(defun vmacs-gptel-save(_ _ &optional arg)
+(defun vmacs-ai-after-chat-insertion-hook (&optional arg arg2 )
   (unless buffer-file-name
     (setq buffer-file-name
-          (format "%s-%s"
-                  (string-trim (buffer-name) "*" "*")
-                  (format-time-string "%Y%m%d_%H%M%S.org" (current-time)))))
+          (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))))
   (write-file buffer-file-name))
 
-(add-hook 'gptel-post-response-functions 'gptel-end-of-response)
-(add-hook 'gptel-post-response-functions 'vmacs-gptel-save 1)
-(define-key gptel-mode-map (kbd "<RET>") 'gptel-send)
-(vmacs-leader  "fg" #'gptel-code)
-(vmacs-leader  "fw" #'gptel-writing)
+(add-hook 'org-ai-after-chat-insertion-hook #'vmacs-ai-after-chat-insertion-hook)
+(vmacs-leader  "fg" #'vmacs-ai)
 ;; (keymap-global-set "<f6>" "C-u C-c <return> <return>")
 
 (provide 'conf-ai)
