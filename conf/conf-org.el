@@ -268,7 +268,7 @@ linktoc=all
   (push '("[X]" . ?✅) prettify-symbols-alist)
   (push '("[ ]" . ?❎) prettify-symbols-alist)
   (prettify-symbols-mode 1)
-
+  (remove-hook 'completion-at-point-functions 'ispell-completion-at-point t)
   ;; (iimage-mode 1)
   ;; (auto-fill-mode 1)
   ;; (paragraph-indent-minor-mode 1)

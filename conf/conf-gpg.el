@@ -121,7 +121,7 @@
 ;; ;; 允许缓存密码，否则编辑时每次保存都要输入密码
 ;; (setq-default epa-file-cache-passphrase-for-symmetric-encryption nil)
 
-(setq-default epa-file-inhibit-auto-save nil)
+(setq-default epa-file-inhibit-auto-save t)
 
 (provide 'conf-gpg)
 

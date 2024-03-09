@@ -135,6 +135,7 @@
 (vmacs-leader (kbd  "<f5>") 'compile-dwim-compile)
 (vmacs-leader "<f6>" 'compile-dwim-run)
 (vmacs-leader "<f7>" 'recompile)
+(vmacs-leader  "fg" #'vmacs-ai)
 
 
 (global-set-key (kbd "C-x C-u") #'vundo)

@@ -5,6 +5,20 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-ai()
+  (interactive)
+  (let ((default-directory "~/Documents/jianguo/jianguo/ai/")
+        (name "*ai*"))
+    (with-current-buffer (generate-new-buffer name)
+      (org-mode)
+      (require 'org-ai)
+      (org-ai-mode)
+      (yas-minor-mode 1)
+      (insert "ai")
+      (yas-expand-from-trigger-key)
+      (display-buffer (current-buffer) '(pop-to-buffer)))))
+
+;;;###autoload
 (defun dired-mp4togif()
   (interactive)
   (shell-command
