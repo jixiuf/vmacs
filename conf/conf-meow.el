@@ -152,13 +152,13 @@
                     '(regexp "`\\|'" "`\\|'"))
 
 ;; org-mode begin_src or markdown ``` block
-(meow-thing-register 'block
-                    '(regexp "^[ \\|\t]*\\(#\\+begin_src[^\n]*\\|```\\)\n" "^[ \\|\t]*\\(#\\+end_src\\|```\\)$")
-                    '(regexp "^[ \\|\t]*\\(#\\+begin_src[^\n]*\\|```\\)\n" "^[ \\|\t]*\\(#\\+end_src\\|```\\)$")
+(meow-thing-register 'org-block
+                    '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
+                    '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
                     )
 
 (add-to-list 'meow-char-thing-table '(?` . quoted))
-(add-to-list 'meow-char-thing-table '(?o . block))
+(add-to-list 'meow-char-thing-table '(?o . org-block))
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
 (setq meow-keypad-start-keys
