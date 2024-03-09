@@ -64,6 +64,9 @@
     (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)))
 (add-hook 'after-init-hook #'vmacs-set-font)
 (add-hook 'after-make-frame-functions #'vmacs-set-font)
+
+(setq auth-sources '("~/.authinfo.gpg" ))
+
 (provide 'conf-linux)
 
 ;; Local Variables:

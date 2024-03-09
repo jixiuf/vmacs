@@ -1,3 +1,5 @@
+(setq auth-sources
+   '("~/.authinfo.gpg" macos-keychain-internet macos-keychain-generic))
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
 (setq-default initial-frame-alist

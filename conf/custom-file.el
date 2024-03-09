@@ -12,8 +12,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auth-sources
-   '("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" macos-keychain-internet macos-keychain-generic))
  '(auto-save-file-name-transforms '((".*" "~/.emacs.d/cache/backup_files/" t)))
  '(auto-save-visited-interval 5)
  '(auto-save-visited-mode t)
@@ -51,10 +49,10 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async cape chatgpt-shell codeium consult-dir corfu dape dired-filetype-face eglot embark
-           embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg
-           kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg ox-gfm
-           pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
+   '(async cape codeium consult-dir corfu dape dired-filetype-face eglot embark embark-consult
+           exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg gptel kind-icon
+           lua-mode magit marginalia markdown-mode mu4e-alert orderless org-msg ox-gfm pinyinlib
+           protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((codeium :vc-backend Git :url "https://github.com/Exafunction/codeium.el")))
  '(proced-enable-color-flag t)
