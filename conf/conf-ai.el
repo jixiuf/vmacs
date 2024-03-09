@@ -1,5 +1,7 @@
 (require 'gptel)
 (setq-default
+ gptel-prompt-prefix-alist '((markdown-mode . "# ") (org-mode . "* "))
+ gptel-default-mode 'org-mode
  ;; gptel-max-tokens 500
  gptel-directives
  '((default . "我是一名go程序言，我的OS是 gentoo with systemd & hyprland wm ,平时使用emacs编辑器,回答问题时，不要重复我的提问，回答尽量简洁，如果你不会，请回答“不会”，")
@@ -18,16 +20,32 @@
                  ))
 (defun gptel-writing()
   (interactive)
-  (setq-local gptel-temperature 1.5)
-  (setq-default gptel--system-message (alist-get 'writing gptel-directives))
-  (call-interactively 'gptel))
+  (let ((default-directory "~/Documents/jianguo/jianguo/ai/"))
+    (setq-default gptel-temperature 1.5)
+    (setq-default gptel--system-message (alist-get 'writing gptel-directives))
+    (gptel "*writing*" nil nil t)))
 
 (defun gptel-code()
   (interactive)
-  (setq-default gptel-temperature 0.5)
-  (setq-default gptel--system-message (alist-get 'default gptel-directives))
-  (call-interactively 'gptel))
+  (let ((default-directory "~/Documents/jianguo/jianguo/ai/"))
+    (setq-default gptel-temperature 0.5)
+    (setq-default gptel--system-message (alist-get 'default gptel-directives))
+    (gptel "*code*" nil nil t)))
 
+(defun vmacs-gptel-save(_ _ &optional arg)
+  (unless buffer-file-name
+    (setq buffer-file-name
+          (format "%s-%s"
+                  (string-trim (buffer-name) "*" "*")
+                  (format-time-string "%Y%m%d_%H%M%S.org" (current-time)))))
+  (write-file buffer-file-name))
+
+(add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+(add-hook 'gptel-post-response-functions 'vmacs-gptel-save 1)
+(define-key gptel-mode-map (kbd "<RET>") 'gptel-send)
+(vmacs-leader  "fg" #'gptel-code)
+(vmacs-leader  "fw" #'gptel-writing)
+;; (keymap-global-set "<f6>" "C-u C-c <return> <return>")
 
 (provide 'conf-ai)
 

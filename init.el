@@ -16,7 +16,7 @@
 (with-eval-after-load 'protobuf-mode (require 'conf-program-protobuf))
 (with-eval-after-load 'css-mode (require 'conf-css))
 (with-eval-after-load 'lua (require 'conf-program-lua))
-(with-eval-after-load 'chatgpt-shell (require 'conf-ai))
+(require 'conf-ai)
 (when (executable-find "gpg") (require 'conf-gpg))
 (with-eval-after-load 'sql (require 'conf-sql))
 
