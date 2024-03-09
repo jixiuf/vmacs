@@ -109,12 +109,19 @@
 ;; ;; 总是使用对称加密
 ;; ;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
 (setq-default epa-file-select-keys nil)
-(setq-default epa-file-encrypt-to "jixiuf") ;默认用哪个公钥私钥解密
+(setq-default epa-file-encrypt-to '("jixiuf")) ;默认用哪个公钥私钥解密
+(defun vmacs-gpg-find-file-hook ()
+  "auto encrypt use key in `epa-file-encrypt-to'"
+  (when (epa-file-name-p (buffer-file-name))
+    (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))))
+
+(add-hook 'find-file-hooks 'vmacs-gpg-find-file-hook)
+
 ;; ;; -*- epa-file-encrypt-to: ("your@email.address") -*-
 ;; ;; 允许缓存密码，否则编辑时每次保存都要输入密码
 ;; (setq-default epa-file-cache-passphrase-for-symmetric-encryption nil)
 
-;; (setq-default epa-file-inhibit-auto-save nil)
+(setq-default epa-file-inhibit-auto-save nil)
 
 (provide 'conf-gpg)
 
