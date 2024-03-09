@@ -150,7 +150,15 @@
 (meow-thing-register 'quoted
                     '(regexp "`\\|'" "`\\|'")
                     '(regexp "`\\|'" "`\\|'"))
+
+;; org-mode begin_src or markdown ``` block
+(meow-thing-register 'block
+                    '(regexp "^[ \\|\t]*\\(#\\+begin_src[^\n]*\\|```\\)\n" "^[ \\|\t]*\\(#\\+end_src\\|```\\)$")
+                    '(regexp "^[ \\|\t]*\\(#\\+begin_src[^\n]*\\|```\\)\n" "^[ \\|\t]*\\(#\\+end_src\\|```\\)$")
+                    )
+
 (add-to-list 'meow-char-thing-table '(?` . quoted))
+(add-to-list 'meow-char-thing-table '(?o . block))
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
 (setq meow-keypad-start-keys
