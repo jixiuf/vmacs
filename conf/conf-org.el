@@ -198,20 +198,20 @@ linktoc=all
  ;; code 执行免应答（Eval code without confirm）
  org-confirm-babel-evaluate nil
  org-image-actual-width '(600)
- org-default-notes-file (expand-file-name "notes.txt" dropbox-dir)
+ org-default-notes-file (expand-file-name "notes.txt.gpg" dropbox-dir)
  org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d)")
                      (sequence "Info(i)"))
- org-capture-templates `(("t" "Todo" entry (file+headline ,(expand-file-name "todo.txt" dropbox-dir) "Tasks")
+ org-capture-templates `(("t" "Todo" entry (file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Tasks")
                           "* TODO %? :%T\n  %i\n")
-                         ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt" dropbox-dir) "Info")
+                         ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Info")
                           "* Info %? :%T\n  %i\n")
-                         ("h" "Note" item (file ,(expand-file-name "http.txt" dropbox-dir))
+                         ("h" "Note" item (file ,(expand-file-name "http.txt.gpg" dropbox-dir))
                           " %? ")
                          ("n" "Note" item (file ,org-default-notes-file)
                           " %? "))
  org-agenda-custom-commands '(
                               ("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file) (undo)))
-                              ("h"  "[Note] Go to  http.txt (Note )" ((find-file (expand-file-name "http.txt" dropbox-dir)) (undo)))
+                              ("h"  "[Note] Go to  http.txt (Note )" ((find-file (expand-file-name "http.txt.gpg" dropbox-dir)) (undo)))
                               ;; ("b" . "show item of tags prefix") ; describe prefix "h"
                               ;; ("be" tags "+Emacs")
                               ;; ("bj" tags "+Java")
