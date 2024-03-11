@@ -111,7 +111,7 @@
 (global-set-key (kbd "s-i")  'project-find-file)
 (global-set-key (kbd "s-C-I")  'project-or-external-find-file)
 (global-set-key (kbd "s-I")  'project-or-external-find-file)
-
+(global-set-key [S-insert] 'mouse-yank-primary)
 
 ;; (global-set-key  (kbd "s-C-u") 'vmacs-prev-buffer)
 ;; (global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
