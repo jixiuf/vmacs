@@ -80,7 +80,6 @@
   (defun vmacs-embark-collect-mode-hook ()
     (local-set-key "/" #'consult-focus-lines)
     (local-set-key  "z" #'consult-hide-lines)
-    (local-set-key "r" #'consult-reset-lines)
     )
   (add-hook 'tabulated-list-mode-hook 'vmacs-embark-collect-mode-hook))
 

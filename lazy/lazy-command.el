@@ -976,11 +976,6 @@ end tell" (expand-file-name default-directory))))
                          ;; Use consult-location completion category when filtering lines
                          (consult--completion-filter-dispatch
                           pattern cands 'consult-location nil)) nil "! "))
-;;;###autoload
-(defun consult-reset-lines ()
-  (interactive)
-  (consult-focus-lines nil t))
-
 
 ;; ;; this macro works
 ;; ;; (macroexpand '(with-mode-on icomplete-mode (message "ss")))

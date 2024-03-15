@@ -8,7 +8,6 @@
  "/" #'consult-focus-lines
  "z" #'consult-hide-lines
  "r" #'revert-buffer
- "t" #'consult-reset-lines
  "i" #'meow-insert
  "n" #'next-error
  "p" #'previous-error

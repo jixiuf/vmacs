@@ -5,6 +5,11 @@
 ;; C-cC-eRR
 
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
+(with-eval-after-load 'org-agenda
+  (define-key org-agenda-mode-map (kbd "C-c Gt") 'org-capture)
+  (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo)
+  )
+
 (vmacs-leader (kbd "T") 'org-capture)  ;新加一个 todo 条目等
 ;; (define-key evil-normal-state-map "mt" 'org-capture)
 (setq verb-auto-kill-response-buffers t)
@@ -187,7 +192,7 @@ linktoc=all
  ;; org-deadline-string "DEADLINE:"
  ;; org-scheduled-string "SCHEDULED:"
  org-time-stamp-formats  '("<%Y-%m-%d 周%u>" . "<%Y-%m-%d 周%u %H:%M>")
- org-agenda-files  (list (expand-file-name "todo.txt" dropbox-dir))
+ org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir))
  org-deadline-warning-days 5;;最后期限到达前 5 天即给出警告
  org-agenda-show-all-dates t
  org-agenda-skip-deadline-if-done t
@@ -249,8 +254,7 @@ linktoc=all
 
 ;; How to automatically save all org files after marking a repeating item as DONE in the org agenda?
 (add-hook 'org-trigger-hook 'save-buffer)
-(with-eval-after-load 'org-agenda
-  (org-defkey org-agenda-mode-map "m"        nil))
+
 
 ;; C-c C-e export to github markdown
 (eval-after-load "ox" '(require 'ox-gfm nil t))

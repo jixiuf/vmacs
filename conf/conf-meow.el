@@ -168,6 +168,9 @@
 )
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
+(with-eval-after-load 'org-agenda
+  (set-keymap-parent org-agenda-mode-map meow-normal-state-keymap))
+(add-to-list 'meow-mode-state-list '(org-agenda-mode . motion))
 (meow-global-mode 1)
 
 (defun vmacs-meow-frame(&optional f)
