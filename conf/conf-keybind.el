@@ -189,23 +189,17 @@
 
 ;; iterm2 下实同一些 终端下本没有的按键
 ;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在 mac 上的安装及一些相应配置/#orgheadline15
-;; (defun iterm2-keybind-mapping()
 ;;   (global-set-key (kbd "C-[ [ 1 a") (key-binding(kbd "C-<backspace>"))) ;== "M-[ a a" iterm2 map to ctrl-backspace
-;;   ;; (global-set-key (kbd "C-[ [ 1 c") 'hippie-expand)   ; iterm map to ctrl-return
-;;   (global-set-key (kbd "C-[ [ 1 d") (key-binding (kbd "C-,") ))   ;iterm2 map to ctrl-,
-
-;;   (global-set-key (kbd "C-[ [ 1 e") (key-binding (kbd "C-.") ))   ;iterm2 map to ctrl-.
-;;   (global-set-key (kbd "C-[ [ 1 f") (key-binding (kbd "C-;") ))   ; iterm map to ctrl-;
-;;   ;; (global-set-key (kbd "C-[ [ 1 h") (key-binding (kbd "C-i") )) ; iterm map to C-i
-;;   (global-set-key  (kbd "C-[ [ 1 h") (key-binding (kbd "<C-i>") )) ;iterm map to C-i
-;;   (global-set-key (kbd "C-[ [ 1 i") (key-binding (kbd "C-3") ))   ;iterm2 map to ctrl-3
-;;   (global-set-key (kbd "C-[ [ 1 j") 'ignore) ; iterm map to C-4
-;;   (global-set-key (kbd "C-[ [ 1 j") (key-binding (kbd "C-4") ))   ;iterm2 map to ctrl-f3
-;;   (global-set-key (kbd "C-[ [ 1 m") (key-binding (kbd "<C-m>") ))   ;iterm2 map to C-m
-;;   ;; (global-set-key (kbd "C-w C-[ [ 1 h") 'goto-definition) ; C-wC-i
-
+(define-key input-decode-map "\e[1;1a" (kbd "C-<backspace>"))
+(define-key input-decode-map "\e[1;1c"  [(control return)] )
+(define-key input-decode-map "\e[1;1d" (kbd "C-,"))
+(define-key input-decode-map "\e[1;1e" (kbd "C-."))
+(define-key input-decode-map "\e[1;1f" (kbd "C-;"))
+(define-key input-decode-map "\e[1;1h" (kbd "C-i"))
+(define-key input-decode-map "\e[1;1i" (kbd "C-3"))
+(define-key input-decode-map "\e[1;1j" (kbd "C-4"))
+(define-key input-decode-map "\e[1;1m" (kbd "C-m"))
 ;;   (global-set-key (kbd "C-[ [ 1 l") (key-binding (kbd "C-<f3>") ))   ;iterm2 map to ctrl-f3
-
 ;;   (global-set-key (kbd "C-[ [ 1 b") (key-binding (kbd "C-<f2>") )) ; map to ctrl-f2
 ;;   ) ;iterm2 特有的配置
 ;; ;; (iterm2-keybind-mapping)
