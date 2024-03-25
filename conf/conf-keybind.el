@@ -118,6 +118,7 @@
 
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "C-x K") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "M-o") 'toggle-camelize)
 (autoload 'golden-ratio-scroll-screen-up "golden-ratio-scroll-screen" "" t)
@@ -204,8 +205,6 @@
 ;;   ) ;iterm2 特有的配置
 ;; ;; (iterm2-keybind-mapping)
 ;; (add-hook 'after-init-hook 'iterm2-keybind-mapping)
-
-
 
 (provide 'conf-keybind)
 

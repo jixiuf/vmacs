@@ -56,6 +56,8 @@
   ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; 👉
+  (unless (display-graphic-p)
+    (term-title-mode 1))
   ;; emerge -av media-fonts/noto-emoji
   (set-fontset-font "fontset-default" 'emoji "Noto Color Emoji")
   (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji")
