@@ -219,6 +219,7 @@
     (ansi-osc-apply-on-region  (point-min)(point-max))
     (ansi-color-apply-on-region (point-min)(point-max))
     (set-buffer-modified-p nil)
+    (read-only-mode)
     (goto-char (point-max))
     (skip-chars-backward " \t\n")
     (delete-file (buffer-file-name))
