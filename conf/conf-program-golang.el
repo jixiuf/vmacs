@@ -20,37 +20,7 @@
 ;;       (format "%s -w %s" gofmt-command buffer-file-name))
 ;;      nil)))
 
-(with-eval-after-load 'dape
-  ;; (setq dape-key-prefix  "\C-c\C-c")
-  (setq dape-buffer-window-arrangment 'gud)
-  (setq dape-on-start-hooks '())
-  ;; inside your dape-config
-  (setq dape-configs (assq-delete-all 'dlv dape-configs))
-  (add-to-list 'dape-configs
-               `(delve
-                 modes (go-mode go-ts-mode)
-                 ensure dape-ensure-command
-                 fn (dape-config-autoport dape-config-tramp)
-                 command "dlv"
-                 command-args ("dap" "--listen" "127.0.0.1::autoport")
-                 command-cwd dape-command-cwd
-                 port :autoport
-                 :type "debug"
-                 :request "launch"
-                 :mode (lambda() (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
-                 :cwd dape-cwd
-                 :program (lambda()(if (string-suffix-p "_test.go"   (buffer-name))
-                                       (concat "./" (file-relative-name default-directory (funcall dape-cwd-fn)))
-                                     (funcall dape-cwd-fn)))
-                 :args (lambda()
-                         (require 'which-func)
-                         (if (string-suffix-p "_test.go"   (buffer-name))
-                             (when-let* ((test-name (which-function))
-                                         (test-regexp (concat "^" test-name "$")))
-                               (if test-name `["-test.run" ,test-regexp]
-                                 (error "No test selected")))
-                           []))))
-  )
+
 
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
@@ -68,6 +38,8 @@
   ;; (local-set-key (kbd "C-c c") 'dape-continue)
   (local-set-key (kbd "M-r") 'dape-restart)
   (local-set-key (kbd "C-c v") 'dape-repl)
+  (local-set-key (kbd "C-c q") 'dape-quit)
+  (local-set-key (kbd "C-c Gq") 'dape-quit)
   ;; (local-set-key (kbd "C-c q") 'dape-quit)
   ;; (local-set-key (kbd "C-c p") 'dape-pause)
   ;; (local-set-key (kbd "C-c w") 'dape-watch-dwim)

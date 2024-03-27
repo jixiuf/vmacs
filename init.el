@@ -72,7 +72,7 @@
 ;; (with-eval-after-load 'go-mode (require 'conf-program-golang))
 (with-eval-after-load 'go-ts-mode (require 'conf-program-golang))
 (with-eval-after-load 'python (require 'conf-program-python))
-;; (with-eval-after-load 'dap-mode (require 'conf-dap-mode))
+(with-eval-after-load 'dape (require 'conf-dap-mode))
 
 (require 'conf-version-control)
 (with-eval-after-load 'magit (require 'conf-magit))
