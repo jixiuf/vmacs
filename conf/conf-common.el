@@ -223,6 +223,7 @@
     (goto-char (point-max))
     (skip-chars-backward " \t\n")
     (delete-file (buffer-file-name))
+    (tab-line-mode -1)
     (forward-char 1)
     (local-set-key "q" #'vmacs-kill-buffer-dwim))
     ;; (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
