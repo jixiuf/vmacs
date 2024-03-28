@@ -4,6 +4,25 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+
+;;;###autoload
+(defun vmacs-dape()
+  (interactive)
+  (require 'dape)
+  (if (or (dape--live-connection 'parent t)
+          (get-buffer-window "*dape-repl*" t))
+      (progn
+        (call-interactively #'dape-quit)
+        (message "dape stopped now!"))
+    (if current-prefix-arg
+        (call-interactively #'dape)
+      (let ((ad (cl-loop for (key . config) in dape-configs
+                         when (and (dape--config-mode-p config)
+                                   (dape--config-ensure config))
+                         collect (dape--config-eval key config))))
+        (when ad (dape (car ad))))
+      (message "C-cC-c: toggle breakpoint C-cC-l:clear breakpints M-h:info H-r:run-or-stop"))))
+
 ;;;###autoload
 (defun vmacs-ai()
   (interactive)

@@ -10,47 +10,10 @@
 ;; (when (executable-find "gofmt") (setq-default gofmt-command (executable-find "gofmt")))
 ;; (when (executable-find "goimports") (setq-default gofmt-command (executable-find "goimports")))
 (add-hook 'go-ts-mode-hook 'vmacs-go-mode-hook)
-;; 采用 after-save-hook 触发，此时文件已经实质落盘,异步执行，不卡 UI
-;; (defun vmacs-auto-gofmt()
-;;   (when (and buffer-file-name
-;;          (eq major-mode 'go-mode))
-;;     (set-process-query-on-exit-flag
-;;      (start-process-shell-command
-;;       gofmt-command nil
-;;       (format "%s -w %s" gofmt-command buffer-file-name))
-;;      nil)))
-
-
-
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
-  (eldoc-mode)
-  ;; (add-hook 'after-save-hook 'vmacs-auto-gofmt nil t)
-  (require 'dape)
-  (local-set-key dape-key-prefix dape-global-map)
-  (local-set-key (kbd "C-s-r") 'dape)
-  (local-set-key (kbd "M-n") 'dape-next)
-  (local-set-key (kbd "M-j") 'dape-next)
-  (local-set-key (kbd "M-i") 'dape-step-in)
-  (local-set-key (kbd "M-h") 'dape-step-out)
-  ;; (local-set-key (kbd "C-c o") 'dape-step-out)
-  (local-set-key (kbd "M-c") 'dape-continue)
-  ;; (local-set-key (kbd "C-c c") 'dape-continue)
-  (local-set-key (kbd "M-r") 'dape-restart)
-  (local-set-key (kbd "C-c v") 'dape-repl)
-  (local-set-key (kbd "C-c q") 'dape-quit)
-  (local-set-key (kbd "C-c Gq") 'dape-quit)
-  ;; (local-set-key (kbd "C-c q") 'dape-quit)
-  ;; (local-set-key (kbd "C-c p") 'dape-pause)
-  ;; (local-set-key (kbd "C-c w") 'dape-watch-dwim)
-  (local-set-key (kbd "C-c e") 'dape-breakpoint-expression)
-  (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
-  (local-set-key (kbd "C-c b") 'dape-breakpoint-remove-all)
-
-
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
   (local-set-key (kbd "C-c C-p") 'go-get-package-path)
-
   (setq eglot-workspace-configuration
         ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
         '((:gopls .
@@ -65,11 +28,7 @@
                    ;; (codelenses . ((vendor . t)))
                    ;; (buildFlags . ["-mod=readonly"])
                    ;; (experimentalWorkspaceModule  . t)
-                   ))))
-
-  ;; (setq require-final-newline nil)
-  ;; (modify-syntax-entry ?_  "_" (syntax-table)) ;还是让 "_" 作为 symbol，还不是 word
-  )
+                   )))))
 
 (require 'project)
 
@@ -81,24 +40,7 @@
   (cdr project))
 
 (add-hook 'project-find-functions #'project-find-go-module)
-(defun go-get-package-path ()
-  "Get the package path of the Go file currently being edited and copy it to the clipboard.
-   This function needs `go` command installed and a `go.mod` file in the project root directory."
-  (interactive)
-  (let* ((filename (buffer-file-name))
-         (root (substring filename 0 (string-match-p "\\(?:/src/\\)" filename)))
-         (pkg-path-cmd (concat "go list -f '{{ .Dir }}' " (file-name-directory filename))) ; Generate command to get the package path
-         (mod-path-cmd (concat "go list -m")) ; Generate command to get the mod path
-         (pkg-path-output (shell-command-to-string pkg-path-cmd))
-         (mod-path-output (shell-command-to-string mod-path-cmd))
-         )
-    (setq pkg-path (substring pkg-path-output 0 -1)) ; Remove the trailing newline from pkg-path
-    (setq mod-path (substring mod-path-output 0 -1)) ; Remove the trailing newline from pkg-path
-    (setq pkg-path (substring pkg-path (+ 5 (length root ))))
-    (setq pkg-path (format"\"%s%s\"" (file-name-parent-directory mod-path) pkg-path) )
-    (when (not (string= pkg-path ""))
-      (kill-new pkg-path)
-      (message pkg-path))))
+
 
 (provide 'conf-program-golang)
 
