@@ -14,7 +14,7 @@
 ;; |까까까까까까까까까까까까까까까까까까까까|
 
 (defconst my/start-time (current-time))
-
+(setq native-comp-jit-compilation-deny-list '("loaddefs"))
 (defmacro mt (&rest body)
   "Measure the time it takes to evaluate BODY."
   `(let ((time (current-time)))

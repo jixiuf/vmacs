@@ -36,6 +36,12 @@ Non interactive global minor mode."
 (require 'dape)
 (define-key dape-global-map "b" #'dape-breakpoint-remove-all)
 (define-key dape-global-map "B" #'dape-breakpoint-toggle)
+(add-hook 'dape-repl-mode-hook #'(lambda()(tab-line-mode -1)))
+(dolist (h '(dape-info-scope-mode-hook dape-info-watch-mode-hook
+                                       dape-info-stack-mode-hook dape-info-modules-mode-hook
+                                       dape-info-sources-mode-hook dape-info-breakpoints-mode-hook
+                                       dape-info-threads-mode-hook))
+  (add-hook h #'(lambda()(tab-line-mode -1))))
 
 (global-set-key dape-key-prefix dape-global-map)
 ;; inside your dape-config
