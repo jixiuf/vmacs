@@ -7,7 +7,7 @@
 (defun vmacs-ai-after-chat-insertion-hook (&optional type arg2 )
   (unless buffer-file-name
     (setq buffer-file-name
-          (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org.gpg" (current-time))
+          (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))
                             default-directory)))
   (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))
   (when (eq type 'end)
