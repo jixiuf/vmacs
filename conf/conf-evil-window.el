@@ -19,8 +19,7 @@
 (global-set-key (kbd "C-s-h") 'move-border-left)
 (global-set-key (kbd "C-s-l") 'move-border-right)
 
-(global-set-key [s-C-backspace] 'toggle-split-window)
-(vmacs-leader (kbd "4") 'toggle-split-window)
+(global-set-key (kbd "C-s-\\") 'toggle-split-window)
 
 (vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
 (vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏

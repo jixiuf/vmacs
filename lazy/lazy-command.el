@@ -6,21 +6,23 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
-(defun vmacs-dape()
+(defun dape-dwim()
+  "Call `dape' with default config if dape session not exists,
+call `dape-quit' if dape session exists"
   (interactive)
   (require 'dape)
   (if (or (dape--live-connection 'parent t)
           (get-buffer-window "*dape-repl*" t))
       (progn
         (call-interactively #'dape-quit)
-        (message "dape stopped now!"))
+        (message "dape quit now!"))
     (if current-prefix-arg
         (call-interactively #'dape)
-      (let ((ad (cl-loop for (key . config) in dape-configs
-                         when (and (dape--config-mode-p config)
-                                   (dape--config-ensure config))
-                         collect (dape--config-eval key config))))
-        (when ad (dape (car ad))))
+      (let ((cfg (cl-loop for (key . config) in dape-configs
+                          when (and (dape--config-mode-p config)
+                                    (dape--config-ensure config))
+                          collect (dape--config-eval key config))))
+        (when cfg (dape (car cfg))))
       (message "C-cC-c: toggle breakpoint C-cC-l:clear breakpints M-h:info H-r:run-or-stop"))))
 
 ;;;###autoload
