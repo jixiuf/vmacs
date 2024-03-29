@@ -8,7 +8,7 @@
         (value . 120)
         (type . 20)))
 (setq dape-buffer-window-arrangement 'right)
-(setq dape-on-start-hooks '(dape-repl))
+(setq dape-on-start-hooks '())
 (setq dape-info-buffer-window-groups
       '((dape-info-scope-mode dape-info-watch-mode
                               dape-info-stack-mode dape-info-modules-mode
@@ -34,6 +34,8 @@ Non interactive global minor mode."
 
 
 (require 'dape)
+(define-key dape-global-map "t" #'dape-repl)
+(define-key dape-global-map "T" #'dape-select-thread)
 (define-key dape-global-map "b" #'dape-breakpoint-remove-all)
 (define-key dape-global-map "B" #'dape-breakpoint-toggle)
 (add-hook 'dape-repl-mode-hook #'(lambda()(tab-line-mode -1)))

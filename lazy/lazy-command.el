@@ -11,10 +11,11 @@
 call `dape-quit' if dape session exists"
   (interactive)
   (require 'dape)
-  (if (or (dape--live-connection 'parent t)
-          (get-buffer-window "*dape-repl*" t))
+  (if (get-buffer-window "*dape-repl*" t)
       (progn
         (call-interactively #'dape-quit)
+        (shell-command (format "find %s -maxdepth 1 -type f -name '__debug_bin*' -exec rm {} \\;"
+                               (plist-get  cfg 'command-cwd)))
         (message "dape quit now!"))
     (if current-prefix-arg
         (call-interactively #'dape)
@@ -40,6 +41,8 @@ call `dape-quit' if dape session exists"
                (equal (plist-get  hist 'command) (plist-get  cfg 'command))
                (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
           (setq cfg hist))
+        (shell-command (format "find %s -maxdepth 1 -type f -name '__debug_bin*' -exec rm {} \\;"
+                               (plist-get  cfg 'command-cwd)))
         (when cfg (dape cfg)))
       (message "C-cC-c: toggle breakpoint C-cC-l:clear breakpints M-h:info H-r:run-or-stop"))))
 

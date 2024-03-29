@@ -156,6 +156,7 @@
 (vmacs-leader (kbd "wl") 'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "s" 'save-buffer)
+(vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)
 (vmacs-leader "k" ctl-x-r-map)

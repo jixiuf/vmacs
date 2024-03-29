@@ -61,6 +61,7 @@
       (list
        "\\` " "\*Helm" "\*helm"
        "*Launch"
+       "\*dape-repl\*" "\*dape-info"
        "\*vc-diff\*" "\*magit-" "\*vc-" "\*vc*"
        "*Backtrace*" "*Package-Lint*" "\*Completions\*" "\*Compile-Log\*"
        "\*vc-change-log\*" "\*VC-log\*"
