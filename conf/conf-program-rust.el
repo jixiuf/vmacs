@@ -1,3 +1,5 @@
+;; https://kurotych.com/posts/rust_neovim_debugger/
+;; https://github.com/vadimcn/codelldb
 (use-package eglot
   :config (add-to-list 'eglot-server-programs
                        `(rust-ts-mode . ("rust-analyzer"

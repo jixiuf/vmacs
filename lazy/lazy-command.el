@@ -11,11 +11,9 @@
 call `dape-quit' if dape session exists"
   (interactive)
   (require 'dape)
-  (if (get-buffer-window "*dape-repl*" t)
+  (if (dape--live-connection 'parent t)
       (progn
         (call-interactively #'dape-quit)
-        (shell-command (format "find %s -maxdepth 1 -type f -name '__debug_bin*' -exec rm {} \\;"
-                               (plist-get  cfg 'command-cwd)))
         (message "dape quit now!"))
     (if current-prefix-arg
         (call-interactively #'dape)
@@ -44,7 +42,7 @@ call `dape-quit' if dape session exists"
         (shell-command (format "find %s -maxdepth 1 -type f -name '__debug_bin*' -exec rm {} \\;"
                                (plist-get  cfg 'command-cwd)))
         (when cfg (dape cfg)))
-      (message "C-cC-c: toggle breakpoint C-cC-l:clear breakpints M-h:info H-r:run-or-stop"))))
+      (message "spc-dd: toggle breakpoint spc-dk:clear breakpints M-h:info H-r:run-or-stop"))))
 
 ;;;###autoload
 (defun vmacs-ai()

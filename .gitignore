@@ -58,3 +58,4 @@ osx-dictionary-cli
 /chatgpt/history
 /codeium/codeium_language_server
 /chatgpt/request.json
+/debug-adapters/codelldb/

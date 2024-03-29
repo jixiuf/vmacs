@@ -21,9 +21,7 @@
   "M-i" 'dape-step-in
   "M-o" 'dape-step-out
   "M-h" 'dape-info
-  "C-c C-c" 'dape-breakpoint-toggle
-  "C-c C-l" 'dape-breakpoint-remove-all
-  "C-c t" 'dape-repl)
+  )
 
 (define-minor-mode dape-active-mode
   "On when dape debugging session is active.
@@ -36,8 +34,9 @@ Non interactive global minor mode."
 (require 'dape)
 (define-key dape-global-map "t" #'dape-repl)
 (define-key dape-global-map "T" #'dape-select-thread)
-(define-key dape-global-map "b" #'dape-breakpoint-remove-all)
-(define-key dape-global-map "B" #'dape-breakpoint-toggle)
+(define-key dape-global-map "k" #'dape-breakpoint-remove-all)
+(define-key dape-global-map "b" #'dape-breakpoint-toggle)
+(define-key dape-global-map "d" #'dape-breakpoint-toggle)
 (add-hook 'dape-repl-mode-hook #'(lambda()(tab-line-mode -1)))
 (dolist (h '(dape-info-scope-mode-hook dape-info-watch-mode-hook
                                        dape-info-stack-mode-hook dape-info-modules-mode-hook

@@ -133,7 +133,15 @@
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
 (global-set-key (kbd "C-s-r") 'compile-dwim-run)
+
+(vmacs-leader "s" 'save-buffer)
+(vmacs-leader "b" 'meow-last-buffer)
+(vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader  "fg" #'vmacs-ai)
+(vmacs-leader  "fm" (vmacs-defun switch-to-message
+                      (if (equal (buffer-name) "*Messages*")
+                          (switch-to-buffer (other-buffer))
+                        (switch-to-buffer "*Messages*"))))
 
 
 (global-set-key (kbd "C-x C-u") #'vundo)
@@ -155,9 +163,6 @@
 (vmacs-leader (kbd "wc") 'toggle-case-fold)
 (vmacs-leader (kbd "wl") 'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
-(vmacs-leader "s" 'save-buffer)
-(vmacs-leader "b" 'meow-last-buffer)
-(vmacs-leader "q" 'kill-other-buffers)
 (vmacs-leader "p" 'list-packages)
 (vmacs-leader "k" ctl-x-r-map)
 (vmacs-leader (kbd "wd") 'fanyi-dwim2)
