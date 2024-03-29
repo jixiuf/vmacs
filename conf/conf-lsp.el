@@ -19,7 +19,6 @@
   (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
   (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
-  (local-set-key (kbd "C-s-r") 'dape-dwim)
 
   ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
   ;; (add-hook 'completion-at-point-functions

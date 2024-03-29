@@ -87,14 +87,14 @@ Its value should be 'always or list like (filename run compile).")
          ;; "mxmlc %f"
          "lua %n.lua")
     (go (name . "_test\\.go$")
-        compile-go-test-current
-        compile-go-test-current)
+        dape-dwim
+        dape-dwim)
 
     (go (or (name . "\\.go$")
             (mode . go-ts-mode)
             (mode . go-mode))
         (compile-dwim-make)
-        "go run %n.go")
+        dape-dwim)
     (rust (or (name . "\\.rs$")
             (mode . rust-ts-mode))
         "cargo build"

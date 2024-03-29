@@ -18,11 +18,29 @@ call `dape-quit' if dape session exists"
         (message "dape quit now!"))
     (if current-prefix-arg
         (call-interactively #'dape)
-      (let ((cfg (cl-loop for (key . config) in dape-configs
-                          when (and (dape--config-mode-p config)
-                                    (dape--config-ensure config))
-                          collect (dape--config-eval key config))))
-        (when cfg (dape (car cfg))))
+      (let* ((cfg (car (cl-loop for (key . config) in dape-configs
+                                when (and (dape--config-mode-p config)
+                                          (dape--config-ensure config))
+                                collect (dape--config-eval key config))))
+             (suggested-configs
+              (cl-loop for (key . config) in dape-configs
+                       when (and (dape--config-mode-p config)
+                                 (dape--config-ensure config))
+                       collect (dape--config-to-string key nil)))
+             (hist (seq-find (lambda (str)
+                               (ignore-errors
+                                 (member (thread-first (dape--config-from-string str)
+                                                       (car)
+                                                       (dape--config-to-string nil))
+                                         suggested-configs)))
+                             dape-history)))
+        (setq hist (nth 1 (dape--config-from-string hist t)))
+        (when (and
+               (equal (plist-get  hist 'command-cwd) (plist-get  cfg 'command-cwd))
+               (equal (plist-get  hist 'command) (plist-get  cfg 'command))
+               (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
+          (setq cfg hist))
+        (when cfg (dape cfg)))
       (message "C-cC-c: toggle breakpoint C-cC-l:clear breakpints M-h:info H-r:run-or-stop"))))
 
 ;;;###autoload

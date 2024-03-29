@@ -132,10 +132,7 @@
 (global-set-key  (kbd "C-4") 'vmacs-meow-grab)
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
-(global-set-key (kbd "C-c C-r") 'compile-dwim-run)
-(vmacs-leader (kbd  "<f5>") 'compile-dwim-compile)
-(vmacs-leader "<f6>" 'compile-dwim-run)
-(vmacs-leader "<f7>" 'recompile)
+(global-set-key (kbd "C-s-r") 'compile-dwim-run)
 (vmacs-leader  "fg" #'vmacs-ai)
 
 
