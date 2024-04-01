@@ -21,8 +21,12 @@
   "M-i" 'dape-step-in
   "M-o" 'dape-step-out
   "M-h" 'dape-info
+  ;; "C-c C-c" 'dape-breakpoint-toggle
   )
 
+
+
+(require 'dape)
 (define-minor-mode dape-active-mode
   "On when dape debugging session is active.
 Non interactive global minor mode."
@@ -30,8 +34,6 @@ Non interactive global minor mode."
   :keymap dape-active-mode-map
   :interactive nil)
 
-
-(require 'dape)
 (define-key dape-global-map "t" #'dape-repl)
 (define-key dape-global-map "T" #'dape-select-thread)
 (define-key dape-global-map "k" #'dape-breakpoint-remove-all)

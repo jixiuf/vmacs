@@ -33,12 +33,14 @@ call `dape-quit' if dape session exists"
                                                        (dape--config-to-string nil))
                                          suggested-configs)))
                              dape-history)))
-        (setq hist (nth 1 (dape--config-from-string hist t)))
-        (when (and
-               (equal (plist-get  hist 'command-cwd) (plist-get  cfg 'command-cwd))
-               (equal (plist-get  hist 'command) (plist-get  cfg 'command))
-               (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
-          (setq cfg hist))
+        (when hist
+          (setq hist (nth 1 (dape--config-from-string hist t)))
+          (when (and
+                 (equal (plist-get  hist 'command-cwd) (plist-get  cfg 'command-cwd))
+                 (equal (plist-get  hist 'command) (plist-get  cfg 'command))
+                 (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
+            (setq cfg hist))
+          )
         (shell-command (format "find %s -maxdepth 1 -type f -name '__debug_bin*' -exec rm {} \\;"
                                (plist-get  cfg 'command-cwd)))
         (when cfg (dape cfg)))
