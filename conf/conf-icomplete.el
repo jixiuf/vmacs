@@ -181,7 +181,7 @@
 (vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
 
 (autoload #'mu4e-search-bookmark  "mu4e" t)
-(vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (shell-command "killall mbsync" nil nil) (mu4e-search-bookmark)(mu4e t)))
+(vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (call-process "killall" nil nil nil  "mbsync") (mu4e-search-bookmark)(mu4e t)))
 
 (vmacs-leader "<SPC>" 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)

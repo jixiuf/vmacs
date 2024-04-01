@@ -30,8 +30,13 @@
 
 ;;;###autoload
 (defun dape-dwim()
-  "Call `dape' with default config if dape session not exists,
-call `dape-quit' if dape session exists"
+  "If a DAP (Debug Adapter Protocol) session is active, terminate the session.
+If there's no active DAP session, start a new session with default configuration.
+When prefix argument is given, invoke `dape' interactively instead.
+
+This function uses `dape' related functions to manage debug sessions for Emacs.
+It also handles session configuration by looking up the appropriate settings
+based on the current context and previous history."
   (interactive)
   (require 'dape)
   (if (dape--live-connection 'parent t)
@@ -64,8 +69,8 @@ call `dape-quit' if dape session exists"
                  (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
             (setq cfg hist))
           )
-        (shell-command (format "find %s -maxdepth 1 -type f -name '__debug_bin*' -exec rm {} \\;"
-                               (plist-get  cfg 'command-cwd)))
+        (call-process "find" nil nil nil (plist-get  cfg 'command-cwd)
+                      "-maxdepth" "1" "-type" "f" "-name" "__debug_bin*" "-exec" "rm" "{}" ";")
         (when cfg (dape cfg)))
       (message "spc-dd: toggle breakpoint spc-dk:clear breakpints M-h:info H-r:run-or-stop"))))
 
