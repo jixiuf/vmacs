@@ -133,6 +133,8 @@
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
 (global-set-key (kbd "C-s-r") 'compile-dwim-run)
+(global-set-key  (kbd "M-,") 'scroll-other-window-down)
+(global-set-key  (kbd "M-.") 'scroll-other-window)
 
 (vmacs-leader "s" 'save-buffer)
 (vmacs-leader "b" 'meow-last-buffer)

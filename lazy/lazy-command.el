@@ -6,6 +6,29 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
+(defun dape-repl-dwim()
+  (interactive)
+  (if (equal (buffer-name) "*dape-repl*")
+      (delete-window)
+    (call-interactively #'dape-repl)))
+
+;;;###autoload
+(defun dape-eval()
+  (interactive)
+  (let (e )
+    (if (region-active-p)
+        (setq e (buffer-substring (region-beginning)
+                                  (region-end)))
+      (setq e (thing-at-point 'symbol)))
+    (when current-prefix-arg
+      (setq e (read-string "Evaluate: " e)))
+    (dape-repl)
+    (with-current-buffer (get-buffer "*dape-repl*")
+      (goto-char (point-max))
+      (insert e)
+      (comint-send-input))))
+
+;;;###autoload
 (defun dape-dwim()
   "Call `dape' with default config if dape session not exists,
 call `dape-quit' if dape session exists"
