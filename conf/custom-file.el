@@ -47,12 +47,10 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async cape codeium consult-dir corfu dape dired-filetype-face eglot embark embark-consult
+   '(async cape consult-dir corfu dired-filetype-face eglot embark embark-consult
            exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg kind-icon
            lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai org-msg ox-gfm
            pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
- '(package-vc-selected-packages
-   '((codeium :vc-backend Git :url "https://github.com/Exafunction/codeium.el")))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")
