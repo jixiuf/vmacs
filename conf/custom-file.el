@@ -18,8 +18,6 @@
  '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
  '(blink-cursor-mode t)
  '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
- '(chatgpt-shell-model-temperature 0.2)
- '(chatgpt-shell-streaming t)
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes t)
