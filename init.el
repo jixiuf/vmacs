@@ -20,7 +20,7 @@
 (with-eval-after-load 'css-mode (require 'conf-css))
 (with-eval-after-load 'lua (require 'conf-program-lua))
 (with-eval-after-load 'rust-ts-mode (require 'conf-program-rust))
-(with-eval-after-load 'org-ai (require 'conf-ai))
+(with-eval-after-load 'gptel (require 'conf-ai))
 (with-eval-after-load 'sql (require 'conf-sql))
 
 ;; (require 'conf-evil)

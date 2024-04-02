@@ -139,7 +139,10 @@
 (vmacs-leader "s" 'save-buffer)
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'kill-other-buffers)
-(vmacs-leader  "fg" #'vmacs-ai)
+;; (vmacs-leader  "fg" #'vmacs-ai)
+(vmacs-leader  "fg" #'gptel-code)
+(vmacs-leader  "fw" #'gptel-writing)
+
 (vmacs-leader  "fm" (vmacs-defun switch-to-message
                       (if (equal (buffer-name) "*Messages*")
                           (switch-to-buffer (other-buffer))
