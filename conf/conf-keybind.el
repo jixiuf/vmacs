@@ -146,7 +146,8 @@
 (vmacs-leader  "fm" (vmacs-defun switch-to-message
                       (if (equal (buffer-name) "*Messages*")
                           (switch-to-buffer (other-buffer))
-                        (switch-to-buffer "*Messages*"))))
+                        (switch-to-buffer "*Messages*")
+                        (goto-char (point-max)))))
 
 
 (global-set-key (kbd "C-x C-u") #'vundo)

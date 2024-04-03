@@ -160,11 +160,11 @@
   (plist-put consult--source-recent-file
              :items #'vmacs-consult--source-recentf-items)
 
-  (consult-customize
-   consult-buffer
-   ;; my/command-wrapping-consult    ;; disable auto previews inside my command
-   :preview-key '(:debounce 0.4 any)) ;; Option 1: Delay preview
-  ;; :preview-key (kbd "M-."))      ;; Option 2: Manual preview
+  ;; (consult-customize
+  ;;  consult-buffer
+  ;;  ;; my/command-wrapping-consult    ;; disable auto previews inside my command
+  ;;  :preview-key '(:debounce 0.4 any)) ;; Option 1: Delay preview
+  ;; ;; :preview-key (kbd "M-."))      ;; Option 2: Manual preview
 
   )
 
