@@ -86,8 +86,9 @@ based on the current context and previous history."
                  (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
             (setq cfg hist))
           )
-        (call-process "find" nil nil nil (plist-get  cfg 'command-cwd)
-                      "-maxdepth" "1" "-type" "f" "-name" "__debug_bin*" "-exec" "rm" "{}" ";")
+        (when (plist-get  cfg 'command-cwd)
+          (call-process "find" nil nil nil (plist-get  cfg 'command-cwd)
+                        "-maxdepth" "1" "-type" "f" "-name" "__debug_bin*" "-exec" "rm" "{}" ";"))
         (when cfg (dape cfg)))
       (message "spc-dd: toggle breakpoint spc-dk:clear breakpints M-h:info H-r:run-or-stop"))))
 
