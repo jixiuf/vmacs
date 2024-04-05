@@ -5,6 +5,16 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun send-command-to-kitty ( command &optional kitty-sock)
+  "kitty @ --to=unix:/tmp/mykitty-47021 send-text 'ls\n'"
+  ;; listen_on unix:/tmp/mykitty
+  ;; allow_remote_control yes
+  (let* ((sockets (directory-files "/tmp" t "mykitty.*")))
+    (unless kitty-sock
+      (setq kitty-sock (completing-read "kitty-sock: " sockets)))
+    (shell-command (format "kitty @ --to=unix:%s send-text '%s\n'" kitty-sock command ))))
+
+;;;###autoload
 (defun gptel-writing()
   (interactive)
   (require 'conf-ai)
