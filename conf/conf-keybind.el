@@ -77,6 +77,9 @@
 (advice-add 'pop-global-mark :before #'deactivate-mark)
 
 (global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
+(setq shell-command-buffer-name "*Messages*")
+(setq shell-command-default-error-buffer "*Messages*")
+(setq shell-command-dont-erase-buffer nil)
 (defun vmacs-isearch-insert-shift1()
   (interactive)
   (isearch-printing-char ?\!))
