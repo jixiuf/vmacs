@@ -9,10 +9,16 @@
   "kitty @ --to=unix:/tmp/mykitty-47021 send-text 'ls\n'"
   ;; listen_on unix:/tmp/mykitty
   ;; allow_remote_control yes
+  (interactive "s send command to kitty: ")
   (let* ((sockets (directory-files "/tmp" t "mykitty.*")))
     (unless kitty-sock
-      (setq kitty-sock (completing-read "kitty-sock: " sockets)))
-    (shell-command (format "kitty @ --to=unix:%s send-text '%s\n'" kitty-sock command ))))
+      (if (= (length sockets) 1)
+          (setq kitty-sock (car sockets))
+        (setq kitty-sock (completing-read "kitty-sock: " sockets))))
+    (shell-command (format "kitty @ --to=unix:%s send-text '%s\n'" kitty-sock command ))
+    ;; (shell-command-to-string (format "kitty @ --to=unix:%s launch --stdin-source=@last_cmd_output --type=overlay sh -c 'kitty +kitten clipboard'" kitty-sock command ))
+    ))
+
 
 ;;;###autoload
 (defun gptel-writing()
