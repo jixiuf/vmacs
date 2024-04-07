@@ -59,3 +59,4 @@ osx-dictionary-cli
 /codeium/codeium_language_server
 /chatgpt/request.json
 /debug-adapters/codelldb/
+/request/curl-cookie-jar
