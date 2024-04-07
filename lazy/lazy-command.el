@@ -9,16 +9,50 @@
   "kitty @ --to=unix:/tmp/mykitty-47021 send-text 'ls\n'"
   ;; listen_on unix:/tmp/mykitty
   ;; allow_remote_control yes
-  (interactive "s send command to kitty: ")
+  (interactive "ssend command to kitty: ")
+  (let* ((sockets (directory-files "/tmp" t "mykitty.*"))
+         proc
+         )
+    (cond
+     ((= (length sockets) 0)
+      ;; hyprctl dispatch exec '[workspace 4 silent;noanim]' -- term.sh
+      (setq proc (start-process "kitty" nil  "hyprctl" "dispatch" "exec" "[workspace 4 silent;noanim]" "--" "term.sh"
+                                (format "--working-directory=%s" default-directory)))
+      (setq sockets (directory-files "/tmp" t "mykitty.*"))
+      (while (= (length sockets)  0)
+        ;; 等待一段时间再次检查，这里等待0.1秒
+        (sleep-for 0.2)
+        (setq sockets (directory-files "/tmp" t "mykitty.*"))
+        )
+      (sleep-for 0.2)
+      (setq kitty-sock (car sockets))
+      )
+     ((= (length sockets) 1)
+      (setq kitty-sock (car sockets)))
+     (t
+      (setq kitty-sock (completing-read "kitty-sock: " sockets))))
+    (call-process "kitty" nil t nil "@" (concat "--to=unix:" kitty-sock) "send-text" (concat command "\n"))
+
+    (with-current-buffer (get-buffer-create "*Messages*")
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (set-mark (point-min))
+        (call-process "kitty" nil "*Messages*" nil "@" (concat "--to=unix:" kitty-sock)
+                      "get-text" "--extent" "last_cmd_output")  )
+      (pop-to-buffer "*Messages*"))))
+
+
+(defun kitty-output ( &optional kitty-sock)
+  (interactive)
   (let* ((sockets (directory-files "/tmp" t "mykitty.*")))
     (unless kitty-sock
       (if (= (length sockets) 1)
           (setq kitty-sock (car sockets))
         (setq kitty-sock (completing-read "kitty-sock: " sockets))))
-    (shell-command (format "kitty @ --to=unix:%s send-text '%s\n'" kitty-sock command ))
-    ;; (shell-command-to-string (format "kitty @ --to=unix:%s launch --stdin-source=@last_cmd_output --type=overlay sh -c 'kitty +kitten clipboard'" kitty-sock command ))
-    ))
-
+    (with-temp-buffer
+      (call-process "kitty" nil t nil "@" (concat "--to=unix:" kitty-sock)
+                    "get-text" "--extent" "last_non_empty_output")
+      (buffer-string))))
 
 ;;;###autoload
 (defun gptel-writing()

@@ -85,11 +85,19 @@
   (isearch-printing-char ?\!))
 (global-set-key (kbd "C-1")   (lambda()
                                 (interactive)
-                                (if (region-active-p)
-                                    (call-interactively 'shell-command)
-                                  (if (eq major-mode 'dired-mode)
-                                      (call-interactively 'dired-do-shell-command)
-                                      (call-interactively 'shell-command)))))
+                                (cond
+                                 ((eq major-mode 'dired-mode)
+                                  (call-interactively 'dired-do-shell-command))
+                                 (t
+                                  (if current-prefix-arg
+                                      (call-interactively #'send-command-to-kitty)
+                                    (if (region-active-p)
+                                        (shell-command-on-region (region-beginning) (region-end)
+                                                                 (read-shell-command "Shell command on region: ")
+                                                                 t t)
+                                      (call-interactively 'shell-command))
+                                    )
+                                  ))))
 
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
