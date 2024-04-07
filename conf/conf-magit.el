@@ -21,7 +21,7 @@
 (require 'gpt-commit)
 (setq gpt-commit-openai-key (auth-source-pick-first-password :host "ddai-proxy.luojilab.com"))
 (setq gpt-commit-api-url "http://192.168.124.26:8081/v1/chat/completions")
-(setq gpt-commit-model-name "gpt-4-1106-preview")
+(setq gpt-commit-model-name "gpt-3.5-turbo-0125")
 (define-key git-commit-mode-map (kbd "C-c C-e") #'gpt-commit-message)
 (defconst gpt-commit-system-prompt-en
   "The user provides the result of running `git diff --cached`. You suggest a conventional commit message. Don't add anything else to the response. The following describes conventional commits.
