@@ -49,7 +49,7 @@
  '(package-selected-packages
    '(async cape consult-dir corfu dape dired-filetype-face eglot embark embark-consult
            exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg gpt-commit gptel
-           kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai org-msg
+           kind-icon kkp lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai org-msg
            ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
