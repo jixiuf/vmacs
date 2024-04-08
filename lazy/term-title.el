@@ -84,8 +84,9 @@ normally, the original title is not restored."
 
 (defun term-title--set (title)
   "Unconditionally set the current TTY terminal's title."
-
-  (send-string-to-terminal (format "\e]0;%s\a" title)))
+  (if (frame-parameter nil 'tmux)
+      (send-string-to-terminal (format "\ePtmux;\e\e]2;%s\007\e\\" title))
+    (send-string-to-terminal (format "\e]0;%s\a" title))))
 
 (provide 'term-title)
 
