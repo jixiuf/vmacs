@@ -14,7 +14,9 @@
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
  frame-title-format '("「"mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   " GNU/Emacs<" (:eval (expand-file-name default-directory)) ">")
-
+ xterm-set-window-title t
+ xterm-extra-capabilities '( modifyOtherKeys reportBackground  getSelection     setSelection)
+ xterm-tmux-extra-capabilities xterm-extra-capabilities
  ;;  mode-line 上显示当前文件是什么系统的文件(windows 的换行符是\n\r)
  eol-mnemonic-dos "[w32]"
  eol-mnemonic-unix "[unix]"
