@@ -14,10 +14,14 @@
 
 (global-set-key (kbd "C-x 2")  'vmacs-split-window-vertically)
 (global-set-key (kbd "C-x 3")  'vmacs-split-window-horizontally)
-(global-set-key (kbd "C-s-k") 'move-border-up)
-(global-set-key (kbd "C-s-j") 'move-border-down)
-(global-set-key (kbd "C-s-h") 'move-border-left)
-(global-set-key (kbd "C-s-l") 'move-border-right)
+(global-set-key (kbd "C-M-1") 'move-border-up)
+(global-set-key (kbd "C-M-2") 'move-border-down)
+(global-set-key (kbd "C-M-3") 'move-border-left)
+(global-set-key (kbd "C-M-4") 'move-border-right)
+(global-set-key (kbd "s-C-M-1") 'move-border-up)
+(global-set-key (kbd "s-C-M-2") 'move-border-down)
+(global-set-key (kbd "s-C-M-3") 'move-border-left)
+(global-set-key (kbd "s-C-M-4") 'move-border-right)
 
 (global-set-key (kbd "C-s-\\") 'toggle-split-window)
 
