@@ -212,26 +212,25 @@
 ;; iterm2 下实同一些 终端下本没有的按键
 ;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在 mac 上的安装及一些相应配置/#orgheadline15
 ;;   (global-set-key (kbd "C-[ [ 1 a") (key-binding(kbd "C-<backspace>"))) ;== "M-[ a a" iterm2 map to ctrl-backspace
-;; (defun vmacs-tui(&optional f)
-;;   (unless (display-graphic-p)
-;;     ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
-;;     ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
-;;     ;; (global-kkp-mode +1) ; for
-;;     ;; (with-selected-frame (or f (selected-frame))
-;;     ;;      (define-key input-decode-map "\e[1;1a" (kbd "C-<backspace>"))
-;;     ;;      (define-key input-decode-map "\e[1;1c"  [(control return)] )
-;;     ;;      (define-key input-decode-map "\e[1;1d" (kbd "C-,"))
-;;     ;;      (define-key input-decode-map "\e[1;1e" (kbd "C-."))
-;;     ;;      (define-key input-decode-map "\e[1;1f" (kbd "C-;"))
-;;     ;;      (define-key input-decode-map "\e[1;1h" (kbd "C-i"))
-;;     ;;      (define-key input-decode-map "\e[1;1i" (kbd "C-3"))
-;;     ;;      (define-key input-decode-map "\e[1;1j" (kbd "C-4"))
-;;     ;;      (define-key input-decode-map "\e[1;1k" (kbd "C-8"))
-;;     ;;      (define-key input-decode-map "\e[1;1l" (kbd "C-1"))
-;;     ;;      ;; (define-key input-decode-map "\e[1;1m" (kbd "C-m"))
-;;     ;;      )
-;;     ))
-;; (add-hook 'after-make-frame-functions #'vmacs-tui)
+(defun vmacs-tui(&optional f)
+  ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
+  ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
+  ;; (global-kkp-mode +1) ; for
+  ;; (define-key input-decode-map "\e[1;1a" (kbd "C-<backspace>"))
+  ;; (define-key input-decode-map "\e[1;1c"  [(control return)] )
+  ;; (define-key input-decode-map "\e[1;1d" (kbd "C-,"))
+  ;; (define-key input-decode-map "\e[1;1e" (kbd "C-."))
+  ;; (define-key input-decode-map "\e[1;1f" (kbd "C-;"))
+  ;; (define-key input-decode-map "\e[1;1h" (kbd "C-i"))
+  (define-key input-decode-map "\e[1;1i" (kbd "C-3"))
+  (define-key input-decode-map "\e[1;1j" (kbd "C-4"))
+  (define-key input-decode-map "\e[1;1k" (kbd "C-8"))
+  (xterm-mouse-mode 1)
+  ;; (define-key input-decode-map "\e[1;1l" (kbd "C-1"))
+  ;; (define-key input-decode-map "\e[1;1m" (kbd "C-m"))
+  )
+(add-hook 'tty-setup-hook #'vmacs-tui)
+
 
 ;;   (global-set-key (kbd "C-[ [ 1 l") (key-binding (kbd "C-<f3>") ))   ;iterm2 map to ctrl-f3
 ;;   (global-set-key (kbd "C-[ [ 1 b") (key-binding (kbd "C-<f2>") )) ; map to ctrl-f2

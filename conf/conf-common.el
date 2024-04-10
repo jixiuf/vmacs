@@ -218,6 +218,7 @@
     (require 'ansi-color)
     (require 'ansi-osc)
     (save-place-local-mode -1)
+    (compilation-minor-mode 1)
     (ansi-osc-apply-on-region  (point-min)(point-max))
     (ansi-color-apply-on-region (point-min)(point-max))
     (set-buffer-modified-p nil)
@@ -228,8 +229,8 @@
     (tab-line-mode -1)
     (forward-char 1)
     (local-set-key "q" #'vmacs-kill-buffer-dwim))
-    ;; (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
-    ;; (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim))
+  ;; (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
+  ;; (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim))
   )
 (add-hook 'find-file-hook #'vmacs-pager)
 
