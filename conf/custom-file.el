@@ -47,10 +47,11 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async cape consult-dir corfu dape dired-filetype-face eglot embark embark-consult
-           exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg gpt-commit gptel
-           kind-icon kkp lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai org-msg
-           ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
+   '(async cape consult-dir corfu corfu-terminal dape dired-filetype-face eglot emamux embark
+           embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg
+           gpt-commit gptel kind-icon kkp lua-mode magit marginalia markdown-mode mu4e-alert
+           orderless org-ai org-msg ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor
+           yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.emacs.d/cache/recentf")

@@ -90,14 +90,15 @@
                                   (call-interactively 'dired-do-shell-command))
                                  (t
                                   (if current-prefix-arg
-                                      (call-interactively #'send-command-to-kitty)
+                                      (if (equal current-prefix-arg '(16))
+                                          (emamux:send-command)
+                                        (setq current-prefix-arg nil)
+                                        (emamux:send-command))
                                     (if (region-active-p)
                                         (shell-command-on-region (region-beginning) (region-end)
                                                                  (read-shell-command "Shell command on region: ")
                                                                  t t)
-                                      (call-interactively 'shell-command))
-                                    )
-                                  ))))
+                                      (call-interactively 'shell-command)))))))
 
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
