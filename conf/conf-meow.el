@@ -33,6 +33,7 @@
    '("G" . "C-c MG")
    '("/" . "C-c M/")
    '("z" . "C-c Mz")
+   '("q" . "C-c Mq")
    '("<escape>" . "C-c M<escape>"))
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
@@ -59,6 +60,7 @@
    '("/" . "C-c N/")
    '("z" . "C-c Nz")
    '("=" . "C-c N=")
+   '("q" . "C-c q")
    '("0" . meow-expand-or-digit-argument)
    '("9" . meow-expand-or-digit-argument)
    '("8" . meow-expand-or-digit-argument)
@@ -122,7 +124,6 @@
    '("s" . meow-line)
    '("S" . meow-goto-line)
    '("y" . meow-save)
-   '("q" . meow-start-kmacro-or-insert-counter)
    '("`" . meow-end-or-call-kmacro)
    '("R" . meow-swap-grab)
    '("Y" . meow-sync-grab)

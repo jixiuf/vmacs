@@ -149,7 +149,7 @@
 
 (vmacs-leader "s" 'save-buffer)
 (vmacs-leader "b" 'meow-last-buffer)
-(vmacs-leader "q" 'kill-other-buffers)
+(vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 ;; (vmacs-leader  "fg" #'vmacs-ai)
 (vmacs-leader  "fg" #'gptel-code)
 (vmacs-leader  "fw" #'gptel-writing)
@@ -191,23 +191,11 @@
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
 (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
-
-;; C-x esc esc 可以查看 global-set-key 究竟 bind 哪个 key
-;; 默认 Emacs 把 TAB==`C-i'
-;;            RET==`C-m'
-;;            ESC==`C-['
-;;这样可以进行绑定的键好像少了一些,
-;;下面的方法可以实现将`C-i' `C-m'绑定与`TAB' `RET'不同的 func
-;; (defun vmacs-translate-keybind(&optional f) ;
-;;   (with-selected-frame (or f (selected-frame))
-;;     (when (display-graphic-p)
-;;       (define-key input-decode-map [?\C-i] [C-i]) ;(global-set-key (kbd "<C-i>") 'counsel-git)
-;;       (define-key input-decode-map [?\C-m] [C-m]) ; (global-set-key (kbd "<C-m>") 'counsel-git)
-;;       )))
-
-;; (add-hook 'after-make-frame-functions 'vmacs-translate-keybind)
-;; (add-hook 'after-init-hook 'vmacs-translate-keybind) ;this is need for windows
-;; (require 'bind-map)
+(with-eval-after-load 'man
+  (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
+  (define-key Man-mode-map (kbd "C-c Mq") 'save-buffers-kill-terminal)
+  (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
+  (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
 
 ;; iterm2 下实同一些 终端下本没有的按键
 ;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在 mac 上的安装及一些相应配置/#orgheadline15

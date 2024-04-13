@@ -80,6 +80,7 @@
  tramp-default-method "ssh" ;Faster than the default scp
  tramp-verbose 1
  find-function-C-source-directory "~/repos/emacs/src/"
+ Man-notify-method 'bully
  )
 ;; Increase undo limits. Why?
 ;; .. ability to go far back in history can be useful, modern systems have sufficient memory.
