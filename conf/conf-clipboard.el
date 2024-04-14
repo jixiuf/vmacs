@@ -73,7 +73,7 @@
    ((and (equal system-type 'gnu/linux)
          (not (display-graphic-p))
          (not (window-system))
-         (string-= (getenv "XDG_SESSION_TYPE") "wayland")
+         (string= (getenv "XDG_SESSION_TYPE") "wayland")
          (equal (car args) 'CLIPBOARD))
     (let ((default-directory "~/"))
       (shell-command-to-string "wl-paste")))
@@ -92,7 +92,7 @@
    ((and (equal system-type 'gnu/linux)
          (not (display-graphic-p))
          (not (window-system))
-         (string-= (getenv "XDG_SESSION_TYPE") "wayland")
+         (string= (getenv "XDG_SESSION_TYPE") "wayland")
          (equal (car args) 'CLIPBOARD))
     (let ((process-connection-type nil)   ; ; use pipe
           (default-directory "~/"))
