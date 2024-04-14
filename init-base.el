@@ -7,7 +7,7 @@
 (setq submodules-dir (concat user-emacs-directory "submodule"))
 (when submodules-dir
   (dolist (dir (directory-files submodules-dir  nil "[a-zA-Z0-9_-]"))
-    (add-to-list 'load-path dir)))
+    (add-to-list 'load-path (expand-file-name dir  submodules-dir))))
 
 (require 'conf-macro)
 ;; (require 'conf-dump)
