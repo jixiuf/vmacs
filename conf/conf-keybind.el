@@ -85,20 +85,22 @@
   (isearch-printing-char ?\!))
 (global-set-key (kbd "C-1")   (lambda()
                                 (interactive)
-                                (cond
-                                 ((eq major-mode 'dired-mode)
-                                  (call-interactively 'dired-do-shell-command))
-                                 (t
-                                  (if current-prefix-arg
-                                      (if (equal current-prefix-arg '(16))
-                                          (emamux:send-command)
-                                        (setq current-prefix-arg nil)
-                                        (emamux:send-command))
-                                    (if (region-active-p)
-                                        (shell-command-on-region (region-beginning) (region-end)
-                                                                 (read-shell-command "Shell command on region: ")
-                                                                 t t)
-                                      (call-interactively 'shell-command)))))))
+                                (let ((shell-file-name "zsh")
+                                      (shell-command-switch "-ic"))
+                                  (cond
+                                   ((eq major-mode 'dired-mode)
+                                    (call-interactively 'dired-do-shell-command))
+                                   (t
+                                    (if current-prefix-arg
+                                        (if (equal current-prefix-arg '(16))
+                                            (emamux:send-command)
+                                          (setq current-prefix-arg nil)
+                                          (emamux:send-command))
+                                      (if (region-active-p)
+                                          (shell-command-on-region (region-beginning) (region-end)
+                                                                   (read-shell-command "Shell command on region: ")
+                                                                   t t)
+                                        (call-interactively 'shell-command))))))))
 
 (define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
@@ -151,9 +153,7 @@
 (vmacs-leader "s" 'save-buffer)
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
-;; (vmacs-leader  "fg" #'vmacs-ai)
-(vmacs-leader  "fg" #'gptel-code)
-(vmacs-leader  "fw" #'gptel-writing)
+(vmacs-leader  "fg" #'vmacs-ai)
 
 (vmacs-leader  "fm" (vmacs-defun switch-to-message
                       (if (equal (buffer-name) "*Messages*")

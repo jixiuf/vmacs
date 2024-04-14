@@ -6,24 +6,6 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
-(defun gptel-writing()
-  (interactive)
-  (require 'conf-ai)
-  (let ((default-directory "~/Documents/jianguo/jianguo/ai/"))
-    (setq-default gptel-temperature 1.5)
-    (setq-default gptel--system-message (alist-get 'writing gptel-directives))
-    (gptel "*writing*" nil nil t)))
-;;;###autoload
-(defun gptel-code()
-  (interactive)
-  (require 'conf-ai)
-  (let ((default-directory "~/Documents/jianguo/jianguo/ai/"))
-    (setq-default gptel-temperature 0.5)
-    (setq-default gptel--system-message (alist-get 'default gptel-directives))
-    (gptel "*code*" nil nil t)))
-
-
-;;;###autoload
 (defun dape-repl-dwim()
   (interactive)
   (if (equal (buffer-name) "*dape-repl*")

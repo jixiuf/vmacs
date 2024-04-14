@@ -54,8 +54,9 @@
  ;; mail-addrbook-file (expand-file-name "mail_address" dropbox-dir)
 
  ;; after this shell-command can use zsh alias
- shell-file-name "zsh"
- shell-command-switch "-ic"
+ ;; 设置成zsh M-x:man 似乎无法用
+ ;; shell-file-name "zsh"
+ ;; shell-command-switch "-ic"
 
  ;;注意这两个变量是与 recentf 相关的,把它放在这里,是因为
  ;;觉得 recentf 与 filecache 作用有相通之处,
