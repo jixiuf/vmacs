@@ -1,0 +1,3 @@
+[submodule "submodule/meow"]
+	path = submodule/meow
+	url = git@github.com:jixiuf/meow.git
