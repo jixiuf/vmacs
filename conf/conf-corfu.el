@@ -1,10 +1,12 @@
 ;;; Code:
 (global-corfu-mode)
 (corfu-history-mode)
-(require 'kind-icon)
-;;(unless (display-graphic-p)
-  ;;(require 'corfu-popup)
-  ;;(corfu-popup-mode +1))
+(defun corfu-tui()
+  ;; (require 'kind-icon)
+  (unless (display-graphic-p)
+    (corfu-terminal-mode +1)))
+(add-hook 'tty-setup-hook #'corfu-tui)
+
 
 (setq kind-icon-default-face 'corfu-default)
 (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
