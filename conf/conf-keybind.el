@@ -215,6 +215,8 @@
   (define-key input-decode-map "\e[1;1j" (kbd "C-4"))
   (define-key input-decode-map "\e[1;1k" (kbd "C-8"))
   (xterm-mouse-mode 1)
+  (require 'clipetty)
+  (global-clipetty-mode)
   ;; (define-key input-decode-map "\e[1;1l" (kbd "C-1"))
   ;; (define-key input-decode-map "\e[1;1m" (kbd "C-m"))
   )
