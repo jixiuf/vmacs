@@ -579,28 +579,28 @@ Move point to end-of-line ,if point was already at that position,
 
 ;; linux 上使用星际译王的命令行版 sdcv 进行翻译
 ;;;###autoload
-(defun sdcv-to-buffer ()
-  "Search dict in region or world."
-  (interactive)
-  (let* ((word (if mark-active
-                   (buffer-substring-no-properties (region-beginning) (region-end))
-                 (current-word nil t)))
-         (buf-name (buffer-name))
-         (mp3-file (concat "/usr/share/OtdRealPeopleTTS/" (downcase (substring word 0 1 )) "/" word ".mp3"))
-         )
-    ;; (setq word (read-string (format "Search the dictionary for (default %s): " word)
-    ;;                         nil nil word))
-    (set-buffer (get-buffer-create "*sdcv*"))
-    (buffer-disable-undo)
-    (erase-buffer)
-    (when (file-exists-p mp3-file)(shell-command (concat "mpg123 "  mp3-file " >/dev/null 2>/dev/null")))
-    (insert (shell-command-to-string  (format "sdcv --data-dir %s --utf8-input --utf8-output -n %s " (expand-file-name "~/.emacs.d/bin/sdcv/dic/")  word)))
-    ;;
-    (if (equal buf-name "*sdcv*")
-        (switch-to-buffer "*sdcv*")
-      (pop-to-buffer "*sdcv*" t nil))
-    (goto-char (point-min))
-    ))
+;; (defun sdcv-to-buffer ()
+;;   "Search dict in region or world."
+;;   (interactive)
+;;   (let* ((word (if mark-active
+;;                    (buffer-substring-no-properties (region-beginning) (region-end))
+;;                  (current-word nil t)))
+;;          (buf-name (buffer-name))
+;;          (mp3-file (concat "/usr/share/OtdRealPeopleTTS/" (downcase (substring word 0 1 )) "/" word ".mp3"))
+;;          )
+;;     ;; (setq word (read-string (format "Search the dictionary for (default %s): " word)
+;;     ;;                         nil nil word))
+;;     (set-buffer (get-buffer-create "*sdcv*"))
+;;     (buffer-disable-undo)
+;;     (erase-buffer)
+;;     (when (file-exists-p mp3-file)(shell-command (concat "mpg123 "  mp3-file " >/dev/null 2>/dev/null")))
+;;     (insert (shell-command-to-string  (format "sdcv --data-dir %s --utf8-input --utf8-output -n %s " (expand-file-name "~/.emacs.d/bin/sdcv/dic/")  word)))
+;;     ;;
+;;     (if (equal buf-name "*sdcv*")
+;;         (switch-to-buffer "*sdcv*")
+;;       (pop-to-buffer "*sdcv*" t nil))
+;;     (goto-char (point-min))
+;;     ))
 
 ;; (shell-command "notify-send \"`sdcv -n  %s`\"" (buffer-substring begin end))
 ;; (tooltip-show
@@ -671,7 +671,7 @@ Move point to end-of-line ,if point was already at that position,
 ;; (defun vmacs-untabify-hook ()
 ;;   (when (member major-mode vmacs-untabify-modes)
 ;;     (untabify (point-min) (point-max))))
-(defvar my-scratch-backup-directory "~/.emacs.d/cache/scratch-backups/")
+(defvar my-scratch-backup-directory "~/.cache/emacs/scratch-backups/")
 (when (not (file-exists-p my-scratch-backup-directory)) (make-directory my-scratch-backup-directory t))
 
 ;; 将 *scratch* 内容写入指定目录下的备份文件

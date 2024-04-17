@@ -1,26 +1,10 @@
 # -*- coding:utf-8 -*-
 .PHONY: eshell lib rime
 EMACSCMD ?= emacs
-EMACSGCCCMD ?= gccemacs
 LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0
-EMACSNATIVE ?= LIBRARY_PATH=$(LIBRARY_PATH) $(EMACSGCCCMD) --batch --quick -L . \
-			--eval "(let ((default-directory \"~/.emacs.d/elpa/\")) (normal-top-level-add-subdirs-to-load-path))" \
-			--eval "(add-to-list 'load-path \"~/.emacs.d/conf\")" \
-			--eval "(add-to-list 'load-path \"~/.emacs.d/lazy\")" \
-			--eval "(let ((default-directory \"~/.emacs.d/submodule/\")) (normal-top-level-add-subdirs-to-load-path))" \
-            -f batch-native-compile
-
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init-base.el
 all:clean update-autoload-cookie deps
-dump: clean update-autoload-cookie deps
-# @ln -sf  `pwd`/post-receive .git/hooks/
-# @ln -sf  `pwd`/pre-push .git/hooks/ #
-	echo $(EMACSCMD)
-	@-pkill  -f dump-emacs-portable
-	@mkdir -p ~/.emacs.d/cache/dump/
-	$(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)"  -l ~/.emacs.d/dump-init.el  -eval '(dump-emacs-portable "~/.emacs.d/cache/dump/emacs_tmp.pdump")'
-	@cp -f ~/.emacs.d/cache/dump/emacs_tmp.pdump ~/.emacs.d/cache/dump/emacs.pdump
 base:
 	$(EMACS_BASE)  --debug-init
 compile:lib
@@ -73,12 +57,12 @@ deps:
 
 
 rime:
-	rm -rf ~/.emacs.d/rime/
-	mkdir -p ~/.emacs.d/rime
-	ln -s -f "$$HOME/Library/Rime/squirrel.custom.yaml" $$HOME/.emacs.d/rime/squirrel.custom.yaml
-	ln -s -f "$$HOME/Library/Rime/default.custom.yaml" $$HOME/.emacs.d/rime/default.custom.yaml
-	ln -s -f "$$HOME/Library/Rime/pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/rime
-	ln -s -f "$$HOME/Library/Rime/wubi_pinyin_jixiuf.schema.yaml" $$HOME/.emacs.d/rime
-	ln -s -f "$$HOME/Library/Rime/double_pinyin_flypy_jixiuf.schema.yaml" $$HOME/.emacs.d/rime
-	ln -s -f "$$HOME/Library/Rime/"*.dict.yaml $$HOME/.emacs.d/rime/
-	cp  -rf "$$HOME/Library/Rime/"*.userdb $$HOME/.emacs.d/rime/
+	rm -rf rime/
+	mkdir -p rime
+	ln -s -f "$$HOME/Library/Rime/squirrel.custom.yaml" rime/squirrel.custom.yaml
+	ln -s -f "$$HOME/Library/Rime/default.custom.yaml" rime/default.custom.yaml
+	ln -s -f "$$HOME/Library/Rime/pinyin_jixiuf.schema.yaml" rime
+	ln -s -f "$$HOME/Library/Rime/wubi_pinyin_jixiuf.schema.yaml" rime
+	ln -s -f "$$HOME/Library/Rime/double_pinyin_flypy_jixiuf.schema.yaml" rime
+	ln -s -f "$$HOME/Library/Rime/"*.dict.yaml rime/
+	cp  -rf "$$HOME/Library/Rime/"*.userdb rime/

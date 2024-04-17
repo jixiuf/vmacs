@@ -55,7 +55,7 @@
 (setq-default mode-line-format nil)
 (setq mode-line-format nil)
 (setq modus-themes-hl-line  '(intense accented))
-(load "~/.emacs.d/init-base.el")
+(load  (concat user-emacs-directory "init-base.el"))
 (when (eq system-type 'darwin) (require 'conf-macos))
 (when (eq system-type 'gnu/linux) (require 'conf-linux))
 (when (eq system-type 'windows-nt) (require 'conf-w32))

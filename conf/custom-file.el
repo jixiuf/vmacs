@@ -12,12 +12,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(auto-save-file-name-transforms '((".*" "~/.emacs.d/cache/backup_files/" t)))
+ '(auto-save-file-name-transforms '((".*" "~/.cache/emacs/backup_files/" t)))
  '(auto-save-visited-interval 5)
  '(auto-save-visited-mode t)
- '(backup-directory-alist '((".*" . "~/.emacs.d/cache/backup_files/")))
+ '(backup-directory-alist '((".*" . "~/.cache/emacs/backup_files/")))
  '(blink-cursor-mode t)
- '(bookmark-default-file "~/.emacs.d/cache/bookmarks")
+ '(bookmark-default-file "~/.cache/emacs/bookmarks")
  '(column-number-mode nil)
  '(custom-group-tag-faces '(default))
  '(custom-safe-themes t)
@@ -47,13 +47,13 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async cape clipetty consult-dir corfu corfu-terminal dape dired-filetype-face eglot emamux embark
+   '(async cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux embark
            embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg
            gpt-commit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai
            org-msg ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
- '(recentf-save-file "~/.emacs.d/cache/recentf")
+ '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
    '((eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "systemctl --user restart waybar" nil nil)) t)
@@ -67,14 +67,11 @@
      (diff-add-log-use-relative-names . t) (vc-git-annotate-switches . "-w")
      (checkdoc-minor-mode . t) (flycheck-disabled-checkers emacs-lisp-checkdoc)
      (git-commit-major-mode . git-commit-elisp-text-mode)))
- '(save-place-file "~/.emacs.d/cache/place")
- '(savehist-file "~/.emacs.d/cache/history")
+ '(save-place-file "~/.cache/emacs/place")
+ '(savehist-file "~/.cache/emacs/history")
  '(scroll-bar-mode nil)
- '(tramp-persistency-file-name "~/.emacs.d/cache/tramp")
+ '(tramp-persistency-file-name "~/.cache/emacs/tramp")
  '(tramp-syntax 'default nil (tramp))
- '(transient-history-file "~/.emacs.d/cache/transient/history.el")
- '(transient-levels-file "~/.emacs.d/cache/transient/levels.el")
- '(transient-values-file "~/.emacs.d/cache/transient/values.el")
  '(uniquify-buffer-name-style 'forward nil (uniquify))
  '(warning-suppress-log-types '((comp) (emacs) (with-editor)))
  '(warning-suppress-types

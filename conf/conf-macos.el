@@ -81,8 +81,8 @@
 ;; # mac 上 emacs 直接编辑二进制 applescript
 (add-to-list 'jka-compr-compression-info-list
              `["\\.scpt\\'"
-               "converting text applescript to binary applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") nil
-               "converting binary applescript to text applescprit " ,(expand-file-name "applescript-helper.sh" "~/.emacs.d/bin/") ("-d")
+               "converting text applescript to binary applescprit " "applescript-helper.sh" nil
+               "converting binary applescript to text applescprit " "applescript-helper.sh" ("-d")
                nil t "FasdUAS"])
 ;;It is necessary to perform an update!
 ;; (add-hook 'after-init-hook #'jka-compr-update)

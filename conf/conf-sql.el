@@ -1,6 +1,6 @@
 ;;; Code:
 
-(setq sql-input-ring-file-name "~/.emacs.d/cache/sql-cmd-hist")
+(setq sql-input-ring-file-name  "~/.cache/emacs/sql-cmd-hist")
 (defun vmacs-try-write-sql-hist()
   "kill-buffer方式退出时,不会自动写hist, 此处修复之."
   (when (equal major-mode 'sql-interactive-mode)
