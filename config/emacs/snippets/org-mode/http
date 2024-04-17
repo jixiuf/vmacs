@@ -1,0 +1,8 @@
+# key: http
+# name: src (#+BEGIN_SRC verb...)
+# --
+
+#+BEGIN_SRC verb :wrap src ob-verb-response :op send ${1:$$(yas-completing-read "get response:" '("get-body" "get-headers") nil t nil nil "get-body")}
+${2:$$(yas-choose-value (list "GET " "POST " "PUT " "DELETE "))} $0
+
+#+END_SRC

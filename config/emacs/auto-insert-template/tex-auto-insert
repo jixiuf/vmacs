@@ -1,0 +1,12 @@
+\documentclass[11pt]{article}
+\usepackage{xeCJK}
+% \setCJKmainfont{微软雅黑}
+% \setCJKmonofont{微软雅黑}
+\setCJKmainfont[BoldFont=SimHei]{SimSun}
+\parindent 0em                  %段首缩进
+\begin{document}
+$0
+\end{document}
+%%% Local Variables: 
+%%% TeX-master: "."
+%%% End: 

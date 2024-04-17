@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: jsondeclare
+# key: jsd
+# --
+func (${2:${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}} ${1:Class}) MarshalJSON() (data []byte, err error) {
+    $0
+    return
+}
+
+func ($2 *$1) UnmarshalJSON(data []byte) (err error){
+    return
+}

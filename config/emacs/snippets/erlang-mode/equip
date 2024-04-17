@@ -1,0 +1,4 @@
+#name : @equiv
+#key : equiv
+# --
+`(if (looking-back  "%%[ \t]*" (point-at-bol)) (just-one-space)(insert"%% "))`@equiv $1

@@ -1,0 +1,6 @@
+#name : supervisor 
+#key : sup
+# --
+{ok,{{${1:$$(yas/choose-value '("rest_for_all" "simple_one_for_one"  "one_for_all" "one_for_one" ))},${2:MaxRestart},${3:MaxTime}},
+         [$0 %using spec snippet for childspec
+         ]}}

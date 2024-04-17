@@ -1,0 +1,4 @@
+# name: erlang:monitor(process,Pid)
+# key: mon
+# --
+${2:Ref} = erlang:monitor(process,${1:Pid})

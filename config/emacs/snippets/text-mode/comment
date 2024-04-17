@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: comment
+# key: comment
+# --
+`(let ((i 0)(line comment-start)
+      (comment comment-start))
+  (unless (string-empty-p comment-end)
+    (setq comment "*"))
+  (while (< i (/ fill-column (length comment)))
+    (setq line (concat line  comment)) (setq i (1+ i)))
+  (setq line (concat line comment-end)))`

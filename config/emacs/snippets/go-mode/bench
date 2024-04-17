@@ -1,0 +1,6 @@
+func Benchmark${1:name}(b *testing.B)  {
+	b.ReportAllocs()
+	for i := 0; i < b.N; i++ {
+      $0
+	}
+}

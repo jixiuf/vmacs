@@ -1,0 +1,3 @@
+func (${3:${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}} ${2:*}${1:target}) ${4:funcName}(${5:arguments}) (${6:results}) {
+	$0
+}

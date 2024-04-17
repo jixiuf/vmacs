@@ -1,0 +1,9 @@
+#name : try, catch
+#key : try
+# --
+@try {
+    $0
+}
+@catch (${1:NSException} ${2:* ex}) {
+    $3
+}

@@ -1,0 +1,4 @@
+# name: file encoding
+# key: coding
+# --
+`(if (looking-back  (concat comment-start "[ \t]*")(point-at-bol))(just-one-space)(insert comment-start " ") )`-*- coding:${1:utf-8} -*- `(insert comment-end)`

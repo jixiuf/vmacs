@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: @implementation
+# key: imp
+# --
+@implementation $1 
+$0
+@end

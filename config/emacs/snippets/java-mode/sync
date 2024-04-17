@@ -1,0 +1,6 @@
+#name : synchronized
+#key : syn
+# --
+synchronized (${1:this} {
+    $0
+}

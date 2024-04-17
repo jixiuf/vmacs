@@ -1,0 +1,9 @@
+props = new java.util.Properties();
+props.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,
+          "org.jnp.interfaces.NamingContextFactory");
+props.put(javax.naming.Context.URL_PKG_PREFIXES,
+          "org.jboss.naming:org.jnp.interfaces");
+props.put(javax.naming.Context.PROVIDER_URL, "localhost:1099");
+context = new javax.naming.InitialContext(props);
+${1:result} = context.lookup("${2:jndiName}");
+$0

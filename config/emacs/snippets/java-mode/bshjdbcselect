@@ -1,0 +1,7 @@
+ps = conn.prepareStatement("${1:SELECT 1}");
+rs = ps.executeQuery();
+while (rs.next()) {
+    $0
+}
+rs.close();
+ps.close();

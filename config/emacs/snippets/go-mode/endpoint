@@ -1,0 +1,28 @@
+# -*- mode: snippet -*-
+# name: endpoint
+# key: end
+# --
+type $1Req struct {
+	$0
+}
+// https://github.com/swaggo/swag/blob/master/README_zh-CN.md#api操作
+
+// $1 godoc
+// @Summary $1
+// @Description $1
+// @Accept  x-www-form-urlencoded,json
+// @Produce x-www-form-urlencoded,json
+// //@Param msg  	query    string     	true  "this is message" default(hello)
+// @Param X-Uid  	header    int    	true   "用户id(header)" default(10064589)
+// @Param X-Av  	header    string    	true   "版本号" default(10.0.0)
+// @Router /${1:$(progn (require 'lazy-camelize) (underscore yas/text))} [get,post]
+// @Success 200 {object} $1Req
+func (end *${2:$1}Endpoint) $1(c engine.Context) {
+	var req $1Req
+	err:=c.ShouldBind(&req)
+	if err != nil {
+		c.Warningln("$2Endpoint.$1", err)
+		c.JSONResponseError(err)
+		return
+	}
+}

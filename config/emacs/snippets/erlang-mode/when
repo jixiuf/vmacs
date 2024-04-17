@@ -1,0 +1,4 @@
+# name: ?WHEN(Test,EVAL)
+# key: when
+# --
+?WHEN(${1:true},$0)

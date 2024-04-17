@@ -1,3 +1,3 @@
 [submodule "config/emacs/submodule/meow"]
-	path = submodule/meow
+	path = config/emacs/submodule/meow
 	url = git@github.com:jixiuf/meow.git

@@ -1,0 +1,4 @@
+ps = conn.prepareStatement("$1");
+ps.executeUpdate();
+ps.close();
+$0

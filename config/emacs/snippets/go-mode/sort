@@ -1,0 +1,28 @@
+# -*- mode: snippet -*-
+# name: sort
+# key: sort
+# --
+func (l $1) SortReverse() {
+	sort.Sort(sort.Reverse(l))
+}
+
+func (l $1) Sort() {
+	sort.Sort(l)
+}
+func (s $1) Reverse() {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
+func (l $1) Len() int {
+	return len(l)
+}
+
+func (l $1) Less(i, j int) bool {
+	return l[i]<l[j]
+}
+
+func (l $1) Swap(i, j int) {
+	l[i], l[j] = l[j], l[i]
+}

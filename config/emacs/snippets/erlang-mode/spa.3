@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: spawn_link(fun)
+# key: spa
+# --
+`(indent-for-tab-command)`${2:Pid} = spawn_link(fun() -> $1 end)$0

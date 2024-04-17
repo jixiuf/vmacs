@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: cmd
+# --
+        public ICommand $1Command
+        {
+            get { return new BaseCommand($1, CanExecute); }
+        }
+
+        /// <summary>
+        ///$2 
+        /// </summary>
+        /// <param name="parameter">commandµÄ²ÎÊý</param>
+        public void $1(object parameter)
+        {
+            $0
+        }

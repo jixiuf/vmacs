@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: operator++  ++MyClass
+# key: ++
+# --
+${1:MyClass}& $1::operator${2:++}() {
+    return *this;
+}

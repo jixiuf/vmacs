@@ -1,0 +1,9 @@
+%%%-------------------------------------------------------------------
+%%% @author `user-full-name` <`user-mail-address`>
+%%% @doc
+%%%
+%%% @end
+%%% Created : `(format-time-string "%Y-%m-%d %H:%M")` by `user-full-name` <`user-mail-address`>
+%%%-------------------------------------------------------------------
+-module(`(file-name-nondirectory
+              (file-name-sans-extension (or (buffer-file-name) (buffer-name))))`).

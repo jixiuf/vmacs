@@ -1,0 +1,6 @@
+# name: defun a new function
+# key: defun
+# --
+${1:fun_name}()->
+   $0
+.

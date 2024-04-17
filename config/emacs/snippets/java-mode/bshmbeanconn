@@ -1,0 +1,2 @@
+${1:mbeanconn} = new javax.naming.InitialContext().lookup("jmx/rmi/RMIAdaptor");
+$0

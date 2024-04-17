@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: ctx.Error
+# key: e
+# --
+ctx.Error${1:$(if (string-match "%" yas-text) "f" "ln")}(${1:"$2"}${1:$(if (string-match "%" yas-text) "," "\)")
+}$3${1:$(if (string-match "%" yas-text) "\)" "")}

@@ -1,0 +1,11 @@
+#name : latex table  resize for export to latex
+#key: t
+# --
+#+LATEX: \adjustbox{max width=\linewidth}{
+#+LATEX: \rowcolors[]{2}{blue!10}{blue!25}
+|/|<|<>|
+|-|--|----|
+| |$3 |$4 |
+|-$0
+#+LaTeX: }
+#+LaTex: \captionof{table}{${1:标题}}

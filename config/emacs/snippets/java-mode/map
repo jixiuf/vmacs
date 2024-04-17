@@ -1,0 +1,4 @@
+#name : map
+#key : map
+# --
+Map<${1:String}, ${2:Object}> ${3:map} = new HashMap<$1, $2>();$0

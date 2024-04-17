@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Down
+# key: Down
+# expand-env: ((yas/indent-line 'auto) )
+# --
+{'DOWN',${1:Ref},process,${2:Pid},${3:Reason}}`(indent-for-tab-command)` 

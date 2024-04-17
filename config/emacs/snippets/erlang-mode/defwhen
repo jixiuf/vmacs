@@ -1,0 +1,9 @@
+# name: define(WHEN) when
+# key: defwhen
+# --
+-define(WHEN(Test,Eval),
+        case Test of
+            true->
+                Eval;
+            _ ->ok
+        end).

@@ -1,0 +1,8 @@
+# name:foldl(List,E,Init,Acc,Eval),
+foldr(List,Ele). 
+# key: fold
+# --
+?FOLD(${1:List},${2:Ele},${3:Init},${4:Acc},
+              begin
+                  $0
+              end)

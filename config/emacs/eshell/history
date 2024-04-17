@@ -1,0 +1,128 @@
+cd
+ls
+cat readme.txt 
+htop
+ls
+cat a.c
+ls
+ls
+ls
+grep emacs * -R
+grep emacs * -R
+grep emacs * -R
+grep emacs * -R
+grep emacs2 * -R
+rg emacs
+top 
+htop 
+git branch 
+git log 
+git l
+ls
+clear 
+ls
+apmdev
+apmdev
+ssh root@10.2.0.171
+ls
+ls
+zsh 
+ls
+ls
+cd 
+ls
+cd -
+ls
+grep vterm * 
+ls
+ls
+git branch 
+git b
+git log 
+git branch 
+>ls
+pwd
+git bran
+git br
+>ls
+ls
+cat conf-vterm.el
+v conf-vterm.el 
+conf-vterm.el 
+o conf-vterm.el 
+vi conf-v
+vi conf-vterm.el 
+vi conf-vterm.el 
+vi conf-vterm.el 
+./askme -c deployments/askme.testing.toml 
+ls
+tmux 
+ls
+tmux 
+ls
+zsh 
+fzf 
+fzf-tmux
+ls
+ls
+rm config 
+ls
+cd
+ls
+pkill  gpg
+ps -ef|grep gpg
+kill -9  986
+ps -ef|grep gpg
+kill -9 968
+top 
+ll
+ls
+pwd
+ls
+cd /etc/ssh/ssh_config.d/
+ls
+ls
+pwd 
+cdd
+cd -
+ls
+cd /
+ls
+pwd
+cd -
+ls
+cd etc
+cd ..
+ls
+ls
+cd ../etc/
+ls
+ls
+cd ../../etc
+ls
+cd elasticsearch/
+ls
+pwd
+ll
+o roles.yml
+vi  roles.yml
+ls
+ls
+top
+which top
+ls
+*top
+/usr/bin/top 
+top 
+date 
+date
+which date
+unalias date
+unalias 
+date=
+alias date=
+date
+which date
+alias date=''
+date
+which date

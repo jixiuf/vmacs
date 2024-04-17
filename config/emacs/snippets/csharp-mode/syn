@@ -1,0 +1,6 @@
+#name : add/modify/delete by jixf @
+# expand-env: ((yas/indent-line 'auto) (yas/wrap-around-region 'cua))
+# key : syn
+# --
+// ${1:add} by jixf @ `(date)` Start
+$0// $1 by jixf @ `(date)` End

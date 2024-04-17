@@ -1,0 +1,11 @@
+#name : Seam Entity
+# --
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+public class ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`} implements java.io.Serializable {
+    $0
+}

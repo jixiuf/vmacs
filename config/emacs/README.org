@@ -1,0 +1,2 @@
+#+OPTIONS:   H:2 num:nil toc:t \n:t @:t ::t |:t ^:t -:t f:t *:t <:t
+#+TITLE: vmacs

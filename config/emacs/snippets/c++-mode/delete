@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: delete
+# key: del
+# --
+delete ${1:pointer};

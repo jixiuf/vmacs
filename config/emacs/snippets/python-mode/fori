@@ -1,0 +1,6 @@
+# name: for ... in range(n) : ...
+# key: fori
+# group : control structure
+# --
+for ${1:var} in range(${2:n})
+    $0

@@ -1,0 +1,6 @@
+# name: for index, item in enumerate(list):
+# key: enum
+# group : control structure
+# --
+for ${1:index}, ${2:item} in enumerate(${3:list}):
+    $0

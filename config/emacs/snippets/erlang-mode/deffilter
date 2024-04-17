@@ -1,0 +1,4 @@
+# name: -define(FILTER(List,Ele),..) foreach
+# key: deffilter
+# --
+-define(FILTER(List,E,Eval),lists:filter(fun(E)-> Eval end,List)).
