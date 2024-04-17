@@ -1,0 +1,22 @@
+pip install gfwlist2pac
+
+// go-http -p=4141 -d=sample
+ // /Users/jixiuf/Documents/Dropbox/proxy/go-http   -p 9999
+python -m SimpleHTTPServer 9999 .
+http://127.0.0.1:9999/autoproxy.pac
+
+gfwlist2pac  -i g__f_w_list.txt -f autoproxy.pac -p "SOCKS 127.0.0.1:7070"
+gfwlist2pac  -i tinygwf.txt -f autoproxy.pac -p "SOCKS 127.0.0.1:7070"
+#有说"SOCKS5 127.0.0.1:7070" 的，但我在mac 上测试"SOCKS 127.0.0.1:7070"  可用，"SOCKS5 127.0.0.1:7070"不可用
+# ssh
+
+usage: gfwlist2pac [-h] -i GFWLIST -f PAC -p PROXY
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i GFWLIST, --input GFWLIST
+                        path to gfwlist
+  -f PAC, --file PAC    path to output pac
+  -p PROXY, --proxy PROXY
+                        the proxy parameter in the pac file, for example,
+                        "SOCKS 127.0.0.1:1080;"

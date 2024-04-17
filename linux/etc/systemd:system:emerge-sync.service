@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync Portage Tree
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/emerge --sync
+[Install]
+WantedBy=multi-user.target

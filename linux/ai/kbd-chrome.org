@@ -1,0 +1,174 @@
+# -*- coding:utf-8 -*-
+
+* ubuntu 22.04 使用 wayland 时，如何像 macos 下使用 Karabiner-Elements 那样 实现更改 chrome 的快捷键，如实现 ctrl+alt+cmd+p 回到上一个 chrome tab 页面
+在 Ubuntu 22.04 上使用 Wayland 时，可以通过自定义 xkb 键位映射来更改 Chrome 中的快捷键。以下是实现 Ctrl+Alt+Cmd+P 后退到上一个 Chrome 标签页的步骤：
+
+1. 创建自定义 xkb 键位映射：
+
+   创建一个新的 xkb 文件，例如 `mykeymap`。
+
+   ```
+   xkb_keymap {
+       xkb_keycodes   { include "evdev+aliases(qwerty)" };
+       xkb_types      { include "complete" };
+       xkb_compat     { include "complete" };
+       xkb_symbols    { include "pc+us+inet(evdev)+compose(menu)+mykeymap(symbols)" };
+       xkb_geometry   { include "pc(pc105)" };
+   };
+
+   partial modifier_keys
+   xkb_symbols "default" {
+       key <CTL> { [ Control_L ] };
+       key <LALT> { [ Alt_L ] };
+       key <LWIN> { [ Super_L ] };
+       key <RALT> { [ ISO_Level3_Shift ] };
+   };
+
+   partial symbol_keys
+   xkb_symbols "chrome" {
+       include "pc+us+inet(evdev)+compose(menu)+default"
+
+       key <AC10> { [ Left, Left, Left, Left ], [ XF86_Back ] };
+   };
+   ```
+
+   在这个文件中，我们定义了两个部分。`modifier_keys` 定义一个基本的键位映射，包括 Control、Alt、Super 和 ISO_Level3_Shift。`symbol_keys` 定义一个名称为 chrome 的符号表，其中包括我们定义的新快捷键 `Left+Left+Left+Left`，以及可以触发 Back 的 XF86_Back 按键码。
+
+2. 重新载入 xkb 键位映射：
+
+   ```
+   setxkbmap -I$HOME/mykeymap -layout $layout -variant $variant -print | xkbcomp -w 0 -I$HOME/mykeymap - $DISPLAY
+   ```
+
+   在这个命令中，我们使用 `setxkbmap` 来指定使用我们的自定义 xkb 文件，并使用 `xkbcomp` 命令将其载入到当前的 Wayland 显示服务器中。
+
+3. 测试新键位映射：
+
+   打开 Chrome 浏览器，然后尝试使用 Ctrl+Alt+Cmd+P 触发 Back 功能，可以回退到上一个标签页。
+
+注意：上面的示例是一个简单的例子，仅用于演示如何更改键位映射。可能会与系统现有的其他快捷键发生冲突，因此需要根据需要进行进一步微调和测试。同时，`XF86_Back` 键码可能不适用于所有机器，因此您可能需要在自己的系统上确定适当的键码。
+* ubuntu 22.04 使用 wayland 时，如何像 macos 下使用 Karabiner-Elements 那样 实现更改 chrome 的快捷键，如实现 ctrl+alt+cmd+p 回到上一个 chrome tab 页面, ctrl+alt+cmd+l 则定位到地址栏,其他程序则不受影响
+<shell-maker-end-of-prompt>
+在 Ubuntu 22.04 上使用 Wayland 时，要按应用程序更改快捷键，可以使用一个名为 `sxhkd` 的独立程序。使用 `sxhkd`，可以创建一个自定义的全局快捷键映射，在其中根据您需要的方式配置应用程序特定的快捷键映射。
+
+以下是实现您要求的功能的步骤：
+
+1. 安装 `sxhkd`：
+
+   ```
+   sudo apt-get install sxhkd
+   ```
+
+2. 创建全局快捷键映射：
+
+   创建 `~/.config/sxhkd/sxhkdrc` 文件，然后添加以下内容：
+
+   ```
+   # Ctrl+Alt+Cmd+P 触发 Back 命令
+   # 用 Super_L 和 Super_R 替换 Command_L 和 Command_R
+   # 用 ISO_Level3_Shift 替换 Option_L 和 Option_R
+   # 用 Control_L 替换 Control_R
+   # 用 Alt_L 替换 Alt_R
+   # 在 xev 命令下按按键来确定相应的键码
+   super + {_,r} + {iso_level3_shift+control+alt,control+alt} + p
+       chromium-browser --tab --no-wait \
+           --action=previous-tab
+
+   # Ctrl+Alt+Cmd+L 触发定位到地址栏
+   super + {_,r} + {iso_level3_shift+control+alt,control+alt} + l
+       chromium-browser --no-wait \
+           --action=address-bar
+
+   # 其他组合键默认行为，您可以添加其他应用程序的自定义快捷键
+   ```
+
+   在这个文件中，我们定义了两个新的快捷键，分别用于前一个页签和地址栏。我们也可以在文件中添加其他应用程序的自定义快捷键。
+
+3. 启动 `sxhkd`：
+
+启动 `sxhkd` 以启用新的全局快捷键映射。
+
+   ```
+   sxhkd &
+   ```
+
+4. 测试快捷键：
+
+   打开 Chrome 浏览器，然后按 Ctrl+Alt+Cmd+P 触发后退命令，按 Ctrl+Alt+Cmd+L 触发定位到地址栏命令。
+
+注意：如果您想使用不同的应用程序中的自定义快捷键，需要在 `sxhkdrc` 文件中添加适当的条目。如果需要，可以在该文件中添加其他自定义的全局快捷键映射。
+* ubuntu 22.04 下， 如何 实现 ctrl+alt+cmd+c 复制选中内容,ctrl+alt+cmd+v 粘贴，ctrl+alt+cmd+a 全选，ctrl+alt+cmd+z undo
+<shell-maker-end-of-prompt>
+您可以尝试使用 xbindkeys 和 xdotool 两个工具来实现这些快捷键绑定。
+
+1. 安装 xbindkeys 和 xdotool
+
+   ```
+   sudo apt install xbindkeys xdotool
+   ```
+
+2. 配置 xbindkeys
+
+   创建 `~/.xbindkeysrc` 文件（如果不存在），添加以下内容：
+
+   ```
+   # Ctrl + Alt + Cmd + C
+   "xdotool key Ctrl+Shift+c"
+       control+alt + Mod4 + c
+
+   # Ctrl + Alt + Cmd + V
+   "xdotool key Ctrl+Shift+v"
+       control+alt + Mod4 + v
+
+   # Ctrl + Alt + Cmd + A
+   "xdotool key ctrl+a"
+       control+alt + Mod4 + a
+
+   # Ctrl + Alt + Cmd + Z
+   "xdotool key ctrl+z"
+       control+alt + Mod4 + z
+   ```
+
+   这里 Mod4 意为 windows 键或者 command 键，如果您使用的是 Mac 键盘，可以将其改为 `super`。
+
+3. 启动 xbindkeys
+
+   ```
+   xbindkeys -f ~/.xbindkeysrc
+   ```
+
+   然后就可以使用配置的快捷键了。
+* ubuntu 22.04 下， 如何 实现 ctrl+alt+cmd+c 复制选中内容,ctrl+alt+cmd+v 粘贴，ctrl+alt+cmd+a 全选，ctrl+alt+cmd+z undo,并让这些设置开机会自动生效
+
+在 Ubuntu 22.04 中，可以通过配置系统快捷键来实现这些操作。请按照以下步骤操作：
+
+1. 打开系统设置，点击“键盘快捷键”选项。
+
+2. 在左侧菜单中选择“自定义快捷键”。
+
+3. 点击页面右侧的“+”按钮，打开一个新的自定义快捷键设置窗口。
+
+4. 在 “名称” 字段中输入自定义的快捷键名称，如“复制选中内容”。
+
+5. 在 “命令” 字段中输入对应的命令。按 Ctrl + Alt + T 打开终端窗口，输入以下命令：
+
+    ```
+    xclip -selection clipboard < "$(tty)"
+    ```
+    这个命令将当前终端中的内容复制到剪贴板中。
+
+6. 点击 “添加” 按钮保存快捷键设置。
+
+7. 使用相同的步骤创建其他快捷键，分别指定相应的名称和命令。例如：
+
+- 粘贴：命令为 `xclip -selection clipboard -o >> "$(tty)"`
+
+- 全选：命令为 `xdotool key "ctrl+a"`
+
+- 撤销：命令为 `xdotool key "ctrl+z"`
+
+8. 点击 “应用” 按钮保存设置。
+
+9. 重启系统，使设置生效并开机自动生效。
+
+完成上述步骤后，你应该可以使用 Ctrl + Alt + Cmd + C、Ctrl + Alt + Cmd + V、Ctrl + Alt + Cmd + A 和 Ctrl + Alt + Cmd + Z 快捷键完成相应的操作。

@@ -1,0 +1,41 @@
+#!/bin/bash
+#curl wrapper and name it to wget
+# usage
+#  ./get url
+#  ./get url filename
+cmd="curl"
+param=()
+while [ $# -gt 0 ]; do
+    curParam=$1
+    if [ "${curParam:0:1}" == "-" ] ;then # start with -
+        cmd="$cmd $1";
+    else
+        param=("${param[@]}" $1)
+    fi
+    shift;
+done
+
+url=${param[0]}
+filename=${param[1]}
+if [ -n "$filename" ]; then
+    if [ "-o" = $filename  -o  "-O" = $filename    ] ;then
+        filename=$3
+    fi
+fi
+
+
+if [ -z "$filename" ]; then
+    xpath=${url%/*}    # gets the base filename
+    xbase=${url##*/}   # gets the file  hello.apk?a=c#eeee
+    xbase=${xbase%#*}   # remove #eeee
+    xbase=${xbase%\?*}   # remove ?a=b
+    xfext=${xbase##*.}   # gets the extension  apk
+    xpref=${xbase%.*}  # gets the gets the filename prefix hello
+    filename=${xbase}
+fi
+echo  "$cmd -o $filename $url "
+echo "write to [$filename] ..."
+# curl -C - -O <URL>
+# 这里的 `-C -` 告诉 `curl` 自动确定应该从哪里继续下载，而 `-O` 参数用于保存文件，它会保持远程文件的名称相同。
+$cmd -C - -L -o $filename $url
+echo "$filename Done"

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+app=$(hyprctl activewindow -j)
+front_addr=`echo $app|jq -r '.address'`
+cwd=$(hypr-cwd||echo $HOME)
+floating=`echo $app|jq -r '.floating'`
+if [ "$floating" == "true" ]; then
+    term.sh --class=dterm  --working-directory=$cwd &disown
+    hyprctl dispatch togglefloating address:${front_addr}
+    hyprctl dispatch movetoworkspacesilent 4,address:${front_addr}
+else
+    term.sh  --working-directory=$cwd &disown
+fi

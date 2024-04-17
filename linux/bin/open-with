@@ -1,0 +1,45 @@
+#!/bin/bash
+
+arg="$1"
+
+if [ -z "$arg" ]; then
+    # 如果未传参数，则使用 sway-cwd  来从 window title 中获取当前目录
+    # 目录支持 emacs/alacritty 均需要按一定的格式进行定制 window title
+    if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
+        arg=$(hypr-cwd)
+    elif  [ "$XDG_SESSION_DESKTOP" == "sway" ]; then
+        arg=$(sway-cwd)
+    fi
+fi
+
+if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
+    front_app=`hyprctl activewindow -j`
+    front_class=`echo $front_app|jq -r '.class'`
+    front_floating=`echo $front_app|jq -r '.floating'`
+    if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"|| "$front_class" == "dterm") ]]; then
+        hyprctl dispatch "movetoworkspacesilent special"
+    fi
+fi
+
+
+# root@host1:/tmp
+regex="([a-zA-Z0-9_\-]+)@([a-zA-Z0-9_\.\-]+):(.+)"
+arg=${arg#file://$HOSTNAME}
+# 如果是 /path/to/filename:linenum 格式的 使用 emacsclient 打开
+if [[ $arg =~ ^(.+):([0-9]+)$ ]]; then
+    file="${BASH_REMATCH[1]}"
+    line="${BASH_REMATCH[2]}"
+    file=${file#file://}
+    if [[ -f "$file" || -d "$file" ]]; then
+        # ec is my wrapper of emacsclient
+        ec -n +$line "$file"
+    fi
+elif [[ -f $arg || -d $arg ||  $arg =~ ^(/ssh:).*$  ]]; then
+
+    # 如果 arg 对应的文件或目录存在， 则使用 ec 打开否则使用 xdg-open
+    ec -n $arg
+elif [[   $arg =~ $regex  ]]; then
+    ec -n "/ssh:$arg"
+else
+    xdg-open "$arg"
+fi

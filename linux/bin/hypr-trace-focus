@@ -1,0 +1,89 @@
+#!/bin/bash
+# need: hyprctl,socat,jq
+# trace last focused window address before current active window
+# 数组变量，用于保存窗口地址的历史记录
+window_history=()
+# 序列化window_history数组到文件
+serialize_window_history() {
+    printf "%s\n" "${window_history[@]}" > /tmp/hypr_focus_hist.txt
+}
+
+# 从文件中读取序列化的window_history数组
+read_window_history() {
+    if [[ -f "/tmp/hypr_focus_hist.txt" ]]; then
+        IFS=$'\n' read -d '' -r -a window_history < /tmp/hypr_focus_hist.txt
+    fi
+}
+
+get_last_win() {
+    if [[ ${#window_history[@]} -ge 1 ]]; then
+        echo "${window_history[-1]}"
+    else
+        echo ""
+    fi
+}
+# 从历史记录中移除关闭的窗口地址
+delete_win() {
+    address="$1"
+    # 检查历史记录中是否存在该地址，如果存在则先删除
+    if [[ " ${window_history[*]} " == *" $address "* ]]; then
+        for i in "${!window_history[@]}"; do
+            if [[ "${window_history[$i]}" == "$address" ]]; then
+                unset 'window_history[$i]'
+            fi
+        done
+    fi
+}
+handle_active_window() {
+    # echo $1
+    last_win_addr=$(get_last_win)
+    if [ "$last_win_addr" != "$1" ]; then
+        # 从历史记录中移除关闭的窗口地址
+        delete_win $1
+        # 将新的窗口地址添加到历史记录的末尾
+        window_history+=("$address")
+        serialize_window_history
+        if [ -n "$last_win_addr" ]; then
+            last_focus_app=`hyprctl clients -j | jq -rc '.[] | select(.address  | test("'"$last_win_addr"'"; "i"))'`
+            last_floating=`echo $last_focus_app|jq -r '.floating'`
+            last_class=`echo $last_focus_app|jq -r '.class'`
+            if [[  "$last_floating" = "true" &&  ("$last_class" == *"org.wezfurlong.wezterm"*  || "$last_class" == *"Alacritty"*   || "$last_class" == *"dterm"*) ]]; then
+                hyprctl dispatch "movetoworkspacesilent special,address:${last_win_addr}"
+            fi
+        fi
+
+
+    fi
+    # echo "${#window_history[@]} ${window_history[@]}"
+}
+
+handle_close_window() {
+    address="$1"
+    # 从历史记录中移除关闭的窗口地址
+    delete_win $1
+    serialize_window_history
+}
+
+
+handle() {
+    # echo "$1"
+  case $1 in
+    activewindowv2\>\>*)
+        address="0x${1#*>>}"
+        # echo "### $address"
+        if [ "$address" != "0x," ]; then
+            # echo "sssssss $address"
+            handle_active_window $address
+        fi
+        ;;
+    closewindow\>\>*)
+        address="0x${1#*>>}"
+        if [ "$address" != "0x," ]; then
+            handle_close_window $address
+        fi
+        ;;
+
+  esac
+}
+
+socat -U - UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock | while read -r line; do handle "$line"; done

@@ -1,0 +1,14 @@
+#!/bin/bash
+# kill all other windows in current workspace
+# like (delete-other-windows) in emacs
+
+me=$(hyprctl activewindow -j|jq -r '.address')
+while true; do
+    hyprctl dispatch cyclenext
+    win=$(hyprctl activewindow -j|jq -r '.address')
+    if [ "$win" != "$me" ]; then
+        hyprctl dispatch killactive
+    else
+        exit 0;
+    fi
+done

@@ -1,0 +1,743 @@
+#
+# filter-select
+#
+# using filter-select, you can incrementaly filter candidate
+# and select one with ^N/^P keys.
+#
+# press enter for filter-select to update $reply and return 0,
+# press meta (alt) + enter to update $reply but return 1,
+# and press ^C or ^G not to update $reply and return 1.
+#
+# you can use ^@ to mark items. marked items are stored in $reply_marked.
+#
+# you can customize keybinds using bindkey command.
+# first, you call::
+#
+#   autoload -U filter-select; filter-select -i
+#
+# to initialize `filterselect` keymap and then do like::
+#
+#   bindkey -M filterselect '^E' accept-search
+#
+#
+# usage:
+#   filter-select [-t title] [-A assoc-array-name]
+#                 [-d array-of-description] [-D assoc-array-of-descrption]
+#                 [-s initial-filter-contents]
+#                 [-n] [-r] [-m] [-e exit-zle-widget-name]... [--] [arg]...
+#   filter-select -i
+#
+#     -t title
+#       title string displayed top of selection.
+#
+#     -A assoc-array-name
+#       name of associative array that contains candidates.
+#       this option is designed to speed up history selection.
+#
+#     -d array-of-description
+#       name of array that contains each candidate's descriptions.
+#       it is used to display and filter candidates.
+#
+#       if not specified, copied from candidates.
+#
+#     -s initial-filter-contents
+#        initial contents of the filter buffer that users type into
+#
+#     -n
+#       assign a number to the description when -d is not specified
+#
+#     -D assoc-array-of-descrption
+#       same as ``-d`` but associative array.
+#
+#     -r
+#       reverse order.
+#
+#     -m
+#       enable mark feature
+#
+#     -e exit-zle-widget-name
+#       if keys bound to `exit-zle-widget-name` is pressed,
+#       filter-select exits and set it's name to $reply[1].
+#
+#     args
+#       selection candidates.
+#
+#     -i
+#       only initialize `filterselect` keymaps.
+#
+#
+# default key binds in filterselect:
+#   enter:              accept-line (update $reply and return)
+#   meta + enter:       accept-search (update $reply but return 1)
+#   ^G:                 send-break (return 0)
+#   ^H, backspace:      backward-delete-char
+#   ^F, right key:      forward-char
+#   ^B, left key:       backward-char
+#   ^A:                 beginning-of-line
+#   ^E:                 end-of-line
+#   ^W:                 backward-kill-word
+#   ^K:                 kill-line
+#   ^U:                 kill-whole-line
+#   ^N, down key:       down-line-or-history (select next item)
+#   ^P, up key:         up-line-or-history (select previous item)
+#   ^V, page up key:    forward-word (page down)
+#   ^[V, page down key: backward-word (page up)
+#   ^[<, home key:      beginning-of-history (select first item)
+#   ^[>, end key:       end-of-history (select last item)
+#
+# available zstyles:
+#   ':filter-select:highlight' selected
+#   ':filter-select:highlight' matched
+#   ':filter-select:highlight' title
+#   ':filter-select:highlight' error
+#   ':filter-select' max-lines
+#   ':filter-select' rotate-list
+#   ':filter-select' case-insensitive
+#   ':filter-select' extended-search
+#
+#   example:
+#     zstyle ':filter-select:highlight' matched fg=yellow,standout
+#     zstyle ':filter-select' max-lines 10 # use 10 lines for filter-select
+#     zstyle ':filter-select' max-lines -10 # use $LINES - 10 for filter-select
+#     zstyle ':filter-select' rotate-list yes # enable rotation for filter-select
+#     zstyle ':filter-select' case-insensitive yes # enable case-insensitive search
+#     zstyle ':filter-select' extended-search yes # enable extended search regardless of the case-insensitive style
+#
+# extended-search:
+#     If this style set to be true value, the searching bahavior will be
+#     extended as follows:
+#
+#     ^ Match the beginning of the line if the word begins with ^
+#     $ Match the end of the line if the word ends with $
+#     ! Match anything except the word following it if the word begins with !
+#     so-called smartcase searching
+#
+#     If you want to search these metacharacters, please doubly escape them.
+
+typeset -ga reply_marked
+
+function filter-select() {
+    emulate -L zsh
+    setopt local_options extended_glob
+
+    # save ZLE related variables
+    local orig_lbuffer="${LBUFFER}"
+    local orig_rbuffer="${RBUFFER}"
+    local orig_predisplay="${PREDISPLAY}"
+    local orig_postdisplay="${POSTDISPLAY}"
+    local -a orig_region_highlight words
+    orig_region_highlight=("${region_highlight[@]}")
+
+    local key cand lines selected cand_disp buffer_pre_zle last_buffer initbuffer=''
+    local opt pattern msg unused title='' exit_pattern nl=$'\n'
+    local selected_index mark_idx_disp hi start end spec
+    local desc desc_num desc_disp bounds
+
+    local -a displays matched_desc_keys match mbegin mend outs exit_wigdets
+    local -a init_region_highlight marked_lines
+    local -A candidates descriptions matched_descs
+
+    integer i bottom_lines cursor_line=1 display_head_line=1 cand_num disp_num ii num_desc
+    integer offset display_bottom_line selected_num rev=0 ret=0 enum=0
+    integer mark_idx markable=0 is_marked
+
+    local hi_selected hi_matched hi_marked hi_title hi_error
+    zstyle -s ':filter-select:highlight' selected hi_selected || hi_selected='standout'
+    zstyle -s ':filter-select:highlight' matched hi_matched || hi_matched='fg=magenta,underline'
+    zstyle -s ':filter-select:highlight' marked hi_marked || hi_marked='fg=blue,standout'
+    zstyle -s ':filter-select:highlight' title hi_title || hi_title='bold'
+    zstyle -s ':filter-select:highlight' error hi_error || hi_error='fg=white,bg=red'
+
+    integer max_lines
+    zstyle -s ':filter-select' max-lines max_lines || max_lines=0
+
+    local rotate_list
+    zstyle -b ':filter-select' rotate-list rotate_list
+
+    _filter-select-init-keybind
+
+    candidates=()
+    descriptions=()
+    exit_wigdets=(accept-line accept-search send-break)
+
+    while getopts 't:A:d:D:nrme:s:i' opt; do
+        case "${opt}" in
+            t)
+                title="${OPTARG}"
+                ;;
+            A)
+                # copy input assc array
+                candidates=("${(@kvP)${OPTARG}}")
+                ;;
+            d)
+                # copy input array
+                integer i=0
+                for desc in "${(@P)${OPTARG}}"; do
+                    (( i++ ))
+                    descriptions+=( $i "${desc}" )
+                done
+                ;;
+            D)
+                # copy input assc array
+                descriptions=("${(@kvP)${OPTARG}}")
+                ;;
+            n)
+                enum=1
+                ;;
+            r)
+                # reverse ordering
+                rev=1
+                ;;
+            m)
+                # can use set-mark-command
+                markable=1
+                ;;
+            e)
+                exit_wigdets+="${OPTARG}"
+                ;;
+            s)
+                initbuffer="${OPTARG}"
+                ;;
+            i)
+                # do nothing. only keybinds are initialized
+                return
+        esac
+    done
+
+    if (( OPTIND > 1 )); then
+        shift $(( OPTIND - 1 ))
+    fi
+    integer i=0
+    for cand in "$@"; do
+        (( i++ ))
+        candidates+=( $i "${cand}" )
+    done
+
+    if (( ${#descriptions} == 0 )); then
+        # copy candidates
+        descriptions=("${(@kv)candidates}")
+        # add number
+        if (( enum )); then
+            num_desc="${#descriptions}"
+            for i in {1.."$num_desc"}; do
+                if (( rev )); then
+                    ii="$(($num_desc-$i+1))"
+                else
+                    ii="$i"
+                fi
+                descriptions[$i]="${(r.5.)ii} ${descriptions[$i]}"
+            done
+        fi
+    fi
+
+    desc_num="${#descriptions}"
+    matched_desc_keys=("${(onk@)descriptions}")
+    if (( rev )); then
+        matched_desc_keys=("${(Oa@)matched_desc_keys}")
+    fi
+
+    key=''
+    bounds=''
+
+    # clear edit buffer
+    BUFFER="$initbuffer"
+
+    # display original edit buffer's contants as PREDISPLAY
+    PREDISPLAY="${orig_predisplay}${orig_lbuffer}${orig_rbuffer}${orig_postdisplay}${nl}"
+
+    # re-calculate region_highlight
+    init_region_highlight=()
+    for hi in "${(@)orig_region_highlight}"; do
+        if [[ "${hi}" == P* ]]; then
+            init_region_highlight+="${hi}"
+        else
+            print -r -- "${hi}" | read -d ' ' start end spec
+            init_region_highlight+="P$(( start + ${#orig_predisplay} )) $(( end + ${#orig_predisplay} )) $spec"
+        fi
+    done
+
+    # prompt for filter-select
+    PREDISPLAY+="filter: "
+
+    # clear strings displayed below the command line
+    zle -Rc
+
+    _filter-select-reset
+
+    exit_pattern="(${(j:|:)exit_wigdets})"
+
+    while [[ "${bounds}" != ${~exit_pattern} ]]; do
+        case "${bounds}" in
+            set-mark-command)
+                if (( markable )); then
+                    # check if ${selected_index} is already in the marked_lines
+                    if (( ${marked_lines[(ie)${selected_index}]} <= ${#marked_lines} )); then
+                        # remove selected_index
+                        marked_lines=("${(@)marked_lines:#${selected_index}}")
+                    else
+                        marked_lines+="${selected_index}"
+                    fi
+                fi
+                ;;
+            *down-line-or-history)
+                (( cursor_line++ ))
+                ;;
+
+            *up-line-or-history)
+                (( cursor_line-- ))
+                ;;
+
+            *forward-word)
+                (( cursor_line += bottom_lines ))
+                ;;
+
+            *backward-word)
+                (( cursor_line -= bottom_lines ))
+                ;;
+
+            beginning-of-history)
+                (( cursor_line = 1 ))
+                (( display_head_line = 1 ))
+                ;;
+
+            end-of-history)
+                (( cursor_line = desc_num ))
+                ;;
+
+            self-insert|undefined-key)
+                LBUFFER="${LBUFFER}${key}"
+                _filter-select-reset
+                ;;
+
+            '')
+                # empty, initial state
+                ;;
+
+            *)
+                buffer_pre_zle="${BUFFER}"
+
+                zle "${bounds}"
+
+                if [[ "${BUFFER}" != "${buffer_pre_zle}" ]]; then
+                    _filter-select-reset
+                fi
+        esac
+
+        if (( cursor_line < 1 )); then
+            (( display_head_line -= 1 - cursor_line ))
+            if (( display_head_line < 1 )); then
+                (( display_head_line = 1 ))
+            fi
+            if [[ $rotate_list == "yes" ]] && (( selected_num <= 1 )); then
+                (( cursor_line = bottom_lines ))
+                (( display_head_line = desc_num - bottom_lines + 1 ))
+            else
+                (( cursor_line = 1 ))
+            fi
+
+        elif (( bottom_lines == 0 )); then
+            (( display_head_line = 1 ))
+            (( cursor_line = 1 ))
+
+        elif (( cursor_line > bottom_lines )); then
+            (( display_head_line += cursor_line - bottom_lines ))
+            if (( display_head_line > desc_num - bottom_lines + 1 )); then
+                (( display_head_line = desc_num - bottom_lines + 1 ))
+            fi
+            if [[ $rotate_list == "yes" ]] && (( selected_num >= desc_num )); then
+                (( cursor_line = 1 ))
+                (( display_head_line = 1 ))
+            else
+                (( cursor_line = bottom_lines ))
+            fi
+        fi
+
+        if (( ! PENDING )); then
+            region_highlight=("${(@)init_region_highlight}")
+
+            displays=()
+            offset="${#BUFFER}"
+            if [[ -n "${title}" ]]; then
+                offset+=$(( 1 + ${#title} ))
+            fi
+
+            selected=""
+            selected_num=0
+
+            if [[ "${BUFFER}" != "${last_buffer}" ]]; then
+                if [[ -n "${BUFFER}" ]]; then
+                    if _filter-select-buffer-words words; then
+                        matched_descs=("${(kv@)descriptions}")
+                        for pattern in $words; do
+                            matched_descs=("${(kv@)matched_descs[(R)*${pattern}*]}")
+                        done
+                        matched_desc_keys=("${(onk@)matched_descs}")
+                    else
+                        matched_desc_keys=("${(onk@)descriptions}")
+                    fi
+                else
+                    matched_desc_keys=("${(onk@)descriptions}")
+                fi
+                if (( rev )); then
+                    matched_desc_keys=("${(Oa@)matched_desc_keys}")
+                fi
+                last_buffer="${BUFFER}"
+            fi
+
+            # nums pattern matched
+            desc_num="${#matched_desc_keys}"
+
+            # nums displayed
+            disp_num=0
+
+            _filter-select-update-bottom-lines
+            display_bottom_line=$(( display_head_line + bottom_lines))
+
+            if (( desc_num )); then
+                for i in "${(@)matched_desc_keys[${display_head_line},$(( display_bottom_line - 1 ))]}"; do
+                    (( disp_num++ ))
+                    desc="${descriptions[$i]}"
+
+                    desc_disp="${desc}"
+
+                    if zstyle -T ':filter-select' escape-descriptions ; then
+                        # escape \r\n\t\
+                        desc_disp="${desc_disp//\\/\\\\}"
+                        desc_disp="${desc_disp//$'\n'/\\n}"
+                        desc_disp="${desc_disp//$'\r'/\\r}"
+                        desc_disp="${desc_disp//$'\t'/\\t}"
+                    fi
+
+                    mark_idx="${marked_lines[(ie)${i}]}"
+                    (( is_marked = mark_idx <= ${#marked_lines} ))
+
+                    if (( is_marked )); then
+                        mark_idx_disp=" (${mark_idx})"
+                    else
+                        mark_idx_disp=""
+                    fi
+
+                    if (( ${(m)#desc_disp} + ${#mark_idx_disp} > COLUMNS - 1 )); then
+                        # strip long line
+                        desc_disp="${(mr:$(( COLUMNS - ${#mark_idx_disp} - 6 )):::::)desc_disp} ...${mark_idx_disp}"
+                    else
+                        desc_disp="${desc_disp}${mark_idx_disp}"
+                    fi
+
+                    displays+="${desc_disp}"
+
+                    if [[ -n "${BUFFER}" ]]; then
+                        # highlight matched words
+                        for pattern in \
+                            "(${(j.|.)${(@M)words:#*'(#e)'}})" \
+                            "(${(j.|.)${(@)words:#(\~*|*'(#e)')}})" ; do
+                            if [[ "$pattern" != '()' ]]; then
+                                region_highlight+=( "${(f)${(S)desc_disp//*(#b)${~pattern}/$(( offset + mbegin[1] )) $(( offset + mend[1] + 1 )) ${hi_matched}${nl}}%$nl*}" )
+                            fi
+                        done
+                    fi
+
+                    if (( is_marked )); then
+                        region_highlight+="${offset} $(( offset + ${#desc_disp} - ${#mark_idx_disp} + 1 )) ${hi_marked}"
+                    fi
+
+                    if (( disp_num == cursor_line )); then
+                        region_highlight+="${offset} $(( offset + ${#desc_disp} + 1 )) ${hi_selected}"
+                        selected="${candidates[$i]}"
+                        (( selected_num = display_head_line + disp_num - 1 ))
+                        selected_index="${i}"
+                    fi
+
+                    (( offset += ${#desc_disp} + 1 )) # +1 -> \n
+                done
+            fi
+
+            POSTDISPLAY=$'\n'
+            if [[ -n "${title}" ]]; then
+                POSTDISPLAY+="${title}"$'\n'
+                region_highlight+="${#BUFFER} $(( ${#BUFFER} + ${#title} + 1 )) ${hi_title}"
+            fi
+
+            if (( ${#displays} == 0 )); then
+                if (( ${#candidates} == 0 )); then
+                    msg='no candidate'
+                else
+                    msg='pattern not found'
+                fi
+                POSTDISPLAY+="${msg}"
+                region_highlight+="${offset} $(( offset + ${#msg} + 1 )) ${hi_error}"
+            fi
+
+            POSTDISPLAY+="${(F)displays}"$'\n'"[${selected_num}/${desc_num}]"
+            zle -R
+
+        fi
+
+        _filter-select-read-keys
+
+        if [[ $? != 0 ]]; then
+            # maybe ^C
+            key=''
+            bounds=''
+            break
+        else
+            key="${reply}"
+            # TODO: key sequence
+            outs=("${(z)$( bindkey -M filterselect -- "${key}" )}")
+            # XXX: will $outs contains more than two values?
+            bounds="${outs[2]}"
+        fi
+    done
+
+    if [[ -z "${key}" && -z "${bounds}" ]]; then
+        # ^C
+        reply=()
+        reply_marked=()
+        ret=1
+
+    elif [[ "${bounds}" == send-break ]]; then
+        # ^G
+        reply=()
+        reply_marked=()
+        ret=1
+
+    elif (( ${#displays} == 0 )); then
+        # no candidate matches pattern (no candidate selected)
+        reply=()
+        reply_marked=()
+        ret=1
+
+    else
+        reply=("${bounds}" "${selected}")
+        reply_marked=()
+        if (( ${#marked_lines} > 0 )); then
+            for i in "${(@)marked_lines}"; do
+                reply_marked+="${candidates[${i}]}"
+            done
+        fi
+        ret=0
+    fi
+
+    LBUFFER="${orig_lbuffer}"
+    RBUFFER="${orig_rbuffer}"
+    PREDISPLAY="${orig_predisplay}"
+    POSTDISPLAY="${orig_postdisplay}"
+    region_highlight=("${orig_region_highlight[@]}")
+    zle -Rc
+    zle reset-prompt
+
+    return $ret
+}
+
+function _filter-select-update-lines() {
+    # XXX: this function override ${lines}
+    #      that define as local in filter-select
+    #      also use ${title}
+
+    local _tmp_postdisplay="${POSTDISPLAY}"
+    # to re-calculate ${BUFFERLINES}
+    if [[ -n "${title}" ]]; then
+        POSTDISPLAY="${title}"$'\n'
+    else
+        POSTDISPLAY=""
+    fi
+    zle -R
+
+    # lines that can be used to display candidates
+    # -1 for current/total number display area
+    (( lines = LINES - BUFFERLINES - 1 ))
+
+    POSTDISPLAY="${_tmp_postdisplay}"
+    zle -R
+}
+
+function _filter-select-update-bottom-lines() {
+    # cursor が移動できる一番下の行
+    # ${max_lines} か ${lines} か ${desc_num} の小さい方を使う
+    if (( max_lines > 0 && max_lines < lines )); then
+        (( bottom_lines = max_lines ))
+    elif (( max_lines < 0 )); then
+        (( bottom_lines = lines + max_lines ))
+    else
+        (( bottom_lines = lines ))
+    fi
+
+    if (( desc_num < bottom_lines )); then
+        (( bottom_lines = desc_num ))
+    fi
+
+    if (( bottom_lines < 1 )); then
+        (( bottom_lines = 1 ))
+    fi
+}
+
+function _filter-select-reset() {
+    display_head_line=1
+    cursor_line=1
+    _filter-select-update-lines
+    _filter-select-update-bottom-lines
+}
+
+function _filter-select-buffer-words() {
+    local place="$1"
+    local -a a
+    local MATCH MBEGIN MEND
+    # split into words using shell's command line parsing,
+    # unquote the words, remove duplicated,
+    # escape "(", ")", "[", "]" and "#" to avoid crash
+    # also escape "|" and "~"
+    a=("${(@)${(@Qu)${(z)BUFFER}}//(#m)[()[\]#\|~]/\\${MATCH}}")
+
+    if ! zstyle -t ':filter-select' extended-search ; then
+        if zstyle -t ':filter-select' case-insensitive; then
+            : ${(A)a::=(#i)${^a}}
+        fi
+    else
+        # remove single "\\", "!",
+        # "^" like the history-incremental-pattern-searches',
+        # and "!^".
+        : ${(A)a::=${a:#([\\!^]|'!^')}}
+
+        # escape "^" other than the beginning's
+        # unescape "\\^" one level
+        : ${(A)a::=${a//(#m)('^'~(#s)'^')/\\${MATCH}}}
+        : ${(A)a::=${a//(#m)'\\^'/${MATCH#\\}}}
+
+        # "!aoe" -> "~*aoe",
+        # ("a!oe" should be held on, the beginning's "!" only be considered)
+        # unescape "\\!" one level
+        : ${(A)a::=${a/(#m)(#s)\!?##/\~\*${MATCH#\!}}}
+        : ${(A)a::=${a//(#m)'\!'/${MATCH#\\}}} # XXX: not '\\!' though...
+
+        # "^abc" -> "(#s)abc",
+        # ("a^bc" should be held on, the beginning's "^" only be considered)
+        : ${(A)a::=${a/(#m)(#s)\^?##/(#s)${MATCH#\^}}}
+
+        # "xyz$" -> "xyz(#e)",
+        # ("x$yz" shoud be held on, the ending's "$" only be considered)
+        # unescape "\\$" one level
+        : ${(A)a::=${a/(#m)*[^\\]\$(#e)/${MATCH%\$}(#e)}}
+        : ${(A)a::=${a//(#m)'\$'/${MATCH#\\}}} # XXX: not '\\$' though...
+
+        # smartcase searching ("(#i)(#I)Search" searches case sensitively)
+        : ${(A)a::=${a/(#m)*[[:upper:]##]*/(#I)${MATCH}}}
+        : ${(A)a::=(#i)${^a}}
+
+        # make "~" to be at the beginning
+        #: ${(A)a::=${a/#(#b)('(#i)'('(#I)')#)'~'/\~${match[1]}}}
+        : ${(A)a::=${a/#'(#i)(#I)~'/\~(#i)(#I)}}
+        : ${(A)a::=${a/#'(#i)~'/\~(#i)}}
+
+        # fixup the '!^'; "~(#i)*\^" -> "~(#i)(#s)"
+        # (for example, "!^aoe" -> "~(#i)*\^aoe" -> "~(#i)(#s)aoe")
+        #: ${(A)a::=${a/#(#b)'~'('(#i)'('(#I)')#)'*\^'/\~${match[1]}(#s)}}
+        : ${(A)a::=${a/#'~(#i)(#I)*\^'/'~(#i)(#I)(#s)'}}
+        : ${(A)a::=${a/#'~(#i)*\^'/'~(#i)(#s)'}}
+    fi
+    : ${(PA)place::=$a}
+    (( ${#a} > 1 )) || (( ${#a} == 1 )) && [[ -n "$a" ]]
+}
+
+function _filter-select-init-keybind() {
+    integer fd ret
+
+    # be quiet and check filterselect keybind defined
+    exec {fd}>&2 2>/dev/null
+    bindkey -l filterselect > /dev/null
+    ret=$?
+    exec 2>&${fd} {fd}>&-
+
+    if (( ret != 0 )); then
+        bindkey -N filterselect
+
+        bindkey -M filterselect '^J' accept-line
+        bindkey -M filterselect '^M' accept-line
+        bindkey -M filterselect '\e^J' accept-search
+        bindkey -M filterselect '\e^M' accept-search
+
+        bindkey -M filterselect '\e^G' send-break
+        bindkey -M filterselect '^G' send-break
+
+        bindkey -M filterselect '^@' set-mark-command
+
+        bindkey -M filterselect '^H' backward-delete-char
+        bindkey -M filterselect '^?' backward-delete-char
+
+        bindkey -M filterselect '^F' forward-char
+        bindkey -M filterselect '\e[C' forward-char
+        bindkey -M filterselect '\eOC' forward-char
+
+        bindkey -M filterselect '^B' backward-char
+        bindkey -M filterselect '\e[D' backward-char
+        bindkey -M filterselect '\eOD' backward-char
+
+        bindkey -M filterselect '^A' beginning-of-line
+        bindkey -M filterselect '^E' end-of-line
+
+        bindkey -M filterselect '^W' backward-kill-word
+        bindkey -M filterselect '^K' kill-line
+        bindkey -M filterselect '^U' kill-whole-line
+
+        # move cursor down/up
+        bindkey -M filterselect '^N' down-line-or-history
+        bindkey -M filterselect '\e[B' down-line-or-history
+        bindkey -M filterselect '\eOB' down-line-or-history
+        bindkey -M filterselect '^P' up-line-or-history
+        bindkey -M filterselect '\e[A' up-line-or-history
+        bindkey -M filterselect '\eOA' up-line-or-history
+
+        # page down/up
+        bindkey -M filterselect '^V' forward-word
+        bindkey -M filterselect '\e[6~' forward-word
+
+        bindkey -M filterselect '\eV' backward-word
+        bindkey -M filterselect '\ev' backward-word
+        bindkey -M filterselect '\e[5~' backward-word
+
+        # home/end
+        bindkey -M filterselect '\e<' beginning-of-history
+        bindkey -M filterselect '\e[1~' beginning-of-history
+
+        bindkey -M filterselect '\e>' end-of-history
+        bindkey -M filterselect '\e[4~' end-of-history
+    fi
+}
+
+function _filter-select-read-keys() {
+    local key key2 key3 nkey
+    integer ret
+
+    read -k key
+    ret=$?
+    reply="${key}"
+    if [[ '#key' -eq '#\\e' ]]; then
+        # M-...
+        read -t $(( KEYTIMEOUT / 1000 )) -k key2
+        if [[ "${key2}" == 'O' ]]; then
+            # ^[O (SS3) affects next character only.
+            # Example: cursor keys on some terminals.
+            read -k key3
+            ret=$?
+            reply="${key}${key2}${key3}"
+        else
+            if [[ "${key2}" == '[' ]]; then
+                # ^[[ (CSI) starts a sequence of [0-9;?] terminated by [@-~].
+                # Examples: Home, End, PgUp, PgDn ...
+                reply="${key}${key2}"
+                while true; do
+                    read -k nkey
+                    reply+=$nkey
+                    ret=$?
+                    (( $ret == 0 )) && [[ "${nkey}" =~ '^[0-9;?]$' ]] || break
+                done
+            else
+                reply="${key}${key2}"
+            fi
+        fi
+    else
+        reply="${key}"
+    fi
+    return $ret
+}
+
+filter-select "$@"

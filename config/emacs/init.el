@@ -5,7 +5,7 @@
 
 (load-theme 'modus-vivendi)
 (require 'conf-gpg)
-(load "~/.emacs.d/conf/conf-private.el.gpg")
+(load  (concat user-emacs-directory "conf/conf-private.el.gpg"))
 
 (require 'conf-face)
 (require 'conf-meow)

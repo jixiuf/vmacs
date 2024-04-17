@@ -1,0 +1,7 @@
+# cat /proc/bus/input/devices 可查看所有device的 busid vendorid  等
+# I: Bus=0003 Vendor=05ac Product=027c Version=0001
+# 注意需要将小定变大定， 如05AC
+# sudo udevadm control --reload-rules
+# journalctl -u systemd-udevd
+
+ACTION=="add", SUBSYSTEM=="input", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="0256", RUN+="/usr/local/bin/on-keyboard-update update"

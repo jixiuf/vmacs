@@ -1,0 +1,5 @@
+[Unit]
+Description=Backs up files
+
+[Service]
+ExecStart=/usr/bin/rsync -avz -CERrltm --delete /var/cache/binpkgs root@10.2.0.171:/data/binpkgs 

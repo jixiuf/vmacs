@@ -1,0 +1,46 @@
+#!/bin/bash
+# 切换当前 workspace 中窗口的布局，通常对两个窗口的布局有效
+# 即 将上下布局的两个窗口切换成左右布局
+# 或 将左右布局的两个窗口切换成上下布局
+# 大于两个窗口的窗口也可以切换，不过行为太复杂，不建议使用本脚本切换，可自行体会
+
+#有焦点的窗口
+focused_con_id=$(swaymsg -t get_seats|jq '.[].focus'|head -n 1)
+if [ -z "$focused_con_id" ]; then
+    exit 1
+fi
+id=$focused_con_id
+
+while true; do
+    parent_con=$(swaymsg -t get_tree | jq -r "recurse(.nodes[], .floating_nodes[])|select (.nodes[].id == ${id})")
+    if [ -z "$parent_con"  ]; then
+        break
+    fi
+    children=$(echo $parent_con| jq -r '.nodes')
+    cnt=$(echo $children| jq -r 'length')
+    if [ $cnt == 0 ]; then
+        exit 2;
+    elif [ $cnt -gt 1 ]; then     # nodes.length>1
+        typ=$(echo $children| jq -r '.[].type')
+        break
+    fi
+    # 只有一个 node
+    typ=$(echo $children| jq -r '.[].type')
+    # 如果 node 的类型不是容器，则退出，说明 只有一个窗口，无须 swap
+    if [ "$typ" != "con" ]; then
+        exit 4;
+    fi
+    id=$(echo $parent_con| jq '.id')
+done
+
+# try swap
+orientation=$(echo $parent_con|jq -r '.orientation')
+if [ "$orientation" = "horizontal" ]; then
+    first_child_id=$(echo $children|jq -r '.[0].id')
+    swaymsg "[con_id=$first_child_id] move up"
+elif [ "$orientation" = "vertical" ]; then
+    first_child_id=$(echo $children|jq -r '.[0].id')
+    swaymsg "[con_id=$first_child_id] move right"
+fi
+    swaymsg "[con_id=$focused_con_id] focus"
+echo "done"

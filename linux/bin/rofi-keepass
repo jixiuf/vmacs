@@ -1,0 +1,124 @@
+#!/bin/bash
+
+KEEPASS_DB_PATH="$HOME/Documents/jianguo/jianguo/keepass/pass.kdbx"
+# my master key is encrpted by gpg
+master=$(gpg -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
+# master=$(pass show bitwarden.com | head -n 1)
+
+declare -A classMap
+classMap["apifox-pdv"]="luojilab.com"
+classMap["dterm"]="bitwarden.com"
+classMap["org.keepassxc.KeePassXC"]="bitwarden.com"
+classMap["kitty"]="bitwarden.com"
+classMap["polkit-gnome-authentication-agent-1"]="bitwarden.com"
+# 取网站根域名
+declare -A TLD='()'
+initTld () {
+    local tld
+    while read -r tld; do
+        [[ -n ${tld//*[ \/;*]*} ]] && TLD["${tld#\!}"]=''
+    done < <(
+        if [ ! -f "/tmp/public_suffix_list.dat"  ]; then
+            curl https://publicsuffix.org/list/public_suffix_list.dat |grep -v "^//"|grep -v "^$" >/tmp/public_suffix_list.dat
+        fi
+        cat /tmp/public_suffix_list.dat
+    )
+}
+tldExtract () {
+    if [[ $1 == -v ]] ;then local _tld_out_var=$2;shift 2;fi
+    local dom tld=$1 _tld_out_var
+    while [[ ! -v TLD[${tld}] ]] && [[ -n $tld ]]; do
+        IFS=. read -r dom tld <<< "$tld"
+    done
+    if [[ -v _tld_out_var ]] ;then
+        printf -v $_tld_out_var '%s.%s' "$dom" "$tld"
+    else
+        echo "${dom}.${tld}"
+    fi
+}
+initTld
+
+init_input() {
+    appinfo=`hyprctl activewindow -j`
+    if [ -n "$appinfo" ]; then
+        class=`echo $appinfo|jq -r '.class'|head -n 1`
+        domain=${classMap["$class"]}
+        if [[ "$class" = "firefox" || "$class" = "google-chrome"  ]]; then
+            # show url in window title
+            # need addon for firefox: https://addons.mozilla.org/en-US/firefox/addon/add-url-to-window-title/
+            title=`echo $appinfo|jq -r '.title'|head -n 1`
+            url=$(echo $title | grep -o 'https://[^ ]*' | sed 's/— Mozilla Firefox$//' | awk '{print $1}')
+            # 提取域名
+            domain=$(echo $url | awk -F[/:] '{print $4}')
+            # 去除?后
+            domain=$(echo $domain | cut -d'?' -f1)
+            domain=$(echo $domain | sed 's/com.hk/com/g')
+            domain=$(tldExtract $domain)
+            echo $domain
+        elif [[ -n  "$domain"  ]]; then
+             echo $domain
+        fi
+    fi
+}
+ROFI_OPTIONS=(
+    -filter "$(init_input)"
+    -mesg "C-Ret: type user/passwd, Alt-Ret: type user, C-t: type TOTP, Ret:type passwd"
+    -dmenu  -i -p "Select entry" -config ~/.config/rofi/config-bwmenu.rasi
+    -kb-custom-1 "Control+u" -kb-custom-2 "Alt+Return" -kb-custom-3 "Control+t" -kb-custom-4 "Control+Return"
+)
+type_word() {
+    echo type $1|dotoolc
+  # "${AUTOTYPE_MODE[@]}" type $CLEAR_MODIFIERS "$1"
+    # echo "${AUTOTYPE_MODE[@]}"
+}
+
+type_tab() {
+    echo key tab|dotoolc
+}
+paste() {
+    echo key control+v | dotoolc
+}
+type_backspace() {
+    echo key backspace|dotoolc
+}
+
+CACHE_FILE="/tmp/keepassxc_cache"
+
+# 检查缓存文件是否存在，如果不存在或者是空的，就刷新缓存
+if [ ! -s "$CACHE_FILE" ]; then
+    echo $master | keepassxc-cli ls "$KEEPASS_DB_PATH" -f -R -q | grep -v 回收站 > "$CACHE_FILE"
+fi
+
+# 使用缓存文件中的数据
+
+# 生成条目列表并使用户选择
+ENTRY=$(cat "$CACHE_FILE" | rofi "${ROFI_OPTIONS[@]}")
+case $? in
+  10) # C-u, Copy username
+    echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "UserName" | wl-copy
+    notify-send "KeepassXC CLI" "Username copied to clipboard"
+    ;;
+   11) # M-Ret type username
+    NAME=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "UserName" --quiet)
+    type_word $NAME
+    ;;
+  12) # C-t: type TOTP
+    totp=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" -t --quiet)
+    type_word $totp
+    ;;
+  13) # C-Ret, Auto-type username, password
+    NAME=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "UserName" --quiet)
+    PASSWORD=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "Password" --quiet)
+    if [ -n "$NAME" ]; then
+        type_word $NAME
+        type_tab
+    fi
+    type_word $PASSWORD
+    ;;
+  0) # ret type passwd
+    PASSWORD=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "Password" --quiet)
+    type_word $PASSWORD
+    ;;
+  *)
+    ;;
+esac

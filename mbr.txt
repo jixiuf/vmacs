@@ -1,0 +1,4 @@
+        446+64+2=512
+dd </dev/sda bs=512 count=1 >mbr512.img
+dd <mbr512.img bs=446 count=1 >/dev/sda
+dd <mbr512.img bs=1 count=64 skip=446 seek=446 >/dev/sda

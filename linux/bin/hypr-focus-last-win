@@ -1,0 +1,64 @@
+#!/bin/bash
+# this need hypr-trace-focus
+window_history=()
+# 从文件中读取序列化的window_history数组
+read_window_history() {
+    if [[ -f "/tmp/hypr_focus_hist.txt" ]]; then
+        IFS=$'\n' read -d '' -r -a window_history < /tmp/hypr_focus_hist.txt
+    fi
+}
+read_window_history
+# 获取数组长度
+length=${#window_history[@]}
+# echo "${#window_history[@]} ${window_history[@]}" >>/tmp/a.log
+
+# 倒序遍历数组
+last_focus_app=''
+last_focus_address=''
+for ((i=length-2; i>=0; i--))
+do
+    apps=`hyprctl clients -j`
+    last_focus_address=${window_history[$i]}
+    last_focus_app=`echo $apps | jq -rc '.[] | select(.address  | test("'"$last_focus_address"'"; "i"))'`
+    if [ -n "last_focus_app" ]; then
+        break
+    fi
+    # echo "${window_history[$i]}"
+done
+# echo "$last_focus_app" >>/tmp/a.log
+
+# 如果没有last_focus_app 则什么也不做
+if [ -z "last_focus_app" ]; then
+    exit;
+fi
+target_floating=`echo $last_focus_app|jq -r '.floating'`
+target_app=`echo $last_focus_app|jq -r '.class'`
+# echo $target_app >>/tmp/a.log
+front_app=`hyprctl activewindow -j`
+# front_class=`echo $front_app|jq -r '.class'`
+front_floating=`echo $front_app|jq -r '.floating'`
+front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
+
+front_ws_name=`echo $front_app|jq -r '.workspace.name'`
+# 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
+if [[ "$front_ws_name" == *"special"* ]]; then
+    hyprctl dispatch "togglespecialworkspace"
+fi
+# 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
+if [[ "$front_floating" == "true" ]]; then
+    hyprctl dispatch "movetoworkspacesilent special"
+fi
+
+# 如果当前窗口是fullscreen，则将其恢复
+if [ "$front_fullscreen" == "true" ]; then
+    hyprctl dispatch "fullscreen"
+fi
+
+
+if [ "$target_floating" == "true" ]; then
+    # 如果窗口是floating 的，则将其move 到当前workspace
+    hyprctl dispatch "movetoworkspacesilent e+0,address:${last_focus_address}"
+    hyprctl dispatch "focuswindow address:${last_focus_address}"
+else
+    hyprctl dispatch "focuswindow address:${last_focus_address}"
+fi

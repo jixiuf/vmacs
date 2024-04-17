@@ -1,0 +1,113 @@
+* hello
+#+BEGIN_SRC chatgpt-shell
+ubuntu22.04 wayland  如何支持像macos 一样的三指拖移
+#+END_SRC
+
+#+RESULTS:
+要启用 Ubuntu 22.04 上 Wayland 的三指拖移功能，请按照以下步骤：
+
+1. 打开终端。
+
+2. 输入以下命令以安装必要的软件包：
+
+   ```
+   sudo apt-get update
+   sudo apt-get install libinput-tools xdotool
+   ```
+
+3. 创建一个新文件，并将以下内容复制到文件中：
+
+   ```
+   #!/bin/bash
+   #
+   # Three finger dragging, ala MacOS.
+   #
+   # Enable with: "touchdrag.sh enable"
+   # Disable with: "touchdrag.sh disable"
+
+   state_file=/tmp/touchdrag.state
+   device=$(xinput list | grep -i touchpad | perl -ne 'if (/id=(\d+)/) { print $1; last }')
+
+   case $1 in
+           enable)
+                   echo 1 > $state_file
+                   xinput set-prop $device "libinput Tapping Enabled" 0
+                   xinput set-prop $device "libinput Tapping Dragging Enabled" 1
+                   ;;
+           disable)
+                   echo 0 > $state_file
+                   xinput set-prop $device "libinput Tapping Enabled" 1
+                   xinput set-prop $device "libinput Tapping Dragging Enabled" 0
+                   ;;
+           *)
+                   if [ -e $state_file ]; then
+                           state=$(cat $state_file)
+                   else
+                           state=0
+                   fi
+                   $0 $(($state == 0 ? "enable" : "disable"))
+                   ;;
+   esac
+   ```
+
+4. 将文件保存为 "touchdrag.sh"。
+
+5. 使用以下命令将文件标记为可执行：
+
+   ```
+   chmod +x touchdrag.sh
+   ```
+
+6. 运行以下命令以启用三指拖移功能：
+
+   ```
+   ./touchdrag.sh enable
+   ```
+
+   如果要禁用此功能，请运行以下命令：
+
+   ```
+   ./touchdrag.sh disable
+   ```
+
+现在，您应该可以像 macOS 一样使用三指拖移了。
+
+=======================
+Ubuntu 2 可以通过安装 libinput-gestures 和 xdotool 来支持像 macOS 一样的三指拖移。
+
+以下是步骤：
+
+1.打开终端并更新软件包库：
+
+sudo apt-get update
+
+2.安装 libinput-gestures：
+
+sudo apt-get install libinput-tools
+
+3.安装 xdotool：
+
+sudo apt-get install xdotool
+
+4.创建一个用户自定义配置文件~/.config/libinput-gestures.conf：
+
+nano ~/.config/libinput-gestures.conf
+
+在文件中添加以下内容：
+
+gesture swipe up 3 xdotool key super
+gesture swipe down 3 xdotool key super+shift
+
+5.然后将 libinput-gestures 添加到系统启动项中：
+
+sudo gpasswd -a $USER input
+sudo apt-get install xdotool wmctrl libinput-tools
+git clone http://github.com/bulletmark/libinput-gestures
+cd libinput-gestures
+sudo make install
+
+6.启动 libinput-gestures：
+
+libinput-gestures-setup start
+
+现在您应该可以使用三指拖动手势在 Ubuntu 上进行操作了！

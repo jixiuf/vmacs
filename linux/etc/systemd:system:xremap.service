@@ -1,0 +1,18 @@
+[Unit]
+Description=Run xremap 
+# BindsTo=sway-session.target
+# # After=network.target
+# After=udevmon.service
+# DefaultDependencies=no
+
+[Service]
+Environment="LANG=zh_CN.UTF-8"
+Type=simple
+User=jixiuf
+Group=users
+Restart=always
+ExecStart=sh -c '/usr/local/bin/xremap /etc/xremap.yaml /etc/xremap-$(hostname).yaml --watch=device --ignore="dotool keyboard" --ignore="ydotoold virtual device"'
+
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Find a window with title containing "GNU/Emacs" but does not contains "*vterm*"
+#
+YABAI=/usr/local/bin/yabai
+EMACSCLIENT=/usr/local/bin/emacsclient
+JQ=/usr/local/bin/jq
+# 选择所有
+# emacs_wins=$($YABAI -m query --windows | $JQ -r '.[] | select(.title | test("^(?!.*vterm).*GNU/Emacs"))')
+emacs_wins=$($YABAI -m query --windows | $JQ -r '.[] | select(.title | test("GNU/Emacs"))')
+# emacs_wins=$($YABAI -m query --windows | $JQ -r '.[] | select(.title | test(".*\\*vterm\\*.*GNU/Emacs")) | .id')
+wids=$(echo "$emacs_wins"|$JQ -r ".id")
+
+# If found, hide the current emacs_wins
+if [ -n "$wids" ]; then
+    focused=$(echo "$emacs_wins"|$JQ -r 'select(."has-focus"==true)|.id' )
+    if [ -n "$focused" ]; then  # 如果当前聚焦的窗口是 emacs
+        # $YABAI -m window --close $id
+        # focus next or first window in current space
+        # $YABAI -m window --focus next || $YABAI -m window --focus first
+        $YABAI -m window --focus $(cat /tmp/yabai_prev_focus)
+    else
+        for id in ${wids[@]}; do
+            $YABAI -m window --focus $id
+        done
+    fi
+else
+# Otherwise, launch Emacs if it's not already running and focus it
+    $EMACSCLIENT -c -n &
+    sleep 0.3 # Wait for Emacs to start
+    emacs_wins=$($YABAI -m query --windows | $JQ -r '.[] | select(.title | test("GNU/Emacs"))')
+    wids=$(echo "$emacs_wins"|$JQ -r ".id")
+    for id in ${wids[@]}; do
+        $YABAI -m window --focus $id
+    done
+fi

@@ -1,0 +1,24 @@
+#!/bin/bash
+# 对 swaymsg kill 简单封装，
+# 若当前窗口是 emacs 则 使用 ydotool 模拟按下 C-x 5 0 以调用 delete-frame
+appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+if [ -n "$appinfo" ]; then
+    echo $appinfo>>/tmp/al.log
+    app_id=`echo $appinfo|jq -r '(.app_id // "")'`
+    if [ -z "$app_id" ]; then
+        app_id=`echo $appinfo|jq -r '(.window_properties.class // "")'`
+    fi
+    if [ "$app_id" = "emacs" ]; then
+        # /usr/include/linux/input-event-codes.h
+        # C-x 5 0 delete frame
+        ydotool key 29:1 45:1 45:0  29:0 6:1 6:0 11:1 11:0
+    else
+        swaymsg kill
+    fi
+fi
+# 则将焦点转到上一次聚焦的窗口（哪怕上次聚焦的窗口在别的 workspace）,
+# 如果 不这样做， 关闭 workspace 的最后一个窗口后，依然会留在空 workspace 中
+# 需要配合 sway-track-prev-focus 使用
+# swaymsg '[con_mark=_prev_con] focus'
+
+# sway-on-window-close 里统一处理了，上面那句应该不需要了

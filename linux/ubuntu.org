@@ -1,0 +1,33 @@
+* xorg or wayland
+/etc/gdm3/custom.conf
+WaylandEnable=true
+* emacs
+snap install emacs --classic --channel edge
+
+*  gnome-shell-extensions gnome-tweaks
+很多插件是以 gnome-shell-extensions 或依赖 gnome-shell-extensions 如 https://github.com/k0kubun/xremap
+故先要安装 gnome-shell-extensions
+#+begin_src sh
+sudo apt install gnome-shell-extensions  chrome-gnome-shell
+#+end_src
+** gnome-tweaks
+1. 禁用左右 cmd（win）键 单按时的行为
+   https://linux.how2shout.com/how-to-disable-super-or-win-key-in-ubuntu-20-04-or-18-04/
+    sudo apt install gnome-tweaks
+    gnome-tweaks
+* Ctrl-; ctrl-. 被占用的问题
+ ibus-setup 后选 emojj 把相应的快捷键删掉即可
+* 输入法
+sudo apt-get install ibus-rime
+ibus 有漏字的情况，
+sudo apt-get install fcitx5  fcitx5-rime fcitx5-config-qt
+im-config 更换输入法
+配置环境变量 见 /etc/environment
+
+
+* xremap
+https://github.com/k0kubun/xremap
+https://github.com/k0kubun/xremap/blob/master/example/config.yml
+
+** spacebar 作为 mac 的 cmd 或者 windows 的 win 来用
+使用xremap 即可

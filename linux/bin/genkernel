@@ -1,0 +1,24 @@
+#!/bin/sh
+# `make oldconfig`命令会根据当前的内核配置文件（.config）和新版本内核的配置选项，提示用户逐个确认是
+# 否保留当前配置或者选择新的配置选项。这个命令通常用于在升级内核版本时，保留原有的配置选项，并根据新
+# 版本的内核配置进行更新。
+
+# `make olddefconfig`命令则是在`make oldconfig`的基础上，自动选择默认配置选项，而不需要用户手动确认。
+# 这个命令通常用于在升级内核版本时，快速更新内核配置，而不需要用户逐个确认。
+
+# `make localmodconfig` 是一个用于生成适用于当前系统的内核配置文件的命令。
+# 它会根据当前系统中已加载的内核模块来生成一个最小化的内核配置文件。
+
+sudo make oldconfig
+sudo make olddefconfig
+sudo make menuconfig
+# sudo make localmodconfig
+sudo make  && sudo make modules_install  && sudo make install
+
+ver=$(basename "$(pwd)")
+if [ "$ver" = "linux" ]; then
+    ver=$(basename "$(realpath $(pwd))"|sed s/linux-//g)
+fi
+sudo dracut -a lvm --force  --kver=$ver
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo emerge @module-rebuild

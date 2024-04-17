@@ -1,0 +1,21 @@
+# evdev:input:b<bus_id>v<vendor_id>p<product_id>e<version_id>-<modalias>
+# https://yulistic.gitlab.io/2017/12/linux-keymapping-with-udev-hwdb/
+# cat /proc/bus/input/devices 可查看所有device的 busid vendorid  等
+# I: Bus=0003 Vendor=05ac Product=027c Version=0001
+#evdev:input:b0003v05ACp027Ce0101*
+# 注意需要将小定变大定， 如05AC
+
+# evtest 可用于显示每个按键的scancode 与
+# KEYBOARD_KEY_<scan_code>=<key_code>
+# sudo systemd-hwdb update;sudo udevadm trigger
+# 更底层 针对键盘层面的 remap 
+# I: Bus=0003 Vendor=05ac Product=0256 Version=0111
+#usb
+evdev:input:b0003v05ACp0256e0111*
+  KEYBOARD_KEY_700e3=leftctrl
+  KEYBOARD_KEY_700e2=leftalt
+  KEYBOARD_KEY_700e0=leftmeta
+# esc-> ` 
+  KEYBOARD_KEY_70029=grave
+#  `->esc  
+  KEYBOARD_KEY_70035=esc

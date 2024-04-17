@@ -1,0 +1,4 @@
+#!/bin/sh
+BEMENU_OPTS='-i -I 0   --fn "Sarasa Term SC Nerd 24" --hp 5 -W 0.5  -p run: --fb "#1e1e2e" --ff "#00ffff" --nb "#1e1e2e" \
+ --nf "#f5e0dc" --tb "#1e1e2e" --hb "#1e1e2e" --hf "#00ffff" --tf "#f5e0dc" --af "#f5e0dc" --ab "#1e1e2e"  -l 10 -n' \
+bemenu-run

@@ -1,0 +1,4 @@
+* shadowsocks 配置
+ pip install shadowsocks
+ ssserver -c ~/.shadowsocks.json
+

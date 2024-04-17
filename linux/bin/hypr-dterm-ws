@@ -1,0 +1,17 @@
+#!/bin/bash
+
+ws=$(hyprctl activeworkspace -j)
+ws_id=`echo $ws|jq -r '.id'`
+term_workspace=4
+echo $ws_id
+if [ "$ws_id" == "$term_workspace" ]; then
+    hyprctl dispatch focuscurrentorlast
+else
+    # terminal in workspace 4
+    term_cnt=$(hyprctl clients -j | jq -cr '.[] | select(( (.class  | test("dterm"; "i")) or (.class  | test("org.wezfurlong.wezterm"; "i")) or (.class  | test("kitty"; "i")) or (.class  | test("foot"; "i")) or (.class  | test("Alacritty"; "i"))) and (.workspace.id == '$term_workspace') )'|wc -l)
+    cwd=$(hypr-cwd||echo $HOME)
+    hyprctl dispatch workspace $term_workspace
+    if [ "$term_cnt" == "0" ]; then
+        term.sh  --working-directory=$cwd -- tmux.sh --session $RANDOM --cwd $(hypr-cwd||echo $HOME)
+    fi
+fi

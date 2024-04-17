@@ -1,0 +1,30 @@
+find . -depth  -print  |cpio -ov >/re.cpio
+find . -depth  -print |cpio -ov|gzip >/re.cpio.gz
+
+uncompress rc.cpio to current path
+
+	#cpio -iv</re.cpio 
+or
+	#gunzip /re.cpio.gz -c|cpio -i
+	#gunzip /re.cpio.gz -c |cpio -id
+	#gunzip /re.cpio.gz -c |cpio -iud
+-u means update
+-d means make dirtory first
+-i means get file from cpio to current path  
+
+===============================================================
+tar
+//copy 
+tar cpBf – . | ( cd /new_root && /bin/tar xvpBf – )
+tar CpBf - .|tar xvpBf - -C /new_root
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > /boot/my-initramfs.cpio.gz
+
+这里跳到/ 下，使用了相对路径
+tar 备份当前linux
+cd / ;sudo tar -czf /tmp/back.tgz --exclude ./proc --exclude ./sys --exclude ./tmp --exclude ./var/run --exclude ./mnt --exclude ./resource  --exclude ./var/tmp --exclude ./home --exclude ./java --exclude ./video ./
+
+;;注意tar 的--exclude 参数，
+如果想忽略某个目录，如 /tmp   需要写成/tmp 而不是/tmp/ 或者/tmp/*  (使用绝对路径)
+如果想忽略某个目录，如 ./tmp   需要写成./tmp 而不是./tmp/ 或者./tmp/*  (使用绝对路径)
+
+

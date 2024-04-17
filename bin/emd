@@ -1,0 +1,57 @@
+#!/bin/sh
+# use default emacs in $PATH
+ulimit -n 10000
+function call_emacs_daemon(){
+    # echo "with emacs:$EMACSCMD"
+    if [  -z $EMACSCMD ] ; then
+        echo "can not find emacs exit"
+        exit 1
+    fi
+    # do not why pgrep doesnot work in Emacs/term.el
+    # emacsDaemonCount=`pgrep -f "$EMACSCMD --daemon"|wc -l`
+    echo $EMACSCMD
+    emacsDaemonCount=`ps -ef|grep "$EMACSCMD --daemon"|grep -v grep|wc -l`
+    emacsBgDaemonCount=`ps -ef|grep "$EMACSCMD --bg-daemon"|grep -v grep|wc -l`
+    emacsfgDaemonCount=`ps -ef|grep "$EMACSCMD --fg-daemon"|grep -v grep|wc -l`
+    emacsOldDaemonCount=`ps -ef|grep "$EMACSCMD --old-daemon"|grep -v grep|wc -l`
+    emacsNewDaemonCount=`ps -ef|grep "$EMACSCMD --new-daemon"|grep -v grep|wc -l`
+    if [ $emacsfgDaemonCount -eq 0 ] && [ $emacsBgDaemonCount -eq 0 ] && [ $emacsDaemonCount -eq 0 ] && [ $emacsOldDaemonCount -eq 0 ] && [ $emacsNewDaemonCount -eq 0 ]; then
+        if [ -f  ~/.emacs.d/cache/dump/emacs.pdump  ]; then
+            $EMACSCMD --dump-file  ~/.emacs.d/cache/dump/emacs.pdump --daemon
+         else
+            $EMACSCMD  --daemon
+        fi
+    fi
+}
+
+EMACSCMD=""
+
+
+if [  -z $EMACSCMD ] && [ -x "/usr/local/bin/emacs"  ] && [ `/usr/local/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'` != "22" ]; then
+    if [ `file /usr/local/bin/emacs|grep shell|wc -l` -eq 1 ]; then
+        EMACSCMD=`cat /usr/local/bin/emacs|grep exec|cut -d " " -f 2`
+    else
+        EMACSCMD="/usr/local/bin/emacs"
+    fi
+    call_emacs_daemon $@
+    exit
+fi
+
+
+if [  -z $EMACSCMD ] && [ -x "/Applications/Emacs.app/Contents/MacOS/Emacs"  ]; then
+    EMACSCMD="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    call_emacs_daemon $@
+    exit
+fi
+
+if [  -z $EMACSCMD ] && [ -x "/usr/bin/emacs"  ] && [ `/usr/bin/emacs --version 2>&1| head -n 1|awk -F ' ' '{print $3}'|awk -F '.' '{print $1}'` != "22" ]; then
+    EMACSCMD="/usr/bin/emacs"
+    call_emacs_daemon $@
+    exit
+fi
+
+EMACSCMD=`command -v emacs`
+if [ ! -z $EMACSCMD ]; then
+    call_emacs_daemon $@
+    exit
+fi

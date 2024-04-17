@@ -1,0 +1,270 @@
+# Rime default settings
+# encoding: utf-8
+# 我的配置扩展都在这
+# https://gist.github.com/lotem/2309739
+# config_version: "0.32"
+########################################################################################################################
+# 如果 default.custom.yaml 裏面已經有其他設定內容，只要以相同的縮進方式添加 patch: 以下的部分，不可重複 patch: 這一行。#
+# 注意 缩进很重要，否则 可能导致 配置不起作用 ，每修改一项， 确保它起作用后再永久保存
+########################################################################################################################
+
+patch:
+  switcher:
+    abbreviate_options: true
+    caption: "〔方案選單〕"
+    fold_options: true
+    hotkeys:
+      - "Control+Escape"
+      - "Control+grave"
+      - "Control+Shift+grave"
+      - F4
+    option_list_separator: "／"
+    save_options:
+      - full_shape
+      - ascii_punct
+      - simplification
+      - extended_charset
+      - zh_hant
+      - zh_hans
+      - zh_hant_tw
+
+  schema_list:
+    # - schema: wubi_rime_ice
+    # - schema: rime_ice
+    # - schema: double_pinyin_flypy_jixiuf
+    - schema: wubi_pinyin_jixiuf          # 五笔拼音混合輸入
+    - schema: pinyin_jixiuf
+    # - schema: double_pinyin_flypy #bash rime-install double-pinyin
+    # # - schema: pinyin_simp
+    # - schema: wubi_pinyin          # 五笔拼音混合輸入
+    # - schema: luna_pinyin_fluency # 朙月拼音·語句流錄入！    以空格分詞、標點或回車上屏。
+    # # - schema: luna_pinyin_simp     # 朙月拼音 简化字模式
+    # - schema: wubi86               # 五笔86
+    # - schema: emoji # emoji表情
+    # - schema: luna_pinyin          # 朙月拼音
+    # - schema: double_pinyin_mspy # 微軟雙拼
+    # - schema: double_pinyin_flypy # 小鶴雙拼
+      # - schema: luna_pinyin_tw       # 朙月拼音 臺灣正體模式
+      # - schema: luna_pinyin # 朙月拼音
+      # - schema: luna_pinyin_simp # 朙月拼音 简化字模式
+      # - schema: luna_pinyin_tw # 朙月拼音 臺灣正體模式
+      # - schema: terra_pinyin # 地球拼音 dì qiú pīn yīn
+      # - schema: bopomofo # 注音
+      # - schema: jyutping # 粵拼
+      # - schema: cangjie5 # 倉頡五代
+      # - schema: cangjie5_express # 倉頡 快打模式
+      # - schema: quick5 # 速成
+      # - schema: wubi86 # 五笔86
+      # - schema: wubi_pinyin # 五笔拼音混合輸入
+      # - schema: double_pinyin # 自然碼雙拼
+      # - schema: double_pinyin_abc # 智能ABC雙拼
+      # - schema: wugniu # 吳語上海話（新派）
+      # - schema: wugniu_lopha # 吳語上海話（老派）
+      # - schema: sampheng # 中古漢語三拼
+      # - schema: zyenpheng # 中古漢語全拼
+      # - schema: ipa_xsampa # X-SAMPA 國際音標
+
+
+# 每页多少项
+  menu:
+    page_size: 5
+
+# 中西文切換鍵的默認設置寫在 default.yaml 裏面
+# 以下的 default.custom.yaml 在全局範圍重定義該組快速鍵
+#
+# 可用的按鍵有 Caps_Lock, Shift_L, Shift_R, Control_L, control_R
+# Mac 系統上的鼠鬚管不能區分左、右，因此只有對 Shift_L, Control_L 的設定起作用
+#
+# 已輸入編碼時按切換鍵，可以進一步設定輸入法中西文切換的形式。
+# 可選的臨時切換策略有三：
+# inline_ascii 在輸入法的臨時西文編輯區內輸入字母、數字、符號、空格等，回車上屏後自動復位到中文
+# commit_text 已輸入的候選文字上屏並切換至西文輸入模式
+# commit_code 已輸入的編碼字符上屏並切換至西文輸入模式
+# 設爲 noop，屏蔽該切換鍵
+#
+# 如果要把 Caps Lock 設爲只改變字母的大小寫而不做中西文切換，可將 Caps_Lock 對應的切換方式設爲 noop
+# 如果要以 Caps Lock 切換到西文模式，默認輸出小寫字母，請置 ascii_composer/good_old_caps_lock: false
+# 如果要以 Caps Lock 切換到西文模式，默認輸出大寫字母，請使用以下設置：ascii_composer/good_old_caps_lock: true
+  ascii_composer/good_old_caps_lock: true
+# 定义shift切换中英文
+  ascii_composer/switch_key:
+    Caps_Lock: commit_code
+    # Shift_L: clear
+    # Shift_R: clear
+    Shift_L: noop
+    Shift_R: noop
+    # Shift_L: commit_code
+  key_binder:
+    # [ ] 以词定字（上屏当前词句的第一个或最后一个字）
+    select_first_character: "bracketleft"
+    select_last_character: "bracketright"
+
+    # Shift_R: commit_code
+
+  key_binder/bindings:
+    - { when: always, accept: Control+Shift+2, toggle: ascii_mode }
+    # Ctrl-g
+    # - { when: composing, accept: Control+g,  send: Escape}
+    - { when: always, accept: Control+g,  send: Escape}
+    - { when: always, accept: F17,  send: Escape}
+    - { when: composing, accept: F19, send: Escape }
+    # [ ]  翻页
+    # - { when: paging, accept: bracketleft, send: Page_Up }
+    # - { when: has_menu, accept: bracketright, send: Page_Down }
+    # ,.翻页
+    - { when: paging, accept: comma, send: Page_Up }
+    - { when: has_menu, accept: period, send: Page_Down }
+
+    # dss
+    # Emacs style
+    - { when: composing, accept: Control+r, send: Up }
+    - { when: composing, accept: Control+s, send: Down }
+    - { when: composing, accept: Control+m, send: Return }
+
+    - { when: composing, accept: Control+p, send: Up }
+    - { when: composing, accept: Control+n, send: Down }
+    - { when: composing, accept: Control+b, send: Left }
+    - { when: composing, accept: Control+f, send: Right }
+    - { when: composing, accept: Control+a, send: Home }
+    - { when: composing, accept: Control+e, send: End }
+    - { when: composing, accept: Control+d, send: Delete }
+    - { when: composing, accept: Control+k, send: Shift+Delete }
+    # - { when: composing, accept: Control+g, send: Escape }
+    - { when: composing, accept: Alt+v, send: Page_Up }
+    # - { when: composing, accept: Control+o, send: Page_Up }
+    - { when: composing, accept: Control+u, send: Page_Up }
+    - { when: composing, accept: Control+v, send: Page_Down }
+    - { when: composing, accept: Control+o, send: Page_Up }
+    # paging keys
+    - { when: composing, accept: ISO_Left_Tab, send: Page_Up }
+    - { when: composing, accept: Shift+Tab, send: Page_Up }
+    - { when: composing, accept: Tab, send: Page_Down }
+    - { when: has_menu, accept: minus, send: Page_Up }
+    - { when: has_menu, accept: equal, send: Page_Down }
+    # hotkey switch
+    # - { when: always, accept: Control+Shift+1, select: .next }
+    # - { when: always, accept: Control+Shift+3, toggle: full_shape }
+    # - { when: always, accept: Control+Shift+4, toggle: simplification }
+    # - { when: always, accept: Control+Shift+5, toggle: extended_charset }
+    # - { when: always, accept: Control+Shift+exclam, select: .next }
+    # - { when: always, accept: Control+Shift+at, toggle: ascii_mode }
+    # - { when: always, accept: Control+Shift+numbersign, toggle: full_shape }
+    # - { when: always, accept: Control+Shift+dollar, toggle: simplification }
+    # - { when: always, accept: Control+Shift+percent, toggle: extended_charset }
+    # - { when: always, accept: Shift+space, toggle: full_shape }
+# key_binder 按键速查 https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
+# （没有 Command 键，不支持）
+# accept 和 send 可用字段除 A-Za-z0-9 外，还包含以下键盘上实际有的键：
+# BackSpace	退格
+# Tab	水平定位符
+# Linefeed	换行
+# Clear	清除
+# Return	回车
+# Pause	暂停
+# Sys_Req	印屏
+# Escape	退出
+# Delete	删除
+# Home	原位
+# Left	左箭头
+# Up	上箭头
+# Right	右箭头
+# Down	下箭头
+# Prior、Page_Up	上翻
+# Next、Page_Down	下翻
+# End	末位
+# Begin	始位
+# Shift_L	左Shift
+# Shift_R	右Shift
+# Control_L	左Ctrl
+# Control_R	右Ctrl
+# Meta_L	左Meta
+# Meta_R	右Meta
+# Alt_L	左Alt
+# Alt_R	右Alt
+# Super_L	左Super
+# Super_R	右Super
+# Hyper_L	左Hyper
+# Hyper_R	右Hyper
+# Caps_Lock	大写锁
+# Shift_Lock	上档锁
+# Scroll_Lock	滚动锁
+# Num_Lock	小键板锁
+# Select	选定
+# Print	打印
+# Execute	运行
+# Insert	插入
+# Undo	还原
+# Redo	重做
+# Menu	菜单
+# Find	搜寻
+# Cancel	取消
+# Help	帮助
+# Break	中断
+# space
+# exclam	!
+# quotedbl	"
+# numbersign	#
+# dollar	$
+# percent	%
+# ampersand	&
+# apostrophe	'
+# parenleft	(
+# parenright	)
+# asterisk	*
+# plus	+
+# comma	,
+# minus	-
+# period	.
+# slash	/
+# colon	:
+# semicolon	;
+# less	<
+# equal	=
+# greater	>
+# question	?
+# at	@
+# bracketleft	[
+# backslash
+# bracketright	]
+# asciicircum	^
+# underscore	_
+# grave	`
+# braceleft	{
+# bar	|
+# braceright	}
+# asciitilde	~
+# KP_Space	小键板空格
+# KP_Tab	小键板水平定位符
+# KP_Enter	小键板回车
+# KP_Delete	小键板删除
+# KP_Home	小键板原位
+# KP_Left	小键板左箭头
+# KP_Up	小键板上箭头
+# KP_Right	小键板右箭头
+# KP_Down	小键板下箭头
+# KP_Prior、KP_Page_Up	小键板上翻
+# KP_Next、KP_Page_Down	小键板下翻
+# KP_End	小键板末位
+# KP_Begin	小键板始位
+# KP_Insert	小键板插入
+# KP_Equal	小键板等于
+# KP_Multiply	小键板乘号
+# KP_Add	小键板加号
+# KP_Subtract	小键板减号
+# KP_Divide	小键板除号
+# KP_Decimal	小键板小数点
+# KP_0	小键板0
+# KP_1	小键板1
+# KP_2	小键板2
+# KP_3	小键板3
+# KP_4	小键板4
+# KP_5	小键板5
+# KP_6	小键板6
+# KP_7	小键板7
+# KP_8	小键板8
+# KP_9	小键板9
+
+#
+# Local Variables:
+# coding: utf-8
+# End:

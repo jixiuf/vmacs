@@ -1,0 +1,33 @@
+# <fs>        <mountpoint>    <type>        <opts>         <dump/pass>
+# NOTE: If your BOOT partition is ReiserFS, add the notail option to opts.
+/dev/sda3                /boot              ext3       noatime                                             1 2
+/dev/sda6                /mnt/d             ntfs-3g    auto,noatime,nls=utf-8,locale=zh_CN.UTF-8           0 0
+/dev/sda1                /mnt/win           ntfs-3g    noauto,noatime,nls=utf-8,locale=zh_CN.UTF-8         0 1
+/dev/cdrom               /mnt/cdrom         auto       noauto,ro                                           0 0
+/dev/mapper/vg1-update   /                  ext4       noatime                                             0 1
+/dev/vg1/java            /java              ext4       noatime                                             0 0
+/dev/vg1/video           /video             ext4       noatime                                             0 0
+/dev/mapper/vg1-home     /home              ext4       noatime                                             0 0
+/dev/mapper/vg1-oracle   /db                ext4       noatime                                             0 0
+/dev/mapper/vg1-res      /resource          ext4       noatime                                             0 0
+/dev/mapper/vg1-text     /mnt/text          ext4       noatime,noauto                                      0 0
+/dev/mapper/vg1-swap     none               swap       sw                                                  0 0
+tmpfs                    /var/tmp/portage   tmpfs      size=4G,noatime                                     0 0
+tmpfs                    /tmp               tmpfs      size=2G,noatime                                     0 0         
+/home/jixiuf             /root              none       rw,bind,auto                                        0 0 
+/dev/nvme0n1p5      	/mnt/exfat     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,uid=1000,shortname=mixed,errors=remount-ro	0 2
+
+#/resource/pkg/gentoo/distfiles /home/ftp/distfiles  none  rw,bind,auto  0  0
+
+# auto mount sshfs
+# noauto will stop the no-brainer actions like forcibly mounting whatsoever at booting regardless if the network is up or not.
+# x-systemd.automount is the smart daemon that knows when to mount.
+# The _netdev tag will also identify that it uses network devices, thus it will wait until the network is up. ​​​​​​
+root@host:/data/binpkgs /var/cache/binpkgs/ fuse.sshfs noauto,x-systemd.automount,_netdev,port=8003,uid=250,gid=250,IdentityFile=/home/jixiuf/.ssh/id_rsa,allow_other,reconnect 0 0
+
+# glibc 2.2 and above expects tmpfs to be mounted at /dev/shm for 
+# POSIX shared memory (shm_open, shm_unlink).
+# (tmpfs is a dynamically expandable/shrinkable ramdisk, and will
+#  use almost no memory if not populated with files)
+#fshm			/dev/shm	tmpfs		nodev,nosuid,noexec	0 0
+

@@ -1,0 +1,63 @@
+# -*- coding:utf-8 -*-
+ChatGPT> sway 下 如何实现按下$mod+e 键打开 emacs ,如果 emacs 已经打开，则焦点选中 emacs,若已经选中 emacs ,则隐藏 emacs
+<shell-maker-end-of-prompt>
+要在 sway 中实现这个功能，可以使用 `swaymsg` 命令和 `exec` 动作来运行 `emacs`。同时，可以使用 `swaymsg` 命令和 `focus` 动作来将焦点设置为 `emacs` 窗口，使用 `mark` 动作来为 `emacs` 窗口设置标记，以便稍后将焦点返回该窗口。最后，可以使用 `swaymsg` 命令和 `unmark` 动作来取消窗口的标记，并使用 `kill` 动作来关闭 `emacs` 窗口。
+
+在 `sway` 配置文件中添加以下内容:
+
+```bash
+set $emacs_instance running
+
+# 检查是否存在正在运行的 emacs，没有就启动一个新的 emacs
+bindsym Mod1+e exec swaymsg -t get_tree | grep -q "\"class\":\"Emacs\"" || exec emacs
+
+#切换到正在运行的 emacs，否则隐藏 emacs 窗口
+bindsym Mod1+e [con_mark=$emacs_instance] focus
+bindsym Mod1+e [con_mark=$emacs_instance] unmark; [con_id=$(swaymsg -t get_tree | grep "\"class\":\"Emacs\"" | head -n1 | cut -d":" -f2 | tr -d ',"[:space:]')] mark $emacs_instance; [con_id=$con_id] focus
+bindsym Mod1+Shift+e [con_mark=$emacs_instance] kill
+```
+
+这里将 `$emacs_instance` 设置为 `running` 并在绑定 `Mod1+e` 时检查是否已经运行了 `emacs`。如果不存在正在运行的 `emacs`，则使用 `exec` 动作启动一个新的 `emacs` 窗口。如果存在正在运行的 `emacs`，则使用 `focus` 动作将焦点设置为 `emacs` 窗口。如果 `emacs` 窗口已经拥有焦点，则使用 `unmark` 和 `mark` 动作将窗口取消标记并将其标记，然后使用 `focus` 动作将焦点返回该窗口。最后，使用 `kill` 动作关闭 `emacs` 窗口。
+
+注意：在上面的配置中，使用了 `Mod1` 键来替代一般的 `$mod` 键。你可以将 `Mod1` 替换成 `$mod`，或者按照你自己的习惯指定任何其他的按键组合。另外，上述配置只是其中一种实现方案，你可以根据自己的需要进行修改。
+
+ChatGPT> sway 如何实现 run or raise
+<shell-maker-end-of-prompt>
+在 `sway` 中，可以使用 `swaymsg` 命令和标记（mark）动作，以及 `exec` 动作来模拟 `run or raise` 的功能。
+
+假设我们要实现在按下 `$mod+Enter` 快捷键时，如果浏览器（Firefox）已经在运行，那么切换到浏览器窗口，否则启动浏览器。
+
+```bash
+bindsym $mod+Return exec swaymsg -t get_tree | grep -q "\"class\":\"Firefox\"" && swaymsg "[con_mark=\"firefox\"] focus" || (firefox & swaymsg "[con_mark=\"firefox\"] mark")
+```
+
+首先，使用 `swaymsg -t get_tree` 命令获取当前窗口树，并使用 `grep` 命令查找当前是否运行了 Firefox 浏览器。如果 Firefox 窗口已经存在，那么使用 `swaymsg` 命令和 `focus` 动作将焦点转移到 Firefox 窗口，并使用 `con_mark` 标记将 Firefox 窗口标记为 `firefox`。否则，使用 `exec` 命令启动 Firefox，并使用 `swaymsg` 命令和 `mark` 动作将新启动的 Firefox 窗口标记为 `firefox`。
+
+注意：上面的示例中，启动 Firefox 浏览器的命令是 `firefox`。你需要根据你电脑上实际的 Firefox 命令来修改。
+
+ChatGPT> 在上面实现的基础上 ，如果当前窗口已经是 firefox ,再次按下$mod+Enter ,则将焦点切换以上一个聚焦的窗口,即如果 app 未启动，则 run 之，若启动了未聚焦则聚焦之，若已聚焦则切换到上一个聚焦的 app
+<shell-maker-end-of-prompt>
+要实现这个功能，可以使用 `jq` 这个命令行工具解析 `swaymsg -t get_tree` 命令的输出。首先，我们需要保存上一个聚焦的窗口的 ID。使用 `swaymsg -t get_tree` 命令获取当前窗口树，并使用 `jq` 过滤器将返回的 JSON 对象存储为一个 shell 变量数组。在接下来的交互过程中，我们将使用这个数组和保存的上一个聚焦的窗口 ID 来查找要切换到的窗口。还需要使用 `sed` 命令和正则表达式来过滤 `swaymsg -t get_tree` 命令的输出，以便匹配我们正在寻找的程序的窗口。
+
+```bash
+set $prev_focused none
+bindsym $mod+Return exec swaymsg -t get_tree | jq -r '.nodes[].nodes[].nodes[].nodes[] | select(.focused==true) | .id as $prev_focused | .. | .class?, .id?' | paste -sd ' ' - | sed 's/\s\+/ /g' | read -a sway_tree
+
+if [[ $(swaymsg -t get_tree | grep "\"class\":\"Firefox\"" | wc -l) -gt 0 ]]; then
+  if [[ $prev_focused -ne none ]] && [[ $sway_tree =~ 'Firefox' ]]; then
+    swaymsg [con_id="$prev_focused"] focus || swaymsg -t get_tree | grep -A 3 "$prev_focused" | grep id | head -1 | cut -d ":" -f2 | tr -d '",[:space:]' | xargs -I {} swaymsg [con_id="{}"] focus
+  else
+    swaymsg [con_mark="firefox"] focus || (firefox & swaymsg [con_mark="firefox"] mark)
+  fi
+else
+  firefox & swaymsg [con_mark="firefox"] mark
+fi
+```
+
+首先，定义了一个 shell 变量 `$prev_focused` 用于保存上一个聚焦的窗口的 ID，并初始化为字符串 `none`。使用 `swaymsg -t get_tree` 命令获取当前窗口树，并使用 `jq` 过滤器选中当前聚焦的窗口，并将其 ID 保存到 `$prev_focused` 变量中。将窗口树的 JSON 对象存储为一个 shell 变量数组 `sway_tree`。
+
+然后，使用 `if` 语句检查 Firefox 是否正在运行。如果是，那么使用 `$prev_focused` 变量中保存的 ID 和 `swaymsg` 命令和 `focus` 动作来将焦点切换到上一个聚焦的窗口，如果上一个聚焦的窗口当前不可用，则使用 `swaymsg -t get_tree` 命令搜索并切换到最近的 Firefox 窗口。如果 Firefox 不在运行，则使用 `swaymsg` 命令和 `mark` 标记打开一个新的 Firefox 窗口。
+
+注意：在上述配置中，使用了 `set` 命令定义了一个名为 `$prev_focused` 的 shell 变量。你需要在每次调用 `$prev_focused` 变量之前使用 `set` 命令重新定义该变量（如第一行所示），这样 `$prev_focused` 变量中才会存储最新的聚焦窗口的 ID。另外，上述配置只是其中一种实现方案，你可以根据自己的需要进行修改。
+
+ChatGPT>

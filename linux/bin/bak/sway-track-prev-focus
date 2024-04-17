@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# https://gitlab.com/wef/dotfiles/-/blob/master/bin/sway-track-prev-focus
+# shellcheck disable=SC2034
+TIME_STAMP="20230101.124033"
+
+# Copyright (C) 2020-2021 Bob Hepple <bob dot hepple at gmail dot com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+# I like these bindings:
+# bindsym $mod+grave [con_mark=_prev] focus
+# to enable fast switching between 2 apps
+
+# from https://gist.github.com/ckafi
+
+case $1 in
+    -h|--help)
+        echo "Usage: $( basename "$0" )"
+        echo
+        echo "Tracks focus changes in sway, renames workspaces and marks windows with _prev. This enables the following key binding:" |fmt
+        echo "    bindsym \$mod+grave [con_mark=_prev] focus"
+        exit 0
+        ;;
+esac
+
+prev_focus=$(swaymsg -r -t get_seats | jq '.[0].focus')
+prev_app=""
+
+swaymsg -m -t subscribe '["window"]' 2> /dev/null | \
+    jq --unbuffered -r 'select(.change == "focus").container.id' | \
+    while read -r new_focus; do
+        tree=$(swaymsg -t get_tree)
+        win=$( echo $tree |jq -r "recurse(.nodes[], .floating_nodes[])| select(.id == $new_focus)")
+
+        title=$( echo "$win" | jq -r '.window_properties.class' )
+        [[ "$title" == "null" ]] &&
+            title=$( echo "$win" | jq -r '.app_id' )
+        [[ "$title" == "null" ]] && title=""
+
+        NUM=$( swaymsg -t get_workspaces|jq '.[]|select(.focused==true).num' )
+        swaymsg "rename workspace to $NUM:${title::12}" >/dev/null 2>&1
+
+        if [ "$prev_focus" != "$new_focus" ]; then
+            # echo "$new_focus $title $prev_app $prev_focus" >>/tmp/a.log
+            swaymsg -- "[con_id=${prev_focus}] mark --add _prev" &>/dev/null
+            # get id with mark _prev
+            # swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[])| select(.marks?[]? == "_prev") | .id
+
+            prev_win_type=$( echo $tree | jq -r "..|try select(.id == ${prev_focus}).type" )
+            if [[  "$prev_win_type" = "floating_con" && "$prev_app" = "dterm" ]]; then
+                # 如果失去焦点的窗口是 floating,则将其 send 到 scratchpad
+                swaymsg --  "[con_id=${prev_focus}] move window to scratchpad"
+            fi
+            # echo "$prev_focus prev_app">>/tmp/sway-prev-focus
+            prev_focus=$new_focus
+            prev_app=$title
+        fi
+    done
+
+# Local Variables:
+# mode: shell-script
+# time-stamp-pattern: "4/TIME_STAMP=\"%:y%02m%02d.%02H%02M%02S\""
+# eval: (add-hook 'before-save-hook 'time-stamp)
+# End:

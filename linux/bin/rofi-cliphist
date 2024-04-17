@@ -1,0 +1,10 @@
+#!/bin/sh
+content=`cliphist list | rofi -dmenu -i  `
+if [ $? = 0 ]; then
+    echo "$content"| cliphist decode | wl-copy
+    # |ydotool type -d 0 -D 0 --file -
+    # keyd do C-y
+    # /usr/include/linux/input-event-codes.h
+    # ydotool key  29:1 21:1 21:0 29:0
+    echo key ctrl+y | dotoolc
+fi

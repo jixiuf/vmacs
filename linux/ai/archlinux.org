@@ -1,0 +1,50 @@
+# -*- coding:utf-8 -*-
+ChatGPT> 没有 U 盘 ，如何在 macbook 上安装 archlinux 双系统
+<shell-maker-end-of-prompt>
+可以通过以下步骤在 MacBook 上安装 Arch Linux 双系统：
+
+1. 确认系统版本：MacBook 必须在使用 Intel 处理器的 Mac OS X 10.7 版本或更高版本上运行。检查方法：点击左上角苹果标志，选择“关于本机”。
+2. 下载 Arch Linux ISO 镜像：从 Arch Linux 官网下载 ISO 镜像。不需要烧录到 U 盘，可以放在 MacBook 的硬盘上。
+3. 创建新的硬盘分区：在 Mac OS X 上使用磁盘工具创建一个新的硬盘分区，用于安装 Arch Linux。
+4. 安装 rEFInd 引导：从 rEFInd 官网下载 rEFInd 引导程序，然后安装它。rEFInd 是一款功能强大的引导程序，可以让你在引导时选择不同的操作系统和启动选择。参考网站：http://www.rodsbooks.com/refind/
+5. 安装 Arch Linux：在 Mac OS X 上打开终端应用程序，并使用以下命令启动 Arch Linux 安装程序：
+
+   ```
+   qemu-system-x86_64 -enable-kvm -m 2048M -drive file=/path/to/archlinux.iso,index=0,media=cdrom -drive file=/dev/sda,index=1,media=disk,format=raw -boot order=d -serial stdio
+   ```
+
+   其中，/path/to/archlinux.iso 是已下载的 Arch Linux ISO 镜像的路径，/dev/sda 是新的硬盘分区。这将启动一个虚拟机并加载 Arch Linux 安装程序。可以使用虚拟机中的 GParted 工具对新分区进行格式化。安装完成后，重启 MacBook，rEFInd 将在引导时显示 Arch Linux。
+
+ChatGPT> macbook 上怎么安装 qemu-system-x86_64
+<shell-maker-end-of-prompt>
+可以在 MacBook 上使用 Homebrew 来安装 qemu-system-x86_64，步骤如下：
+
+1. 安装 Homebrew：打开终端应用程序，并在命令行中输入以下命令来安装 Homebrew：
+
+   ```
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+   ```
+
+2. 更新 Homebrew：使用以下命令获取更新 Homebrew 安装包列表和更新现有的安装包：
+
+   ```
+   brew update
+   ```
+
+3. 安装 qemu：使用以下命令来安装 qemu：
+
+   ```
+   brew install qemu
+   ```
+
+4. 验证安装：使用以下命令来验证 qemu 已成功安装：
+
+   ```
+   qemu-system-x86_64 --version
+   ```
+
+   如果已经成功安装，则会显示qemu版本信息。
+
+安装完成后，即可使用qemu-system-x86_64来创建和管理虚拟机。
+
+ChatGPT>

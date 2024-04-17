@@ -1,0 +1,15 @@
+# # https://wiki.archlinuxcn.org/wiki/Fcitx5
+# # GTK_IM_MODULE=fcitx
+# # GTK_IM_MODULE=wayland
+# QT_IM_MODULE=fcitx
+# XMODIFIERS=@im=fcitx
+# SDL_IM_MODULE=fcitx
+# # GLFW_IM_MODULE=ibus
+# # firefox use  WAYLAND
+# MOZ_ENABLE_WAYLAND=1 
+# MOZ_USE_XINPUT=1
+# SDL_VIDEODRIVER=wayland
+# _JAVA_AWT_WM_NONREPARENTING=1
+# QT_QPA_PLATFORM=wayland
+# # XDG_CURRENT_DESKTOP=Hyprland
+# # XDG_SESSION_DESKTOP=Hyprland

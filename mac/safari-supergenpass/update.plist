@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+   <key>Extension Updates</key>
+   <array>
+     <dict>
+       <key>CFBundleIdentifier</key>
+       <string>com.wesleymoy.safarisgp</string>
+       <key>Developer Identifier</key>
+       <string>5D7367Q3PH</string>
+       <key>CFBundleVersion</key>
+       <string>2</string>
+       <key>CFBundleShortVersionString</key>
+       <string>0.2</string>
+       <key>URL</key>
+       <string>https://github.com/downloads/wesleym/safarisgp/SafariSGP-0.2.safariextz</string>
+     </dict>
+   </array>
+</dict>
+</plist>

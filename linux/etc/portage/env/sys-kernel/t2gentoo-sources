@@ -1,0 +1,6 @@
+post_pkg_postinst() {
+    # Eselect the new kernel or genkernel will build the current one
+	eselect kernel set linux-"${KV}"
+	# CURRENT_KV=$(uname -r)
+    cd /usr/src/linux-"${KV}"; genkernel
+}

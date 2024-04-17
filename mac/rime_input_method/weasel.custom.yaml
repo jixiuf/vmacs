@@ -1,0 +1,4 @@
+# windows
+patch:
+  "style/color_scheme": lost_temple
+  "style/horizontal": true # 候選窗横向顯示

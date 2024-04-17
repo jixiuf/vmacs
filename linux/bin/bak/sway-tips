@@ -1,0 +1,6 @@
+
+notify-send -t 3000 'C-w:
+    C-h/j/k/l: focus
+    C-u:  focus parent
+    C-i:  focus child
+    C-o:  focus next'

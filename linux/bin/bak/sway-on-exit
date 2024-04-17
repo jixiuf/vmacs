@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+swaymsg -m -t subscribe '["shutdown"]' # would block util sway exit
+
+# 当 sway 退出时执行的脚本放在此注释之后
+
+systemctl --user stop sway-session.target
+
+# Local Variables:
+# mode: shell-script
+# End:

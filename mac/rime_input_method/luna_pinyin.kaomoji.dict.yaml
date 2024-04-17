@@ -1,0 +1,62 @@
+# Rime dictionary - kaomoji
+# encoding: utf-8
+# ref: http://www.facemark.jp/
+---
+name: luna_pinyin.kaomoji
+version: "0.5"
+sort: origin
+...
+
+→_→	zza	10
+<(￣︶￣)↗	zza	10
+(￣ε(#￣) 	zza	10
+<( ￣＾￣)> 	zza	10
+o(￣ヘ￣o＃) 	zza	10
+<(￣︶￣)> 	zza	10
+╮(╯_╰)╭ 	zza	10
+╮(￣▽￣)╭	zza	10
+（ˉ﹃ˉ）	zza	10
+m(_ _)m	zzd	10
+≧▽≦	zzd	10
+⊙.⊙	zzd	10
+〒▽〒	zzd	10
+┬＿┬	zzd	10
+＞﹏＜	zzd	10
+ˊ_>ˋ	zzd	10
+Θ_Θ	zzd	10
+¬_¬	zzd	10
+눈_눈	zzd	10
+ζ*'ヮ')ζ	zzs	10
+( ・ˍ・)	zzs	10
+(´･ω･`)	zzs	10
+(●′ω`●) 	zzs	10
+o(‵ε′)ψ	zzs	10
+(#‵′)凸	zzs	10
+(੭ु´･ω･`)੭ु⁾⁾	zzs	10
+(つД`)	zzs	10
+ヽ(；▽；)ﾉ	zzs	10
+(つ。⊂)	zzs	10
+(*/ω＼*)	zzs	10
+(ﾟДﾟ≡ﾟдﾟ)!?	zzs	10
+(＃°Д°)	zzs	10
+( ͡° ͜ʖ ͡°)✧	zzs	10
+ლ(･ิω･ิლ)	zzs	10
+(╬ Ò ‸ Ó)	zzs	10
+∑(ﾟдﾟ;)	zzs	10
+∑(￣ﾛ￣||)	zzs	10
+Σ(・ω・」)」	zzs	10
+(°⌓°;	zzs	10
+ヽ(ﾟ∀ﾟ*)ﾉ	zzs	10
+･ﾟ･(ﾉД`;)･ﾟ	zzs	10
+／人◕‿‿◕人＼	zzzz	10
+ㄟ(◑‿◐ )ㄏ	zz zz	10
+(<ゝω·)☆~	zzzz	10
+( ╯-_-)╯~┴—┴ 	zzzz	10
+┯━┯ノ('－'ノ)	zzzz	10
+( ´･･)ﾉ(._.`) zzzz	10
+_(:з」∠)_	zzzz	10
+╧═╧╰（`□′╰）	zzzz	10
+（T_ T(○=(＞_＜o	zzzz	10
+（╬￣皿￣）＝○＃（￣＃）３￣）	zzzz	10
+～(￣▽￣～)(～￣▽￣)～	zzzz	10
+ˊㅅˋ	zzzz	10

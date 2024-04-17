@@ -1,0 +1,306 @@
+# Rime schema
+# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
+# encoding: utf-8
+# 调整几个translator 的 initial_quality ，即可样此输入法变成 五笔 双拼 全拼都支持，只是权重不同的输入法
+
+schema:
+  schema_id: double_pinyin_flypy_jixiuf
+  name: a小鶴雙拼j
+  version: "0.18"
+  author:
+    - double pinyin layout by 鶴
+    - Rime schema by 佛振 <chen.sst@gmail.com>
+  description: |
+    小鶴雙拼方案+五筆字型86版＋漢語拼音混合輸入。
+    碼表源自 qq五笔,使用深蓝词库工具.exe转换而成
+    各词库优先级可通过initial_quality进行和調整
+
+  dependencies:
+    - wubi_pinyin_jixiuf
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  # - name: simplification
+  #   states: [ 漢字, 汉字 ]
+  - name: extended_charset
+    states: [ 常用, 增廣 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+  - name: zh_simp               # 字库中如月繁体字，结合engine/filters/simplifier来实现简繁转化
+    reset: 1
+    states: [ 漢字, 汉字 ]
+  - options: [utf8, gbk, gb2312]    # (※2) 字符集选单
+    reset: 1                        # 默认 GBK
+    states:                         # 可以通过切功能键，切至 UTF8 等超大字符集
+      - UTF-8
+      - GBK
+      - GB2312
+
+engine:
+  processors:
+    # 彻底地移除英文状态，似乎注掉ascii_composer更有效
+    # - ascii_composer #處理西文模式及中西文切換 我把此移除验证禁用其英文输入态
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator    # 对应下面的punctuator，用来输入标点
+    # 把script_translator@pinyin放在reverse_lookup_translatorp之上,这样输入拼音的时候才能自动调词频
+    # 因为reverse_lookup_translator也能通过反查进行拼音的输入，但是它不支持调频
+    - script_translator         # 双拼
+    # script_translator@wubi 改成table_translator@wubi 后 才可以五笔自动造词，但不知有什么影响
+    - table_translator@wubi
+    # - script_translator@wubi  # 放到reverse_lookup_translator 之前才可以调频五笔的输入
+    - script_translator@pinyin #
+    - reverse_lookup_translator # 用五笔打出的字，会提示双批编码
+    # 如果没有别名，则 {table|script}_translator 默认用 translator: 节点， reverse_lookup_translator 默认用 reverse_lookup: 节点。
+
+
+  # translators:
+  #   - punct_translator
+  #   - reverse_lookup_translator
+  #   - script_translator
+  # filters:
+  #   - simplifier
+  #   - uniquifier
+  filters:
+    - simplifier
+    - reverse_lookup_filter@wubi_comment # 展示wubi编码
+    # - reverse_lookup_filter@double_pinyin_comment # 展示双拼编码
+
+    - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
+    - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
+    - charset_filter@gbk            # (※3) 默认 GBK
+
+simplifier:
+  option_name: zh_simp
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"              # 分词用
+# xform --改寫〔不保留原形〕
+# derive --衍生〔保留原形〕
+# abbrev --簡拼〔出字優先級較上兩組更低〕
+# fuzz --畧拼〔此種簡拼僅組詞，不出單字〕
+# xlit --變換〔適合大量一對一變換〕
+# erase --刪除
+  algebra:
+    - erase/^xx$/
+    - derive/^([jqxy])u$/$1v/
+    - derive/^([aoe])([ioun])$/$1$1$2/
+    - xform/^([aoe])(ng)?$/$1$1$2/
+    - xform/iu$/Q/
+    - xform/(.)ei$/$1W/
+    - xform/uan$/R/
+    - xform/[uv]e$/T/
+    - xform/un$/Y/
+    - xform/^sh/U/
+    - xform/^ch/I/
+    - xform/^zh/V/
+    - xform/uo$/O/
+    - xform/ie$/P/
+    - xform/i?ong$/S/
+    - xform/ing$|uai$/K/
+    - xform/(.)ai$/$1D/
+    - xform/(.)en$/$1F/
+    - xform/(.)eng$/$1G/
+    - xform/[iu]ang$/L/
+    - xform/(.)ang$/$1H/
+    - xform/ian$/M/
+    - xform/(.)an$/$1J/
+    - xform/(.)ou$/$1Z/
+    - xform/[iu]a$/X/
+    - xform/iao$/N/
+    - xform/(.)ao$/$1C/
+    - xform/ui$/V/
+    - xform/in$/B/
+    - xlit/QWRTYUIOPSDFGHJKLZXCVBNM/qwrtyuiopsdfghjklzxcvbnm/
+    #- abbrev/^(.).+$/$1/
+
+# wubi:                     # 五笔模式白 translator
+wubi:                     # 五笔模式白 translator
+  # dictionary: wubi86
+  dictionary: wubi_pinyin_jixiuf.extend
+  # prism: wubi_pinyin_jixiuf     # 一直没理解
+  enable_charset_filter: true #启用罕见字過濾
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_sentence: true         # 是否開啓自動造句
+  sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+  enable_encoder: true          #  是否開啓自動造詞
+  encode_commit_history: true   # 是否對已上屛詞自動成詞
+  max_phrase_length: 4
+  initial_quality: 1000 ## 优先级
+  disable_user_dict_for_patterns:
+    - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
+    - "^[a-y]$"                   # 对单字母打出的字不进行调频
+    - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
+pinyin:                         # 全拼 针对script_translator@pinyin
+  dictionary: luna_pinyin.extended
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_sentence: true         # 是否開啓自動造句
+  enable_charset_filter: true #启用罕见字過濾 是否開啓字符集過濾〔僅table_translator有效。啓用cjk_minifier後可適用於script_translator〕
+  enable_encoder: true          #  是否開啓自動造詞 僅table_translator有效 (此处应该无效)
+  encode_commit_history: true   # 是否對已上屛詞自動成詞 〔僅table_translator有效〕 (此处应该无效)
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕 (此处应该无效)
+  initial_quality: 1 ## 优先级
+
+
+translator:                     # script_translator默认使用此translator,针对pinyin 可以script_translator@pinyin
+  dictionary: luna_pinyin.extended
+  prism: double_pinyin_flypy_jixiuf
+  enable_charset_filter: true #启用罕见字過濾 是否開啓字符集過濾〔僅table_translator有效。啓用cjk_minifier後可適用於script_translator〕
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_sentence: true         # 是否開啓自動造句
+  enable_encoder: true          #  是否開啓自動造詞 〔僅table_translator有效〕 (此处应该无效)
+  encode_commit_history: true   # 是否對已上屛詞自動成詞〔僅table_translator有效〕  (此处应该无效)
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕 (此处应该无效)
+  initial_quality: 20          # # 优先级
+  # spelling_hints: 2  # 設定多少字以內候選標註完整帶調拼音〔僅script_translator有效〕,但是此处显示的是全批的提示无意义
+  # comment_format:         # spelling_hints配合使用，候选词提示对应的双拼编码
+
+  # preedit_format:    # 上屛碼格式,取消注释则上屏全拼
+  #   - xform/([bpmfdtnljqx])n/$1iao/
+  #   - xform/(\w)g/$1eng/
+  #   - xform/(\w)q/$1iu/
+  #   - xform/(\w)w/$1ei/
+  #   - xform/([dtnlgkhjqxyvuirzcs])r/$1uan/
+  #   - xform/(\w)t/$1ve/
+  #   - xform/(\w)y/$1un/
+  #   - xform/([dtnlgkhvuirzcs])o/$1uo/
+  #   - xform/(\w)p/$1ie/
+  #   - xform/([jqx])s/$1iong/
+  #   - xform/(\w)s/$1ong/
+  #   - xform/(\w)d/$1ai/
+  #   - xform/(\w)f/$1en/
+  #   - xform/(\w)h/$1ang/
+  #   - xform/(\w)j/$1an/
+  #   - xform/([gkhvuirzcs])k/$1uai/
+  #   - xform/(\w)k/$1ing/
+  #   - xform/([jqxnl])l/$1iang/
+  #   - xform/(\w)l/$1uang/
+  #   - xform/(\w)z/$1ou/
+  #   - xform/([gkhvuirzcs])x/$1ua/
+  #   - xform/(\w)x/$1ia/
+  #   - xform/(\w)c/$1ao/
+  #   - xform/([dtgkhvuirzcs])v/$1ui/
+  #   - xform/(\w)b/$1in/
+  #   - xform/(\w)m/$1ian/
+  #   - xform/([aoe])\1(\w)/$1$2/
+  #   - "xform/(^|[ '])v/$1zh/"
+  #   - "xform/(^|[ '])i/$1ch/"
+  #   - "xform/(^|[ '])u/$1sh/"
+  #   - xform/([jqxy])v/$1u/
+  #   - xform/([nl])v/$1ü/
+abc_segmentor:
+  extra_tags:
+    - reverse_lookup
+    # - wubi_comment
+
+reverse_lookup:
+  dictionary: wubi_pinyin_jixiuf.extend
+  prefix: "`"
+  suffix: "'"
+  tips: 〔输入五笔拼音反查双拼〕
+  overwrite_comment: true # 覆盖其他提示
+  comment_format:         # 反查提示对应的双拼编码
+    - erase/^xx$/
+    - derive/^([jqxy])u$/$1v/
+    - derive/^([aoe])([ioun])$/$1$1$2/
+    - xform/^([aoe])(ng)?$/$1$1$2/
+    - xform/iu$/Q/
+    - xform/(.)ei$/$1W/
+    - xform/uan$/R/
+    - xform/[uv]e$/T/
+    - xform/un$/Y/
+    - xform/^sh/U/
+    - xform/^ch/I/
+    - xform/^zh/V/
+    - xform/uo$/O/
+    - xform/ie$/P/
+    - xform/i?ong$/S/
+    - xform/ing$|uai$/K/
+    - xform/(.)ai$/$1D/
+    - xform/(.)en$/$1F/
+    - xform/(.)eng$/$1G/
+    - xform/[iu]ang$/L/
+    - xform/(.)ang$/$1H/
+    - xform/ian$/M/
+    - xform/(.)an$/$1J/
+    - xform/(.)ou$/$1Z/
+    - xform/[iu]a$/X/
+    - xform/iao$/N/
+    - xform/(.)ao$/$1C/
+    - xform/ui$/V/
+    - xform/in$/B/
+    - xlit/QWRTYUIOPSDFGHJKLZXCVBNM/qwrtyuiopsdfghjklzxcvbnm/
+double_pinyin_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
+  tags: [ abc ]
+  # spelling_hints: 5
+  dictionary: luna_pinyin.extended
+  overwrite_comment: true  # 覆蓋其他提示
+  comment_format:
+    # 同時顯示羅馬字拼寫
+    # - "xform/ .*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+    - erase/^xx$/
+    - derive/^([jqxy])u$/$1v/
+    - derive/^([aoe])([ioun])$/$1$1$2/
+    - xform/^([aoe])(ng)?$/$1$1$2/
+    - xform/iu$/Q/
+    - xform/(.)ei$/$1W/
+    - xform/uan$/R/
+    - xform/[uv]e$/T/
+    - xform/un$/Y/
+    - xform/^sh/U/
+    - xform/^ch/I/
+    - xform/^zh/V/
+    - xform/uo$/O/
+    - xform/ie$/P/
+    - xform/i?ong$/S/
+    - xform/ing$|uai$/K/
+    - xform/(.)ai$/$1D/
+    - xform/(.)en$/$1F/
+    - xform/(.)eng$/$1G/
+    - xform/[iu]ang$/L/
+    - xform/(.)ang$/$1H/
+    - xform/ian$/M/
+    - xform/(.)an$/$1J/
+    - xform/(.)ou$/$1Z/
+    - xform/[iu]a$/X/
+    - xform/iao$/N/
+    - xform/(.)ao$/$1C/
+    - xform/ui$/V/
+    - xform/in$/B/
+    - xlit/QWRTYUIOPSDFGHJKLZXCVBNM/qwrtyuiopsdfghjklzxcvbnm/
+wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
+  tags: [ abc ]
+  dictionary: wubi_pinyin_jixiuf.extend
+  overwrite_comment: true  # 覆蓋其他提示
+  comment_format:
+    # 同時顯示羅馬字拼寫
+    - "xform/ .*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+
+punctuator:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "`[a-z]*'?$"

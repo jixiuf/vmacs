@@ -1,0 +1,15 @@
+[Unit]
+BindsTo=sway-session.target
+Description=Starts emacs service
+
+[Service]
+Environment="XDG_SESSION_DESKTOP=Hyprland"
+Type=simple
+Restart=always
+ExecStart=/usr/bin/emacs --fg-daemon
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillMode=process
+TimeoutSec=180
+
+[Install]
+WantedBy=sway-session.target

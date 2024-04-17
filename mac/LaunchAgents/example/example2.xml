@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>test</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/jixiuf/repos/dotfiles/mac/LaunchAgents/test.sh</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/tmp/lauchAgentTest.log</string>
+	<key>StandardOutPath</key>
+	<string>/tmp/lauchAgentTest.log</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+      <!-- 每天0点30分执行 -->
+		<key>Hour</key>
+		<integer>0</integer>
+		<key>Minute</key>
+		<integer>30</integer>
+	</dict>
+    <key>KeepAlive</key>
+    <true/>
+    <key>RunAtLoad </key>
+    <true/>
+</dict>
+</plist>

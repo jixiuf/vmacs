@@ -1,0 +1,39 @@
+*  ubuntu 22.04 wayland 如何实现 mac 的三指拖移
+
+在 Ubuntu 22.04 上使用 Wayland 显示服务器，可以按照以下步骤实现类似 Mac 的三指拖移功能：
+
+1. 打开终端并运行 `xinput list` 命令，查找触摸板的 ID。
+
+2. 执行以下命令安装 libinput：
+
+   ```
+   sudo apt-get update
+   sudo apt-get install xserver-xorg-input-libinput
+   ```
+
+3. 创建 `/etc/X11/xorg.conf.d/40-libinput.conf` 文件，并添加以下内容：
+
+   ```
+   Section "InputClass"
+       Identifier "libinput touchpad"
+       Driver "libinput"
+       MatchIsTouchpad "on"
+       Option "Tapping" "on"
+       Option "ClickMethod" "clickfinger"
+       Option "DisableWhileTyping" "true"
+       Option "NaturalScrolling" "true"
+       Option "MiddleEmulation" "true"
+       Option "ScrollMethod" "twofinger"
+       Option "TappingDrag" "true"
+   EndSection
+   ```
+
+   其中，`TappingDrag` 选项就是三指拖移功能的配置选项。
+
+4. 重新启动 XWindows。
+
+   ```
+   systemctl restart gdm.service
+   ```
+
+5. 现在您可以在 Ubuntu 22.04 上使用三指拖移功能了。

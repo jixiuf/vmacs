@@ -1,0 +1,57 @@
+# https://github.com/rvaiya/keyd
+# move this to *.conf
+[ids]
+# keyd monitor
+# home macbook keyboard
+0000:0000
+#*
+[main]
+# Maps capslock to escape when pressed and control when held.
+# 加 timeout 是为了长按放手以后避免输入空格。
+space = timeout(overload(spacebar, space) , 500, layer(spacebar))
+capslock = timeout(overload(caps, capslock), 500, layer(caps))
+rightmeta =  timeout(overload(caps, C-space), 500, layer(caps))
+leftmeta = timeout(overload(control, esc), 500, layer(control))
+# rightmeta = overload(caps, control+space)
+leftcontrol=layer(meta)
+# esc = `
+[spacebar:C-M]
+
+#super-ctrl
+# Super-C-f: { launch: ["swaymsg","exec","--","sway-run-or-raise","'firefox|firefox-esr'","firefox"] }
+f=command(swaymsg exec -- sway-run-or-raise firefox firefox)
+e=command(swaymsg exec -- sway-run-or-raise emacs runemacs)
+d=command(swaymsg exec -- sway-run-or-raise --cd --floating-only -- dterm alacritty  --working-directory=$(sway-cwd||echo $HOME) --class=dterm )
+,=command(swaymsg exec -- sway-run-or-raise      --floating-only -- dterm alacritty  --working-directory=$(sway-cwd||echo $HOME) --class=dterm )
+b=command(swaymsg exec -- sway-run-or-raise    weixin weixin-uos 2>&1 >/dev/null )
+3=command(swaymsg exec -- sway-run-or-raise    Bytedance-feishu bytedance-feishu-stable 2>&1 >/dev/null )
+7=command(swaylock --ignore-empty-password  --show-failed-attempts  --color  1e1e1e  --inside-color  cccccc  --ring-color  ffffff  --inside-clear-color 11a8cd  --ring-clear-color  29b8db --inside-ver-color  2472c8  --ring-ver-color  3b8eea   )
+8=command(swaymsg exec -- sway-run-or-raise corplink /opt/Corplink/corplink)
+9=command(pick-color)
+enter=command(swaymsg exec -- sh -c alacritty --working-directory=$(sway-cwd||echo $HOME))
+q=command(swaymsg kill)
+o=command(sway-focus-next)
+1=command(sway-kill-other-window)
+m=command(swaymsg fullscreen)
+n=command(swaymsg workspace next)
+p=command(swaymsg workspace prev)
+\=command(sway-toggle-split)
+[caps:M-A]
+#super-alt
+# rightcontrol=layer(meta+control+alt)
+q=command(swaymsg exit)
+i=command(swaymsg splith)
+v=command(swaymsg splitv)
+t=command(swaymsg layout toggle split)
+f=command(swaymsg floating toggle)
+h=command(swaymsg move scratchpad)
+,=command(swaymsg resize shrink width 15px)
+.=command(swaymsg resize grow width 15px)
+
+[caps+control]
+h=command(swaymsg  scratchpad show)
+,=command(swaymsg resize shrink height 15px)
+.=command(swaymsg resize grow height 15px)
+
+# Remaps the escape key to capslock
+# esc = capslock

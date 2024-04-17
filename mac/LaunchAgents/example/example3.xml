@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>test</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>git </string>
+		<string>checkout </string>
+		<string>master </string>
+	</array>
+    <key>StartInterval </key>
+	<integer>3</integer>
+
+    <key>WorkingDirectory </key>
+     <string>/Users/jixiuf/repos/proj_golang/src/zerogame.info/thserver/</string>
+    
+    <key>KeepAlive</key>
+    <true/>
+    
+    <key>RunAtLoad </key>
+    <true/>
+</dict>
+</plist>

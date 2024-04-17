@@ -1,0 +1,19 @@
+#!/bin/sh
+# -*- mode:sh -*-
+# move window to next workspace ,if workspace not fount creat a new one
+# 将当前窗口 移到下一个 workspace 中， 最多支持 5 个 workspace ，可调整 max_ws 的值
+# 若当前 workspace 已经是最后一个，则移到第 1 个 workspace 中
+# 另见 sway-next-empty-workspace 可将当前窗口挪到下一个空闲 workspace
+max_ws="7"
+wsinfo=`swaymsg -t get_workspaces | jq '.[] | select(.focused==true)'`
+ws_index=`echo $wsinfo|jq  '.num'`
+if [ "$ws_index" = "$max_ws" ]; then
+    swaymsg move container to workspace number 1 ,workspace number 1
+else
+    ws_index=$(( $ws_index + 1 ))
+    swaymsg move container to workspace number $ws_index,workspace number $ws_index
+    # swaymsg -- mark --add "_prev_focused"
+    # swaymsg move container to workspace next_on_output
+    # swaymsg  "[con_mark=_prev_focused] focus"
+    # swaymsg  "unmark _prev_focused"
+fi

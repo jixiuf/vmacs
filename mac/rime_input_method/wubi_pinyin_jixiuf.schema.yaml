@@ -1,0 +1,174 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: wubi_pinyin_jixiuf
+  name: "五笔·拼音jixiuf"
+  version: "0.9"
+  author:
+    - 發明人 jixiuf
+  description: |
+    五筆字型86版＋漢語拼音混合輸入。
+    碼表源自 qq五笔,使用深蓝词库工具.exe转换而成
+  dependencies:
+    # - pinyin_jixiuf        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库
+    # - pinyin_simp.extend
+    - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
+    - liangfen  # 两分拼字，作为反查挂载到拼音方案
+
+switches:
+  - name: ascii_mode
+    reset: 0
+  # # 只保留中文输入法，避免无意间切到英文输入状态，因为我使用系统的英文输入法，还不是rime的
+  # # states: [ 中文, 西文 ]
+  # switches/@0/states:  [ 中文]
+    states: [ 中文]
+    # states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: extended_charset
+    states: [ 常用, 增廣 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+  # - name: simplification
+  #   states: [ 漢字, 汉字 ]
+  - name: traditionalization
+    states: [ 简, 繁 ]
+    reset: 0
+
+  - name: zh_simp               # 字库中如月繁体字，结合engine/filters/simplifier来实现简繁转化
+    reset: 1
+    states: [ 漢字, 汉字 ]
+
+# 各字段含义
+# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
+
+engine:
+  processors:
+    # 彻底地移除英文状态，似乎注掉ascii_composer更有效
+    # - ascii_composer #處理西文模式及中西文切換 我把此移除验证禁用其英文输入态
+
+    - recognizer #與 matcher 搭配，處理符合特定規則的輸入碼，如網址、反查等
+    - key_binder # 在特定條件下將按鍵綁定到其他按鍵，如重定義逗號、句號爲候選翻頁鍵
+    - speller                   # 將字母鍵加入輸入碼序列
+    - punctuator #句讀處理器，將單個字符按鍵直接映射爲文字符號
+    - selector                  #  選字、換頁  選字處理器，處理數字選字鍵、上、下候選定位、換頁鍵
+    - navigator                 #   # 移動插入點  處理輸入欄內的光標移動鍵
+    - express_editor  #編輯器，處理空格、回車上屏、回退鍵等
+    # 用 fluency_editor 代替了 express_editor 是语句流，可以用空格断词。
+    # - fluency_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor             # # 標記輸入碼的類型
+    - punct_segmentor
+    - fallback_segmentor
+    # - affix_segmentor@pinyin
+  translators:
+    - punct_translator    # 对应下面的punctuator，用来输入标点
+    # 把script_translator@pinyin放在reverse_lookup_translatorp之上,这样输入拼音的时候才能自动调词频
+    # 因为reverse_lookup_translator也能通过反查进行拼音的输入，但是它不支持调频
+    # script_translator@pinyin   指定的通过下面tag:pinyin的方式则可以支持
+    - table_translator
+    - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
+    - reverse_lookup_translator # 用拼音打出的字，会提示五笔编码
+  filters:
+    - simplifier
+    - reverse_lookup_filter@wubi_comment # 展示五笔的编码
+    - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
+    - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
+
+simplifier:
+  option_name: zh_simp
+  # 你好不错
+
+speller:
+  delimiter: " ;'"              # 分词用
+  #自动顶屏
+  # auto_select: true
+  # max_code_length: 4  # 四碼頂字上屏
+
+#关于五笔拼音同时存在，且也能调拼音词频的配置 http://tieba.baidu.com/p/2283095493
+# 以往要实现五笔拼音混打，用 table_translator 出五笔，拼音只好用 reverse_lookup_translator ，因为 r10n_translator 和 table_translator 是互斥的。
+# 现在好了，你可以创建具名的 translator 实例：
+# 这比原来的 table_translator + reverse_lookup_translator 强大之处是拼音也会独立地调频、组词造句鸟。
+# 不过，如果你仍需要拼音反查五笔编码的功能，那就还需要 reverse_lookup_translator
+# 如果没有别名，则 {table|script}_translator 默认用 translator: 节点， reverse_lookup_translator 默认用 reverse_lookup: 节点。
+
+pinyin:                         # 针对script_translator@pinyin
+  dictionary: luna_pinyin.extended
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_sentence: true         # 是否開啓自動造句
+  enable_encoder: true          #  是否開啓自動造詞
+  encode_commit_history: true   # 是否對已上屛詞自動成詞
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+  initial_quality: 1 # 优先级
+
+# wubi:                     # 五笔模式白 translator
+translator:                     # 五笔模式白 translator
+  # dictionary: wubi86
+  dictionary: wubi_pinyin_jixiuf.extend
+  # prism: wubi_pinyin_jixiuf     # 不必指定，用默认的即可 生成的prism.bin文件的名字，默认wubi_pinyin_jixiuf.prism.bin
+  enable_charset_filter: true
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_sentence: true         # 是否開啓自動造句
+  sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+  enable_encoder: true          #  是否開啓自動造詞
+  encode_commit_history: true   # 是否對已上屛詞自動成詞
+  max_phrase_length: 4
+  initial_quality: 9          # 优先级
+  disable_user_dict_for_patterns:
+    - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
+    - "^[a-y]$"                   # 对单字母打出的字不进行调频
+    - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
+
+
+abc_segmentor:
+  extra_tags:
+    - reverse_lookup
+    # wubi_comment
+
+reverse_lookup:
+  dictionary: luna_pinyin.extended
+  prefix: "`"
+  suffix: "'"
+  tips: 〔拼音〕
+  overwrite_comment: true # 覆盖其他提示
+  preedit_format: # 上屏码显示格式，
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+
+wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
+  tags: [ abc ]
+  dictionary: wubi_pinyin_jixiuf.extend
+  overwrite_comment: true  # 覆蓋其他提示
+  comment_format:
+    # 同時顯示羅馬字拼寫
+    - "xform/ .*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+
+
+
+
+
+# punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
+# 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
+punctuator:
+  # import_preset: default
+  # 引入symbols.yaml文件坦德标点的处理,比如/xl，则列出αβ
+  import_preset: symbols
+
+# 从default.yaml 导入keybind
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    reverse_lookup: "`[a-z]*'?$"
+
+    # 加了这句之后与import_preset: symbols 结合使用，当输入/开头时，输入特殊符号，如/xl输出αβ等，詳細见symbals.ymal
+    # 比如 /2 输入二貳等
+    punct: "^/([0-9]+[a-z]*|[a-z]+)$"

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+ws=$(hyprctl activeworkspace -j)
+ws_id=`echo $ws|jq -r '.id'`
+# app count in current workspace
+app_cnt=$(hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l)
+
+appinfo=`hyprctl activewindow -j`
+
+# if front app exits
+if [ -n "$appinfo" ]; then
+    class=`echo $appinfo|jq -r '.class'|head -n 1`
+    # fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
+    if [[ "$class" = "emacs"  ]]; then
+        sleep 0.1
+        echo key ctrl+super+m|dotoolc
+    else
+        hyprctl dispatch fullscreen 1
+    fi
+else
+    hyprctl dispatch fullscreen 1
+fi

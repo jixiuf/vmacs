@@ -1,0 +1,52 @@
+# for vixie cron
+# $Header: /var/cvsroot/gentoo-x86/sys-process/vixie-cron/files/crontab-3.0.1-r4,v 1.2 2009/05/12 09:13:46 bangert Exp $
+
+# Global variables
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+# check scripts in cron.hourly, cron.daily, cron.weekly and cron.monthly
+#59  *  * * *    root	rm -f /var/spool/cron/lastrun/cron.hourly
+#9  3  * * *	    root	rm -f /var/spool/cron/lastrun/cron.daily
+#19 4  * * 6	    root	rm -f /var/spool/cron/lastrun/cron.weekly
+#29 5  1 * *	    root	rm -f /var/spool/cron/lastrun/cron.monthly
+#*/10  *  * * *	root	test -x /usr/sbin/run-crons && /usr/sbin/run-crons
+# 3 点，关机
+#0 3  * * *	root	shutdown -h now
+#0 22  * * *	root    emerge --sync &&eix-update&& emerge -uDN world --keep-going	
+#每小时更新一次 locate db
+#@hourly        root   updatedb 
+#@hourly        root   cd /resource/gentoo/distfiles/bzr-src/emacs/trunk ; bzr pull
+#@hourly        root   cd /home/jixiuf/.config/awesome                          ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /home/jixiuf/documents/org/public_html/               ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /home/jixiuf/documents/org/src/                       ; git checkout master  ;git pull ; git push 
+#@hourly        root   cd /home/jixiuf/.emacs.d/                                ; git checkout master  ;git pull ; git push ;make compile
+#@hourly        root   cd /home/jixiuf/.emacs.d/                                ; make pull;make push ;make compile
+#@hourly        root   cd /home/jixiuf/dotfiles/                                ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /mnt/d/ahk                                            ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /home/jixiuf/c/                                       ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /home/jixiuf/ex/                                      ; git checkout master  ;git pull ; git push
+
+# man 5 crontab
+#* *  * * *	root	notify-send hello
+#* *  * * *	root	echo hel>/tmp/a
+
+# 前 5 个字段,分表表示以下内容
+# field          allowed values
+# -----          --------------
+# minute         0-59           
+# hour           0-23
+# day of month   1-31
+# month          0-12 (or names, see below)
+# day of week    0-7 (0 or 7 is Sun, or use names)
+
+# 可取值为* 表示整个范围 , 
+# */2 表示每 2 分钟(或每小时,具体视在哪个列)执行一次,
+
+# */10  *  * * *	root	test -x /usr/sbin/run-crons && /usr/sbin/run-crons
+# 比如,每 10 分钟
+
+# *  */2  * * *	root	test -x /usr/sbin/run-crons && /usr/sbin/run-crons
+# 比如,每 2 小时
+

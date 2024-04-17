@@ -1,0 +1,10 @@
+[Unit]
+Description=Checks if paths that are currently being backed up have changed
+After=network.target
+
+[Path]
+PathChanged=/var/cache/binpkgs
+# PathChanged=%h/music
+
+[Install]
+WantedBy=default.target

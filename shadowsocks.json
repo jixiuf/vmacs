@@ -1,0 +1,10 @@
+{
+    "server":"0.0.0.0",
+    "server_port":9999,
+    "local_address":"127.0.0.1",
+    "local_port":7777,
+    "password":"helloworld",
+    "timeout":600,
+    "method":"aes-256-cfb",
+    "fast_open": false
+}

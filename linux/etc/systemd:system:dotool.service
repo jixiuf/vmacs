@@ -1,0 +1,15 @@
+[Unit]
+Description=Starts dotoold service
+[Service]
+Environment="LANG=zh_CN.UTF-8"
+Type=simple
+User=jixiuf
+Group=users
+Restart=always
+ExecStart=/usr/local/bin/dotoold
+ExecReload=/usr/bin/kill -HUP $MAINPID
+TimeoutSec=180
+KillMode=process
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,218 @@
+/* @define-color foreground white; */
+/* @define-color background grey; */
+@define-color foreground #bfbfc0;
+@define-color background #020103;
+@define-color foreground-warning white;
+@define-color background-warning #2980b9;
+@define-color foreground-error black;
+@define-color background-error #B0C4DE;
+@define-color foreground-critical black;
+@define-color background-critical #ffff00;
+@define-color cursor #bfbfc0;
+
+@define-color color0 #020103;
+@define-color color1 #FBBA52;
+@define-color color2 #4B3E81;
+@define-color color3 #705E91;
+@define-color color4 #9575A6;
+@define-color color5 #CB7B96;
+@define-color color6 #AB8EAC;
+@define-color color7 #bfbfc0;
+@define-color color8 #414042;
+@define-color color9 #FBBA52;
+@define-color color10 #4B3E81;
+@define-color color11 #705E91;
+@define-color color12 #9575A6;
+@define-color color13 #CB7B96;
+@define-color color14 #AB8EAC;
+@define-color color15 #bfbfc0;
+/* @import 'colors-waybar.css'; */
+
+* {
+  min-height: 0;
+  font-family: Jost;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+window#waybar {
+  transition-property: background-color;
+  transition-duration: 0.5s;
+  /* background-color: #1e1e2e; */
+  /* background-color: #181825; */
+  background-color: rgba(24, 24, 37, 0.6);
+}
+
+window#waybar.hidden {
+  opacity: 0.5;
+}
+#workspaces {
+    background: @background-color;
+    margin: 0px 0px 0px 0px;
+    /* padding: 4px 1px; */
+    border-radius: 12px;
+    font-weight: normal;
+    font-style: normal;
+    opacity:0.8;
+}
+
+#workspaces button {
+    padding: 0px 5px;
+    margin: 0px 1px;
+    border-radius: 12px;
+    color: @color7;
+    background-color: @color11;
+    transition: all 0.3s ease-in-out;
+    opacity:0.5;
+    font-size:13px;
+    
+}
+
+#workspaces button.active {
+    color: #cdd6f4;
+    background-color: @color11;
+    border-radius: 10px;
+    min-width: 30px;
+    background-size: 400% 400%;
+    transition: all 0.3s ease-in-out;
+    opacity:1.0;
+}
+
+#workspaces button:hover {
+    background-color: @color1;
+    color: #0000ff;
+    border-radius: 10px;
+    min-width: 30px;
+    background-size: 400% 400%;
+}
+
+
+#workspaces button.persistent {
+  color: #cba6f7;
+  background-color: #585b70;
+}
+#workspaces button.visible {
+  color: #1e1e2e;
+  background-color: #89b4fa;
+}
+
+#workspaces button.urgent {
+  background-color: #ff0000;
+}
+
+#clock,
+#pulseaudio,
+#custom-logo,
+#custom-power,
+#cpu,
+#tray,
+#wireplumber,
+#network,
+#battery,
+#window,
+#idle_inhibitor,
+#memory {
+  min-height: 0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin: 0px 1px;
+  color: #89b4fa;
+  background-color: #1e1e2e;
+}
+
+#custom-sep {
+  padding: 0px;
+  color: #585b70;
+}
+
+#cpu {
+  color: #94e2d5;
+}
+
+#memory {
+  color: #cba6f7;
+}
+
+#clock {
+  color: #89b4fa;
+}
+
+#clock.date {
+  color: #74c7ec;
+}
+
+#window {
+  color: #a6e3a1;
+}
+
+#wireplumber {
+  color: #b4befe;
+}
+
+#wireplumber.muted {
+  color: #a6adc8;
+}
+
+#custom-logo {
+  color: #89b4fa;
+}
+
+#custom-power {
+  color: #f38ba8;
+  padding-right: 8px;
+  font-size: 14px;
+}
+
+@keyframes blink {
+  to {
+    background-color: #f38ba8;
+    color: #181825;
+  }
+}
+
+tooltip {
+    border-radius: 10px;
+    background-color: @background-error;
+    opacity:0.8;
+    padding:20px;
+    margin:0px;
+}
+
+tooltip label {
+    color: @color11;
+}
+
+#battery.discharging {
+    color:      @foreground-error;
+    background: @background-error;
+}
+#battery.critical:not(.charging) {
+    color:            @foreground-critical;
+    background-color: @background-critical;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+
+#custom-applauch {
+    /* margin-right:5px; */
+    /* margin-left:5px; */
+    min-width: 10px;
+    transition: all 0.3s ease-in-out;
+    /* font-size:20px; */
+    /* color: #cdd6f4; */
+    background-color: #a6adc8;
+    border-radius: 10px;
+    min-width: 30px;
+    background-size: 400% 400%;
+    transition: all 0.3s ease-in-out;
+    opacity:1.0;
+}
+#custom-notification {
+  color: #f38ba8;
+  padding: 8px;
+  font-size: 14px;
+}

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob globstar
+
+typeit=0
+if [[ $1 == "--type" ]]; then
+	typeit=1
+	shift
+fi
+
+if [[ -n $WAYLAND_DISPLAY ]]; then
+    export BEMENU_OPTS='-p password: -i -I 0   --fn "Sarasa Term SC Nerd 24" --hp 5 -W 0.7   --fb "#1e1e2e" --ff "#00ffff" --nb "#1e1e2e" --nf "#f5e0dc" --tb "#1e1e2e" --hb "#1e1e2e" --hf "#00ffff" --tf "#f5e0dc" --af "#f5e0dc" --ab "#1e1e2e"  -l 10 -n'
+	dmenu="rofi"
+	xdotool="ydotool type --file -"
+elif [[ -n $DISPLAY ]]; then
+	dmenu=dmenu
+	xdotool="xdotool type --clearmodifiers --file -"
+else
+	echo "Error: No Wayland or X11 display detected" >&2
+	exit 1
+fi
+
+prefix=${PASSWORD_STORE_DIR-~/.password-store}
+password_files=( "$prefix"/**/*.gpg )
+password_files=( "${password_files[@]#"$prefix"/}" )
+password_files=( "${password_files[@]%.gpg}" )
+
+password=$(printf '%s\n' "${password_files[@]}"| "$dmenu" "-dmenu" "-i" "$@")
+
+[[ -n $password ]] || exit
+
+if [[ $typeit -eq 0 ]]; then
+	pass show -c "$password" 2>/dev/null
+else
+	pass show "$password" | { IFS= read -r pass; printf %s "$pass"; } | $xdotool
+fi

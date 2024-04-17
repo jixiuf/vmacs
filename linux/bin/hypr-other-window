@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+ws=$(hyprctl activeworkspace -j)
+ws_id=`echo $ws|jq -r '.id'`
+# app count in current workspace
+app_cnt=$(hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l)
+
+appinfo=`hyprctl activewindow -j`
+
+# if front app exits
+if [ -n "$appinfo" ]; then
+    class=`echo $appinfo|jq -r '.class'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
+    fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
+    floating=`echo $appinfo|jq -r '.floating'|head -n 1`
+     # ( "$app_cnt" = "1" || "$fullscreen" = "true" )
+    if [[ "$class" = "emacs" ]]; then
+        echo key ctrl+super+o|dotoolc
+    elif [[ ( "$class" = "foot" || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+        echo key ctrl+super+o|dotoolc
+    elif [[ ( "$class" = "foot" || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+        tmux select-pane -t :.+
+    else
+        hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+    fi
+else
+    hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+fi

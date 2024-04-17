@@ -1,0 +1,28 @@
+#!/bin/bash
+# 依次将焦点切换到下一个窗口(只针对当前 workspace)
+#
+#有焦点的窗口
+focused_con_id=$(swaymsg -t get_seats|jq '.[].focus'|head -n 1)
+if [ -z "$focused_con_id" ]; then
+    exit 1
+fi
+# 获取当前 workspace 的信息
+workspace_info=$(swaymsg -t get_workspaces | jq 'map(select(.focused == true))')
+
+if [[ ! -z $workspace_info ]]; then
+  # 获取当前 workspace 的名字和 ID
+  workspace_name=$(echo "$workspace_info" | jq -r '.[0].name')
+  workspace_id=$(echo "$workspace_info" | jq -r '.[0].id')
+
+  wids=($(swaymsg -t get_tree | jq -r ".nodes[].nodes[]|select(.id == $workspace_id)|recurse(.nodes[], .floating_nodes[])|select (.app_id != null or .window_properties.class != null)|.id"))
+    found=0
+    for id in ${wids[@]}; do
+        if [[ $found == 1 ]]; then
+            swaymsg "[con_id=$id] focus"
+            exit 0
+        elif [[ $id == $focused_con_id ]]; then
+            found=1
+        fi
+    done
+    swaymsg "[con_id=${wids[0]}] focus"
+fi

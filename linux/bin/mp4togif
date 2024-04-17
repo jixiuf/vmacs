@@ -1,0 +1,28 @@
+#!/bin/sh
+# - `-vf "fps=10,scale=320:-1:flags=lanczos"`：视频过滤器选项，
+# `fps=10`设置GIF的帧率为10帧/秒，
+# `flags=lanczos`使用Lanczos算法进行缩放，以提高质量。
+# - `-c:v gif`：指定输出视频编码为GIF格式。
+# 1. 使用了临时调色板`palette.png`来优化颜色的选择，这对于GIF质量的提升非常关键。
+# 2. `fps=10`和`scale=640:-1`可以根据需要调整。提高`fps`会使动画更流畅，但文件大小也会增加
+# 。`scale=640:-1`保持了宽度为640像素，高度自动调整以保持原始宽高比，这个也可以根据需要调整。
+# 3. 使用了`-v warning`来减少非关键信息的输出，使得输出更加清晰。
+
+
+input=$1
+output=$2
+
+if [ -z "$output" ]; then
+    output=$(dirname "$input")/$(basename "$input" ".mp4")-$(date +"%Y-%m-%d-%H-%M-%S").gif
+fi
+# 生成调色板
+palette="/tmp/palette.png"
+filters="fps=1"
+# -3 非空则压缩到宽800
+if [ -n "$3" ]; then
+    filters="fps=1,scale=800:-1:flags=lanczos"
+fi
+
+ffmpeg -v warning -i "$input" -vf "$filters,palettegen" -y $palette
+ffmpeg -v warning -i "$input" -i $palette -lavfi "$filters [x]; [x][1:v] paletteuse" -y "$output"
+# ffmpeg  -v warning -i $1 -vf "fps=1,scale=800:-1:flags=lanczos" -c:v gif $output

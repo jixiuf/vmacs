@@ -1,0 +1,27 @@
+# -*- coding:utf-8; -*-
+# cat w.txt|sort -r| awk -F\t '!a[$1$2]++'|sort>s2.txt
+#  awk -F\t '!a[$1$2]++' 意思是以tab分隔，第一列第二列作key,用来去重，
+# encoding: utf-8
+# Rime dictionary: qq五笔导出
+# 并合并了 qq成语 谚语，及搜狗的成语谚语
+---
+name: wubi_pinyin_jixiuf
+version: "0.6"
+sort: by_weight
+columns:
+  - text
+  - code
+  - weight
+  - stem
+encoder:
+  exclude_patterns:
+    - '^z.*$'
+  rules:
+    - length_equal: 2           # #對於二字詞
+      formula: "AaAbBaBb"       # #取第一字首碼与第二码、第二字首碼及第二码
+    - length_equal: 3           # 
+      formula: "AaBaCaCb"       # 取第1字首码，第2字首码，第3字首码及第2码
+    - length_in_range: [4, 10]
+      formula: "AaBaCaZa"
+...
+工	a	5000000

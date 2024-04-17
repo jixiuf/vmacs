@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+# https://gitlab.com/wef/dotfiles/-/blob/master/bin/sway-next-empty-workspace
+# shellcheck disable=SC2034
+TIME_STAMP="20221227.173528"
+
+# Copyright (C) 2020-2023 Bob Hepple <bob dot hepple at gmail dot com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+PROG=$( basename "$0" )
+
+take=""
+forward="set"
+debug="0"
+
+while [[ "$1" ]]; do
+    case "$1" in
+        -h|--help)
+            # shellcheck disable=SC2016
+            echo "Usage: $PROG [OPTIONS]
+Jumps to the next empty workspace. For example, if you're on workspace
+1 and there are workspaces [1 2 3 5 6] then you would jump to
+workspace 4.
+
+Suggested bindings:
+
+#### W_orkspace Next empty workspace
+    bindsym \$mod+greater exec sway-next-empty-workspace
+    bindsym \$mod+less    exec sway-next-empty-workspace --reverse
+
+(NB see sway-menu for the explanation of the #### W_orkspace line).
+
+  -r, --reverse               reverse direction
+  -d, --debug                 debug to stderr
+  -t, --take-focused          take currently focused with you"
+            exit 0
+            ;;
+        -r|--reverse)
+            forward=""
+            shift
+            ;;
+        -d|--debug)
+            debug="1"
+            shift
+            ;;
+        -t|--take-focused)
+            take=$( swaymsg -t get_tree | jq '.. | select(.type?) | select(.focused==true) | .id' )
+            shift
+            ;;
+    esac
+done
+
+(( debug == 1 )) && echo "$PROG: take=$take"
+
+this_workspace=$( swaymsg -t get_workspaces |
+                  jq -r '.[] | select(.focused==true)|.num' |
+                  awk -F':' '{print $1}' )
+
+(( debug == 1 )) && echo "$PROG: this_workspace=$this_workspace"
+
+if [[ "$forward" ]]; then
+    next_workspace=$( swaymsg -t get_workspaces|
+                      jq -r '.[].num'|
+                      sort -n |
+                      awk -v this_workspace="$this_workspace" -v debug="$debug" '
+                      BEGIN {lasti=0}
+                      {
+                          i=$1+0
+                          if (debug) print "i=" i >"/dev/stderr"
+                          if (i > 0) {
+                              if (lasti > 0) {
+                                  if (i > lasti+1) {exit}
+                              }
+                              if (i >= this_workspace) lasti = i
+                          }
+                          if (debug) print "lasti=" i >"/dev/stderr"
+                      }
+                      END{if (lasti > 0) { print lasti+1}}'  
+                  )
+else
+    next_workspace=$( swaymsg -t get_workspaces|
+                      jq -r '.[].num'|
+                      sort -rn |
+                      awk -v this_workspace="$this_workspace" '
+                      BEGIN {lasti=0}
+                      {
+                          i=$1+0
+                          if (debug) print "i=" i >"/dev/stderr"
+                          if (i > 0) {
+                              if (lasti == 0) {
+                                  if (i <= this_workspace) lasti = i
+                              } else {
+                                  if (i > 1) {
+                                      if (i < lasti-1) {exit}
+                                      if (i <= this_workspace) lasti=i
+                                  } else {
+                                      lasti=1
+                                  }
+                              }
+                          }
+                          if (debug) print "lasti=" i >"/dev/stderr"
+                      }
+                      END{if (lasti > 1) print lasti-1}'  
+                  )
+    (( debug == 1 )) && echo "next_workspace=$next_workspace"
+fi
+
+[[ "$next_workspace" ]] && {
+    cmd="workspace $next_workspace"
+    [[ "$take" ]] && cmd="move --no-auto-back-and-forth window to workspace number $next_workspace; $cmd"
+    (( debug == 1)) && echo "$PROG: $cmd"
+    swaymsg "$cmd"
+}
+
+# Local Variables:
+# mode: shell-script
+# time-stamp-pattern: "4/TIME_STAMP=\"%:y%02m%02d.%02H%02M%02S\""
+# eval: (add-hook 'before-save-hook 'time-stamp)
+# End:
+

@@ -1,0 +1,89 @@
+# -*- coding:utf-8;mode:gitconfig-*-
+[user]
+	name = deployer
+	email = deployer@3ciyuan.com
+[branch "master"]
+	remote = origin
+	merge = master
+[push]
+	default = current
+
+# [mergetool "ediff"]
+# 	cmd = emacsclient --eval \"(git-mergetool-emacsclient-ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$MERGED\\\")\"
+# 	trustExitCode = false
+# [mergetool]
+# 	prompt = false
+# [merge]
+	# tool = ediff
+
+	# run : git difftool
+[diff]
+	tool = ediff
+[difftool]
+	prompt = false
+# [difftool "ediff"]
+# 	cmd = emacsclient --eval \"(ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" )\"
+
+[alias]
+	sub=submodule
+	subp=submodule foreach git pull
+	subc=submodule foreach git co master
+	a=add
+	st = status
+	br = branch -a -v
+	b = branch -a -v
+	ci = commit
+	co = checkout
+	df = diff
+	re = remote -v
+	undo = reset --soft HEAD^
+	l =log --date iso
+	log =log --date iso
+	ll = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	pd = pull --dry-run
+	s = status
+	up = pull --rebase
+	put = push origin HEAD
+	pom = push origin master
+
+	dd = difftool
+	d = diff -C
+	dw = diff -C --color-words
+
+	ru = remote update
+	sb = show-branch --sha1-name
+	ls-del = ls-files -d
+	ls-mod = ls-files -m
+	ls-new = ls-files --exclude-standard -o
+	ls-ign = ls-files --exclude-standard -o -i
+
+	# ignore some changes temp
+	# git ignore <filenames>
+	# git unignore <filenames>
+	# git ignored
+	ignore = !git update-index --assume-unchanged
+	unignore = !git update-index --no-assume-unchanged
+	# ignored = !git ls-files -v | grep ^[a-z]
+    # ignored = !git ls-files -v | grep "^[[:lower:]]" | awk '{print $2}'
+	ignored = !git ls-files -v | grep "^[[:lower:]]"
+
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+	ui = auto
+
+[core]
+	editor =vi
+	pager = less -r
+	#his basically tells Git that an end-of-line CR is not an error. As a result,
+	#those annoying ^M characters no longer appear at the end of lines in git diff, git show, etc.
+	whitespace = cr-at-eol
+	excludesfile = ~/.gitignore
+	# 644 or 755
+	filemode = false
+[log]
+	date=iso
+[i18n]
+	commitencoding = utf-8

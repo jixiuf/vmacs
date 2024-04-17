@@ -1,0 +1,237 @@
+# -*- coding:utf-8 -*-
+#+LANGUAGE:  zh
+#+TITLE:     macbook上安装archlinux 备忘
+#+DATE:     2023-05-09 Tue
+#+DESCRIPTION:archlinux.org
+#+KEYWORDS:
+#+TAGS:
+#+FILETAGS:
+#+OPTIONS:   H:2 num:t toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil
+#+REVEAL_TRANS: None/Fade/Slide/Convex/Concave/Zoom
+* 安装之前 macos 上的准备
+** 硬盘分区
+ 使用 macos 自带的磁盘工具，  对硬盘提前进行分区
+ 额外再分出两个区 一个 1G 就行用于/boot,一个>30G 左右用于 archlinux
+ 分区之前 到 安全性与隐私内把 文件保险箱关闭
+ 注意点: 分区时 点击 “+” 时  会提示 "添加分区" 或 "添加宗卷"， 选“添加分区”
+ 格式可以选 exfat (这个格式 mac/windows/linux 都能识别，且 linux 的 boot 目录支持 exfat 格式)
+ 所以为了方便 macos 与 linux 之间互传文件，可以将/boot 分区设置稍大一些
+ 请牢记你添加分区的大小、格式,因为 macos 内有隐藏分区用于 mac 的恢复、引导启动等。
+命令行下可通过 以下命令查看分区状况
+#+begin_src sh
+diskutil list
+#+end_src
+#+begin_quote
+如我的硬盘如下: 只需要关注标注为 internal, physical 的/dev/disk0 这块硬盘即可
+这个硬盘现在共 4 个分区其中 dev/disk0s1 为 mac 的 EFI 启动引导用的分区 /dev/disk0s2 为 mac 用
+/dev/disk0s3 /dev/disk0s4 为我新添加的两个分区
+/dev/disk0 (internal, physical):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *500.3 GB   disk0
+   1:                        EFI ⁨EFI⁩                     314.6 MB   disk0s1
+   2:                 Apple_APFS ⁨Container disk1⁩         457.5 GB   disk0s2
+   3:       Microsoft Basic Data ⁨linux⁩                   41.4 GB    disk0s3
+   4:       Microsoft Basic Data ⁨ios⁩                     999.3 MB   disk0s4
+
+/dev/disk1 (synthesized):
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      APFS Container Scheme -                      +457.5 GB   disk1
+                                 Physical Store disk0s2
+   1:                APFS Volume ⁨Macintosh HD - 数据⁩     342.7 GB   disk1s1
+   2:                APFS Volume ⁨Preboot⁩                 350.5 MB   disk1s2
+   3:                APFS Volume ⁨Recovery⁩                623.5 MB   disk1s3
+   4:                APFS Volume ⁨VM⁩                      18.3 GB    disk1s4
+   5:                APFS Volume ⁨Macintosh HD⁩            22.3 GB    disk1s5
+   6:              APFS Snapshot ⁨com.apple.os.update-...⁩ 22.3 GB    disk1s5s1
+#+end_quote
+可通过 diskutil mount unmount 子命令 挂载相应的分区，可在/Volimes 下查看
+当然 macos 默认无法挂载 linux 支持的 ext4 等分区，
+#+begin_src sh
+diskutil mount /dev/disk0s3    # 后续archliunux的/boot将会使用此分区，此分区可用于macos/arch互传文件用
+diskutil unmount /Volumes/EFI
+#+end_src
+
+整体流程 跟着 https://wiki.archlinux.org/title/Installation_guide 走
+着重记录下我易忘记的点:
+* wifi
+**  ip link 查看网卡名
+** iwctl 管理无线网连接
+https://wiki.archlinux.org/title/Iwd#iwctl
+iwctl 为管理无线网连接的命令，它于守互进程 iwd 一起配合使用
+使用 usb 中的 archlinux.iso 启动过程中 可直接执行 iwctl 对无线网进行管理
+执行 iwctl 命令后 可使用以下命令
+#+begin_src sh
+device list # 列出当前的无线网卡名，如我的名为 wlan0
+device device set-property Powered on #  这条我好像没用到
+adapter adapter set-property Powered on #  这条我好像没用到
+station device scan # 扫描附近的无线网，此条命令 无任何输出
+station device get-networks # 这条命令列表当前扫描到的可连接的无线
+station device connect SSID # 这条命令 连接你的无线， 将 SSID 换成你无线的名字，如我的是 CMCC-58103
+#+end_src
+iwd 会自动将密码存到 /var/lib/iwd 后续可能不提示输入密码
+** 安装完 archlinux 重启后如何配置网络
+若安装完后 还想用 iwctl 需要 在 arch-chroot 到新系统后安装 iwd 并进行配置
+** 配置 /etc/iwd/main.conf
+#+begin_example
+[General]
+# 使用iwd来管理网络,iwd 自带了DHCP client ,不需要再客外安装 DHCP client ,用以下选项启用
+EnableNetworkConfiguration=true
+[Network]
+EnableIPv6=false # 可选
+# 指定使用 systemd-resolved  作为 dns 解析用，下面会说到
+NameResolvingService=systemd
+#+end_example
+** 先启动 iwd.service
+#+begin_src sh
+systemctl enable iwd
+systemctl start iwd
+#+end_src
+** Select DNS manage
+
+ 我直接使用 systemd-resolved  不需要安装
+ #+begin_src sh
+systemctl enable  systemd-resolved
+systemctl start  systemd-resolved
+systemctl enable  systemd-networkd
+systemctl start  systemd-networkd
+ #+end_src
+ 官网上说 机器刚启动 有人遇到过 iwd 服务不生效，可以手动重启一下 iwd ,还不行 systemd-resolved 也重启下
+#+begin_src sh
+systemctl restart iwd
+#+end_src
+官方建议在 iwd.service 中加上 sleep 命令，延迟 iwd 的启动(通常在/etc/systemd/某个子目录下)
+#+begin_example
+[Service]
+ExecStartPre=/usr/bin/sleep 2
+#+end_example
+
+
+
+* fdisk 分区
+执行 fdisk -l  查看当前分区情况 仔细辨认大小、类型来识别刚才新建立的分区
+注意 mac 下显示的分区名字如/dev/disk0s1 在 linux 下可能是另外的名字 如 /dev/nvme0n1
+下面 archlinux 安装过程中提到的分区名 如/dev/disk0s1 实际要改成 fdisk -l 显示的名字
+这里为了统一，便于理解 依照使用 mac 下的分区名进行说明。
+/boot 用的分区不需要进行格式化(在 mac 上已将其格式化为 exfat 类型的，可直接用)
+另一个挂载/目录的分区， 我不确定有没有必要更改其 Partition type ,如果需要可直接执行
+#+begin_src sh
+fdisk /dev/disk0 # 注意这里输入的/dev/disk0 是整个硬盘，不是某个分区如 /dev/disk0s1
+#+end_src
+m: 查看子命令帮助
+p: 列表分区情况
+l: 支持的 Partition type  如 83 为 linux ,后续使用 t 命令更改某个分区类型
+n: 添加分区
+w: 保存
+q: 退出
+注意 w 或 q 之前任何操作不真正生效，只有输入 w 保存后 所有操作才最终生效
+调整完分区后 使用以下命令建立文件系统
+#+begin_src sh
+mkfs.ext4 /dev/disk0s4
+mount /dev/disk0s4 /mnt #挂载根分区到 /mnt 目录，/mnt/内的内容实际写入 /dev/disk0s4 对应分区
+#+end_src
+
+* 初始化 archlinux
+当然像 vim man-db iwd 等可以在 arch-chroot 到新系统后使用 pacman 安装
+#+begin_src sh
+pacstrap -K /mnt base linux linux-firmware vim iwd man-db
+#+end_src
+* linux 引导系统 grub 相关配置
+首先先列一下 各个分区的挂载情况，供参考
+| arch-chroot 前 | arch-chroot 后 | 分区         | 备注                 |
+| /mnt           | /              | /dev/disk0s4 |                      |
+| /mnt/boot      | /boot          | /dev/disk0s3 |                      |
+| /mnt/boot/efi  | /boot/efi      | /dev/disk0s1 | macbook efi 引导分区 |
+
+https://wiki.archlinux.org/title/GRUB
+上述文档中提到的 esp 对应我们上面的/boot/efi
+下面说的命令是 arch-chroot 到/mnt 目录后且上述 3 个分区都 mount 到位后的情况
+** 安装 grub/efibootmgr
+#+begin_src sh
+pacman -S grub efibootmgr
+#+end_src
+** 安装 efi /grub 引导信息到 /boot/efi 及 /boot/grub
+#+begin_src sh
+ tar -czf efi_backup.tar.gz /boot/efi #建议在执行相应命令之前使用 将 mac efi 引导分区进行备份 (非必须)
+ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=archlinux-grub
+#+end_src
+以上命令会做以下几件事
+1. 在 /boot/efi 目录下，也就是 mac 的引导分区下 生成一个 /boot/efi/EFI/archlinux-grub/grubx64.efi
+   在执行命令前，建议你观察下/boo/efi 有哪些文件、目录，以了解此条命令新增了哪些文件
+   后面如果不想用 linux 了，可通过提前删除/boot/efi/EFI/archlinux-grub 这个目录来实现
+2. 生成/boo/grub/ 目录下的文件，包括字体配置等 grub 引导需要的文件
+** 定制/boot/grub/grub.cfg
+可通过修改 /etc/default/grub
+然后 使用以下命令生成/boot/grub/grub.cfg
+我记不清 不执行此条命令 默认会不会生成/boot/grub/grub.cfg ,所有还是建议执行一下
+#+begin_src sh
+grub-mkconfig -o /boot/grub/grub.cfg
+#+end_src
+理论上现在重启后就可以引导登录 archlinux 了， 可通过 按下 Alt/option 键来选择 archlinux/macos
+*** grub 支持引导 macos (未验证)
+
+#+begin_src sh
+pacman -S os-prober
+#+end_src
+编辑 /etc/default/grub ,使用上面的 grub-mkconfig  重新生成/boot/grub/grub.cfg
+#+begin_quote
+GRUB_DISABLE_OS_PROBER=false
+#+end_quote
+在这个过程中 要保证 mount 了 macos 的引导分区，才能检测的到 mac 的存在 即上面 /boot/efi
+好像在 arch-root 执行时 无效，reboot 后 直接登录到 archlinux 后 再执行此操作
+
+*  lvm2 相关
+如果/ 放在 lvm 管理的 需要进行额外的配置
+https://wiki.archlinux.org/title/Install_Arch_Linux_on_LVM
+https://wiki.archlinux.org/title/Mkinitcpio#Image_creation_and_activation
+https://wiki.archlinux.org/title/LVM
+https://github.com/jixiuf/jixiuf.github.io/blob/source/Linux/llvm.org?plain=1#L12
+#+begin_src sh
+ pacman -S lvm2
+#+end_src
+* 重新生成 /boot/initramfs.img
+编辑  /etc/mkinitcpio.conf
+在 HOOKS 中加入 lvm2
+#+begin_quote
+HOOKS=(base udev ... block lvm2 filesystems)
+#+end_quote
+
+#+begin_src  sh
+ pacman -S zstd xz bzip2 gzip # 可能默认已经有了,( initramfs.img 是zstd压缩后的)
+ mkinitcpio -P #-P  为所有内核都重新生成，archlinux 可配置多个核，以便某个失败后仍可进入arch
+ mkinitcpio -p linux # 为某一个内核重新生成
+#+end_src
+* grub 字体调整
+#+begin_src sh
+# 选择支持中文的字体，如 WenQuanYi Micro Hei 或者 Source Code Pro
+pacman -S ttf-dejavu
+fc-cache -fv
+grub-mkfont -s 36 -o /boot/grub/fonts/DejaVuSansMono.pf2 /usr/share/fonts/TTF/DejaVuSansMono.ttf
+#+end_src
+** 编辑/etc/defaults/grub
+#+begin_example
+GRUB_FONT=/boot/grub/fonts/DejaVuSansMono.pf2
+#+end_example
+
+#+begin_src sh
+grub-mkconfig -o /boot/grub/grub.cfg
+#+end_src
+
+* tty 终端下的字体(未生效)
+#+begin_src sh
+ls /usr/share/kbd/consolefonts
+setfont Agafari-12 # 临时更改为Agafari-12
+sudo pacman -S wqy-microhei
+#+end_src
+或者在 /etc/vconsole.conf
+#+begin_src sh
+# FONT=ter-v24b
+FONT=wqy-microhei
+#+end_src
+* fcitx5
+如文档中配置完 env 后需要重启
+https://wiki.archlinuxcn.org/wiki/Fcitx5
+#+begin_src sh
+pacman -S fictx5 fictx5-rime fcitx5-diagnose fcitx5-qt fcitx5-gtk fcitx5-configtool
+fcitx5-diagnose #诊断fictx问题
+#+end_src

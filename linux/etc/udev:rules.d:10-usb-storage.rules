@@ -1,0 +1,39 @@
+# sudo udevadm control --reload-rules
+# journalctl -u systemd-udevd
+  
+# /dev/nvme0n1p5      	/mnt/exfat	exfat     	rw,relatime,fmask=0022,uid=1000,dmask=0022,iocharset=utf8,errors=remount-ro	0 2
+# /dev/nvme0n1p4      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
+  
+KERNEL!="sd[a-z][0-9]", GOTO="media_by_label_auto_mount_end"
+
+# Import FS infos
+IMPORT{program}="/sbin/blkid -o udev -p %N"
+
+# Get a label if present, otherwise specify one
+ENV{ID_FS_LABEL}!="", ENV{dir_name}="%E{ID_FS_LABEL}"
+ENV{ID_FS_LABEL}=="", ENV{dir_name}="usb-%k"
+
+# Global mount options
+ACTION=="add", ENV{mount_options}="rw,noauto,sync,dirsync,noexec,nodev,noatime,uid=1000"
+# Filesystem-specific mount options
+# 如果是vfat 或者ntfs 系统，则设置mount_options 的选项如下
+ACTION=="add", ENV{ID_FS_TYPE}=="exfat|vfat|ntfs", ENV{mount_options}="$env{mount_options},gid=100,umask=000"
+
+# Mount the device
+#  如果文件系统不是ntfs ,意味着是vfat
+# 同时挂载到/media/sd[a-z][0-9] 的形式
+ACTION=="add",ENV{ID_FS_TYPE}!="ntfs", RUN+="/bin/mkdir -p /mnt/usb-%k", RUN+="/bin/mount -o $env{mount_options},rw /dev/%k /mnt/usb-%k"
+
+#ntfs
+#  如果文件系统是ntfs ,以ntfs-3g 的形式挂载，实现可读写
+# 同时挂载到/media/sd[a-z][0-9] 的形式
+
+ACTION=="add",ENV{ID_FS_TYPE}=="ntfs", RUN+="/bin/mkdir -p /mnt/usb-%k", RUN+="/bin/mount -t ntfs-3g -o $env{mount_options},rw /dev/%k /mnt/usb-%k"
+# Clean up after removal
+#
+ACTION=="remove", ENV{dir_name}!="",  RUN+="/bin/umount -l /mnt/usb-%k",  RUN+="/bin/rmdir /mnt/usb-%k" ,  RUN+="/bin/rm /mnt/usb-%k" 
+
+
+# Exit
+LABEL="media_by_label_auto_mount_end"
+

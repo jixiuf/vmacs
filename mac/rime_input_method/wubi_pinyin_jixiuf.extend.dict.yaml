@@ -1,0 +1,76 @@
+# Rime dictionary: qq五笔导出
+# encoding: utf-8
+# cat w.txt|sort -r| awk -F\t '!a[$1$2]++'|sort>s2.txt
+#  awk -F\t '!a[$1$2]++' 意思是以tab分隔，第一列第二列作key,用来去重，
+
+# 差集
+# https://www.jianshu.com/p/cf428138caab
+# 意思是以tab分隔，第一列作key,只打印key在b.txt中存在，且不存在于a.txt中的
+# awk -F\t 'NR==FNR{ a[$1]=$1 } NR>FNR{ if(a[$1] == ""){ print $0}}' a.txt b.txt
+#NR表示已经处理的行数，FNR表示当前文件处理的行数。所以当NR==FNR时，处理的是aaa.txt，NR>FNR时处理的是bbb.txt
+# 即在处理a.txt时 将a[key]设置上值，在处理b.txt时，判断a[key]是否为空，为空就打印，即为空，说明此key在a.txt中不存在
+# awk   -F\t 'NR==FNR{ a[$1]=$1 } NR>FNR{ if(a[$1] == ""){ print $0}}' wubi_pinyin_jixiuf.base.dict.yaml wubi_pinyin_jixiuf.suyu.dict.yaml>c.txt
+
+# awk -F\t 'NR==FNR{ a[$1]=$1 } NR>FNR{ if(a[$1] == ""){ print $1}}' a.txt b.txt
+
+# a.txt-b.txt:
+# sort a.txt b.txt b.txt | uniq -u
+# sort a.txt b.txt b.txt | uniq -u：将两个文件排序，最后输出a.txt b.txt b.txt文件中只出现过一次的内容，
+# 因为有两个b.txt所以只会输出只在a.txt出现过一次的内容，即是a.txt-b.txt差集
+
+# 求交集 sort a.txt b.txt | uniq -d
+
+
+# Rime dictionary ---
+
+#  wubi_pinyin_jixiuf.extend 这个词典的神奇之处是：虽然
+# wubi_pinyin_jixiuf.schema.yaml 已设置为加载名为 wubi_pinyin_jixiuf.extend 的词典，
+# 但配套的用户词典名却是「wubi_pinyin_jixiuf」，即 Rime 自动取句点之前的部分为
+# 用户词典名，以保证按以上方法增补了词汇之后，不至於因为改变词典名而抛弃
+# 原有的用户词典。
+
+name: wubi_pinyin_jixiuf.extend
+version: "2013.04.22"
+sort: by_weight
+# use_preset_vocabulary: true
+import_tables:
+  # 这里引入别的字库dict
+  - wubi_pinyin_jixiuf
+  - wubi_pinyin_jixiuf.base
+  # - wubi_pinyin_jixiuf.word4
+  # - wubi_pinyin_jixiuf.suyu
+# - emoji
+# - wubi_pinyin_jixiuf_qq_chengyu
+# - wubi_pinyin_jixiuf_qq_yanyu
+# - wubi_pinyin_jixiuf_qq_chengyu_pinyin
+# - wubi_dict2
+columns:
+  - text
+  - code
+  - weight
+  - stem
+encoder:
+  exclude_patterns:
+    - '^z.*$'
+  rules:
+    - length_equal: 2
+      formula: "AaAbBaBb"
+    - length_equal: 3
+      formula: "AaBaCaCb"
+    - length_in_range: [4, 10]
+      formula: "AaBaCaZa"
+
+...
+# 以下写用户自定义的词
+# table begins
+# 以下为我自己加的词，每次加新词要加wubi_pinyin_jixiuf.userdb/目录清掉重新部署
+# columns: 定義碼表以Tab分隔出的各列，可設text【文本】、code【碼】、weight【權重】、stem【造詞碼】
+# tab 隔开
+不孬	gigi	1
+不为人知	gywt	2
+秀峰	temt	2
+文芳	yyay	200000
+牧风	mf	20000000
+李雪玉	lxy	200000
+王喜萍	wxp	200000
+王昕	wx	2000000

@@ -1,0 +1,3 @@
+#!/bin/sh
+notify-send -t 3000 "屏幕取色,颜色复制到剪切板"
+grim -g "$(slurp -p)" -t ppm - | convert - -format "%[pixel:p{0,0}]" txt:- | tail -n 1 | cut -d " " -f 4 | wl-copy

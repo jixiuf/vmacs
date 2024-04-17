@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# 当有窗口关闭时，将焦点转移到上一个聚焦的窗口，
+# 主要处理当窗口关闭时，当前 workspace 无窗口后，自动转到其他 workspace
+# 需要配置 sway-track-prev-focus 来跟踪焦点的转移
+swaymsg -m -t subscribe '["window"]' 2> /dev/null | \
+    jq --unbuffered -r 'select(.change == "close").container.id' | \
+    while read -r new_closed; do
+        # previd=$(swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[])| select(.marks?[]? == "_prev") | .id')
+        # echo "$new_closed  closed $previd">>/tmp/a.log
+        swaymsg '[con_mark=_prev] focus'
+        # prev_focus=$(cat /tmp/sway-prev-focus)
+        # swaymsg "[con_id=${prev_focus}] focus"
+    done
+
+# Local Variables:
+# mode: shell-script
+# End:

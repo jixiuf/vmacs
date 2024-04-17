@@ -1,0 +1,171 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 37,
+    "spacing": 0,
+    "exclusive": true,
+    "gtk-layer-shell": true,
+    "passthrough": false,
+    "fixed-center": true,
+    // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["hyprland/window"], // sway/window
+    "modules-right": ["idle_inhibitor", "wireplumber",  "clock", "tray", "network","battery","custom/notification"],
+    "hyprland/workspaces": {
+		"format": "{name}",
+        "on-scroll-up": "hyprctl dispatch workspace e+1",
+        "on-scroll-down": "hyprctl dispatch workspace e-1",
+        "sort-by":"number",
+        // "show-special":true,
+		"format-icons": {
+                        // "1": "一",
+            //			"2": "二",
+            //			"3": "三",
+            //			"4": "四",
+            //			"5": "五",
+			"urgent": "",
+			"active": "",
+			"default": "󰧞"
+        }
+    },
+    "hyprland/window": {
+        "format": "👉 {}",
+        "rewrite": {
+            "(.*) — Mozilla Firefox": "🌎 $1",
+            "(.*) - fish": "> [$1]"
+        },
+        "separate-outputs": true
+    } ,
+    // "hyprland/language": {
+    //     "format": "Lang: {}",
+    //     "format-en": "AMERICA, HELL YEAH!",
+    //     "format-tr": "As bayrakları",
+    //     "keyboard-name": "at-translated-set-2-keyboard"
+    // } ,
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": false,
+        "format": "{value}" // includes {num}
+        // "persistent_workspaces": { // puts blanks ws's for all other outputs
+        //     // "1": [],
+        //     "2": [],
+        //     "3": [],
+        //     "4": []
+        // }
+    },
+    // "sway/mode": {
+    //     "format": "<span style=\"italic\">{}</span>"
+    // },
+    "network": {
+        "interface": "wl*", // (Optional) To force the use of this interface
+        // "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-wifi": "",     // {signalStrength}%
+        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+        "format-linked": "{ifname} (No IP) ",
+        "format-disconnected": "⚠",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "tooltip-format": "{ifname}: {essid} {ipaddr}/{cidr}",
+        "on-click-right": "alacritty --class=nmtui -e nmtui",
+
+    },
+    "tray": {
+        "spacing": 0
+    },
+    "clock": {
+        // "interval": 1,
+        "tooltip": true,
+        "format": "{:%m-%d%a%H:%M}",
+        "format-alt": "{:%Y-%m-%d}",
+        "on-click-right": "gnome-clocks",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>\n\nR:Clocks"
+        // "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+        // "format": "  {:%H:%M}"
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+
+    // "cpu": {
+    //     "format": "  {usage}%",
+    //     "tooltip": true,
+    //     "interval": 1
+    // },
+    // "memory": {
+    //     "format": "  {used:0.2f}G"
+    // },
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 60,
+            "error": 30,
+            "critical": 15
+        },
+        "interval": 5,
+        "format": "{icon}",
+        // "format": "{capacity}{icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        // "format-good": "", // An empty format will hide the module
+        // "format-full": "",
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        // "on-click-right": "gnome-control-center power",
+        // "on-click-middle": "toggle-devices",
+        "tooltip-format": "{capacity}%\n{}\n"
+    },
+
+    "wireplumber": {
+        "format": "{volume}% {icon}",
+        "format-muted": "",
+        "on-click": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-click-right": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+        "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "format-icons": ["", "", ""]
+    } ,
+    "custom/logo": {
+		"format": "",
+		"tooltip": false
+	},
+    "custom/notification": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "<span foreground='red'><sup></sup></span>",
+            "none": "",
+            "dnd-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-none": "",
+            "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "inhibited-none": "",
+            "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+            "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "if [  -z $(pgrep ^swaync$) ]; then  swaync&disown;fi;swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+    // "custom/sep": {
+	//  "format": "|",
+	//  "tooltip": false
+	// },
+    "custom/applauch": {
+        "tooltip": false,
+        "on-click": "killall rofi||rofi -show combi -combi-modes 'window,drun,run,ssh' -modes combi",
+        "format": "",
+    },
+    "custom/power": {
+        "tooltip": false,
+        "on-click": "/home/jixiuf/.config/rofi/scripts/power",
+        "format": " ",
+    },
+}
+
+ // Local Variables:
+//  eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart waybar" nil nil)) t)
+//  End:

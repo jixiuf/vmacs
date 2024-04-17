@@ -1,0 +1,35 @@
+# 修改默认输入法的状态
+# http://bbs.feng.com/forum.php?mod=viewthread&tid=5127693
+# 拼音反查 `nihao' 则会出现你好的五笔编码，注意以`开头以'结尾 
+# 一个词连续输入两遍 会被自动收录到用户字典中
+# 比如，我以单字输入 “不孬” gi giv ,两次之后，gigi 被可以打出"不孬" 这个 
+
+# 補丁文件的寫法
+# patch:
+#   "一級設定項/二級設定項/三級設定項": 新的設定值
+#   "另一個設定項": 新的設定值
+#   "再一個設定項": 新的設定值
+#   "含列表的設定項/@n": 列表第n個元素新的設定值,从零开始计数
+#   "含列表的設定項/@last": 列表最後一個元素新的設定值
+#   "含列表的設定項/@before 0": 在列表第一個元素之前插入新的設定值（不建議在補靪中使用）
+#   "含列表的設定項/@after last": 在列表最後一個元素之後插入新的設定值（不建議在補靪中使用）
+#   "含列表的設定項/@next": 在列表最後一個元素之後插入新的設定值（不建議在補靪中使用）
+patch:
+# switches:
+#   - name: ascii_mode
+#     reset: 0
+#     states: [ 中文, 西文 ]
+  
+# wubi_pinyin.schema.yaml. 里有个reset: 奖0 改成1 就变成默认英文输入状态
+# 設輸入方案裏 {name: ascii_mode} 在 switches: 列表中爲第一項，即下標 0
+# 默认中文状态
+  switches/@0/reset: 0
+  # 默认英文状态
+  # switches/@0/reset: 1
+
+  # 只保留中文输入法，避免无意间切到英文输入状态，因为我使用系统的英文输入法，还不是rime的
+  # states: [ 中文, 西文 ]
+  switches/@0/states:  [ 中文]
+
+  # # 載入朙月拼音擴充詞庫
+  # "translator/dictionary": luna_pinyin.extended  

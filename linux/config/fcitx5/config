@@ -1,0 +1,68 @@
+[Hotkey]
+# 反复按切换键时进行轮换
+EnumerateWithTriggerKeys=True
+# 轮换输入法时跳过第一个输入法
+EnumerateSkipFirst=False
+# 向前切换输入分组
+EnumerateGroupForwardKeys=
+# 向后切换输入法分组
+EnumerateGroupBackwardKeys=
+# 激活输入法
+ActivateKeys=
+# 取消激活输入法
+DeactivateKeys=
+# 切换是否使用嵌入预编辑
+TogglePreedit=
+
+[Hotkey/TriggerKeys]
+0=Shift_R
+
+[Hotkey/AltTriggerKeys]
+0=Shift_L
+
+[Hotkey/EnumerateForwardKeys]
+0=Control+Shift_L
+
+[Hotkey/EnumerateBackwardKeys]
+0=Control+Shift_R
+
+[Hotkey/PrevPage]
+0=Up
+
+[Hotkey/NextPage]
+0=Down
+
+[Hotkey/PrevCandidate]
+0=Shift+Tab
+
+[Hotkey/NextCandidate]
+0=Tab
+
+[Behavior]
+# 默认状态为激活
+ActiveByDefault=False
+# 共享输入状态
+ShareInputState=All
+# 在程序中显示预编辑文本
+PreeditEnabledByDefault=True
+# 切换输入法时显示输入法信息
+ShowInputMethodInformation=False
+# 在焦点更改时显示输入法信息
+showInputMethodInformationWhenFocusIn=True
+# 显示紧凑的输入法信息
+CompactInputMethodInformation=True
+# 显示第一个输入法的信息
+ShowFirstInputMethodInformation=True
+# 默认页大小
+DefaultPageSize=4
+# 覆盖 Xkb 选项
+OverrideXkbOption=False
+# 自定义 Xkb 选项
+CustomXkbOption=
+# Force Enabled Addons
+EnabledAddons=
+# Force Disabled Addons
+DisabledAddons=
+# Preload input method to be used by default
+PreloadInputMethod=True
+

@@ -1,0 +1,21 @@
+#!/bin/sh
+# accept one param
+# it may be [ascii_mode !ascii_mode,
+# full_shape, !full_shape ,
+# ascii_punct,!ascii_punct,
+# simplification !simplification,
+# extended_charset !extended_charset]
+# 
+# # http://www.hammerspoon.org
+# if [ "$1" = "!ascii_mode" ]; then
+#     # 切换到中文的时候调用hammerspoon中绑定的一个函数，
+#     # 在那里做处理
+#     # 主要判断 当前激活的窗口是不是emacs,如果是emacs ,
+#    # 模拟按键 使emacs 进入evil-insert-state态
+#     open -g "hammerspoon://emacs_evil_insert_state"
+# fi
+if [ "$1" = "ascii_mode" ]; then
+    # 禁止切换成英文状，一旦收到切换为英文状态，马上切回去
+   /Library/Input\ Methods/Squirrel.app/Contents/MacOS/squirrel_client -u ascii_mode
+fi
+

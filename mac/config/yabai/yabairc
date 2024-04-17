@@ -1,0 +1,62 @@
+# https://github.com/koekeishiya/yabai/wiki/Commands#space-commands
+
+# for this to work you must configure sudo such that
+# it will be able to run the command without password
+# yabai --stop-service;yabai --start-service
+# 聚焦特定的窗口
+# yabai -m window --focus $(yabai -m query --windows  | jq -r '.[] | select(.app == "Emacs") | .id')
+
+# https://github.com/koekeishiya/yabai/blob/master/doc/yabai.asciidoc#rule
+# 查 window 信息 yabai -m query --windows
+yabai -m rule --add app="预览" manage=off
+yabai -m rule --add app="^系统" manage=off
+yabai -m rule --add app="Lark Helper" manage=off
+yabai -m rule --add app="^Karabiner*" manage=off
+# yabai -m rule --add title='^(?\!.*vterm).*GNU/Emacs' space=2
+
+yabai -m rule --add app="Chrome" space=3
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+# 记录 最后获得焦点的 window id 到 yabai_last_focus yabai_prev_focus 两文件中
+touch /tmp/yabai_prev_focus /tmp/yabai_last_focus
+yabai -m signal --add event=window_focused action='cp -f /tmp/yabai_last_focus /tmp/yabai_prev_focus;echo  $YABAI_WINDOW_ID>/tmp/yabai_last_focus'
+
+
+# focus_follows_mouse          autofocus            \
+yabai -m config                                 \
+    mouse_follows_focus          on            \
+    focus_follows_mouse          off            \
+    window_origin_display        default        \
+    window_placement             second_child   \
+    window_zoom_persist          on             \
+    window_topmost               off            \
+    window_shadow                on             \
+    window_animation_duration    0            \
+    window_animation_frame_rate  120            \
+    window_opacity_duration      0.0            \
+    active_window_opacity        0.9            \
+    normal_window_opacity        0.90           \
+    window_opacity               on            \
+    insert_feedback_color        0xffd75f5f     \
+    active_window_border_color   0xffa6f759     \
+    normal_window_border_color   0xff555555     \
+    window_border_width          0              \
+    window_border_radius         12             \
+    window_border_blur           on            \
+    window_border_hidpi          on             \
+    window_border                on            \
+    split_ratio                  0.50           \
+    split_type                   auto           \
+    auto_balance                 off            \
+    top_padding                  2             \
+    bottom_padding               2             \
+    left_padding                 2             \
+    right_padding                2             \
+    window_gap                   01             \
+    layout                       bsp            \
+    mouse_modifier               fn             \
+    mouse_action1                move           \
+    mouse_action2                resize         \
+    mouse_drop_action            swap
+
+echo "yabai configuration loaded.."

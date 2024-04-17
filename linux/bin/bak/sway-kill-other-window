@@ -1,0 +1,21 @@
+#!/bin/bash
+# kill all other windows in current workspace
+# like (delete-other-windows) in emacs
+
+# 获取当前 workspace 的信息
+workspace_info=$(swaymsg -t get_workspaces | jq 'map(select(.focused == true))')
+
+if [[ ! -z $workspace_info ]]; then
+  # 获取当前 workspace 的名字和 ID
+  workspace_name=$(echo "$workspace_info" | jq -r '.[0].name')
+  workspace_id=$(echo "$workspace_info" | jq -r '.[0].id')
+
+  # 当前 workspace 里未聚焦的其他所有窗口
+  other_window_list=$(swaymsg -t get_tree | jq -r ".nodes[].nodes[]|select(.id == $workspace_id)|recurse(.nodes[], .floating_nodes[])|select ((.app_id != null or .window_properties.class != null) and (.focused == false))|.id")
+
+  # 移除当前 workspace 中不需要的 window
+  for window_id in $other_window_list
+  do
+    swaymsg "[con_id=$window_id] kill"
+  done
+fi

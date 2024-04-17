@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# 同 sway-track-prev-focus 不过只记录 平铺窗口的焦点
+# I like these bindings:
+# bindsym $mod+grave [con_mark=_prev] focus
+# to enable fast switching between 2 apps
+
+# from https://gist.github.com/ckafi
+
+case $1 in
+    -h|--help)
+        echo "Usage: $( basename "$0" )"
+        echo
+        echo "Tracks focus changes in sway, renames workspaces and marks windows with _prev. This enables the following key binding:" |fmt
+        echo "    bindsym \$mod+grave [con_mark=_prev] focus"
+        exit 0
+        ;;
+esac
+
+prev_focus=$(swaymsg -r -t get_seats | jq '.[0].focus')
+#
+swaymsg -m -t subscribe '["window"]' 2> /dev/null | \
+    jq --unbuffered -r 'select(.change == "focus") | "{\"id\":\(.container.id),\"class\":\"\(.container.window_properties.class)\",\"app_id\":\"\(.container.app_id)\",\"type\":\"\(.container.type)\"}"' | \
+    while read -r id_type; do
+        new_focus=$(echo $id_type|jq -r '.id') # id
+        new_focus_type=$(echo $id_type|jq -r '.type') # type: con or floating_con
+        # new_focus_class=$(echo $id_type|jq -r '.class')
+        # new_focus_app_id=$(echo $id_type|jq -r '.app_id')
+        # echo "$new_focus $new_focus_type $new_focus_class |$new_focus_app_id"
+        # 只记录平铺窗口的焦点
+        if [ "$new_focus_type" = "con" ]; then
+            swaymsg -- "[con_id=${prev_focus}] mark --add _prev_con" &>/dev/null
+            # bindsym control+mod1+tab [con_mark=_prev_con] focus
+            prev_focus=$new_focus
+        fi
+    done
+
+# Local Variables:
+# mode: shell-script
+# End:

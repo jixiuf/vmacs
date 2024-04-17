@@ -1,0 +1,21 @@
+[Unit]
+Description=Keeps an ssh tunnel to  open
+After=network.target
+
+[Service]
+User=jixiuf
+# no monitoring
+Environment="AUTOSSH_PORT=0"
+# Disable gatetime behaviour
+Environment="AUTOSSH_GATETIME=0"
+# EnvironmentFile=/etc/default/autossh@%i
+RestartSec=3
+Restart=always
+
+# -NT Just open the connection and do nothing (not interactive, no tty alloc)
+# use /usr/bin/ssh instead of autossh is good as well
+ExecStart=autossh -M 20003 -o "ConnectTimeout=3" -o "ServerAliveInterval=10" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes"  -NTR  8093:localhost:22 root@10.2.0.171 
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

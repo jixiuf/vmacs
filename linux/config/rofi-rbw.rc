@@ -1,0 +1,2 @@
+# keybindings:Alt+1:type:username:password,Alt+Return:type:username,Control+Return:type:password,Alt+Super+Return:type:totp,Alt+c:copy:password,Alt+u:copy:username,Alt+t:copy:totp,Alt+m::menu,Control+s:sync
+keybindings:Alt+Return:type:username,Control+Return:type:password,Alt+Super+Return:type:totp,Alt+c:copy:password,Alt+u:copy:username,Alt+t:copy:totp,Control+o::menu,Control+r:sync
