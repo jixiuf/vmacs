@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: #import <Foundation/Foundation.h>
-# key: fnd
-# --
-#import <Foundation/Foundation.h>

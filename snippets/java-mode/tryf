@@ -1,7 +1,0 @@
-#name : try, finally
-#key :try
-# --
-try {
-    $0
-} finally {
-}

@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: @property
-# key: prop
-# --
-
-@property ${1:$$(yas-choose-value '(" " "(readonly)" "(assign)" "(copy)" "(retain)" "(nonatomic)"))} $2;

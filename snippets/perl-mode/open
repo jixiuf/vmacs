@@ -1,4 +1,0 @@
-#name : open(FHandle,File)
-# --
-open(${1:FH},${2:FileName});
-$0

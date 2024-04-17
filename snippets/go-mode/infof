@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: ctx.Infof
-# key: infof
-# --
-ctx.Infof("${1:%s}"${1:$(if (string-match "%" yas-text) "," "\)")
-}$2${1:$(if (string-match "%" yas-text) "\)" "")}

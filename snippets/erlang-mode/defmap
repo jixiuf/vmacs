@@ -1,9 +1,0 @@
-# name: define(MAP) lists:map
-# key: defmap
-# --
--define(MAP(List,E,Eval),
-        lists:map(
-          fun(E)->
-                  Eval
-          end,List
-         )).

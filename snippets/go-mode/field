@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: field
-# key: f
-# --
-
- // @Param ${1:$(progn (require 'lazy-camelize) (underscore yas/text))}  	query    ${2:$(swagger-type yas/text)}     	true  "$7" default($8)
-${1:Field}    ${2:int64}    \`${3:form:"${1:$(underscore yas/text)}" }${4:json:"${1:$(underscore yas/text)}" }${5:toml:"${1:$(underscore yas/text)}" }${6:yaml:"${1:$(underscore yas/text)}" }${7:bson:"${1:$(underscore yas/text)}"}\` // ${8:${1:$(underscore yas/text)}}
-$0

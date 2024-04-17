@@ -1,3 +1,0 @@
-package `(file-name-nondirectory
-   (directory-file-name
-    (file-name-directory default-directory)))`

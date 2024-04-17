@@ -1,4 +1,0 @@
-#name : @private
-#key : priv
-# --
-`(if (looking-back  "%%[ \t]*" (point-at-bol))  (just-one-space) (insert "%% ") )`@private

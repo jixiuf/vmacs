@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: NSLOG
-# key: log
-# --
-NSLog(@"${1:%@}\\n"${1:$(if (string-match "%" yas-text) "," "\);")
-}$2${1:$(if (string-match "%" yas-text) "\);" "")}

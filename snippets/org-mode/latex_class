@@ -1,4 +1,0 @@
-#name : #+LATEX_CLASS
-#key: class
-# --
-#+LATEX_CLASS: ${1:$$(yas-choose-value (reverse (mapcar (lambda (x) (car x)) org-latex-classes)))}$0

@@ -1,8 +1,0 @@
-#name : String
-# key: str
-# expand-env: ((yas/indent-line 'fixed))
-# --
-func (${2:${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}} ${1:Class}) String() string {
-	data, _ := json.Marshal(${1:$(camelize-method  yas/text)})
-	return string(data)
-}

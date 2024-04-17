@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: jsonmarsharl
-# key: jsm
-# --
-	data, _ := json.Marshal(this)
-	return string(data)

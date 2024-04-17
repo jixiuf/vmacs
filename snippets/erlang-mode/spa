@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: spawn(M,F,A)
-# key: spa
-# --
-`(indent-for-tab-command)`${4:Pid} = spawn(${1:?MODULE},${2:fun},${3:[]})$0

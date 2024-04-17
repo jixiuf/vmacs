@@ -1,4 +1,0 @@
-# name: -behaviour(...).
-# key: beh
-# --
--behaviour(${1:$$(yas/choose-value '("gen_server" "gen_fsm" "gen_event" "supervisor"))}).

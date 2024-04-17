@@ -1,8 +1,0 @@
-func (${2:${1:$(progn (require 'lazy-camelize) (camelize-method yas/text))}} ${1:Class}) MarshalBinary() (data []byte, err error) {
-     $0
-	return
-}
-
-func ($2 *$1) UnmarshalBinary(data []byte) (err error) {
-	return
-}

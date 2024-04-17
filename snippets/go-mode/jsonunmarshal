@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: jsonunmarsharl
-# key: jsu
-# --
-err := json.Unmarshal(${1:this})

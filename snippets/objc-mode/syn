@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: @synthesize
-# key: syn
-# --
-
-@synthesize $1;

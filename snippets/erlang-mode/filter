@@ -1,4 +1,0 @@
-# name:?FILTER(List,E,Eval),
-# key: filter
-# --
-?FILTER(${1:List},E,$0),

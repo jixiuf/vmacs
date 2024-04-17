@@ -1,4 +1,0 @@
-#name : latex header
-#key: th
-# --
-#+LATEX_HEADER: ${1:\usepackage{${2:longtable}\}}$0

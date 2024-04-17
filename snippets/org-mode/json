@@ -1,5 +1,0 @@
-#name : application/json
-# expand-env: ((yas/indent-line 'fixed) (yas/wrap-around-region 'nil))
-# --
-${1:Content-Type}: application/json
-$0
