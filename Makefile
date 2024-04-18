@@ -7,6 +7,7 @@ NORMAL_FILES_COMMON := `echo ssh password-store pam-gnupg gnupg mitmproxy authin
 default:
 	sudo make sudo
 	make deploy
+	make -C config/emacs
 
 deploy:
 	@for file in $(NORMAL_FILES_COMMON); do unlink ~/.$$file ; $(LINK_CMD) $(PWD)/$$file ~/.$$file; done
@@ -32,7 +33,6 @@ deploy:
 	fi
 	@if [ `uname -s` = "Linux" ] ; then \
 		mkdir -p ~/.local/share/fcitx5; \
-		$(LINK_CMD)   $(PWD)/mac/rime_input_method ~/.local/share/fcitx5/rime ;\
 		cd linux && $(MAKE) ; \
 	fi
 
