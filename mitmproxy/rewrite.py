@@ -3,8 +3,9 @@ from mitmproxy import http
 # mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py
 # 定义一个映射字典，键是原始前缀，值是新前缀
 URL_PREFIX_MAP = {
-    "http://entree.dev.didatrip.com/badge/": "http://localhost:3831/badge/",
-    "http://entree.dev.didatrip.com/label/": "http://localhost:3890/label/",
+    # "http://entree.dev.didatrip.com/badge/": "http://localhost:3831/badge/",
+    # "http://entree.dev.didatrip.com/bauhinia/": "http://127.0.0.1:3880/bauhinia/",
+    # "http://entree.dev.didatrip.com/label/": "http://localhost:3890/label/",
 }
 
 def request(flow: http.HTTPFlow) -> None:
