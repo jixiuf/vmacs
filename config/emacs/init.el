@@ -54,8 +54,8 @@
 (require 'conf-wgrep)
 ;; (with-eval-after-load 'ido (require 'conf-ido)) ;暂时决定不用 ido 的配置
 ;; mac 或 linux 上启用 sudo ，用于切换成 root 或别的用户来编辑当前文件或目录
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
-(when (and (executable-find "mu") (require 'mu4e nil t)) (require 'conf-mail))
+;(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+;(when (and (executable-find "mu") (require 'mu4e nil t)) (require 'conf-mail))
 
 
 

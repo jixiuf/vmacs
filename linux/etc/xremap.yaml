@@ -317,7 +317,7 @@ keymap:
       # C-j: C-RIGHTBRACE
   - name: global_emacs
     application:
-      only: [Bytedance-feishu,DBeaver,apifox-pdv,org.keepassxc.KeePassXC]
+      only: [Bytedance-feishu,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark]
     remap:
       super-C-w: C-w
       M-f: C-right
