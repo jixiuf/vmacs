@@ -193,8 +193,11 @@
 
 (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
 (with-eval-after-load 'man
+  (set-keymap-parent Man-mode-map meow-normal-state-keymap)
   (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
   (define-key Man-mode-map (kbd "C-c Mq") 'save-buffers-kill-terminal)
+  (define-key Man-mode-map (kbd "n") 'meow-search)
+  (define-key Man-mode-map (kbd "N") 'meow-search-reverse)
   (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
   (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
 

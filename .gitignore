@@ -96,3 +96,4 @@ gnupg/random_seed
 /linux/config/fcitx5/conf/notifications.conf
 /linux/config/tmux/plugins/
 /corplink_cookies.json
+/gnupg/.#*
