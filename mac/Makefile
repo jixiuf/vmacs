@@ -27,14 +27,14 @@ deploy:
 		link_name=$$(echo "$$file" | tr ':' '/'); \
 		mkdir -p "$$HOME/.$$(dirname "$$link_name")"; \
 		if [ -h ~/.$$link_name ]; then \
-			unlink ~/.$$link_name ;\
+			rm -rf ~/.$$link_name ;\
         fi;\
 		$(LINK_CMD) $(PWD)/$$file ~/.$$link_name ;\
 	done
 	@mkdir -p ~/bin
 	@-for file in bin/*; do \
 		if [ -h /$$file ]; then \
-		unlink /$$file ;\
+		rm -rf /$$file ;\
         fi;\
 		if	[ -f $$file ]; then \
 			$(LINK_CMD) $(PWD)/$$file ~/$$file ;\

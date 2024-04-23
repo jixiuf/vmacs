@@ -22,7 +22,7 @@ deploy:
 		link_name=$$(echo "$$file" | tr ':' '/'); \
 		mkdir -p "$$HOME/.$$(dirname "$$link_name")"; \
 		if [ -h ~/.$$link_name ]; then \
-			unlink ~/.$$link_name ;\
+			rm -rf ~/.$$link_name ;\
         fi;\
 		$(LINK_CMD) $(PWD)/$$file ~/.$$link_name ;\
 	done
@@ -51,7 +51,7 @@ sudo:
 	fi
 	for file in bin/*; do \
 		if [ -h /usr/local/$$file ]; then \
-		unlink /usr/local/$$file ;\
+		rm -rf /usr/local/$$file ;\
 		fi;\
 		if	[ -f $$file ]; then \
 			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
