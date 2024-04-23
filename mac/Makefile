@@ -46,13 +46,6 @@ deploy:
 
 	@-mkdir -p ~/.cow
 	@-$(LINK_CMD) $(PWD)/cowrc ~/.cow/rc
-#emacs 中使用 term
-# 如果你使用的是 mac 系统，发现 multi-term 每行出出了 4m，在 shell 里运
-# 行下：tic -o ~/.terminfo
-# /Applications/Emacs.app/Contents/Resources/etc/e/eterm-color.ti
-	@-rm -rf ~/.terminfo
-	@-$(LINK_CMD) $(PWD)/terminfo ~/.terminfo
-
 	@make -C rime_input_method/
 # @-$(LINK_CMD) $(PWD)/squirrel_toggle_option $$HOME/bin
 
