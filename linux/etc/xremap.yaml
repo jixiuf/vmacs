@@ -380,7 +380,9 @@ keymap:
       super-C-e: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --  emacs  emacsclient -c -r -n"] }
       super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --gtk-version=4"] }
       super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise","apifox-pdv","/opt/Apifox/apifox-pdv"] }
-      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
+      # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
+      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","DBeaver","dbeaver"] }
+      
       super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise mitp -- term.sh --app-id=mitp  mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
       super-C-d: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --app-id=dterm --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(hypr-cwd||echo $HOME)" ] }
       super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(hypr-cwd||echo $HOME)"] }
