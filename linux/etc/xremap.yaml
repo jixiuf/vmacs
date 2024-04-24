@@ -140,7 +140,7 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --cd --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --app-id=dterm --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(hypr-cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --cd --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(hypr-cwd||echo $HOME)" ] }
 
   - name: terminal emacs
     application:
@@ -383,8 +383,8 @@ keymap:
       # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
       super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","DBeaver","dbeaver"] }
       
-      super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise mitp -- term.sh --app-id=mitp  mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
-      super-C-d: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --app-id=dterm --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(hypr-cwd||echo $HOME)" ] }
+      super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
+      super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(hypr-cwd||echo $HOME)" ] }
       super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(hypr-cwd||echo $HOME)"] }
       super-C-comma: { launch: ["hyprctl","dispatch","exec hypr-dterm-ws"] }
       super-C-b: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise weixin weixin-uos" ] }

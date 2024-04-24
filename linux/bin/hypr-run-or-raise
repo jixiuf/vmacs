@@ -186,44 +186,7 @@ else
                     tmux_session=${target_title%%:*}
                     # cwd=${cwd#*:}
                 fi
-                # root@host#2222:/path # host#2222:/path
-                # regex2="(\/ssh:)?([a-zA-Z0-9_]+@)?([a-zA-Z0-9_\.]+)#([0-9]+):(.+)"
-
-                # ;; listen_on unix:/tmp/mykitty
-                # ;; allow_remote_control yes
-                # kitty @ --to=unix:/tmp/mykitty-${target_pid} send-key ctrl+u
-                tmux send-keys -t $tmux_session C-u
-                if [[ $cwd =~ $regex ]]; then
-                    userat=${BASH_REMATCH[2]}
-                    host=${BASH_REMATCH[3]}
-                    path=${BASH_REMATCH[4]}
-                    termcwd=$(hypr-cwd)
-                    # alacritty    -e ssh -t root@bench1 'cd /tmp&& exec $SHELL'
-                    if [[ $termcwd =~ $regex ]]; then
-                        # wl-copy  --primary " cd $path"
-                        # kitty @ --to=unix:/tmp/mykitty-${target_pid} send-text "cd $path\n"
-                        tmux send-keys -t $tmux_session "cd $path"
-                        tmux send-keys -t $tmux_session Enter
-
-                    else
-                        # wl-copy  --primary " ssh -t $userat$host  'cd $path && exec "'$SHELL'"'"
-                        tmux send-keys -t $tmux_session " ssh -t $userat$host  'cd $path && exec "'$SHELL'"'"
-                        tmux send-keys -t $tmux_session Enter
-                        # kitty @ --to=unix:/tmp/mykitty-${target_pid} send-text " ssh -t $userat$host  'cd $path && exec "'$SHELL'"'\n"
-                    fi
-                else
-                        tmux send-keys -t $tmux_session "cd $cwd"
-                        tmux send-keys -t $tmux_session Enter
-                        # kitty @ --to=unix:/tmp/mykitty-${target_pid} send-text "cd $cwd\n"
-                        # wl-copy  --primary " cd $cwd"
-                fi
-
-                # sleep 0.1
-                # fcitx5-remote -s keyboard-us
-                # /usr/include/linux/input-event-codes.h
-                # keyd do C-u C-S-v enter C-l
-                # ydotool key  29:1 22:1 22:0 42:1 47:1 47:0 42:0 29:0  28:1 28:0 29:1 38:1  38:0  29:0
-                # echo key ctrl+u ctrl+shift+v ctrl+m|dotoolc
+                cd.sh $cwd $tmux_session
             fi
         fi
     else
