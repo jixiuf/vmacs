@@ -403,7 +403,7 @@ keymap:
       super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.keepassxc.KeePassXC keepassxc"] }
       super-C-Grave: { launch: ["swaylock"] }
       # super-C-Esc: { launch: ["swaylock"] }
-      super-C-9: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","corplink","/opt/Corplink/corplink"] }
+      # super-C-9: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","corplink","/opt/Corplink/corplink"] }
       # super-C-0: { launch: ["pick-color"] }
       super-C-y: { launch: ["rofi-cliphist"] }
       # super-C-0: { launch: ["bwmenu"] }
