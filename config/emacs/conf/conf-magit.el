@@ -2,6 +2,7 @@
 (setq-default
  transient-default-level 5
  magit-commit-show-diff nil
+ magit-show-long-lines-warning nil
  ;; slow ,if t
  magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
  magit-diff-highlight-hunk-body nil
