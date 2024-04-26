@@ -236,6 +236,10 @@
   ;; (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim))
   )
 (add-hook 'find-file-hook #'vmacs-pager)
+(defun vmacs-pager-done ()
+  (when (string-prefix-p "*pager" (buffer-name))
+    (delete-file (buffer-file-name))))
+(add-hook 'server-done-hook #'vmacs-pager-done)
 
 (defun vmacs-calc-hook()
   (require 'calc-bin)

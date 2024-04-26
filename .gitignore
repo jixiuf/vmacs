@@ -40,3 +40,4 @@
 /dots/ssh/id_rsa_old.pub
 /dots/ssh/known_hosts
 /dots/mitmproxy/__pycache__/*.pyc
+/config/emacs/.achive
