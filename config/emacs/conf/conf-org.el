@@ -18,6 +18,7 @@
   (with-eval-after-load 'verb
     (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
     (define-key org-mode-map (kbd "C-M-h") 'org-babel-mark-block)
+    (define-key org-mode-map (kbd "C-,") nil)
     (define-key org-mode-map (kbd "C-c C-u") #'verb-export-request-on-point-curl))
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
   (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
