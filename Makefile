@@ -10,7 +10,16 @@ default:
 	make -C config/emacs
 
 deploy:
-	@for file in $(NORMAL_FILES_COMMON); do unlink ~/.$$file ; $(LINK_CMD) $(PWD)/$$file ~/.$$file; done
+	@-for file in dots/*; do \
+		link_name=$$(echo "$$file" | tr ':' '/'); \
+		echo $$link_name ;\
+		if [ -h ~/$$link_name ]; then \
+			rm -rf ~/$$link_name ;\
+        fi;\
+		name=$$(basename "$$link_name"); \
+		$(LINK_CMD) $(PWD)/$$file ~/.$$name ;\
+	done
+
 	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa
 	gpg -d ~/.ssh/config.gpg > ~/.ssh/config
 	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys
