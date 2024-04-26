@@ -49,8 +49,8 @@
  '(package-selected-packages
    '(async cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux embark
            embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg
-           gpt-commit kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai
-           org-msg ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
+           kind-icon lua-mode magit marginalia markdown-mode mu4e-alert orderless org-ai org-msg
+           ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")

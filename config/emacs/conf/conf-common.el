@@ -62,6 +62,7 @@
  ;;觉得 recentf 与 filecache 作用有相通之处,
  ;;匹配这些表达示的文件，不会被加入到最近打开的文件中
  recentf-exclude  `("\\.elc$" ,(regexp-quote (concat user-emacs-directory "cache/" ))
+                    ,(regexp-quote "~/.cache/")
                     "/cache/recentf"
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
  recentf-max-saved-items 1000
