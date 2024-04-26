@@ -136,6 +136,7 @@
 (global-set-key (kbd "C-c C-v") 'save-buffers-kill-terminal)
 (global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "M-o") 'toggle-camelize)
+(setq golden-ratio-scroll-highlight-flag nil)
 (autoload 'golden-ratio-scroll-screen-up "golden-ratio-scroll-screen" "" t)
 (autoload 'golden-ratio-scroll-screen-down "golden-ratio-scroll-screen" "" t)
 (global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up) ;C-v

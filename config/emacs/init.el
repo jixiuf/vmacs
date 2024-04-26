@@ -82,6 +82,7 @@
 (save-place-mode t)
 (savehist-mode 1)
 (recentf-mode 1)
+(beacon-mode 1)
 (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
 (require 'conf-tmp nil t)
 ;; (when (eq system-type 'darwin) (require 'conf-vterm))
