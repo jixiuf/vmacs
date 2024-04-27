@@ -3,7 +3,11 @@
 autossh -M 20003 -o "ConnectTimeout=3" -o "ServerAliveInterval=10" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes"  -NTR  8093:localhost:22 root@remote_server 
 # remote server 上执行以下命令 在8095 则为socks5 proxy, 此代理将通过 local server 1 访问 
 ssh -g -ND 8095 -p 8093 jixiuf@remote_server
-# 
-
+#  
 ssh -p 22  -D 0.0.0.0:7070 deployer@52.68.216.6 -N -4
 
+
+# 以下项目可将socks5 代理转为http proxy
+https://github.com/KaranGauswami/socks-to-http-proxy
+# 将 socks 8095 变成 http 8096
+sthp -p 8096 -s 127.0.0.1:8095
