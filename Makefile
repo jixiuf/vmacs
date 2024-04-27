@@ -12,11 +12,8 @@ default:
 deploy:
 	@-for file in dots/*; do \
 		link_name=$$(echo "$$file" | tr ':' '/'); \
-		echo $$link_name ;\
-		if [ -h ~/$$link_name ]; then \
-			rm -rf ~/$$link_name ;\
-        fi;\
 		name=$$(basename "$$link_name"); \
+		rm -rf ~/.$$name ;\
 		$(LINK_CMD) $(PWD)/$$file ~/.$$name ;\
 	done
 
