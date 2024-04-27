@@ -41,7 +41,6 @@ deploy:
 		mkdir -p ~/.cache/.vimbackup;\
 	fi
 	@if [ `uname -s` = "Linux" ] ; then \
-		mkdir -p ~/.local/share/fcitx5; \
 		cd linux && $(MAKE) ; \
 	fi
 
@@ -49,8 +48,6 @@ deploy:
 	  cd mac && $(MAKE) ; \
 	fi
 sudo:
-	@-mv /etc/hosts /tmp/hosts
-	-$(LINK_CMD_HARD) $(PWD)/hosts /etc/hosts
 
 	@if [ `uname -s` = "Linux" ] ; then \
 	  cd linux && $(MAKE)  sudo; \

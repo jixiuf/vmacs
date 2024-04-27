@@ -188,6 +188,7 @@
 
 (defun vmacs-bury-boring-windows ()
   (when (active-minibuffer-window)
+    (select-window (active-minibuffer-window))
     (minibuffer-keyboard-quit))
   (when (equal last-command 'keyboard-quit)
     (bury-boring-windows)))
