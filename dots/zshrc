@@ -156,7 +156,6 @@ else
 fi
 
 alias en="ec -nw"
-alias mitp="mitmproxy -p 8888 "
 # go tool dist list
 alias linuxgo='GOOS=linux GOARCH=amd64 go'
 alias linuxgob='GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"'
