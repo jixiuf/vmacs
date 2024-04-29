@@ -112,6 +112,7 @@
 (setq-default epa-file-encrypt-to '("jixiuf")) ;默认用哪个公钥私钥解密
 (defun vmacs-gpg-find-file-hook ()
   "auto encrypt use key in `epa-file-encrypt-to'"
+  (require 'epa-hook)
   (when (epa-file-name-p (buffer-file-name))
     (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))))
 
