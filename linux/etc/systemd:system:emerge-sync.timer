@@ -4,6 +4,8 @@ Description=Daily Portage Tree Sync
 [Timer]
 OnCalendar=daily
 Persistent=true
+#  延迟执行 避免开机阻塞
+RandomizedDelaySec=15min
 
 [Install]
 WantedBy=timers.target
