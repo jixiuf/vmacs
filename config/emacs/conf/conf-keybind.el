@@ -148,6 +148,8 @@
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
 (global-set-key (kbd "C-s-r") 'compile-dwim-run)
+(global-set-key (kbd "C-c C-r") 'compile-dwim-run)
+(global-set-key (kbd "C-c r") 'compile-dwim-run) ;space r
 (global-set-key  (kbd "M-,") 'scroll-other-window-down)
 (global-set-key  (kbd "M-.") 'scroll-other-window)
 
