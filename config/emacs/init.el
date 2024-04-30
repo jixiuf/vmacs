@@ -5,7 +5,8 @@
 
 (load-theme 'modus-vivendi)
 (require 'conf-gpg)
-(load  (concat user-emacs-directory "conf/conf-private.el.gpg") t)
+(when (member (system-name) '("jxfhome" "jxfluoji"))
+  (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
 
 (require 'conf-face)
 (require 'conf-meow)
