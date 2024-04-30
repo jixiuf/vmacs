@@ -57,16 +57,18 @@
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; 👉
   ;; (unless (display-graphic-p)
-    ;; (term-title-mode 1))
+  ;; (term-title-mode 1))
   ;; emerge -av media-fonts/noto-emoji
-  (set-fontset-font "fontset-default" 'emoji "Noto Color Emoji")
-  (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji")
-  (with-selected-frame (or f (selected-frame))
-    (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
-    ;; (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
-    ;; (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
-    ;; https://github.com/lxgw/LxgwWenKai
-    (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)))
+  (when (display-graphic-p)
+    (set-fontset-font "fontset-default" 'emoji "Noto Color Emoji")
+    (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji")
+    (with-selected-frame (or f (selected-frame))
+      (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+      ;; (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
+      ;; (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+      ;; https://github.com/lxgw/LxgwWenKai
+      (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0))))
+
 (add-hook 'after-init-hook #'vmacs-set-font)
 (add-hook 'after-make-frame-functions #'vmacs-set-font)
 
