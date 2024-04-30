@@ -26,8 +26,9 @@
       (set-fontset-font t 'emoji "Apple Color Emoji-17"))
     (set-fontset-font t 'symbol "Apple Symbols")
     ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
-    (set-face-attribute 'default nil :font "Sarasa Term SC Nerd" :height 220)
-    (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
+    ;; https://github.com/lxgw/LxgwWenKai
+    (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+    (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
     ))
 
 (add-hook 'after-init-hook #'vmacs-set-font)
