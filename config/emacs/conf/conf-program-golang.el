@@ -1,7 +1,7 @@
-;; https://github.com/saibing/tools
-;; go get  golang.org/x/tools/cmd/gopls
+;; go install golang.org/x/tools/gopls@latest
+;;  go install github.com/go-delve/delve/cmd/dlv@latest
+;; go install golang.org/x/tools/cmd/goimports@latest
 
-;; go install golang.org/x/tools/cmd/goimports
 ;; (let ((gopath (getenv "GOPATH")))
 ;;   (when
 ;;       (dolist (path  (parse-colon-path gopath))
@@ -20,7 +20,6 @@
                   ((usePlaceholders . t)
                    (completeUnimported . t) ;;
                    (staticcheck . t)
-                   (allowModfileModifications . t)
                    (allowImplicitNetworkAccess . t)
                    (directoryFilters . ["-vendor"])
                    ;; (analyses . ((unusedparams . t) (unusedwrite . t)))
