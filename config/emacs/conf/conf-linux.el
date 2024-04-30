@@ -2,23 +2,32 @@
 ;; ibus engine
 ;; xkb:us::eng  or rime
 ;; ibus engine rime  # 将输入法更改为
-(defvar ime (if (executable-find "fcitx5") 'fcitx5 'ibuf))
+(defvar ime (if (executable-find "fcitx5") 'fcitx5 'ibus))
 (defun switch-to-english-input-method ()
   "Switch to English input method."
   (interactive)
-  (if (eq ime 'fcitx5)
-      (call-process "fcitx5-remote" nil nil nil "-s" "keyboard-us")
-    (call-process "ibus" nil nil nil "engine" "xkb:us::eng")))
+  (cond
+   ((eq ime 'fcitx5)
+    (call-process "fcitx5-remote" nil nil nil "-s" "keyboard-us"))
+   ((eq ime 'ibus)
+    (call-process "ibus" nil nil nil "engine" "xkb:us::eng"))))
+
 (defun switch-to-rime-input-method ()
   "Switch to English input method."
   (interactive)
-  (if (eq ime 'fcitx5)
-      (call-process "fcitx5-remote" nil nil nil "-s" "rime")
-    (call-process "ibus" nil nil nil "engine" "rime")))
+  (cond
+   ((eq ime 'fcitx5)
+    (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
+   ((eq ime 'ibus)
+    (call-process "ibus" nil nil nil "engine" "rime"))))
+
 (defun get-input-method-state()
-  (if (eq ime 'fcitx5)
-      (string-trim (shell-command-to-string "fcitx5-remote -n"))
-    (string-trim (shell-command-to-string "ibus engine"))))
+  (cond
+   ((eq ime 'fcitx5)
+    (string-trim (shell-command-to-string "fcitx5-remote -n")))
+   ((eq ime 'ibus)
+    (string-trim (shell-command-to-string "ibus engine")))))
+
 (defun vmacs-input-method-hook()
   (when (member this-command '(vmacs-pop-selection meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
     (switch-to-english-input-method)))
