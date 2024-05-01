@@ -72,7 +72,7 @@
     (set-fontset-font "fontset-default" 'emoji "Noto Color Emoji")
     (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji")
     (with-selected-frame (or f (selected-frame))
-      (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+      (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 175)
       ;; (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
       ;; (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
       ;; https://github.com/lxgw/LxgwWenKai
