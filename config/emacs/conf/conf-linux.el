@@ -2,7 +2,10 @@
 ;; ibus engine
 ;; xkb:us::eng  or rime
 ;; ibus engine rime  # 将输入法更改为
-(defvar ime (if (executable-find "fcitx5") 'fcitx5 'ibus))
+(defvar ime (cond
+             ((executable-find "fcitx5")    'fcitx5)
+             ((executable-find "ibus")    'ibus)))
+
 (defun switch-to-english-input-method ()
   "Switch to English input method."
   (interactive)
