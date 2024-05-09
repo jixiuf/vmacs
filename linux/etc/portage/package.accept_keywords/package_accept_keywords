@@ -71,6 +71,7 @@ x11-terms/wezterm  ~amd64
 x11-terms/alacritty  ~amd64
 gui-apps/foot  ~amd64
 app-misc/tmux  ~amd64
+app-misc/tmux  **
 # Local Variables:
 # mode: conf
 # End:
