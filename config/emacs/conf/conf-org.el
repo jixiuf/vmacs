@@ -13,7 +13,7 @@
 (vmacs-leader (kbd "T") 'org-capture)  ;新加一个 todo 条目等
 ;; (define-key evil-normal-state-map "mt" 'org-capture)
 (setq verb-auto-kill-response-buffers t)
-(defun uid() (interactive) (insert (completing-read "uid: " '("10064589" "545473" "60682172"))))
+(defun uid() (interactive) (completing-read "uid: " '("10064589" "545473" "60682172")))
 (with-eval-after-load 'org
   (with-eval-after-load 'verb
     (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
@@ -21,6 +21,9 @@
     (define-key org-mode-map (kbd "C-,") nil)
     (define-key org-mode-map (kbd "C-c C-u") #'verb-export-request-on-point-curl))
   (define-key org-mode-map (kbd "C-c e") 'org-edit-special)
+  (define-key org-mode-map (kbd "C-a") 'org-mode-smart-beginning-of-line)
+  (define-key org-mode-map (kbd "C-e") 'org-mode-smart-end-of-line)
+  (define-key org-mode-map (kbd "C-k") 'vmacs-kill-region-or-org-kill-line)
   (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
@@ -211,13 +214,13 @@ linktoc=all
                           "* TODO %? :%T\n  %i\n")
                          ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Info")
                           "* Info %? :%T\n  %i\n")
-                         ("h" "Note" item (file ,(expand-file-name "http.txt.gpg" dropbox-dir))
+                         ("h" "Note" item (file ,(expand-file-name "http.txt" dropbox-dir))
                           " %? ")
                          ("n" "Note" item (file ,org-default-notes-file)
                           " %? "))
  org-agenda-custom-commands '(
                               ("n"  "[Note] Go to  Target(Note )" ( (find-file org-default-notes-file) (undo)))
-                              ("h"  "[Note] Go to  http.txt (Note )" ((find-file (expand-file-name "http.txt.gpg" dropbox-dir)) (undo)))
+                              ("h"  "[Note] Go to  http.txt (Note )" ((find-file (expand-file-name "http.txt" dropbox-dir)) (undo)))
                               ;; ("b" . "show item of tags prefix") ; describe prefix "h"
                               ;; ("be" tags "+Emacs")
                               ;; ("bj" tags "+Java")
