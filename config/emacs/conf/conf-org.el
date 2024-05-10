@@ -214,8 +214,6 @@ linktoc=all
                           "* TODO %? :%T\n  %i\n")
                          ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Info")
                           "* Info %? :%T\n  %i\n")
-                         ("h" "Note" item (file ,(expand-file-name "http.txt" dropbox-dir))
-                          " %? ")
                          ("n" "Note" item (file ,org-default-notes-file)
                           " %? "))
  org-agenda-custom-commands '(

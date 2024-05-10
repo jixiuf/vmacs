@@ -171,6 +171,9 @@
 
 (vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
 (vmacs-leader (kbd "ft") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(vmacs-leader (kbd "fu") (vmacs-defun find-file-tmp (find-file (expand-file-name "~/Documents/jianguo/jianguo/http.txt"))))
+(vmacs-leader (kbd "fn") (vmacs-defun find-file-tmp (find-file org-default-notes-file)))
+
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
 (vmacs-leader (kbd "ff") #'find-file)
