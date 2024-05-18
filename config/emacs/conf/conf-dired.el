@@ -104,6 +104,7 @@
  dired-dwim-target t                   ;Dired试着猜处默认的目标目录
  dired-listing-switches "-alht"
  dired-kill-when-opening-new-dired-buffer t
+ dired-vc-rename-file t
  )
 
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
