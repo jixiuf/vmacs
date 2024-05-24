@@ -1,6 +1,6 @@
 (global-tab-line-mode t)
-(global-set-key  (kbd "C-,") 'next-buffer)
-(global-set-key  (kbd "C-.") 'previous-buffer)
+(global-set-key  (kbd "C-,") 'tab-line-switch-to-prev-tab)
+(global-set-key  (kbd "C-.") 'tab-line-switch-to-next-tab)
 (setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator (propertize "▶" 'face  `(:inherit tab-line-tab-inactive :foreground "cyan")))
