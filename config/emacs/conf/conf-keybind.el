@@ -197,22 +197,35 @@
 
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
-(global-set-key (kbd "C-;") #'vmacs-meow-iedit)
+(global-set-key (kbd "C-;") #'query-replace-dwim)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
-(global-set-key (kbd "C-c gs") #'query-replace)
-(global-set-key (kbd "C-c ga") (vmacs-defun vmacs-replace-all
-                                 (goto-char (point-min))
-                                 (call-interactively #'query-replace)))
+(global-set-key (kbd "C-c Gs") #'query-replace) ;gs
+(global-set-key (kbd "C-c Ga") (vmacs-defun vmacs-replace-all
+                                 (save-excursion
+                                   (setq vmacs-query-replace-read-from-def
+                                         (if (use-region-p)
+                                             (buffer-substring-no-properties (region-beginning) (region-end))
+                                           (thing-at-point 'symbol)))
+                                   (goto-char (point-min))
+                                   (call-interactively #'query-replace))))
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
 (defvar vmacs-do-nothing-map
   (let ((map (make-keymap)))
     (set-char-table-range (nth 1 map) t 'ignore)
     map))
+(set-keymap-parent query-replace-map vmacs-do-nothing-map)
 (define-key query-replace-map "g" 'automatic) ;old ! replace all automatic
 (define-key query-replace-map "p" 'backup)
+(define-key query-replace-map "c" 'act)     ;old y
 (define-key query-replace-map "\C-c" 'edit) ;临时退出
-(set-keymap-parent query-replace-map vmacs-do-nothing-map)
-
+(setq query-replace-read-from-default #'vmacs-query-replace-read-from-default)
+(defvar vmacs-query-replace-read-from-def nil)
+(defun vmacs-query-replace-read-from-default()
+  (if (eq this-command 'vmacs-replace-all)
+      vmacs-query-replace-read-from-def
+    (if (use-region-p)
+        (buffer-substring-no-properties (region-beginning) (region-end))
+      (thing-at-point 'symbol))))
 
 (with-eval-after-load 'man
   (set-keymap-parent Man-mode-map meow-normal-state-keymap)

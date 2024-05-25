@@ -74,6 +74,7 @@
   ;; (setq embark-collect-initial-view-alist '((t . list)))
   ;; (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
 
+  (global-set-key  (kbd "C-t") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-t") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-e") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)

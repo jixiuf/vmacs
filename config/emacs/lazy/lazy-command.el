@@ -5,6 +5,31 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 
+(defun query-replace-dwim()
+  (interactive)
+  "C-u:only matches surrounded byword boundaries."
+  (let* ((pt (point))
+         (from (if (use-region-p)
+                   (buffer-substring-no-properties (region-beginning) (region-end))
+                 (thing-at-point 'symbol)))
+         (to (read-from-minibuffer
+              (format "%s -> " from) from))
+         (delimited-flag (and current-prefix-arg
+                              (not (eq current-prefix-arg '-)))))
+    (save-excursion
+      (if (use-region-p) (goto-char (setq pt (region-beginning)))
+        (goto-char (setq pt (car (bounds-of-thing-at-point 'symbol)))))
+      (query-replace from to delimited-flag
+                     (point)
+                     (point-max)
+                     nil
+                     (use-region-noncontiguous-p))
+      (goto-char pt)
+      (query-replace from to delimited-flag
+                     (point-min)
+                     (point)
+                     t
+                     (use-region-noncontiguous-p)))))
 ;;;###autoload
 (defun dape-repl-dwim()
   (interactive)
