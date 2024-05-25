@@ -71,8 +71,8 @@ based on the current context and previous history."
           (when (and
                  (equal (plist-get  hist 'command-cwd) (plist-get  cfg 'command-cwd))
                  (equal (plist-get  hist 'command) (plist-get  cfg 'command))
-                 (compare-vectors-prefix (plist-get  hist 'args) (plist-get  cfg 'args))
-                 (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
+                 (compare-vectors-prefix (plist-get  hist ':args) (plist-get  cfg ':args))
+                 (equal (plist-get  hist ':program) (plist-get  cfg ':program)))
             (setq cfg hist))
           )
         (when (plist-get  cfg 'command-cwd)
