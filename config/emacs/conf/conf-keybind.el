@@ -198,7 +198,22 @@
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
 (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
-(global-set-key (kbd "C-c gs") #'replace-string)
+(global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
+(global-set-key (kbd "C-c gs") #'query-replace)
+(global-set-key (kbd "C-c ga") (vmacs-defun vmacs-replace-all
+                                 (goto-char (point-min))
+                                 (call-interactively #'query-replace)))
+;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
+(defvar vmacs-do-nothing-map
+  (let ((map (make-keymap)))
+    (set-char-table-range (nth 1 map) t 'ignore)
+    map))
+(define-key query-replace-map "g" 'automatic) ;old ! replace all automatic
+(define-key query-replace-map "p" 'backup)
+(define-key query-replace-map "\C-c" 'edit) ;临时退出
+(set-keymap-parent query-replace-map vmacs-do-nothing-map)
+
+
 (with-eval-after-load 'man
   (set-keymap-parent Man-mode-map meow-normal-state-keymap)
   (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
