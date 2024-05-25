@@ -27,6 +27,7 @@
 (define-key  ibuffer-mode-map (kbd "C-c Gr") #'ibuffer-filter-disable)                 ;gr
 (define-key  ibuffer-mode-map "r" 'ibuffer-update)
 (define-key  ibuffer-mode-map "/" 'ibuffer-filter-by-name)
+(define-key ibuffer-name-map  (kbd "<mouse-1>") #'ibuffer-visit-buffer)
 
 (setq ibuffer-saved-filter-groups
       '(("Default"

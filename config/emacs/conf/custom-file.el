@@ -59,7 +59,8 @@
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
-   '((eval add-hook (make-local-variable 'after-save-hook)
+   '((vc-default-patch-addressee . "bug-gnu-emacs@gnu.org")
+     (eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "systemctl --user restart waybar" nil nil)) t)
      (eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "gpg -d authorized_keys.gpg>authorized_keys")) t)
