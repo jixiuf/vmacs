@@ -75,6 +75,7 @@
   ;; (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
 
   (define-key icomplete-minibuffer-map (kbd "C-t") 'embark-act)
+  (define-key icomplete-minibuffer-map (kbd "C-c C-e") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (defun vmacs-embark-collect-mode-hook ()
