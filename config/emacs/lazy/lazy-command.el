@@ -16,6 +16,54 @@
     (goto-char (point-min))
     (call-interactively #'query-replace)))
 
+(defvar query-replace-iedit-mode-overlay nil
+  "Overlay of region to be replaced.")
+(defvar query-replace-iedit-mode-from-string nil)
+(defvar query-replace-iedit-mode-delimited nil)
+
+;;;###autoload
+(define-minor-mode query-replace-iedit-mode
+  "Edit region and query replace."
+  :lighter "Q"
+  (if query-replace-iedit-mode
+      (let ((bounds (if (region-active-p) (cons (region-beginning) (region-end))
+                      (bounds-of-thing-at-point 'symbol))))
+        (if (not bounds)
+            (setq query-replace-iedit-mode nil)
+          (overlay-put
+           (setq query-replace-iedit-mode-from-string
+                 (buffer-substring
+                  (car bounds)
+                  (cdr bounds))
+                 query-replace-iedit-mode-overlay
+                 (make-overlay (car bounds)
+                               (cdr bounds)
+                               nil nil t))
+           'face '(:inherit highlight))
+          (setq query-replace-iedit-mode-delimited
+                (or (not (region-active-p))
+                    (and current-prefix-arg
+                         (not (eq current-prefix-arg '-)))))
+          (message "C-; replace, g:all, c:act e:edit replacement C-e:临时退出 C-cC-c:恢复")))
+
+    (let* ((start (overlay-start
+                   query-replace-iedit-mode-overlay))
+           (end (overlay-end
+                 query-replace-iedit-mode-overlay))
+           (to (buffer-substring-no-properties start end)))
+      (delete-overlay query-replace-iedit-mode-overlay)
+      (unless (string-equal query-replace-iedit-mode-from-string to)
+        (save-excursion
+          (delete-region  start end)
+          (insert query-replace-iedit-mode-from-string)
+          (goto-char (point-min))
+          (query-replace query-replace-iedit-mode-from-string
+                         to
+                         query-replace-iedit-mode-delimited
+                         (point)
+                         (point-max)
+                         nil (use-region-noncontiguous-p)))))))
+
 ;;;###autoload
 (defun query-replace-dwim()
   (interactive)

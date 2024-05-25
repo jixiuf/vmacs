@@ -197,7 +197,7 @@
 
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
-(global-set-key (kbd "C-;") #'query-replace-dwim)
+(global-set-key (kbd "C-;") #'query-replace-iedit-mode)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 (global-set-key (kbd "C-c Gs") #'query-replace) ;gs
 (global-set-key (kbd "C-c Ga") #'vmacs-replace-all)
