@@ -198,8 +198,7 @@
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
 (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
-(global-set-key (kbd "C-c wr") #'replace-string)
-(global-set-key (kbd "C-c wR") #'replace-regexp)
+(global-set-key (kbd "C-c gs") #'replace-string)
 (with-eval-after-load 'man
   (set-keymap-parent Man-mode-map meow-normal-state-keymap)
   (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
