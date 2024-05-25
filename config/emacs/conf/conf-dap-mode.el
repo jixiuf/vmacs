@@ -65,7 +65,7 @@ Non interactive global minor mode."
                :mode (lambda() (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
                :cwd dape-cwd
                :program (lambda()(if (string-suffix-p "_test.go"   (buffer-name))
-                                     (concat "./" (file-relative-name default-directory (funcall dape-cwd-fn)))
+                                     (file-relative-name default-directory (funcall dape-cwd-fn))
                                    (funcall dape-cwd-fn)))
                :args (lambda()
                        (require 'which-func)
