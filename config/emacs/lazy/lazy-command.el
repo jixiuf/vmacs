@@ -5,31 +5,39 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 
+;;;###autoload
+(defun vmacs-replace-all()
+  (interactive)
+  (save-excursion
+    (setq vmacs-query-replace-read-from-def
+          (if (use-region-p)
+              (buffer-substring-no-properties (region-beginning) (region-end))
+            (thing-at-point 'symbol)))
+    (goto-char (point-min))
+    (call-interactively #'query-replace)))
+
+;;;###autoload
 (defun query-replace-dwim()
   (interactive)
   "C-u:only matches surrounded byword boundaries."
-  (let* ((pt (point))
-         (from (if (use-region-p)
+  (let* ((from (if (use-region-p)
                    (buffer-substring-no-properties (region-beginning) (region-end))
                  (thing-at-point 'symbol)))
-         (to (read-from-minibuffer
-              (format "%s -> " from) from))
          (delimited-flag (and current-prefix-arg
-                              (not (eq current-prefix-arg '-)))))
+                              (not (eq current-prefix-arg '-))))
+         (to (read-from-minibuffer
+              (format "g:all, c:act C-e:ed CcCc:goon: [%s%s%s]-> "
+                      (if delimited-flag "\\<" "")
+                      from (if delimited-flag "\\>" ""))
+              from)))
     (save-excursion
-      (if (use-region-p) (goto-char (setq pt (region-beginning)))
-        (goto-char (setq pt (car (bounds-of-thing-at-point 'symbol)))))
+      (goto-char (point-min))
       (query-replace from to delimited-flag
                      (point)
                      (point-max)
                      nil
-                     (use-region-noncontiguous-p))
-      (goto-char pt)
-      (query-replace from to delimited-flag
-                     (point-min)
-                     (point)
-                     t
                      (use-region-noncontiguous-p)))))
+
 ;;;###autoload
 (defun dape-repl-dwim()
   (interactive)

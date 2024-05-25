@@ -200,14 +200,7 @@
 (global-set-key (kbd "C-;") #'query-replace-dwim)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 (global-set-key (kbd "C-c Gs") #'query-replace) ;gs
-(global-set-key (kbd "C-c Ga") (vmacs-defun vmacs-replace-all
-                                 (save-excursion
-                                   (setq vmacs-query-replace-read-from-def
-                                         (if (use-region-p)
-                                             (buffer-substring-no-properties (region-beginning) (region-end))
-                                           (thing-at-point 'symbol)))
-                                   (goto-char (point-min))
-                                   (call-interactively #'query-replace))))
+(global-set-key (kbd "C-c Ga") #'vmacs-replace-all)
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
 (defvar vmacs-do-nothing-map
   (let ((map (make-keymap)))
@@ -217,7 +210,7 @@
 (define-key query-replace-map "g" 'automatic) ;old ! replace all automatic
 (define-key query-replace-map "p" 'backup)
 (define-key query-replace-map "c" 'act)     ;old y
-(define-key query-replace-map "\C-c" 'edit) ;临时退出
+(define-key query-replace-map "\C-e" 'edit) ;临时退出
 (setq query-replace-read-from-default #'vmacs-query-replace-read-from-default)
 (defvar vmacs-query-replace-read-from-def nil)
 (defun vmacs-query-replace-read-from-default()
