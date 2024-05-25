@@ -28,6 +28,11 @@
       (insert e)
       (comint-send-input))))
 
+(defun compare-vectors-prefix (vec1 vec2)
+  (let ((min-length (min (length vec1) (length vec2))))
+    (cl-loop for i below min-length
+             always (equal (aref vec1 i) (aref vec2 i)))))
+
 ;;;###autoload
 (defun dape-dwim()
   "If a DAP (Debug Adapter Protocol) session is active, terminate the session.
@@ -66,6 +71,7 @@ based on the current context and previous history."
           (when (and
                  (equal (plist-get  hist 'command-cwd) (plist-get  cfg 'command-cwd))
                  (equal (plist-get  hist 'command) (plist-get  cfg 'command))
+                 (compare-vectors-prefix (plist-get  hist 'args) (plist-get  cfg 'args))
                  (equal (plist-get  hist 'program) (plist-get  cfg 'program)))
             (setq cfg hist))
           )
