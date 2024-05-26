@@ -47,6 +47,10 @@
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit)
   (define-key wgrep-mode-map (kbd "C-x C-s") 'vmacs-wgrep-finish-edit)
+  (define-key wgrep-mode-map (kbd "M-n") 'compilation-next-error)
+  (define-key wgrep-mode-map (kbd "M-p") 'compilation-previous-error)
+  (define-key wgrep-mode-map (kbd "M-s-n") 'compilation-next-file)
+  (define-key wgrep-mode-map (kbd "M-s-p") 'compilation-previous-file)
   )
 
 (provide 'conf-wgrep)
