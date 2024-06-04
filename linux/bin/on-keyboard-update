@@ -4,7 +4,6 @@ if [ "$1" == "update" ]; then
 fi
 dir=$(dirname $(readlink -f "$0"))
 dir=$(dirname "$dir")
-echo "$dir">/tmp/aaa
 # ACTION=="add", SUBSYSTEM=="input", ATTRS{idVendor}=="05ac", ATTRS{idProduct}=="0256", RUN+="/usr/local/bin/restart-udevmon"
 # udevadm trigger --verbose --type=subsystems --action=remove --subsystem-match=usb --attr-match="idVendor=05ac"
 line=$(cat  /tmp/usb-keyboard|wc -l)
