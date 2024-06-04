@@ -74,7 +74,9 @@
     "clock": {
         // "interval": 1,
         "tooltip": true,
-        "format": "{:%m-%d%a%H:%M}",
+        "format": "{:L%m-%d%a%H:%M}",
+        "timezone":"Asia/Shanghai",
+        "locale":"zh_CN.UTF-8",
         "format-alt": "{:%Y-%m-%d}",
         "on-click-right": "gnome-clocks",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>\n\nR:Clocks"
