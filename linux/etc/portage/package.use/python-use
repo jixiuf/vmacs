@@ -1,0 +1,5 @@
+# 保持与 binhost 里的一致 clang 编译太慢    
+sys-devel/clang  PYTHON_SINGLE_TARGET: -python3_12 -python3_10 python3_11
+dev-libs/boost   python_targets_python3_11
+net-proxy/mitmproxy python_targets_python3_11
+dev-python/pyasn1  python_targets_python3_11               
