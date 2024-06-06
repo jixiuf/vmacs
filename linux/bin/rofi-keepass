@@ -8,6 +8,7 @@ master=$(gpg -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
 declare -A classMap
 classMap["apifox-pdv"]="luojilab.com"
 classMap["dterm"]="bitwarden.com"
+classMap["foot"]="bitwarden.com"
 classMap["org.keepassxc.KeePassXC"]="bitwarden.com"
 classMap["kitty"]="bitwarden.com"
 classMap["polkit-gnome-authentication-agent-1"]="bitwarden.com"
@@ -75,6 +76,9 @@ type_word() {
 type_tab() {
     echo key tab|dotoolc
 }
+type_enter() {
+    echo key enter|dotoolc
+}
 paste() {
     echo key control+v | dotoolc
 }
@@ -101,10 +105,12 @@ case $? in
    11) # M-Ret type username
     NAME=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "UserName" --quiet)
     type_word $NAME
+    type_enter
     ;;
   12) # C-t: type TOTP
     totp=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" -t --quiet)
     type_word $totp
+    type_enter
     ;;
   13) # C-Ret, Auto-type username, password
     NAME=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "UserName" --quiet)
@@ -114,10 +120,12 @@ case $? in
         type_tab
     fi
     type_word $PASSWORD
+    type_enter
     ;;
   0) # ret type passwd
     PASSWORD=$(echo $master |keepassxc-cli show "$KEEPASS_DB_PATH" "$ENTRY" --attributes "Password" --quiet)
     type_word $PASSWORD
+    type_enter
     ;;
   *)
     ;;
