@@ -72,6 +72,12 @@ x11-terms/alacritty  ~amd64
 gui-apps/foot  ~amd64
 app-misc/tmux  ~amd64
 app-misc/tmux  **
+dev-util/hyprwayland-scanner ~amd64
+media-video/wireplumber ~amd64
+media-video/pipewire ~amd64
+
+
+
 # Local Variables:
 # mode: conf
 # End:

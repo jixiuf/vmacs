@@ -3,3 +3,8 @@ sys-devel/clang  PYTHON_SINGLE_TARGET: -python3_12 -python3_10 python3_11
 dev-libs/boost   python_targets_python3_11
 net-proxy/mitmproxy python_targets_python3_11
 dev-python/pyasn1  python_targets_python3_11               
+dev-python/blinker python_targets_python3_11
+dev-python/cryptography python_targets_python3_11
+dev-python/tornado python_targets_python3_11
+app-arch/brotli  python_targets_python3_11
+# dev-python/urwid python_targets_python3_11
