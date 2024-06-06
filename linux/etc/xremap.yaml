@@ -299,9 +299,9 @@ keymap:
       only: [org.gnome.Nautilus]
     remap:
       Super-C-w: Super-C-q
-  - name: Bytedance-feishu
+  - name: Bytedance-lark
     application:
-      only: [Bytedance-feishu]
+      only: [Bytedance-lark]
     remap:
       C-comma: C-leftbrace
       C-dot: C-rightbrace
@@ -321,7 +321,7 @@ keymap:
       # C-j: C-RIGHTBRACE
   - name: global_emacs
     application:
-      only: [Bytedance-feishu,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark]
+      only: [Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark]
     remap:
       super-C-w: C-w
       M-f: C-right
@@ -392,7 +392,7 @@ keymap:
       super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(hypr-cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(hypr-cwd||echo $HOME)"] }
       super-C-comma: { launch: ["hyprctl","dispatch","exec hypr-dterm-ws"] }
       super-C-b: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise weixin weixin-uos" ] }
-      super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Bytedance-feishu","bytedance-feishu-stable  2>&1 >/dev/null"] }
+      super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
       super-C-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.gnome.Nautilus nautilus"] }
       # eme slurp swappy    
       super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]} 

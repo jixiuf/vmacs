@@ -21,6 +21,8 @@ deploy:
 	gpg -d ~/.ssh/config.gpg > ~/.ssh/config
 	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys
 	chmod 600 ~/.ssh/id_rsa
+	sudo cp -f ~/.ssh/config /etc/ssh/ssh_config.d/1config.conf
+	chmod 644  /etc/ssh/ssh_config.d/1config.conf
 	chmod 600 ~/.ssh/config
 	chmod 600 ~/.ssh/authorized_keys
 	@-mkdir -p ~/.config/

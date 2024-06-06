@@ -193,7 +193,7 @@ if [ $(uname -s ) = "Linux" ] ; then
     alias emet='sudo -E emerge --oneshot --keep-going'
     alias emerge='sudo -E emerge '
     alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo emerge @preserved-rebuild;sudo eclean packages'
-    alias emeU='sudo -E emerge --ask -q --keep-going --skipfirst --emptytree @world'
+    alias emeU='sudo -E emerge --ask -q --keep-going  --emptytree @world'
     alias esync='sudo -E emerge --sync'
     emec() {        if [ -z "$1" ]; then sudo -E emerge -ac;else sudo -E emerge -aqvC "$@";fi    }
     alias emes='sudo -E emerge -aSqv'
