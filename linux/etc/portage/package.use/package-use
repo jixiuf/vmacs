@@ -46,9 +46,7 @@ app-i18n/rime-data -double-pinyin -essay -luna-pinyin -octagram  -stroke -terra-
 >=dev-qt/qtgui-5.15.9 egl
 dev-qt/qtbase egl
 media-libs/mesa llvm vulkan
-sys-devel/gcc jit gcc fortran
 sys-fs/lvm2 lvm 
-sys-kernel/gentoo-kernel savedconfig
 media-libs/freetype X
 >=media-libs/libglvnd-1.6.0 X
 >=gui-libs/wlroots-0.16.2 X
