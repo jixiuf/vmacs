@@ -44,7 +44,6 @@ gui-wm/hyprland X
 app-i18n/rime-data -double-pinyin -essay -luna-pinyin -octagram  -stroke -terra-pinyin  -wubi 
 >=app-i18n/fcitx-qt-5.0.17-r1 qt5
 >=dev-qt/qtgui-5.15.9 egl
-gui-wm/sway  X -swaybar grimshot
 dev-qt/qtbase egl
 media-libs/mesa llvm vulkan
 sys-devel/gcc jit gcc fortran
@@ -60,7 +59,6 @@ gui-apps/waybar wifi  network pipewire upower tray experimental
 >=media-video/pipewire-0.3.65-r1 ffmpeg  extra bluetooth dbus  sound-server 
 media-sound/pulseaudio -daemon
 media-video/ffmpeg mp3 pulseaudio libsoxr opus theora vpx openh264
-x11-misc/j4-dmenu-desktop -dmenu
 net-misc/networkmanager connection-sharing  bluetooth  iptables -iwd
 >=net-wireless/wpa_supplicant-2.10-r1 dbus
 >=net-dns/dnsmasq-2.89 dbus
@@ -81,17 +79,12 @@ gui-libs/gtk-layer-shell introspection
 gui-apps/wlogout layershell
 net-wireless/wpa_supplicant p2p
 sys-apps/xdg-desktop-portal screencast
-app-shells/gitstatus zsh-completion
-media-libs/libcanberra pulseaudio
-sci-geosciences/GeographicLib  python
 gui-apps/nwg hyprland
 
-gui-libs/gtk-layer-shell vala
-app-admin/keepassxc autotype browser
+app-admin/keepassxc browser
 media-libs/freetype brotli
 media-libs/opencolorio -opengl
 gui-apps/wf-recorder pulseaudio
 sys-boot/grub mount
 # x11-libs/wxGTK gstreamer webkit
-dev-lang/python tk
 # dev-python/wxpython webkit
