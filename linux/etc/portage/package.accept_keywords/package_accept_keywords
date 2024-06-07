@@ -19,6 +19,7 @@ app-editors/emacs ~amd64 **
 app-editors/vscode ~amd64
 app-i18n/* ~amd64 
 gui-wm/hyprland ~amd64 
+gui-wm/hyprland ** 
 app-office/bytedance-feishu ~amd64
 app-shells/gitstatus ~amd64
 app-shells/zsh-theme-powerlevel10k ~amd64
