@@ -73,7 +73,7 @@ app-crypt/pinentry emacs
 dev-lang/php gd
 media-libs/gd fontconfig
 gui-apps/rofi-wayland  drun windowmode
-gui-libs/gtk-layer-shell introspection
+gui-libs/gtk-layer-shell introspection vala
 gui-apps/wlogout layershell
 net-wireless/wpa_supplicant p2p
 sys-apps/xdg-desktop-portal screencast
@@ -84,5 +84,6 @@ media-libs/freetype brotli
 media-libs/opencolorio -opengl
 gui-apps/wf-recorder pulseaudio
 sys-boot/grub mount
+
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
