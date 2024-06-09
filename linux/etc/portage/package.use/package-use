@@ -84,6 +84,7 @@ media-libs/freetype brotli
 media-libs/opencolorio -opengl
 gui-apps/wf-recorder pulseaudio
 sys-boot/grub mount
+sys-kernel/installkernel dracut
 
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
