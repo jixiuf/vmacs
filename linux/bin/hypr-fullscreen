@@ -14,6 +14,9 @@ if [ -n "$appinfo" ]; then
     if [[ "$class" = "emacs"  ]]; then
         sleep 0.1
         echo key ctrl+super+m|dotoolc
+    elif [[ "$class" = "foot" || "$class" = "dterm" ]]; then
+        sleep 0.1
+        echo key ctrl+c z|dotoolc
     else
         hyprctl dispatch fullscreen 1
     fi
