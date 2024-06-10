@@ -1,6 +1,7 @@
 (setq org-ai-default-chat-model "gpt-4-1106-preview")
 (setq org-ai-default-chat-system-prompt (car ai-system-prompts))
 (setq org-ai-image-directory "~/Documents/jianguo/jianguo/ai/images/")
+(setq org-ai-openai-api-token nil)
 (require 'org-ai)
 (add-hook 'org-mode-hook #'org-ai-mode)
 
