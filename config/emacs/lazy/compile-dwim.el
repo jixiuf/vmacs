@@ -87,7 +87,7 @@ Its value should be 'always or list like (filename run compile).")
          ;; "mxmlc %f"
          "lua %n.lua")
     (go (name . "_test\\.go$")
-        dape-dwim
+        compile-go-test-current
         dape-dwim)
 
     (go (or (name . "\\.go$")

@@ -17,12 +17,12 @@ deploy:
 		$(LINK_CMD) $(PWD)/$$file ~/.$$name ;\
 	done
 
-	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa
-	gpg -d ~/.ssh/config.gpg > ~/.ssh/config
-	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys
+	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
+	gpg -d ~/.ssh/config.gpg > ~/.ssh/config 2>/dev/null
+	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys 2>/dev/null
 	chmod 600 ~/.ssh/id_rsa
 	sudo cp -f ~/.ssh/config /etc/ssh/ssh_config.d/1config.conf
-	chmod 644  /etc/ssh/ssh_config.d/1config.conf
+	sudo chmod 644  /etc/ssh/ssh_config.d/1config.conf
 	chmod 600 ~/.ssh/config
 	chmod 600 ~/.ssh/authorized_keys
 	@-mkdir -p ~/.config/
