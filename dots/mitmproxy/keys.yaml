@@ -1,0 +1,4 @@
+-
+  key: c
+  cmd: export.file curl @focus /tmp/mitm.curl
+  # 导出curl 到 /tmp/mitm.curl

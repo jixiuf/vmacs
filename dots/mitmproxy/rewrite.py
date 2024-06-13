@@ -4,7 +4,7 @@ import json
 import requests
 from urllib.parse import urlparse
 # https://docs.mitmproxy.org/stable/addons-examples/#http-modify-form
-# E(event) 查看 代码中打印的日志 
+# E(event) 查看 代码中打印的日志
 
 URL_PREFIX_MAP = {
     # "http://entree.dev.didatrip.com/badge/": "http://localhost:3831/badge/",
@@ -34,7 +34,6 @@ def request(flow: http.HTTPFlow) -> None:
             data = body_data.get("data")
 
             if not url or not method:
-                ctx.log.error("请求缺少URL或方法")
                 return
 
             # 替换URL前缀
@@ -53,7 +52,7 @@ def request(flow: http.HTTPFlow) -> None:
             parsed_url = urlparse(url)
             host = parsed_url.hostname
             ctx.log.error("请求缺少URL或方法%s" % host)
-            
+
             flow.request.headers["Host"] = host
 
         except json.JSONDecodeError as e:
