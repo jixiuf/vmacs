@@ -78,7 +78,7 @@ User jixiuf@qq.com
 # 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
 # security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
 # security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine smtp.qq.cn login jixiuf@qq.com password/ {print $NF}'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com login jixiuf@qq.com password/ {print $NF}'"
 # PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
 SSLType IMAPS
 SSLVersions TLSv1.2

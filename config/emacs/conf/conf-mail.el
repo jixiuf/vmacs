@@ -183,16 +183,17 @@
 (mu4e-alert-set-default-style 'notifier)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 
+;; 注释掉，暂时因为开了这 无法用C-xm
 ;; https://github.com/jeremy-compostella/org-msg
-(require 'org-msg)
-(setq org-msg-options "html-postamble:nil  H:2 num:t ^:{} toc:nil author:nil email:nil \\n:t"
-      org-msg-startup " inlineimages"
-      org-msg-default-alternatives '((new		. (text html))
-                                     (reply-to-html	. (text html))
-                                     (reply-to-text	. (text)))
-      org-msg-posting-style nil
-      org-msg-convert-citation t)
-(org-msg-mode)
+;; (require 'org-msg)
+;; (setq org-msg-options "html-postamble:nil  H:2 num:t ^:{} toc:nil author:nil email:nil \\n:t"
+;;       org-msg-startup " inlineimages"
+;;       org-msg-default-alternatives '((new		. (text html))
+;;                                      (reply-to-html	. (text html))
+;;                                      (reply-to-text	. (text)))
+;;       org-msg-posting-style nil
+;;       org-msg-convert-citation t)
+;; (org-msg-mode)
 
 (fset 'vmacs-read-all
    (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y ?\C-l] 0 "%d"))
