@@ -15,6 +15,11 @@ URL_PREFIX_MAP = {
     # 填写你的映射字典
 }
 
+# cms oms 调内部服务的时候 会走proxy,如 https://oms.luojilab.com/api/proxy
+# 此处通过脚本 绕过代理 直接请求内部服务， 并且可以通过 上面的 URL_PREFIX_MAP  将请求打向本地的服务
+
+CMS_OMS_API_PROXY=[ "cp.iget.dev.didatrip.com","oms.test.igetget.dc","cms.luojilab.com","oms.luojilab.com"]
+
 def is_server_responding(url):
     try:
         # 解析URL并获取主机部分
@@ -37,7 +42,7 @@ def replace_url_prefix(url):
     return url
 
 def request(flow: http.HTTPFlow) -> None:
-    if flow.request.pretty_host == "cp.iget.dev.didatrip.com" \
+    if flow.request.pretty_host in CMS_OMS_API_PROXY  \
        and flow.request.path.startswith("/api/proxy"):
         try:
             body_data = json.loads(flow.request.get_text())
