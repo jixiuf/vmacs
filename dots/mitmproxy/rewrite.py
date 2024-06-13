@@ -15,6 +15,18 @@ URL_PREFIX_MAP = {
     # 填写你的映射字典
 }
 
+def is_server_responding(url):
+    try:
+        # 解析URL并获取主机部分
+        parsed_url = urlparse(url)
+        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}/ping"
+
+        # 发送GET请求到 /ping
+        response = requests.get(base_url)
+        return response.status_code == 200
+    except requests.exceptions.RequestException as e:
+        return False
+
 def replace_url_prefix(url):
     # 遍历映射字典
     for original_prefix, new_prefix in URL_PREFIX_MAP.items():
@@ -29,18 +41,16 @@ def request(flow: http.HTTPFlow) -> None:
        and flow.request.path.startswith("/api/proxy"):
         try:
             body_data = json.loads(flow.request.get_text())
-            url = replace_url_prefix(body_data.get("url"))
+            url = body_data.get("url")
             method = body_data.get("method").lower()
             data = body_data.get("data")
+            newURL = replace_url_prefix(url)
+            if is_server_responding(newURL):
+                url=newURL
+
 
             if not url or not method:
                 return
-
-            # 替换URL前缀
-            for original_prefix, new_prefix in URL_PREFIX_MAP.items():
-                if url.startswith(original_prefix):
-                    url = url.replace(original_prefix, new_prefix, 1)
-                    break
 
             # 设置请求的新URL
             flow.request.url = url
@@ -51,7 +61,6 @@ def request(flow: http.HTTPFlow) -> None:
             flow.request.headers["Content-Type"] = "application/json"
             parsed_url = urlparse(url)
             host = parsed_url.hostname
-            ctx.log.error("请求缺少URL或方法%s" % host)
 
             flow.request.headers["Host"] = host
 
