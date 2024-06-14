@@ -1,5 +1,3 @@
- (when (file-directory-p "~/repos/meow")
-   (add-to-list 'load-path "~/repos/meow"))
  (when (file-directory-p "~/repos/dape")
    (add-to-list 'load-path "~/repos/dape"))
 
