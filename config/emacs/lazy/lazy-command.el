@@ -4,6 +4,71 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+;;;###autoload
+(defun vmacs-meow-line (n &optional expand)
+  "Select the current line, eol is not included.
+
+Create selection with type (expand . line).
+For the selection with type (expand . line), expand it by line.
+For the selection with other types, cancel it.
+
+Prefix:
+numeric, repeat times.
+"
+  (interactive "p")
+  (unless (or expand (equal '(expand . line) (meow--selection-type)))
+    (meow--cancel-selection))
+  (let* ((orig (mark t))
+         (backward (meow--direction-backward-p))
+         (forward (> n 0))
+         cnt p)
+    (cond
+     ((region-active-p)
+      (setq cnt (count-lines (region-beginning) (region-end)))
+      (save-mark-and-excursion
+        (cond
+         (backward
+          (cond
+           ((> (+ cnt n) 0)
+            (forward-line (- n))
+            (setq p (line-beginning-position)))
+           (t
+            (goto-char orig)
+            (setq orig (line-beginning-position))
+            (forward-line (- (+ cnt n)))
+            (setq p (line-end-position)))))
+         (t ;; forward
+          (cond
+           ((> (+ cnt n) 0)
+            (forward-line n)
+            (setq p (line-end-position)))
+           (t
+            (goto-char orig)
+            (setq orig (line-end-position))
+            (forward-line (- (+ cnt n)))
+            (setq p (line-beginning-position)))))))
+      (thread-first
+        (meow--make-selection '(expand . line) orig p expand)
+        (meow--select))
+      (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))
+     (t
+      (let ((m (if forward
+                   (line-beginning-position)
+                 (line-end-position)))
+            (p (save-mark-and-excursion
+                 (if forward
+                     (progn
+                       (forward-line (1- n))
+                       (line-end-position))
+                   (progn
+                     (forward-line (1+ n))
+                     (when (meow--empty-line-p)
+                       (backward-char 1))
+                     (line-beginning-position))))))
+        (thread-first
+          (meow--make-selection '(expand . line) m p expand)
+          (meow--select))
+        (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))))))
 
 ;;;###autoload
 (defun vmacs-replace-all()

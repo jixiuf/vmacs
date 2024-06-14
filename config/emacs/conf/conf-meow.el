@@ -121,7 +121,7 @@
    '("C-r" . vmacs-meow-reverse)
    '("%" . vmacs-meow-reverse)
    '(";" . vmacs-meow-reverse)
-   '("s" . meow-line)
+   '("s" . vmacs-meow-line)
    '("S" . meow-goto-line)
    '("y" . meow-save)
    '("`" . meow-end-or-call-kmacro)
@@ -141,10 +141,10 @@
 (require 'meow)
 (meow-setup)
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
-(add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
+(add-to-list 'meow-selection-command-fallback '(meow-save . vmacs-meow-line)) ;support: yy y3y
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
-(add-to-list 'meow-selection-command-fallback '(meow-kill . meow-line)) ;suppert: dd d3d
-(add-to-list 'meow-selection-command-fallback '(meow-change . meow-line)) ;suppert: cc c3c
+(add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
+(add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
 (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 
 
