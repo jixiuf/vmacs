@@ -12,7 +12,7 @@ URL_PREFIX_MAP = {
     "http://entree.dev.didatrip.com/label/": "http://localhost:3890/label/",
     "https://entree-ali.igetget.com/label/": "http://localhost:3890/label/",
     "http://odobpkg.test.svc.luojilab.dc/":"http://127.0.0.1:17946/",
-    "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:8890/",
+    "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:3890/",
     # 填写你的映射字典
 }
 
@@ -50,6 +50,8 @@ def request(flow: http.HTTPFlow) -> None:
             url = body_data.get("url")
             method = body_data.get("method").lower()
             data = body_data.get("data")
+            headers = body_data.get("headers")
+
             newURL = replace_url_prefix(url)
             if is_server_responding(newURL):
                 url=newURL
@@ -58,13 +60,18 @@ def request(flow: http.HTTPFlow) -> None:
             if not url or not method:
                 return
 
+            if headers != None and headers.get("Content-Type")=="application/x-www-form-urlencoded":
+                flow.request.headers["Content-Type"] = "application/x-www-form-urlencoded"
+                flow.request.urlencoded_form =data
+            else:
+                # 将数据转换为字符串并设置请求内容
+                flow.request.headers["Content-Type"] =  "application/json"
+                flow.request.content = json.dumps(data).encode()
+
             # 设置请求的新URL
             flow.request.url = url
             flow.request.method = method.upper()
-            # 将数据转换为字符串并设置请求内容
-            flow.request.content = json.dumps(data).encode()
             # 更新请求头
-            flow.request.headers["Content-Type"] = "application/json"
             parsed_url = urlparse(url)
             host = parsed_url.hostname
 
