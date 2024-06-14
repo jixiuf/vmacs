@@ -21,6 +21,9 @@
  "," 'goto-last-change
  "." 'goto-last-change-reverse
  )
+(defvar-keymap  m-mode-map
+  "f" #'mark-defun
+  )
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
 
@@ -29,6 +32,7 @@
    "="  #'meow-indent
    "G"  #'vmacs-goto-line
    "g" g-mode-map
+   "m" m-mode-map
    "n"  #'meow-search
    "N"  #'meow-search-reverse
    "/"  #'isearch-forward
@@ -199,7 +203,7 @@
 
 (global-set-key (kbd "C-;") #'query-replace-iedit-mode)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
-(global-set-key (kbd "C-c gs") #'query-replace) ;space gs
+(global-set-key (kbd "C-c g s") #'query-replace) ;space gs
 (global-set-key (kbd "C-c ga") #'vmacs-replace-all)
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
 (defvar vmacs-do-nothing-map

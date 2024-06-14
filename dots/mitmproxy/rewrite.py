@@ -11,7 +11,8 @@ URL_PREFIX_MAP = {
     # "http://entree.dev.didatrip.com/bauhinia/": "http://127.0.0.1:3880/bauhinia/",
     "http://entree.dev.didatrip.com/label/": "http://localhost:3890/label/",
     "https://entree-ali.igetget.com/label/": "http://localhost:3890/label/",
-    "http://odobpkg.test.svc.luojilab.dc/odobpkg/":"http://127.0.0.1:17946/odobpkg/",
+    "http://odobpkg.test.svc.luojilab.dc/":"http://127.0.0.1:17946/",
+    "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:8890/",
     # 填写你的映射字典
 }
 
