@@ -9,12 +9,12 @@
 # 2. 如果没有，则使用 arg2 及之后的参数 以启动目录程序,并聚焦之(有可能程序是在其他 workspace 启动，故需要将焦点转移到那)
 # hypr-run-or-raise emacs emacs
 # hypr-run-or-raise 'firefox|firefox-esr' firefox
-# hypr-run-or-raise --cd --float-only  Alacritty alacritty  --working-directory=$(hypr-cwd||echo $HOME)
-# hypr-run-or-raise --float-only  Alacritty alacritty  --working-directory=$(hypr-cwd||echo $HOME)
-# hypr-run-or-raise --floating   'dterm|Alacritty|kitty|org.wezfurlong.wezterm'  term.sh --  --class=dterm --working-directory=$(hypr-cwd||echo $HOME)
-# hypr-run-or-raise --cd --floating  'dterm|Alacritty|kitty|org.wezfurlong.wezterm' term.sh -- --class=dterm  --working-directory=$(hypr-cwd||echo $HOME)
+# hypr-run-or-raise --cd --float-only  Alacritty alacritty  --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --float-only  Alacritty alacritty  --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --floating   'dterm|Alacritty|kitty|org.wezfurlong.wezterm'  term.sh --  --class=dterm --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --cd --floating  'dterm|Alacritty|kitty|org.wezfurlong.wezterm' term.sh -- --class=dterm  --working-directory=$(cwd||echo $HOME)
 
-# 有个特例，参见 hypr-cwd
+# 有个特例，参见 cwd
 # 若当前窗口是 emacs ,我能从 emacs 的 title 中获取到 emacs 的 default-directory(emacs 当前编辑的文件所在的目录)
 # 而我的目录窗口若是 alacritty 终端，则当我切换到 alacritty 终端时，我希望执行 cd directory 命令，切换到与 emacs 中文件所在目录 相同的目录
 # 需要依赖 ydotool
@@ -133,7 +133,7 @@ else
     target_title=`echo $target_appinfo|jq -r '.title'|head -n 1`
     target_ws_id=`echo $target_appinfo|jq -r '.workspace.id'`
     # target_pid=`echo $target_appinfo|jq -r '.pid'`
-    cwd=$(hypr-cwd)
+    cwd=$(cwd)
     if [  "$front_addr" != "$target_addr" ]; then
         # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
         if [[ "$front_ws_name" == *"special"* ]]; then
@@ -174,7 +174,7 @@ else
         fi
         if [[  "$target" == *"foot"*   || "$target" == *"dterm"*  ]]; then
             if [[ -n "$cwd" && -n "$cd" ]]; then
-                # 如果 hypr-cwd 获取到当前 working directory
+                # 如果 cwd 获取到当前 working directory
                 # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
                 # root@host:/path
                 regex="(\/ssh:)?([a-zA-Z0-9_\-]+@)?([a-zA-Z0-9_\.\-]+):(.+)"

@@ -20,7 +20,7 @@ if [[ $cwd =~ $regex ]]; then
     userat=${BASH_REMATCH[2]}
     host=${BASH_REMATCH[3]}
     path=${BASH_REMATCH[4]}
-    termcwd=$(hypr-cwd)
+    termcwd=$(cwd)
     # alacritty    -e ssh -t root@bench1 'cd /tmp&& exec $SHELL'
     if [[ $termcwd =~ $regex ]]; then
         # wl-copy  --primary " cd $path"

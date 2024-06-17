@@ -2,7 +2,7 @@
 
 app=$(hyprctl activewindow -j)
 front_addr=`echo $app|jq -r '.address'`
-cwd=$(hypr-cwd||echo $HOME)
+cwd=$(cwd||echo $HOME)
 floating=`echo $app|jq -r '.floating'`
 if [ "$floating" == "true" ]; then
     term.sh --class=dterm  --working-directory=$cwd &disown
