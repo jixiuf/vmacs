@@ -411,9 +411,9 @@ keymap:
       # super-C-0: { launch: ["pick-color"] }
       super-C-y: { launch: ["rofi-cliphist"] }
       # super-C-0: { launch: ["bwmenu"] }
-      C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
-      super-C-Backslash: { launch: ["hyprctl","dispatch","togglesplit"] }
-      super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
+      # C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
+      # super-C-Backslash: { launch: ["hyprctl","dispatch","togglesplit"] }
+      # super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
       super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
       super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
       super-C-o: { launch: ["hypr-other-window"] }
@@ -425,7 +425,7 @@ keymap:
       
       # super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
       # super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
-      super-C-Tab: { launch: ["hypr-focus-last-win"]}
+      # super-C-Tab: { launch: ["hypr-focus-last-win"]}
       # 窗口大小调整 space+ 箭头
       super-C-l: { launch: ["hypr-resize" ,"right"]}
       super-C-h: { launch: ["hypr-resize" ,"left"]}
