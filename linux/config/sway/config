@@ -67,6 +67,8 @@ bindgesture swipe:4:left workspace next
 # bindgesture pinch:inward+right move right
 bindgesture swipe:3:right exec sway-move-to-next-workspace
 bindgesture swipe:3:left exec sway-move-to-prev-workspace
+bindsym mod4+mod1+control+n sway-move-to-next-workspace
+bindsym mod4+mod1+control+p sway-move-to-prev-workspace
 
 # bindsym mod4+mod1+i splith
 # bindsym mod4+mod1+v splitv
