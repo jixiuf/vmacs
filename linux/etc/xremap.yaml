@@ -185,9 +185,9 @@ keymap:
       only: [dterm,foot]
     remap:
       super-C-w: super-C-q
-      super-C-Enter: [C-c,"2"] 
-      super-C-Backslash: [C-c,M-1] 
-      super-C-Backspace: [C-c,M-2] 
+      # super-C-Enter: [C-c,"2"] 
+      # super-C-Backslash: [C-c,M-1] 
+      # super-C-Backspace: [C-c,M-2] 
         # - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
       # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--float-only","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
       # C-l: [C-l,C-Shift-l,C-Shift-l]
@@ -414,13 +414,13 @@ keymap:
       # C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
       # super-C-Backslash: { launch: ["hyprctl","dispatch","togglesplit"] }
       # super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
-      super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
+      # super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
       super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
       super-C-o: { launch: ["hypr-other-window"] }
       super-C-1: { launch: ["hypr-kill-other-window"] }
-      super-C-m: { launch: ["hypr-fullscreen"] }
-      super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
-      super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
+      super-C-m: { launch: ["toggle-fullscreen"] }
+      # super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
+      # super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
       super-C-w: super-C-w
       
       # super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}

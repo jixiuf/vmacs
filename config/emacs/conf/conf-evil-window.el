@@ -39,7 +39,7 @@
            (not (string-equal "1" (string-trim (shell-command-to-string "ws_id=$(hyprctl activeworkspace -j|jq -r '.id');hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l")))))
       (progn
         (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")
-        (setq this-command 'hypr-fullscreen))
+        (setq this-command 'toggle-fullscreen))
     (if (> (length (window-list)) 1)
         (progn
           (setq vmacs--fullscreen-window-configuration (current-window-configuration))

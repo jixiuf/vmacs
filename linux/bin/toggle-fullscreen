@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# ws=$(hyprctl activeworkspace -j)
+# ws_id=`echo $ws|jq -r '.id'`
+# app count in current workspace
+# app_cnt=$(hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l)
+if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+    appinfo=`hyprctl activewindow -j`
+    class=`echo $appinfo|jq -r '.class'|head -n 1`
+else
+    appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+    class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+fi
+
+if [ -n "$class" ]; then
+    # fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
+    if [[ "$class" = "emacs"  ]]; then
+        sleep 0.1
+        echo key ctrl+super+m|dotoolc
+    # elif [[ "$class" = "foot" || "$class" = "dterm" ]]; then
+    #     tmux resize-pane -Z
+    else
+        if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+            hyprctl dispatch fullscreen 1
+        fi
+    fi
+else
+    if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+        hyprctl dispatch fullscreen 1
+    fi
+fi
