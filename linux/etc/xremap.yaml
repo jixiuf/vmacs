@@ -423,8 +423,8 @@ keymap:
       super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
       super-C-w: super-C-w
       
-      super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
-      super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
+      # super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
+      # super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
       super-C-Tab: { launch: ["hypr-focus-last-win"]}
       # 窗口大小调整 space+ 箭头
       super-C-l: { launch: ["hypr-resize" ,"right"]}
@@ -432,10 +432,10 @@ keymap:
       super-C-k: { launch: ["hypr-resize" ,"up"]}
       super-C-j: { launch: ["hypr-resize" ,"down"]}
       
-      super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
-      super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
-      super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
-      super-C-M-d: { launch: ["hyprctl" ,"dispatch","movetoworkspacesilent","empty"]}
+      # super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
+      # super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
+      # super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
+      # super-C-M-d: { launch: ["hyprctl" ,"dispatch","movetoworkspacesilent","empty"]}
 
       # C-w:
       #   remap:

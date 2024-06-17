@@ -42,7 +42,7 @@ bindsym --no-repeat mod4+mod1+Return fullscreen disable, exec foot
 
 
 # Exit sway (logs you out of your Wayland session)
-# bindsym mod4+mod1+q exec swaymsg exit
+bindsym mod4+mod1+q exec swaymsg exit
 # bindsym mod4+control+q exec swaymsg kill
 #
 # Moving around:
