@@ -43,3 +43,4 @@
 /mitmproxy/__pycache__/
 /dots/ssh/known_hosts.old
 /config/emacs/network-security.data
+/linux/config/sway/config
