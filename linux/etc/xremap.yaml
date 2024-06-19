@@ -140,7 +140,7 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --cd --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
 
   - name: terminal emacs
     application:
@@ -283,8 +283,8 @@ keymap:
       C-s: C-f
       C-u: C-b
       C-l: C-u
-      super-C-w: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
-      super-C-q: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
+      super-C-w: super-M-h
+      super-C-q: super-M-h
 # 
   - name: flameshot
     application:
@@ -381,61 +381,32 @@ keymap:
   - name: Global
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      super-C-e: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --  emacs  emacsclient -c -r -n"] }
-      super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --gtk-version=4"] }
-      super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise","apifox-pdv","/opt/Apifox/apifox-pdv"] }
-      # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
-      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","DBeaver","dbeaver"] }
-      
-      super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
-      super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
-      super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)"] }
-      super-C-comma: { launch: ["hyprctl","dispatch","exec hypr-dterm-ws"] }
-      super-C-b: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise weixin weixin-uos" ] }
-      super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
-      super-C-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.gnome.Nautilus nautilus"] }
       # eme slurp swappy    
       super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]} 
       # super-C-4: { launch: ["screenshot","1"]} #area
       super-M-4: { launch: ["screenshot"]}     #screen
+      super-M-i: { launch: ["swaync-client","-t"]}     #screen
 
       super-M-v: Shift-Insert
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       
       super-C-7: { launch: ["sh","-c","gpg -d /usr/local/bin/master.gpg|sh"] }
-      super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.keepassxc.KeePassXC keepassxc"] }
       super-C-Grave: { launch: ["swaylock"] }
       # super-C-Esc: { launch: ["swaylock"] }
       # super-C-9: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","corplink","/opt/Corplink/corplink"] }
       # super-C-0: { launch: ["pick-color"] }
       super-C-y: { launch: ["rofi-cliphist"] }
       # super-C-0: { launch: ["bwmenu"] }
-      # C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
       # super-C-Backslash: { launch: ["hyprctl","dispatch","togglesplit"] }
       # super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
       # super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
-      super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
-      super-C-o: { launch: ["hypr-other-window"] }
-      super-C-1: { launch: ["hypr-kill-other-window"] }
       super-C-m: { launch: ["toggle-fullscreen"] }
       # super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
       # super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
       super-C-w: super-C-w
       
-      super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
-      super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
-      # super-C-Tab: { launch: ["hypr-focus-last-win"]}
-      # 窗口大小调整 space+ 箭头
-      super-C-l: { launch: ["hypr-resize" ,"right"]}
-      super-C-h: { launch: ["hypr-resize" ,"left"]}
-      super-C-k: { launch: ["hypr-resize" ,"up"]}
-      super-C-j: { launch: ["hypr-resize" ,"down"]}
       
-      # super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
-      # super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
-      # super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
-      # super-C-M-d: { launch: ["hyprctl" ,"dispatch","movetoworkspacesilent","empty"]}
 
       # C-w:
       #   remap:
