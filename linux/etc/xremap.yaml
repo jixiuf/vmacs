@@ -423,8 +423,8 @@ keymap:
       # super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
       super-C-w: super-C-w
       
-      # super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
-      # super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
+      super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
+      super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
       # super-C-Tab: { launch: ["hypr-focus-last-win"]}
       # 窗口大小调整 space+ 箭头
       super-C-l: { launch: ["hypr-resize" ,"right"]}

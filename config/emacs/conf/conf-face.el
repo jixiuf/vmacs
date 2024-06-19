@@ -29,16 +29,17 @@
 (custom-theme-set-faces
  'modus-vivendi
  '(secondary-selection ((t (:extend t :background "gray15")))))
-
-(defface font-lock-todo-face nil
+(defface font-lock-todo-face
+  '((t (:foreground "Red" :box (:line-width 2 :color "grey75" :style released-button) :height 1.2
+        :inherit default)))
   "Font Lock mode face used to highlight TODO."
   :group 'font-lock-faces)
-(defface font-lock-done-face nil
+(defface font-lock-done-face
+  '((t (:inherit default :foreground "Green" :box (:line-width 2 :color "grey75" :style released-button) :height 1.2)))
   "Font Lock mode face used to highlight DONE."
-
   :group 'font-lock-faces)
 (dolist (mode '(c-mode c++-mode java-mode lisp-mode emacs-lisp-mode erlang-mode
-                       go-mode
+                       go-ts-mode
                        actionscript-mode lisp-interaction-mode sh-mode sgml-mode))
   (font-lock-add-keywords
    mode
