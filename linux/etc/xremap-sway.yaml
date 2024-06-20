@@ -3,34 +3,33 @@ keymap:
   - name: Global
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      super-C-e: { launch: ["sh","-c","sway-run-or-raise --  emacs  emacsclient -c -r -n"] }
-      # super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --gtk-version=4"] }
-      # super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise","apifox-pdv","/opt/Apifox/apifox-pdv"] }
-      # # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
-      # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","DBeaver","dbeaver"] }
+      super-C-e: { launch: ["swaymsg","exec","--","sway-run-or-raise --  emacs  emacsclient -c -r -n"] }
+      super-C-f: { launch: ["swaymsg","exec","--","sway-run-or-raise -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --gtk-version=4"] }
+      super-C-5: { launch: ["swaymsg","exec","--", "sway-run-or-raise","apifox-pdv","/opt/Apifox/apifox-pdv"] }
+      # # super-C-6: { launch: ["swaymsg","exec","--","sway-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
+      super-C-6: { launch: ["swaymsg","exec","--","sway-run-or-raise","DBeaver","dbeaver"] }
 
-      # super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
-      # super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
-      # super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)"] }
-      # super-C-comma: { launch: ["hyprctl","dispatch","exec hypr-dterm-ws"] }
-      # super-C-b: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise weixin weixin-uos" ] }
-      # super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
-      # super-C-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.gnome.Nautilus nautilus"] }
-      # # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      # # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      super-C-dot: { launch: ["swaymsg","exec","--","sway-run-or-raise mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
+      super-C-d:     { launch: ["swaymsg","exec","--","sway-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-Enter: { launch: ["swaymsg","exec","--", "term.sh   --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)"] }
+      super-C-comma: { launch: ["hyprctl","dispatch","exec hypr-dterm-ws"] }
+      super-C-b: { launch: ["swaymsg","exec","--","sway-run-or-raise weixin weixin-uos" ] }
+      super-C-3: { launch: ["swaymsg","exec","--","sway-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
+      super-C-0: { launch: ["swaymsg","exec","--","sway-run-or-raise org.gnome.Nautilus nautilus"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
 
-      # super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.keepassxc.KeePassXC keepassxc"] }
-      # super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
-      # super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
-      # super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
-      # super-C-o: { launch: ["hypr-other-window"] }
-      # super-C-1: { launch: ["hypr-kill-other-window"] }
-      # super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
+      super-C-8: { launch: ["swaymsg","exec","--","sway-run-or-raise org.keepassxc.KeePassXC keepassxc"] }
+      super-M-f: { launch: ["swaymsg","floating toggle"] }
+      super-M-h: { launch: ["swaymsg","move","scratchpad"] }
+      super-C-M-h: { launch: ["swaymsg","scratchpad","show"] }
+      super-C-o: { launch: ["sway-focus-next"] }
+      super-C-1: { launch: ["sway-kill-other-window"] }
       # super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
 
-      # super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
-      # super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
-      # Super-C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
+      super-C-n: { launch: ["swaymsg","workpace" ,"next"]}
+      super-C-p: { launch: ["swaymsg","workpace" ,"prev"]}
+      # Super-C-Tab: { launch: ["swaymsg","exec","--","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
       # C-Tab: { launch: ["hypr-focus-last-win"]}
       # # 窗口大小调整 space+ 箭头
       # super-C-l: { launch: ["hypr-resize" ,"right"]}
