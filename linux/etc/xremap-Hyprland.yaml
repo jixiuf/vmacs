@@ -38,7 +38,7 @@ keymap:
       super-C-k: { launch: ["hypr-resize" ,"up"]}
       super-C-j: { launch: ["hypr-resize" ,"down"]}
 
-      super-M-Enter: { launch: ["hyprctl" ,"dispatch","togglesplit"]}
+      super-M-Backslash: { launch: ["hyprctl" ,"dispatch","togglesplit"]}
       super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
       super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
       super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
