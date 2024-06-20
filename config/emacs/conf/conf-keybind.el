@@ -166,6 +166,8 @@
                       (if (equal (buffer-name) "*Messages*")
                           (switch-to-buffer (other-buffer))
                         (switch-to-buffer "*Messages*")
+                        (display-line-numbers-mode -1)
+                        (setq truncate-lines nil)
                         (goto-char (point-max)))))
 
 

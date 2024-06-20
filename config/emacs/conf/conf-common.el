@@ -195,8 +195,6 @@
 ;;快速跳转到当前 buffer 最后一次修改的位置 利用了 undo 定位最后一次在何处做了修改
 ;; (autoload 'goto-last-change "goto-last-change" "Set point to the position of the last change." t)
 (autoload 'goto-last-change-reverse "goto-chg.el" "goto last change reverse" t)
-(vmacs-leader (kbd "x/") 'goto-last-change)
-(vmacs-leader (kbd "x,") 'goto-last-change-reverse)
 
 (with-eval-after-load 'cc-mode (define-key c-mode-base-map ";" 'vmacs-append-semicolon-at-eol))
 ;; Quick edit (for use with hammerspoon quick edit)
