@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+resize_window() {
+    case "$1" in
+        left*)
+            hyprctl dispatch resizeactive -15 0
+            ;;
+        right*)
+            hyprctl dispatch resizeactive 15 0
+            ;;
+        up*)
+            hyprctl dispatch resizeactive 0 -15
+            ;;
+        down*)
+            hyprctl dispatch resizeactive 0 15
+            ;;
+    esac
+}
+
+sway_resize_window() {
+    case "$1" in
+        left*)
+            swaymsg resize shrink width 15px
+            # swaymsg resize shrink left
+            ;;
+        right*)
+            swaymsg resize grow width 15px
+            ;;
+        up*)
+            swaymsg resize grow height 15px
+            ;;
+        down*)
+            swaymsg resize shrink height 15px
+            ;;
+    esac
+}
+# need https://github.com/ramnes/move-border for emacs
+resize_emacs_window() {
+    case "$1" in
+        left*)
+            echo key ctrl+alt+3|dotoolc
+            ;;
+        right*)
+            echo key ctrl+alt+4|dotoolc
+            ;;
+        up*)
+            echo key ctrl+alt+1|dotoolc
+            ;;
+        down*)
+            echo key ctrl+alt+2|dotoolc
+            ;;
+    esac
+}
+
+resize_tmux_emacs_window() {
+    case "$1" in
+        left*)
+            tmux send-keys C-M-3
+            ;;
+        right*)
+            tmux send-keys C-M-4
+            ;;
+        up*)
+            tmux send-keys C-M-1
+            ;;
+        down*)
+            tmux send-keys C-M-2
+            ;;
+    esac
+}
+
+resize_tmux_window() {
+    case "$1" in
+        left*)
+            tmux resize-pane -L 2
+            ;;
+        right*)
+            tmux resize-pane -R 2
+            ;;
+        up*)
+            tmux resize-pane -U 2
+            ;;
+        down*)
+            tmux resize-pane -D 2
+            ;;
+    esac
+}
+
+# app count in current workspace
+if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+    ws=$(hyprctl activeworkspace -j)
+    ws_id=`echo $ws|jq -r '.id'`
+    app_cnt=$(hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l)
+    appinfo=`hyprctl activewindow -j`
+    class=`echo $appinfo|jq -r '.class'|head -n 1`
+    fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
+    floating=`echo $appinfo|jq -r '.floating'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
+else
+    app_cnt=$(swaymsg -t get_workspaces |jq -r '.[] | select(.focused==true)|.focus|length')
+    appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+    class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+    fullscreen=`echo $front_app|jq -r '.fullscreen_mode'` # 0 1
+    floating=`echo $appinfo|jq -r '.type'|head -n 1`
+fi
+
+if [[ "$class" = "emacs" && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$fullscreen" = "1"  ||"$floating" == "true" ||"$floating" == "floating_con" ) ]]; then
+    resize_emacs_window $1
+elif [[ ( "$class" = "foot" || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* ]]; then
+    resize_tmux_emacs_window $1
+elif [[ ( "$class" = "foot" || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true"|| "$fullscreen" = "1" ||"$floating" == "floating_con"||"$floating" == "true" ) ]]; then
+    resize_tmux_window $1
+else
+    if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+        resize_window $1
+    else
+        sway_resize_window $1
+    fi
+fi

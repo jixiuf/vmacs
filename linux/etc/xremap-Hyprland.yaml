@@ -33,10 +33,10 @@ keymap:
       Super-C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'window,drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["hypr-focus-last-win"]}
       # 窗口大小调整 space+ 箭头
-      super-C-l: { launch: ["hypr-resize" ,"right"]}
-      super-C-h: { launch: ["hypr-resize" ,"left"]}
-      super-C-k: { launch: ["hypr-resize" ,"up"]}
-      super-C-j: { launch: ["hypr-resize" ,"down"]}
+      super-C-l: { launch: ["resize-window" ,"right"]}
+      super-C-h: { launch: ["resize-window" ,"left"]}
+      super-C-k: { launch: ["resize-window" ,"up"]}
+      super-C-j: { launch: ["resize-window" ,"down"]}
 
       super-M-Backslash: { launch: ["hyprctl" ,"dispatch","togglesplit"]}
       super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
