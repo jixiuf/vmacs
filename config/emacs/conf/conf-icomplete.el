@@ -173,8 +173,8 @@
 
 (vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
 (vmacs-leader (kbd "ft") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-(vmacs-leader (kbd "fu") (vmacs-defun find-file-tmp (find-file (expand-file-name "~/Documents/jianguo/jianguo/http.txt"))))
-(vmacs-leader (kbd "fn") (vmacs-defun find-file-tmp (find-file org-default-notes-file)))
+(vmacs-leader (kbd "fu") (vmacs-defun find-file-http (find-file (expand-file-name "http.txt" dropbox-dir))))
+(vmacs-leader (kbd "fn") (vmacs-defun find-file-note (find-file org-default-notes-file)))
 
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
@@ -183,7 +183,6 @@
 (global-set-key (kbd "C-x r b") #'consult-bookmark)
 (global-set-key (kbd "C-x r x" ) #'consult-register)
 
-(vmacs-leader (kbd "fc") #'(lambda()(interactive) (find-file (expand-file-name "http.txt" dropbox-dir))))
 
 (autoload #'mu4e-search-bookmark  "mu4e" t)
 (vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (call-process "killall" nil nil nil  "mbsync") (mu4e-search-bookmark)(mu4e t)))
