@@ -140,11 +140,11 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --floating --float-only  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
 
   - name: terminal emacs
     application:
-      only: [dterm,kitty,Alacritty,foot]
+      only: [dterm,kitty,Alacritty,foot,foot-ws]
     window:
       only: [/GNU\/Emacs/ , /History/, /Last command output/, /EDITING SCROLLBACK/ ]
     remap:
@@ -157,7 +157,7 @@ keymap:
       
   - name: terminal tmux
     application:
-      only: [dterm,kitty,Alacritty,foot]
+      only: [dterm,kitty,Alacritty,foot,foot-ws]
     window:
       only: [/TMUX:/ ]
     remap:
@@ -182,7 +182,7 @@ keymap:
       
   - name: foot
     application:
-      only: [dterm,foot]
+      only: [dterm,foot,foot-ws]
     remap:
       super-C-w: super-C-q
       # super-C-Enter: [C-c,"2"] 
@@ -335,7 +335,7 @@ keymap:
       C-d: delete
   - name: Default -- some of these are overridden by the above definitions
     application:
-      not: [Gnome-terminal, Emacs,emacs ,foot,Foot,dterm,kitty,Alacritty,org.wezfurlong.wezterm]
+      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,kitty,Alacritty,org.wezfurlong.wezterm]
       # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
     remap:
       super-C-a: C-a

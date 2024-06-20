@@ -15,9 +15,9 @@ if [ -n "$appinfo" ]; then
      # ( "$app_cnt" = "1" || "$fullscreen" = "true" )
     if [[ "$class" = "emacs" ]]; then
         echo key ctrl+super+o|dotoolc
-    elif [[ ( "$class" = "foot" || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
         echo key ctrl+super+o|dotoolc
-    elif [[ ( "$class" = "foot" || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
         tmux select-pane -t :.+
     else
         hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"

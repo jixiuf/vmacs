@@ -49,6 +49,7 @@ app-misc/tmux  ~amd64
 app-misc/tmux  **
 media-video/wireplumber ~amd64
 media-video/pipewire ~amd64
+gui-wm/hyprland ~amd64
  
  
  
