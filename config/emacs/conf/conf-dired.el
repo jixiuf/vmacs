@@ -208,6 +208,17 @@
 
 (advice-add 'find-file :around 'find-file-auto)
 
+(defun consult-focus-lines-dired()
+  (run-with-timer
+   0.001 nil #'(lambda()
+                 (when (and consult--focus-lines-overlays
+                            (eq major-mode 'dired-mode))
+                   (if (dired-get-filename t t)
+                       (dired-move-to-filename)
+                     (dired-previous-line 1))
+                   ))))
+(add-hook 'minibuffer-exit-hook 'consult-focus-lines-dired)
+
 (provide 'conf-dired)
 
 ;; Local Variables:
