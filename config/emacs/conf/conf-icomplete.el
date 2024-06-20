@@ -119,7 +119,7 @@
         (embark-consult-export-grep lines)
         (wgrep-change-to-wgrep-mode)))
     )
-    (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
+  (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
@@ -147,15 +147,15 @@
 /a/b/c/d-> c/d"
     (let* ((file (directory-file-name file))
            (filename (file-name-nondirectory file))
-           ;; (dir (file-name-directory file))
+           (dir (file-name-directory file))
            short-name)
-      (setq short-name filename
+      (setq short-name
             ;; 这段是想实现 只展示最后 1 级目录/文件.ext 的功能
-            ;; (if dir
-            ;;     (format "%s/%s" (file-name-nondirectory
-            ;;                      (directory-file-name dir))
-            ;;             filename)
-            ;;   filename)
+            (if dir
+                (format "%s/%s" (file-name-nondirectory
+                                 (directory-file-name dir))
+                        filename)
+              filename)
             )
       (propertize short-name 'multi-category `(file . ,file))))
 
