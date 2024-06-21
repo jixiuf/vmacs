@@ -179,9 +179,9 @@
 
 (setq mu4e-query-rewrite-function 'mu4e-goodies~break-cjk-query)
 
-(require 'mu4e-alert)
-(mu4e-alert-set-default-style 'notifier)
-(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+;; (require 'mu4e-alert)
+;; (mu4e-alert-set-default-style 'notifier)
+;; (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 
 ;; 注释掉，暂时因为开了这 无法用C-xm
 ;; https://github.com/jeremy-compostella/org-msg
@@ -196,7 +196,7 @@
 ;; (org-msg-mode)
 
 (fset 'vmacs-read-all
-   (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y ?\C-l] 0 "%d"))
+   (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y ?\M-n] 0 "%d"))
 
 (provide 'conf-mail)
 
