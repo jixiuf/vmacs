@@ -21,15 +21,15 @@
 (define-key mu4e-view-mode-map (kbd "M-p") #'mu4e-view-headers-prev-unread)
 
 (define-key mu4e-headers-mode-map "r" #'mu4e-headers-mark-for-read)
-(define-key mu4e-headers-mode-map "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t)))
+(define-key mu4e-headers-mode-map "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t) (mu4e-headers-next-unread)))
 (define-key mu4e-headers-mode-map "!" #'mu4e-headers-mark-for-refile)
 (define-key mu4e-headers-mode-map (kbd "M-n") #'mu4e-headers-next-unread)
 (define-key mu4e-headers-mode-map (kbd "M-p") #'mu4e-headers-prev-unread)
 (define-key mu4e-headers-mode-map (kbd "C-c C-c") #'vmacs-mu4e-brower)
 (define-key mu4e-headers-mode-map "i" #'vmacs-read-all)
-(define-key mu4e-headers-mode-map (kbd "C-c gu") #'vmacs-mu4e-update-mail-and-index);gu
-(define-key mu4e-headers-mode-map (kbd "C-c gl") #'mu4e-search-next);gl
-(define-key mu4e-headers-mode-map (kbd "C-c gh") #'mu4e-search-prev);gh
+(define-key mu4e-headers-mode-map (kbd "C-c Gu") #'vmacs-mu4e-update-mail-and-index);gu
+(define-key mu4e-headers-mode-map (kbd "C-c Gl") #'mu4e-search-next);gl
+(define-key mu4e-headers-mode-map (kbd "C-c Gh") #'mu4e-search-prev);gh
 
 (defun vmacs-mu4e-brower (&optional msg)
   (interactive)
@@ -66,7 +66,7 @@
  mu4e-headers-date-format "%y-%m-%d"
  mu4e-change-filenames-when-moving t
  mu4e-attachment-dir "~/Downloads/"
- mu4e-update-interval 500
+ mu4e-update-interval nil
  mu4e-index-update-in-background t
  mu4e-split-view 'single-window
  mu4e-completing-read-function #'completing-read
@@ -196,7 +196,7 @@
 ;; (org-msg-mode)
 
 (fset 'vmacs-read-all
-   (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y ?\M-n] 0 "%d"))
+   (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y] 0 "%d"))
 
 (provide 'conf-mail)
 
