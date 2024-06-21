@@ -58,7 +58,7 @@
                 (alpha-background . 75)
                 (alpha . 100)
 
-                (font . "LXGW WenKai Mono-15")
+                (font . "Sarasa Term SC Nerd Light-15")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000")))
@@ -76,11 +76,12 @@
     (set-fontset-font "fontset-default" 'symbol "Noto Color Emoji")
     (with-selected-frame (or f (selected-frame))
       (setq default-text-properties '(line-spacing 0.06 line-height 1.15))
-      (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 175)
-      ;; (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd" :height 1.0)
-      ;; (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+      ;; (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 175)
+      (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd Light" :height 1.0)
+      (set-face-attribute 'default nil :font "Sarasa Term SC Nerd Light" )
       ;; https://github.com/lxgw/LxgwWenKai
-      (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0))))
+      ;; (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
+      )))
 
 (add-hook 'after-init-hook #'vmacs-set-font)
 (add-hook 'after-make-frame-functions #'vmacs-set-font)
