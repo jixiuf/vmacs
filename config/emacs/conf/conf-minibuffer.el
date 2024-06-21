@@ -30,7 +30,7 @@
 (define-key completion-list-mode-map (kbd "C-g") 'quit-window) ;*Completions*
 
 (defface vmacs-minibuffer-font
-  `((t :inherit default :height 1.2))
+  `((t :inherit default :height 1.0))
   "The default font for minibuffer buffer.
 Monospaced font whihc is fixed idth and height is recommended."
   :group 'minibuffer)
