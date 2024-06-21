@@ -92,20 +92,12 @@
 ;;; image-dired
 
 (setq-default
- image-dired-db-file (concat user-emacs-directory "cache/image-dired/image-dired_db" )
- image-dired-dir (concat user-emacs-directory "cache/image-dired/image-dired" )
- image-dired-gallery-dir (concat user-emacs-directory "cache/image-dired/image-dired-gallery")
- image-dired-main-image-directory (concat user-emacs-directory "cache/image" )
- image-dired-temp-image-file (concat user-emacs-directory "cache/image-dired-tmp")
- thumbs-thumbsdir (concat user-emacs-directory "cache/thumbs-dir")
-
  dired-recursive-copies 'always         ;让 dired 可以递归的拷贝和删除目录。
  dired-recursive-deletes 'always       ;always表示不加询问
  dired-dwim-target t                   ;Dired试着猜处默认的目标目录
  dired-listing-switches "-alht"
  dired-kill-when-opening-new-dired-buffer t
- dired-vc-rename-file t
- )
+ dired-vc-rename-file t)
 
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (require 'dired)
