@@ -63,8 +63,10 @@
   (interactive)
   (select-window (next-window))
   (when (eq (selected-window) vmacs-window-status)
-    (call-process "hyprctl" nil nil nil "--batch"
-                  "dispatch cyclenext; dispatch bringactivetotop"))
+    (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
+        (call-process "hyprctl" nil nil nil "--batch"
+                      "dispatch cyclenext; dispatch bringactivetotop"))
+    (call-process "sway-focus-next"))
   (unless (and vmacs-window-status
                (window-live-p vmacs-window-status))
     (setq vmacs-window-status (selected-window))))

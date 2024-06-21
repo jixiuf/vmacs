@@ -386,6 +386,7 @@ keymap:
       # super-C-4: { launch: ["screenshot","1"]} #area
       super-M-4: { launch: ["screenshot"]}     #screen
       super-M-i: { launch: ["swaync-client","-t"]}     #screen
+      super-C-o: { launch: ["other-window"] }
 
       super-M-v: Shift-Insert
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }

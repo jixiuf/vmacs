@@ -12,7 +12,7 @@ keymap:
       super-C-dot: { launch: ["swaymsg","exec","--","sway-run-or-raise mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
       super-C-d:     { launch: ["swaymsg","exec","--","sway-run-or-raise --floating --float-only  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
       super-C-Enter: { launch: ["swaymsg","exec","--", "term.sh   --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)"] }
-      super-C-comma: { launch: ["swaymsg","exec""--","sway-run-or-raise foot-ws -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)" ] }
+      super-C-comma: { launch: ["swaymsg","exec","--","sway-run-or-raise foot-ws -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)" ] }
       super-C-b: { launch: ["swaymsg","exec","--","sway-run-or-raise weixin weixin-uos" ] }
       super-C-3: { launch: ["swaymsg","exec","--","sway-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
       super-C-0: { launch: ["swaymsg","exec","--","sway-run-or-raise org.gnome.Nautilus nautilus"] }
@@ -23,7 +23,6 @@ keymap:
       super-M-f: { launch: ["swaymsg","floating toggle"] }
       super-M-h: { launch: ["swaymsg","move","scratchpad"] }
       super-C-M-h: { launch: ["swaymsg","scratchpad","show"] }
-      super-C-o: { launch: ["sway-focus-next"] }
       super-C-1: { launch: ["sway-kill-other-window"] }
       # super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
 

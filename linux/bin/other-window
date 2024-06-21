@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+    ws=$(hyprctl activeworkspace -j)
+    ws_id=`echo $ws|jq -r '.id'`
+    app_cnt=$(hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l)
+    appinfo=`hyprctl activewindow -j`
+    class=`echo $appinfo|jq -r '.class'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
+    fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1` # true/false
+    floating=`echo $appinfo|jq -r '.floating'|head -n 1`
+else
+    app_cnt=$(swaymsg -t get_workspaces |jq -r '.[] | select(.focused==true)|.focus|length')
+    appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+    class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+    title=$(echo $appinfo|jq -r '.name')
+    fullscreen=`echo $appinfo|jq -r '.fullscreen_mode'` # 0 1
+    if [ "$fullscreen" == "1" ]; then
+        fullscreen="true"
+    else
+        fullscreen="false"
+    fi
+    floating=`echo $appinfo|jq -r '.type'|head -n 1`    # floating_con con
+    if [ "$floating" == "floating_con" ]; then
+        floating="true"
+    else
+        floating="false"
+    fi
+fi
+
+# if front app exits
+if [ -n "$appinfo" ]; then
+    # ( "$app_cnt" = "1" || "$fullscreen" = "true" )
+    if [[ "$class" = "emacs" ]]; then
+        echo key ctrl+super+o|dotoolc
+    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+        echo key ctrl+super+o|dotoolc
+    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+        tmux select-pane -t :.+
+    else
+        if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+            hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+        else
+            sway-focus-next
+        fi
+    fi
+else
+    if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+        hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+    else
+        sway-focus-next
+    fi
+fi
