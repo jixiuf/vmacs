@@ -18,6 +18,7 @@
 ;;                                                  'display '(space :align-to right))
 ;;                                      (propertize "\n" 'face '(:height 1)))
 (setq icomplete-separator (propertize " ☚ " 'face  '(foreground-color . "lightgreen")))
+
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
 (when (require 'orderless nil t)
@@ -45,7 +46,8 @@
 
 
 (icomplete-mode 1)
-;; (icomplete-vertical-mode -1);; (setq icomplete-scroll t)
+(icomplete-vertical-mode 1)
+;; (setq icomplete-scroll t)
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
@@ -60,13 +62,13 @@
 
 
 (when (require 'embark nil t)
-  ;; (when (require 'marginalia nil t)
-  ;;   (marginalia-mode 1)
-  ;;   (advice-add 'marginalia--annotate-local-file :override
-  ;;               (defun marginalia--annotate-local-file-advice (cand)
-  ;;                 (marginalia--fields
-  ;;                  ((marginalia--full-candidate cand)
-  ;;                   :face 'marginalia-size )))))
+  (when (require 'marginalia nil t)
+    (marginalia-mode 1)
+    (advice-add 'marginalia--annotate-local-file :override
+                (defun marginalia--annotate-local-file-advice (cand)
+                  (marginalia--fields
+                   ((marginalia--full-candidate cand)
+                    :face 'marginalia-size )))))
   ;; (setq marginalia-margin-min 18)
 
   ;; (setq embark-collect-initial-view-alist '((t . list)))
@@ -251,13 +253,13 @@ It handles the case of remote files as well."
 
 
 
-;; (defun vmacs-icomplete()
-;;   (setq-local truncate-lines t)
-;;   ;;  remove the truncated lines indicator
-;;   ;; (setq-default fringe-indicator-alist (assq-delete-all 'truncation fringe-indicator-alist))
-;;   )
+(defun vmacs-icomplete()
+  (setq-local truncate-lines t)
+  ;;  remove the truncated lines indicator
+  ;; (setq-default fringe-indicator-alist (assq-delete-all 'truncation fringe-indicator-alist))
+  )
 
-;; (add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete)
+(add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete)
 
 (provide 'conf-icomplete)
 
