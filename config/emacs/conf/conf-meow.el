@@ -78,6 +78,8 @@
    '("." . meow-bounds-of-thing)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
+   '("<" . indent-rigidly-left-to-tab-stop)
+   '(">" . indent-rigidly-right-to-tab-stop)
    '("M-s-," . meow-beginning-of-thing)
    '("M-s-." . meow-end-of-thing)
    '("a" . vmacs-meow-append)
