@@ -13,7 +13,7 @@ keymap:
       super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --floating --float-only  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
       super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)"] }
       super-C-comma: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise foot-ws -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)" ] }
-      super-C-b: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise weixin weixin-uos" ] }
+      # super-C-b: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise weixin weixin-uos" ] }
       super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
       super-C-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise org.gnome.Nautilus nautilus"] }
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
