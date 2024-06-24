@@ -184,8 +184,7 @@
 (global-set-key (kbd "C-x r x" ) #'consult-register)
 
 
-(autoload #'mu4e-search-bookmark  "mu4e" t)
-(vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (call-process "killall" nil nil nil  "mbsync") (mu4e-search-bookmark)(mu4e t)))
+(vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (call-process "killall" nil nil nil  "mbsync")(require 'mu4e)(mu4e t)(mu4e-search-bookmark)))
 
 (vmacs-leader "<SPC>" 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)

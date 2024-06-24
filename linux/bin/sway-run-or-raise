@@ -120,6 +120,14 @@ if [ ! "$target_appinfo" ]; then
             swaymsg "floating toggle"
             # hyprctl dispatch centerwindow
         fi
+        target_app_id=`echo $target_appinfo|jq -r '(.app_id // "")'|head -n 1`
+        target_class=`echo $target_appinfo|jq -r '(.window_properties.class // "")'|head -n 1`
+        # echo "$target_app_id"
+        if [ -z "$target_app_id" ]; then # no app_id,x11 window
+            swaymsg "[class=\"${target_class}\"] focus"
+        else                    # wayland window
+            swaymsg "[app_id=\"${target_app_id}\"] focus"
+        fi
     fi
 else
     # frontappinfo=`hyprctl clients -j | jq -r '.[] |select(.focused)'`
@@ -158,25 +166,25 @@ else
                 swaymsg "fullscreen"
             fi
             # move window to current ws
-             # hyprctl keyword animations:enabled 0
+            # hyprctl keyword animations:enabled 0
             # swaymsg  "[con_id=$target_addr] move window to workspace current"
-             # hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
-             # hyprctl dispatch "focuswindow address:${target_addr}"
+            # hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
+            # hyprctl dispatch "focuswindow address:${target_addr}"
             if [ -z "$target_app_id" ]; then # no app_id,x11 window
                 swaymsg "[class=\"${target_class}\"] focus"
             else                    # wayland window
                 swaymsg "[app_id=\"${target_app_id}\"] focus"
             fi
-             if [[ "$floating" = "true" && "$target_floating" = "false" ]]; then
-                 # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
-                 swaymsg  "[con_id=$target_addr] floating toggle"
-                 # hyprctl dispatch togglefloating address:${target_addr}
-                 # hyprctl dispatch centerwindow
-                 # resize 有bug
-                 # hyprctl dispatch resizeactive "$resize"
-             fi
+            if [[ "$floating" = "true" && "$target_floating" = "false" ]]; then
+                # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
+                swaymsg  "[con_id=$target_addr] floating toggle"
+                # hyprctl dispatch togglefloating address:${target_addr}
+                # hyprctl dispatch centerwindow
+                # resize 有bug
+                # hyprctl dispatch resizeactive "$resize"
+            fi
 
-             # hyprctl keyword animations:enabled 1
+            # hyprctl keyword animations:enabled 1
             if [ $maximize ]; then
                 swaymsg "fullscreen"
             fi
