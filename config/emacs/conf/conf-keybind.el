@@ -23,6 +23,8 @@
  )
 (defvar-keymap  m-mode-map
   "f" #'mark-defun
+  "m" #'set-mark-command                ;C-@
+  "," #'pop-to-mark-command
   )
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
