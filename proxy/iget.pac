@@ -7,6 +7,7 @@ var httpproxy = "proxy 192.168.130.124:8888;DIRECT";
 var domains = {
     // "cloudfront.net",
      "mitm.it": 1,
+     "caldav.feishu.cn": 1,
 };
 
 var direct = 'DIRECT';
