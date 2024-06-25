@@ -21,7 +21,7 @@
 (define-key mu4e-view-mode-map (kbd "M-p") #'mu4e-view-headers-prev-unread)
 
 (define-key mu4e-headers-mode-map "r" #'mu4e-headers-mark-for-read)
-(define-key mu4e-headers-mode-map "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t) (mu4e-headers-next-unread)))
+(define-key mu4e-headers-mode-map "t" #'(lambda nil (interactive) (mu4e-headers-mark-thread nil '(read)) (mu4e-mark-execute-all t) (mu4e-view-headers-prev)(mu4e-headers-next-unread)))
 (define-key mu4e-headers-mode-map "!" #'mu4e-headers-mark-for-refile)
 (define-key mu4e-headers-mode-map (kbd "M-n") #'mu4e-headers-next-unread)
 (define-key mu4e-headers-mode-map (kbd "M-p") #'mu4e-headers-prev-unread)
