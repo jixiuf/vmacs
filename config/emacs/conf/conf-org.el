@@ -300,9 +300,15 @@ Monospaced font whihc is fixed idth and height is recommended."
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
 ;; C-cC-xC-i C-cC-xC-o
-(add-hook 'org-clock-in-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-in")))
-(add-hook 'org-clock-out-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-out")))
+;; (add-hook 'org-clock-in-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-in")))
+;; (add-hook 'org-clock-out-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-out")))
 
+(when (require 'org-alert nil t)
+  (setq alert-default-style 'libnotify)
+  (setq org-alert-interval 300
+        org-alert-notify-cutoff 10
+        org-alert-notify-after-event-cutoff 10)
+  (org-alert-enable))
 
 
 ;; 见 org-export-options-alist 对应哪些全局变量

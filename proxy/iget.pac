@@ -8,6 +8,7 @@ var domains = {
     // "cloudfront.net",
      "mitm.it": 1,
      "caldav.feishu.cn": 1,
+     "192.168.130.124": 1,
 };
 
 var direct = 'DIRECT';
