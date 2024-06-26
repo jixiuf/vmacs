@@ -196,7 +196,7 @@ linktoc=all
  ;; org-deadline-string "DEADLINE:"
  ;; org-scheduled-string "SCHEDULED:"
  org-time-stamp-formats  '("<%Y-%m-%d 周%u>" . "<%Y-%m-%d 周%u %H:%M>")
- org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir))
+ org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt.gpg" dropbox-dir))
  org-deadline-warning-days 5;;最后期限到达前 5 天即给出警告
  org-agenda-show-all-dates t
  org-agenda-skip-deadline-if-done t
@@ -310,6 +310,21 @@ Monospaced font whihc is fixed idth and height is recommended."
         org-alert-notify-after-event-cutoff 10)
   (org-alert-enable))
 
+(require 'org-caldav)
+;; URL of the caldav server
+(setq org-caldav-url "https://caldav.feishu.cn/jixiufeng_luojilab")
+;; calendar ID on server
+(setq org-caldav-calendar-id "60BADA72-D892-4002-60BA-DA72D8924002")
+;; Org filename where new entries from calendar stored
+(setq org-caldav-inbox (expand-file-name "caldav.txt.gpg" dropbox-dir))
+
+;; Additional Org files to check for calendar events
+(setq org-caldav-files nil)
+
+;; Usually a good idea to set the timezone manually
+(setq org-icalendar-timezone "Asia/Shanghai")
+(setq org-icalendar-include-todo 'all
+      org-caldav-sync-todo t)
 
 ;; 见 org-export-options-alist 对应哪些全局变量
 ;; #+OPTIONS:   H:2 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
