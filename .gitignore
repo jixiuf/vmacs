@@ -44,3 +44,5 @@
 /dots/ssh/known_hosts.old
 /config/emacs/network-security.data
 /linux/config/sway/config
+/config/emacs/.org-id-locations
+/config/emacs/org-caldav-4fa39a1.el

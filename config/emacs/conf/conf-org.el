@@ -310,21 +310,24 @@ Monospaced font whihc is fixed idth and height is recommended."
         org-alert-notify-after-event-cutoff 10)
   (org-alert-enable))
 
-(require 'org-caldav)
-;; URL of the caldav server
-(setq org-caldav-url "https://caldav.feishu.cn/jixiufeng_luojilab")
-;; calendar ID on server
-(setq org-caldav-calendar-id "60BADA72-D892-4002-60BA-DA72D8924002")
-;; Org filename where new entries from calendar stored
-(setq org-caldav-inbox (expand-file-name "caldav.txt.gpg" dropbox-dir))
+(when (require 'org-caldav nil t)
+  ;; URL of the caldav server
+  (setq org-caldav-url "https://caldav.feishu.cn/jixiufeng_luojilab")
+  (setq org-caldav-sync-direction 'cal->org)
+  (setq org-caldav-show-sync-results nil)
+  ;; calendar ID on server
+  (setq org-caldav-calendar-id "60BADA72-D892-4002-60BA-DA72D8924002")
+  ;; Org filename where new entries from calendar stored
+  (setq org-caldav-inbox (expand-file-name "caldav.txt.gpg" dropbox-dir))
 
-;; Additional Org files to check for calendar events
-(setq org-caldav-files nil)
+  ;; Additional Org files to check for calendar events
+  (setq org-caldav-files nil)
+(add-hook 'org-agenda-mode-hook #'org-caldav-sync)
 
-;; Usually a good idea to set the timezone manually
-(setq org-icalendar-timezone "Asia/Shanghai")
-(setq org-icalendar-include-todo 'all
-      org-caldav-sync-todo t)
+  ;; Usually a good idea to set the timezone manually
+  (setq org-icalendar-timezone "Asia/Shanghai")
+  (setq org-icalendar-include-todo 'all
+        org-caldav-sync-todo t)  )
 
 ;; 见 org-export-options-alist 对应哪些全局变量
 ;; #+OPTIONS:   H:2 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
