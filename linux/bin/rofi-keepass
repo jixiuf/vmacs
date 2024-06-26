@@ -9,6 +9,7 @@ declare -A classMap
 classMap["apifox-pdv"]="luojilab.com"
 classMap["dterm"]="bitwarden.com"
 classMap["foot"]="bitwarden.com"
+classMap["foot-ws"]="bitwarden.com"
 classMap["org.keepassxc.KeePassXC"]="bitwarden.com"
 classMap["kitty"]="bitwarden.com"
 classMap["polkit-gnome-authentication-agent-1"]="bitwarden.com"
