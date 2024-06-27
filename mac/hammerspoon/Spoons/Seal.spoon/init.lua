@@ -273,7 +273,7 @@ function obj.completionCallback(rowInfo)
 end
 
 function obj.choicesCallback()
-    -- TODO: Sort each of these clusters of choices, alphabetically
+    -- TODO Sort each of these clusters of choices, alphabetically
     choices = {}
     query = obj.chooser:query()
     cmd = nil
@@ -314,7 +314,7 @@ function obj.choicesCallback()
         end
     end
     -- Now add in any matching commands
-    -- TODO: This only makes sense to do if we can select the choice without dismissing the chooser, which requires changes to HSChooser
+    -- TODO This only makes sense to do if we can select the choice without dismissing the chooser, which requires changes to HSChooser
     for command,cmdInfo in pairs(obj.commands) do
         if string.match(command, query) and #query_words == 0 then
             choice = {}

@@ -14,7 +14,6 @@
   (interactive)
   (if current-prefix-arg (mu4e-update-mail-and-index t) (mu4e-update-index)))
 
-; TODO:
 (define-key mu4e-view-mode-map (kbd "C-j") #'mu4e-view-headers-next)
 (define-key mu4e-view-mode-map (kbd "C-k") #'mu4e-view-headers-prev)
 (define-key mu4e-view-mode-map (kbd "M-n") #'mu4e-view-headers-next-unread)

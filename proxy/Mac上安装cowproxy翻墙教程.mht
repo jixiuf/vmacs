@@ -4205,7 +4205,7 @@ allery, .gcard-services .grav-services {
 		text-decoration: none;
 	}
 		.pos-left .grav-tag a {
-			/* TODO: Replace flip with grav-tag-left.gif */
+			/* TODO Replace flip with grav-tag-left.gif */
 			-o-transform: scaleX(-1);
 			-moz-transform: scaleX(-1);
 			-webkit-transform: scaleX(-1);

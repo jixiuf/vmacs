@@ -9,12 +9,12 @@ TIME_STAMP="20230410.133538"
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
@@ -317,7 +317,7 @@ add_opt() {
 
     export ARGP_ARG_"$name"="$arg"
     export ARGP_DEFAULT_"$name"="$default"
-    
+
     # this would boom! if [[ "$name" == "name" ]] ... but since all
     # option names are up-shifted, using lowercase variable names
     # keeps us safe.
@@ -1230,7 +1230,7 @@ initialise() {
     GARGP_INT_RANGE_REGEX="($GARGP_INT_REGEX)*[-:]($GARGP_INT_REGEX)*"
     GARGP_FLOAT_REGEX="[+-]*[[:digit:]]+(\\.[[:digit:]]+)*"
     GARGP_FLOAT_RANGE_REGEX="($GARGP_FLOAT_REGEX)[-:]($GARGP_FLOAT_REGEX)"
-    # FIXME: this needs a few tweaks:
+    # FIXME this needs a few tweaks:
     GARGP_URL_REGEX="(nfs|http|https|ftp|file)://[[:alnum:]_.-]*[^[:space:]]*"
 
     # cron jobs have TERM=dumb and tput throws errors:

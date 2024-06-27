@@ -18,7 +18,6 @@
 
 ;; recent commit always expand when i open magit status
 (setf (alist-get 'unpushed magit-section-initial-visibility-alist) 'show)
-
 (defun vmacs-magit-status-list()
   (interactive)
   (let (list)
@@ -78,13 +77,14 @@
 (with-eval-after-load 'diff-mode
   (define-key  diff-mode-map (kbd "C-c Gw") #'toggle-diff-whitespace)) ;gw
 
+(setq magit-todos-branch-list nil)
 (defun vmacs-magit-mode-hook()
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
-
+  (magit-todos-mode)
   ;; brew install git-delta
   (let ((dir (abbreviate-file-name (file-truename (directory-file-name (magit-toplevel))))))
     (unless (file-remote-p dir)
