@@ -3,9 +3,9 @@
 (setq history-delete-duplicates t)          ;minibuffer 删除重复历史
 (setq minibuffer-prompt-properties;minibuffer prompt 只读，且不允许光标进入其中
               '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
-(setq read-buffer-completion-ignore-case nil)
-(setq read-file-name-completion-ignore-case nil)
-(setq completion-ignore-case nil)      ;company-capf 匹配时不区分大小写
+;; (setq read-buffer-completion-ignore-case nil)
+;; (setq read-file-name-completion-ignore-case nil)
+;; (setq completion-ignore-case nil)      ;company-capf 匹配时不区分大小写
 
 (setq completion-cycle-threshold 3)
 ;; (setq completion-flex-nospace t)              ;default t

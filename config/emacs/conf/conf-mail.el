@@ -24,7 +24,7 @@
 (define-key mu4e-headers-mode-map "!" #'mu4e-headers-mark-for-refile)
 (define-key mu4e-headers-mode-map (kbd "M-n") #'mu4e-headers-next-unread)
 (define-key mu4e-headers-mode-map (kbd "M-p") #'mu4e-headers-prev-unread)
-(define-key mu4e-headers-mode-map (kbd "C-c C-c") #'vmacs-mu4e-brower)
+(define-key mu4e-headers-mode-map (kbd "C-c C-w") #'vmacs-mu4e-brower)
 (define-key mu4e-headers-mode-map "i" #'vmacs-read-all)
 (define-key mu4e-headers-mode-map (kbd "C-c Gu") #'vmacs-mu4e-update-mail-and-index);gu
 (define-key mu4e-headers-mode-map (kbd "C-c Gl") #'mu4e-search-next);gl
