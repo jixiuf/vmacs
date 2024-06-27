@@ -50,7 +50,7 @@ app-misc/tmux  **
 media-video/wireplumber ~amd64
 media-video/pipewire ~amd64
 gui-wm/hyprland ~amd64
- 
+gui-libs/hyprcursor ~amd64 
  
  
 
