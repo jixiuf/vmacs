@@ -11,7 +11,7 @@
 (setq icomplete-hide-common-prefix nil)
 (setq icomplete-in-buffer nil)
 (setq icomplete-tidy-shadowed-file-names t)
-(setq icomplete-prospects-height 2)
+(setq icomplete-prospects-height 1)
 ;; (concat
 ;;                                      (propertize "\n" 'face '(:height 1))
 ;;                                      (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
@@ -46,7 +46,21 @@
 
 
 (icomplete-mode 1)
-(icomplete-vertical-mode 1)
+;; (icomplete-vertical-mode 1)
+(add-hook 'minibuffer-setup-hook #'vmacs-icomplete-vertical-mode)
+(defun vmacs-icomplete-vertical-mode()
+  (setq-local truncate-lines t)
+  (when  (member this-command '(consult-grep
+                                execute-extended-command
+                                consult-ripgrep
+                                consult-ripgrep-default-symbol
+                                consult-ripgrep-root-symbol
+                                consult-ripgrep-default))
+    (setq-local icomplete-vertical-mode t)
+    (add-hook 'icomplete-minibuffer-setup-hook
+              #'icomplete--vertical-minibuffer-setup nil t)))
+;; (add-hook 'minibuffer-exit-hook '(lambda() (icomplete-vertical-mode -1)))
+
 ;; (setq icomplete-scroll t)
 (define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
@@ -252,13 +266,6 @@ It handles the case of remote files as well."
 
 
 
-(defun vmacs-icomplete()
-  (setq-local truncate-lines t)
-  ;;  remove the truncated lines indicator
-  ;; (setq-default fringe-indicator-alist (assq-delete-all 'truncation fringe-indicator-alist))
-  )
-
-(add-hook 'icomplete-minibuffer-setup-hook #'vmacs-icomplete)
 
 (provide 'conf-icomplete)
 

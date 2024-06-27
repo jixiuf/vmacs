@@ -159,6 +159,7 @@
 (global-set-key  (kbd "M-,") 'scroll-other-window-down)
 (global-set-key  (kbd "M-.") 'scroll-other-window)
 
+;; (setq-default buffer-save-without-query nil)
 (vmacs-leader "s" 'save-buffer)
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)

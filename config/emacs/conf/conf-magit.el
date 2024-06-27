@@ -4,7 +4,7 @@
  magit-commit-show-diff nil
  magit-show-long-lines-warning nil
  ;; slow ,if t
- magit-diff-refine-hunk nil  ;'all, This is super useful when only a single identifier/word is changed all over the place
+ magit-diff-refine-hunk 'all  ;'all, This is super useful when only a single identifier/word is changed all over the place
  magit-diff-highlight-hunk-body nil
  magit-section-keep-region-overlay t
  magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename 的 log 也能看到
