@@ -53,6 +53,7 @@
   (when  (member this-command '(consult-grep
                                 execute-extended-command
                                 consult-ripgrep
+                                consult-line
                                 consult-ripgrep-default-symbol
                                 consult-ripgrep-root-symbol
                                 consult-ripgrep-default))

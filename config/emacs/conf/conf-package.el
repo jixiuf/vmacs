@@ -7,7 +7,10 @@
 (or (file-exists-p package-user-dir) (package-refresh-contents))
 ;; (package-initialize)
 (add-hook 'after-init-hook (lambda()
-                             (package-install-selected-packages t)))
+                             (package-install-selected-packages t)
+                             (define-key package-menu-mode-map (kbd "C-c M /") 'consult-focus-lines)
+                             ))
+
 
 (provide 'conf-package)
 
