@@ -51,6 +51,9 @@
 (defun vmacs-icomplete-vertical-mode()
   (setq-local truncate-lines t)
   (when  (member this-command '(consult-grep
+                                xref-find-references
+                                eglot-find-declaration
+                                eglot-code-actions
                                 execute-extended-command
                                 consult-ripgrep
                                 consult-line
