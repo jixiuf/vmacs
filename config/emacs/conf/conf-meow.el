@@ -155,6 +155,9 @@
 (meow-thing-register 'quoted
                     '(regexp "`\\|'" "`\\|'")
                     '(regexp "`\\|'" "`\\|'"))
+(meow-thing-register 'go-package
+                    '(regexp "[[:space:]\"(),\n]" "[[:space:]\"(),\n]")
+                    '(regexp "[[:space:]\"(),\n]" "[[:space:]\"(),\n]"))
 
 ;; org-mode begin_src or markdown ``` block
 (meow-thing-register 'org-block
@@ -164,6 +167,7 @@
 
 (add-to-list 'meow-char-thing-table '(?` . quoted))
 (add-to-list 'meow-char-thing-table '(?o . org-block))
+(add-to-list 'meow-char-thing-table '(?, . go-package))
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
 (setq meow-keypad-start-keys

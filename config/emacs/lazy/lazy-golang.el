@@ -60,7 +60,7 @@
 
 (defun go-get()
   (interactive)
-  (let* ((pkg (meow--parse-range-of-thing 'string t))
+  (let* ((pkg (meow--parse-range-of-thing 'go-package t))
          (master "")
          ( display-buffer-alist
            '((t (display-buffer-no-window ))))
