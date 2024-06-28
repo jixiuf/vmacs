@@ -184,7 +184,8 @@
     (meow--prepare-face)))
 
 (add-hook 'after-make-frame-functions #'vmacs-meow-frame)
-(global-display-line-numbers-mode)
+;; (global-display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (meow-setup-line-number)
 (add-hook 'meow-insert-exit-hook 'corfu-quit)
 
