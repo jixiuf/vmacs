@@ -14,6 +14,7 @@
   (setq go-ts-mode-indent-offset 4)
   (local-set-key (kbd "C-c g") 'golang-setter-getter)
   (local-set-key (kbd "C-c C-p") 'go-get-package-path)
+  (local-set-key (kbd "C-c C-u") 'go-get)
   (setq eglot-workspace-configuration
         ;; https://github.com/golang/tools/blob/master/gopls/doc/emacs.md
         '((:gopls .

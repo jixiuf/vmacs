@@ -57,6 +57,24 @@
       (kill-new pkg-path)
       (message pkg-path))))
 
+
+(defun go-get()
+  (interactive)
+  (let* ((pkg (meow--parse-range-of-thing 'string t))
+         (master "")
+         ( display-buffer-alist
+           '((t (display-buffer-no-window ))))
+         cmd)
+    (when pkg
+      (when current-prefix-arg
+        (setq master "@master")
+        )
+      (setq cmd (format "go get %s%s;go mod tidy"
+                        (buffer-substring (car pkg) (cdr pkg))
+                        master))
+      (message "%s" cmd)
+      (async-shell-command cmd (messages-buffer)(messages-buffer)))))
+
 (provide 'lazy-golang)
 
 ;; Local Variables:
