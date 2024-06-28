@@ -201,6 +201,7 @@ linktoc=all
  org-agenda-show-all-dates t
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
+ org-agenda-span 'fortnight
  org-reverse-note-order t ;;org.el
  org-link-file-path-type  'relative
  org-log-done 'time
