@@ -50,10 +50,10 @@ app-misc/tmux  **
 media-video/wireplumber ~amd64
 media-video/pipewire ~amd64
 gui-wm/hyprland ~amd64
-gui-libs/hyprcursor ~amd64 
- 
- 
-
+gui-libs/hyprcursor ~amd64
+dev-libs/hyprland-protocols ~amd64
+gui-libs/hyprutils  ~amd64
+dev-util/hyprwayland-scanner ~amd64
 
 # Local Variables:
 # mode: conf
