@@ -54,7 +54,11 @@ gui-libs/hyprcursor ~amd64
 dev-libs/hyprland-protocols ~amd64
 gui-libs/hyprutils  ~amd64
 dev-util/hyprwayland-scanner ~amd64
-
+dev-python/vdirsyncer ~amd64 
+dev-python/click-log ~amd64
+dev-python/aiostream ~amd64
+dev-python/aiohttp-oauthlib ~amd64
+app-misc/khal ~amd64
 # Local Variables:
 # mode: conf
 # End:

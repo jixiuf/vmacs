@@ -1,0 +1,51 @@
+# An example configuration for vdirsyncer.
+#
+# Move it to ~/.vdirsyncer/config or ~/.config/vdirsyncer/config and edit it.
+# Run `vdirsyncer --help` for CLI usage.
+#
+# Optional parameters are commented out.
+# This file doesn't document all available parameters, see
+# http://vdirsyncer.pimutils.org/ for the rest of them.
+
+[general]
+# A folder where vdirsyncer can store some metadata about each pair.
+status_path = "~/.vdirsyncer/status/"
+
+# CALDAV
+[pair feishu_calendar]
+a = "feishu_calendar_local"
+b = "feishu_calendar_remote"
+collections = ["60BADA72-D892-4002-60BA-DA72D8924002"]
+
+# Calendars also have a color property
+metadata = ["displayname", "color"]
+[pair ali_calendar]
+a = "ali_calendar_local"
+b = "ali_calendar_remote"
+collections = ["primary"]
+
+# Calendars also have a color property
+metadata = ["displayname", "color"]
+
+
+[storage feishu_calendar_local]
+type = "filesystem"
+path = "~/.calendars/"
+fileext = ".ics"
+
+[storage feishu_calendar_remote]
+type = "caldav"
+url = "https://caldav.feishu.cn/jixiufeng_luojilab"
+username ="jixiufeng_luojilab"
+password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine caldav.feishu.cn:443 port https login jixiufeng_luojilab password/ {print $NF}'" ]
+
+[storage ali_calendar_local]
+type = "filesystem"
+path = "~/.calendars/"
+fileext = ".ics"
+
+[storage ali_calendar_remote]
+type = "caldav"
+url = "https://calendar.dingtalk.com/dav/u_fukx3svp"
+username ="u_fukx3svp"
+password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine calendar.dingtalk.com:443 port https login u_fukx3svp password/ {print $NF}'" ]
