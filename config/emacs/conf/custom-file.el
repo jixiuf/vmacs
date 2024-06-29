@@ -30,22 +30,14 @@
  '(global-auto-revert-mode t)
  '(ignored-local-variable-values
    '((eval add-hook 'after-save-hook
-           (lambda nil
-             (shell-command
-              (concat markdown-command " README.md > README.html")))
+           (lambda nil (shell-command (concat markdown-command " README.md > README.html"))) nil
+           'local)
+     (eval add-hook 'after-save-hook (lambda nil (shell-command "pkill --signal RTMIN+13 waybar"))
            nil 'local)
-     (eval add-hook 'after-save-hook
-           (lambda nil
-             (shell-command "pkill --signal RTMIN+13 waybar"))
-           nil 'local)
-     (eval add-hook 'after-save-hook
-           (lambda nil
-             (shell-command "pkill --signal RTMIN+11 waybar"))
+     (eval add-hook 'after-save-hook (lambda nil (shell-command "pkill --signal RTMIN+11 waybar"))
            nil 'local)
      (eval add-hook 'before-save-hook 'time-stamp)
-     (eval add-hook
-           (make-local-variable 'after-save-hook)
-           'bh/ensure-in-vc-or-check-in t)))
+     (eval add-hook (make-local-variable 'after-save-hook) 'bh/ensure-in-vc-or-check-in t)))
  '(magit-commit-ask-to-stage t)
  '(magit-log-margin '(t "%y-%m-%d %H:%M " magit-log-margin-width t 6))
  '(magit-no-confirm
@@ -60,41 +52,26 @@
  '(modus-themes-scale-title 1.5)
  '(org-agenda-files '("/home/jixiuf/Documents/jianguo/jianguo/todo.txt.gpg"))
  '(package-selected-packages
-   '(async beacon cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux embark embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen goto-chg kind-icon lua-mode magit magit-todos marginalia markdown-mode orderless org-ai org-msg ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
+   '(async beacon cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux
+           embark embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen
+           goto-chg khalel kind-icon lua-mode magit magit-todos marginalia markdown-mode orderless
+           org-ai org-msg ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
-   '((vc-default-patch-addressee . "bug-gnu-emacs@gnu.org")
-     (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "systemctl --user restart waybar" nil nil))
-           t)
-     (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "gpg -d authorized_keys.gpg>authorized_keys"))
-           t)
-     (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "gpg -d config.gpg>config"))
-           t)
-     (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "systemctl --user restart xremap"))
-           t)
-     (eval add-hook
-           (make-local-variable 'after-save-hook)
-           #'(lambda nil
-               (shell-command "make"))
-           t)
-     (diff-add-log-use-relative-names . t)
-     (vc-git-annotate-switches . "-w")
-     (checkdoc-minor-mode . t)
-     (flycheck-disabled-checkers emacs-lisp-checkdoc)
+   '((buffer-read-only . 1) (vc-default-patch-addressee . "bug-gnu-emacs@gnu.org")
+     (eval add-hook (make-local-variable 'after-save-hook)
+           #'(lambda nil (shell-command "systemctl --user restart waybar" nil nil)) t)
+     (eval add-hook (make-local-variable 'after-save-hook)
+           #'(lambda nil (shell-command "gpg -d authorized_keys.gpg>authorized_keys")) t)
+     (eval add-hook (make-local-variable 'after-save-hook)
+           #'(lambda nil (shell-command "gpg -d config.gpg>config")) t)
+     (eval add-hook (make-local-variable 'after-save-hook)
+           #'(lambda nil (shell-command "systemctl --user restart xremap")) t)
+     (eval add-hook (make-local-variable 'after-save-hook) #'(lambda nil (shell-command "make")) t)
+     (diff-add-log-use-relative-names . t) (vc-git-annotate-switches . "-w")
+     (checkdoc-minor-mode . t) (flycheck-disabled-checkers emacs-lisp-checkdoc)
      (git-commit-major-mode . git-commit-elisp-text-mode)))
  '(save-place-file "~/.cache/emacs/place")
  '(savehist-file "~/.cache/emacs/history")
@@ -104,10 +81,7 @@
  '(uniquify-buffer-name-style 'forward nil (uniquify))
  '(warning-suppress-log-types '((comp) (emacs) (with-editor)))
  '(warning-suppress-types
-   '((comp)
-     (initialization)
-     (eglot)
-     (yasnippet backquote-change)))
+   '((comp) (initialization) (eglot) (yasnippet backquote-change)))
  '(window-divider-default-bottom-width 1)
  '(window-divider-default-places 'bottom-only)
  '(window-divider-default-right-width 1)

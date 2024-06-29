@@ -196,7 +196,7 @@ linktoc=all
  ;; org-deadline-string "DEADLINE:"
  ;; org-scheduled-string "SCHEDULED:"
  org-time-stamp-formats  '("<%Y-%m-%d 周%u>" . "<%Y-%m-%d 周%u %H:%M>")
- org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt.gpg" dropbox-dir))
+ org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir))
  org-deadline-warning-days 5;;最后期限到达前 5 天即给出警告
  org-agenda-show-all-dates t
  org-agenda-skip-deadline-if-done t
@@ -308,6 +308,23 @@ Monospaced font whihc is fixed idth and height is recommended."
         org-alert-notify-cutoff 10
         org-alert-notify-after-event-cutoff 10)
   (org-alert-enable))
+(with-eval-after-load khalel
+  (setq khalel-import-start-date "-7d")
+  (setq khalel-import-org-file (expand-file-name "caldav.txt" dropbox-dir))
+  (setq khalel-default-calendar "primary")
+  (define-advice khalel--sanitize-ics (:around (orig-fun &rest args) ali)
+    "When called interactively with no active region, copy a single line instead."
+    (apply orig-fun args)
+    (with-temp-file (car args)
+      (insert-file-contents (car args))
+      (goto-char (point-min))
+      (while (re-search-forward "^\\(UID:[[:blank:]]*\\)SC-" nil t)
+        (replace-match "\\1" nil nil))
+      (goto-char (point-min))
+      (while (re-search-forward "^\\(UID:[[:blank:]]*\\)DL-" nil t)
+        (replace-match "\\1" nil nil))
+      )
+    (car args)))
 
 (when (require 'org-caldav nil t)
   ;; URL of the caldav server
@@ -333,7 +350,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 
   ;; Additional Org files to check for calendar events
   (setq org-caldav-files nil)
-  (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
+  ;; (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
 
   ;; Usually a good idea to set the timezone manually
   (setq org-icalendar-timezone "Asia/Shanghai")

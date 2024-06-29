@@ -29,7 +29,7 @@
 (define-auto-insert "\\.cpp$" ["c++-auto-insert" vmacs-autoinsert-yas-expand])
 (define-auto-insert "\\.cc$" ["c++-auto-insert" vmacs-autoinsert-yas-expand])
 (define-auto-insert "\\.cs$" ["csharp-auto-insert" vmacs-autoinsert-yas-expand])
-(define-auto-insert "\\.org$" ["org-auto-insert" vmacs-autoinsert-yas-expand])
+;; (define-auto-insert "\\.org$" ["org-auto-insert" vmacs-autoinsert-yas-expand])
 (define-auto-insert "\\.tex$" ["tex-auto-insert" vmacs-autoinsert-yas-expand])
 (define-auto-insert "\\.py$" ["py-auto-insert" vmacs-autoinsert-yas-expand])
 (define-auto-insert "\\.go$" ["go-auto-insert" vmacs-autoinsert-yas-expand])

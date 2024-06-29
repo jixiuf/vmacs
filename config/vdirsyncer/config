@@ -46,6 +46,7 @@ fileext = ".ics"
 
 [storage ali_calendar_remote]
 type = "caldav"
-url = "https://calendar.dingtalk.com/dav/u_fukx3svp"
+url = "https://calendar.dingtalk.com/dav/"
 username ="u_fukx3svp"
 password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine calendar.dingtalk.com:443 port https login u_fukx3svp password/ {print $NF}'" ]
+auth="basic"
