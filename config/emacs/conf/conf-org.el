@@ -311,17 +311,29 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (when (require 'org-caldav nil t)
   ;; URL of the caldav server
-  (setq org-caldav-url "https://caldav.feishu.cn/jixiufeng_luojilab")
-  (setq org-caldav-sync-direction 'cal->org)
-  (setq org-caldav-show-sync-results nil)
-  ;; calendar ID on server
-  (setq org-caldav-calendar-id "60BADA72-D892-4002-60BA-DA72D8924002")
-  ;; Org filename where new entries from calendar stored
-  (setq org-caldav-inbox (expand-file-name "caldav.txt.gpg" dropbox-dir))
+  (defun vmacs-org-caldav-sync()
+    (setq org-caldav-url "https://caldav.feishu.cn/jixiufeng_luojilab")
+    (setq org-caldav-sync-direction 'cal->org)
+    (setq org-caldav-show-sync-results nil)
+    ;; calendar ID on server
+    (setq org-caldav-calendar-id "60BADA72-D892-4002-60BA-DA72D8924002")
+    ;; Org filename where new entries from calendar stored
+    (setq org-caldav-inbox (expand-file-name "caldav.txt.gpg" dropbox-dir))
+    (org-caldav-sync)
+    ;; URL of the caldav server
+    (setq org-caldav-sync-direction 'twoway)
+    (setq org-caldav-url "https://calendar.dingtalk.com/dav/u_fukx3svp")
+    (setq org-caldav-calendar-id "primary")
+    (setq org-caldav-delete-org-entries 'never)
+    ;; org-caldav-inbox
+    ;; Org filename where new entries from calendar stored
+    (setq org-caldav-inbox `(file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Tasks"))
+    (org-caldav-sync)
+    )
 
   ;; Additional Org files to check for calendar events
   (setq org-caldav-files nil)
-(add-hook 'org-agenda-mode-hook #'org-caldav-sync)
+  (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
 
   ;; Usually a good idea to set the timezone manually
   (setq org-icalendar-timezone "Asia/Shanghai")
