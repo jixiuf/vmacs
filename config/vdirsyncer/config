@@ -16,6 +16,8 @@ status_path = "~/.vdirsyncer/status/"
 a = "feishu_calendar_local"
 b = "feishu_calendar_remote"
 collections = ["60BADA72-D892-4002-60BA-DA72D8924002"]
+conflict_resolution = "a wins"
+# conflict_resolution = ["command", "vimdiff"]
 
 # Calendars also have a color property
 metadata = ["displayname", "color"]
@@ -23,6 +25,7 @@ metadata = ["displayname", "color"]
 a = "ali_calendar_local"
 b = "ali_calendar_remote"
 collections = ["primary"]
+conflict_resolution = "a wins"
 
 # Calendars also have a color property
 metadata = ["displayname", "color"]

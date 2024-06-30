@@ -324,8 +324,16 @@ Monospaced font whihc is fixed idth and height is recommended."
   (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
   (setq khalel-default-calendar "primary")
   (define-advice khalel--delete-process-window-when-done (:around (orig-fun &rest args) refresh)
+    (let ((buf (process-buffer (car args))))
+      (when (equal (buffer-name buf) "*khal-edit*")
+        (khalel-import-events)
+        (khalel-run-vdirsyncer)
+        (khalel-import-events)
+        (with-current-buffer (get-file-buffer khalel-import-org-file)
+          (revert-buffer nil t))
+        ))
     (apply orig-fun args)
-    (khalel-import-events))
+    )
   (define-advice khalel--sanitize-ics (:around (orig-fun &rest args) ali)
     "When called interactively with no active region, copy a single line instead."
 
