@@ -2,11 +2,11 @@
 [calendars]
 
 [[ali_calendar_local]]
-path = ~/.calendars/*
+path = ~/.calendars/primary
 type = discover
 
 [[feishu_calendar_local]]
-path = ~/.calendars/*
+path = ~/.calendars/60BADA72-D892-4002-60BA-DA72D8924002
 type = discover
 
 [locale]

@@ -308,9 +308,17 @@ Monospaced font whihc is fixed idth and height is recommended."
         org-alert-notify-cutoff 10
         org-alert-notify-after-event-cutoff 10)
   (org-alert-enable))
-(with-eval-after-load khalel
+(with-eval-after-load 'khalel
   (setq khalel-import-start-date "-7d")
   (setq khalel-import-org-file (expand-file-name "caldav.txt" dropbox-dir))
+  (setq khalel-import-org-file-confirm-overwrite nil)
+  (setq khalel-import-org-file-header "#+TITLE: 日历\n\
+#+COLUMNS: %ITEM %TIMESTAMP %LOCATION %CALENDAR\n\n\
+*NOTE*: 本文件使用 [[elisp:(khalel-import-events)][khalel-import-events]] 生成 \
+不要直接编辑，\n请用 =khalel-edit-calendar-event= 或者 =khal edit= 来编辑\n\
+[[elisp:(khalel-run-vdirsyncer)][占此同步]]\n")
+  (khalel-add-capture-template)
+  (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
   (setq khalel-default-calendar "primary")
   (define-advice khalel--sanitize-ics (:around (orig-fun &rest args) ali)
     "When called interactively with no active region, copy a single line instead."
