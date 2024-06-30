@@ -202,6 +202,9 @@ linktoc=all
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
  org-agenda-span 'fortnight
+ org-icalendar-timezone "Asia/Shanghai"
+ org-icalendar-include-todo 'all
+
  org-reverse-note-order t ;;org.el
  org-link-file-path-type  'relative
  org-log-done 'time
@@ -293,7 +296,14 @@ Monospaced font whihc is fixed idth and height is recommended."
   ;; (create-frame-font-large-mac)
   ;; 不起作用
   (face-remap-add-relative 'default 'vmacs-org-font)
-
+  (when (string= khalel-import-org-file (buffer-file-name))
+    (local-set-key (kbd "C-c C-e") 'khalel-edit-calendar-event)
+    (local-set-key (kbd "C-c C-r") 'khalel-import-events)
+    (local-set-key (kbd "C-c C-s") '(lambda()(interactive)(khalel-run-vdirsyncer)(khalel-import-events)))
+    (defun khal-edit-hook()
+      (when (equal (buffer-name) "*khal-edit*") (setq-local truncate-lines nil)))
+    (add-hook 'comint-mode-hook #'khal-edit-hook)
+    )
   )
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
@@ -301,16 +311,9 @@ Monospaced font whihc is fixed idth and height is recommended."
 ;; C-cC-xC-i C-cC-xC-o
 ;; (add-hook 'org-clock-in-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-in")))
 ;; (add-hook 'org-clock-out-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-out")))
-
-(when (require 'org-alert nil t)
-  (setq alert-default-style 'libnotify)
-  (setq org-alert-interval 300
-        org-alert-notify-cutoff 10
-        org-alert-notify-after-event-cutoff 10)
-  (org-alert-enable))
+(setq khalel-import-org-file (expand-file-name "caldav.txt" dropbox-dir))
 (with-eval-after-load 'khalel
   (setq khalel-import-start-date "-7d")
-  (setq khalel-import-org-file (expand-file-name "caldav.txt" dropbox-dir))
   (setq khalel-import-org-file-confirm-overwrite nil)
   (setq khalel-import-org-file-header "#+TITLE: 日历\n\
 #+COLUMNS: %ITEM %TIMESTAMP %LOCATION %CALENDAR\n\n\
@@ -320,8 +323,12 @@ Monospaced font whihc is fixed idth and height is recommended."
   (khalel-add-capture-template)
   (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
   (setq khalel-default-calendar "primary")
+  (define-advice khalel--delete-process-window-when-done (:around (orig-fun &rest args) refresh)
+    (apply orig-fun args)
+    (khalel-import-events))
   (define-advice khalel--sanitize-ics (:around (orig-fun &rest args) ali)
     "When called interactively with no active region, copy a single line instead."
+
     (apply orig-fun args)
     (with-temp-file (car args)
       (insert-file-contents (car args))
@@ -333,37 +340,13 @@ Monospaced font whihc is fixed idth and height is recommended."
         (replace-match "\\1" nil nil))
       )
     (car args)))
+(when (require 'org-alert nil t)
+  (setq alert-default-style 'libnotify)
+  (setq org-alert-interval 300
+        org-alert-notify-cutoff 10
+        org-alert-notify-after-event-cutoff 10)
+  (org-alert-enable))
 
-(when (require 'org-caldav nil t)
-  ;; URL of the caldav server
-  (defun vmacs-org-caldav-sync()
-    (setq org-caldav-url "https://caldav.feishu.cn/jixiufeng_luojilab")
-    (setq org-caldav-sync-direction 'cal->org)
-    (setq org-caldav-show-sync-results nil)
-    ;; calendar ID on server
-    (setq org-caldav-calendar-id "60BADA72-D892-4002-60BA-DA72D8924002")
-    ;; Org filename where new entries from calendar stored
-    (setq org-caldav-inbox (expand-file-name "caldav.txt.gpg" dropbox-dir))
-    (org-caldav-sync)
-    ;; URL of the caldav server
-    (setq org-caldav-sync-direction 'twoway)
-    (setq org-caldav-url "https://calendar.dingtalk.com/dav/u_fukx3svp")
-    (setq org-caldav-calendar-id "primary")
-    (setq org-caldav-delete-org-entries 'never)
-    ;; org-caldav-inbox
-    ;; Org filename where new entries from calendar stored
-    (setq org-caldav-inbox `(file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Tasks"))
-    (org-caldav-sync)
-    )
-
-  ;; Additional Org files to check for calendar events
-  (setq org-caldav-files nil)
-  ;; (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
-
-  ;; Usually a good idea to set the timezone manually
-  (setq org-icalendar-timezone "Asia/Shanghai")
-  (setq org-icalendar-include-todo 'all
-        org-caldav-sync-todo t)  )
 
 ;; 见 org-export-options-alist 对应哪些全局变量
 ;; #+OPTIONS:   H:2 num:nil toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
