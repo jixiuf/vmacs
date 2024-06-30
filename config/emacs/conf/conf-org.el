@@ -312,6 +312,8 @@ Monospaced font whihc is fixed idth and height is recommended."
 ;; (add-hook 'org-clock-in-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-in")))
 ;; (add-hook 'org-clock-out-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-out")))
 (setq khalel-import-org-file (expand-file-name "caldav.txt" dropbox-dir))
+(autoload 'khalel-import-events "khalel" "" t)
+(add-hook 'org-agenda-mode-hook #'khalel-import-events)
 (with-eval-after-load 'khalel
   (setq khalel-import-start-date "-7d")
   (setq khalel-import-org-file-confirm-overwrite nil)
@@ -321,6 +323,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 不要直接编辑，\n请用 =khalel-edit-calendar-event= 或者 =khal edit= 来编辑\n\
 [[elisp:(khalel-run-vdirsyncer)][占此同步]]\n")
   (khalel-add-capture-template)
+
   (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
   (setq khalel-default-calendar "primary")
   (define-advice khalel--delete-process-window-when-done (:around (orig-fun &rest args) refresh)
