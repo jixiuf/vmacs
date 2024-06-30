@@ -190,6 +190,8 @@ linktoc=all
  ;; (setq-default org-agenda-format-date (quote my-org-agenda-format-date-aligned))
  org-agenda-inhibit-startup t
  org-agenda-scheduled-leaders (quote ("计划任务:" "计划任务(第%2d 次激活): "))
+ org-agenda-start-with-log-mode '(state clock closed)
+ org-agenda-format-date "%A %Y-%m-%d"
  org-agenda-window-setup (quote current-window)
  ;; org-clock-string "计时:"
  ;; org-closed-string "已关闭:"
@@ -330,8 +332,8 @@ Monospaced font whihc is fixed idth and height is recommended."
     (let ((buf (process-buffer (car args))))
       (when (equal (buffer-name buf) "*khal-edit*")
         (khalel-import-events)
-        (khalel-run-vdirsyncer)
-        (khalel-import-events)
+        ;; (khalel-run-vdirsyncer)
+        ;; (khalel-import-events)
         (with-current-buffer (get-file-buffer khalel-import-org-file)
           (revert-buffer nil t))
         ))

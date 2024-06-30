@@ -50,7 +50,6 @@
  '(modus-themes-scale-4 1.5)
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
- '(org-agenda-files '("/home/jixiuf/Documents/jianguo/jianguo/todo.txt.gpg"))
  '(package-selected-packages
    '(async beacon cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux
            embark embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen
