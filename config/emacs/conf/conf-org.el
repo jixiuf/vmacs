@@ -8,6 +8,7 @@
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "C-c Gt") 'org-capture)
   (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo)
+  (define-key org-agenda-mode-map (kbd "C-c C-u") 'khalel-refresh)
   )
 
 (vmacs-leader (kbd "T") 'org-capture)  ;新加一个 todo 条目等
@@ -197,13 +198,14 @@ linktoc=all
  ;; org-closed-string "已关闭:"
  ;; org-deadline-string "DEADLINE:"
  ;; org-scheduled-string "SCHEDULED:"
- org-time-stamp-formats  '("<%Y-%m-%d 周%u>" . "<%Y-%m-%d 周%u %H:%M>")
+ org-timestamp-formats  '("<%Y-%m-%d %A>" . "<%Y-%m-%d %H:%M %A>")
  org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir))
  org-deadline-warning-days 5;;最后期限到达前 5 天即给出警告
  org-agenda-show-all-dates t
+ org-deadline-past-days 1
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
- org-agenda-span 'fortnight
+ org-agenda-span 'week
  org-icalendar-timezone "Asia/Shanghai"
  org-icalendar-include-todo 'all
 
@@ -301,7 +303,7 @@ Monospaced font whihc is fixed idth and height is recommended."
   (when (string= khalel-import-org-file (buffer-file-name))
     (local-set-key (kbd "C-c C-e") 'khalel-edit-calendar-event)
     (local-set-key (kbd "C-c C-r") 'khalel-import-events)
-    (local-set-key (kbd "C-c C-s") '(lambda()(interactive)(khalel-run-vdirsyncer)(khalel-import-events)))
+    (local-set-key (kbd "C-c C-u") 'khalel-refresh)
     (defun khal-edit-hook()
       (when (equal (buffer-name) "*khal-edit*") (setq-local truncate-lines nil)))
     (add-hook 'comint-mode-hook #'khal-edit-hook)
@@ -315,10 +317,29 @@ Monospaced font whihc is fixed idth and height is recommended."
 ;; (add-hook 'org-clock-out-hook #'(lambda()(call-process  "open" nil nil nil "-g" "hammerspoon://org-clock?id=org-clock-out")))
 (setq khalel-import-org-file (expand-file-name "caldav.txt" dropbox-dir))
 (autoload 'khalel-import-events "khalel" "" t)
-(add-hook 'org-agenda-mode-hook #'khalel-import-events)
+(defun khalel-refresh ()
+  (interactive)
+  (require 'khalel)
+  (khalel-run-vdirsyncer)
+  (khalel-import-events))
+;; (add-hook 'org-agenda-mode-hook #'khalel-import-events)
 (with-eval-after-load 'khalel
   (setq khalel-import-start-date "-7d")
   (setq khalel-import-org-file-confirm-overwrite nil)
+(setq khalel-import-format "* {title} {cancelled} :{calendar}:\n\
+DEADLINE: <{start-long}>
+:PROPERTIES:\n:CALENDAR: {calendar}\n\
+:LOCATION: {location}\n\
+:ID: {uid}\n\
+:END:\n\
+- When: <{start-date-long} {start-time}>--<{end-date-long} {end-time}>\n\
+- Where: {location}\n\
+- Description: {description}\n\
+- URL: {url}\n- Organizer: {organizer}\n\n\
+[[elisp:(khalel-edit-calendar-event)][Edit(C-cC-e)]]\
+    [[elisp:(progn (khalel-run-vdirsyncer) (khalel-import-events))]\
+[Sync]]\n"
+)
   (setq khalel-import-org-file-header "#+TITLE: 日历\n\
 #+COLUMNS: %ITEM %TIMESTAMP %LOCATION %CALENDAR\n\n\
 *NOTE*: 本文件使用 [[elisp:(khalel-import-events)][khalel-import-events]] 生成 \
@@ -327,7 +348,7 @@ Monospaced font whihc is fixed idth and height is recommended."
   (khalel-add-capture-template)
 
   (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
-  (setq khalel-default-calendar "primary")
+  (setq khalel-default-calendar "3223365702614182656")
   (define-advice khalel--delete-process-window-when-done (:around (orig-fun &rest args) refresh)
     (let ((buf (process-buffer (car args))))
       (when (equal (buffer-name buf) "*khal-edit*")
