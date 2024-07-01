@@ -55,6 +55,8 @@
                                 eglot-find-declaration
                                 eglot-code-actions
                                 execute-extended-command
+                                vmacs-yank-pop
+                                yank-pop
                                 consult-ripgrep
                                 consult-line
                                 consult-ripgrep-default-symbol
