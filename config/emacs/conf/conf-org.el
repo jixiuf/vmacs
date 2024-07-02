@@ -187,11 +187,11 @@ linktoc=all
  calendar-month-name-array ["一月" "二月" "三月" "四月" "五月" "六月" "七月" "八月" "九月" "十月" "十一月" "十二月"]
  calendar-week-start-day 1
 
- org-agenda-deadline-leaders (quote ("最后期限:  " "%3d 天后到期: " "%2d 天前: "))
+ org-agenda-deadline-leaders (quote ("最后期限:  " "%3d 天后到期: " "%2d 天前截止: "))
  ;; (setq-default org-agenda-format-date (quote my-org-agenda-format-date-aligned))
  org-agenda-inhibit-startup t
  org-agenda-scheduled-leaders (quote ("计划任务:" "计划任务(第%2d 次激活): "))
- org-agenda-start-with-log-mode '(state clock closed)
+ org-agenda-start-with-log-mode nil
  org-agenda-format-date "%A %Y-%m-%d"
  org-agenda-window-setup (quote current-window)
  ;; org-clock-string "计时:"
@@ -338,7 +338,7 @@ Monospaced font whihc is fixed idth and height is recommended."
       )
     )
   )
-;; (add-hook 'org-agenda-mode-hook #'khalel-import-events)
+(add-hook 'org-agenda-mode-hook #'khalel-import-events)
 (with-eval-after-load 'khalel
   (setq khalel-import-start-date "-7d")
   (setq khalel-import-org-file-confirm-overwrite nil)
