@@ -321,9 +321,14 @@ Monospaced font whihc is fixed idth and height is recommended."
 (autoload 'khalel-import-events "khalel" "" t)
 (defun khalel-refresh ()
   (interactive)
-  (require 'khalel)
-  (khalel-run-vdirsyncer)
-  (khalel-import-events))
+  (let( (mode major-mode))
+    (require 'khalel)
+    (khalel-run-vdirsyncer)
+    (if (equal mode 'org-agenda-mode)
+        (org-agenda-redo)
+      (khalel-import-events)
+      )))
+
 (defun khalel-done()
   (interactive)
   (when (equal major-mode 'org-agenda-mode)
@@ -341,8 +346,9 @@ Monospaced font whihc is fixed idth and height is recommended."
 (add-hook 'org-agenda-mode-hook #'khalel-import-events)
 (with-eval-after-load 'khalel
   (setq khalel-import-start-date "-7d")
+  (setq khalel-import-end-date "+100d")
   (setq khalel-import-org-file-confirm-overwrite nil)
-(setq khalel-import-format "* {title} {cancelled} :{calendar}:\n\
+  (setq khalel-import-format "* {title} {cancelled} :{calendar}:\n\
 :PROPERTIES:\n:CALENDAR: {calendar}\n\
 :LOCATION: {location}\n\
 :ID: {uid}\n\
@@ -354,7 +360,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 [[elisp:(khalel-edit-calendar-event)][Edit(C-cC-e)]]\
     [[elisp:(progn (khalel-run-vdirsyncer) (khalel-import-events))]\
 [Sync]]\n"
-)
+        )
   (setq khalel-import-org-file-header "#+TITLE: 日历\n\
 #+COLUMNS: %ITEM %TIMESTAMP %LOCATION %CALENDAR\n\n\
 *NOTE*: 本文件使用 [[elisp:(khalel-import-events)][khalel-import-events]] 生成 \
@@ -364,7 +370,7 @@ Monospaced font whihc is fixed idth and height is recommended."
   (khalel-add-capture-template)
 
   (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
-  (setq khalel-default-calendar "3223365702614182656")
+  (setq khalel-default-calendar "primary")
   (define-advice khalel--delete-process-window-when-done (:around (orig-fun &rest args) refresh)
     (let ((buf (process-buffer (car args))))
       (when (equal (buffer-name buf) "*khal-edit*")
