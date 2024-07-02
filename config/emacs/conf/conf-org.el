@@ -323,7 +323,7 @@ Monospaced font whihc is fixed idth and height is recommended."
         `(
           (:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
                         :get-event-by-report t
-                        :uuid-extension "ics"
+                        :uuid-extension ".ics"
                         :sync-direction 'cal->org
                         :url "https://caldav.feishu.cn/jixiufeng_luojilab"
                         :inbox ,(expand-file-name "caldav.txt" dropbox-dir))
