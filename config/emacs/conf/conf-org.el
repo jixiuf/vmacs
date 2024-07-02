@@ -343,12 +343,11 @@ Monospaced font whihc is fixed idth and height is recommended."
   (setq khalel-import-start-date "-7d")
   (setq khalel-import-org-file-confirm-overwrite nil)
 (setq khalel-import-format "* {title} {cancelled} :{calendar}:\n\
-DEADLINE: <{start-long}>
 :PROPERTIES:\n:CALENDAR: {calendar}\n\
 :LOCATION: {location}\n\
 :ID: {uid}\n\
 :END:\n\
-- When: <{start-date-long} {start-time}>--<{end-date-long} {end-time}>\n\
+- When: <{start-long}>--<{end-long}>\n\
 - Where: {location}\n\
 - Description: {description}\n\
 - URL: {url}\n- Organizer: {organizer}\n\n\
@@ -361,6 +360,7 @@ DEADLINE: <{start-long}>
 *NOTE*: 本文件使用 [[elisp:(khalel-import-events)][khalel-import-events]] 生成 \
 不要直接编辑，\n请用 =khalel-edit-calendar-event= 或者 =khal edit= 来编辑\n\
 [[elisp:(khalel-run-vdirsyncer)][占此同步]]\n")
+  (setq khalel-capture-key "w")
   (khalel-add-capture-template)
 
   (unless (file-exists-p khalel-import-org-file)(khalel-import-events))
@@ -391,6 +391,12 @@ DEADLINE: <{start-long}>
       )
     (car args)))
 (when (require 'org-alert nil t)
+  ;; support  for khalel calendar
+  ;; - When: <2024-07-02 14:00>--<2024-07-02 15:00>
+  (setq org-alert-match-string
+        "- When>=\"<today>\"+- When<\"<tomorrow>\"|SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"|DEADLINE>=\"<today>\"+DEADLINE<\"<tomorrow>\"")
+  (setq org-alert-time-match-string
+        "\\(?:SCHEDULED\\|DEADLINE\\|When\\):.*<.*\\([0-9]\\{2\\}:[0-9]\\{2\\}\\).*>")
   (setq alert-default-style 'libnotify)
   (setq org-alert-interval 300
         org-alert-notify-cutoff 10
