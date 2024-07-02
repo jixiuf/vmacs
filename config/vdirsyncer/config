@@ -35,47 +35,47 @@ username ="jixiufeng_luojilab"
 read_only= true
 password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine caldav.feishu.cn:443 port https login jixiufeng_luojilab password/ {print $NF}'" ]
                
-# [pair ali_calendar]
-# a = "ali_calendar_local"
-# b = "ali_calendar_remote"
-# collections = ["primary"]
-# conflict_resolution = "a wins"
-
-# # Calendars also have a color property
-# metadata = ["displayname", "color"]
-
-# [storage ali_calendar_local]
-# type = "filesystem"
-# path = "~/.calendars/"
-# fileext = ".ics"
-
-# [storage ali_calendar_remote]
-# type = "caldav"
-# url = "https://calendar.dingtalk.com/dav/"
-# username ="u_fukx3svp"
-# password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine calendar.dingtalk.com:443 port https login u_fukx3svp password/ {print $NF}'" ]
-# auth="basic"
-
-
-
-[pair tencent_calendar]
-a = "tencent_calendar_local"
-b = "tencent_calendar_remote"
-collections = ["3223365702614182656"]
-# collections = ["3223365702614182656","10001","10000"]
+[pair ali_calendar]
+a = "ali_calendar_local"
+b = "ali_calendar_remote"
+collections = ["primary"]
 conflict_resolution = "a wins"
 
 # Calendars also have a color property
 metadata = ["displayname", "color"]
 
-[storage tencent_calendar_local]
+[storage ali_calendar_local]
 type = "filesystem"
 path = "~/.calendars/"
 fileext = ".ics"
 
-[storage tencent_calendar_remote]
+[storage ali_calendar_remote]
 type = "caldav"
-url = "https://dav.calendar.tencent.com/Cal_egzk5956/puVq02zDTM/"
-username ="Cal_egzk5956"
-password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine dav.calendar.tencent.com:443 port https login Cal_egzk5956 password/ {print $NF}'" ]
+url = "https://calendar.dingtalk.com/dav/"
+username ="u_fukx3svp"
+password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine calendar.dingtalk.com:443 port https login u_fukx3svp password/ {print $NF}'" ]
 auth="basic"
+
+
+
+# [pair tencent_calendar]
+# a = "tencent_calendar_local"
+# b = "tencent_calendar_remote"
+# collections = ["3223365702614182656"]
+# # collections = ["3223365702614182656","10001","10000"]
+# conflict_resolution = "a wins"
+
+# # Calendars also have a color property
+# metadata = ["displayname", "color"]
+
+# [storage tencent_calendar_local]
+# type = "filesystem"
+# path = "~/.calendars/"
+# fileext = ".ics"
+
+# [storage tencent_calendar_remote]
+# type = "caldav"
+# url = "https://dav.calendar.tencent.com/Cal_egzk5956/puVq02zDTM/"
+# username ="Cal_egzk5956"
+# password.fetch = ["shell", "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine dav.calendar.tencent.com:443 port https login Cal_egzk5956 password/ {print $NF}'" ]
+# auth="basic"
