@@ -179,6 +179,7 @@
 (add-to-list 'meow-mode-state-list '(comint-mode . insert))
 (add-to-list 'meow-mode-state-list '(org-mode . normal))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
+
 (with-eval-after-load 'org-agenda
   (set-keymap-parent org-agenda-mode-map meow-normal-state-keymap))
 (add-to-list 'meow-mode-state-list '(org-agenda-mode . motion))

@@ -4,15 +4,12 @@
 ;;(setq org-re-reveal-single-file t)
 ;; C-cC-eRR
 
+(with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "C-c Gt") 'org-capture)
-  (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo)
-  ;; (define-key org-agenda-mode-map (kbd "C-c C-u") 'khalel-refresh)
-  )
+  (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo))
 
-(vmacs-leader (kbd "T") 'org-capture)  ;新加一个 todo 条目等
-;; (define-key evil-normal-state-map "mt" 'org-capture)
 (setq verb-auto-kill-response-buffers t)
 (defun uid() (interactive) (completing-read "uid: " '("10064589" "545473" "60682172")))
 (with-eval-after-load 'org
@@ -28,23 +25,12 @@
   (define-key org-mode-map (kbd "C-c C-k") 'org-babel-remove-result-one-or-many)
   (define-key org-mode-map (kbd "<drag-n-drop>") 'vmacs-org-insert-image))
 
-;; (evil-collection-define-key 'normal 'outline-mode-map
-;;    (kbd "C-k" ) nil
-;;     (kbd "C-j" ) nil)
-;; (evil-collection-define-key 'normal 'org-mode-map
-;;   "gw" 'novel-fill
-;;   "\C-k" 'vmacs-kill-region-or-org-kill-line
-;;   "\C-a" 'org-mode-smart-beginning-of-line
-;;   "\C-e" 'org-mode-smart-end-of-line)
-
-
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
    (shell . t)
    (verb . t)))
 
-;; https://github.com/zweifisch/ob-http
 (with-eval-after-load 'org-src
   (add-to-list 'org-src-lang-modes (cons "go" 'go))
   (add-to-list 'org-src-lang-modes (cons "golang" 'go))
@@ -339,14 +325,17 @@ Monospaced font whihc is fixed idth and height is recommended."
 
   (defun vmacs-org-caldav-sync()
     ;; f and b 前一周
-    (unless (member this-command
-                    '(org-agenda-log-mode
-                      org-agenda-earlier
-                      org-agenda-later))
+    (print this-command)
+    (when (member this-command
+                  '(org-agenda-redo
+                    org-agenda-todo
+                    ;; org-agenda
+                    org-agenda-date-prompt))
       (save-excursion
       (org-caldav-sync))))
-  ;; Additional Org files to check for calendar events
   (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
+  (run-with-idle-timer 300 t 'org-caldav-sync) ;idle 300=5*60s,
+
 
   ;; Usually a good idea to set the timezone manually
   ;; (setq org-icalendar-date-time-format ":%Y%m%dT%H%M%S")
