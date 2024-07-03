@@ -51,7 +51,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async beacon cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux
+   '(org-alert async beacon cape clipetty consult-dir corfu corfu-terminal dired-filetype-face eglot emamux
            embark embark-consult exec-path-from-shell fanyi git-link golden-ratio-scroll-screen
            goto-chg khalel kind-icon lua-mode magit magit-todos marginalia markdown-mode orderless
            org-ai org-msg ox-gfm pinyinlib protobuf-mode verb vundo wgrep with-editor yasnippet))

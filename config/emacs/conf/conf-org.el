@@ -325,14 +325,17 @@ Monospaced font whihc is fixed idth and height is recommended."
 
   (defun vmacs-org-caldav-sync()
     ;; f and b 前一周
-    (print this-command)
-    (when (member this-command
-                  '(org-agenda-redo
-                    org-agenda-todo
-                    ;; org-agenda
-                    org-agenda-date-prompt))
-      (save-excursion
-      (org-caldav-sync))))
+    (let ((buf (current-buffer)))
+      (when (member this-command
+                    '(org-agenda-redo
+                      org-agenda-todo
+                      ;; org-agenda
+                      org-agenda-date-prompt))
+        (save-window-excursion
+          (save-excursion
+            (org-caldav-sync)
+            (switch-to-buffer buf))))))
+
   (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
   (run-with-idle-timer 300 t 'org-caldav-sync) ;idle 300=5*60s,
 
