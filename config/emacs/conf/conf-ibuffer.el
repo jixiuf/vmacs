@@ -34,7 +34,7 @@
          ("Files"  (or (mode . dired-mode) (visiting-file . "^.*$")))
          ("Shell"  (or (mode . shell-mode) (mode . vterm-mode)))
          ("Emacs"  (or (name . "^\\*.*$") (name . "magit")))
-         ("Hidden(g则不显示此分组)"  (name . "^ ")))))
+         ("Hidden(gt则不显示此分组)"  (name . "^ ")))))
 
 (add-hook #'ibuffer-mode-hook
           (lambda ()
