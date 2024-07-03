@@ -182,32 +182,17 @@ linktoc=all
  org-src-window-setup 'current-window   ;C-c'
  org-src-preserve-indentation t
  calendar-date-style 'iso
- calendar-day-abbrev-array ["七" "一" "二" "三" "四" "五" "六"]
- calendar-day-name-array ["七" "一" "二" "三" "四" "五" "六"]
+ calendar-day-abbrev-array ["日" "一" "二" "三" "四" "五" "六"]
+ calendar-day-name-array ["日" "一" "二" "三" "四" "五" "六"]
  calendar-month-name-array ["一月" "二月" "三月" "四月" "五月" "六月" "七月" "八月" "九月" "十月" "十一月" "十二月"]
  calendar-week-start-day 1
-
- org-agenda-deadline-leaders (quote ("最后期限:  " "%3d 天后到期: " "%2d 天前截止: "))
- ;; (setq-default org-agenda-format-date (quote my-org-agenda-format-date-aligned))
- org-agenda-inhibit-startup t
- org-agenda-scheduled-leaders (quote ("计划任务:" "计划任务(第%2d 次激活): "))
- org-agenda-start-with-log-mode nil
- org-agenda-format-date "%A %Y-%m-%d"
- org-agenda-window-setup (quote current-window)
  ;; org-clock-string "计时:"
  ;; org-closed-string "已关闭:"
  ;; org-deadline-string "DEADLINE:"
  ;; org-scheduled-string "SCHEDULED:"
- org-timestamp-formats  '("<%Y-%m-%d %A>" . "<%Y-%m-%d %H:%M %A>")
- org-agenda-files  (list (expand-file-name "todo.txt" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir))
+ org-timestamp-formats  '("<%Y-%m-%d %a>" . "<%Y-%m-%d %a %H:%M>") ;%a 要在 %H 前，否则时间区间的 11:00-12:00 会被分开
  org-deadline-warning-days 5;;最后期限到达前 5 天即给出警告
- org-agenda-show-all-dates t
- org-deadline-past-days 1
- org-agenda-skip-deadline-if-done t
- org-agenda-skip-scheduled-if-done t
- org-agenda-span 'week
  org-icalendar-timezone "Asia/Shanghai"
- org-icalendar-include-todo 'all
 
  org-reverse-note-order t ;;org.el
  org-link-file-path-type  'relative
@@ -215,11 +200,24 @@ linktoc=all
  ;; code 执行免应答（Eval code without confirm）
  org-confirm-babel-evaluate nil
  org-image-actual-width '(600)
- org-default-notes-file (expand-file-name "notes.txt.gpg" dropbox-dir)
+ org-agenda-show-all-dates t
+ org-deadline-past-days 1
+ org-agenda-deadline-leaders (quote ("最后期限:  " "%3d 天后到期: " "%2d 天前截止: "))
+ ;; (setq-default org-agenda-format-date (quote my-org-agenda-format-date-aligned))
+ org-agenda-inhibit-startup t
+ org-agenda-scheduled-leaders (quote ("计划任务:" "计划任务(第%2d 次激活): "))
+ org-agenda-start-with-log-mode nil
+ org-agenda-format-date "%A %Y-%m-%d"
+ org-agenda-window-setup (quote current-window)
+ org-agenda-skip-deadline-if-done t
+ org-agenda-skip-scheduled-if-done t
+ org-agenda-span 'week
+  org-default-notes-file (expand-file-name "notes.txt.gpg" dropbox-dir)
+ org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt.gpg" dropbox-dir))
  org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d)")
                      (sequence "Info(i)"))
- org-capture-templates `(("t" "Todo" entry (file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Tasks")
-                          "* TODO %? :%T\n  %i\n")
+ org-capture-templates `(("t" "Todo" entry (file ,(expand-file-name "todo.txt.gpg" dropbox-dir))
+                          "* TODO %?\n%T\n  %i\n")
                          ("i" "Info" entry (file+headline ,(expand-file-name "todo.txt.gpg" dropbox-dir) "Info")
                           "* Info %? :%T\n  %i\n")
                          ("n" "Note" item (file ,org-default-notes-file)
@@ -315,33 +313,59 @@ Monospaced font whihc is fixed idth and height is recommended."
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
 (when (require 'org-caldav nil t)
-  (setq org-agenda-files  (list (expand-file-name "todo.txt" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
+  ;; (setq org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
   (setq org-caldav-delete-org-entries 'ask)
   (setq org-caldav-files nil)
   (setq org-caldav-show-sync-results nil)
+  (setq org-caldav-debug-level 0)
+  (setq org-caldav-debug-buffer " *org-caldav-debug*")
   (setq org-caldav-calendars
         `(
           (:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
                         :get-event-by-report t
                         :uuid-extension ".ics"
-                        :sync-direction 'cal->org
+                        :sync-direction "cal->org"
                         :url "https://caldav.feishu.cn/jixiufeng_luojilab"
-                        :inbox ,(expand-file-name "caldav.txt" dropbox-dir))
+                        :inbox ,(expand-file-name "caldav.txt.gpg" dropbox-dir))
           (:calendar-id "primary"
                         :get-event-by-report nil
                         :uuid-extension ""
                         :sync-direction "twoway"
                         :url "https://calendar.dingtalk.com/dav/u_fukx3svp"
-                        :inbox ,(expand-file-name "todo.txt" dropbox-dir))
-          ))
+                        :inbox ,(expand-file-name "todo.txt.gpg" dropbox-dir))))
 
+  (defun vmacs-org-caldav-sync()
+    ;; f and b 前一周
+    (unless (member this-command
+                    '(org-agenda-log-mode
+                      org-agenda-earlier
+                      org-agenda-later))
+      (save-excursion
+      (org-caldav-sync))))
   ;; Additional Org files to check for calendar events
-  (add-hook 'org-agenda-mode-hook #'org-caldav-sync)
+  (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
 
   ;; Usually a good idea to set the timezone manually
+  ;; (setq org-icalendar-date-time-format ":%Y%m%dT%H%M%S")
   (setq org-icalendar-timezone "Asia/Shanghai")
-  (setq org-icalendar-include-todo 'all
-        org-caldav-sync-todo t)  )
+  ;; ali dingding 对todo 的支持有问题，暂不同步todo
+  (setq org-icalendar-include-todo nil
+        org-caldav-sync-todo nil)  )
+(when (require 'org-alert nil t)
+  ;; support  for khalel calendar
+  ;; - When: <2024-07-02 14:00>--<2024-07-02 15:00>
+  ;; `TIMESTAMP_IA` 代表不活跃的时间戳（即不会影响 agenda 视图的纯时间戳）。
+  ;; TIMESTAMP 时间戳是活跃的,您应该使用 `TIMESTAMP` 替换 `TIMESTAMP_IA`。
+  (setq org-alert-match-string
+        "SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"|DEADLINE>=\"<today>\"+DEADLINE<\"<tomorrow>\"|TIMESTAMP>=\"<today>\"+TIMESTAMP<\"<tomorrow>\"")
+  (setq org-alert-time-match-string
+        "\\(?:SCHEDULED\\|DEADLINE\\|When\\)?:?.*<20[0-9][0-9]-[0-9][0-9]-[0-9][0-9] [日一二三四五六] ?\\([0-9]\\{2\\}:[0-9]\\{2\\}\\)?.*>")
+
+  (setq alert-default-style 'libnotify)
+  (setq org-alert-interval 300
+        org-alert-notify-cutoff 10
+        org-alert-notify-after-event-cutoff 10)
+  (org-alert-enable))
 
 
 
@@ -437,18 +461,6 @@ Monospaced font whihc is fixed idth and height is recommended."
 ;;         (replace-match "\\1" nil nil))
 ;;       )
 ;;     (car args)))
-(when (require 'org-alert nil t)
-  ;; support  for khalel calendar
-  ;; - When: <2024-07-02 14:00>--<2024-07-02 15:00>
-  (setq org-alert-match-string
-        "- When>=\"<today>\"+- When<\"<tomorrow>\"|SCHEDULED>=\"<today>\"+SCHEDULED<\"<tomorrow>\"|DEADLINE>=\"<today>\"+DEADLINE<\"<tomorrow>\"")
-  (setq org-alert-time-match-string
-        "\\(?:SCHEDULED\\|DEADLINE\\|When\\):.*<.*\\([0-9]\\{2\\}:[0-9]\\{2\\}\\).*>")
-  (setq alert-default-style 'libnotify)
-  (setq org-alert-interval 300
-        org-alert-notify-cutoff 10
-        org-alert-notify-after-event-cutoff 10)
-  (org-alert-enable))
 
 
 ;; 见 org-export-options-alist 对应哪些全局变量
