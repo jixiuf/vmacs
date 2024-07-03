@@ -209,6 +209,7 @@ linktoc=all
  org-agenda-start-with-log-mode nil
  org-agenda-format-date "%A %Y-%m-%d"
  org-agenda-window-setup (quote current-window)
+ org-agenda-confirm-kill nil            ;C-k 删除条目
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
  org-agenda-span 'week
@@ -314,7 +315,8 @@ Monospaced font whihc is fixed idth and height is recommended."
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
 (when (require 'org-caldav nil t)
   ;; (setq org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
-  (setq org-caldav-delete-org-entries 'ask)
+  (setq org-caldav-delete-org-entries 'always)
+  (setq org-caldav-delete-calendar-entries 'always)
   (setq org-caldav-files nil)
   (setq org-caldav-show-sync-results nil)
   (setq org-caldav-debug-level 0)
@@ -324,7 +326,8 @@ Monospaced font whihc is fixed idth and height is recommended."
           (:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
                         :get-event-by-report t
                         :uuid-extension ".ics"
-                        :sync-direction "cal->org"
+                        ;; :sync-direction "cal->org"
+                        :sync-direction "twoway"
                         :url "https://caldav.feishu.cn/jixiufeng_luojilab"
                         :inbox ,(expand-file-name "caldav.txt.gpg" dropbox-dir))
           (:calendar-id "primary"
