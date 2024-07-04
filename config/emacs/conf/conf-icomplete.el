@@ -56,6 +56,8 @@
                                 eglot-code-actions
                                 execute-extended-command
                                 vmacs-yank-pop
+                                describe-function
+                                describe-variable
                                 yank-pop
                                 consult-ripgrep
                                 consult-line

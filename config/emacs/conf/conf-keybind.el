@@ -38,7 +38,7 @@
    "m" m-mode-map
    "n"  #'meow-search
    "N"  #'meow-search-reverse
-   "/"  #'isearch-forward
+   "/"  #'isearch-forward-regexp
    "z"   #'meow-pop-selection)
 
 (global-set-key (kbd "C-c N") vmacs-normal-mode-map)
@@ -47,7 +47,7 @@
    "k"  #'meow-prev
    "G"  #'vmacs-goto-line
    "g"  g-mode-map
-   "/"  #'isearch-forward
+   "/"  #'isearch-forward-regexp
    "z"   #'meow-pop-selection
    "<escape>"  #'keyboard-quit)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
@@ -77,8 +77,8 @@
 (define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (add-hook 'isearch-mode-hook #'push-mark)
-(setq isearch-lazy-count t)
-(setq lazy-highlight-cleanup nil)
+;; (setq isearch-lazy-count t)
+;; (setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
 (vmacs-leader "," #'pop-global-mark)
 (advice-add 'pop-global-mark :before #'deactivate-mark)
