@@ -94,9 +94,8 @@
   ;; (setq embark-collect-initial-view-alist '((t . list)))
   ;; (vmacs-define-key  'global (kbd "C-t") #'embark-act nil 'normal)
 
-  (global-set-key  (kbd "C-t") 'embark-act)
-  (define-key icomplete-minibuffer-map (kbd "C-t") 'embark-act)
-  (define-key icomplete-minibuffer-map (kbd "C-c C-e") 'embark-act)
+  (global-set-key  (kbd "C-w") 'embark-act)
+  (define-key icomplete-minibuffer-map (kbd "C-w") 'embark-act)
   (define-key icomplete-minibuffer-map (kbd "C-c C-o") 'embark-collect-snapshot)
   (define-key icomplete-minibuffer-map (kbd "C-c C-c") 'embark-export)
   (defun vmacs-embark-collect-mode-hook ()

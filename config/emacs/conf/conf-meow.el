@@ -1,4 +1,5 @@
 (autoload #'viper-ex  "viper" t)
+(setq meow--kbd-kill-region "C-k")
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
