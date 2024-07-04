@@ -156,8 +156,8 @@
                     '(regexp "`\\|'" "`\\|'")
                     '(regexp "`\\|'" "`\\|'"))
 (meow-thing-register 'go-package
-                    '(regexp "[[:space:]\"(),\n]" "[[:space:]\"(),\n]")
-                    '(regexp "[[:space:]\"(),\n]" "[[:space:]\"(),\n]"))
+                    '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
+                    '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
 
 ;; org-mode begin_src or markdown ``` block
 (meow-thing-register 'org-block
