@@ -303,15 +303,14 @@ Monospaced font whihc is fixed idth and height is recommended."
   ;; (setq org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
   (setq org-caldav-delete-org-entries 'always)
   (setq org-caldav-delete-calendar-entries 'always)
-  (setq org-caldav-files nil)
   (setq org-caldav-show-sync-results nil)
   (setq org-caldav-debug-level 0)
   (setq org-caldav-debug-buffer " *org-caldav-debug*")
   (setq org-caldav-calendars
-        `(
-          (:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
+        `((:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
                         :get-event-by-report t
                         :uuid-extension ".ics"
+                        :readonly t
                         ;; :sync-direction "cal->org"
                         :sync-direction "twoway"
                         :url "https://caldav.feishu.cn/jixiufeng_luojilab"
