@@ -304,6 +304,7 @@ Monospaced font whihc is fixed idth and height is recommended."
   (setq org-caldav-delete-org-entries 'always)
   (setq org-caldav-delete-calendar-entries 'always)
   (setq org-caldav-show-sync-results nil)
+  (setq org-caldav-files nil)
   (setq org-caldav-debug-level 0)
   (setq org-caldav-debug-buffer " *org-caldav-debug*")
   (setq org-caldav-calendars
@@ -356,7 +357,7 @@ Monospaced font whihc is fixed idth and height is recommended."
         "\\(?:SCHEDULED\\|DEADLINE\\|When\\)?:?.*<20[0-9][0-9]-[0-9][0-9]-[0-9][0-9] [日一二三四五六] ?\\([0-9]\\{2\\}:[0-9]\\{2\\}\\)?.*>")
 
   (setq alert-default-style 'libnotify)
-  (setq org-alert-interval 300
+  (setq org-alert-interval 120
         org-alert-notify-cutoff 10
         org-alert-notify-after-event-cutoff 10)
   (org-alert-enable))
