@@ -169,15 +169,15 @@
     (let* ((file (directory-file-name file))
            (filename (file-name-nondirectory file))
            (dir (file-name-directory file))
-           short-name)
-      (setq short-name
-            ;; 这段是想实现 只展示最后 1 级目录/文件.ext 的功能
-            (if dir
-                (format "%s/%s" (file-name-nondirectory
-                                 (directory-file-name dir))
-                        filename)
-              filename)
-            )
+           (short-name filename)
+           ;; (display short-name)
+           )
+      (when dir
+        (setq short-name
+              ;; 这段是想实现 只展示最后 1 级目录/文件.ext 的功能
+              (format "%s\\%s" filename (file-name-nondirectory
+                                        (directory-file-name dir))
+                      )))
       (propertize short-name 'multi-category `(file . ,file))))
 
   (plist-put consult--source-recent-file
