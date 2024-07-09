@@ -22,7 +22,7 @@
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
 (when (require 'orderless nil t)
-  (setq completion-styles '(orderless basic partial-completion initials))
+  (setq completion-styles '(basic partial-completion initials orderless))
   ;; 支持拼间首字母过滤中文， 不必切输入法
   (defun completion--regex-pinyin (str)
     (require 'pinyinlib)
@@ -31,8 +31,10 @@
   (setq orderless-matching-styles '(completion--regex-pinyin orderless-regexp orderless-literal orderless-initialism ))
   ;; Define orderless style with initialism by default
   (orderless-define-completion-style +orderless-with-initialism
-    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp )))
   (setq completion-category-overrides '((eglot (styles orderless))
+                                        (multi-category (styles . (basic partial-completion orderless)))
+                                        ;; (buffer (styles +orderless-with-initialism)) ;; partial-completion is tried first
                                         (file (styles partial-completion)) ;; partial-completion is tried first
                                         ;; enable initialism by default for symbols
                                         (command (styles +orderless-with-initialism))
@@ -55,6 +57,7 @@
                                 eglot-find-declaration
                                 eglot-code-actions
                                 execute-extended-command
+                                project-or-external-find-file
                                 vmacs-yank-pop
                                 describe-function
                                 describe-variable
