@@ -53,6 +53,22 @@
   (define-key wgrep-mode-map (kbd "M-s-p") 'compilation-previous-file)
   )
 
+(defvar my/re-builder-positions nil  "Store point and region bounds before calling re-builder")
+;; https://karthinks.com/software/bridging-islands-in-emacs-1/
+(with-eval-after-load 're-builder
+  (define-advice re-builder (:around (orig-fun &rest args) query-replace)
+    (setq my/re-builder-positions
+          (cons (point)
+                (when (region-active-p)
+                  (list (region-beginning)
+                        (region-end)))))
+    (apply orig-fun args)
+    (message "Return:Query Replace,C-cC-c:quit"))
+
+  (define-key reb-mode-map (kbd "RET") #'reb-replace-regexp)
+  (define-key reb-lisp-mode-map (kbd "RET") #'reb-replace-regexp)
+  (define-key reb-mode-map (kbd "C-c C-c") #'reb-quit))
+
 (provide 'conf-wgrep)
 
 ;; Local Variables:

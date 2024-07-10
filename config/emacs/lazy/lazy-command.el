@@ -4,6 +4,34 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+;;;###autoload
+(defun reb-replace-regexp (&optional delimited)
+  "Run `query-replace-regexp' with the contents of re-builder. With
+non-nil optional argument DELIMITED, only replace matches
+surrounded by word boundaries."
+  (interactive "P")
+  (reb-update-regexp)
+  (let* ((re (reb-target-value 'reb-regexp))
+         (replacement (query-replace-read-to
+                       re
+                       (concat "Query replace"
+                               (if current-prefix-arg
+                                   (if (eq current-prefix-arg '-) " backward" " word")
+                                 "")
+                               " regexp"
+                               (if (with-selected-window reb-target-window
+                                     (region-active-p)) " in region" ""))
+                       t))
+         (pnt (car my/re-builder-positions))
+         (beg (cadr my/re-builder-positions))
+         (end (caddr my/re-builder-positions)))
+    (with-selected-window reb-target-window
+      (goto-char pnt) ; replace with (goto-char (match-beginning 0)) if you want
+                                        ; to control where in the buffer the replacement starts
+                                        ; with re-builder
+      (setq my/re-builder-positions nil)
+      (reb-quit)
+      (query-replace-regexp re replacement delimited beg end))))
 
 ;;;###autoload
 (defun vmacs-replace-all()
