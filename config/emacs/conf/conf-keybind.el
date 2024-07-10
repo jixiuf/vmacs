@@ -192,7 +192,7 @@
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (vmacs-leader (kbd "m") 'execute-extended-command)
 (vmacs-leader (kbd "wc") 'toggle-case-fold)
-(vmacs-leader (kbd "wl") 'git-link)
+(vmacs-leader (kbd "wl") 'browse-at-remote-kill)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "p" 'list-packages)
 (vmacs-leader "k" ctl-x-r-map)

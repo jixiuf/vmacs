@@ -141,20 +141,11 @@
 
   (magit-add-section-hook 'magit-status-sections-hook 'magit-insert-assume-unchanged-files nil t)
 
-(with-eval-after-load 'git-link
-  (defun git-link-gitlab (hostname dirname filename branch commit start end)
-    (format "https://%s/%s/blob/%s/%s"
-            hostname
-            dirname
-            (or branch commit)
-            (concat filename
-                    (when start
-                      (concat "#"
-                              (if end
-                                  (format "L%s-%s" start end)
-                                (format "L%s" start)))))))
-
-  )
+(with-eval-after-load 'browse-at-remote
+  (add-to-list 'browse-at-remote-remote-type-regexps
+               `(:host ,(rx bol "gitlab.luojilab.com" eol)
+                       ;; :actual-host "gitlab.luojilab.com"
+                       :type "gitlab")))
 (provide 'conf-magit)
 
 ;; Local Variables:

@@ -54,6 +54,7 @@
   (setq-local truncate-lines t)
   (when  (member this-command '(consult-grep
                                 xref-find-references
+                                xref-find-definitions
                                 eglot-find-declaration
                                 eglot-code-actions
                                 execute-extended-command
