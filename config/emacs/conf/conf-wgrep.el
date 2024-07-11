@@ -68,6 +68,7 @@
 
   (define-key reb-mode-map (kbd "M-n") #'reb-next-match)
   (define-key reb-mode-map (kbd "M-p") #'reb-prev-match)
+  ;; 可以使用 \(.*\)  后使用\1 来指定原始group值
   (define-key reb-mode-map (kbd "RET") #'reb-replace-regexp)
   ;; (define-key reb-lisp-mode-map (kbd "RET") #'reb-replace-regexp) # rx 模式
   (define-key reb-mode-map (kbd "C-c C-k") #'reb-quit))
