@@ -176,6 +176,8 @@
     ;; (?h . ?h)
     (?x . ?x))
 )
+
+(add-to-list 'meow-mode-state-list '(reb-mode . insert))
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(comint-mode . insert))
 (add-to-list 'meow-mode-state-list '(org-mode . normal))

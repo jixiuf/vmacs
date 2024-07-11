@@ -215,7 +215,7 @@
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
 (vmacs-leader "gh" #'consult-grep)
-(vmacs-leader "gr" #'grep)
+(vmacs-leader "ge" #'grep)
 (vmacs-leader "gg" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory)))
 (vmacs-leader "gt" #'consult-ripgrep)
 (vmacs-leader "g." (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b"))))

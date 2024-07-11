@@ -211,7 +211,7 @@
 (global-set-key (kbd "C-;") #'query-replace-iedit-mode)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 (global-set-key (kbd "C-c g s") #'query-replace) ;space gs
-(global-set-key (kbd "C-c g f") #'re-builder)    ;query-replace-regexp
+(global-set-key (kbd "C-c g r") #'re-builder)    ;query-replace-regexp
 
 (global-set-key (kbd "C-c ga") #'vmacs-replace-all)
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map

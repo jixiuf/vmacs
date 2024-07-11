@@ -56,6 +56,7 @@
 (defvar my/re-builder-positions nil  "Store point and region bounds before calling re-builder")
 ;; https://karthinks.com/software/bridging-islands-in-emacs-1/
 (with-eval-after-load 're-builder
+  (setq reb-re-syntax 'string)          ; read/string/rx 写正则的时候  group写成\(\) 而非默认的 \\(\\)
   (define-advice re-builder (:around (orig-fun &rest args) query-replace)
     (setq my/re-builder-positions
           (cons (point)
@@ -63,11 +64,13 @@
                   (list (region-beginning)
                         (region-end)))))
     (apply orig-fun args)
-    (message "Return:Query Replace,C-cC-c:quit"))
+    (message "Return:Query Replace,C-cC-k:quit"))
 
+  (define-key reb-mode-map (kbd "M-n") #'reb-next-match)
+  (define-key reb-mode-map (kbd "M-p") #'reb-prev-match)
   (define-key reb-mode-map (kbd "RET") #'reb-replace-regexp)
-  (define-key reb-lisp-mode-map (kbd "RET") #'reb-replace-regexp)
-  (define-key reb-mode-map (kbd "C-c C-c") #'reb-quit))
+  ;; (define-key reb-lisp-mode-map (kbd "RET") #'reb-replace-regexp) # rx 模式
+  (define-key reb-mode-map (kbd "C-c C-k") #'reb-quit))
 
 (provide 'conf-wgrep)
 
