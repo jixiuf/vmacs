@@ -192,7 +192,7 @@
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (vmacs-leader (kbd "m") 'execute-extended-command)
 (vmacs-leader (kbd "wc") 'toggle-case-fold)
-(defun git-link() (interactive) (let ((url (browse-at-remote-get-url)))(kill-new url)(message "%s" url) ))
+(defun git-link() (interactive) (require 'browse-at-remote) (let ((url (browse-at-remote-get-url)))(kill-new url)(message "%s" url) ))
 (vmacs-leader (kbd "wl") #'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "p" 'list-packages)
