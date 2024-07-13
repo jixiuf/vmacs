@@ -35,6 +35,9 @@ delete_win() {
     fi
 }
 handle_active_window() {
+
+
+    set_tmux_pane_id $1
     last_win_addr=$(get_last_win)
     if [ "$last_win_addr" != "$1" ]; then
         # 从历史记录中移除关闭的窗口地址
@@ -65,6 +68,31 @@ hide_dterm(){
 
     if [ "$dterm_addr" != "$active_addr" ]; then
         hyprctl dispatch "movetoworkspacesilent special,address:${dterm_addr}"
+    fi
+}
+set_tmux_pane_id(){
+    active_addr="$1"
+    appinfo=`hyprctl clients -j | jq -rc '.[] | select(.address  | test("'"$active_addr"'"; "i"))'`
+    class=`echo $appinfo|jq -r '.class'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
+    # 当激活一个tmux windows时， 记录下窗口中pane 的，以方便other-window 里进行窗口切换
+    if [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
+        title=${title#TMUX:}
+        tmux_session=${title%%:*}
+        tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id 2>/dev/null|tr -d '\n')
+        if [ -z "$tmux_pane_cursor" ]; then # empty
+            tmux display-message -t $tmux_session -p '#{pane_id}' >/tmp/tmux-${tmux_session}-last-pane-id
+        else
+            last_pane_exits=$(tmux list-panes -s -t $tmux_session -F '#{pane_id}'|grep $tmux_pane_cursor|wc -l)
+            if [ "$last_pane_exits" = "0" ]; then
+                tmux display-message -t $tmux_session -p '#{pane_id}' >/tmp/tmux-${tmux_session}-last-pane-id
+            fi
+        fi
+        tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id 2>/dev/null|tr -d '\n')
+        last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
+        if [ "$tmux_pane_cursor" = "$last_pane_id" ] ; then
+            tmux select-pane -t :.+
+        fi
     fi
 }
 

@@ -35,19 +35,23 @@ if [ -n "$appinfo" ]; then
         echo key ctrl+super+o|dotoolc
     elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
         echo key ctrl+super+o|dotoolc
-    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&"$(tmux list-panes | wc -l)" -gt 1  ]]; then
-        tmux select-pane -t :.+
-        # if [ "$(tmux display-message -p '#{pane_at_right}')" -eq 1 ] && [ "$(tmux display-message -p '#{pane_at_bottom}')" -eq 1 ]; then
-        #     # echo "这是最后一个面板"
-        #     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-        #         hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
-        #     else
-        #         sway-focus-next
-        #     fi
-        # else
-        #     tmux select-pane -t :.+
-        #     exit;
-        # fi
+    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"*  &&"$(tmux list-panes | wc -l)" -gt 1  ]]; then
+        title=${title#TMUX:}
+        tmux_session=${title%%:*}
+
+        tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id|tr -d '\n')
+        last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
+        if [ "$tmux_pane_cursor" = "$last_pane_id" ] ; then
+            # echo "这是最后一个面板"
+            if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+                hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+            else
+                sway-focus-next
+            fi
+        else
+            tmux select-pane -t :.+
+            exit;
+        fi
     else
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
             hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
