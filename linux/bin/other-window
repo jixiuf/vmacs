@@ -41,7 +41,7 @@ if [ -n "$appinfo" ]; then
 
         tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id|tr -d '\n')
         last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
-        if [ "$tmux_pane_cursor" = "$last_pane_id" ] ; then
+        if [ "$tmux_pane_cursor" = "$last_pane_id" ] && [ "$app_cnt" -gt "1" ]; then
             # echo "这是最后一个面板"
             if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
                 hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"

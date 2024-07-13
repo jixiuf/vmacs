@@ -91,7 +91,7 @@ set_tmux_pane_id(){
         tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id 2>/dev/null|tr -d '\n')
         last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
         if [ "$tmux_pane_cursor" = "$last_pane_id" ] ; then
-            tmux select-pane -t :.+
+            tmux    select-pane -t $tmux_session:.+
         fi
     fi
 }
