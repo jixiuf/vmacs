@@ -42,7 +42,20 @@
                                         (symbol (styles +orderless-with-initialism))))
 
   (setq orderless-component-separator #'orderless-escapable-split-on-space) ;; allow escaping space with \
-  )
+  ;; Recognizes the following patterns:
+  ;; * regexp$ (regexp matching at end)
+  ;; consult-buffer 等 支持  el$
+  ;; https://github.com/minad/consult/wiki#orderless-style-dispatchers-ensure-that-the--regexp-works-with-consult-buffer
+  (defun +orderless-fix-dollar (word &optional _index _total)
+    (let ((consult-suffix
+           (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+               (format "[%c-%c]*$"
+                       consult--tofu-char
+                       (+ consult--tofu-char consult--tofu-range -1))
+             "$")))
+    (concat word consult-suffix)))
+  (add-to-list 'orderless-affix-dispatch-alist
+               '(?$ . +orderless-fix-dollar)))
 
 
 
