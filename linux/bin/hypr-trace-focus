@@ -43,14 +43,14 @@ handle_active_window() {
         # 将新的窗口地址添加到历史记录的末尾
         window_history+=("$address")
         serialize_window_history
-        if [ -n "$last_win_addr" ]; then
-            last_focus_app=`hyprctl clients -j | jq -rc '.[] | select(.address  | test("'"$last_win_addr"'"; "i"))'`
-            last_floating=`echo $last_focus_app|jq -r '.floating'`
-            last_class=`echo $last_focus_app|jq -r '.class'`
-            if [[  "$last_floating" = "true" &&  ("$last_class" == *"org.wezfurlong.wezterm"*  || "$last_class" == *"Alacritty"*   || "$last_class" == *"dterm"*) ]]; then
-                hyprctl dispatch "movetoworkspacesilent special,address:${last_win_addr}"
-            fi
-        fi
+        # if [ -n "$last_win_addr" ]; then
+        #     last_focus_app=`hyprctl clients -j | jq -rc '.[] | select(.address  | test("'"$last_win_addr"'"; "i"))'`
+        #     last_floating=`echo $last_focus_app|jq -r '.floating'`
+        #     last_class=`echo $last_focus_app|jq -r '.class'`
+        #     if [[  "$last_floating" = "true" &&  ("$last_class" == *"org.wezfurlong.wezterm"*  || "$last_class" == *"Alacritty"*   || "$last_class" == *"dterm"*) ]]; then
+        #         hyprctl dispatch "movetoworkspacesilent special,address:${last_win_addr}"
+        #     fi
+        # fi
 
 
     fi
