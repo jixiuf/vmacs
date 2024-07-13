@@ -11,6 +11,23 @@ if [[ $socket_file != "" ]]; then
     socket_file_switch=" -s $socket_file "
 fi
 function call_emacsclient(){
+    if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
+        front_app=`hyprctl activewindow -j`
+        front_class=`echo $front_app|jq -r '.class'`
+        front_floating=`echo $front_app|jq -r '.floating'`
+        if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == "dterm") ]]; then
+            hyprctl dispatch "movetoworkspacesilent special"
+        fi
+    else
+        front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+        front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+        # title=$(echo $front_app|jq -r '.name')
+        front_floating=`echo $front_app|jq -r '.type'|head -n 1` # con or floating_con
+        if [[ "$front_floating" == "floating_con" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"* || "$front_class" == "dterm") ]]; then
+            swaymsg  "move window to scratchpad"
+            # swaymsg  "[con_id=$id] move window to scratchpad"
+        fi
+    fi
     # echo $EMACSCLIENT
     framecnt=`$EMACSCLIENT $socket_file_switch --eval "(gui-frame-cnt)"`
     # echo $framecnt
