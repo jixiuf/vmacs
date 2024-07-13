@@ -35,7 +35,6 @@ delete_win() {
     fi
 }
 handle_active_window() {
-    # echo $1
     last_win_addr=$(get_last_win)
     if [ "$last_win_addr" != "$1" ]; then
         # 从历史记录中移除关闭的窗口地址
@@ -51,10 +50,22 @@ handle_active_window() {
         #         hyprctl dispatch "movetoworkspacesilent special,address:${last_win_addr}"
         #     fi
         # fi
-
+        hide_dterm $1
 
     fi
     # echo "${#window_history[@]} ${window_history[@]}"
+}
+hide_dterm(){
+    active_addr="$1"
+    # ws=$(hprctl activeworkspace -j)
+    # ws_id=`echo $ws|jq -r '.id'`
+    # ws_wins=$(hyprctl clients -j | jq -cr '.[] | select(((.class  | test("dterm"; "i"))) and (.workspace.id == '$term_workspace') )'|wc -l)
+    dterm_app=$(hyprctl clients -j | jq -cr '.[] | select(.class  | test("dterm"; "i") )')
+    dterm_addr=`echo $dterm_app|jq -r '.address'`
+
+    if [ "$dterm_addr" != "$active_addr" ]; then
+        hyprctl dispatch "movetoworkspacesilent special,address:${dterm_addr}"
+    fi
 }
 
 handle_close_window() {
