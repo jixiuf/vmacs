@@ -17,7 +17,7 @@
 ;;                                      (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
 ;;                                                  'display '(space :align-to right))
 ;;                                      (propertize "\n" 'face '(:height 1)))
-(setq icomplete-separator (propertize " ◀ " 'face  '(foreground-color . "lightgreen")))
+(setq icomplete-separator (propertize " 👈 " 'face  '(foreground-color . "lightgreen")))
 
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
