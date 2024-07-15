@@ -59,18 +59,17 @@ Non interactive global minor mode."
                fn (dape-config-autoport dape-config-tramp)
                command "dlv"
                command-args ("dap" "--listen" "127.0.0.1::autoport")
-               command-cwd dape-command-cwd
+               command-cwd (lambda()(if (string-suffix-p "_test.go" (buffer-name))
+                                     default-directory (dape-cwd)))
                port :autoport
                :type "debug"
                :request "launch"
-               :mode (lambda() (if (string-suffix-p "_test.go"   (buffer-name)) "test" "debug"))
-               :cwd dape-cwd
-               :program (lambda()(if (string-suffix-p "_test.go"   (buffer-name))
-                                     (file-relative-name default-directory (funcall dape-cwd-fn))
-                                   (funcall dape-cwd-fn)))
+               :mode (lambda() (if (string-suffix-p "_test.go" (buffer-name)) "test" "debug"))
+               :program "."
+               :cwd "."
                :args (lambda()
                        (require 'which-func)
-                       (if (string-suffix-p "_test.go"   (buffer-name))
+                       (if (string-suffix-p "_test.go" (buffer-name))
                            (when-let* ((test-name (which-function))
                                        (test-regexp (concat "^" test-name "$")))
                              (if test-name `["-test.run" ,test-regexp]

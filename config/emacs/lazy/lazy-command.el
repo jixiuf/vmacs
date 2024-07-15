@@ -913,6 +913,8 @@ Move point to end-of-line ,if point was already at that position,
          (kill-buffer (get-file-buffer f)))
        (kill-this-buffer)
        )
+     ( (derived-mode-p 'reb-mode)
+       (call-interactively 'reb-quit))
      ( (derived-mode-p 'calc-mode)
        (call-interactively 'calc-quit))
      ( (derived-mode-p 'mu4e-view-mode)
