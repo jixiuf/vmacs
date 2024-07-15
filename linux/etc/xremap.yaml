@@ -162,6 +162,7 @@ keymap:
       only: [/TMUX:/ ]
     remap:
       # super-M-v: [C-w,C-y]
+      super-C-Enter: [C-c,"4"] 
       super-C-w: [C-c,k] 
       super-C-t: [C-c ,c] 
       super-M-n: [C-c ,n] 
@@ -185,7 +186,7 @@ keymap:
       only: [dterm,foot,foot-ws]
     remap:
       super-C-w: super-C-q
-      super-C-Enter: [C-c,"2"] 
+      # super-C-Enter: [C-c,"2"] 
       # super-C-Backslash: [C-c,M-1] 
       # super-C-Backspace: [C-c,M-2] 
         # - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
