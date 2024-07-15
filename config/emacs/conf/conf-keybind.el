@@ -26,6 +26,7 @@
   "m" #'set-mark-command                ;C-@
   "," #'pop-to-mark-command
   "t" #'org-capture
+  "s" #'hs-toggle-hiding
   )
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
