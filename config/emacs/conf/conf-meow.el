@@ -122,8 +122,8 @@
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
    '("?" . isearch-backward)
-   '("W" . meow-mark-symbol)
-   '("w" . meow-mark-word)
+   '("W" . meow-mark-word)
+   '("w" . meow-mark-symbol)
    '("C-r" . vmacs-meow-reverse)
    '("%" . vmacs-meow-reverse)
    '(";" . vmacs-meow-reverse)
@@ -234,6 +234,20 @@
 
 (global-set-key (kbd "C-h") 'negative-argument)
 (global-set-key (kbd "C-u") 'meow-universal-argument)
+
+(defun vmacs-pop-all-selection ()
+  (when (region-active-p)
+    (meow-pop-all-selection)))
+
+(advice-add 'keyboard-quit :before #'vmacs-pop-all-selection)
+
+(define-advice meow-mark-symbol (:around (orig-fun &rest args) dwim)
+  "makr symbol or word"
+  (if (not (eq last-command 'meow-mark-symbol))
+      (apply orig-fun args)
+    (meow-pop-all-selection)
+    (call-interactively #'meow-mark-word)))
+
 ;; (lambda () (interactive)
 ;;    (if (or defining-kbd-macro executing-kbd-macro)
 ;;        (call-interactively #'end-kbd-macro)
