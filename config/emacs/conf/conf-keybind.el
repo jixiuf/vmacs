@@ -198,7 +198,7 @@
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "p" 'list-packages)
 (vmacs-leader "k" ctl-x-r-map)
-(vmacs-leader (kbd "wd") 'fanyi-dwim2)
+(vmacs-leader (kbd "wd") 'gt-do-translate)
 
 (defun vmacs-bury-boring-windows ()
   (when (active-minibuffer-window)
