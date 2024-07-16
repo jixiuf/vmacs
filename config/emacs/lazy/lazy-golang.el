@@ -58,6 +58,7 @@
       (message pkg-path))))
 
 
+;;;###autoload
 (defun go-get()
   (interactive)
   (let* ((pkg (meow--parse-range-of-thing 'go-package t))
