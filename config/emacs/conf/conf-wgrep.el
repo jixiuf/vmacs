@@ -60,14 +60,17 @@
   (define-advice re-builder (:around (orig-fun &rest args) query-replace)
     (setq my/re-builder-positions
           (cons (point)
-                (when (region-active-p)
-                  (list (region-beginning)
-                        (region-end)))))
+                (if  (region-active-p)
+                    (list (region-beginning)
+                          (region-end))
+                  (list (point-min)
+                        (point-max)))))
     (apply orig-fun args)
-    (message "Return:Query Replace,C-cC-k:quit"))
+    (message "Return:Query Replace,C-cC-k:quit C-r:\\(\\)"))
 
   (define-key reb-mode-map (kbd "M-n") #'reb-next-match)
   (define-key reb-mode-map (kbd "M-p") #'reb-prev-match)
+  (define-key reb-mode-map (kbd "C-r") #'(lambda()(interactive) (insert "\\(\\)") (backward-char 2)))
   ;; 可以使用 \(.*\)  后使用\1 来指定原始group值
   (define-key reb-mode-map (kbd "RET") #'reb-replace-regexp)
   ;; (define-key reb-lisp-mode-map (kbd "RET") #'reb-replace-regexp) # rx 模式
