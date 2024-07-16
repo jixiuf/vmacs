@@ -400,6 +400,12 @@ numeric, repeat times.
   (meow-search -1)
   (meow-search nil))
 
+(define-advice meow-mark-word (:around (orig-fun &rest args) dwim)
+  "makr symbol or word"
+  (if (not (eq last-command 'meow-mark-word))
+      (apply orig-fun args)
+    (meow-pop-all-selection)
+    (call-interactively #'meow-mark-symbol)))
 
 ;;;###autoload
 (defun vmacs-insert-pair(prefix suffix)
