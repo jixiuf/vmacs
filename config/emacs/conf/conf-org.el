@@ -337,7 +337,7 @@ Monospaced font whihc is fixed idth and height is recommended."
             (switch-to-buffer buf))))))
 
   (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
-  (run-with-idle-timer 300 t 'org-caldav-sync) ;idle 300=5*60s,
+  (run-with-idle-timer 300 t #'(lambda()(org-caldav-sync) (org-agenda-exit) )) ;idle 300=5*60s,
 
 
   ;; Usually a good idea to set the timezone manually
