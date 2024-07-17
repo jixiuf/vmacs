@@ -265,17 +265,18 @@
                         ;; 以下mode 默认翻译单个段落
                         (gt-taker :text 'paragraph :if '(Info-mode help-mode text-mode org-mode novel-mode))
                         ;;read-only： fresh-word 只翻译生词
-                        (gt-taker :text 'buffer :pick 'fresh-word :if 'read-only)
+                        ;; (gt-taker :text 'buffer :pick 'fresh-word :if 'read-only)
                         (gt-taker :text 'word))
          :engines (list (gt-google-engine :if 'word)
                         (gt-youdao-dict-engine :if 'word)
                         (gt-chatgpt-engine :if '(or parts read-only)) ;多段落 不支持  :stream t
                         (gt-chatgpt-engine :if '(and no-word no-parts no-read-only) :stream t) ; 非单词 非多段落 （即单个段落时） 使用stream
                         )
-         :render  (list ;(gt-overlay-render :if 'selection)
+         :render  (list
+                   (gt-overlay-render :if 'selection)
                    ;; (gt-render :if 'selection) ;minibuffer
                    ;; (gt-insert-render :if 'selection) ;minibuffer
-                   (gt-overlay-render :if 'read-only)
+                   ;; (gt-overlay-render :if 'read-only)
                    (gt-insert-render :if (lambda (translator) (member (buffer-name) '("COMMIT_EDITMSG"))))
                    (gt-insert-render :if  '((and (or org-mode novel-mode) not-word)) :type 'after)
                    ;; (gt-alert-render :if '(and xxx-mode (or not-selection (and read-only parts))))
