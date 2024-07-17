@@ -318,6 +318,7 @@ Monospaced font whihc is fixed idth and height is recommended."
                         :inbox ,(expand-file-name "caldav.txt.gpg" dropbox-dir))
           (:calendar-id "primary"
                         :get-event-by-report nil
+                        :readonly nil
                         :uuid-extension ""
                         :sync-direction "twoway"
                         :url "https://calendar.dingtalk.com/dav/u_fukx3svp"
