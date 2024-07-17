@@ -263,7 +263,7 @@
         (gt-translator
          :taker   (list (gt-taker :pick nil :if 'selection) ;有选中则使用选中的内这
                         ;; 以下mode 默认翻译单个段落
-                        (gt-taker :text 'paragraph :if '(Info-mode help-mode org-mode novel-mode))
+                        (gt-taker :text 'paragraph :if '(Info-mode help-mode text-mode org-mode novel-mode))
                         ;;read-only： fresh-word 只翻译生词
                         (gt-taker :text 'buffer :pick 'fresh-word :if 'read-only)
                         (gt-taker :text 'word))
