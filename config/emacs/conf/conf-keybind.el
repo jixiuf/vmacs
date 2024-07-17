@@ -48,6 +48,7 @@
    "k"  #'meow-prev
    "G"  #'vmacs-goto-line
    "g"  g-mode-map
+   "m"  m-mode-map
    "/"  #'isearch-forward-regexp
    "z"   #'meow-pop-selection
    "<escape>"  #'keyboard-quit)

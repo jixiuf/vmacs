@@ -7,7 +7,9 @@
 (with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
 (with-eval-after-load 'org-agenda
-  (define-key org-agenda-mode-map (kbd "C-c Gt") 'org-capture)
+  (define-key org-agenda-mode-map (kbd "m") m-mode-map)
+  (define-key org-agenda-mode-map (kbd "C-c Nmt") 'org-capture)
+  (define-key org-agenda-mode-map (kbd "C-c Mmt") 'org-capture)
   (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo))
 
 (setq verb-auto-kill-response-buffers t)
