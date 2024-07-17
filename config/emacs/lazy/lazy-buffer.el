@@ -60,7 +60,7 @@
 (setq vmacs-ignore-buffers
       (list
        "\\` " "\*Helm" "\*helm"
-       "*Launch"
+       "*Launch" "\*Warnings\*"
        "\*RE-Builder\*"
        "\*dape-repl\*" "\*dape-info"
        "\*vc-diff\*" "\*magit-" "\*vc-" "\*vc*"
