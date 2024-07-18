@@ -109,7 +109,7 @@
 (put 'narrow-to-region 'disabled nil);; 启用 narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
 (put 'upcase-region 'disabled nil)
-
+(with-eval-after-load 'markdown-mode  (add-hook 'markdown-mode-hook #'auto-fill-mode))
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 (setq-default auto-mode-alist
@@ -273,17 +273,19 @@
                         (gt-chatgpt-engine :if '(and no-word no-parts no-read-only no-selection) :stream t) ; 非单词 非多段落 （即单个段落时） 使用stream
                         )
          :render  (list
-                   (gt-overlay-render :if 'selection)
+                   ;; (gt-overlay-render :if 'selection)
                    ;; (gt-render :if 'selection) ;minibuffer
                    ;; (gt-insert-render :if 'selection) ;minibuffer
-                   ;; (gt-overlay-render :if 'read-only)
-                   (gt-insert-render :if (lambda (translator) (member (buffer-name) '("COMMIT_EDITMSG"))))
-                   (gt-insert-render :if  '((and (or org-mode markdown-mode novel-mode) not-word)) :type 'after)
+                   (gt-overlay-render :if 'read-only)
+                   ;; (gt-insert-render :if (lambda (translator) (member (buffer-name) '("COMMIT_EDITMSG"))))
+                   (gt-insert-render :if  '((and (or org-mode text-mode markdown-mode novel-mode) not-word)) :type 'after)
                    ;; (gt-alert-render :if '(and xxx-mode (or not-selection (and read-only parts))))
-                   (gt-buffer-render  :buffer-name "abc"
+                   (gt-buffer-render
+                    :buffer-name "abc"
                                       :window-config '((display-buffer-same-window))
                                       :then (lambda (_) (pop-to-buffer "abc"))))))
   (define-key gt-overlay-render-map (kbd "C-g") #'gt-delete-render-overlays)
+  (define-key gt-overlay-render-map (kbd "<escape>") #'gt-delete-render-overlays)
   (define-key gt-overlay-render-map (kbd "M-w") #'gt-overlay-render-save-to-kill-ring))
 
 (provide 'conf-common)

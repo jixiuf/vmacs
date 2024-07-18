@@ -258,6 +258,7 @@ linktoc=all
   "novel mode")
 
 (defun vmacs-org-mode-hook()
+  (auto-fill-mode)
   (modify-syntax-entry ?， "." ) ;; 识别中文标点
   (modify-syntax-entry ?。 "." ) ;; 识别中文标点
   (modify-syntax-entry ?！ "." ) ;; 识别中文标点
