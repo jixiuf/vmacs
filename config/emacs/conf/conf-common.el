@@ -263,7 +263,7 @@
         (gt-translator
          :taker   (list (gt-taker :pick nil :if 'selection) ;有选中则使用选中的内这
                         ;; 以下mode 默认翻译单个段落
-                        (gt-taker :text 'paragraph :if '(Info-mode help-mode text-mode org-mode novel-mode))
+                        (gt-taker :text 'paragraph :if '(Info-mode help-mode markdown-mode text-mode org-mode novel-mode))
                         ;;read-only： fresh-word 只翻译生词
                         ;; (gt-taker :text 'buffer :pick 'fresh-word :if 'read-only)
                         (gt-taker :text 'word))
@@ -278,12 +278,13 @@
                    ;; (gt-insert-render :if 'selection) ;minibuffer
                    ;; (gt-overlay-render :if 'read-only)
                    (gt-insert-render :if (lambda (translator) (member (buffer-name) '("COMMIT_EDITMSG"))))
-                   (gt-insert-render :if  '((and (or org-mode novel-mode) not-word)) :type 'after)
+                   (gt-insert-render :if  '((and (or org-mode markdown-mode novel-mode) not-word)) :type 'after)
                    ;; (gt-alert-render :if '(and xxx-mode (or not-selection (and read-only parts))))
                    (gt-buffer-render  :buffer-name "abc"
                                       :window-config '((display-buffer-same-window))
                                       :then (lambda (_) (pop-to-buffer "abc"))))))
-  (define-key gt-overlay-render-map (kbd "C-g") #'gt-delete-render-overlays))
+  (define-key gt-overlay-render-map (kbd "C-g") #'gt-delete-render-overlays)
+  (define-key gt-overlay-render-map (kbd "M-w") #'gt-overlay-render-save-to-kill-ring))
 
 (provide 'conf-common)
 

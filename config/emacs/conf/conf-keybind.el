@@ -24,10 +24,12 @@
 (defvar-keymap  m-mode-map
   "f" #'mark-defun
   "m" #'set-mark-command                ;C-@
+  "d" #'gt-do-translate
   "," #'pop-to-mark-command
   "t" #'org-capture
   "s" #'hs-toggle-hiding
   )
+(vmacs-leader (kbd "wd") 'gt-do-translate)
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
 
@@ -199,7 +201,6 @@
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "p" 'list-packages)
 (vmacs-leader "k" ctl-x-r-map)
-(vmacs-leader (kbd "wd") 'gt-do-translate)
 
 (defun vmacs-bury-boring-windows ()
   (when (active-minibuffer-window)
