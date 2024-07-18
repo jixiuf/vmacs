@@ -269,8 +269,8 @@
                         (gt-taker :text 'word))
          :engines (list (gt-google-engine :if 'word)
                         (gt-youdao-dict-engine :if 'word)
-                        (gt-chatgpt-engine :if '(or parts read-only)) ;多段落 不支持  :stream t
-                        (gt-chatgpt-engine :if '(and no-word no-parts no-read-only) :stream t) ; 非单词 非多段落 （即单个段落时） 使用stream
+                        (gt-chatgpt-engine :if '(or parts read-only selection)) ;多段落 不支持  :stream t
+                        (gt-chatgpt-engine :if '(and no-word no-parts no-read-only no-selection) :stream t) ; 非单词 非多段落 （即单个段落时） 使用stream
                         )
          :render  (list
                    (gt-overlay-render :if 'selection)
@@ -283,9 +283,7 @@
                    (gt-buffer-render  :buffer-name "abc"
                                       :window-config '((display-buffer-same-window))
                                       :then (lambda (_) (pop-to-buffer "abc"))))))
-  (defun vmacs-gt-delete-render-overlays()
-    (gt-delete-render-overlays (point-min) (point-max)))
-  (advice-add 'keyboard-quit :before #'vmacs-gt-delete-render-overlays))
+  (define-key gt-overlay-render-map (kbd "C-g") #'gt-delete-render-overlays))
 
 (provide 'conf-common)
 

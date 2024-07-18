@@ -2713,6 +2713,16 @@ Description="键盘 - 法语 - 法语（Dvorak）"
 Language=fr
 Label="fr (dvorak)"
 
+[keyboard-fr-ergol]
+Description="键盘 - 法语 - French (Ergo‑L)"
+Language=fr
+Label="fr (ergol)"
+
+[keyboard-fr-ergol_iso]
+Description="键盘 - 法语 - French (Ergo‑L, ISO variant)"
+Language=fr
+Label="fr (ergol_iso)"
+
 [keyboard-fr-mac]
 Description="键盘 - 法语 - 法语（Macintosh）"
 Language=fr
@@ -3274,9 +3284,19 @@ Language=hu
 Label="hu (102_qwerty_dot_nodead)"
 
 [keyboard-hu-oldhunlig]
-Description="键盘 - 匈牙利语 - 旧匈牙利语（含连字）"
+Description="键盘 - 匈牙利语 - 古匈牙利语（含连字）"
 Language=hu
 Label="oldhun(lig) (oldhunlig)"
+
+[keyboard-hu-oldhun_sk_sh]
+Description="键盘 - 匈牙利语 - 古匈牙利语（喀尔巴阡高地，S 作为 Sh）"
+Language=hu
+Label="oldhun(SK,Sh) (oldhun_sk_sh)"
+
+[keyboard-hu-oldhun_sk_sz]
+Description="键盘 - 匈牙利语 - 古匈牙利语（喀尔巴阡高地，S 作为 Sz）"
+Language=hu
+Label="oldhun(SK,Sz) (oldhun_sk_sz)"
 
 [keyboard-hu-us]
 Description="键盘 - 匈牙利语 - 匈牙利语（美国）"
