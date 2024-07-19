@@ -17,8 +17,8 @@ if [ -n "$class" ]; then
     if [[ "$class" = "emacs"  ]]; then
         sleep 0.1
         echo key ctrl+super+m|dotoolc
-        # elif [[ "$class" = "foot" || "$class" = "dterm" ]]; then
-        #     tmux resize-pane -Z
+    elif [[ "$class" = "foot"* || "$class" = "dterm"* ]]; then
+            tmux resize-pane -Z
     else
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
             hyprctl dispatch fullscreen 1
