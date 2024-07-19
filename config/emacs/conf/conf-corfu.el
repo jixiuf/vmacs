@@ -49,7 +49,7 @@
 (add-to-list 'completion-at-point-functions #'cape-file)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 
-(global-set-key (kbd "C-<return>") (cape-capf-interactive #'codeium-completion-at-point))
+;; (global-set-key (kbd "C-<return>") (cape-capf-interactive #'codeium-completion-at-point))
 
 
 (provide 'conf-corfu)
