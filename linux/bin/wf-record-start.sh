@@ -18,7 +18,7 @@ window="窗口"
 # options="$screen\n$area\n$window"
 chosen=$1
 
-killall wf-record-stop.sh
+killall wf-record-stop.sh 2>/dev/null
 
 if [ -z $(pgrep wf-recorder) ]
 then
@@ -28,26 +28,36 @@ then
     echo "$filepath" > "${tmp_file}"
     case $chosen in
         $screen)
-            sleep 1;wf-recorder  --audio --file="${filepath}" & disown && \
-                $notify_cmd_shot "Screen Record" "录屏开始..." && \
-                pkill -RTMIN+8 waybar
+            sleep 1;
+            cd /tmp/
+            nohup wf-recorder  --audio --file="${filepath}" >/tmp/wf-recorder.log &
+            swaync-client -cp
+            pkill -RTMIN+8 waybar
             ;;
         $area)
             if command -v slurp >/dev/null 2>&1; then
                 g="$(slurp)"
-                sleep 1;wf-recorder -g "$g"  --audio --file="${filepath}" & disown && \
-                    $notify_cmd_shot "Screen Record" "录屏开始..." && \
-                    pkill -RTMIN+8 waybar
+                sleep 1
+                nohup wf-recorder -g "$g"  --audio --file="${filepath}"  >/tmp/wf-recorder.log &
+                swaync-client -cp
+                pkill -RTMIN+8 waybar
             else
                 $notify_cmd_shot  "slurp not found"
             fi
             ;;
         $window)
-            sleep 1; wf-recorder -g "$(hyprctl activewindow | grep at: | cut -d' ' -f2) $(hyprctl activewindow | grep size: | cut -d' ' -f2 | sed 's/,/x/g')"  --audio --file="${filepath}" & disown && \
-                $notify_cmd_shot "Screen Record" "录屏开始...." && \
+                sleep 1
+                nohup wf-recorder -g "$(hyprctl activewindow | grep at: | cut -d' ' -f2) $(hyprctl activewindow | grep size: | cut -d' ' -f2 | sed 's/,/x/g')"  --audio --file="${filepath}" >/tmp/wf-recorder.log &
+                swaync-client -cp
                 pkill -RTMIN+8 waybar
             ;;
     esac
+    sleep 2;
+    if [ -z $(pgrep wf-recorder) ]; then
+        ${notify_cmd_shot} "Screen Record" "没有 录制中的视频!"
+    else
+        $notify_cmd_shot "Screen Record" "录屏开始..."
+    fi
 
 
 else
