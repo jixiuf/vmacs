@@ -52,7 +52,7 @@ if [ -n "$appinfo" ]; then
         if [ "$(tmux list-panes -t $tmux_session | wc -l)" -gt 1 ]; then
             tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id|tr -d '\n')
             last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
-            if [ "$tmux_pane_cursor" = "$last_pane_id" ] && [ "$app_cnt" -gt "1" ]; then
+            if [ "$tmux_pane_cursor" = "$last_pane_id" ] && [ "$app_cnt" -gt "1" ] && [ "$floating" == "false" ]; then
                 next-window
             else
                 tmux select-pane  -t $tmux_session:.+
