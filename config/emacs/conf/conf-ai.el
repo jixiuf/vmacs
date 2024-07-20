@@ -10,7 +10,7 @@
     (setq buffer-file-name
           (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))
                             default-directory)))
-  (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))
+  ;; (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))
   (when (eq type 'end)
     (run-with-timer 0.01 nil #'(lambda() (write-file buffer-file-name)))
     ;; (epa-file-write-region (point-min) (point-max) buffer-file-name)
