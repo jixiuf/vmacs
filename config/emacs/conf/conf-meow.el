@@ -146,7 +146,8 @@
 (require 'meow)
 (meow-setup)
 
-(add-hook 'after-init-hook #'which-key-mode)
+(when (featurep 'which-key-mode)
+  (add-hook 'after-init-hook #'which-key-mode))
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . vmacs-meow-line)) ;support: yy y3y
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
