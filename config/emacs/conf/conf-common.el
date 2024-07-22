@@ -261,6 +261,7 @@
   (setq gt-langs '(en zh))
   (setq gt-buffer-render-window-config
         '((display-buffer-same-window)))
+  (setq gt-chatgpt-system-prompt "你是一个翻译助手，尽量做到信达雅，英语专用名词可以不用翻译,意译而不要直译")
   (setq gt-default-translator
         (gt-translator
          :taker   (list (gt-taker :pick nil :if 'selection) ;有选中则使用选中的内这

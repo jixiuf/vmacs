@@ -54,8 +54,8 @@
    '(async beacon browse-at-remote cape clipetty consult-dir corfu corfu-terminal dired-filetype-face
            eglot emamux embark embark-consult exec-path-from-shell go-translate
            golden-ratio-scroll-screen goto-chg kind-icon lua-mode magit magit-todos marginalia
-           markdown-mode orderless org-ai org-alert org-msg ox-gfm pinyinlib posframe protobuf-mode
-           verb vundo wgrep with-editor yasnippet))
+           markdown-mode orderless org-ai org-alert org-msg ox-gfm pinyinlib plz posframe
+           protobuf-mode verb vundo wgrep with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
