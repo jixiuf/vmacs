@@ -276,7 +276,7 @@
                    ;; (gt-overlay-render :if 'selection)
                    ;; (gt-render :if 'selection) ;minibuffer
                    ;; (gt-insert-render :if 'selection) ;minibuffer
-                   (gt-overlay-render :if 'read-only)
+                   (gt-overlay-render :if '(and read-only no-word))
                    ;; (gt-insert-render :if (lambda (translator) (member (buffer-name) '("COMMIT_EDITMSG"))))
                    (gt-insert-render :if  '((and (or org-mode text-mode markdown-mode novel-mode) not-word)) :type 'after)
                    ;; (gt-alert-render :if '(and xxx-mode (or not-selection (and read-only parts))))
