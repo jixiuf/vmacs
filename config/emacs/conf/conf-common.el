@@ -259,14 +259,18 @@
 (with-eval-after-load 'go-translate
   ;; https://github.com/lorniu/go-translate/blob/master/README-zh.org
   (setq gt-langs '(en zh))
+  (setq gt-buffer-render-window-config
+        '((display-buffer-same-window)))
   (setq gt-default-translator
         (gt-translator
          :taker   (list (gt-taker :pick nil :if 'selection) ;有选中则使用选中的内这
                         ;; 以下mode 默认翻译单个段落
-                        (gt-taker :text 'paragraph :if '(Info-mode help-mode markdown-mode text-mode org-mode novel-mode))
+                        ;; (gt-taker :text 'paragraph :if '(Info-mode help-mode markdown-mode text-mode org-mode novel-mode))
+                        (gt-taker :text 'paragraph)
                         ;;read-only： fresh-word 只翻译生词
                         ;; (gt-taker :text 'buffer :pick 'fresh-word :if 'read-only)
-                        (gt-taker :text 'word))
+                        ;; (gt-taker :text 'word)
+                        )
          :engines (list (gt-google-engine :if 'word)
                         (gt-youdao-dict-engine :if 'word)
                         (gt-chatgpt-engine :if '(or parts read-only selection)) ;多段落 不支持  :stream t
@@ -280,10 +284,7 @@
                    ;; (gt-insert-render :if (lambda (translator) (member (buffer-name) '("COMMIT_EDITMSG"))))
                    (gt-insert-render :if  '((and (or org-mode text-mode markdown-mode novel-mode) not-word)) :type 'after)
                    ;; (gt-alert-render :if '(and xxx-mode (or not-selection (and read-only parts))))
-                   (gt-buffer-render
-                    :buffer-name "abc"
-                                      :window-config '((display-buffer-same-window))
-                                      :then (lambda (_) (pop-to-buffer "abc"))))))
+                   (gt-buffer-render))))
   (define-key gt-overlay-render-map (kbd "C-g") #'gt-delete-render-overlays)
   (define-key gt-overlay-render-map (kbd "<escape>") #'gt-delete-render-overlays)
   (define-key gt-overlay-render-map (kbd "M-w") #'gt-overlay-render-save-to-kill-ring))
