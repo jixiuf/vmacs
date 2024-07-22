@@ -70,18 +70,22 @@ resize_tmux_emacs_window() {
 }
 
 resize_tmux_window() {
+    title=$2
+    title=${title#TMUX:}
+    tmux_session=${title%%:*}
+
     case "$1" in
         left*)
-            tmux resize-pane -L 2
+            tmux resize-pane -t $tmux_session -L 2
             ;;
         right*)
-            tmux resize-pane -R 2
+            tmux resize-pane  -t $tmux_session -R 2
             ;;
         up*)
-            tmux resize-pane -U 2
+            tmux resize-pane -t $tmux_session -U 2
             ;;
         down*)
-            tmux resize-pane -D 2
+            tmux resize-pane -t $tmux_session -D 2
             ;;
     esac
 }
@@ -102,6 +106,7 @@ else
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
     fullscreen=`echo $front_app|jq -r '.fullscreen_mode'` # 0 1
     floating=`echo $appinfo|jq -r '.type'|head -n 1`
+    title=$(echo $appinfo|jq -r '.name')
 fi
 
 if [[ "$class" = "emacs" && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$fullscreen" = "1"  ||"$floating" == "true" ||"$floating" == "floating_con" ) ]]; then
@@ -109,7 +114,7 @@ if [[ "$class" = "emacs" && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$ful
 elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* ]]; then
     resize_tmux_emacs_window $1
 elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true"|| "$fullscreen" = "1" ||"$floating" == "floating_con"||"$floating" == "true" ) ]]; then
-    resize_tmux_window $1
+    resize_tmux_window $1 $title
 else
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
         resize_window $1

@@ -47,6 +47,7 @@ if [ -n "$appinfo" ]; then
         exit 0
     elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
         # need hypr-trace-focus
+        #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
         tmux_session=${title%%:*}
         if [ "$(tmux list-panes -t $tmux_session | wc -l)" -gt 1 ]; then

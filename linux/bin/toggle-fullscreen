@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+toggle_fullscreen(){
+    if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+        hyprctl dispatch fullscreen 1
+    else
+        swaymsg "fullscreen"
+    fi
+}
 # ws=$(hyprctl activeworkspace -j)
 # ws_id=`echo $ws|jq -r '.id'`
 # app count in current workspace
@@ -7,9 +14,11 @@
 if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     appinfo=`hyprctl activewindow -j`
     class=`echo $appinfo|jq -r '.class'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
 else
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+    title=$(echo $appinfo|jq -r '.name')
 fi
 
 if [ -n "$class" ]; then
@@ -18,18 +27,13 @@ if [ -n "$class" ]; then
         sleep 0.1
         echo key ctrl+super+m|dotoolc
     elif [[ "$class" = "foot"* || "$class" = "dterm"* ]]; then
-            tmux resize-pane -Z
+        #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
+        title=${title#TMUX:}
+        tmux_session=${title%%:*}
+        tmux resize-pane -t $tmux_session -Z
     else
-        if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-            hyprctl dispatch fullscreen 1
-        else
-            swaymsg "fullscreen"
-        fi
+        toggle_fullscreen
     fi
 else
-    if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-        hyprctl dispatch fullscreen 1
-    else
-        swaymsg "fullscreen"
-    fi
+    toggle_fullscreen
 fi
