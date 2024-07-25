@@ -31,9 +31,12 @@
 
 (setq ibuffer-saved-filter-groups
       '(("Default"
-         ("Files"  (or (mode . dired-mode) (visiting-file . "^.*$")))
+         ("Files"  (or (mode . dired-mode) (and (visiting-file . "^.*$")
+                                                (not (name . "caldav.txt.gpg"))
+                                                (not (name . "todo.txt.gpg")))))
          ("Shell"  (or (mode . shell-mode) (mode . vterm-mode)))
-         ("Emacs"  (or (name . "^\\*.*$") (name . "magit")))
+         ("Emacs"  (or (name . "^\\*.*$") (name . "caldav.txt.gpg")
+                       (name . "todo.txt.gpg") (name . "magit")))
          ("Hidden(gt则不显示此分组)"  (name . "^ ")))))
 
 (add-hook #'ibuffer-mode-hook
