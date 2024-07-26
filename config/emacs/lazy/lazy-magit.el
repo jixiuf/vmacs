@@ -13,13 +13,23 @@
    (t
     (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))))
 
+
   (cond
-   ((equal magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff"))
-    (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space" "--no-ext-diff")))
-   ((equal magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space" "--no-ext-diff"))
-    (setq magit-buffer-diff-args '("--no-ext-diff")))
+   ((equal magit-buffer-diff-args (append (get major-mode 'magit-diff-default-arguments)
+                                          '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")))
+    (message "diff  --ignore-blank-lines --ignore-space-change --ignore-all-space")
+    (setq magit-buffer-diff-args
+          (append (get major-mode 'magit-diff-default-arguments)
+                  '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space"))))
+   ((equal magit-buffer-diff-args
+           (append (get major-mode 'magit-diff-default-arguments)
+                   '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
+    (message "diff show whitespace change")
+    (setq magit-buffer-diff-args (get major-mode 'magit-diff-default-arguments)))
    (t
-    (setq magit-buffer-diff-args '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--no-ext-diff"))))
+    (message "diff --ignore-space-at-eol --ignore-space-change --ignore-blank-lines")
+    (setq magit-buffer-diff-args (append (get major-mode 'magit-diff-default-arguments)
+                                         '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")))))
 
 
   (if  (and (boundp 'vc-svn-diff-switches)(equal vc-svn-diff-switches t))
@@ -33,7 +43,7 @@
     )
    ((equal major-mode 'magit-status-mode)
     (magit-refresh)))
-  (message "toggle diff show whitespace "))
+  )
 ;; (setq-default magit-log-format-graph-function 'magit-log-format-unicode-graph)
 
 ;; ;;;###autoload

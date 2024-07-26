@@ -6,10 +6,9 @@
  ;; slow ,if t
  magit-diff-refine-hunk 'all  ;'all, This is super useful when only a single identifier/word is changed all over the place
  magit-diff-highlight-hunk-body nil
- magit-section-keep-region-overlay t
+ magit-section-keep-region-overlay nil
  magit-log-arguments  '("-n256" "--graph" "--decorate" "--follow") ;加了--follow ,rename 的 log 也能看到
  magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1
- magit-diff-section-arguments '("--ignore-space-at-eol" "--ignore-blank-lines" "--no-ext-diff") ;do not set this ;use  toggle-diff-whitespace to toggle
  magit-section-highlight-hook nil       ;不必 hightlight,光标移动的时候，默认会显示当前 section 区域
  magit-section-unhighlight-hook nil)
 (define-key magit-mode-map (kbd "M-w") 'magit-copy-section-value)
@@ -33,6 +32,7 @@
 
 
 ;; (define-key magit-mode-map "q" 'magit-mode-bury-buffer)
+;; 小指按tab 太疼，d 与tab 交换
 (define-key magit-mode-map "d" 'magit-section-toggle)
 (define-key magit-mode-map "e" 'magit-delete-thing)
 (define-key magit-mode-map "`" 'magit-process-buffer)
@@ -44,6 +44,7 @@
 (define-key magit-mode-map "P" 'magit-section-backward)
 ;; (transient-append-suffix 'magit-push ?v 'magit-push-current-to-pushremote)
 
+;; 不想按shift ,将pull fetch 常用功能 放到f上
 (setq magit-pull-or-fetch t)
 (define-key magit-mode-map (kbd "f") 'magit-pull)
 (define-key magit-mode-map (kbd "F") 'magit-fetch)
@@ -60,6 +61,7 @@
 
 
 
+;; 不想小指按p ,将push 常用功能 放到v上
 (transient-suffix-put 'magit-push "p" :key "v")
 (transient-suffix-put 'magit-rebase "p" :key "r")
 ;; (magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
