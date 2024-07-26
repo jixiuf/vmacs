@@ -7,7 +7,7 @@
   (interactive)
   (cond
    ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
-      (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
+    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
    ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space"))
     (setq vc-git-diff-switches t))
    (t
@@ -28,6 +28,9 @@
   (cond
    ((equal major-mode 'diff-mode)
     (revert-buffer))
+   ((equal major-mode 'magit-revision-mode)
+    (call-interactively #'magit-show-commit)
+    )
    ((equal major-mode 'magit-status-mode)
     (magit-refresh)))
   (message "toggle diff show whitespace "))
