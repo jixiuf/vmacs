@@ -29,22 +29,26 @@
 /* @import 'colors-waybar.css'; */
 
 * {
-  min-height: 0;
-  font-family: Jost;
-  font-size: 16px;
-  font-weight: 500;
+    border: none;
+    border-radius: 0px;
+    min-height: 0;
+    font-family: Jost;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 window#waybar {
-  transition-property: background-color;
-  transition-duration: 0.5s;
-  /* background-color: #1e1e2e; */
-  /* background-color: #181825; */
-  background-color: rgba(24, 24, 37, 0.6);
+    transition-property: background-color;
+    transition-duration: 0.5s;
+    /* color: @color7; */
+    /* background-color: #1e1e2e; */
+    /* background-color: #181825; */
+    background-color: rgba(24, 24, 37, 0);
+    /* color: #FBBA52; */
 }
 
 window#waybar.hidden {
-  opacity: 0.5;
+    opacity: 0.5;
 }
 #workspaces {
     background: @background-color;
@@ -62,6 +66,7 @@ window#waybar.hidden {
     border-radius: 12px;
     color: @color7;
     background-color: @color11;
+    /* background-color: rgba(24, 24, 37, 0); */
     transition: all 0.3s ease-in-out;
     opacity:0.5;
     font-size:13px;
@@ -88,16 +93,16 @@ window#waybar.hidden {
 
 
 #workspaces button.persistent {
-  color: #cba6f7;
-  background-color: #585b70;
+    color: #cba6f7;
+    background-color: #585b70;
 }
 #workspaces button.visible {
-  color: #1e1e2e;
-  background-color: #89b4fa;
+    color: #1e1e2e;
+    background-color: #89b4fa;
 }
 
 #workspaces button.urgent {
-  background-color: #ff0000;
+    background-color: #ff0000;
 }
 
 #clock,
@@ -112,62 +117,64 @@ window#waybar.hidden {
 #window,
 #idle_inhibitor,
 #memory {
-  min-height: 0;
-  padding: 4px 10px;
-  border-radius: 6px;
-  margin: 0px 1px;
-  color: #89b4fa;
-  background-color: #1e1e2e;
+    min-height: 0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin: 0px 1px;
+    color: #89b4fa;
+    /* background-color: #1e1e2e; */
+    background-color: rgba(30,30,46,0);  
+    /* background-color: rgba(24, 24, 37, 0); */
 }
 
 #custom-sep {
-  padding: 0px;
-  color: #585b70;
+    padding: 0px;
+    color: #585b70;
 }
 
 #cpu {
-  color: #94e2d5;
+    color: #94e2d5;
 }
 
 #memory {
-  color: #cba6f7;
+    color: #cba6f7;
 }
 
 #clock {
-  color: #89b4fa;
+    color: #89b4fa;
 }
 
 #clock.date {
-  color: #74c7ec;
+    color: #74c7ec;
 }
 
 #window {
-  color: #a6e3a1;
+    color: #a6e3a1;
 }
 
 #wireplumber {
-  color: #b4befe;
+    color: #b4befe;
 }
 
 #wireplumber.muted {
-  color: #a6adc8;
+    color: #a6adc8;
 }
 
 #custom-logo {
-  color: #89b4fa;
+    color: #89b4fa;
 }
 
 #custom-power {
-  color: #f38ba8;
-  padding-right: 8px;
-  font-size: 14px;
+    color: #f38ba8;
+    padding-right: 8px;
+    font-size: 14px;
 }
 
 @keyframes blink {
-  to {
-    background-color: #f38ba8;
-    color: #181825;
-  }
+    to {
+        background-color: #f38ba8;
+        color: #181825;
+    }
 }
 
 tooltip {
@@ -212,7 +219,7 @@ tooltip label {
     opacity:1.0;
 }
 #custom-notification {
-  color: #f38ba8;
-  padding: 8px;
-  font-size: 14px;
+    color: #f38ba8;
+    padding: 8px;
+    font-size: 14px;
 }
