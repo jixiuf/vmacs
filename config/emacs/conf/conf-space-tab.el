@@ -11,7 +11,9 @@
                       trailing space-before-tab newline
                       empty space-after-tab
                       missing-newline-at-eof)
- whitespace-action '(auto-cleanup))
+  whitespace-action nil
+  ;; whitespace-action '(auto-cleanup)
+)
 
 ;; 只对特定的major mode 启用ethan-wspace-mode,因为在makefile 中启用会有bug
 (dolist (hook '(java-mode-hook c++-mode-hook python-mode-hook c-mode-hook org-mode-hook perl-mode-hook
