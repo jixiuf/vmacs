@@ -6,7 +6,7 @@
 :PROPERTIES:
 :SYS:  `org-ai-default-chat-system-prompt`
 :temperature: 1.0
-:model: gpt-4-1106-preview
+:model: `org-ai-default-chat-model`
 :END:
 #+begin_ai
 [ME]: $0

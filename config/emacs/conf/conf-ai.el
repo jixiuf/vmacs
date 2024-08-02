@@ -1,4 +1,4 @@
-(setq org-ai-default-chat-model "gpt-4-1106-preview")
+(setq org-ai-default-chat-model "gpt-4o-mini")
 (setq org-ai-default-chat-system-prompt (car ai-system-prompts))
 (setq org-ai-image-directory "~/Documents/jianguo/jianguo/ai/images/")
 (setq org-ai-openai-api-token nil)
