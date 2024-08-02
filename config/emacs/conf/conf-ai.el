@@ -2,7 +2,7 @@
 (setq org-ai-default-chat-system-prompt (car ai-system-prompts))
 (setq org-ai-image-directory "~/Documents/jianguo/jianguo/ai/images/")
 (setq org-ai-openai-api-token nil)
-(setq org-ai-auto-fill t)
+;; (setq org-ai-auto-fill nil)
 (require 'org-ai)
 (add-hook 'org-mode-hook #'org-ai-mode)
 

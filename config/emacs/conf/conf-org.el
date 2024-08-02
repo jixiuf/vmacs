@@ -253,25 +253,24 @@ linktoc=all
 
 ;; C-c C-e export to github markdown
 (eval-after-load "ox" '(require 'ox-gfm nil t))
-;;;###autoload
+ ;;;###autoload
 (define-derived-mode novel-mode org-mode "Novel"
   "novel mode")
 
 (defun vmacs-org-mode-hook()
-  (auto-fill-mode)
   (modify-syntax-entry ?， "." ) ;; 识别中文标点
   (modify-syntax-entry ?。 "." ) ;; 识别中文标点
   (modify-syntax-entry ?！ "." ) ;; 识别中文标点
   (modify-syntax-entry ?？ "." ) ;; 识别中文标点
   (modify-syntax-entry ?、 "." ) ;; 识别中文标点
   (modify-syntax-entry ?； "." ) ;; 识别中文标点
-  (push '("[X]" . ?✅) prettify-symbols-alist)
-  (push '("[ ]" . ?❎) prettify-symbols-alist)
-  (prettify-symbols-mode 1)
+  ;; (push '("[X]" . ?✅) prettify-symbols-alist)
+  ;; (push '("[ ]" . ?❎) prettify-symbols-alist)
+  ;; (prettify-symbols-mode 1)
   (setq truncate-lines nil)
   (remove-hook 'completion-at-point-functions 'ispell-completion-at-point t)
   ;; (iimage-mode 1)
-  ;; (auto-fill-mode 1)
+  (auto-fill-mode 1)
   ;; (paragraph-indent-minor-mode 1)
   ;; (org-set-local 'fill-paragraph-function 'fill-paragraph-function-org-mode-hook)
   ;; (create-frame-font-mac)
