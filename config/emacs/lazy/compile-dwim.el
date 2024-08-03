@@ -120,7 +120,7 @@ Its value should be 'always or list like (filename run compile).")
     (c    (or (name . "\\.c$")
               (mode . c-mode))
           "gcc -o %n %f"
-          ,(if (equal system-type 'windows-nt) "%n" "./%n"))
+          dape-dwim)
 
     (c++  (or (name . "\\.cpp$")
               (mode . c++-mode))
