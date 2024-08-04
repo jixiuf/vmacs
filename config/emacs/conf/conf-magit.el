@@ -157,6 +157,22 @@
                                 (format "L%s" start))))))))
 
 
+(defun vmacs-magit-diff-visit-file (file &optional other-window)
+  "From a diff visit the appropriate version of FILE.
+
+C-u: Visit the worktree version of the appropriate file.  The location
+of point inside the diff determines which file is being visited.
+The visited version depends on what changes the diff is about.
+
+Note that this command only works if point is inside a diff.
+In other cases `magit-find-file' (which see) has to be used."
+  (interactive (list (magit-diff--file-at-point t t) current-prefix-arg))
+  (magit-diff-visit-file--internal file current-prefix-arg
+                                   'pop-to-buffer-same-window))
+
+(fset 'magit-diff-visit-file 'vmacs-magit-diff-visit-file)
+
+
 (provide 'conf-magit)
 
 ;; Local Variables:
