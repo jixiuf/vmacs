@@ -252,16 +252,15 @@
 (defun vmacs-tui(&optional f)
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
   ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
-  ;; (global-kkp-mode +1) ; for
   ;; (define-key input-decode-map "\e[1;1a" (kbd "C-<backspace>"))
   ;; (define-key input-decode-map "\e[1;1c"  [(control return)] )
   ;; (define-key input-decode-map "\e[1;1d" (kbd "C-,"))
   ;; (define-key input-decode-map "\e[1;1e" (kbd "C-."))
   ;; (define-key input-decode-map "\e[1;1f" (kbd "C-;"))
   ;; (define-key input-decode-map "\e[1;1h" (kbd "C-i"))
-  (define-key input-decode-map "\e[1;1i" (kbd "C-3"))
-  (define-key input-decode-map "\e[1;1j" (kbd "C-4"))
-  (define-key input-decode-map "\e[1;1k" (kbd "C-8"))
+  ;; (define-key input-decode-map "\e[1;1i" (kbd "C-3"))
+  ;; (define-key input-decode-map "\e[1;1j" (kbd "C-4"))
+  ;; (define-key input-decode-map "\e[1;1k" (kbd "C-8"))
   ;;b (xterm-mouse-mode 1)
   (global-kkp-mode)
   (require 'clipetty)

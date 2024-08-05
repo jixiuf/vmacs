@@ -1,5 +1,6 @@
 (setq-default
- indent-tabs-mode nil                   ;用空格代替tab
+ c-basic-offset 4
+ indent-tabs-mode nil                    ;用空格代替tab
  tab-width 4
  indicate-empty-lines t                 ;如果文件末尾有空行， 以可视地形式提醒
  ;; x-stretch-cursor nil                  ;如果设置为t，光标在TAB字符上会显示为一个大方块
