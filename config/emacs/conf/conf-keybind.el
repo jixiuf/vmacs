@@ -24,6 +24,7 @@
 (defvar-keymap  m-mode-map
   "f" #'mark-defun
   "m" #'set-mark-command                ;C-@
+  "v" #'rectangle-mark-mode
   "q" #'fill-paragraph
   "d" #'gt-do-translate
   "," #'pop-to-mark-command
