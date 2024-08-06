@@ -3,16 +3,16 @@
 resize_window() {
     case "$1" in
         left*)
-            hyprctl dispatch resizeactive -15 0
+            hyprctl dispatch resizeactive -30 0
             ;;
         right*)
-            hyprctl dispatch resizeactive 15 0
+            hyprctl dispatch resizeactive 30 0
             ;;
         up*)
-            hyprctl dispatch resizeactive 0 -15
+            hyprctl dispatch resizeactive 0 -20
             ;;
         down*)
-            hyprctl dispatch resizeactive 0 15
+            hyprctl dispatch resizeactive 0 20
             ;;
     esac
 }
