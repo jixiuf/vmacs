@@ -85,6 +85,6 @@ media-libs/opencolorio -opengl
 gui-apps/wf-recorder pulseaudio
 sys-boot/grub mount
 sys-kernel/installkernel dracut
-
+dev-java/openjdk-bin source
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit

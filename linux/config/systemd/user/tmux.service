@@ -4,8 +4,8 @@ Description=tmux session for user
 [Service]
 Type=forking
 # WARNING: when in etc， use %I instead of %u here; %u=root in system services.
-ExecStart=/usr/bin/tmux new-session -s jixiuf -d -c /home/jixiuf
-ExecStop=/usr/bin/tmux kill-session -t jixiuf
+ExecStart=tmux new-session -s jixiuf -d -c /home/jixiuf
+ExecStop=tmux kill-session -t jixiuf
 Restart=always
 Environment="GTK_THEME=Adwaita-dark"
 Environment="HYPRLAND_CMD=Hyprland"

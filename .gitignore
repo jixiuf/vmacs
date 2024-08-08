@@ -49,3 +49,5 @@
 /config/emacs/org-caldav-86bba5a.el
 /config/emacs/org-caldav-backup.org
 /config/emacs/gt-known-words.txt
+/config/emacs/share/
+/config/emacs/eglot-java-eclipse-jdt-cache/
