@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # need hypr-trace-focus for tmux pane
+arg="$1"
 next-window() {
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
         hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
@@ -39,10 +40,12 @@ fi
 # if front app exits
 if [ -n "$appinfo" ]; then
     # ( "$app_cnt" = "1" || "$fullscreen" = "true" )
-    if [[ "$class" = "emacs" ]]; then
+    if [[ "$class" = "emacs" && -z "$arg" ]]; then
         echo key ctrl+super+o|dotoolc
         exit 0
-    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) ]]; then
+    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* &&
+                ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&
+                -z "$arg" ]]; then
         echo key ctrl+super+o|dotoolc
         exit 0
     elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
