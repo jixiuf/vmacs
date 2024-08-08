@@ -3,4 +3,4 @@
 	url = https://github.com/jixiuf/meow.git
 [submodule "config/emacs/submodule/org-caldav"]
 	path = config/emacs/submodule/org-caldav
-	url = git@github.com:jixiuf/org-caldav.git
+	url = https://github.com/jixiuf/org-caldav.git
