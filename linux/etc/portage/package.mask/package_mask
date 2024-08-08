@@ -6,4 +6,3 @@
 <=app-i18n/fcitx-5.0.0
 >=dev-cpp/yaml-cpp-0.8.0-1
 <=media-gfx/blender-4.0.0
->gui-wm/hyprland-0.41 

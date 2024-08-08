@@ -121,22 +121,30 @@
 ;;;###autoload
 (defun move-border-left (arg)
   (interactive "P")
-  (move-border-left-or-right arg t))
+  (if (> (length (window-list)) 1)
+      (move-border-left-or-right arg t)
+    (call-process "resize-window" nil nil nil "left" "skip-emacs")))
 
 ;;;###autoload
 (defun move-border-right (arg)
   (interactive "P")
-  (move-border-left-or-right arg nil))
+  (if (> (length (window-list)) 1)
+      (move-border-left-or-right arg nil)
+    (call-process "resize-window" nil nil nil "right" "skip-emacs")))
 
 ;;;###autoload
 (defun move-border-up (arg)
   (interactive "P")
-  (move-border-up-or-down arg t))
+  (if (> (length (window-list)) 1)
+      (move-border-up-or-down arg t)
+    (call-process "resize-window" nil nil nil "up" "skip-emacs")))
 
 ;;;###autoload
 (defun move-border-down (arg)
   (interactive "P")
-  (move-border-up-or-down arg nil))
+  (if (> (length (window-list)) 1)
+      (move-border-up-or-down arg nil)
+    (call-process "resize-window" nil nil nil "down" "skip-emacs")))
 
 (provide 'lazy-window)
 

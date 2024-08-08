@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+arg="$2"
 
 resize_window() {
     case "$1" in
@@ -111,7 +112,7 @@ fi
 
 if [[ "$class" = "emacs" && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$fullscreen" = "1"  ||"$floating" == "true" ||"$floating" == "floating_con" ) ]]; then
     resize_emacs_window $1
-elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* ]]; then
+elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"*  && -z "$arg" ]]; then
     resize_tmux_emacs_window $1
 elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true"|| "$fullscreen" = "1" ||"$floating" == "floating_con"||"$floating" == "true" ) ]]; then
     resize_tmux_window $1 $title
