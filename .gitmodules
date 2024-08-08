@@ -1,3 +1,6 @@
 [submodule "config/emacs/submodule/meow"]
 	path = config/emacs/submodule/meow
 	url = https://github.com/jixiuf/meow.git
+[submodule "config/emacs/submodule/org-caldav"]
+	path = config/emacs/submodule/org-caldav
+	url = https://github.com/jixiuf/org-caldav.git
