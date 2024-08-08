@@ -252,30 +252,11 @@
 (defun vmacs-tui(&optional f)
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
   ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
-  ;; (define-key input-decode-map "\e[1;1a" (kbd "C-<backspace>"))
-  ;; (define-key input-decode-map "\e[1;1c"  [(control return)] )
-  ;; (define-key input-decode-map "\e[1;1d" (kbd "C-,"))
-  ;; (define-key input-decode-map "\e[1;1e" (kbd "C-."))
-  ;; (define-key input-decode-map "\e[1;1f" (kbd "C-;"))
-  ;; (define-key input-decode-map "\e[1;1h" (kbd "C-i"))
-  ;; (define-key input-decode-map "\e[1;1i" (kbd "C-3"))
-  ;; (define-key input-decode-map "\e[1;1j" (kbd "C-4"))
-  ;; (define-key input-decode-map "\e[1;1k" (kbd "C-8"))
   ;;b (xterm-mouse-mode 1)
   (global-kkp-mode)
   (require 'clipetty)
-  (global-clipetty-mode)
-  ;; (define-key input-decode-map "\e[1;1l" (kbd "C-1"))
-  ;; (define-key input-decode-map "\e[1;1m" (kbd "C-m"))
-  )
+  (global-clipetty-mode))
 (add-hook 'tty-setup-hook #'vmacs-tui)
-
-
-;;   (global-set-key (kbd "C-[ [ 1 l") (key-binding (kbd "C-<f3>") ))   ;iterm2 map to ctrl-f3
-;;   (global-set-key (kbd "C-[ [ 1 b") (key-binding (kbd "C-<f2>") )) ; map to ctrl-f2
-;;   ) ;iterm2 特有的配置
-;; ;; (iterm2-keybind-mapping)
-;; (add-hook 'after-init-hook 'iterm2-keybind-mapping)
 
 (provide 'conf-keybind)
 

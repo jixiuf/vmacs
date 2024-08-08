@@ -4,5 +4,4 @@
 # >=sys-devel/clang-16.0.6
 #>=net-libs/webkit-gtk-2.40.4-r410
 <=app-i18n/fcitx-5.0.0
->=dev-cpp/yaml-cpp-0.8.0-1
 <=media-gfx/blender-4.0.0
