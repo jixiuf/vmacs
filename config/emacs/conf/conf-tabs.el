@@ -3,7 +3,7 @@
 (global-set-key  (kbd "C-.") 'tab-line-switch-to-next-tab)
 (setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
-(setq tab-line-separator (propertize "▶" 'face  `(:inherit tab-line-tab-inactive :foreground "cyan")))
+(setq tab-line-separator (propertize " " 'face  `( :foreground "cyan")))
 (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
