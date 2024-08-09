@@ -79,7 +79,7 @@
   (interactive)
   (let ((curframe (selected-frame))
         (fs (frame-list)))
-    (if (= (gui-frame-cnt) 1)
+    (if (<= (gui-frame-cnt) 1)
         (vmacs-delete-other-windows)
       (dolist (f fs)
         (unless (equal f curframe)
