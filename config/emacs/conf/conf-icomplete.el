@@ -76,6 +76,7 @@
                                 describe-function
                                 describe-variable
                                 yank-pop
+                                consult-dir
                                 consult-ripgrep
                                 consult-line
                                 consult-ripgrep-default-symbol
