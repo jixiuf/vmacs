@@ -165,6 +165,7 @@ keymap:
       super-C-Enter: [C-c,"4"] 
       super-C-Backslash: [C-c,Space] 
       super-C-Backspace: [C-c,M-2] 
+      C-Backspace: M-Backspace 
       super-C-w: [C-c,k] 
       super-C-t: [C-c ,c] 
       super-M-n: [C-c ,n] 
