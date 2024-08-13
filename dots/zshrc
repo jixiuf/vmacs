@@ -340,7 +340,7 @@ fi
 # add-zsh-hook precmd vcs_info_wrapper
 # if [ -z "$INSIDE_EMACS" ]; then
 # fi
-if [ "$COLORTERM" = "truecolor" ]; then
+if [[ "$COLORTERM" = "truecolor" || "$TERM" == *"direct" ]]; then
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666666,bg=underline"
 fi
 if [ -f ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then

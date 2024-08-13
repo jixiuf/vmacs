@@ -2,7 +2,8 @@
 # [shell]
 # args = ["-l", "-c", "tmux attach || tmux"]
 # program = "/bin/zsh"
-
+[env]
+TERM= "alacritty-direct"
 
 [colors.bright]
 black = "0x666666"
@@ -92,25 +93,25 @@ action = "Copy"
 key = "C"
 mods = "Control|Super"
 
-[[keyboard.bindings]]
-action = "PasteSelection"
-key = "V"
-mods = "Control|Shift"
+# [[keyboard.bindings]]
+# action = "PasteSelection"
+# key = "V"
+# mods = "Control|Shift"
 
-[[keyboard.bindings]]
-action = "ClearHistory"
-key = "L"
-mods = "Control|Shift"
+# [[keyboard.bindings]]
+# action = "ClearHistory"
+# key = "L"
+# mods = "Control|Shift"
 
-[[keyboard.bindings]]
-action = "ScrollPageDown"
-key = "V"
-mods = "Control"
+# [[keyboard.bindings]]
+# action = "ScrollPageDown"
+# key = "V"
+# mods = "Control"
 
-[[keyboard.bindings]]
-action = "ToggleViMode"
-key = "V"
-mods = "Alt"
+# [[keyboard.bindings]]
+# action = "ToggleViMode"
+# key = "V"
+# mods = "Alt"
 
 [[keyboard.bindings]]
 action = "ToggleViMode"
