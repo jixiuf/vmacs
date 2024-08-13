@@ -40,7 +40,7 @@ if [ -n "$appinfo" ]; then
         cwd="${cwd/#\~/$HOME}"
         echo $cwd
         exit 0
-    elif [[ "$class" = "org.wezfurlong.wezterm" ||"$class" = "foot" ||"$class" = "kitty" || "$class" = "Alacritty" || "$class" = "dterm" ]]; then
+    elif [[ "$class" = "org.wezfurlong.wezterm" ||"$class" = "foot"* ||"$class" = "kitty" || "$class" = *"Alacritty"* || "$class" = "dterm" ]]; then
         # for zsh
         # autoload -U add-zsh-hook
         # update_cwd(){

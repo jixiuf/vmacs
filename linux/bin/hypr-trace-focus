@@ -74,7 +74,7 @@ set_tmux_pane_id(){
     class=`echo $appinfo|jq -r '.class'|head -n 1`
     title=`echo $appinfo|jq -r '.title'|head -n 1`
     # 当激活一个tmux windows时， 记录下窗口中pane 的，以方便other-window 里进行窗口切换
-    if [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
+    if [[ ( "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
         title=${title#TMUX:}
         tmux_session=${title%%:*}
         tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id 2>/dev/null|tr -d '\n')

@@ -140,11 +140,11 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --floating --float-only  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --floating --float-only  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
 
   - name: terminal emacs
     application:
-      only: [dterm,kitty,Alacritty,foot,foot-ws]
+      only: [dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
     window:
       only: [/GNU\/Emacs/ , /History/, /Last command output/, /EDITING SCROLLBACK/ ]
     remap:
@@ -157,7 +157,7 @@ keymap:
       
   - name: terminal tmux
     application:
-      only: [dterm,kitty,Alacritty,foot,foot-ws]
+      only: [dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
     window:
       only: [/TMUX:/ ]
     remap:
@@ -183,6 +183,26 @@ keymap:
       #     C-c: C-c              # C-xC-x send C-x
       #     C-f: [C-Shift-m]         # open file:linenum
       #     C-j: { launch: ["open-with"]}
+  - name: Terminal
+    application:
+      only: [Alacritty]
+    remap:
+      super-C-w: super-C-q
+      # super-C-Enter:
+      #   - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
+      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --class=dterm --working-directory=$(cwd||echo $HOME) "] }
+      # C-l: [C-l,C-Shift-l,C-Shift-l]
+      # C-Enter: [C-y,Enter]
+      # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
+      C-x:
+        remap:
+          C-x: C-x              # C-xC-x send C-x
+          C-c: super-C-q
+      C-c:
+        remap:
+          C-c: C-c              # C-xC-x send C-x
+          C-f: C-Shift-M        # hints
+          C-j: { launch: ["open-with"]}
       
   - name: foot
     application:
@@ -260,26 +280,6 @@ keymap:
   #         C-n: C-M-n            #next prompt
   #         C-p: C-M-p  #prev prompt
   #         C-j: { launch: ["open-with"]}
-  # - name: Terminal
-  #   application:
-  #     only: [Alacritty]
-  #   remap:
-  #     super-C-w: super-C-q
-  #     super-C-Enter:
-  #       - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-  #     super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --class=dterm --working-directory=$(cwd||echo $HOME) "] }
-  #     C-l: [C-l,C-Shift-l,C-Shift-l]
-  #     C-Enter: [C-y,Enter]
-  #     C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
-  #     C-x:
-  #       remap:
-  #         C-x: C-x              # C-xC-x send C-x
-  #         C-c: super-C-q
-  #     C-c:
-  #       remap:
-  #         C-c: C-c              # C-xC-x send C-x
-  #         C-e: C-Shift-M        # hints
-  #         C-j: { launch: ["open-with"]}
   - name: org.keepassxc.KeePassXC
     application:
       only: [org.keepassxc.KeePassXC]
@@ -339,7 +339,7 @@ keymap:
       C-d: delete
   - name: Default -- some of these are overridden by the above definitions
     application:
-      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,kitty,Alacritty,org.wezfurlong.wezterm]
+      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,kitty,Alacritty   ,org.wezfurlong.wezterm  ]
       # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
     remap:
       super-C-a: C-a

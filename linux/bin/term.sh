@@ -4,13 +4,14 @@
 # 即 让alacritty 的--working-directory 支持emacs 的tramp 语法
 #!/bin/bash
 
-# term=alacritty
-# termexec="-e"
-# working_directory_arg="--working-directory"
-term=foot
-termexec=""
+term=alacritty
+termexec="-e"
 working_directory_arg="--working-directory"
-class_arg="--app-id"
+class_arg="--class"
+# term=foot
+# termexec=""
+# working_directory_arg="--working-directory"
+# class_arg="--app-id"
 
 
 # private variable
@@ -70,6 +71,6 @@ else
     if [ -n "$working_directory" ]; then
         termargs=" $termargs $working_directory_arg=$working_directory"
     fi
-    $term $termargs $other_args
+    $term $termargs $termexec $other_args
         # $term  $other_args
 fi

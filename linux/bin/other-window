@@ -43,12 +43,12 @@ if [ -n "$appinfo" ]; then
     if [[ "$class" = "emacs" && -z "$arg" ]]; then
         echo key ctrl+super+o|dotoolc
         exit 0
-    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* &&
+    elif [[ ( "$class" = "foot"*  ||"$class" = "Alacritty"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* &&
                 ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&
                 -z "$arg" ]]; then
         echo key ctrl+super+o|dotoolc
         exit 0
-    elif [[ ( "$class" = "foot"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
+    elif [[ ( "$class" = "foot"* ||"$class" = "Alacritty"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
         # need hypr-trace-focus
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
