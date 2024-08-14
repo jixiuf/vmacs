@@ -106,14 +106,6 @@ man() {
     emacsclient -nw -e " (man \"$1\")"
 }
 
-go env -w GOPRIVATE="*.luojilab.com"
-# go env -w GOSUMDB=off
-go env -w GOSUMDB="sum.golang.google.cn"
-# go env -w GOPROXY="https://goproxy.cn,direct"
-# go env -w GOPROXY=https://goproxy.io,direct
-# go env -w GOPROXY=
-#go env -w GOPROXY="https://mirrors.luojilab.com/goproxy,https://goproxy.cn,direct"
-go env -w GOPROXY="https://goproxy.cn,direct"
 # export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles
 # brew pin gcc 禁止 gcc upgrade
 export HOMEBREW_NO_AUTO_UPDATE=1
@@ -472,3 +464,13 @@ if [ $(uname -s ) = "Linux" ] ; then
         XDG_SESSION_DESKTOP=sway sway 2>&1 >/tmp/sway.log
     fi
 fi
+
+[[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
+go env -w GOPRIVATE="*.luojilab.com"
+# go env -w GOSUMDB=off
+go env -w GOSUMDB="sum.golang.google.cn"
+# go env -w GOPROXY="https://goproxy.cn,direct"
+# go env -w GOPROXY=https://goproxy.io,direct
+# go env -w GOPROXY=
+#go env -w GOPROXY="https://mirrors.luojilab.com/goproxy,https://goproxy.cn,direct"
+go env -w GOPROXY="https://goproxy.cn,direct"
