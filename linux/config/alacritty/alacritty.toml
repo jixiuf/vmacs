@@ -78,10 +78,10 @@ key = "Key2"
 mode = "~Vi"
 mods = "Control"
 
-[[keyboard.bindings]]
-action = "Paste"
-key = "Y"
-mods = "Control"
+# [[keyboard.bindings]]
+# action = "Paste"
+# key = "Y"
+# mods = "Control"
 
 [[keyboard.bindings]]
 action = "Paste"
