@@ -5,5 +5,5 @@
 pwd=$(tmux display-message -p -F "#{pane_current_path}")
 
 file=$pwd/$(mktemp *pager-XXXXXX*)
-tmux capture-pane -e -p -S- -E-   > $file
+tmux capture-pane -J -e -p -S- -E-   > $file
 tmux new-window -n:edit-scrollback "emacsclient $@ $file;rm $file"
