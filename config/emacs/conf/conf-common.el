@@ -79,6 +79,8 @@
  fill-column 100
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  tramp-shell-prompt-pattern (concat "\\(?:^\\|\r\\)" "[^]#@$%>\n]*#?[]#$@%>] *\\(\e\\[[0-9;]*[a-zA-Z-.] *\\)*")
+ comint-prompt-regexp "^[^#$%>\n]*[#$%>] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
+ shell-prompt-pattern "^[^#$%>\n]*[#$%>] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
  tramp-default-method "ssh" ;Faster than the default scp
  tramp-verbose 1
  find-function-C-source-directory "~/repos/emacs/src/"
@@ -219,6 +221,8 @@
     (require 'ansi-color)
     (require 'ansi-osc)
     (save-place-local-mode -1)
+    (setq comint-use-prompt-regexp t )
+    (shell-mode)
     (compilation-minor-mode 1)
     (ansi-osc-apply-on-region  (point-min)(point-max))
     (ansi-color-apply-on-region (point-min)(point-max))
@@ -229,6 +233,7 @@
     (delete-file (buffer-file-name))
     (tab-line-mode -1)
     (forward-char 1)
+    (meow-normal-mode)
     (local-set-key "q" #'vmacs-kill-buffer-dwim))
   ;; (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
   ;; (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim))

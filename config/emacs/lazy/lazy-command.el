@@ -601,6 +601,11 @@ Move point to beginning-of-line ,if point was already at that position,
   (cond
    ((derived-mode-p 'vterm-mode)
     (call-interactively #'vterm-beginning-of-line))
+   ((derived-mode-p 'comint-mode)
+    (if (equal last-command 'comint-bol)
+        (beginning-of-line)
+      (call-interactively #'comint-bol)
+      (setq this-command 'comint-bol)))
    ((derived-mode-p 'eshell-mode)
     (let ((oldpos (point)))
       (eshell-bol)
