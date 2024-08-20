@@ -1,9 +1,5 @@
-;; (global-set-key (kbd "s-,") 'vterm-toggle)
-;; (global-set-key (kbd "s-C-,") 'vterm-toggle)
-;; (global-set-key  (kbd "s-t") 'vterm-toggle-cd)
-;; (global-set-key  (kbd "s-C-t") 'vterm-toggle-cd)
 (setq widen-automatically nil)         ;for goto-line
-(defvar-keymap  g-mode-map
+(defvar-keymap  g-mode-map             ;meow: g
  "g" #'vmacs-goto-line
  "/" #'consult-focus-lines
  "z" #'consult-hide-lines
@@ -21,7 +17,7 @@
  "," 'goto-last-change
  "." 'goto-last-change-reverse
  )
-(defvar-keymap  m-mode-map
+(defvar-keymap  m-mode-map              ;meow: m
   "f" #'mark-defun
   "m" #'set-mark-command                ;C-@
   "v" #'rectangle-mark-mode
@@ -59,22 +55,12 @@
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
 
-;; (global-set-key [(tab)]       'smart-tab)
-;; (global-set-key (kbd "TAB")   'smart-tab)
-;; (global-set-key (kbd "<C-i>") 'counsel-git) ;Ctrl-i not tab
-(global-set-key (kbd "C-9")   #'(lambda() (interactive)  (vmacs-insert-pair "(" ")")))
-(global-set-key (kbd "C-0")   #'(lambda() (interactive)(insert ")")))
 (global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))
 (defun vmacs-isearch-insert_()
   (interactive)
   (isearch-printing-char ?_))
 (define-key isearch-mode-map  (kbd "C--")   'vmacs-isearch-insert_)
-(defun vmacs-isearch-insert-quote()
-  (interactive)
-  (isearch-printing-char ?\"))
 
-(define-key isearch-mode-map  (kbd "C-'")   'vmacs-isearch-insert-quote)
-(global-set-key (kbd "C-'") #'(lambda() (interactive)  (vmacs-insert-pair "\"" "\"")))
 (define-key isearch-mode-map  (kbd "M-n")   'isearch-forward-thing-at-point)
 (define-key isearch-mode-map  (kbd "M-p")   'consult-isearch-history)
 (define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
@@ -89,7 +75,6 @@
 (vmacs-leader "," #'pop-global-mark)
 (advice-add 'pop-global-mark :before #'deactivate-mark)
 
-(global-set-key (kbd "C-7")   #'(lambda() (interactive)(insert "&")))
 (setq shell-command-buffer-name "*Messages*")
 (setq shell-command-default-error-buffer "*Messages*")
 (setq shell-command-dont-erase-buffer nil)

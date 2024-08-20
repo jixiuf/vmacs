@@ -21,10 +21,10 @@ TogglePreedit=
 0=Shift_L
 
 [Hotkey/EnumerateForwardKeys]
-0=Control+Shift_L
+# 0=Control+Shift_L
 
 [Hotkey/EnumerateBackwardKeys]
-0=Control+Shift_R
+# 0=Control+Shift_R
 
 [Hotkey/PrevPage]
 0=Up

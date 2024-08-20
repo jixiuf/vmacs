@@ -137,6 +137,12 @@ keymap:
     application:
       only: [emacs,Emacs]
     remap:
+      C-7: [Shift_L-7]
+      C-9: [Shift_L-9]
+      C-0: [Shift_L-0]
+      # C-MINUS: Shift_L-MINUS
+      C-APOSTROPHE: [Shift_L-APOSTROPHE] #' "
+      
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
@@ -148,6 +154,11 @@ keymap:
     window:
       only: [/GNU\/Emacs/ , /History/, /Last command output/, /EDITING SCROLLBACK/ ]
     remap:
+      C-7: [Shift_L-7]
+      C-9: [Shift_L-9]
+      C-0: [Shift_L-0]
+      # C-MINUS: Shift_L-MINUS
+      C-APOSTROPHE: [Shift_L-APOSTROPHE] #' "
       super-C-w: [C-x ,Shift-k] 
       M-v: M-v
       C-c: [C-c,C-c]
