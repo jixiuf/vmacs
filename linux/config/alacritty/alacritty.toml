@@ -72,11 +72,11 @@ mods = "Control|Shift"
 enabled = true
 mods = "None"
 
-[[keyboard.bindings]]
-action = "ToggleViMode"
-key = "Key2"
-mode = "~Vi"
-mods = "Control"
+# [[keyboard.bindings]]
+# action = "ToggleViMode"
+# key = "Key2"
+# mode = "~Vi"
+# mods = "Control"
 
 # [[keyboard.bindings]]
 # action = "Paste"
