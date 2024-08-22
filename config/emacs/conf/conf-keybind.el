@@ -231,13 +231,10 @@
   (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
   (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
 
-;; iterm2 下实同一些 终端下本没有的按键
-;;参见 这个链接中含中文  http://jixiuf.github.io/blog/emacs-在 mac 上的安装及一些相应配置/#orgheadline15
-;;   (global-set-key (kbd "C-[ [ 1 a") (key-binding(kbd "C-<backspace>"))) ;== "M-[ a a" iterm2 map to ctrl-backspace
 (defun vmacs-tui(&optional f)
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
   ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
-  ;;b (xterm-mouse-mode 1)
+  (xterm-mouse-mode 1)
   (global-kkp-mode)
   (require 'clipetty)
   (global-clipetty-mode))
