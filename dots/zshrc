@@ -459,13 +459,13 @@ function goi(){
 }
 
 
-if [ $(uname -s ) = "Linux" ] ; then
-    if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-        Hyprland 2>&1 >/tmp/sway.log ;exit
-    elif [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 2 ]; then
-        XDG_SESSION_DESKTOP=sway sway 2>&1 >/tmp/sway.log
-    fi
-fi
+# if [ $(uname -s ) = "Linux" ] ; then
+    # if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+    #     Hyprland 2>&1 >/tmp/sway.log ;exit
+    # elif [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 2 ]; then
+    #     XDG_SESSION_DESKTOP=sway sway 2>&1 >/tmp/sway.log
+    # fi
+# fi
 
 [[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
 go env -w GOPRIVATE="*.luojilab.com"
