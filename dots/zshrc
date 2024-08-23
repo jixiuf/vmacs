@@ -467,7 +467,13 @@ function goi(){
     # fi
 # fi
 
-[[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
+function gv(){
+    if [ `which gvm| grep -c "/gvm" ` -eq 0 ]; then  \
+        [[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
+    fi
+    ~/.gvm/bin/gvm $@
+}
+# [[ -s ~/.gvm/scripts/gvm ]] && source ~/.gvm/scripts/gvm
 go env -w GOPRIVATE="*.luojilab.com"
 # go env -w GOSUMDB=off
 go env -w GOSUMDB="sum.golang.google.cn"
