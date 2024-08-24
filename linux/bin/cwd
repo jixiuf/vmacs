@@ -10,11 +10,15 @@
 #           print -Pn "\e]2;$(pwd)\a" #s
 #       }
 #       add-zsh-hook precmd update_cwd
-# bashrc
-# tramp(){
-#    printf "\e]2;/ssh:$(whoami)@$(ip addr | grep 'inet\b' |grep -v 127.0.0.1 | awk '{print $2}' | cut -d/ -f1):$(pwd)\a"
-# }
-# PS1=$PS1'\[$(tramp)\]'
+#    bashrc
+#    tramp(){
+#       printf "\e]2;/ssh:$(whoami)@$(ip addr | grep 'inet\b' |grep -v 127.0.0.1 | awk '{print $2}' | cut -d/ -f1):$(pwd)\a"
+#    }
+#     PS1=$PS1'\[$(tramp)\]'
+#   if you use tmux, the format of tmux window title should be: "TMUX:session:path"
+#      set -g set-titles on
+#      set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
+
 
 # 通过当前激活 window 的 title 获取当前的工作目录，
 # 目前支持 emacs (需要配置 frame-title-format,如下文注释)
