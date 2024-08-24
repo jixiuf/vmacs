@@ -1,13 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # make alacritty/foot/kitty --working-directory suppporting emacs tramp path
-# alacritty/foot/kitty的简单包装,，当 --working-directory=/ssh:root@host:/path时 将其转为
-# term.sh  --working-directory=/tmp
-# term.sh  --working-directory=/ssh:root@host:/tmp
-# term.sh --class=dterm --working-directory=/ssh:bench:/ 
-# term.sh --class=dterm --working-directory=/ssh:bench:/ -- tmux.sh --session dterm --cwd /ssh:bench:/
-# term.sh  --working-directory=$cwd -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)
+# --working-directory support path like:
+# root@host:/path
+# root@host#2222:/path
+# /ssh:root@host:/path
+# /ssh:root#2222@host:/path
+
+# term.sh --working-directory=/tmp
+# term.sh --working-directory=root@host:/tmp
+# term.sh --working-directory=/ssh:root@host:/tmp
+# term.sh --working-directory=/ssh:root@host:/ -- tmux.sh --session dterm --cwd /ssh:root@host:/
+# term.sh --class=dterm --working-directory=/ssh:root@bench:/
+
+# term.sh --working-directory=$(cwd||echo $HOME)
+# term.sh --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)
+
 # 即 让alacritty 的--working-directory 支持emacs 的tramp 语法
-#!/bin/bash
 TERMINAL=${TERMINAL:-alacritty}
 if [ "$TERMINAL"  = "alacritty" ]; then
     TERMINAL_EXEC="-e"
@@ -69,14 +77,22 @@ if [[ $working_directory =~ $regex ]]; then
   host=${BASH_REMATCH[3]}
   path=${BASH_REMATCH[4]}
   cmd="ssh -t $userat$host \"cd $path && exec "'\$SHELL'"\" && exec $SHELL"
-  $TERMINAL $term_args $TERMINAL_EXEC $other_args  "--" $SHELL -i -c \'$cmd\'
+  if [ -z "$other_args" ]; then
+     eval $TERMINAL $term_args $TERMINAL_EXEC  $SHELL  -i -c \'$cmd\'
+  else
+       $TERMINAL $term_args $TERMINAL_EXEC $other_args  "--" $SHELL -i -c \'$cmd\'
+  fi
 elif [[ $working_directory =~ $regex2 ]]; then
   userat=${BASH_REMATCH[2]}
   host=${BASH_REMATCH[3]}
   port=${BASH_REMATCH[4]}
   path=${BASH_REMATCH[5]}
   cmd="ssh -t $userat$host -p $port \"cd $path && exec "'\$SHELL'"\" && exec $SHELL"
-  $TERMINAL $term_args $TERMINAL_EXEC $other_args  "--" $SHELL -i -c \'$cmd\'
+  if [ -z "$other_args" ]; then
+     eval $TERMINAL $term_args $TERMINAL_EXEC  $SHELL  -i -c \'$cmd\'
+  else
+       $TERMINAL $term_args $TERMINAL_EXEC $other_args  "--" $SHELL -i -c \'$cmd\'
+  fi
 else
     if [ -n "$working_directory" ]; then
         term_args=" $term_args $WORKING_DIRECTORY_ARG=$working_directory"
