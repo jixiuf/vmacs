@@ -24,10 +24,11 @@ TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*
 PROG=$( basename "$0" )
 float_only=""
 floating=""
+toggle=""
 maximize=""
 cd=""
 
-TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -42,6 +43,7 @@ for i in "$@"; do
             echo "--float-only only match floating app"
             echo "--maximize maximize the target window"
             echo "--floating make the target window floating"
+            echo "--toggle toggle between the current window and target window"
             echo "--cd "
             echo "  when the target window is a termianl(with tmux running in it) and the working-directory from current window title is not empty, then after switch to the terminal it would insert a cd command"|fmt
             echo "  it support getting the workding-directory from window title, currently it support emacs and termianl"|fmt
@@ -54,6 +56,10 @@ for i in "$@"; do
             ;;
         --cd*)
             cd="set"
+            shift
+            ;;
+        --toggle*)
+            toggle="set"
             shift
             ;;
 
@@ -156,9 +162,13 @@ else
     # target_pid=`echo $target_appinfo|jq -r '.pid'`
     if [[ ! ("$front_class" =~ $target) ]]; then
         target_appinfo=`echo $target_appinfo|head -n 1`
-    elif [  "$front_addr" == "$last_target_addr" ]; then
-        focus_last_win
-        exit
+    elif [[  "$front_addr" == "$last_target_addr"  ]]; then
+        if [  -n "$toggle" ]; then
+            focus_last_win
+            exit
+        else
+            target_appinfo=`echo $target_appinfo|head -n 1`
+        fi
     else
         # len($target_appinfo)>1 and $front_app is one of them
         # and $front_app is not the last one of them
