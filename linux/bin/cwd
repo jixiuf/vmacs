@@ -1,16 +1,10 @@
 #!/bin/sh
-# 通过当前激活 window 的 title 获取当前的工作目录，
-# 目前支持 emacs (需要配置 frame-title-format,如下文注释)
-# 后续可以添加 alacritty/foot 等的支持(需要在 zsh/bash 中配置一定的规则以更新 window title)
-# 可以实现的功能：
-# 比如说 在 emacs 中 当前在/etc 目录下，我想打开 alacritty 终端并进入 /etc 目录，则可以使用以下命令
-#  alacritty  --working-directory=$(cwd||echo $HOME)
-# get current work directory of front most app
+# get current working directory from window title
 # supported app:
 # 1. emacs
-#       frame-title-format '( "%f  GNU/Emacs<" (:eval (expand-file-name default-directory)) ">")
-#       详见：https://github.com/jixiuf/vmacs/blob/master/conf/conf-common.el#L56
-# 2. alacritty with zsh
+#       (setq frame-title-format '( "%f  GNU/Emacs<" (:eval (expand-file-name default-directory)) ">"))
+#       see https://github.com/jixiuf/vmacs/blob/master/config/emacs/conf/conf-common.el#L16
+# 2. terminal with zsh
 #       autoload -U add-zsh-hook
 #       update_cwd(){
 #           print -Pn "\e]2;$(pwd)\a" #s
@@ -22,11 +16,20 @@
 # }
 # PS1=$PS1'\[$(tramp)\]'
 
+# 通过当前激活 window 的 title 获取当前的工作目录，
+# 目前支持 emacs (需要配置 frame-title-format,如下文注释)
+# 后续可以添加 alacritty/foot 等的支持(需要在 zsh/bash 中配置一定的规则以更新 window title)
+# 可以实现的功能：
+# 比如说 在 emacs 中 当前在/etc 目录下，我想打开 alacritty 终端并进入 /etc 目录，则可以使用以下命令
+#  alacritty  --working-directory=$(cwd||echo $HOME)
+
+TERM_CLASS_REGEX="org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm"
+
 if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     appinfo=`hyprctl activewindow -j`
     class=`echo $appinfo|jq -r '.class'|head -n 1`
     title=$(echo $appinfo|jq -r '.title')
-else
+elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
     title=$(echo $appinfo|jq -r '.name')
@@ -40,26 +43,28 @@ if [ -n "$appinfo" ]; then
         cwd="${cwd/#\~/$HOME}"
         echo $cwd
         exit 0
-    elif [[ "$class" = "org.wezfurlong.wezterm" ||"$class" = "foot"* ||"$class" = "kitty" || "$class" = *"Alacritty"* || "$class" = "dterm" ]]; then
+    elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ ]]; then
         # for zsh
         # autoload -U add-zsh-hook
         # update_cwd(){
         #     print -Pn "\e]2;$(pwd)\a" #s
         # }
         # add-zsh-hook precmd update_cwd
-        # 如果使用 oh my zsh ,请在source $ZSH/oh-my-zsh.sh 前加 DISABLE_AUTO_TITLE=true
+        # if you use  'oh my zsh' ,set DISABLE_AUTO_TITLE=true before source $ZSH/oh-my-zsh.sh
         # DISABLE_AUTO_TITLE=true
         # source $ZSH/oh-my-zsh.sh
         cwd=$title
         if [[ $cwd == TMUX:* ]]; then
             # Remove the prefix "TMUX:" and then split the remaining string by ":"
-            # 格式： "TMUX:session:path"
+            # format of tmux window title： "TMUX:session:path"
+            # set -g set-titles on
+            # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
+            # see https://github.com/jixiuf/vmacs/blob/master/linux/config/tmux/tmux.conf#L158
             cwd=${cwd#TMUX:}
             tmux_session=${cwd%%:*}
             cwd=${cwd#*:}
         fi
-        cwd="${cwd/#\~/$HOME}"
-        # eval "cwd=$cwd"         # replace ~ -> $HOME
+        cwd="${cwd/#\~/$HOME}"  # replace ~ -> $HOME
         echo $cwd
         exit 0
     fi
