@@ -26,9 +26,8 @@ float_only=""
 floating=""
 maximize=""
 cd=""
-resize=""
 
-TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,resize:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -37,9 +36,20 @@ for i in "$@"; do
             echo "Usage: $PROG OPTIONS target [runstring]"
             echo
             echo "Give focus to a program based on window class. If we can't give focus to something with that window class, then exec 'runstring'" |fmt
+            echo "it would consistently cycling through all windows matching class regex"
             echo
             echo "OPTIONS"
-            echo "-f|--float-only  只在 target_floating 窗口中寻找匹配的 target"
+            echo "--float-only only match floating app"
+            echo "--maximize maximize the target window"
+            echo "--floating make the target window floating"
+            echo "--cd "
+            echo "  when the target window is a termianl(with tmux running in it) and the working-directory from current window title is not empty, then after switch to the terminal it would insert a cd command"|fmt
+            echo "  it support getting the workding-directory from window title, currently it support emacs and termianl"|fmt
+            echo "  the format of working directory support emacs tramp path like /ssh:root@host:/tmp or root@host:/tmp, it would run ssh -t root@host  'cd /tmp/ && exec $SHELL'"|fmt
+            echo "  you tmux.conf need:"
+            echo "    set -g set-titles on"
+            echo "    set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'"
+            echo "  see script 'cwd' and 'cd.sh' for more details"
             exit 0
             ;;
         --cd*)
@@ -61,12 +71,6 @@ for i in "$@"; do
             float_only="set"
             shift
             ;;
-        --resize*)
-            resize="$2"
-            shift
-            shift
-            ;;
-
     esac
 done
 
@@ -79,6 +83,23 @@ target=$1
 # 获取除第 1 个参数外的所有参数
 shift 1
 cmd="$@"
+
+focus_last_win(){
+    if [[ "$front_ws_name" == *"special"* ]]; then
+        # hide 当前special workspace
+        hyprctl dispatch "togglespecialworkspace"
+    elif [ "$target_floating" == "true" ]; then
+        hyprctl dispatch "movetoworkspacesilent special"
+    else
+        hypr-focus-last-win --move-to-current-workspace-if-floating \
+                            --move-to-current-workspace-if-special \
+                            --disable-front-fullscreen \
+                            --hide-front-floating \
+                            --hide-front-special-window \
+                            --skip-class $target
+        #     hyprctl dispatch "focuscurrentorlast"
+    fi
+}
 #
 if [ -n "$float_only" ]; then
     # only match floating app
@@ -107,11 +128,11 @@ if [ ! "$target_appinfo" ]; then
     # 如果期望新创建的窗口是floating,则尝试将期转成floating
     if [ "$floating" == "true" ]; then
         if [ -n "$float_only" ]; then
-            target_appinfo=`hyprctl clients -j | jq -r '.[] | select((.class  | test("'"$target"'"; "i")) and (.floating == true) )'`
+            target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class  | test("'"$target"'"; "i")) and (.floating == true) )'`
         else
-            target_appinfo=`hyprctl clients -j | jq -r '.[] | select((.class |test("'"$target"'"; "i")))'`
+            target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class |test("'"$target"'"; "i")))'`
         fi
-        target_floating=`echo $target_appinfo|jq -r '.floating'|head -n 1`
+        target_floating=`echo $target_appinfo|jq -r '.floating'`
         if [ "$target_floating" == "false" ]; then
             # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
             hyprctl dispatch togglefloating address:${target_addr}
@@ -121,7 +142,7 @@ if [ ! "$target_appinfo" ]; then
 else
     # frontappinfo=`hyprctl clients -j | jq -r '.[] |select(.focused)'`
     front_app=`hyprctl activewindow -j`
-    # front_class=`echo $front_app|jq -r '.class'`
+    front_class=`echo $front_app|jq -r '.class'`
     front_addr=`echo $front_app|jq -r '.address'`
     front_floating=`echo $front_app|jq -r '.floating'`
     front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
@@ -129,81 +150,89 @@ else
     front_ws_name=`echo $front_app|jq -r '.workspace.name'`
     front_ws_id=`echo $front_app|jq -r '.workspace.id'`
     # jq 的(.app_id // "") 表示取 app_id 若无此字段则为空串
-    # target_class=`echo $target_appinfo|jq -r '.class'|head -n 1`
-    target_addr=`echo $target_appinfo|jq -r '.address'|head -n 1`
-    target_floating=`echo $target_appinfo|jq -r '.floating'|head -n 1`
-    target_title=`echo $target_appinfo|jq -r '.title'|head -n 1`
-    target_ws_id=`echo $target_appinfo|jq -r '.workspace.id'`
+    target_class=`echo $target_appinfo|jq -r '.class'|head -n 1`
+    last_target_class=`echo $target_appinfo|jq -r '.class'|tail -n 1`
+    last_target_addr=`echo $target_appinfo|jq -r '.address'|tail -n 1`
     # target_pid=`echo $target_appinfo|jq -r '.pid'`
+    if [[ ! ("$front_class" =~ $target) ]]; then
+        target_appinfo=`echo $target_appinfo|head -n 1`
+    elif [  "$front_addr" == "$last_target_addr" ]; then
+        focus_last_win
+        exit
+    else
+        # len($target_appinfo)>1 and $front_app is one of them
+        # and $front_app is not the last one of them
+        # so we need find out the one after $front_app in $target_appinfo
+        found=""
+        while IFS= read -r appinfo; do
+            if [ -n "$found" ]; then
+                target_appinfo=$appinfo
+                break
+            fi
+            addr=`echo $appinfo|jq -r '.address'`
+            if [ "$addr" == "$front_addr" ]; then
+                echo "found"
+                found="set"
+            fi
+        done <<< "$target_appinfo"
+    fi
+    target_floating=`echo $target_appinfo|jq -r '.floating'`
+    last_target_addr=`echo $target_appinfo|jq -r '.address'`
     cwd=$(cwd)
-    if [  "$front_addr" != "$target_addr" ]; then
-        # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
-        if [[ "$front_ws_name" == *"special"* ]]; then
-            hyprctl dispatch "togglespecialworkspace"
-        fi
-        # # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
-        # if [[ "$front_floating" == "true" ]]; then
-        #     hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
-        # fi
+    target_addr=`echo $target_appinfo|jq -r '.address'`
+    target_title=`echo $target_appinfo|jq -r '.title'`
+    target_ws_id=`echo $target_appinfo|jq -r '.workspace.id'`
 
-        if [[ "$target_floating" == "true" || "$floating" == "true" ]]; then
-            # 如果当前窗口是fullscreen，则将其恢复
-            if [ "$front_fullscreen" == "true" ]; then
-                hyprctl dispatch "fullscreen"
-            fi
-            # move window to current ws
-             # hyprctl keyword animations:enabled 0
-             hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
-             hyprctl dispatch "focuswindow address:${target_addr}"
-             if [[ "$floating" = "true" && "$target_floating" = "false" ]]; then
-                 # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
-                 hyprctl dispatch togglefloating address:${target_addr}
-                 hyprctl dispatch centerwindow
-                 # resize 有bug
-                 # hyprctl dispatch resizeactive "$resize"
-             fi
+    # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
+    if [[ "$front_ws_name" == *"special"* ]]; then
+        hyprctl dispatch "togglespecialworkspace"
+    fi
+    # # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
+    # if [[ "$front_floating" == "true" ]]; then
+    #     hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
+    # fi
 
-             # hyprctl keyword animations:enabled 1
-            if [ $maximize ]; then
-                hyprctl dispatch "fullscreen 1"
-            fi
-        else
-            # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
-            if [[ "$front_floating" == "true" && "$target_ws_id" == "$front_ws_id" ]]; then
-                hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
-            fi
-            hyprctl dispatch "focuswindow address:${target_addr}"
+    if [[ "$target_floating" == "true" || "$floating" == "true" ]]; then
+        # 如果当前窗口是fullscreen，则将其恢复
+        if [ "$front_fullscreen" == "true" ]; then
+            hyprctl dispatch "fullscreen"
         fi
-        if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
-            if [[ -n "$cwd" && -n "$cd" ]]; then
-                # 如果 cwd 获取到当前 working directory
-                # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-                # root@host:/path
-                regex="(\/ssh:)?([a-zA-Z0-9_\-]+@)?([a-zA-Z0-9_\.\-]+):(.+)"
-                tmux_session=""
-                if [[ $target_title == TMUX:* ]]; then
-                    # Remove the prefix "TMUX:" and then split the remaining string by ":"
-                    # 格式： "TMUX:session:path"
-                    target_title=${target_title#TMUX:}
-                    tmux_session=${target_title%%:*}
-                    # cwd=${cwd#*:}
-                fi
-                cd.sh $cwd $tmux_session
-            fi
+        # move window to current ws
+        # hyprctl keyword animations:enabled 0
+        hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
+        hyprctl dispatch "focuswindow address:${target_addr}"
+        if [[ "$floating" = "true" && "$target_floating" = "false" ]]; then
+            # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
+            hyprctl dispatch togglefloating address:${target_addr}
+            hyprctl dispatch centerwindow
+        fi
+
+        # hyprctl keyword animations:enabled 1
+        if [ $maximize ]; then
+            hyprctl dispatch "fullscreen 1"
         fi
     else
-        if [[ "$front_ws_name" == *"special"* ]]; then
-            # hide 当前special workspace
-            hyprctl dispatch "togglespecialworkspace"
-        elif [ "$target_floating" == "true" ]; then
-            hyprctl dispatch "movetoworkspacesilent special"
-        else
-            hypr-focus-last-win --move-to-current-workspace-if-floating \
-                                --move-to-current-workspace-if-special \
-                                --disable-front-fullscreen \
-                                --hide-front-floating \
-                                --hide-front-special-window
-        #     hyprctl dispatch "focuscurrentorlast"
+        # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
+        if [[ "$front_floating" == "true" && "$target_ws_id" == "$front_ws_id" ]]; then
+            hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
+        fi
+        hyprctl dispatch "focuswindow address:${target_addr}"
+    fi
+    if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
+        if [[ -n "$cwd" && -n "$cd" ]]; then
+            # 如果 cwd 获取到当前 working directory
+            # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
+            # root@host:/path
+            regex="(\/ssh:)?([a-zA-Z0-9_\-]+@)?([a-zA-Z0-9_\.\-]+):(.+)"
+            tmux_session=""
+            if [[ $target_title == TMUX:* ]]; then
+                # Remove the prefix "TMUX:" and then split the remaining string by ":"
+                # 格式： "TMUX:session:path"
+                target_title=${target_title#TMUX:}
+                tmux_session=${target_title%%:*}
+                # cwd=${cwd#*:}
+            fi
+            cd.sh $cwd $tmux_session
         fi
     fi
 fi
