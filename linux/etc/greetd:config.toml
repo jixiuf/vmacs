@@ -16,5 +16,5 @@ command = "agreety --cmd Hyprland"
 user = "jixiuf"
 
 [initial_session]
-command = "Hyprland"
+command = "sh -c 'sleep 3;Hyprland'"
 user = "jixiuf"
