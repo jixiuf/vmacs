@@ -1,5 +1,7 @@
 #!/bin/bash
 # need: hyprctl,socat,jq
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
+
 # trace last focused window address before current active window
 # 数组变量，用于保存窗口地址的历史记录
 window_history=()
@@ -56,6 +58,7 @@ handle_active_window() {
     fi
     # echo "${#window_history[@]} ${window_history[@]}"
 }
+# hide my dropdown terminal when lose focus
 hide_dterm(){
     active_addr="$1"
     # ws=$(hprctl activeworkspace -j)
@@ -68,13 +71,17 @@ hide_dterm(){
         hyprctl dispatch "movetoworkspacesilent special,address:${dterm_addr}"
     fi
 }
+# this is for the script named 'other-window'
+# you can use other-window to select other pane of tmux
 set_tmux_pane_id(){
     active_addr="$1"
     appinfo=`hyprctl clients -j | jq -rc '.[] | select(.address  | test("'"$active_addr"'"; "i"))'`
     class=`echo $appinfo|jq -r '.class'|head -n 1`
     title=`echo $appinfo|jq -r '.title'|head -n 1`
     # 当激活一个tmux windows时， 记录下窗口中pane 的，以方便other-window 里进行窗口切换
-    if [[ ( "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
+    if [[ "$class" =~ ^($TERM_CLASS_REGEX)$  && "$title" == "TMUX:"*    ]]; then
+        # set -g set-titles on
+        # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
         tmux_session=${title%%:*}
         tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id 2>/dev/null|tr -d '\n')
@@ -89,7 +96,7 @@ set_tmux_pane_id(){
         tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id 2>/dev/null|tr -d '\n')
         last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
         if [ "$tmux_pane_cursor" = "$last_pane_id" ] ; then
-            tmux    select-pane -t $tmux_session:.+
+            tmux select-pane -t $tmux_session:.+
         fi
     fi
 }

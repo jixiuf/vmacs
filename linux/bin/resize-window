@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 arg="$2"
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
 
 resize_window() {
     case "$1" in
@@ -101,7 +102,7 @@ if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
     floating=`echo $appinfo|jq -r '.floating'|head -n 1`
     title=`echo $appinfo|jq -r '.title'|head -n 1`
-else
+elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
     app_cnt=$(swaymsg -t get_workspaces |jq -r '.[] | select(.focused==true)|.focus|length')
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
@@ -112,14 +113,14 @@ fi
 
 if [[ "$class" = "emacs" && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$fullscreen" = "1"  ||"$floating" == "true" ||"$floating" == "floating_con" ) ]]; then
     resize_emacs_window $1
-elif [[ ( "$class" = "foot"* ||"$class" = *"Alacritty"*|| "$class" = "dterm" ) && "$title" == *"GNU/Emacs"*  && -z "$arg" ]]; then
+elif [[   "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == *"GNU/Emacs"*  && -z "$arg" ]]; then
     resize_tmux_emacs_window $1
-elif [[ ( "$class" = "foot"*  ||"$class" = *"Alacritty"* || "$class" = "dterm" ) && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true"|| "$fullscreen" = "1" ||"$floating" == "floating_con"||"$floating" == "true" ) ]]; then
+elif [[  "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == "TMUX:"* && ( "$app_cnt" = "1" || "$fullscreen" = "true"|| "$fullscreen" = "1" ||"$floating" == "floating_con"||"$floating" == "true" ) ]]; then
     resize_tmux_window $1 $title
 else
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
         resize_window $1
-    else
+    elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
         sway_resize_window $1
     fi
 fi

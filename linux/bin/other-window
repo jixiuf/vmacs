@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # need hypr-trace-focus for tmux pane
+
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
+
 arg="$1"
+
 next-window() {
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
         hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
@@ -43,12 +47,12 @@ if [ -n "$appinfo" ]; then
     if [[ "$class" = "emacs" && -z "$arg" ]]; then
         echo key ctrl+super+o|dotoolc
         exit 0
-    elif [[ ( "$class" = "foot"*  ||"$class" = "Alacritty"* || "$class" = "dterm" ) && "$title" == *"GNU/Emacs"* &&
+    elif [[  "$class" =~ ^($TERM_CLASS_REGEX)$  && "$title" == *"GNU/Emacs"* &&
                 ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&
                 -z "$arg" ]]; then
         echo key ctrl+super+o|dotoolc
         exit 0
-    elif [[ ( "$class" = "foot"* ||"$class" = "Alacritty"* || "$class" = "dterm" ) && "$title" == "TMUX:"*    ]]; then
+    elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == "TMUX:"*    ]]; then
         # need hypr-trace-focus
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
