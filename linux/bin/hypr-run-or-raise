@@ -9,7 +9,7 @@
 # 2. 如果没有，则使用 arg2 及之后的参数 以启动目录程序,并聚焦之(有可能程序是在其他 workspace 启动，故需要将焦点转移到那)
 # hypr-run-or-raise emacs emacs
 # hypr-run-or-raise 'firefox|firefox-esr' firefox
-# hypr-run-or-raise --cd --float-only  Alacritty alacritty  --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --cd --float-only  Alacritty -- alacritty   --working-directory=$(cwd||echo $HOME)
 # hypr-run-or-raise --float-only  Alacritty alacritty  --working-directory=$(cwd||echo $HOME)
 # hypr-run-or-raise --floating   'dterm|Alacritty|kitty|org.wezfurlong.wezterm'  term.sh --  --class=dterm --working-directory=$(cwd||echo $HOME)
 # hypr-run-or-raise --cd --floating  'dterm|Alacritty|kitty|org.wezfurlong.wezterm' term.sh -- --class=dterm  --working-directory=$(cwd||echo $HOME)
@@ -19,6 +19,7 @@
 # 而我的目录窗口若是 alacritty 终端，则当我切换到 alacritty 终端时，我希望执行 cd directory 命令，切换到与 emacs 中文件所在目录 相同的目录
 # 需要依赖 ydotool
 #
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
 PROG=$( basename "$0" )
 float_only=""
 floating=""
@@ -172,7 +173,7 @@ else
             fi
             hyprctl dispatch "focuswindow address:${target_addr}"
         fi
-        if [[  "$target" == *"foot"*  ||"$class" = *"Alacritty"* || "$target" == *"dterm"*  ]]; then
+        if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
             if [[ -n "$cwd" && -n "$cd" ]]; then
                 # 如果 cwd 获取到当前 working directory
                 # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
