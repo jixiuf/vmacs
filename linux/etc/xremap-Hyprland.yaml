@@ -30,7 +30,7 @@ keymap:
       super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
       super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
       Super-C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
-      C-Tab: { launch: ["hypr-focus-last-win"]}
+      C-Tab: { launch: ["hypr-focus-last-win","--move-to-current-workspace-if-special","--disable-front-fullscreen","--hide-front-special-window"]}
       # 窗口大小调整 space+ 箭头
       super-C-l: { launch: ["resize-window" ,"right"]}
       super-C-h: { launch: ["resize-window" ,"left"]}

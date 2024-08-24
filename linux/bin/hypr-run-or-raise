@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# need: jq,hypr-focus-last-win,hypr-trace-focus,cd.sh tmux.sh term.sh cwd
 # arg1: target_class (regexp)
 # other args: command
 # demo:
@@ -197,7 +198,11 @@ else
         elif [ "$target_floating" == "true" ]; then
             hyprctl dispatch "movetoworkspacesilent special"
         else
-            hypr-focus-last-win
+            hypr-focus-last-win --move-to-current-workspace-if-floating \
+                                --move-to-current-workspace-if-special \
+                                --disable-front-fullscreen \
+                                --hide-front-floating \
+                                --hide-front-special-window
         #     hyprctl dispatch "focuscurrentorlast"
         fi
     fi
