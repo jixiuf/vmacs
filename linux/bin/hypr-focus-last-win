@@ -1,5 +1,77 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # this need hypr-trace-focus
+
+PROG=$( basename "$0" )
+TEMP=$( getopt --options h --longoptions skip-class:,hide-front-special-window,hide-front-floating,disable-front-fullscreen,move-to-current-workspace,move-to-current-workspace-if-special,move-to-current-workspace-if-floating,help -- "$@" ) || exit 1
+eval set -- "$TEMP"
+skip_class=""
+hide_front_special_window=""
+hide_front_floating=""
+disable_front_fullscreen=""
+move_to_current_workspace=""
+move_to_current_workspace_if_special=""
+move_to_current_workspace_if_floating=""
+for i in "$@"; do
+    case "$i" in
+        -h|--help)
+            echo "Usage: $PROG OPTIONS"
+            echo
+            echo "Focus last focused window"
+            echo
+            echo "OPTIONS"
+            echo "--skip-class regexp_of_class_name "
+            echo "  skip window with class match regexp_of_class_name"
+            echo "  demo: --skip-class '.*foot.*|.*kitty.*'"
+            echo "--hide-front-special-window"
+            echo "  hide current window if current window is special window"
+            echo "--hide-front-floating"
+            echo "  hide current window if current window is floating window"
+            echo "--disable-front-fullscreen"
+            echo "  disable fullscreen if current window is fullscreen"
+            echo "--move-to-current-workspace"
+            echo "  move the target window to current workspace"
+            echo "--move_to_current_workspace-if-special"
+            echo "  move the target window to current workspace if it is special window"
+            echo "--move_to_current_workspace-if-floating"
+            echo "  move the target window to current workspace if it is a floating window"
+            exit 0
+            ;;
+        --move-to-current-workspace)
+            move_to_current_workspace="set"
+            shift
+            ;;
+        --move-to-current-workspace-if-special*)
+            move_to_current_workspace_if_special="set"
+            shift
+            ;;
+        --move-to-current-workspace-if-floating*)
+            move_to_current_workspace_if_floating="set"
+            shift
+            ;;
+        --hide-front-special-window*)
+            hide_front_special_window="set"
+            shift
+            ;;
+        --hide-front-floating*)
+            hide_front_floating="set"
+            shift
+            ;;
+        --disable-front-fullscreen*)
+            disable_front_fullscreen="set"
+            shift
+            ;;
+        --skip-class*)
+            skip_class="$2"
+            shift
+            shift
+            ;;
+
+    esac
+done
+
+shift # remove --
+
+
 window_history=()
 # 从文件中读取序列化的window_history数组
 read_window_history() {
@@ -20,9 +92,14 @@ do
     apps=`hyprctl clients -j`
     last_focus_address=${window_history[$i]}
     last_focus_app=`echo $apps | jq -rc '.[] | select(.address  | test("'"$last_focus_address"'"; "i"))'`
-    if [ -n "last_focus_app" ]; then
-        break
+    if [ -z "last_focus_app" ]; then
+        continue
     fi
+
+    if [[ -n "$skip_class" && $(echo $last_focus_app|jq -r '.class') =~ ^($skip_class)$ ]]; then
+        continue
+    fi
+    break
     # echo "${window_history[$i]}"
 done
 # echo "$last_focus_app" >>/tmp/a.log
@@ -32,33 +109,37 @@ if [ -z "last_focus_app" ]; then
     exit;
 fi
 target_floating=`echo $last_focus_app|jq -r '.floating'`
-target_app=`echo $last_focus_app|jq -r '.class'`
-# echo $target_app >>/tmp/a.log
+# target_app=`echo $last_focus_app|jq -r '.class'`
+target_ws_name=`echo $last_focus_app|jq -r '.workspace.name'`
+
+
 front_app=`hyprctl activewindow -j`
 # front_class=`echo $front_app|jq -r '.class'`
 front_floating=`echo $front_app|jq -r '.floating'`
 front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
-
 front_ws_name=`echo $front_app|jq -r '.workspace.name'`
 # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
-if [[ "$front_ws_name" == *"special"* ]]; then
+if [[ -n "$hide_front_special_window"  && "$front_ws_name" == *"special"* ]]; then
     hyprctl dispatch "togglespecialworkspace"
 fi
 # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
-if [[ "$front_floating" == "true" ]]; then
+if [[ -n "$hide_front_floating" && "$front_floating" == "true"  && "$target_ws_name" == "$front_ws_name" ]]; then
     hyprctl dispatch "movetoworkspacesilent special"
 fi
 
 # 如果当前窗口是fullscreen，则将其恢复
-if [ "$front_fullscreen" == "true" ]; then
+if [[ -n "$disable_front_fullscreen" && "$front_fullscreen" == "true" && "$target_ws_name" == "$front_ws_name" ]]; then
     hyprctl dispatch "fullscreen"
 fi
+if [[ "$target_floating" == "true" && -n "$move_to_current_workspace_if_floating" ]]; then
+    move_to_current_workspace="set"
+fi
+if [[ "$target_ws_name" == *"special"* && -n "$move_to_current_workspace_if_special" ]]; then
+    move_to_current_workspace="set"
+fi
 
-
-if [ "$target_floating" == "true" ]; then
+if [ -n "$move_to_current_workspace" ]; then
     # 如果窗口是floating 的，则将其move 到当前workspace
     hyprctl dispatch "movetoworkspacesilent e+0,address:${last_focus_address}"
-    hyprctl dispatch "focuswindow address:${last_focus_address}"
-else
-    hyprctl dispatch "focuswindow address:${last_focus_address}"
 fi
+hyprctl dispatch "focuswindow address:${last_focus_address}"
