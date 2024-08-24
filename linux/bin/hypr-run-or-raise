@@ -27,8 +27,9 @@ floating=""
 toggle=""
 maximize=""
 cd=""
+move_to_current_workspace_if_floating=""
 
-TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,move-to-current-workspace-if-floating,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -44,6 +45,8 @@ for i in "$@"; do
             echo "--maximize maximize the target window"
             echo "--floating make the target window floating"
             echo "--toggle toggle between the current window and target window"
+            echo "--move_to_current_workspace-if-floating"
+            echo "  move the target window to current workspace if it is a floating window"
             echo "--cd "
             echo "  when the target window is a termianl(with tmux running in it) and the working-directory from current window title is not empty, then after switch to the terminal it would insert a cd command"|fmt
             echo "  it support getting the workding-directory from window title, currently it support emacs and termianl"|fmt
@@ -56,6 +59,10 @@ for i in "$@"; do
             ;;
         --cd*)
             cd="set"
+            shift
+            ;;
+        --move-to-current-workspace-if-floating*)
+            move_to_current_workspace_if_floating="set"
             shift
             ;;
         --toggle*)
@@ -156,35 +163,35 @@ else
     front_ws_name=`echo $front_app|jq -r '.workspace.name'`
     front_ws_id=`echo $front_app|jq -r '.workspace.id'`
     # jq 的(.app_id // "") 表示取 app_id 若无此字段则为空串
-    target_class=`echo $target_appinfo|jq -r '.class'|head -n 1`
-    last_target_class=`echo $target_appinfo|jq -r '.class'|tail -n 1`
-    last_target_addr=`echo $target_appinfo|jq -r '.address'|tail -n 1`
+    # target_class=`echo $target_appinfo|jq -r '.class'|head -n 1`
+    # last_target_class=`echo $target_appinfo|jq -r '.class'|tail -n 1`
+    addrs=`echo $target_appinfo|jq -rc '.address'|sort`
+    last_target_addr=`echo $target_appinfo|jq -rc '.address'|sort|tail -n 1`
+    first_target_addr=`echo $target_appinfo|jq -rc '.address'|sort|head -n 1`
     # target_pid=`echo $target_appinfo|jq -r '.pid'`
     if [[ ! ("$front_class" =~ $target) ]]; then
-        target_appinfo=`echo $target_appinfo|head -n 1`
+        target_appinfo=`echo $target_appinfo |  jq -rc 'select(.address  | test("'"$first_target_addr"'"; "i"))'`
     elif [[  "$front_addr" == "$last_target_addr"  ]]; then
         if [  -n "$toggle" ]; then
             focus_last_win
             exit
         else
-            target_appinfo=`echo $target_appinfo|head -n 1`
+            target_appinfo=`echo $target_appinfo | jq -rc 'select(.address  | test("'"$first_target_addr"'"; "i"))'`
         fi
     else
         # len($target_appinfo)>1 and $front_app is one of them
         # and $front_app is not the last one of them
         # so we need find out the one after $front_app in $target_appinfo
         found=""
-        while IFS= read -r appinfo; do
+        while IFS= read -r addr; do
             if [ -n "$found" ]; then
-                target_appinfo=$appinfo
+                target_appinfo=`echo $target_appinfo | jq -rc 'select(.address  | test("'"$addr"'"; "i"))'`
                 break
             fi
-            addr=`echo $appinfo|jq -r '.address'`
             if [ "$addr" == "$front_addr" ]; then
-                echo "found"
                 found="set"
             fi
-        done <<< "$target_appinfo"
+        done <<< "$addrs"
     fi
     target_floating=`echo $target_appinfo|jq -r '.floating'`
     last_target_addr=`echo $target_appinfo|jq -r '.address'`
@@ -209,8 +216,11 @@ else
         fi
         # move window to current ws
         # hyprctl keyword animations:enabled 0
-        hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
+        if [ -n "$move_to_current_workspace_if_floating" ]; then
+            hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
+        fi
         hyprctl dispatch "focuswindow address:${target_addr}"
+        hyprctl dispatch "bringactivetotop"
         if [[ "$floating" = "true" && "$target_floating" = "false" ]]; then
             # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
             hyprctl dispatch togglefloating address:${target_addr}
