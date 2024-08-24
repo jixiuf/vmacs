@@ -1,24 +1,34 @@
 #!/bin/bash
-# alacritty的简单包装,，当 --working-directory=/ssh:root@host:/path时 将其转为
-# term -e ssh -t root@host cd /path&& exec $SHELL
+# make alacritty/foot/kitty --working-directory suppporting emacs tramp path
+# alacritty/foot/kitty的简单包装,，当 --working-directory=/ssh:root@host:/path时 将其转为
+# term.sh  --working-directory=/tmp
+# term.sh  --working-directory=/ssh:root@host:/tmp
+# term.sh --class=dterm --working-directory=/ssh:bench:/ 
+# term.sh --class=dterm --working-directory=/ssh:bench:/ -- tmux.sh --session dterm --cwd /ssh:bench:/
+# term.sh  --working-directory=$cwd -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)
 # 即 让alacritty 的--working-directory 支持emacs 的tramp 语法
 #!/bin/bash
-
-term=alacritty
-termexec="-e"
-working_directory_arg="--working-directory"
-class_arg="--class"
-# term=foot
-# termexec=""
-# working_directory_arg="--working-directory"
-# class_arg="--app-id"
+TERMINAL=${TERMINAL:-alacritty}
+if [ "$TERMINAL"  = "alacritty" ]; then
+    TERMINAL_EXEC="-e"
+    WORKING_DIRECTORY_ARG="--working-directory"
+    CLASS_ARG="--class"
+elif [ "$TERMINAL"  = "foot" ]; then
+    TERMINAL_EXEC=""
+    WORKING_DIRECTORY_ARG="--working-directory"
+    CLASS_ARG="--app-id"
+elif [ "$TERMINAL"  = "kitty" ]; then
+    TERMINAL_EXEC=""
+    WORKING_DIRECTORY_ARG="--working-directory"
+    CLASS_ARG="--app-id"
+fi
 
 
 # private variable
 working_directory=""
 class=""
-other_args=()
-termargs=""
+other_args=""
+term_args=""
 
 PROG=$( basename "$0" )
 TEMP=$( getopt --options h --longoptions class:,working-directory:,help -- "$@" ) || exit 1
@@ -46,7 +56,7 @@ shift # remove --
 other_args=$@
 
 if [ -n "$class" ]; then
-    termargs=" $termargs $class_arg=$class"
+    term_args=" $term_args $CLASS_ARG=$class"
 fi
 
 # root@host:/path or host:/path
@@ -59,18 +69,21 @@ if [[ $working_directory =~ $regex ]]; then
   host=${BASH_REMATCH[3]}
   path=${BASH_REMATCH[4]}
   cmd="ssh -t $userat$host \"cd $path && exec "'\$SHELL'"\" && exec $SHELL"
-  $term $termargs $other_args $termexec "--" $SHELL -i -c \'$cmd\'
+  $TERMINAL $term_args $TERMINAL_EXEC $other_args  "--" $SHELL -i -c \'$cmd\'
 elif [[ $working_directory =~ $regex2 ]]; then
   userat=${BASH_REMATCH[2]}
   host=${BASH_REMATCH[3]}
   port=${BASH_REMATCH[4]}
   path=${BASH_REMATCH[5]}
   cmd="ssh -t $userat$host -p $port \"cd $path && exec "'\$SHELL'"\" && exec $SHELL"
-  $term $termargs $other_args $termexec "--" $SHELL -i -c \'$cmd\'
+  $TERMINAL $term_args $TERMINAL_EXEC $other_args  "--" $SHELL -i -c \'$cmd\'
 else
     if [ -n "$working_directory" ]; then
-        termargs=" $termargs $working_directory_arg=$working_directory"
+        term_args=" $term_args $WORKING_DIRECTORY_ARG=$working_directory"
     fi
-    $term $termargs $termexec $other_args
-        # $term  $other_args
+    if [ -z "$other_args" ]; then
+        $TERMINAL $term_args
+    else
+        $TERMINAL $term_args $TERMINAL_EXEC $other_args
+    fi
 fi
