@@ -165,6 +165,13 @@ keymap:
       C-x: C-x
       C-comma: C-comma
       C-dot: C-dot
+  - name: terminal tmux dterm
+    application:
+      only: [dterm]
+    window:
+      only: [/TMUX:/ ]
+    remap:
+      super-C-Enter: [C-c,"4"] 
       
   - name: terminal tmux
     application:
@@ -173,7 +180,6 @@ keymap:
       only: [/TMUX:/ ]
     remap:
       # super-M-v: [C-w,C-y]
-      super-C-Enter: [C-c,"4"] 
       super-C-Backslash: [C-c,Space] 
       super-C-Backspace: [C-c,M-2] 
       C-Backspace: M-Backspace 

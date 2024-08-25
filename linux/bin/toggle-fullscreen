@@ -15,6 +15,7 @@ if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     appinfo=`hyprctl activewindow -j`
     class=`echo $appinfo|jq -r '.class'|head -n 1`
     title=`echo $appinfo|jq -r '.title'|head -n 1`
+    fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
 else
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
@@ -28,12 +29,27 @@ if [ -n "$class" ]; then
         echo key ctrl+super+m|dotoolc
     elif [[ "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = "dterm"* ]]; then
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
-        title=${title#TMUX:}
-        tmux_session=${title%%:*}
-        if [ "$(tmux list-panes -s $tmux_session|wc -l)" == "1" ]; then
-            toggle_fullscreen
+        if [[ "$title" == "TMUX:"* ]]; then
+            title=${title#TMUX:}
+            tmux_session=${title%%:*}
+            # tmux display -p '#{window_zoomed_flag}'
+            if [ "$(tmux display -p '#{window_panes}')" == "1" ]; then
+                toggle_fullscreen
+            else
+                zoomed=$(tmux display -p '#{window_zoomed_flag}')
+                if [ "$zoomed" == "0"   ]; then
+                    if [ "$fullscreen" == "0" ]; then
+                        toggle_fullscreen
+                    fi
+                else
+                    if [ "$fullscreen" == "1" ]; then
+                        toggle_fullscreen
+                    fi
+                fi
+                tmux resize-pane -t $tmux_session -Z
+            fi
         else
-            tmux resize-pane -t $tmux_session -Z
+            toggle_fullscreen
         fi
     else
         toggle_fullscreen

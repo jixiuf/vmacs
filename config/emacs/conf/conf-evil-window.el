@@ -34,19 +34,18 @@
 (defvar vmacs--fullscreen-window-configuration nil)
 (defun vmacs-fullscreen()
   (interactive)
-  (if (and (eq this-command 'vmacs-fullscreen)
-           (eq last-command 'vmacs-fullscreen)
-           (not (string-equal "1" (string-trim (shell-command-to-string "ws_id=$(hyprctl activeworkspace -j|jq -r '.id');hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l")))))
+  (if (> (length (window-list)) 1)
       (progn
-        (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")
-        (setq this-command 'toggle-fullscreen))
-    (if (> (length (window-list)) 1)
-        (progn
-          (setq vmacs--fullscreen-window-configuration (current-window-configuration))
-          (vmacs-delete-other-frame))
-      (when vmacs--fullscreen-window-configuration
-        (set-window-configuration vmacs--fullscreen-window-configuration)
-        (setq vmacs--fullscreen-window-configuration nil)))))
+        (setq vmacs--fullscreen-window-configuration (current-window-configuration))
+        (vmacs-delete-other-frame)
+        (when (string-equal "0" (string-trim
+                                 (shell-command-to-string
+                                  "hyprctl activewindow -j| jq -rc '.fullscreen'")))
+          (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+    (when vmacs--fullscreen-window-configuration
+      (set-window-configuration vmacs--fullscreen-window-configuration)
+      (setq vmacs--fullscreen-window-configuration nil))
+    (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
 
 (global-set-key (kbd "C-s-o") 'vmacs-other-window)
 (defvar vmacs-window-status nil)
