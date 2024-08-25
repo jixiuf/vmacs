@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # need: jq,hypr-focus-last-win,hypr-trace-focus,cd.sh tmux.sh term.sh cwd
+# hypr-run-or-raise -h for help
 # arg1: target_class (regexp)
 # other args: command
 # demo:
@@ -9,11 +10,12 @@
 # 1.2 若此窗口不是当前聚焦的窗口，则将焦点转移到此窗口
 # 2. 如果没有，则使用 arg2 及之后的参数 以启动目录程序,并聚焦之(有可能程序是在其他 workspace 启动，故需要将焦点转移到那)
 # hypr-run-or-raise emacs emacs
+# hypr-run-or-raise --toggle emacs emacs
 # hypr-run-or-raise 'firefox|firefox-esr' firefox
 # hypr-run-or-raise --cd --float-only  Alacritty -- alacritty   --working-directory=$(cwd||echo $HOME)
-# hypr-run-or-raise --float-only  Alacritty alacritty  --working-directory=$(cwd||echo $HOME)
-# hypr-run-or-raise --floating   'dterm|Alacritty|kitty|org.wezfurlong.wezterm'  term.sh --  --class=dterm --working-directory=$(cwd||echo $HOME)
-# hypr-run-or-raise --cd --floating  'dterm|Alacritty|kitty|org.wezfurlong.wezterm' term.sh -- --class=dterm  --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --toggle --float-only  Alacritty -- alacritty  --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --toggle --floating   'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=$(cwd||echo $HOME)
+# hypr-run-or-raise --toggle --cd --floating  'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=$(cwd||echo $HOME)
 
 # 有个特例，参见 cwd
 # 若当前窗口是 emacs ,我能从 emacs 的 title 中获取到 emacs 的 default-directory(emacs 当前编辑的文件所在的目录)
@@ -28,14 +30,15 @@ toggle=""
 maximize=""
 cd=""
 move_to_current_workspace_if_floating=""
+hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,move-to-current-workspace-if-floating,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,move-to-current-workspace-if-floating,hide-front-floating-window,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
     case "$i" in
         -h|--help)
-            echo "Usage: $PROG OPTIONS target [runstring]"
+            echo "Usage: $PROG OPTIONS target runstring"
             echo
             echo "Give focus to a program based on window class. If we can't give focus to something with that window class, then exec 'runstring'" |fmt
             echo "it would consistently cycling through all windows matching class regex"
@@ -47,6 +50,8 @@ for i in "$@"; do
             echo "--toggle toggle between the current window and target window"
             echo "--move_to_current_workspace-if-floating"
             echo "  move the target window to current workspace if it is a floating window"
+            echo "--hide-front-floating-window"
+            echo "  if current window is floating then move it to special workspace before focus target window "|fmt
             echo "--cd "
             echo "  when the target window is a termianl(with tmux running in it) and the working-directory from current window title is not empty, then after switch to the terminal it would insert a cd command"|fmt
             echo "  it support getting the workding-directory from window title, currently it support emacs and termianl"|fmt
@@ -55,14 +60,27 @@ for i in "$@"; do
             echo "    set -g set-titles on"
             echo "    set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'"
             echo "  see script 'cwd' and 'cd.sh' for more details"
+            echo " some demo:"
+            echo "   hypr-run-or-raise emacs emacs"
+            echo "   hypr-run-or-raise --toggle emacs emacs"
+            echo "   hypr-run-or-raise 'firefox|firefox-esr' firefox"
+            echo "   hypr-run-or-raise --cd --float-only  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
+            echo "   hypr-run-or-raise --toggle --float-only  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   hypr-run-or-raise --toggle --floating   'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=\$(cwd||echo \$HOME)"
+            echo "   hypr-run-or-raise --toggle --cd --floating  'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   hypr-run-or-raise --toggle --move-to-current-workspace-if-floating  'dterm' -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME) -- tmux.sh --session dterm --cwd \$(cwd||echo \$HOME)"
             exit 0
             ;;
         --cd*)
             cd="set"
             shift
             ;;
+        --hide-front-floating-window)
+            hide_front_floating_window="--hide-front-floating"
+            shift
+            ;;
         --move-to-current-workspace-if-floating*)
-            move_to_current_workspace_if_floating="set"
+            move_to_current_workspace_if_floating="--move-to-current-workspace-if-special"
             shift
             ;;
         --toggle*)
@@ -98,20 +116,13 @@ shift 1
 cmd="$@"
 
 focus_last_win(){
-    if [[ "$front_ws_name" == *"special"* ]]; then
-        # hide 当前special workspace
-        hyprctl dispatch "togglespecialworkspace"
-    elif [ "$target_floating" == "true" ]; then
-        hyprctl dispatch "movetoworkspacesilent special"
-    else
-        hypr-focus-last-win --move-to-current-workspace-if-floating \
-                            --move-to-current-workspace-if-special \
-                            --disable-front-fullscreen \
-                            --hide-front-floating \
-                            --hide-front-special-window \
-                            --skip-class $target
-        #     hyprctl dispatch "focuscurrentorlast"
-    fi
+    hypr-focus-last-win $move_to_current_workspace_if_floating \
+                        --move-to-current-workspace-if-special \
+                        --disable-front-fullscreen \
+                        $hide_front_floating_window \
+                        --hide-front-special-window \
+                        --skip-class $target
+    #     hyprctl dispatch "focuscurrentorlast"
 }
 #
 if [ -n "$float_only" ]; then
@@ -233,10 +244,12 @@ else
         fi
     else
         # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
-        if [[ "$front_floating" == "true" && "$target_ws_id" == "$front_ws_id" ]]; then
+        if [[ "$front_floating" == "true" && "$target_ws_id" == "$front_ws_id" && \
+                  -n "$hide_front_floating_window" ]]; then
             hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
         fi
         hyprctl dispatch "focuswindow address:${target_addr}"
+        hyprctl dispatch "bringactivetotop"
     fi
     if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
         if [[ -n "$cwd" && -n "$cd" ]]; then
