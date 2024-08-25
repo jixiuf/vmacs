@@ -72,42 +72,22 @@ done
 shift # remove --
 
 
-window_history=()
-# 从文件中读取序列化的window_history数组
-read_window_history() {
-    if [[ -f "/tmp/hypr_focus_hist.txt" ]]; then
-        IFS=$'\n' read -d '' -r -a window_history < /tmp/hypr_focus_hist.txt
-    fi
-}
-read_window_history
-# 获取数组长度
-length=${#window_history[@]}
-# echo "${#window_history[@]} ${window_history[@]}" >>/tmp/a.log
+last_focus_app=""
+# 按.focusHistoryID 排序后 去除第一个（即当前窗口）
+if [ -n "$skip_class" ]; then
+    # del(.[0])去除第一个（即当前窗口）
+    last_focus_app=`hyprctl clients -j | jq -rc 'map(.) | sort_by(.focusHistoryID)|del(.[0])|map(select(.class  | test("'"$skip_class"'"; "i")|not))|.[0]'`
+else
+    # [1] 跳过第0 个 即（即当前窗口）
+    last_focus_app=`hyprctl clients -j | jq -rc 'map(.) | sort_by(.focusHistoryID) .[1]'`
+fi
 
-# 倒序遍历数组
-last_focus_app=''
-last_focus_address=''
-for ((i=length-2; i>=0; i--))
-do
-    apps=`hyprctl clients -j`
-    last_focus_address=${window_history[$i]}
-    last_focus_app=`echo $apps | jq -rc '.[] | select(.address  | test("'"$last_focus_address"'"; "i"))'`
-    if [ -z "last_focus_app" ]; then
-        continue
-    fi
-
-    if [[ -n "$skip_class" && $(echo $last_focus_app|jq -r '.class') =~ ^($skip_class)$ ]]; then
-        continue
-    fi
-    break
-    # echo "${window_history[$i]}"
-done
-# echo "$last_focus_app" >>/tmp/a.log
-
+echo $last_focus_app
 # 如果没有last_focus_app 则什么也不做
 if [ -z "last_focus_app" ]; then
     exit;
 fi
+last_focus_address=`echo $last_focus_app|jq -r '.address'`
 target_floating=`echo $last_focus_app|jq -r '.floating'`
 # target_app=`echo $last_focus_app|jq -r '.class'`
 target_ws_name=`echo $last_focus_app|jq -r '.workspace.name'`
