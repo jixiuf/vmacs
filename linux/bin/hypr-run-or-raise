@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# need: jq,hypr-focus-last-win,hypr-trace-focus,cd.sh tmux.sh term.sh cwd
+# need: jq,hypr-focus-last-win,cd.sh tmux.sh term.sh cwd
 # hypr-run-or-raise -h for help
 # arg1: target_class (regexp)
 # other args: command
