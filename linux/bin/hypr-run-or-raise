@@ -127,18 +127,18 @@ focus_last_win(){
 #
 if [ -n "$float_only" ]; then
     # only match floating app
-    target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class  | test("'"$target"'"; "i")) and (.floating == true) )'`
+    target_appinfo=`hyprctl clients -j | jq -rc 'map(select((.class  | test("'"$target"'"; "i")) and (.floating == true) ))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
 else
     # make the target floating
     if [ "$floating" == "true" ]; then
         # target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class  | test("'"$target"'"; "i")) and (.floating == true) )'`
         # 优先匹配floating 的
-        target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class  | test("'"$target"'"; "i")) and (.floating == true) )'`
+        target_appinfo=`hyprctl clients -j | jq -rc 'map(select((.class  | test("'"$target"'"; "i")) and (.floating == true)))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
         if [ -z "$target_appinfo" ]; then
-            target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class |test("'"$target"'"; "i")))'`
+            target_appinfo=`hyprctl clients -j | jq -rc 'map(select(.class |test("'"$target"'"; "i")))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
         fi
     else
-        target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class |test("'"$target"'"; "i")))'`
+        target_appinfo=`hyprctl clients -j | jq -rc 'map(select(.class |test("'"$target"'"; "i")))| sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
     fi
 fi
 if [ ! "$target_appinfo" ]; then
@@ -152,9 +152,9 @@ if [ ! "$target_appinfo" ]; then
     # 如果期望新创建的窗口是floating,则尝试将期转成floating
     if [ "$floating" == "true" ]; then
         if [ -n "$float_only" ]; then
-            target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class  | test("'"$target"'"; "i")) and (.floating == true) )'`
+            target_appinfo=`hyprctl clients -j | jq -rc 'map(select((.class  | test("'"$target"'"; "i")) and (.floating == true) ))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
         else
-            target_appinfo=`hyprctl clients -j | jq -rc '.[] | select((.class |test("'"$target"'"; "i")))'`
+            target_appinfo=`hyprctl clients -j | jq -rc 'map(select((.class |test("'"$target"'"; "i"))))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
         fi
         target_floating=`echo $target_appinfo|jq -r '.floating'`
         if [ "$target_floating" == "false" ]; then
@@ -176,9 +176,9 @@ else
     # jq 的(.app_id // "") 表示取 app_id 若无此字段则为空串
     # target_class=`echo $target_appinfo|jq -r '.class'|head -n 1`
     # last_target_class=`echo $target_appinfo|jq -r '.class'|tail -n 1`
-    addrs=`echo $target_appinfo|jq -rc '.address'|sort`
-    last_target_addr=`echo $target_appinfo|jq -rc '.address'|sort|tail -n 1`
-    first_target_addr=`echo $target_appinfo|jq -rc '.address'|sort|head -n 1`
+    addrs=`echo $target_appinfo|jq -rc '.address'`
+    last_target_addr=`echo $target_appinfo|jq -rc '.address'|tail -n 1`
+    first_target_addr=`echo $target_appinfo|jq -rc '.address'|head -n 1`
     # target_pid=`echo $target_appinfo|jq -r '.pid'`
     if [[ ! ("$front_class" =~ $target) ]]; then
         target_appinfo=`echo $target_appinfo |  jq -rc 'select(.address  | test("'"$first_target_addr"'"; "i"))'`
