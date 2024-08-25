@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# need hypr-trace-focus for tmux pane
+# need dotool,hypr-trace-focus for tmux pane
 
 TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
 

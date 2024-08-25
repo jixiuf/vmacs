@@ -30,7 +30,11 @@ if [ -n "$class" ]; then
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
         tmux_session=${title%%:*}
-        tmux resize-pane -t $tmux_session -Z
+        if [ "$(tmux list-panes -s $tmux_session|wc -l)" == "1" ]; then
+            toggle_fullscreen
+        else
+            tmux resize-pane -t $tmux_session -Z
+        fi
     else
         toggle_fullscreen
     fi
