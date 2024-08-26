@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# need dotool,hypr-trace-focus for tmux pane
+# need dotool
+# focuses the next window on a workspace
+# support switching between emacs window and tmux pane
 
 TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
 
@@ -45,25 +47,32 @@ fi
 if [ -n "$appinfo" ]; then
     # ( "$app_cnt" = "1" || "$fullscreen" = "true" )
     if [[ "$class" = "emacs" && -z "$arg" ]]; then
-        echo key ctrl+super+o|dotoolc
+        # (global-set-key (kbd "C-x o") 'vmacs-other-window)
+        # (defun vmacs-other-window()
+        #   (interactive)
+        #   (select-window (next-window))
+        #   (when (eq (selected-window) vmacs-window-status)
+        #     (call-process "other-window" nil nil nil "skip-emacs"))
+        #   (unless (and vmacs-window-status
+        #                (window-live-p vmacs-window-status))
+        #     (setq vmacs-window-status (selected-window))))
+        echo key ctrl+x o|dotoolc
         exit 0
     elif [[  "$class" =~ ^($TERM_CLASS_REGEX)$  && "$title" == *"GNU/Emacs"* &&
                 ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&
                 -z "$arg" ]]; then
-        echo key ctrl+super+o|dotoolc
+        echo key ctrl+x o|dotoolc
         exit 0
     elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == "TMUX:"*    ]]; then
-        # need hypr-trace-focus
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
         tmux_session=${title%%:*}
         if [ "$(tmux list-panes -t $tmux_session | wc -l)" -gt 1 ]; then
-            tmux_pane_cursor=$(cat /tmp/tmux-${tmux_session}-last-pane-id|tr -d '\n')
-            last_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
-            if [ "$tmux_pane_cursor" = "$last_pane_id" ] && [ "$app_cnt" -gt "1" ] && [ "$floating" == "false" ]; then
+            last_pane_id=$(tmux list-panes -t $tmux_session -F "#{pane_id}"|tail -n 1)
+            cur_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
+            tmux select-pane  -t $tmux_session:.+
+            if [ "$last_pane_id" = "$cur_pane_id" ]  && [ "$floating" == "false" ]; then
                 next-window
-            else
-                tmux select-pane  -t $tmux_session:.+
             fi
             exit 0
         fi

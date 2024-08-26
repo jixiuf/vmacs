@@ -48,6 +48,7 @@
     (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
 
 (global-set-key (kbd "C-s-o") 'vmacs-other-window)
+(global-set-key (kbd "C-x o") 'vmacs-other-window)
 (defvar vmacs-window-status nil)
 (defun vmacs-focus()
   (if (frame-focus-state)
