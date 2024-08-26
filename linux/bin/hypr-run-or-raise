@@ -43,6 +43,7 @@ for i in "$@"; do
             echo "    set -g set-titles on"
             echo "    set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'"
             echo "  see script 'cwd' and 'cd.sh' for more details"
+            echo "  you need install https://sr.ht/~geb/dotool/ if you do not use tmux"
             echo "--term-class terminal-class"
             echo "  terminal-class: the class of terminal, this should work with --cd, if \$TERM_CLASS_REGEX don't match your terminal,you can custom it"|fmt
             echo " some demo:"
@@ -214,7 +215,9 @@ else
                 target_title=${target_title#TMUX:}
                 tmux_session=${target_title%%:*}
                 # cwd=${cwd#*:}
-                cd.sh $cwd $tmux_session
+                cd.sh --auto-type "tmux send-keys -t $tmux_session" $cwd
+            else
+                cd.sh $cwd
             fi
         fi
     fi
