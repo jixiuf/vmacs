@@ -1,6 +1,8 @@
 #!/bin/bash
 # need: hyprctl,socat,jq
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
+# auto hide some windows when lose focus
+AUTO_HIDE_CLASS_REGEX=${AUTO_HIDE_CLASS_REGEX:-dterm|org.keepassxc.KeePassXC}
+# TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
 
 # trace last focused window address before current active window
 # 数组变量，用于保存窗口地址的历史记录
@@ -45,31 +47,24 @@ handle_active_window() {
         # 将新的窗口地址添加到历史记录的末尾
         window_history+=("$address")
         # serialize_window_history
-        # if [ -n "$last_win_addr" ]; then
-        #     last_focus_app=`hyprctl clients -j | jq -rc '.[] | select(.address  | test("'"$last_win_addr"'"; "i"))'`
-        #     last_floating=`echo $last_focus_app|jq -r '.floating'`
-        #     last_class=`echo $last_focus_app|jq -r '.class'`
-        #     if [[  "$last_floating" = "true" &&  ("$last_class" == *"org.wezfurlong.wezterm"*  || "$last_class" == *"Alacritty"*   || "$last_class" == *"dterm"*) ]]; then
-        #         hyprctl dispatch "movetoworkspacesilent special,address:${last_win_addr}"
-        #     fi
-        # fi
-        hide_dterm $1
+        auto_hide_windows_after_lose_focus $1
 
     fi
     # echo "${#window_history[@]} ${window_history[@]}"
 }
 # hide my dropdown terminal when lose focus
-hide_dterm(){
+auto_hide_windows_after_lose_focus(){
     active_addr="$1"
     # ws=$(hprctl activeworkspace -j)
     # ws_id=`echo $ws|jq -r '.id'`
-    # ws_wins=$(hyprctl clients -j | jq -cr '.[] | select(((.class  | test("dterm"; "i"))) and (.workspace.id == '$term_workspace') )'|wc -l)
-    dterm_app=$(hyprctl clients -j | jq -cr '.[] | select(.class  | test("dterm"; "i") )')
-    dterm_addr=`echo $dterm_app|jq -r '.address'`
+    # ws_wins=$(hyprctl clients -j | jq -cr '.[]|select((.class  | test("'"$AUTO_HIDE_CLASS_REGEX"'"; "i")) and (.workspace.id == '$term_workspace') )'|wc -l)
+    addrs=$(hyprctl clients -j | jq -rc '.[]|select(.class  | test("'"$AUTO_HIDE_CLASS_REGEX"'"; "i"))|.address')
+    while IFS= read -r addr; do
+        if [ "$addr" != "$active_addr" ]; then
+            hyprctl dispatch "movetoworkspacesilent special,address:${addr}"
+        fi
+    done <<< "$addrs"
 
-    if [ "$dterm_addr" != "$active_addr" ]; then
-        hyprctl dispatch "movetoworkspacesilent special,address:${dterm_addr}"
-    fi
 }
 # # this is for the script named 'other-window'
 # # you can use other-window to select other pane of tmux
