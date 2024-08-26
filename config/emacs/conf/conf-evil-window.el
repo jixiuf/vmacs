@@ -49,9 +49,10 @@
     (when vmacs--fullscreen-window-configuration
       (set-window-configuration vmacs--fullscreen-window-configuration)
       (setq vmacs--fullscreen-window-configuration nil))
-    (unless (string-equal "1" (string-trim
-                               (shell-command-to-string
-                                "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
+    (if (string-equal "1" (string-trim
+                           (shell-command-to-string
+                            "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
+        (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "0")
       (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1"))))
 
 (global-set-key (kbd "C-s-o") 'vmacs-other-window)

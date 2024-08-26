@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # need: jq,hypr-focus-last-win,cd.sh tmux.sh term.sh cwd
+# you can use hypr-trace-focus to auto hide some floating window when lose focus
 # hypr-run-or-raise -h for help
 # arg1: target_class (regexp)
 # other args: command
