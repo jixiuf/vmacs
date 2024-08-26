@@ -4,37 +4,18 @@
 # hypr-run-or-raise -h for help
 # arg1: target_class (regexp)
 # other args: command
-# demo:
-# 根据 arg1(window target_class) 来匹配当前运行的程序中有没有匹配的窗口，
-# 1. 如果有
-# 1.1 若此窗口已经是聚焦的窗口，则将焦点转移到上一次聚焦的窗口上
-# 1.2 若此窗口不是当前聚焦的窗口，则将焦点转移到此窗口
-# 2. 如果没有，则使用 arg2 及之后的参数 以启动目录程序,并聚焦之(有可能程序是在其他 workspace 启动，故需要将焦点转移到那)
-# hypr-run-or-raise emacs emacs
-# hypr-run-or-raise --toggle emacs emacs
-# hypr-run-or-raise 'firefox|firefox-esr' firefox
-# hypr-run-or-raise --cd --float-only  Alacritty -- alacritty   --working-directory=$(cwd||echo $HOME)
-# hypr-run-or-raise --toggle --float-only  Alacritty -- alacritty  --working-directory=$(cwd||echo $HOME)
-# hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating --float-only  'dterm' alacritty -- --class dterm
-# hypr-run-or-raise --toggle --floating   'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=$(cwd||echo $HOME)
-# hypr-run-or-raise --toggle --cd --floating  'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=$(cwd||echo $HOME)
 
-# 有个特例，参见 cwd
-# 若当前窗口是 emacs ,我能从 emacs 的 title 中获取到 emacs 的 default-directory(emacs 当前编辑的文件所在的目录)
-# 而我的目录窗口若是 alacritty 终端，则当我切换到 alacritty 终端时，我希望执行 cd directory 命令，切换到与 emacs 中文件所在目录 相同的目录
-# 需要依赖 ydotool
-#
 TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
 PROG=$( basename "$0" )
 float_only=""
 toggle=""
-maximize=""
+fullscreen=""
 center_floating_window=""
 cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions maximize,cd,float-only,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions fullscreen:,cd,float-only,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -47,7 +28,7 @@ for i in "$@"; do
             echo
             echo "OPTIONS"
             echo "--float-only only match floating window"
-            echo "--maximize maximize the target window"
+            echo "--fullscreen fullscreenstate fullscreenstate can be 1:maximize 2:fullscreen"
             echo "--center center the active window(floating only)"
             echo "--toggle toggle between the current window and target window"
             echo "--move_to_current_workspace-if-floating"
@@ -62,6 +43,8 @@ for i in "$@"; do
             echo "    set -g set-titles on"
             echo "    set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'"
             echo "  see script 'cwd' and 'cd.sh' for more details"
+            echo "--term-class terminal-class"
+            echo "  terminal-class: the class of terminal, this should work with --cd, if \$TERM_CLASS_REGEX don't match your terminal,you can custom it"|fmt
             echo " some demo:"
             echo "   hypr-run-or-raise emacs emacs"
             echo "   hypr-run-or-raise --toggle emacs emacs"
@@ -90,8 +73,14 @@ for i in "$@"; do
             shift
             ;;
 
-        --maximize*)
-            maximize="set"
+        --fullscreen*)
+            fullscreen="$2" #1:maximize 2:fullscreen
+            shift
+            shift
+            ;;
+        --term-class*)
+            TERM_CLASS_REGEX="$2"
+            shift
             shift
             ;;
         --center*)
@@ -134,28 +123,18 @@ else
 fi
 if [ ! "$target_appinfo" ]; then
     $cmd &
-    # if app not found ,run the cmde
-    # if echo "$cmd" | grep -q " "; then
-    #     $cmd &
-    # else
-    # fi
 else
-    # frontappinfo=`hyprctl clients -j | jq -r '.[] |select(.focused)'`
     front_app=`hyprctl activewindow -j`
     front_class=`echo $front_app|jq -r '.class'`
     front_addr=`echo $front_app|jq -r '.address'`
     front_floating=`echo $front_app|jq -r '.floating'`
-    front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
-
+    # front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
     front_ws_name=`echo $front_app|jq -r '.workspace.name'`
     front_ws_id=`echo $front_app|jq -r '.workspace.id'`
     # jq 的(.app_id // "") 表示取 app_id 若无此字段则为空串
-    # target_class=`echo $target_appinfo|jq -r '.class'|head -n 1`
-    # last_target_class=`echo $target_appinfo|jq -r '.class'|tail -n 1`
     addrs=`echo $target_appinfo|jq -rc '.address'`
     last_target_addr=`echo $target_appinfo|jq -rc '.address'|tail -n 1`
     first_target_addr=`echo $target_appinfo|jq -rc '.address'|head -n 1`
-    # target_pid=`echo $target_appinfo|jq -r '.pid'`
     if [[ ! ("$front_class" =~ $target) ]]; then
         target_appinfo=`echo $target_appinfo |  jq -rc 'select(.address  | test("'"$first_target_addr"'"; "i"))'`
     elif [[  "$front_addr" == "$last_target_addr"  ]]; then
@@ -198,47 +177,45 @@ else
 
     if [[ "$target_floating" == "true"  ]]; then
         # 如果当前窗口是fullscreen，则将其恢复
-        if [ "$front_fullscreen" == "true" ]; then
-            hyprctl dispatch "fullscreen"
-        fi
+        # if [ "$front_fullscreen" != "0" ]; then
+        #     hyprctl dispatch "fullscreen"
+        # fi
         # move window to current ws
         # hyprctl keyword animations:enabled 0
         if [ -n "$move_to_current_workspace_if_floating" ]; then
             hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
         fi
-        hyprctl dispatch "focuswindow address:${target_addr}"
-        hyprctl dispatch "bringactivetotop"
+        hyprctl --batch "dispatch focuswindow address:${target_addr}; dispatch bringactivetotop"
         if [ -n "$center_floating_window" ]; then
             hyprctl dispatch centerwindow
         fi
         # hyprctl keyword animations:enabled 1
-        if [ $maximize ]; then
-            hyprctl dispatch "fullscreen 1"
+        if [ $fullscreen ]; then
+            hyprctl dispatch "fullscreenstate $fullscreen"
         fi
-    else
+    else             # target not floating case
         # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
         if [[ "$front_floating" == "true" && "$target_ws_id" == "$front_ws_id" && \
                   -n "$hide_front_floating_window" ]]; then
             hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
         fi
-        hyprctl dispatch "focuswindow address:${target_addr}"
-        hyprctl dispatch "bringactivetotop"
+        hyprctl --batch "dispatch focuswindow address:${target_addr}; dispatch bringactivetotop"
     fi
     if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-            # root@host:/path
-            regex="(\/ssh:)?([a-zA-Z0-9_\-]+@)?([a-zA-Z0-9_\.\-]+):(.+)"
             tmux_session=""
             if [[ $target_title == TMUX:* ]]; then
                 # Remove the prefix "TMUX:" and then split the remaining string by ":"
                 # 格式： "TMUX:session:path"
+                # set -g set-titles on
+                # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
                 target_title=${target_title#TMUX:}
                 tmux_session=${target_title%%:*}
                 # cwd=${cwd#*:}
+                cd.sh $cwd $tmux_session
             fi
-            cd.sh $cwd $tmux_session
         fi
     fi
 fi

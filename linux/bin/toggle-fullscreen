@@ -2,7 +2,11 @@
 
 toggle_fullscreen(){
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-        hyprctl dispatch fullscreen 1
+        if [ $appcnt = 1 ]; then
+            hyprctl dispatch fullscreen 0
+        else
+            hyprctl dispatch fullscreen 1
+        fi
     else
         swaymsg "fullscreen"
     fi
@@ -16,10 +20,12 @@ if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     class=`echo $appinfo|jq -r '.class'|head -n 1`
     title=`echo $appinfo|jq -r '.title'|head -n 1`
     fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
+    appcnt=`hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc ".id")')|.address'|wc -l`
 else
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
     title=$(echo $appinfo|jq -r '.name')
+    appcnt=0                    # todo
 fi
 
 if [ -n "$class" ]; then
