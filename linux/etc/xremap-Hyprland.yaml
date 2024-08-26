@@ -5,9 +5,9 @@ keymap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
       super-C-e: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --  emacs  emacsclient -c -r -n"] }
       super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --gtk-version=4"] }
-      super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv"] }
+      super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise --toggle apifox-pdv /opt/Apifox/apifox-pdv"] }
       # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
-      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","--toggle","DBeaver","dbeaver"] }
+      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle DBeaver dbeaver"] }
 
       super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
       super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --floating --float-only  'dterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
