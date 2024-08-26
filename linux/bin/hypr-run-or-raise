@@ -28,11 +28,12 @@ float_only=""
 floating=""
 toggle=""
 maximize=""
+center_floating_window=""
 cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,move-to-current-workspace-if-floating,hide-front-floating-window,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions maximize,cd,floating,float-only,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -44,9 +45,10 @@ for i in "$@"; do
             echo "it would consistently cycling through all windows matching class regex"
             echo
             echo "OPTIONS"
-            echo "--float-only only match floating app"
+            echo "--float-only only match floating window"
             echo "--maximize maximize the target window"
-            echo "--floating make the target window floating"
+            echo "--center center the active window(floating only)"
+            echo "--floating sets the target window’s floating state to true"
             echo "--toggle toggle between the current window and target window"
             echo "--move_to_current_workspace-if-floating"
             echo "  move the target window to current workspace if it is a floating window"
@@ -90,6 +92,10 @@ for i in "$@"; do
 
         --maximize*)
             maximize="set"
+            shift
+            ;;
+        --center*)
+            center_floating_window="set"
             shift
             ;;
         --floating*)
@@ -159,7 +165,10 @@ if [ ! "$target_appinfo" ]; then
         target_floating=`echo $target_appinfo|jq -r '.floating'`
         if [ "$target_floating" == "false" ]; then
             # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
-            hyprctl dispatch togglefloating address:${target_addr}
+            target_addr=`echo $target_appinfo|jq -r '.address'`
+            hyprctl dispatch setfloating address:${target_addr}
+        fi
+        if [ -n "$center_floating_window" ]; then
             hyprctl dispatch centerwindow
         fi
     fi
@@ -234,10 +243,11 @@ else
         hyprctl dispatch "bringactivetotop"
         if [[ "$floating" = "true" && "$target_floating" = "false" ]]; then
             # 如果目标窗口不是floating,且 有--floating 参数（ 即想让目标窗口以floating的形式展示）
-            hyprctl dispatch togglefloating address:${target_addr}
+            hyprctl dispatch setfloating address:${target_addr}
+        fi
+        if [ -n "$center_floating_window" ]; then
             hyprctl dispatch centerwindow
         fi
-
         # hyprctl keyword animations:enabled 1
         if [ $maximize ]; then
             hyprctl dispatch "fullscreen 1"
