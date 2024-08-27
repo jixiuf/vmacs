@@ -15,7 +15,8 @@ notify_cmd_shot="notify-send -h string:x-canonical-private-synchronous:screeensh
 
 proc_notif(){
     mpv $shutter_sound &
-    ${notify_cmd_shot} -t 1500 "截屏" "截屏。。。"
+    ${notify_cmd_shot} -t 3000 "截屏" "a:-> r:口，d:blur, f:fill  t:txt  c:O x:clear b:brush"
+    
 }
 
 # Clean up tmp file

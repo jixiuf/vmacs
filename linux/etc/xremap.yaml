@@ -54,19 +54,20 @@ modmap:
         alone_timeout_millis: 1000 # Optional
 
 keymap:
-  # - name: swappy
-  #   application:
-  #     only: [swappy]
-  #   remap:
-  #   # http://7is7.com/software/firefox/shortcuts.html 
-  #     C-y: C-y
-  #     C-b: C-b
-  #     C-g: [C-c,C-s, esc]
-  #     esc: [C-c,C-s, esc]
-  #     C-slash: C-z
-  #     C-x:
-  #       remap:
-  #         C-c: [C-c,C-s, esc]
+  - name: swappy
+    application:
+      only: [swappy]
+    remap:
+    # http://7is7.com/software/firefox/shortcuts.html
+      C-y: C-y
+      C-b: C-b
+      C-g: [C-c,C-s, esc]
+      esc: [C-c,C-s, esc]
+      C-slash: C-z
+      Super-C-v: C-v
+      C-x:
+        remap:
+          C-c: [C-c,C-s, esc]
   - name: DBeaver
     application:
       only: [DBeaver]
@@ -403,8 +404,8 @@ keymap:
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
       # eme slurp swappy    
-      super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]} 
-      # super-C-4: { launch: ["screenshot","1"]} #area
+      # super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]}
+      super-C-4: { launch: ["screenshot","1"]} #area
       super-M-4: { launch: ["screenshot"]}     #screen
       super-M-i: { launch: ["swaync-client","-t"]}     #screen
       super-C-o: { launch: ["other-window"] }
