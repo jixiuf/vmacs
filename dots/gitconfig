@@ -77,10 +77,10 @@
 	ll = log --date iso --stat
 	pd = pull --dry-run
 	s = status
-	up = pull --rebase
+	up = pull --rebase --autostash
 	put = push origin HEAD
 	pom = push origin master
-	f = pull
+	f = pull --autostash
     p =push
 
 	dd = difftool
