@@ -7,20 +7,20 @@
 ;;;###autoload
 (defun vmacs-meow-yank()
   (interactive)
-(if rectangle-mark-mode
+(if (bound-and-true-p rectangle-mark-mode)
       (call-interactively #'yank-rectangle)
       (call-interactively #'meow-yank)))
 ;;;###autoload
 (defun vmacs-meow-change()
   (interactive)
-  (if rectangle-mark-mode
+  (if (bound-and-true-p rectangle-mark-mode)
       (call-interactively #'string-rectangle)
     (call-interactively #'meow-change)))
 ;;;###autoload
 ;;;###autoload
 (defun vmacs-meow-replace()
   (interactive)
-  (if rectangle-mark-mode
+  (if (bound-and-true-p rectangle-mark-mode)
       (progn
         (call-interactively #'delete-rectangle)
         (rectangle-exchange-point-and-mark)
@@ -31,7 +31,7 @@
 ;;;###autoload
 (defun vmacs-kill-ring-save()
   (interactive)
-  (if rectangle-mark-mode
+  (if (bound-and-true-p rectangle-mark-mode)
       (call-interactively #'copy-rectangle-as-kill)
       (call-interactively #'kill-ring-save)))
 
@@ -854,7 +854,7 @@ Move point to end-of-line ,if point was already at that position,
   will call (kill-line) ,else kill the region."
   (interactive "P")
   (if mark-active
-      (if rectangle-mark-mode
+      (if (bound-and-true-p rectangle-mark-mode)
           (call-interactively #'kill-rectangle)
         (if (= (region-beginning) (region-end) ) (kill-line arg)
           (kill-region (region-beginning) (region-end))
@@ -867,7 +867,7 @@ Move point to end-of-line ,if point was already at that position,
   will call (kill-line) ,else kill the region."
   (interactive "P")
   (if mark-active
-      (if rectangle-mark-mode
+      (if (bound-and-true-p rectangle-mark-mode)
           (call-interactively #'kill-rectangle)
         (if (= (region-beginning) (region-end) ) (org-kill-line arg)
           (kill-region (region-beginning) (region-end))))

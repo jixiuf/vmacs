@@ -5,6 +5,6 @@ show_panel=false
 line_size=5
 text_size=30
 # text_font=sans-serif
-paint_mode=brush
+paint_mode=arrow
 early_exit=false
 fill_shape=false
