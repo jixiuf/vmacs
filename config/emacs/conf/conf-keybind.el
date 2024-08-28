@@ -150,6 +150,8 @@
 (global-set-key (kbd "C-c r") 'compile-dwim-run) ;space r
 (global-set-key  (kbd "M-,") 'scroll-other-window-down)
 (global-set-key  (kbd "M-.") 'scroll-other-window)
+(global-set-key  (kbd "M-w") 'vmacs-kill-ring-save)
+
 
 ;; (setq-default buffer-save-without-query nil)
 (vmacs-leader "s" 'save-buffer)

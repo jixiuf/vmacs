@@ -5,6 +5,37 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-meow-yank()
+  (interactive)
+(if rectangle-mark-mode
+      (call-interactively #'yank-rectangle)
+      (call-interactively #'meow-yank)))
+;;;###autoload
+(defun vmacs-meow-change()
+  (interactive)
+  (if rectangle-mark-mode
+      (call-interactively #'string-rectangle)
+    (call-interactively #'meow-change)))
+;;;###autoload
+;;;###autoload
+(defun vmacs-meow-replace()
+  (interactive)
+  (if rectangle-mark-mode
+      (progn
+        (call-interactively #'delete-rectangle)
+        (rectangle-exchange-point-and-mark)
+        (call-interactively #'yank-rectangle))
+    (call-interactively #'meow-replace)))
+
+  
+;;;###autoload
+(defun vmacs-kill-ring-save()
+  (interactive)
+  (if rectangle-mark-mode
+      (call-interactively #'copy-rectangle-as-kill)
+      (call-interactively #'kill-ring-save)))
+
+;;;###autoload
 (defun reb-replace-regexp (&optional delimited)
   "Run `query-replace-regexp' with the contents of re-builder. With
 non-nil optional argument DELIMITED, only replace matches
@@ -823,12 +854,12 @@ Move point to end-of-line ,if point was already at that position,
   will call (kill-line) ,else kill the region."
   (interactive "P")
   (if mark-active
-      (if (= (region-beginning) (region-end) ) (kill-line arg)
-        (kill-region (region-beginning) (region-end) )
-        )
-    (kill-line arg)
-    )
-  )
+      (if rectangle-mark-mode
+          (call-interactively #'kill-rectangle)
+        (if (= (region-beginning) (region-end) ) (kill-line arg)
+          (kill-region (region-beginning) (region-end))
+          ))
+    (kill-line arg)))
 ;;;###autoload
 (defun vmacs-kill-region-or-org-kill-line(&optional arg)
   "this function is a wrapper of (kill-line).
@@ -836,12 +867,11 @@ Move point to end-of-line ,if point was already at that position,
   will call (kill-line) ,else kill the region."
   (interactive "P")
   (if mark-active
-      (if (= (region-beginning) (region-end) ) (org-kill-line arg)
-        (kill-region (region-beginning) (region-end) )
-        )
-    (org-kill-line arg)
-    )
-  )
+      (if rectangle-mark-mode
+          (call-interactively #'kill-rectangle)
+        (if (= (region-beginning) (region-end) ) (org-kill-line arg)
+          (kill-region (region-beginning) (region-end))))
+    (org-kill-line arg)))
 ;; ;;;;(global-unset-key "\C-w")  ;C-k 现在完全具有 C-w 的功能, 所以取消 C-w 的键定义
 ;; (defvar vmacs-trailing-whitespace-modes '(c++-mode c-mode haskell-mode emacs-lisp-mode scheme-mode erlang-mode))
 ;; ;;;###autoload
