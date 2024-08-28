@@ -379,9 +379,9 @@ that alist."
     ;; (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     (if current-prefix-arg
         (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise --prefer-same-workspace --cd  'dterm' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm -- tmux.sh --session dterm --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
+                      (format "hypr-run-or-raise  --cd  'dterm' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm -- tmux.sh --session dterm --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
         (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise --cd  'foot-emacs' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=foot-emacs -- tmux.sh --session foot-emacs --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
+                      (format "hypr-run-or-raise --prefer-same-workspace --cd  'foot*|dterm|Alacritty|kitty|' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=foot-emacs -- tmux.sh --session foot-emacs --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
 )))
 
 ;; (defun term-compile ()
