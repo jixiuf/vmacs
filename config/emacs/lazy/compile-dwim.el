@@ -378,7 +378,7 @@ that alist."
     ;; (call-process "ydotool" nil nil nil "key" "28:1" "28:0") ;return
     ;; (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     (call-process "sh" nil nil nil "-c"
-                  (format "hypr-run-or-raise --cd --floating 'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm -- tmux.sh --session dterm --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
+                  (format "hypr-run-or-raise --cd  'foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm -- tmux.sh --session dterm --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
     ;; /usr/include/linux/input-event-codes.h
     ;; (call-process "keyd" nil nil nil "do" "C-g" "C-u" C-l" "C-S-v" "enter")
     ;; (with-temp-buffer

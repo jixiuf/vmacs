@@ -147,7 +147,7 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd  --float-only  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd  --floating true  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
 
   - name: terminal emacs
     application:
@@ -231,7 +231,7 @@ keymap:
       # super-C-Backslash: [C-c,M-1] 
       # super-C-Backspace: [C-c,M-2] 
         # - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--float-only","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
+      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
       # C-l: [C-l,C-Shift-l,C-Shift-l]
       # C-Enter: [C-y,Enter]
       # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
@@ -256,7 +256,7 @@ keymap:
   #     super-C-w: super-C-q
   #     super-C-Enter:
   #       - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-  #     # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--float-only","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
+  #     # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
   #     # C-l: [C-l,C-Shift-l,C-Shift-l]
   #     # C-Enter: [C-y,Enter]
   #     # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line

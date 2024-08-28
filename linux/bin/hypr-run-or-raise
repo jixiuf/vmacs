@@ -15,7 +15,7 @@ cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions fullscreen:,cd,float-only,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions prefer-same-workspace,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -27,7 +27,7 @@ for i in "$@"; do
             echo "it would consistently cycling through all windows matching class regex"
             echo
             echo "OPTIONS"
-            echo "--float-only only match floating window"
+            echo "--floating true/false only match window with .floating=true/false"
             echo "--fullscreen fullscreenstate fullscreenstate can be 1:maximize 2:fullscreen"
             echo "--center center the active window(floating only)"
             echo "--toggle toggle between the current window and target window"
@@ -50,8 +50,8 @@ for i in "$@"; do
             echo "   hypr-run-or-raise emacs emacs"
             echo "   hypr-run-or-raise --toggle emacs emacs"
             echo "   hypr-run-or-raise 'firefox|firefox-esr' firefox"
-            echo "   hypr-run-or-raise --cd --float-only  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
-            echo "   hypr-run-or-raise --toggle --float-only  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   hypr-run-or-raise --cd --floating true  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
+            echo "   hypr-run-or-raise --toggle --floating true  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
             echo "   hypr-run-or-raise --toggle  'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=\$(cwd||echo \$HOME)"
             echo "   hypr-run-or-raise --toggle --cd   'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=\$(cwd||echo \$HOME)"
             echo "   hypr-run-or-raise --toggle --move-to-current-workspace-if-floating  'dterm' -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME) -- tmux.sh --session dterm --cwd \$(cwd||echo \$HOME)"
@@ -88,11 +88,18 @@ for i in "$@"; do
             center_floating_window="set"
             shift
             ;;
-        --float-only*)
+        --floating*)
             # 只匹配当前是floating 的
-            float_only="set"
+            float_only="(.floating == $2)"
+            shift
             shift
             ;;
+        --prefer-same-workspace*)
+            # 只匹配当前是floating 的
+            prefer_same_workspace="(.workspace.id == $(hyprctl activeworkspace -j|jq -rc '.id'))"
+            shift
+            ;;
+        
     esac
 done
 
@@ -116,12 +123,19 @@ focus_last_win(){
     #     hyprctl dispatch "focuscurrentorlast"
 }
 #
+where="(.class  | test(\"$target\"; \"i\"))"
 if [ -n "$float_only" ]; then
     # only match floating app
-    target_appinfo=`hyprctl clients -j | jq -rc 'map(select((.class  | test("'"$target"'"; "i")) and (.floating == true) ))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
-else
-    target_appinfo=`hyprctl clients -j | jq -rc 'map(select(.class |test("'"$target"'"; "i")))| sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'`
+    where="$where and $float_only "
 fi
+if [ -n "$prefer_same_workspace" ]; then
+    where="$where and $prefer_same_workspace "
+
+fi
+echo $where
+
+select="hyprctl clients -j | jq -rc 'map(select("$where"))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'"
+target_appinfo=`eval $select`
 if [ ! "$target_appinfo" ]; then
     $cmd &
 else
