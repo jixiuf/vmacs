@@ -151,6 +151,8 @@
 (global-set-key  (kbd "M-,") 'scroll-other-window-down)
 (global-set-key  (kbd "M-.") 'scroll-other-window)
 (global-set-key  (kbd "M-w") 'vmacs-kill-ring-save)
+(autoload #'viper-delete-char  "viper" t)
+(global-set-key  (kbd "C-d") 'viper-delete-char)
 
 
 ;; (setq-default buffer-save-without-query nil)

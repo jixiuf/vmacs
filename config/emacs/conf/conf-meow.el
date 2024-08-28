@@ -150,7 +150,7 @@
   (add-hook 'after-init-hook #'which-key-mode))
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . vmacs-meow-line)) ;support: yy y3y
-(add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
+(add-to-list 'meow-selection-command-fallback '(meow-replace . vmacs-meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
 (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
@@ -227,10 +227,13 @@
   "Make `yank' behave like paste (p) command in vim."
   (when-let ((clip (condition-case nil (current-kill 0 t) (error ""))))
     (set-text-properties 0 (length clip) nil clip)
-    (let ((linep (string-suffix-p "\n" clip)))
-      (when linep
-        (forward-line)
-        (goto-char (line-beginning-position)))
+    (let ((charp (= 1 (length clip)))
+          (linep (string-suffix-p "\n" clip)))
+      (if charp
+          (forward-char)
+        (when linep
+          (forward-line)
+          (goto-char (line-beginning-position))))
       (apply orig-fun args)
       ;; 下面代码 自动选中粘贴的内容，如果粘贴的是整行(即 yy p)
       ;; 则光标移动到行首（类似vim），否则行尾
