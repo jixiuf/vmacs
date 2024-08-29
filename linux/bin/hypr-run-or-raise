@@ -46,15 +46,19 @@ for i in "$@"; do
             echo "  you need install https://sr.ht/~geb/dotool/ if you do not use tmux"
             echo "--term-class terminal-class"
             echo "  terminal-class: the class of terminal, this should work with --cd, if \$TERM_CLASS_REGEX don't match your terminal,you can custom it"|fmt
+            echo " --auto-type 'args for autotype.sh '"
+            echo "   this is for terminal"
+            echo "   auto type some command after terminal window show"
+            echo "     --auto-type '--key ctrl+u --key ctrl+l --type \"make\" --key enter'"
             echo " some demo:"
-            echo "   hypr-run-or-raise emacs emacs"
-            echo "   hypr-run-or-raise --toggle emacs emacs"
-            echo "   hypr-run-or-raise 'firefox|firefox-esr' firefox"
-            echo "   hypr-run-or-raise --cd --floating true  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
-            echo "   hypr-run-or-raise --toggle --floating true  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
-            echo "   hypr-run-or-raise --toggle  'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=\$(cwd||echo \$HOME)"
-            echo "   hypr-run-or-raise --toggle --cd   'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=\$(cwd||echo \$HOME)"
-            echo "   hypr-run-or-raise --toggle --move-to-current-workspace-if-floating  'dterm' -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME) -- tmux.sh --session dterm --cwd \$(cwd||echo \$HOME)"
+            echo "   $PROG emacs emacs"
+            echo "   $PROG --toggle emacs emacs"
+            echo "   $PROG 'firefox|firefox-esr' firefox"
+            echo "   $PROG --cd --floating true  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --floating true  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle  'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --cd   'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --move-to-current-workspace-if-floating  'dterm' -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME) -- tmux.sh --session dterm --cwd \$(cwd||echo \$HOME)"
             exit 0
             ;;
         --cd*)
@@ -164,10 +168,10 @@ if [ ! "$target_appinfo" ]; then
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+             TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
         fi
         if [ -n "$auto_type" ]; then
-            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval   "autotype.sh $auto_type"
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
         fi
     fi
 else
@@ -253,10 +257,10 @@ else
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+              TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
         fi
         if [ -n "$auto_type" ]; then
-            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval   "autotype.sh $auto_type"
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
         fi
     fi
 fi
