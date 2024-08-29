@@ -5,6 +5,14 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-delete-char()
+  (interactive)
+  (unless (eobp)
+    (copy-region-as-kill (point) (1+ (point)))
+    (delete-char 1)
+      )
+  )
+;;;###autoload
 (defun vmacs-meow-yank()
   (interactive)
 (if (bound-and-true-p rectangle-mark-mode)
