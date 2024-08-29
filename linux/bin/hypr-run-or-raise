@@ -15,7 +15,7 @@ cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions prefer-same-workspace,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions prefer-current-workspace,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -94,9 +94,9 @@ for i in "$@"; do
             shift
             shift
             ;;
-        --prefer-same-workspace*)
+        --prefer-current-workspace*)
             # 只匹配当前是floating 的
-            prefer_same_workspace="(.workspace.id == $(hyprctl activeworkspace -j|jq -rc '.id'))"
+            prefer_cur_workspace="(.workspace.id == $(hyprctl activeworkspace -j|jq -rc '.id'))"
             shift
             ;;
         
@@ -128,8 +128,8 @@ if [ -n "$float_only" ]; then
     # only match floating app
     where="$where and $float_only "
 fi
-if [ -n "$prefer_same_workspace" ]; then
-    where="$where and $prefer_same_workspace "
+if [ -n "$prefer_cur_workspace" ]; then
+    where="$where and $prefer_cur_workspace "
 
 fi
 echo $where
