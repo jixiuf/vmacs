@@ -200,7 +200,7 @@ else
                 swaymsg "[app_id=\"${target_app_id}\"] focus"
             fi
         fi
-        if [[  "$target" == *"foot"*  ||"$class" = *"Alacritty"* || "$target" == *"dterm"*  ]]; then
+        if [[  "$target" == *"foot"*  ||"$class" = *"Alacritty"* || "$target" == *"term"*  ]]; then
             if [[ -n "$cwd" && -n "$cd" ]]; then
                 # 如果 cwd 获取到当前 working directory
                 # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录

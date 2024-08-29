@@ -5,7 +5,7 @@
 # arg1: target_class (regexp)
 # other args: command
 
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm}
 PROG=$( basename "$0" )
 float_only=""
 toggle=""
@@ -220,19 +220,7 @@ else
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-            tmux_session=""
-            if [[ $target_title == TMUX:* ]]; then
-                # Remove the prefix "TMUX:" and then split the remaining string by ":"
-                # 格式： "TMUX:session:path"
-                # set -g set-titles on
-                # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
-                target_title=${target_title#TMUX:}
-                tmux_session=${target_title%%:*}
-                # cwd=${cwd#*:}
-                cd.sh --auto-type "tmux send-keys -t $tmux_session" $cwd
-            else
-                cd.sh $cwd
-            fi
+            window_title=$target_title cd.sh "$cwd"
         fi
     fi
 fi

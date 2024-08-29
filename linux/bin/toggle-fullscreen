@@ -33,7 +33,7 @@ if [ -n "$class" ]; then
     if [[ "$class" = "emacs"  ]]; then
         sleep 0.1
         echo key ctrl+super+m|dotoolc
-    elif [[ "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = "dterm"* ]]; then
+    elif [[ "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = *"term"* ]]; then
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         if [[ "$title" == "TMUX:"* ]]; then
             title=${title#TMUX:}

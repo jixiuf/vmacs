@@ -8,6 +8,7 @@ master=$(gpg -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
 declare -A classMap
 classMap["apifox-pdv"]="luojilab.com"
 classMap["dterm"]="bitwarden.com"
+classMap["bterm"]="bitwarden.com"
 classMap["foot"]="bitwarden.com"
 classMap["foot-ws"]="bitwarden.com"
 classMap["Alacritty"]="bitwarden.com"

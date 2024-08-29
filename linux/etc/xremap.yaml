@@ -147,11 +147,11 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd  --floating true  'foot|foot-ws|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd   'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
 
   - name: terminal emacs
     application:
-      only: [dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
+      only: [bterm,dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
     window:
       only: [/GNU\/Emacs/ , /History/, /Last command output/, /EDITING SCROLLBACK/ ]
     remap:
@@ -176,7 +176,7 @@ keymap:
       
   - name: terminal tmux
     application:
-      only: [dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
+      only: [dterm,bterm,kitty,Alacritty,foot.*,Alacritty-ws]
     window:
       only: [/TMUX:/ ]
     remap:
@@ -203,7 +203,7 @@ keymap:
       #     C-j: { launch: ["open-with"]}
   - name: Terminal
     application:
-      only: [Alacritty]
+      only: [Alacritty.*]
     remap:
       super-C-w: super-C-q
       # super-C-Enter:
@@ -224,7 +224,7 @@ keymap:
       
   - name: foot
     application:
-      only: [dterm,foot,foot-ws]
+      only: [dterm,foot.*]
     remap:
       super-C-w: super-C-q
       # super-C-Enter: [C-c,"2"] 
@@ -357,7 +357,7 @@ keymap:
       C-d: delete
   - name: Default -- some of these are overridden by the above definitions
     application:
-      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,kitty,Alacritty   ,org.wezfurlong.wezterm  ]
+      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty   ,org.wezfurlong.wezterm  ]
       # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
     remap:
       super-C-a: C-a

@@ -15,7 +15,7 @@ function call_emacsclient(){
         front_app=`hyprctl activewindow -j`
         front_class=`echo $front_app|jq -r '.class'`
         front_floating=`echo $front_app|jq -r '.floating'`
-        if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == "dterm") ]]; then
+        if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
             hyprctl dispatch "movetoworkspacesilent special"
         fi
     else
@@ -23,7 +23,7 @@ function call_emacsclient(){
         front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
         # title=$(echo $front_app|jq -r '.name')
         front_floating=`echo $front_app|jq -r '.type'|head -n 1` # con or floating_con
-        if [[ "$front_floating" == "floating_con" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"* || "$front_class" == "dterm") ]]; then
+        if [[ "$front_floating" == "floating_con" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"* || "$front_class" == *"term") ]]; then
             swaymsg  "move window to scratchpad"
             # swaymsg  "[con_id=$id] move window to scratchpad"
         fi
