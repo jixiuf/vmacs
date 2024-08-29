@@ -15,7 +15,7 @@ cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions prefer-current-workspace,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions prefer-current-workspace,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -84,6 +84,15 @@ for i in "$@"; do
             shift
             shift
             ;;
+        --auto-type)
+            # this is for terminal
+            # auto type some command after target window show
+            # this is args for autotype.sh
+            # --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter'
+            auto_type="$2"
+            shift
+            shift
+            ;;
         --center*)
             center_floating_window="set"
             shift
@@ -99,7 +108,6 @@ for i in "$@"; do
             prefer_cur_workspace="(.workspace.id == $(hyprctl activeworkspace -j|jq -rc '.id'))"
             shift
             ;;
-        
     esac
 done
 
@@ -136,8 +144,32 @@ echo $where
 
 select="hyprctl clients -j | jq -rc 'map(select("$where"))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'"
 target_appinfo=`eval $select`
+
 if [ ! "$target_appinfo" ]; then
     $cmd &
+    count=0
+    max_retries=25
+    # wait target window show
+    while [[ $count -lt $max_retries && -z "$target_appinfo" ]]; do
+        sleep 0.2
+        ((count++))
+        target_appinfo=`eval $select`
+    done
+    if [ ! "$target_appinfo" ]; then
+        exit 1
+    fi
+    target_class=`echo $target_appinfo|jq -r '.class'`
+    target_title=`echo $target_appinfo|jq -r '.title'`
+    if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
+        if [[ -n "$cwd" && -n "$cd" ]]; then
+            # 如果 cwd 获取到当前 working directory
+            # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
+            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+        fi
+        if [ -n "$auto_type" ]; then
+            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval   "autotype.sh $auto_type"
+        fi
+    fi
 else
     front_app=`hyprctl activewindow -j`
     front_class=`echo $front_app|jq -r '.class'`
@@ -178,6 +210,7 @@ else
     last_target_addr=`echo $target_appinfo|jq -r '.address'`
     cwd=$(cwd)
     target_addr=`echo $target_appinfo|jq -r '.address'`
+    target_class=`echo $target_appinfo|jq -r '.class'`
     target_title=`echo $target_appinfo|jq -r '.title'`
     target_ws_id=`echo $target_appinfo|jq -r '.workspace.id'`
 
@@ -220,7 +253,10 @@ else
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-            window_title=$target_title cd.sh "$cwd"
+            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+        fi
+        if [ -n "$auto_type" ]; then
+            WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval   "autotype.sh $auto_type"
         fi
     fi
 fi

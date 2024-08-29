@@ -379,9 +379,9 @@ that alist."
     ;; (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     (if current-prefix-arg
         (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise  --cd  'dterm' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm -- tmux.sh --session dterm --cwd $(cwd||echo $HOME);tmux send-keys C-u C-l '%s' Enter" compile-command))
+                      (format "hypr-run-or-raise  --cd  'dterm' --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm -- tmux.sh --session dterm --cwd $(cwd||echo $HOME);" compile-command))
         (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise --prefer-current-workspace --cd  'foot.*|dterm|bterm|Alacritty|kitty' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=bterm -- tmux.sh --session bterm --cwd $(cwd||echo $HOME);echo key ctrl+u ctrl+l|dotoolc ;echo type '%s'|dotoolc;echo key enter|dotoolc" compile-command))
+                      (format "hypr-run-or-raise --prefer-current-workspace --cd --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' 'foot.*|dterm|bterm|Alacritty|kitty' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=bterm -- tmux.sh --session bterm --cwd $(cwd||echo $HOME);" compile-command))
 )))
 
 ;; (defun term-compile ()
