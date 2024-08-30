@@ -64,6 +64,8 @@ gui-apps/swappy  **
 gui-apps/hyprlock  ~amd64
 gui-apps/hypridle  ~amd64
 gui-apps/hyprpaper  ~amd64
+gui-apps/gtklock  ~amd64
+gui-libs/gtk-session-lock  ~amd64
 dev-cpp/sdbus-c++  ~amd64
 app-misc/brightnessctl ~amd64
 
