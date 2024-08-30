@@ -1,13 +1,13 @@
 ;;; -*- lexical-binding: t; coding:utf-8 -*-
 ;; ssh://user@server#2222:path/to/file
 ;; this stuff help you to switch between edit current buffer as root and as  common user
-;;(global-set-key (kbd "C-c o") 'toggle-read-only-file-with-sudo)
+;;(global-set-key (kbd "C-c o") 'sudo-edit)
 ;; also you can  /usr/bin/emacsclient -t -e "(wl-sudo-find-file \"$1\" \"$PWD\")"
-;;; toggle-read-only-file-with-sudo  函数的定义
+;;; sudo-edit  函数的定义
 ;; (require 'tramp)
 (require 'tramp)
 (require 'server)
-(defvar toggle-with-sudo-history-host-user-alist (make-hash-table))
+(defvar sudo-edit-host-user-alist (make-hash-table))
 
 ;; sshx
 ;; 这和 ssh 很类似，只有一点细微的差别：ssh 在远程机器上打开一个
@@ -22,7 +22,7 @@
 
 ;;当在本机或远程机 以普通用户打开某个文件或 dired 时，调用此命令，则切换到 root 打开此文件 ，再次调用则切换回去
 ;;;###autoload
-(defun toggle-read-only-file-with-sudo (&optional argv)
+(defun sudo-edit (&optional argv)
   (interactive "P")
   (let* ((old-pos (point))
          (fname (expand-file-name (or buffer-file-name dired-directory default-directory)) )
@@ -33,27 +33,27 @@
         (with-parsed-tramp-file-name fname nil
           (unless user (setq user ""))
           (if (string-equal user "root")
-              (let*((cache-username (gethash  (intern  host) toggle-with-sudo-history-host-user-alist))
+              (let*((cache-username (gethash  (intern  host) sudo-edit-host-user-alist))
                     (toggle-username (if argv
                                          (read-string (concat "username:[" cache-username "]") "" nil cache-username)
                                        (or cache-username "root"))))
 
                 ;; (tramp-make-tramp-file-name method user host localname "")
-                (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist)
+                (puthash  (intern  host) user sudo-edit-host-user-alist)
                 (setq fname (concat "/ssh:" (if (string-empty-p toggle-username) "" (concat toggle-username "@"))
                                     host  ":" localname)))
-            (let*((cache-username (or (gethash  (intern  host) toggle-with-sudo-history-host-user-alist) "root")))
+            (let*((cache-username (or (gethash  (intern  host) sudo-edit-host-user-alist) "root")))
               (if argv
                   (setq fname (concat "/" method ":" (read-string (concat "username:[" cache-username "]") ""
                                                                   nil cache-username) "@" host ":" localname))
                 (setq fname (concat "/" method ":" (if (string-empty-p user) "" (concat user "@")) host "|sudo:" "root"  "@" host ":" localname))
-                (puthash  (intern  host) user toggle-with-sudo-history-host-user-alist))))))
+                (puthash  (intern  host) user sudo-edit-host-user-alist))))))
 
        ((string-match (concat "^/sudo:.*@" (regexp-quote local-hostname)) fname) ;用 sudo 打开了本机的文件
         (with-parsed-tramp-file-name fname nil (setq fname localname)))
 
        (t                               ;默认正常打开本机文件
-        (let*((cache-username (or (gethash  (intern  local-hostname) toggle-with-sudo-history-host-user-alist) "root")))
+        (let*((cache-username (or (gethash  (intern  local-hostname) sudo-edit-host-user-alist) "root")))
           (setq fname (concat "/sudo:" (if argv (read-string (concat "username:[" cache-username "]") "" nil cache-username) "root") "@" local-hostname ":"  fname)))))
       (when argv
         (setq fname (read-string ":" fname nil fname)))

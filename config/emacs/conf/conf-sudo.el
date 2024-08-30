@@ -1,5 +1,5 @@
 ;; 用sudo 打开当前编辑的文件或目录
-(global-set-key (kbd "C-c fr") 'toggle-read-only-file-with-sudo)
+(global-set-key (kbd "C-c fr") 'sudo-edit)
 ;; su: or /sudo: on remote hosts
 ;; You can also use this syntax to sudo/su to root (or of course any other use) on a remote host:
 ;; C-xC-f /ssh:you@remotehost|sudo:remotehost:/path/to/file RET
@@ -40,7 +40,8 @@
   )
 
 (add-hook 'find-file-hooks 'my-sudo-find-file-hook);; find-file-hooks 是加载完file 之后调用的一个hook
-(add-hook 'dired-mode-hook 'my-sudo-find-file-hook) ;;
+(add-hook '
+ dired-mode-hook 'my-sudo-find-file-hook) ;;
 
 
 
