@@ -12,6 +12,6 @@ else
     cwd=$(cwd||echo $HOME)
     hyprctl dispatch workspace $term_workspace
     if [ "$term_cnt" == "0" ]; then
-        term.sh  --working-directory=$cwd -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)
+        term.sh  --working-directory=$cwd   --tmux-session $RANDOM
     fi
 fi

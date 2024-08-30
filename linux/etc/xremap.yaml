@@ -147,7 +147,7 @@ keymap:
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
       # C-x: C-x
-      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) -- tmux.sh --session dterm --cwd $(cwd||echo $HOME)" ] }
+      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
 
   - name: terminal emacs
     application:

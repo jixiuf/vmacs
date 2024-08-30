@@ -15,7 +15,7 @@ cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
 
-TEMP=$( getopt --options h --longoptions prefer-current-workspace,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions workspace:,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -27,8 +27,12 @@ for i in "$@"; do
             echo "it would consistently cycling through all windows matching class regex"
             echo
             echo "OPTIONS"
-            echo "--floating true/false only match window with .floating=true/false"
-            echo "--fullscreen fullscreenstate fullscreenstate can be 1:maximize 2:fullscreen"
+            echo "--floating true/false"
+            echo "  only match window with .floating=true/false"
+            echo "--workspace workspaceid or 'current'"
+            echo "  only match window of the workspace"
+            echo "--fullscreen fullscreenstate"
+            echo "  fullscreenstate can be 1:maximize 2:fullscreen"
             echo "--center center the active window(floating only)"
             echo "--toggle toggle between the current window and target window"
             echo "--move_to_current_workspace-if-floating"
@@ -53,12 +57,12 @@ for i in "$@"; do
             echo " some demo:"
             echo "   $PROG emacs emacs"
             echo "   $PROG --toggle emacs emacs"
-            echo "   $PROG 'firefox|firefox-esr' firefox"
+            echo "   $PROG 'firefox.*' firefox"
             echo "   $PROG --cd --floating true  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
             echo "   $PROG --toggle --floating true  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
             echo "   $PROG --toggle  'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=\$(cwd||echo \$HOME)"
             echo "   $PROG --toggle --cd   'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=\$(cwd||echo \$HOME)"
-            echo "   $PROG --toggle --move-to-current-workspace-if-floating  'dterm' -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME) -- tmux.sh --session dterm --cwd \$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --move-to-current-workspace-if-floating  dterm -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME)  --tmux-session dterm "
             exit 0
             ;;
         --cd*)
@@ -107,9 +111,14 @@ for i in "$@"; do
             shift
             shift
             ;;
-        --prefer-current-workspace*)
+        --workspace*)
             # 只匹配当前是floating 的
-            prefer_cur_workspace="(.workspace.id == $(hyprctl activeworkspace -j|jq -rc '.id'))"
+            if [ "$2" = "current" ]; then
+                workspace="(.workspace.id == $(hyprctl activeworkspace -j|jq -rc '.id'))"
+            else
+                workspace="(.workspace.id == $2)"
+            fi
+            shift
             shift
             ;;
     esac
@@ -140,8 +149,8 @@ if [ -n "$float_only" ]; then
     # only match floating app
     where="$where and $float_only "
 fi
-if [ -n "$prefer_cur_workspace" ]; then
-    where="$where and $prefer_cur_workspace "
+if [ -n "$workspace" ]; then
+    where="$where and $workspace "
 
 fi
 echo $where

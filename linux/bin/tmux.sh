@@ -20,7 +20,9 @@ for i in "$@"; do
             shift
             ;;
         --cwd*)
-            cwd="$2"
+            if [ -n "$2" ]; then
+                cwd="$2"
+            fi
             shift
             shift
             ;;
