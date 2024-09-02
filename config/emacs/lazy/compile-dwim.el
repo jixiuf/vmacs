@@ -86,6 +86,9 @@ Its value should be 'always or list like (filename run compile).")
          "lua %n.lua"
          ;; "mxmlc %f"
          "lua %n.lua")
+    (dired (mode . dired-mode)
+          (compile-dwim-make)
+        dape-dired)
     (go (name . "_test\\.go$")
         compile-go-test-current
         dape-dwim)
@@ -214,12 +217,14 @@ that alist."
           ""))))
 
 (defsubst compile-dwim-spec (type)
-  (format-spec-make
-   ?i (compile-dwim-interpreter type)
-   ?F (buffer-file-name)
-   ?f (file-name-nondirectory (buffer-file-name))
-   ?n (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))
-   ?e (file-name-extension (buffer-file-name))))
+  (when (buffer-file-name)
+    (format-spec-make
+     ?i (compile-dwim-interpreter type)
+     ?F (buffer-file-name)
+     ?f (file-name-nondirectory (buffer-file-name))
+     ?n (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))
+     ?e (file-name-extension (buffer-file-name)))  )
+  )
 
 (defun compile-dwim-match-1 (buf filter)
   (cond ((eq (car filter) 'name)
@@ -318,7 +323,8 @@ that alist."
 ;;;###autoload
 (defun compile-dwim-compile (force &optional sentinel)
   (interactive "P")
-  (if (not (buffer-file-name))
+  (if (and (not (buffer-file-name))
+           (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'compile))
@@ -400,7 +406,8 @@ that alist."
 ;;;###autoload
 (defun compile-dwim-run ()
   (interactive)
-  (if (not (buffer-file-name))
+  (if (and (not (buffer-file-name))
+           (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
     (compile-dwim-make-local-vars)
     (let ((cmds (compile-dwim-calculate-command 'run))
@@ -442,6 +449,14 @@ if found return the directory or nil"
           (expand-file-name root)
         nil
         ))))
+(defun dape-dired()
+  (if (eq major-mode 'dired-mode)
+    (cond
+     ((locate-dominating-file default-directory "go.mod")
+      (with-temp-buffer
+        (go-ts-mode)
+        (call-interactively 'dape-dwim))))
+    (call-interactively 'dape-dwim)))
 
 (defun compile-dwim-make()
   (let* ((project-root (compile-dwim-locate-makefile))

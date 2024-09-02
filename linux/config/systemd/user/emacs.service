@@ -4,6 +4,7 @@ Description=Starts emacs service
 
 [Service]
 Environment="XDG_SESSION_DESKTOP=Hyprland"
+Environment="RUN_ENV=development"
 Type=simple
 Restart=always
 ExecStart=/usr/bin/emacs --fg-daemon

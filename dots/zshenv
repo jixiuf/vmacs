@@ -7,6 +7,11 @@ export GPG_TTY="${TTY:-"$(tty)"}"
 # gpg-connect-agent updatestartuptty /bye >/dev/null
 
 export APM_OUTPUT_PATH=/tmp/trace/
+export ARTEMIS_SHUTDOWN_SLEEP_SECONDS=0
+export RUN_ENV=development
+export UPGRADE_ARTEMIS_CMD=false
+export INSTANCE_ID=4
+
 export LC_ALL=zh_CN.UTF-8
 export GO111MODULE=on
 appendPath(){

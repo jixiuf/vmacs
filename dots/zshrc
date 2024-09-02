@@ -92,12 +92,8 @@ export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT%{$fg[blue]%}$ %{$reset_
 
 #解决这个问题用 Ignore insecure directories and continue [y]
 # compaudit | xargs chmod g-w
-export ARTEMIS_SHUTDOWN_SLEEP_SECONDS=0
-alias curl2='curl --http2-prior-knowledge'
-export RUN_ENV=development
-export UPGRADE_ARTEMIS_CMD=false
-export INSTANCE_ID=4
 alias m=less.sh
+alias curl2='curl --http2-prior-knowledge'
 alias top4='ssh admin@bj-ali-zt-topology-04'
 alias apmdev='ssh bj-mjq-dev-apm-1'
 alias bench='ssh bench'
