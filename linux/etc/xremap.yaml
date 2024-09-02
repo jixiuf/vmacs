@@ -176,7 +176,7 @@ keymap:
       
   - name: terminal tmux
     application:
-      only: [dterm,bterm,kitty,Alacritty,foot.*,Alacritty-ws]
+      only: [dterm,bterm,kitty,/Alacritty.*/,/foot.*/]
     window:
       only: [/TMUX:/ ]
     remap:
@@ -203,7 +203,7 @@ keymap:
       #     C-j: { launch: ["open-with"]}
   - name: Terminal
     application:
-      only: [Alacritty.*]
+      only: [/Alacritty.*/]
     remap:
       super-C-w: super-C-q
       # super-C-Enter:
@@ -224,7 +224,7 @@ keymap:
       
   - name: foot
     application:
-      only: [dterm,foot.*]
+      only: [dterm,/foot.*/]
     remap:
       super-C-w: super-C-q
       # super-C-Enter: [C-c,"2"] 
@@ -308,14 +308,14 @@ keymap:
       super-C-w: super-M-h
       super-C-q: super-M-h
 # 
-  - name: flameshot
-    application:
-      only: [flameshot]
-    remap:
-    # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      esc: Enter
-      C-c: Enter
-      C-s: Enter
+  # - name: flameshot
+  #   application:
+  #     only: [flameshot]
+  #   remap:
+  #   # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
+  #     esc: Enter
+  #     C-c: Enter
+  #     C-s: Enter
   - name: org.gnome.Nautilus
     application:
       only: [org.gnome.Nautilus]
