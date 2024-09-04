@@ -37,7 +37,9 @@ keymap:
       super-C-k: { launch: ["resize-window" ,"up"]}
       super-C-j: { launch: ["resize-window" ,"down"]}
 
-      super-M-Backslash: { launch: ["hyprctl" ,"dispatch","togglesplit"]}
+      super-M-Backspace: { launch: ["hyprctl" ,"dispatch","layoutmsg","rollnext"]}
+      super-M-Backslash: { launch: ["hyprctl" ,"dispatch","layoutmsg","rollnext"]}
+      super-M-Enter: { launch: ["hyprctl" ,"dispatch","layoutmsg","orientationnext"]}
       super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
       super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
       super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
