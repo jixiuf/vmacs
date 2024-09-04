@@ -1,6 +1,5 @@
 # -*- mode:conf -*-
 */* CPU_FLAGS_X86: aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3
-#*/* gnome-keyring
 net-libs/libssh server
 sys-libs/zlib minizip
 app-editors/vim -X
@@ -13,36 +12,15 @@ x11-libs/gtk+ X
 dev-cpp/gtkmm X
 dev-cpp/cairomm X
 x11-libs/libxkbcommon X
-# required by gui-wm/sway-1.8.1::gentoo[wallpapers]
-# required by @selected
-# required by @world (argument)
 >=gui-apps/swaybg-1.2.0 gdk-pixbuf
-# required by app-editors/emacs-28.3_rc1-r2::gentoo
-# required by emacs (argument)
 >=app-emacs/emacs-common-1.8 gui
-# required by x11-misc/xdg-utils-1.1.3_p20210805-r1::gentoo
-# required by net-print/cups-2.4.2-r7::gentoo[X]
-# required by app-text/ghostscript-gpl-10.01.1::gentoo[cups]
-# required by net-print/cups-filters-1.28.17::gentoo[postscript]
 >=app-text/xmlto-0.0.28-r10 text
-# required by net-print/cups-filters-1.28.17::gentoo[postscript]
-# required by net-print/cups-2.4.2-r7::gentoo
-# required by www-client/google-chrome-113.0.5672.126::gentoo
-# required by google-chrome (argument)
 >=app-text/ghostscript-gpl-10.01.1 cups
-www-client/google-chrome qt5
-# required by sys-auth/polkit-122-r1::gentoo[systemd]
 >=sys-apps/systemd-253.3-r1 policykit
-# required by gnome-base/gnome-keyring-42.1-r2::gentoo
-# required by virtual/secret-service-0::gentoo
-# required by app-crypt/libsecret-0.20.5-r3::gentoo
 >=app-crypt/gcr-3.41.1-r2:0 gtk
-# required by gui-wm/hyprland-0.25.0::gentoo[X]
 gui-wm/hyprland X
-# required by hyprland (argument)
 >=gui-libs/wlroots-0.16.2 x11-backend
 app-i18n/rime-data -double-pinyin -essay -luna-pinyin -octagram  -stroke -terra-pinyin  -wubi 
->=app-i18n/fcitx-qt-5.0.17-r1 qt5
 >=dev-qt/qtgui-5.15.9 egl
 dev-qt/qtbase egl
 media-libs/mesa llvm vulkan
