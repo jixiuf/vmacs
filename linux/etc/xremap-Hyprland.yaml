@@ -11,7 +11,8 @@ keymap:
 
       super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
       super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true  'dterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
-      super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) -- tmux.sh --session $RANDOM --cwd $(cwd||echo $HOME)"] }
+      super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
+      super-C-M-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --tmux-session $RANDOM"] }
       super-C-comma: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --workspace 4 --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       super-C-g: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle weixin weixin-uos" ] }
       super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'Bytedance-lark|Bytedance-feishu' bytedance-feishu-stable 2>&1 >/dev/null" ] }
@@ -19,7 +20,7 @@ keymap:
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
 
-      super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle org.keepassxc.KeePassXC keepassxc"] }
+      super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise  --toggle --move-to-current-workspace-if-floating --hide-front-floating-window org.keepassxc.KeePassXC keepassxc"] }
       super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
       super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
       super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
