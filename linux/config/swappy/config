@@ -1,5 +1,5 @@
 [Default]
-save_dir=./Pictures/Screenshots
+save_dir=~/Pictures/Screenshots
 save_filename_format=Screenshot_-%Y-%m-%d-%H:%M:%S.png
 show_panel=false
 line_size=5

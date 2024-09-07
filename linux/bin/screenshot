@@ -6,51 +6,34 @@ tmp=$HOME/Pictures/Screenshots/.swappy.tmp
 time=$(date +%Y%m%d%H%M%S)
 dir="$HOME/Pictures/Screenshots"
 shutter_sound="$HOME/.config/hypr/sounds/camera-shutter.mp3"
-file="Screenshot_${time}.png"
-filename="${dir}/${file}"
+# file="Screenshot_${time}.png"
+# filename="${dir}/${file}"
 capture_area=$1
-grim_output="/tmp/grim_$(date "+%s").png"
+# grim_output="/tmp/grim_$(date "+%s").png"
 
 notify_cmd_shot="notify-send -h string:x-canonical-private-synchronous:screeenshot -u low -i ${iDIR}/picture.png"
 
 proc_notif(){
     mpv $shutter_sound &
     ${notify_cmd_shot} -t 3000 "截屏" "a:-> r:口，d:blur, f:fill  t:txt  c:O x:clear b:brush"
-    
 }
 
 # Clean up tmp file
-rm -f $tmp
+# rm -f $tmp
 mkdir -p $dir
 
 if [ -z "$capture_area" ]; then
     proc_notif &
-    grim $grim_output
-    swappy -f $grim_output
+    grim -|swappy -f -
 else
     selection_area=$(slurp)
     if [ ! -z "${selection_area}" ]; then
         mpv $shutter_sound &
         proc_notif &
-        grim -g "${selection_area}" $grim_output
-        swappy -f $grim_output
+        grim -g "${selection_area}" -|swappy -f -
     else
         exit 0
     fi
 fi
 
 
-# if [ ! -e "$tmp" ]; then
-#     tmp=$grim_output
-# fi
-
-# mv $tmp $filename
-# action=$(${notify_cmd_shot} "Screenshot" "Saved to ~/Pictures/Screenshots/${file}" --action " Open containing folder" --action " Open containing folder")
-
-# echo "action: ${action} ${filename}"
-
-# if [[ "${action}" == "0" ]]; then
-#     # todo
-#     # xdg-open "${filename}"
-#     # nautilus "${filename}"
-# fi
