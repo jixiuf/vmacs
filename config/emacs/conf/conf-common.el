@@ -129,7 +129,6 @@
                  ;; ("\\.cron\\(tab\\)?\\'" . crontab-mode)
                  ;; ("cron\\(tab\\)?\\."    . crontab-mode)
                  ("\\.mxml" . nxml-mode)
-                 ("\\.as" . actionscript-mode)
                  ("\\.proto\\'" . protobuf-mode)
                  ("\\.thrift" . thrift-mode)
                  ("\\.md" . markdown-mode)

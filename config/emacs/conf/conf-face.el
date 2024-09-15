@@ -38,9 +38,9 @@
   '((t (:inherit default :foreground "Green" :box (:line-width 2 :color "grey75" :style released-button) :height 1.2)))
   "Font Lock mode face used to highlight DONE."
   :group 'font-lock-faces)
-(dolist (mode '(c-mode c++-mode java-mode lisp-mode emacs-lisp-mode erlang-mode
+(dolist (mode '(c-mode c++-mode java-mode lisp-mode emacs-lisp-mode
                        go-ts-mode
-                       actionscript-mode lisp-interaction-mode sh-mode sgml-mode))
+                       lisp-interaction-mode sh-mode))
   (font-lock-add-keywords
    mode
    '(("\\<\\(FIXME\\|TODO\\|Todo\\|HACK\\|todo\\):" 1  'font-lock-todo-face prepend)
