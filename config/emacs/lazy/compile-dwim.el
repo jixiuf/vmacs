@@ -131,7 +131,9 @@ Its value should be 'always or list like (filename run compile).")
           ,(if (equal system-type 'windows-nt) "%n" "./%n") "%n")
     (java (or (name . "\\.java$")
               (mode . java-mode))
-          "javac %f" "java %n" "%n.class")
+          ;; "javac %f" "java %n" "%n.class"
+          eglot-java-project-build-refresh eglot-java-run-main
+          )
     (python (or (name . "\\.py$")
                 (mode . python-mode))
             dape-dwim
