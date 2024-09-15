@@ -132,8 +132,8 @@ Its value should be 'always or list like (filename run compile).")
     (java (or (name . "\\.java$")
               (mode . java-mode))
           ;; "javac %f" "java %n" "%n.class"
-          eglot-java-project-build-refresh
-          (lambda()(eglot-java-run-main nil))
+          eglot-java-project-build-task
+          dape-dwim
           )
     (python (or (name . "\\.py$")
                 (mode . python-mode))

@@ -12,8 +12,9 @@
   (define-key compilation-mode-map "g" nil)
   (define-key compilation-mode-map "r" 'recompile)
   (define-key compilation-mode-map "C-o" nil)
+  ;; (require 'ansi-color)
+  (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
   )
-
 ;;                                ;
 
 
