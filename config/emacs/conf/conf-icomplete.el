@@ -68,7 +68,9 @@
   (when  (member this-command '(consult-grep
                                 xref-find-references
                                 xref-find-definitions
+                                xref-find-apropos
                                 eglot-find-declaration
+                                eglot-find-implementation
                                 eglot-code-actions
                                 execute-extended-command
                                 project-or-external-find-file

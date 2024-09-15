@@ -35,6 +35,7 @@
                   "=" #'eglot-format
                   "R" #'eglot-rename
                   "x" #'xref-find-references
+                  "a" #'xref-find-apropos
                   "c" #'eglot-find-declaration
                   "i" #'eglot-find-implementation
                   "t" #'eglot-find-typeDefinition
