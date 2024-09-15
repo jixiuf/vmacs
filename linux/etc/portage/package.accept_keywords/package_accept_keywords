@@ -68,6 +68,7 @@ gui-libs/gtk-session-lock  ~amd64
 dev-cpp/sdbus-c++  ~amd64
 app-misc/brightnessctl ~amd64
 sys-devel/gcc ~amd64
+dev-java/openjdk-bin ~amd64 
 
 # Local Variables:
 # mode: conf
