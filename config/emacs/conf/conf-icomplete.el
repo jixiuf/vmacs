@@ -157,10 +157,11 @@
              (setq dir (locate-dominating-file default-directory file))
              (when dir (setq default-directory dir)))
            ) lines)
-        (embark-consult-export-grep lines)
-        (if (boundp 'grep-edit-mode-map)
-            (grep-change-to-grep-edit-mode)
-          (wgrep-change-to-wgrep-mode)))))
+	(embark-consult-export-grep lines)
+          (run-with-timer
+           0.01 nil (lambda()
+                      (with-current-buffer (get-buffer "*grep*")
+                        (grep-change-to-grep-edit-mode)))))))
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))

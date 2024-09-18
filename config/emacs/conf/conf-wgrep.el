@@ -19,6 +19,8 @@
     (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode))
 
   (when (boundp 'grep-edit-mode-map)
+    (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
+
     (advice-add 'grep-exit-message :after #'grep-change-to-grep-edit-mode)
     (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)
     (define-key grep-edit-mode-map (kbd "C-c Nz") #'consult-hide-lines)
