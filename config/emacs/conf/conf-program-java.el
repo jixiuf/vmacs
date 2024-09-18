@@ -12,7 +12,11 @@
 (with-eval-after-load 'eglot-java
   (setq eglot-java-user-init-opts-fn 'custom-eglot-java-init-opts)
   ;; (add-to-list 'eglot-java-eclipse-jdt-args (concat "-javaagent:" (expand-file-name (download-lombok))))
-  )
+  (define-key eglot-java-mode-map (kbd "C-x p n") #'eglot-java-file-new)
+  (define-key eglot-java-mode-map (kbd "C-x p N") #'eglot-java-project-new)
+  (define-key eglot-java-mode-map (kbd "C-x p c") #'eglot-java-project-build-refresh)
+  (define-key eglot-java-mode-map (kbd "C-x p t") #'eglot-java-run-test)
+  (define-key eglot-java-mode-map (kbd "C-x p r") #'eglot-java-run-main))
 
 (with-eval-after-load 'dape
   (add-to-list 'dape-configs
