@@ -158,8 +158,9 @@
              (when dir (setq default-directory dir)))
            ) lines)
         (embark-consult-export-grep lines)
-        (wgrep-change-to-wgrep-mode)))
-    )
+        (if (boundp 'grep-edit-mode-map)
+            (grep-change-to-grep-edit-mode)
+          (wgrep-change-to-wgrep-mode)))))
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
