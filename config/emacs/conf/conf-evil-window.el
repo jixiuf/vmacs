@@ -1,7 +1,7 @@
-(setq pop-up-frames nil)
-(setq pop-up-windows nil)
-(setq display-buffer-reuse-frames t)
+;; (setq pop-up-frames nil)
+;; (setq pop-up-windows t)
 ;; (setq pop-up-frames 'graphic-only)
+(setq display-buffer-reuse-frames t)
 (setq org-agenda-window-setup 'current-window)
 (setq org-src-window-setup 'current-window)
 ;; kill frames when a buffer is buried, makes most things play nice with
@@ -183,6 +183,7 @@
                         "*Agenda Commands*"
                         " *transient*"
                         "*Org Agenda*"
+                        "*Occur*"
                         "*grep*"))
                    bufname)
    (string-prefix-p "magit:" bufname)
