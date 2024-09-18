@@ -5,43 +5,36 @@
 (setq grep-command "rg -nS --no-heading "
       grep-use-null-device nil)
 
-(setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
-              wgrep-too-many-file-length 1
-              wgrep-enable-key "i"
-              wgrep-change-readonly-file t)
-
-(defun vmacs-wgrep-finish-edit()
-  (interactive)
-  (if  current-prefix-arg
-      (let ((wgrep-auto-save-buffer t))
-        (call-interactively #'wgrep-finish-edit)
-        )
-    (call-interactively #'wgrep-finish-edit)
-    (let ((count 0))
-      (dolist (b (buffer-list))
-        (with-current-buffer b
-          (when (buffer-file-name)
-            (let ((ovs (wgrep-file-overlays)))
-              (when (and ovs (buffer-modified-p))
-                (basic-save-buffer)
-                ;; (kill-this-buffer) ;for xref project-find-regexp
-                (setq count (1+ count)))))))
-      (cond
-       ((= count 0)
-        (message "No buffer has been saved."))
-       ((= count 1)
-        (message "Buffer has been saved."))
-       (t
-        (message "%d buffers have been saved." count))))))
+(with-eval-after-load 'replace
+  (define-key occur-mode-map "l" (kbd "C-f"))
+  (define-key occur-edit-mode-map (kbd "C-n") 'next-error-no-select)
+  (define-key occur-edit-mode-map (kbd "C-p") 'previous-error-no-select)
+  (set-keymap-parent occur-mode-map meow-normal-state-keymap)
+  (add-hook 'occur-hook #'occur-edit-mode))
 (with-eval-after-load 'grep
   (set-keymap-parent grep-mode-map meow-normal-state-keymap)
   ;; (define-key grep-mode-map (kbd "C-s") #'consult-focus-lines)
   ;; (define-key grep-mode-map "z" #'consult-hide-lines)
-  (require 'wgrep)
-  (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
+  (when (require 'wgrep nil t)
+    (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode))
 
-)
+  (when (boundp 'grep-edit-mode-map)
+    (advice-add 'grep-exit-message :after #'grep-change-to-grep-edit-mode)
+    (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)
+    (define-key grep-edit-mode-map (kbd "C-c Nz") #'consult-hide-lines)
+    (define-key grep-edit-mode-map (kbd "C-c C-c") 'grep-edit-save-changes)
+    (define-key grep-edit-mode-map (kbd "C-x C-s") 'grep-edit-save-changes)
+    (define-key grep-edit-mode-map (kbd "M-n") 'compilation-next-error)
+    (define-key grep-edit-mode-map (kbd "M-p") 'compilation-previous-error)
+    (define-key grep-edit-mode-map (kbd "M-s-n") 'compilation-next-file)
+    (define-key grep-edit-mode-map (kbd "M-s-p") 'compilation-previous-file)))
+
+
 (with-eval-after-load 'wgrep
+  (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
+              wgrep-too-many-file-length 1
+              wgrep-enable-key "i"
+              wgrep-change-readonly-file t)
   (define-key wgrep-mode-map (kbd "C-c N/") #'consult-focus-lines)
   (define-key wgrep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
@@ -51,7 +44,31 @@
   (define-key wgrep-mode-map (kbd "M-p") 'compilation-previous-error)
   (define-key wgrep-mode-map (kbd "M-s-n") 'compilation-next-file)
   (define-key wgrep-mode-map (kbd "M-s-p") 'compilation-previous-file)
+  (defun vmacs-wgrep-finish-edit()
+    (interactive)
+    (if  current-prefix-arg
+        (let ((wgrep-auto-save-buffer t))
+          (call-interactively #'wgrep-finish-edit)
+          )
+      (call-interactively #'wgrep-finish-edit)
+      (let ((count 0))
+        (dolist (b (buffer-list))
+          (with-current-buffer b
+            (when (buffer-file-name)
+              (let ((ovs (wgrep-file-overlays)))
+                (when (and ovs (buffer-modified-p))
+                  (basic-save-buffer)
+                  ;; (kill-this-buffer) ;for xref project-find-regexp
+                  (setq count (1+ count)))))))
+        (cond
+         ((= count 0)
+          (message "No buffer has been saved."))
+         ((= count 1)
+          (message "Buffer has been saved."))
+         (t
+          (message "%d buffers have been saved." count))))))
   )
+
 
 (defvar my/re-builder-positions nil  "Store point and region bounds before calling re-builder")
 ;; https://karthinks.com/software/bridging-islands-in-emacs-1/
