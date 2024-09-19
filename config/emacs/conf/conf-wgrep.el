@@ -20,6 +20,7 @@
 
   (when (boundp 'grep-edit-mode-map)
     (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
+    (advice-add 'grep-edit-save-changes :after #'meow--switch-to-motion)
 
     (advice-add 'grep-exit-message :after #'grep-change-to-grep-edit-mode)
     (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)

@@ -159,7 +159,7 @@
            ) lines)
 	(embark-consult-export-grep lines)
           (run-with-timer
-           0.01 nil (lambda()
+           0.03 nil (lambda()
                       (with-current-buffer (get-buffer "*grep*")
                         (grep-change-to-grep-edit-mode)))))))
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
