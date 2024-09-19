@@ -1,4 +1,4 @@
-  ;; -*- lexical-binding: t -*-
+;; -*- lexical-binding: t -*-
 ;;; Code:
 (require 'icomplete)
 (require 'recentf)
@@ -53,7 +53,7 @@
                        consult--tofu-char
                        (+ consult--tofu-char consult--tofu-range -1))
              "$")))
-    (concat word consult-suffix)))
+      (concat word consult-suffix)))
   (add-to-list 'orderless-affix-dispatch-alist
                '(?$ . +orderless-fix-dollar)))
 
@@ -157,11 +157,11 @@
              (setq dir (locate-dominating-file default-directory file))
              (when dir (setq default-directory dir)))
            ) lines)
-	(embark-consult-export-grep lines)
-          (run-with-timer
-           0.03 nil (lambda()
-                      (with-current-buffer (get-buffer "*grep*")
-                        (grep-change-to-grep-edit-mode)))))))
+	    (embark-consult-export-grep lines)
+        (run-with-timer
+         0.03 nil (lambda()
+                    (with-current-buffer (get-buffer "*grep*")
+                      (grep-change-to-grep-edit-mode)))))))
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
@@ -198,7 +198,7 @@
         (setq short-name
               ;; 这段是想实现 只展示最后 1 级目录/文件.ext 的功能
               (format "%s\\%s" filename (file-name-nondirectory
-                                        (directory-file-name dir))
+                                         (directory-file-name dir))
                       )))
       (propertize short-name 'multi-category `(file . ,file))))
 

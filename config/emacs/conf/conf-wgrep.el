@@ -15,17 +15,24 @@
   (set-keymap-parent grep-mode-map meow-normal-state-keymap)
   ;; (define-key grep-mode-map (kbd "C-s") #'consult-focus-lines)
   ;; (define-key grep-mode-map "z" #'consult-hide-lines)
-  (when (require 'wgrep nil t)
-    (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode))
-
   (when (boundp 'grep-edit-mode-map)
     (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
     (advice-add 'grep-edit-save-changes :after #'meow--switch-to-motion)
 
-    (advice-add 'grep-exit-message :after #'grep-change-to-grep-edit-mode)
+    (setq compilation-buffer-name-function (lambda(name-of-mode)
+                                             (let ((name (compilation--default-buffer-name name-of-mode)))
+                                               (when (and (string-equal "*grep*" name)
+                                                          (get-buffer "*grep*"))
+                                                 (kill-buffer (get-buffer "*grep*")))
+                                               name)))
+    (add-hook 'compilation-finish-functions
+              (lambda(buffer msg)
+                (when (eq major-mode 'grep-mode)
+                  (with-current-buffer buffer
+                    (grep-change-to-grep-edit-mode)))))
+
     (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)
     (define-key grep-edit-mode-map (kbd "C-c Nz") #'consult-hide-lines)
-    (define-key grep-edit-mode-map (kbd "C-c C-c") 'grep-edit-save-changes)
     (define-key grep-edit-mode-map (kbd "C-x C-s") 'grep-edit-save-changes)
     (define-key grep-edit-mode-map (kbd "M-n") 'compilation-next-error)
     (define-key grep-edit-mode-map (kbd "M-p") 'compilation-previous-error)
@@ -38,6 +45,7 @@
               wgrep-too-many-file-length 1
               wgrep-enable-key "i"
               wgrep-change-readonly-file t)
+  (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
   (define-key wgrep-mode-map (kbd "C-c N/") #'consult-focus-lines)
   (define-key wgrep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
