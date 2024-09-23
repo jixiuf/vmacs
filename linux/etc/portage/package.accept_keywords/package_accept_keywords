@@ -49,7 +49,7 @@ app-misc/tmux  ~amd64
 app-misc/tmux  **
 media-video/wireplumber ~amd64
 media-video/pipewire ~amd64
-gui-wm/hyprland **
+gui-wm/hyprland ~amd64
 gui-libs/aquamarine ~amd64
 gui-libs/hyprcursor ~amd64
 dev-libs/hyprland-protocols ~amd64
@@ -67,7 +67,6 @@ gui-apps/gtklock  ~amd64
 gui-libs/gtk-session-lock  ~amd64
 dev-cpp/sdbus-c++  ~amd64
 app-misc/brightnessctl ~amd64
-sys-devel/gcc ~amd64
 dev-java/openjdk-bin ~amd64 
 
 # Local Variables:
