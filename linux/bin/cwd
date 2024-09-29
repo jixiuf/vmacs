@@ -67,6 +67,9 @@ if [ -n "$appinfo" ]; then
             cwd=${cwd#TMUX:}
             tmux_session=${cwd%%:*}
             cwd=${cwd#*:}
+
+            cwd=${cwd#*GNU/Emacs<}
+            cwd=${cwd%>*}
         fi
         cwd="${cwd/#\~/$HOME}"  # replace ~ -> $HOME
         echo $cwd

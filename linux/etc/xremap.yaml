@@ -185,7 +185,8 @@ keymap:
       super-C-Backspace: [C-c,M-2] 
       C-Backspace: M-Backspace 
       super-C-w: [C-c,k] 
-      super-C-t: [C-c ,c] 
+      super-C-t: [C-c ,C-t] 
+      # super-C-t: [C-c ,c] 
       super-M-n: [C-c ,n] 
       super-M-p: [C-c ,p] 
       super-M-dot: [C-c ,n] 
