@@ -229,7 +229,8 @@ based on the current context and previous history."
           (call-process "find" nil nil nil (plist-get  cfg 'command-cwd)
                         "-maxdepth" "1" "-type" "f" "-name" "__debug_bin*" "-exec" "rm" "{}" ";"))
         (when cfg (dape cfg)))
-      (message "spc-dd: toggle breakpoint spc-dk:clear breakpints M-h:info H-r:run-or-stop"))))
+      (message (substitute-command-keys
+                "\\[dape-breakpoint-toggle] toggle breakpoint,\\[dape-breakpoint-remove-all]:clear breakpints \\[dape-info]:info \\[dape-dwim]:stop")))))
 
 ;;;###autoload
 (defun vmacs-ai()
