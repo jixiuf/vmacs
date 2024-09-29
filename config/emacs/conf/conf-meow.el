@@ -186,6 +186,8 @@
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(comint-mode . insert))
 (add-to-list 'meow-mode-state-list '(org-mode . normal))
+(add-to-list 'meow-mode-state-list '(yaml-mode . normal))
+(add-to-list 'meow-mode-state-list '(yaml-ts-mode . normal))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (add-to-list 'meow-mode-state-list '(grep-mode . normal))
 (add-to-list 'meow-mode-state-list '(markdown-mode . normal))

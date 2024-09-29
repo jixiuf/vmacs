@@ -27,7 +27,7 @@ keymap:
       super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
       super-C-1: { launch: ["hypr-kill-other-window"] }
       super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
-      super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
+      super-M-o: { launch: ["hyprctl","setprop active opaque toggle"] }
 
       super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
       super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
