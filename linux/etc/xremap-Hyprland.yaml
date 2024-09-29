@@ -10,6 +10,7 @@ keymap:
       super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle DBeaver dbeaver"] }
 
       super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
+      # super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'emacs' -- term.sh  --class=emacs --working-directory=$(cwd||echo $HOME) --tmux-session emacs em" ] }
       super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true  'dterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
       super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --tmux-session $RANDOM"] }
