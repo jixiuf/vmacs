@@ -293,8 +293,6 @@
   (define-key gt-overlay-render-map (kbd "C-g") #'gt-delete-render-overlays)
   (define-key gt-overlay-render-map (kbd "<escape>") #'gt-delete-render-overlays)
   (define-key gt-overlay-render-map (kbd "M-w") #'gt-overlay-render-save-to-kill-ring))
-(require 'cursor-undo)
-(cursor-undo 1)
 (def-cursor-undo vmacs-meow-next                  nil     nil      nil)
 (def-cursor-undo vmacs-meow-prev                      nil     nil      nil)
 (def-cursor-undo meow-left                      nil     nil      nil)
