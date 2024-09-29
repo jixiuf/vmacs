@@ -239,6 +239,12 @@
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
   ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
   (xterm-mouse-mode 1)
+  (setq mouse-wheel-scroll-amount
+        '(10 ((shift) . hscroll)
+             ((meta) . nil)
+             ((control meta) . global-text-scale)
+             ((control) . text-scale)))
+  
   (global-kkp-mode)
   (require 'clipetty)
   (global-clipetty-mode))
