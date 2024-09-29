@@ -404,10 +404,11 @@ keymap:
   - name: Global
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      # eme slurp swappy    
+    
+      # eme slurp swappy hyprpicker    
       # super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]}
-      super-C-4: { launch: ["screenshot","1"]} #area
-      super-M-4: { launch: ["screenshot"]}     #screen
+      super-C-4: { launch: ["screenshot","--freeze","copyedit", "area","-"]} #area
+      super-M-4: { launch: ["screenshot","--freeze","copyedit", "screen","-"]} #
       super-M-i: { launch: ["swaync-client","-t"]}     #screen
       super-C-o: { launch: ["other-window"] }
 
