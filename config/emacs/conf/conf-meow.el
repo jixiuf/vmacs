@@ -53,8 +53,11 @@
    '("0" . meow-digit-argument)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet))
+  
   (meow-normal-define-key
    '("g" . "C-c G")
+   ;; see vmacs-normal-mode-map in conf=keybind.el
+   '("i" . "C-c Ni")
    '("G" . "C-c NG")
    '("n" . "C-c Nn")
    '("N" . "C-c NN")
@@ -97,7 +100,6 @@
    '("h" . meow-left)
    ;; '("h" . backward-char)
    '("H" . meow-left-expand)
-   '("i" . meow-insert)
    '("I" . meow-open-above)
    ;; '("j" . next-line)
    '("j" . vmacs-meow-next)
@@ -185,6 +187,7 @@
 (add-to-list 'meow-mode-state-list '(comint-mode . insert))
 (add-to-list 'meow-mode-state-list '(org-mode . normal))
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
+(add-to-list 'meow-mode-state-list '(grep-mode . normal))
 (add-to-list 'meow-mode-state-list '(markdown-mode . normal))
 
 (with-eval-after-load 'org-agenda

@@ -151,7 +151,7 @@ keymap:
 
   - name: terminal emacs
     application:
-      only: [emacs,bterm,dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
+      only: [temacs,bterm,dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws]
     window:
       only: [/GNU\/Emacs/ , /History/, /Last command output/, /EDITING SCROLLBACK/ ]
     remap:

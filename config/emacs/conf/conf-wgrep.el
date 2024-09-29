@@ -12,24 +12,15 @@
   (set-keymap-parent occur-mode-map meow-normal-state-keymap)
   (add-hook 'occur-hook #'occur-edit-mode))
 (with-eval-after-load 'grep
-  (set-keymap-parent grep-mode-map meow-normal-state-keymap)
-  ;; (define-key grep-mode-map (kbd "C-s") #'consult-focus-lines)
-  ;; (define-key grep-mode-map "z" #'consult-hide-lines)
+  (define-key grep-mode-map (kbd "e") nil)
+  ;; (set-keymap-parent grep-mode-map meow-normal-state-keymap)
+  (define-key grep-mode-map (kbd "C-c Ni") #'grep-change-to-grep-edit-mode) ;i
+  (define-key grep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
+  (define-key grep-mode-map (kbd "C-c N/") #'consult-focus-lines)
   (when (boundp 'grep-edit-mode-map)
     (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
-    (advice-add 'grep-edit-save-changes :after #'meow--switch-to-motion)
+    (advice-add 'grep-edit-save-changes :after #'meow--switch-to-normal)
 
-    (setq compilation-buffer-name-function (lambda(name-of-mode)
-                                             (let ((name (compilation--default-buffer-name name-of-mode)))
-                                               (when (and (string-equal "*grep*" name)
-                                                          (get-buffer "*grep*"))
-                                                 (kill-buffer (get-buffer "*grep*")))
-                                               name)))
-    (add-hook 'compilation-finish-functions
-              (lambda(buffer msg)
-                (when (eq major-mode 'grep-mode)
-                  (with-current-buffer buffer
-                    (grep-change-to-grep-edit-mode)))))
 
     (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)
     (define-key grep-edit-mode-map (kbd "C-c Nz") #'consult-hide-lines)
@@ -100,7 +91,11 @@
   (define-key reb-mode-map (kbd "M-p") #'reb-prev-match)
   (define-key reb-mode-map (kbd "C-r") #'(lambda()(interactive) (insert "\\(\\)") (backward-char 2)))
   ;; 可以使用 \(.*\)  后使用\1 来指定原始group值
+  ;; Define
   (define-key reb-mode-map (kbd "RET") #'reb-replace-regexp)
+  (define-key reb-mode-map [(control return) ] #'reb-replace-regexp)
+  (define-key reb-mode-map (kbd "C-c C-c") #'reb-replace-regexp)
+  (define-key reb-mode-map (kbd "C-c C-t") #'reb-toggle-case)
   ;; (define-key reb-lisp-mode-map (kbd "RET") #'reb-replace-regexp) # rx 模式
   (define-key reb-mode-map (kbd "C-c C-k") #'reb-quit))
 

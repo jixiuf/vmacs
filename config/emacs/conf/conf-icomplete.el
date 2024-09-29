@@ -158,10 +158,11 @@
              (when dir (setq default-directory dir)))
            ) lines)
 	    (embark-consult-export-grep lines)
-        (run-with-timer
-         0.03 nil (lambda()
-                    (with-current-buffer (get-buffer "*grep*")
-                      (grep-change-to-grep-edit-mode)))))))
+        ;; (run-with-timer
+        ;;  0.03 nil (lambda()
+        ;;             (with-current-buffer (get-buffer "*grep*")
+        ;;               (grep-change-to-grep-edit-mode))))
+        )))
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
 
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))

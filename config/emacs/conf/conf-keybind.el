@@ -1,22 +1,22 @@
 (setq widen-automatically nil)         ;for goto-line
 (defvar-keymap  g-mode-map             ;meow: g
- "g" #'vmacs-goto-line
- "/" #'consult-focus-lines
- "z" #'consult-hide-lines
- "r" #'revert-buffer
- "i" #'meow-insert
- "n" #'next-error
- "p" #'previous-error
- "b" #'pop-global-mark
- "k" #'vmacs-meow-grab
- "u" #'upcase-dwim
- "U" #'downcase-dwim
- "m" #'push-mark-command
- "P" #'project-or-external-find-file
- "d" #'xref-find-definitions
- "," 'goto-last-change
- "." 'goto-last-change-reverse
- )
+  "g" #'vmacs-goto-line
+  "/" #'consult-focus-lines
+  "z" #'consult-hide-lines
+  "r" #'revert-buffer
+  "i" #'meow-insert
+  "n" #'next-error
+  "p" #'previous-error
+  "b" #'pop-global-mark
+  "k" #'vmacs-meow-grab
+  "u" #'upcase-dwim
+  "U" #'downcase-dwim
+  "m" #'push-mark-command
+  "P" #'project-or-external-find-file
+  "d" #'xref-find-definitions
+  "," 'goto-last-change
+  "." 'goto-last-change-reverse
+  )
 (defvar-keymap  m-mode-map              ;meow: m
   "f" #'mark-defun
   "m" #'set-mark-command                ;C-@
@@ -33,25 +33,26 @@
 
 (global-set-key (kbd "C-c G") g-mode-map)
 (defvar-keymap  vmacs-normal-mode-map
-   "="  #'meow-indent
-   "G"  #'vmacs-goto-line
-   "g" g-mode-map
-   "m" m-mode-map
-   "n"  #'meow-search
-   "N"  #'meow-search-reverse
-   "/"  #'isearch-forward-regexp
-   "z"   #'meow-pop-selection)
+  "="  #'meow-indent
+  "i" #'meow-insert
+  "G"  #'vmacs-goto-line
+  "g" g-mode-map
+  "m" m-mode-map
+  "n"  #'meow-search
+  "N"  #'meow-search-reverse
+  "/"  #'isearch-forward-regexp
+  "z"   #'meow-pop-selection)
 
 (global-set-key (kbd "C-c N") vmacs-normal-mode-map)
 (defvar-keymap  vmacs-motion-mode-map
-   "j"  #'meow-next
-   "k"  #'meow-prev
-   "G"  #'vmacs-goto-line
-   "g"  g-mode-map
-   "m"  m-mode-map
-   "/"  #'isearch-forward-regexp
-   "z"   #'meow-pop-selection
-   "<escape>"  #'keyboard-quit)
+  "j"  #'meow-next
+  "k"  #'meow-prev
+  "G"  #'vmacs-goto-line
+  "g"  g-mode-map
+  "m"  m-mode-map
+  "/"  #'isearch-forward-regexp
+  "z"   #'meow-pop-selection
+  "<escape>"  #'keyboard-quit)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
 
@@ -141,7 +142,7 @@
 ;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)
 (global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
 (global-set-key  (kbd "C-2") 'meow-set-mark)
-; (global-set-key  (kbd "C-3") 'rectangle-mark-mode)
+;; (global-set-key  (kbd "C-3") 'rectangle-mark-mode)
 (global-set-key  (kbd "C-4") 'vmacs-meow-grab)
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
