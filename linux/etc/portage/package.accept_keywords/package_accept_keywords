@@ -8,11 +8,13 @@ dev-go/gopls ~amd64
 # dev-lang/go amd64
 dev-libs/date ~amd64
 dev-python/notofonttools ~amd64
-dev-qt/qtbase  ~amd64
-dev-qt/qtdeclarative ~amd64
-dev-qt/qtshadertools  ~amd64
-dev-qt/qttranslations    ~amd64
-dev-qt/qtwayland ~amd64
+# dev-qt/qtbase  ~amd64
+# dev-qt/qtdeclarative ~amd64
+# dev-qt/qtshadertools  ~amd64
+# dev-qt/qttranslations    ~amd64
+# dev-qt/qtwayland ~amd64
+# dev-qt/qttools  ~amd64
+# dev-qt/qtsvg  ~amd64
 dev-util/mongodb-compass-bin  ~amd64
 gui-apps/rofi-wayland  ~amd64
 gui-apps/swaync   ~amd64
