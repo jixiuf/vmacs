@@ -2,7 +2,7 @@
 ;; Then M-g n or M-g p for the next/previous match.
 ;; With (repeat-mode) consequent next/previous are just n and p.
 ;; (repeat-mode 1)
-(setq grep-command "rg -nS --no-heading "
+(setq grep-command "rg -nS --no-heading -e "
       grep-use-null-device nil)
 
 (with-eval-after-load 'replace
