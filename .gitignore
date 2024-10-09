@@ -54,3 +54,4 @@
 linux/config/fcitx5/conf/cached_layouts
 /dots/ssh/id_rsa.script
 /dots/ssh/id_rsa.script.pub
+/config/emacs/tree-sitter/
