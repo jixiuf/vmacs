@@ -1,5 +1,6 @@
-(add-hook 'js-mode-hook 'vmacs-js-mode-hook)
-(add-hook 'js-json-mode-hook 'vmacs-js-mode-hook)
+;; (add-hook 'js-mode-hook 'vmacs-js-mode-hook)
+(add-hook 'json-ts-mode-hook 'vmacs-js-mode-hook)
+;; (add-hook 'js-json-mode-hook 'vmacs-js-mode-hook)
 (require 'hideshow)
 
 ;; evil 的za用来toggle hiddle
@@ -14,8 +15,11 @@
                                       (call-interactively #'json-pretty-print)
                                     (call-interactively #'json-pretty-print-buffer) ) ))
   )
+;; (add-to-list 'hs-special-modes-alist
+;;              '(js-mode
+;;                "\\[\\|{" "\\]\\|}" "/[*/]" nil nil))
 (add-to-list 'hs-special-modes-alist
-             '(js-mode
+             '(json-ts-mode
                "\\[\\|{" "\\]\\|}" "/[*/]" nil nil))
 
 (provide 'conf-program-js)

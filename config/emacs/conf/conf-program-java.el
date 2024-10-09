@@ -7,7 +7,8 @@
 ;; ~/.m2/repository/com/microsoft/java/com.microsoft.java.debug.plugin/0.51.1/com.microsoft.java.debug.plugin-0.51.1.jar
 
 (autoload 'eglot-java-mode "eglot-java" "" t)
-(add-hook 'java-mode-hook #'eglot-java-mode)
+;; (add-hook 'java-mode-hook #'eglot-java-mode)
+(add-hook 'java-ts-mode-hook #'eglot-java-mode)
 
 (with-eval-after-load 'eglot-java
   (setq eglot-java-user-init-opts-fn 'custom-eglot-java-init-opts)

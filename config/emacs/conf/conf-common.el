@@ -137,6 +137,7 @@
                  ("\\.rs$" . rust-ts-mode)
                  ("\\.go.txt$" . go-ts-mode)
                  ("\\.go\\'" . go-ts-mode)
+                 ("\\.java\\'" . java-ts-mode)
 
                  ("\\.yaws$" . nxml-mode)
 
@@ -155,6 +156,7 @@
                  ("\\.sqlm$"  . mysql-mode)
                  ("\\.sqlms$"  . sqlserver-mode)
                  ("\\.js$"  . js-mode)
+                 ("\\.json$"  . json-ts-mode)
                  ("\\.pac$" . js-mode)
                  ;; ("\\.js$"  . js3-mode)
                  ("\\.txt$" . novel-mode)

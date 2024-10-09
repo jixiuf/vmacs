@@ -18,6 +18,7 @@
 	    (rust . ("https://github.com/tree-sitter/tree-sitter-rust.git" "v0.23.0"))
 	    (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" "v0.2.0"))
 	    (yaml . ("https://github.com/ikatyang/tree-sitter-yaml.git" "v0.5.0"))
+        (json . ("https://github.com/tree-sitter/tree-sitter-json.git" "v0.23.0"))
 	    (c . ("https://github.com/tree-sitter/tree-sitter-c.git" "v0.23.0"))
 	    (cpp . ("https://github.com/tree-sitter/tree-sitter-cpp.git" "v0.23.0"))))
 
