@@ -160,6 +160,8 @@
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 (vmacs-leader  "fg" #'vmacs-ai)
+(autoload 'org-ai-refactor-code "org-ai" "" t)
+(global-set-key  (kbd "C-c Gf") 'org-ai-refactor-code) ;gf
 ;; (autoload 'aider-transient-menu "aider" "" t)
 ;; (global-set-key  (kbd "C-c Gf") 'aider-transient-menu) ;gf
 
