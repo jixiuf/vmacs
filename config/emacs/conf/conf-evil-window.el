@@ -183,9 +183,13 @@
                         "*Agenda Commands*"
                         " *transient*"
                         "*Org Agenda*"
+                        "*ai*"
+                        "*org-ai-refactor*"
+                        "*Diff*"
                         "*Occur*"
                         "*grep*"))
                    bufname)
+   (string-prefix-p "*aider" bufname)
    (string-prefix-p "magit:" bufname)
    (string-prefix-p "*Embark " bufname)
    (string-prefix-p "*Annotate " bufname)))

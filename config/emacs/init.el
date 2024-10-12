@@ -24,6 +24,7 @@
 ;; (with-eval-after-load 'cc-mode (require 'conf-program-java))
 (with-eval-after-load 'java-ts-mode (require 'conf-program-java))
 (with-eval-after-load 'org-ai (require 'conf-ai))
+(with-eval-after-load 'aider (require 'conf-ai))
 (with-eval-after-load 'sql (require 'conf-sql))
 
 ;; (require 'conf-evil)

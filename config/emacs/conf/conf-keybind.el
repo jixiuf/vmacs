@@ -160,6 +160,9 @@
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 (vmacs-leader  "fg" #'vmacs-ai)
+;; (autoload 'aider-transient-menu "aider" "" t)
+;; (global-set-key  (kbd "C-c Gf") 'aider-transient-menu) ;gf
+
 
 (vmacs-leader  "fm" (vmacs-defun switch-to-message
                       (if (equal (buffer-name) "*Messages*")
