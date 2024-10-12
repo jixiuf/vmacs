@@ -26,7 +26,6 @@ media-fonts/twemoji ~amd64
 media-libs/libdisplay-info ~amd64
 media-sound/t2-better-audio ~amd64
 net-im/weixin-uos ~amd64
-net-misc/apifox ~amd64
 sys-apps/xdg-desktop-portal   ~amd64
 sys-auth/pam-gnupg  ~amd64
 sys-firmware/apple-bcm-firmware ~amd64
@@ -70,7 +69,9 @@ gui-libs/gtk-session-lock  ~amd64
 dev-cpp/sdbus-c++  ~amd64
 app-misc/brightnessctl ~amd64
 dev-java/openjdk-bin ~amd64 
-gui-apps/hyprpicker ~amd64 
+gui-apps/hyprpicker ~amd64
+app-misc/jaq       ~amd64
+                    
 # Local Variables:
 # mode: conf
 # End:
