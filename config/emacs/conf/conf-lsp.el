@@ -8,7 +8,7 @@
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (eglot-code-actions nil nil "source.organizeImports" t))
-;; (setq codeium/metadata/api_key (auth-source-pick-first-password :host "codeium.com"))
+(setq codeium/metadata/api_key (auth-source-pick-first-password :host "codeium.com"))
 (autoload 'dape-breakpoint-toggle "dape" "" t)
 (defun vmacs-lsp-hook()
   ;; (eglot-ensure)
@@ -22,6 +22,8 @@
     (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
     (local-set-key (kbd "C-c C-e") 'dape-eval)
     (local-set-key (kbd "C-c C-f") 'dape-continue)
+    (autoload 'codeium-completion-at-point "codeium" "" t) 
+    (local-set-key (kbd "C-<return>") (cape-capf-interactive #'codeium-completion-at-point))
 
     ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
     ;; (add-hook 'completion-at-point-functions
