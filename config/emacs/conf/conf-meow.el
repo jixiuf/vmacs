@@ -205,7 +205,7 @@
 ;; (global-display-line-numbers-mode)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (meow-setup-line-number)
-(add-hook 'meow-insert-exit-hook 'corfu-quit)
+;; (add-hook 'meow-insert-exit-hook 'corfu-quit)
 
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)

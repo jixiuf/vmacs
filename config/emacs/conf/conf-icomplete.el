@@ -9,9 +9,24 @@
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-(setq icomplete-in-buffer nil)
+(setq icomplete-in-buffer t)
+(setq tab-always-indent 'complete)
+(setq completion-in-region-function #'consult-completion-in-region)
+(global-completion-preview-mode)
+(setq completion-preview-ignore-case t)
+(setq completion-ignore-case t)
+;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+(setq read-extended-command-predicate #'command-completion-default-include-p)
+(add-to-list 'completion-at-point-functions #'cape-file)
+(add-to-list 'completion-at-point-functions #'cape-dabbrev)
+
+(define-key completion-preview-active-mode-map (kbd "C-f") #'completion-preview-complete)
+(define-key completion-preview-active-mode-map (kbd "C-n") #'completion-preview-complete)
+(define-key completion-preview-active-mode-map (kbd "C-m") #'completion-preview-insert)
+(setq completion-preview-completion-styles '(basic partial-completion initials orderless))
 (setq icomplete-tidy-shadowed-file-names t)
-(setq icomplete-prospects-height 1)
+(setq icomplete-prospects-height 4)
 ;; (concat
 ;;                                      (propertize "\n" 'face '(:height 1))
 ;;                                      (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
@@ -74,16 +89,20 @@
                                 eglot-code-actions
                                 execute-extended-command
                                 project-or-external-find-file
+                                completion-at-point
+                                indent-for-tab-command
                                 vmacs-yank-pop
                                 describe-function
                                 describe-variable
                                 yank-pop
+                                consult-completion-in-region
                                 consult-dir
                                 consult-ripgrep
                                 consult-line
                                 consult-ripgrep-default-symbol
                                 consult-ripgrep-root-symbol
                                 consult-ripgrep-default))
+    ;; (setq icomplete-prospects-height 4)
     (setq-local icomplete-vertical-mode t)
     (add-hook 'icomplete-minibuffer-setup-hook
               #'icomplete--vertical-minibuffer-setup nil t)))

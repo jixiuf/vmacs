@@ -6,7 +6,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button))))))
+ '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
+ '(whitespace-missing-newline-at-eof ((t (:foreground "yellow")))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -51,11 +52,10 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async beacon cape clipetty consult-dir corfu corfu-terminal  dired-filetype-face emamux
-           embark embark-consult exec-path-from-shell git-link go-translate
-           golden-ratio-scroll-screen goto-chg kind-icon kkp lua-mode magit magit-todos marginalia
-           markdown-mode meow orderless org-ai org-alert org-msg ox-gfm pinyinlib plz posframe
-           protobuf-mode verb vundo with-editor yasnippet))
+   '(async beacon cape clipetty consult-dir dired-filetype-face emamux embark embark-consult
+           exec-path-from-shell git-link go-translate golden-ratio-scroll-screen goto-chg kkp
+           lua-mode magit magit-todos marginalia markdown-mode meow orderless org-ai org-alert
+           org-msg ox-gfm pinyinlib plz posframe protobuf-mode verb vundo with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
