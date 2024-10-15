@@ -57,3 +57,4 @@ linux/config/fcitx5/conf/cached_layouts
 /config/emacs/tree-sitter/
 .aider*
 /config/emacs/codeium/codeium_language_server
+/config/emacs/completions
