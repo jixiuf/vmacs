@@ -100,13 +100,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq completion-preview-minimum-symbol-length nil)
 (setq completion-preview-completion-styles '(basic partial-completion initials orderless))
 (setq icomplete-tidy-shadowed-file-names t)
-;; (concat
-;;                                      (propertize "\n" 'face '(:height 1))
-;;                                      (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
-;;                                                  'display '(space :align-to right))
-;;                                      (propertize "\n" 'face '(:height 1)))
 (setq icomplete-separator (propertize " 👈 " 'face  '(foreground-color . "lightgreen")))
-
 (setq completion-styles '(basic partial-completion substring initials  flex))
 
 (when (require 'orderless nil t)
@@ -153,7 +147,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (icomplete-mode 1)
 ;; (icomplete-vertical-mode 1)
 (add-hook 'minibuffer-setup-hook #'vmacs-icomplete-vertical-mode)
-(add-hook 'completion-in-region-mode-hook #'vmacs-icomplete-vertical-mode)
+;; (add-hook 'completion-in-region-mode-hook #'vmacs-icomplete-vertical-mode)
 (defun vmacs-icomplete-vertical-mode()
   (setq-local truncate-lines t)
   (when  (member this-command '(xref-find-references
