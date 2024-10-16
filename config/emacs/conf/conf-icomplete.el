@@ -98,7 +98,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (define-key completion-preview-active-mode-map (kbd "C-s") #'completion-preview-next-candidate)
 (define-key completion-preview-active-mode-map (kbd "M-f") #'completion-preview-insert-word)
 (setq completion-preview-minimum-symbol-length nil)
-(setq completion-preview-completion-styles '(basic orderless flex))
+(setq completion-preview-completion-styles '(basic partial-completion initials orderless))
 (setq icomplete-tidy-shadowed-file-names t)
 ;; (concat
 ;;                                      (propertize "\n" 'face '(:height 1))
