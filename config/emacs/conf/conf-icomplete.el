@@ -108,6 +108,45 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq icomplete-separator (propertize " 👈 " 'face  '(foreground-color . "lightgreen")))
 
 (setq completion-styles '(basic partial-completion substring initials  flex))
+(defvar icomplete--auto-timer (timer-create)
+  "Auto completion timer.")
+(defcustom icomplete-auto-delay 0.2
+  "Delay for auto completion.
+It is *not recommended* to use a short delay or even 0, since
+this will create high load for Emacs, in particular if executing
+the completion backend is costly."
+  :type 'float)
+
+(defun icomplete--auto-tick ()
+  "Return the current tick/status of the buffer.
+Auto completion is only performed if the tick did not change."
+  (list (selected-window) (current-buffer) (buffer-chars-modified-tick) (point)))
+
+(defun icomplete--auto-complete-deferred (&optional tick)
+  "Initiate auto completion if TICK did not change."
+  (when (and (not completion-in-region-mode)
+             (or (not tick) (equal tick (icomplete--auto-tick))))
+    (while-no-input ;; Interruptible Capf query
+      (completion-at-point))))
+(defun icomplate--auto-post-command ()
+  "Post command hook which initiates auto completion."
+  (cancel-timer icomplete--auto-timer)
+  (when (and (not completion-in-region-mode)
+             (not (minibufferp))
+             (not defining-kbd-macro)
+             (not buffer-read-only)
+             (completion-preview-require-certain-commands))
+    (if (<= icomplete-auto-delay 0)
+        (icomplete--auto-complete-deferred)
+      ;; Do not use `timer-set-idle-time' since this leads to
+      ;; unpredictable pauses, in particular with `flyspell-mode'.
+      (timer-set-time icomplete--auto-timer
+                      (timer-relative-time nil icomplete-auto-delay))
+      (timer-set-function icomplete--auto-timer #'icomplete--auto-complete-deferred
+                          (list (icomplete--auto-tick)))
+      (timer-activate icomplete--auto-timer))
+    ))
+(add-hook 'post-command-hook #'icomplate--auto-post-command)
 
 (when (require 'orderless nil t)
   (setq completion-styles '(basic partial-completion initials orderless))
@@ -181,7 +220,6 @@ Monospaced font whihc is fixed idth and height is recommended."
       ;;             redisplay-adhoc-scroll-in-resize-mini-windows nil)
       )))
 
-;; (add-hook 'meow-insert-exit-hook 'corfu-quit)
 
 ;; (add-hook 'minibuffer-exit-hook '(lambda() (icomplete-vertical-mode -1)))
 
