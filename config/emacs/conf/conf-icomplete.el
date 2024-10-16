@@ -12,11 +12,12 @@
 ;; (setq completion-flex-nospace t)
 (setq completion-pcm-complete-word-inserts-delimiters t) ;partial-completion in completion-styles
 ;; (setq completion-pcm-word-delimiters "-_/:| ")
-(setq completion-auto-help nil)         ;不主动弹出 *Completions*
+(setq completion-auto-help t)         ;不主动弹出 *Completions*
 (setq completions-format 'one-column)   ; *Completions* buffer M-v 跳到*Completions* buffer
 (setq completions-header-format nil)
 (setq max-mini-window-height 4)        ;selectrum-num-candidates-displayed 受影响
-(setq completions-max-height 10)
+(setq completions-max-height 4)
+(setq icomplete-prospects-height 4)
 ;; (setq completion-auto-select nil)
 (setq completions-detailed t)
 (setq completion-show-help nil) ;*Completions* show help
@@ -70,8 +71,11 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
 (setq icomplete-in-buffer t)
+;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.30#L135
+(advice-add 'completion-at-point :after #'minibuffer-hide-completions)
+
 (setq tab-always-indent 'complete)
-(setq completion-in-region-function #'consult-completion-in-region)
+;; (setq completion-in-region-function #'consult-completion-in-region)
 (global-completion-preview-mode)
 ;; (setq read-buffer-completion-ignore-case nil)
 ;; (setq read-file-name-completion-ignore-case nil)
@@ -84,15 +88,18 @@ Monospaced font whihc is fixed idth and height is recommended."
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 (define-key completion-preview-active-mode-map (kbd "C-e") #'completion-preview-insert)
 (define-key completion-preview-active-mode-map (kbd "C-f") #'completion-preview-complete)
-(define-key completion-preview-active-mode-map (kbd "C-n") #'(lambda()(interactive)(completion-preview-hide) (indent-for-tab-command)))
-(define-key completion-preview-active-mode-map (kbd "C-i") #'(lambda()(interactive)(completion-preview-hide) (indent-for-tab-command)))
+(defun vmacs-complete()
+  (interactive)
+  (completion-preview-hide)
+  (indent-for-tab-command))
+(define-key completion-preview-active-mode-map (kbd "C-n") #'vmacs-complete)
+(define-key completion-preview-active-mode-map (kbd "C-i") #'vmacs-complete)
 (define-key completion-preview-active-mode-map (kbd "C-m") #'completion-preview-insert)
 (define-key completion-preview-active-mode-map (kbd "C-s") #'completion-preview-next-candidate)
 (define-key completion-preview-active-mode-map (kbd "M-f") #'completion-preview-insert-word)
 (setq completion-preview-minimum-symbol-length nil)
-(setq completion-preview-completion-styles '(basic orderless))
+(setq completion-preview-completion-styles '(basic orderless flex))
 (setq icomplete-tidy-shadowed-file-names t)
-(setq icomplete-prospects-height 4)
 ;; (concat
 ;;                                      (propertize "\n" 'face '(:height 1))
 ;;                                      (propertize " " 'face '(:inherit vertical-border :underline t :height 1)
@@ -109,10 +116,12 @@ Monospaced font whihc is fixed idth and height is recommended."
     (require 'pinyinlib)
     (orderless-regexp (pinyinlib-build-regexp-string str)))
   ;; 默认按空格开隔的每个关键字支持 regexp/literal/initialism 3 种算法
-  (setq orderless-matching-styles '(completion--regex-pinyin orderless-regexp orderless-literal orderless-initialism ))
+  (setq orderless-matching-styles '(completion--regex-pinyin orderless-regexp
+                                    orderless-literal orderless-initialism
+                                    orderless-flex))
   ;; Define orderless style with initialism by default
   (orderless-define-completion-style +orderless-with-initialism
-    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp )))
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp orderless-flex)))
   (setq completion-category-overrides '((eglot (styles orderless))
                                         (multi-category (styles . (basic partial-completion orderless)))
                                         ;; (buffer (styles +orderless-with-initialism)) ;; partial-completion is tried first
@@ -144,33 +153,36 @@ Monospaced font whihc is fixed idth and height is recommended."
 (icomplete-mode 1)
 ;; (icomplete-vertical-mode 1)
 (add-hook 'minibuffer-setup-hook #'vmacs-icomplete-vertical-mode)
+(add-hook 'completion-in-region-mode-hook #'vmacs-icomplete-vertical-mode)
 (defun vmacs-icomplete-vertical-mode()
   (setq-local truncate-lines t)
-  (when  (member this-command '(consult-grep
-                                xref-find-references
-                                xref-find-definitions
-                                xref-find-apropos
-                                eglot-find-declaration
-                                eglot-find-implementation
-                                eglot-code-actions
-                                execute-extended-command
-                                project-or-external-find-file
-                                completion-at-point
-                                indent-for-tab-command
-                                vmacs-yank-pop
-                                describe-function
-                                describe-variable
-                                yank-pop
-                                consult-completion-in-region
-                                consult-dir
-                                consult-ripgrep
-                                consult-line
-                                consult-ripgrep-default-symbol
-                                consult-ripgrep-root-symbol
-                                consult-ripgrep-default))
-    (setq-local icomplete-vertical-mode t)
-    (add-hook 'icomplete-minibuffer-setup-hook
-              #'icomplete--vertical-minibuffer-setup nil t)))
+  (when  (member this-command '(xref-find-references
+                                xref-find-definitions xref-find-apropos
+                                eglot-find-declaration eglot-find-implementation
+                                eglot-code-actions execute-extended-command
+                                project-or-external-find-file completion-at-point
+                                indent-for-tab-command vmacs-yank-pop
+                                describe-function describe-variable
+                                yank-pop vmacs-complete
+                                consult-dir consult-ripgrep
+                                consult-grep consult-completion-in-region
+                                consult-line consult-ripgrep-default-symbol
+                                consult-ripgrep-root-symbol consult-ripgrep-default))
+    (when (minibufferp)
+      (setq-local icomplete-vertical-mode t)
+      (add-hook 'icomplete-minibuffer-setup-hook
+                #'icomplete--vertical-minibuffer-setup nil t)
+      ;; for complete-in-buffer
+      ;; (local-set-key  (kbd "<escape>") 'keyboard-quit)
+      ;; (setq-local icomplete-hide-common-prefix nil
+      ;;             ;; Ask `icomplete-completions' to return enough completions candidates.
+      ;;             max-mini-window-height 8
+      ;;             icomplete-prospects-height 25
+      ;;             redisplay-adhoc-scroll-in-resize-mini-windows nil)
+      )))
+
+;; (add-hook 'meow-insert-exit-hook 'corfu-quit)
+
 ;; (add-hook 'minibuffer-exit-hook '(lambda() (icomplete-vertical-mode -1)))
 
 ;; (setq icomplete-scroll t)
