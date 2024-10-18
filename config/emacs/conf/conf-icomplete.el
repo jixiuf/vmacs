@@ -15,9 +15,9 @@
 (setq completion-auto-help t)         ;不主动弹出 *Completions*
 (setq completions-format 'one-column)   ; *Completions* buffer M-v 跳到*Completions* buffer
 (setq completions-header-format nil)
-(setq max-mini-window-height 4)        ;selectrum-num-candidates-displayed 受影响
-(setq completions-max-height 4)
-(setq icomplete-prospects-height 4)
+(setq max-mini-window-height 5)        ;selectrum-num-candidates-displayed 受影响
+(setq completions-max-height 5)
+(setq icomplete-prospects-height 5)
 ;; (setq completion-auto-select nil)
 (setq completions-detailed t)
 (setq completion-show-help nil) ;*Completions* show help
@@ -70,12 +70,12 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-(setq icomplete-in-buffer t)
-;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.30#L135
-(advice-add 'completion-at-point :after #'minibuffer-hide-completions)
+;; (setq icomplete-in-buffer t)
+;; ;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.30#L135
+;; (advice-add 'completion-at-point :after #'minibuffer-hide-completions)
 
 (setq tab-always-indent 'complete)
-;; (setq completion-in-region-function #'consult-completion-in-region)
+(setq completion-in-region-function #'consult-completion-in-region)
 (global-completion-preview-mode)
 ;; (setq read-buffer-completion-ignore-case nil)
 ;; (setq read-file-name-completion-ignore-case nil)
@@ -86,7 +86,6 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq read-extended-command-predicate #'command-completion-default-include-p)
 (add-to-list 'completion-at-point-functions #'cape-file)
 (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-(define-key completion-preview-active-mode-map (kbd "C-e") #'completion-preview-insert)
 (define-key completion-preview-active-mode-map (kbd "C-f") #'completion-preview-complete)
 (defun vmacs-complete()
   (interactive)
