@@ -119,10 +119,25 @@
 	#those annoying ^M characters no longer appear at the end of lines in git diff, git show, etc.
 	whitespace = cr-at-eol
 	excludesfile = ~/.gitignore
+    packedGitLimit = 512m 
+    packedGitWindowSize = 512m     
 	# 644 or 755
 	filemode = false
 	attributesfile = ~/.gitattributes
 	ignorecase = true           #用于解决 git svn rebase 时的错 The following untracked working tree files would be overwritten by checkout:
+[pack]
+    # https://stackoverflow.com/questions/66366582/github-unexpected-disconnect-while-reading-sideband-packet
+    # fetch-pack: unexpected disconnect while reading sideband packet
+	window = 1
+    deltaCacheSize = 2047m 
+    packSizeLimit = 2047m 
+    windowMemory = 2047m
+[http]
+	postBuffer = 5242880000
+	# version = HTTP/1.1
+    #这里是因为 Git 使用 libcurl 提供 http 支持
+    #proxy = socks5://127.0.0.1:7070
+    
 [log]
 	date=iso
 [i18n]
@@ -131,10 +146,6 @@
 	# autosetuprebase = always
 # [pull]
 	# rebase = true
-[http]
-	postBuffer = 524288000
-    #这里是因为 Git 使用 libcurl 提供 http 支持
-    #proxy = socks5://127.0.0.1:7070
 [diff "plist"]
 	textconv = plutil -convert xml1 -o -
 [status]
@@ -159,7 +170,3 @@
 	autoStash = true
 [merge]
 	autoStash = true
-[pack]
-    # https://stackoverflow.com/questions/66366582/github-unexpected-disconnect-while-reading-sideband-packet
-    # fetch-pack: unexpected disconnect while reading sideband packet
-	window = 1
