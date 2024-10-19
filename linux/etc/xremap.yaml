@@ -401,6 +401,12 @@ keymap:
           k: C-f4
           # C-x C-c (exit)
           C-c: super-C-q
+  - name: Global home
+    device:
+      only: ["Apple SPI Keyboard"]                  #evtest
+    remap:
+      super-M-k: j
+          
   - name: Global
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
