@@ -7,7 +7,8 @@ keymap:
       super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --gtk-version=4"] }
       super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise --toggle apifox-pdv /opt/Apifox/apifox-pdv"] }
       # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
-      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle DBeaver dbeaver"] }
+      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass|DBeaver' dbeaver"] }
+      super-M-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass'  mongodb-compass -- --ignore-additional-command-line-flags --password-store=\"gnome-libsecret\""] }
 
       super-C-dot: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle mitp -- term.sh --class=mitp  -- mitmproxy -p 8888 -s ~/.mitmproxy/rewrite.py"] }
       # super-C-e:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
