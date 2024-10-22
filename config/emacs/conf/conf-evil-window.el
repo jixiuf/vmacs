@@ -191,6 +191,7 @@
                    bufname)
    (string-prefix-p "*aider" bufname)
    (string-prefix-p "magit:" bufname)
+   (string-prefix-p "magit-" bufname)
    (string-prefix-p "*Embark " bufname)
    (string-prefix-p "*Annotate " bufname)))
 
