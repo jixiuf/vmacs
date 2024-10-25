@@ -4,8 +4,8 @@
  tab-width 4
  indicate-empty-lines t                 ;如果文件末尾有空行， 以可视地形式提醒
  ;; x-stretch-cursor nil                  ;如果设置为t，光标在TAB字符上会显示为一个大方块
- mode-require-final-newline nil
- require-final-newline t ; 文档末尾插入空行
+ ;; mode-require-final-newline nil
+ ;; require-final-newline nil ; 文档末尾插入空行
                                         ;(setq next-line-add-newlines t);到达最后一行后继续C-n将添加空行
  ;;(setq-default line-spacing 1);;设置行距
  whitespace-style   '(face

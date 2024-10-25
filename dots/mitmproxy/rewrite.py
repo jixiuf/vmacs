@@ -11,6 +11,8 @@ URL_PREFIX_MAP = {
     # "http://entree.dev.didatrip.com/bauhinia/": "http://127.0.0.1:3880/bauhinia/",
     "http://entree.dev.didatrip.com/label/": "http://localhost:3890/label/",
     "https://entree-ali.igetget.com/label/": "http://localhost:3890/label/",
+    "https://entree.igetget.com/hotfix/": "http://10.1.0.140:8080/hotfix/",
+    "https://entree-ali.igetget.com/hotfix/": "http://10.1.0.140:8080/hotfix/",
     "http://odobpkg.test.svc.luojilab.dc/":"http://127.0.0.1:17946/",
     "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:3890/",
     # 填写你的映射字典
@@ -100,5 +102,5 @@ def request(flow: http.HTTPFlow) -> None:
                 # 替换 URL 的主机、端口和路径
                 new_url = flow.request.pretty_url.replace(original_prefix, new_prefix, 1)
                 flow.request.url = new_url
-                # flow.request.headers["Xi-av"] = "11.6.2"
+                flow.request.headers["Xi-av"] = "12.3.1"
                 break  # 匹配到一个前缀后就不需要继续检查其他前缀
