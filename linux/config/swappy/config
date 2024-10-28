@@ -8,3 +8,4 @@ text_size=30
 paint_mode=arrow
 early_exit=false
 fill_shape=false
+auto_save=true

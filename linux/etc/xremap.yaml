@@ -61,8 +61,8 @@ keymap:
     # http://7is7.com/software/firefox/shortcuts.html
       C-y: C-y
       C-b: C-b
-      C-g: [C-c,C-s, esc]
-      esc: [C-c,C-s, esc]
+      C-g: [C-c, esc]
+      esc: [C-c, esc]
       C-slash: C-z
       Super-C-v: C-v
       C-x:
