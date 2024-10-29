@@ -1,0 +1,14 @@
+[Unit]
+Description=disable internal keyboard 
+BindsTo=sway-session.target
+
+[Service]
+Type=simple
+Restart=always
+# 禁用内置键盘
+ExecStart=sh -c "pkill evtest;evtest --grab $(libinput list-devices |grep 'Apple Inc. Apple Internal Keyboard / Trackpad' -A 1|tail -n 1| awk '{print $NF}') >/dev/null 2>&1"
+
+
+[Install]
+WantedBy=default.target
+

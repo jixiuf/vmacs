@@ -58,3 +58,4 @@ linux/config/fcitx5/conf/cached_layouts
 .aider*
 /config/emacs/codeium/codeium_language_server
 /config/emacs/completions
+/linux/config/systemd/user/default.target.wants/disable-keyboard.service
