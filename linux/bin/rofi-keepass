@@ -63,7 +63,7 @@ init_input() {
         domain=${classMap["$class"]}
         if [[ "$class" = "firefox" || "$class" = "google-chrome"  ]]; then
             # show url in window title
-            # need addon for firefox: https://addons.mozilla.org/en-US/firefox/addon/add-url-to-window-title/
+            # need addon for firefox: https://github.com/M-Gregoire/Firefox-AddUrlToWindowsTitle
             title=`echo $appinfo|jq -r '.title'|head -n 1`
             url=$(echo $title | grep -o -E 'https?://[^ ]*' | sed 's/— Mozilla Firefox$//' | awk '{print $1}')
             # 提取域名
