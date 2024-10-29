@@ -33,7 +33,6 @@ sys-kernel/t2gentoo-kernel ~amd64
 sys-kernel/t2gentoo-sources ~amd64
 x11-libs/xcb-imdkit ~amd64 
 x11-misc/dex  ~amd64 
-app-admin/rbw **
 app-editors/helix ~amd64  
 dev-util/android-studio ~amd64  
 media-gfx/blender  ~amd64
@@ -72,7 +71,8 @@ dev-java/openjdk-bin ~amd64
 gui-apps/hyprpicker ~amd64
 app-misc/jaq       ~amd64
 net-wireless/iwgtk ~amd64
- dev-util/mongodb-compass-bin ~amd64 
+dev-util/mongodb-compass-bin ~amd64
+
 # Local Variables:
 # mode: conf
 # End:
