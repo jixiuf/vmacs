@@ -47,10 +47,14 @@
 (defvar-keymap  vmacs-motion-mode-map
   "j"  #'meow-next
   "k"  #'meow-prev
+  "h"  #'meow-left
+  "l"  #'meow-right
   "G"  #'vmacs-goto-line
   "g"  g-mode-map
   "m"  m-mode-map
   "/"  #'isearch-forward-regexp
+  "n"  #'meow-search
+  "N"  #'meow-search-reverse
   "z"   #'meow-pop-selection
   "<escape>"  #'keyboard-quit)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)

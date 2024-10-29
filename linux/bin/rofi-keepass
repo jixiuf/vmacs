@@ -25,7 +25,7 @@ initTld () {
         [[ -n ${tld//*[ \/;*]*} ]] && TLD["${tld#\!}"]=''
     done < <(
         if [ ! -f "/tmp/public_suffix_list.dat"  ]; then
-            curl https://publicsuffix.org/list/public_suffix_list.dat |grep -v "^//"|grep -v "^$" >/tmp/public_suffix_list.dat
+            curl --dns-servers 1.1.1.1 https://publicsuffix.org/list/public_suffix_list.dat |grep -v "^//"|grep -v "^$" >/tmp/public_suffix_list.dat
         fi
         cat /tmp/public_suffix_list.dat
     )
@@ -37,9 +37,21 @@ tldExtract () {
         IFS=. read -r dom tld <<< "$tld"
     done
     if [[ -v _tld_out_var ]] ;then
-        printf -v $_tld_out_var '%s.%s' "$dom" "$tld"
+        if [ -z "${dom}" ]; then
+            printf -v $_tld_out_var '%s' "$tld"
+        elif [ -z "$tld"]; then
+            printf -v $_tld_out_var '%s' "$dom"
+        else
+            printf -v $_tld_out_var '%s.%s' "$dom" "$tld"
+        fi
     else
-        echo "${dom}.${tld}"
+        if [ -z "${dom}" ]; then
+            echo "${tld}"
+        elif [ -z "$tld"]; then
+            echo "${dom}"
+        else
+            echo "${dom}.${tld}"
+        fi
     fi
 }
 initTld
@@ -53,14 +65,16 @@ init_input() {
             # show url in window title
             # need addon for firefox: https://addons.mozilla.org/en-US/firefox/addon/add-url-to-window-title/
             title=`echo $appinfo|jq -r '.title'|head -n 1`
-            url=$(echo $title | grep -o 'https://[^ ]*' | sed 's/— Mozilla Firefox$//' | awk '{print $1}')
+            url=$(echo $title | grep -o -E 'https?://[^ ]*' | sed 's/— Mozilla Firefox$//' | awk '{print $1}')
             # 提取域名
-            domain=$(echo $url | awk -F[/:] '{print $4}')
             # 去除?后
-            domain=$(echo $domain | cut -d'?' -f1)
-            domain=$(echo $domain | sed 's/com.hk/com/g')
-            domain=$(tldExtract $domain)
-            echo $domain
+            domain=$(echo $url | awk -F[/:] '{print $4}' | cut -d'?' -f1 | sed 's/com.hk/com/g')
+            if [[ "$domain" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                echo $domain
+            else
+                domain=$(tldExtract $domain)
+                echo $domain
+            fi
         elif [[ -n  "$domain"  ]]; then
              echo $domain
         fi

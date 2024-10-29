@@ -35,7 +35,11 @@
 ;; 小指按tab 太疼，d 与tab 交换
 (define-key magit-mode-map "d" 'magit-section-toggle)
 (define-key magit-mode-map "e" 'magit-delete-thing)
+;; (define-key magit-mode-map (kbd "C-c M/") nil)
+;; (define-key magit-mode-map (kbd "C-c M/") nil)
 (define-key magit-mode-map "`" 'magit-process-buffer)
+(define-key magit-mode-map "." 'magit-log)
+(transient-suffix-put 'magit-log "l" :key (kbd "."))
 (define-key magit-mode-map (kbd "TAB") 'magit-diff)
 (define-key magit-mode-map [(tab)]  'magit-diff)
 (transient-suffix-put 'magit-diff "d" :key (kbd "<tab>"))
