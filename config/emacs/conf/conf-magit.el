@@ -145,7 +145,11 @@
       (unless  (get-buffer-process buf)
         (kill-buffer buf)))))
 
-  (magit-add-section-hook 'magit-status-sections-hook 'magit-insert-assume-unchanged-files nil t)
+(magit-add-section-hook 'magit-status-sections-hook 'magit-insert-assume-unchanged-files nil t)
+(remove-hook 'magit-status-sections-hook 'magit-insert-bisect-output)
+(remove-hook 'magit-status-sections-hook 'magit-insert-bisect-rest)
+(remove-hook 'magit-status-sections-hook 'magit-insert-bisect-log)
+
 
 
 (with-eval-after-load 'git-link
