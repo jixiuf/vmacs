@@ -301,54 +301,54 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
 (add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
-(when (require 'org-caldav nil t)
-  ;; (setq org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
-  (setq org-caldav-delete-org-entries 'always)
-  (setq org-caldav-delete-calendar-entries 'always)
-  (setq org-caldav-show-sync-results nil)
-  (setq org-caldav-files nil)
-  (setq org-caldav-debug-level 0)
-  (setq org-caldav-debug-buffer " *org-caldav-debug*")
-  (setq org-caldav-calendars
-        `((:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
-                        :get-event-by-report t
-                        :uuid-extension ".ics"
-                        :readonly t
-                        ;; :sync-direction "cal->org"
-                        :sync-direction "twoway"
-                        :url "https://caldav.feishu.cn/jixiufeng_luojilab"
-                        :inbox ,(expand-file-name "caldav.txt.gpg" dropbox-dir))
-          (:calendar-id "primary"
-                        :get-event-by-report nil
-                        :readonly nil
-                        :uuid-extension ""
-                        :sync-direction "twoway"
-                        :url "https://calendar.dingtalk.com/dav/u_fukx3svp"
-                        :inbox ,(expand-file-name "todo.txt.gpg" dropbox-dir))))
+;; (when (require 'org-caldav nil t)
+;;   ;; (setq org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
+;;   (setq org-caldav-delete-org-entries 'always)
+;;   (setq org-caldav-delete-calendar-entries 'always)
+;;   (setq org-caldav-show-sync-results nil)
+;;   (setq org-caldav-files nil)
+;;   (setq org-caldav-debug-level 0)
+;;   (setq org-caldav-debug-buffer " *org-caldav-debug*")
+;;   (setq org-caldav-calendars
+;;         `((:calendar-id "60BADA72-D892-4002-60BA-DA72D8924002"
+;;                         :get-event-by-report t
+;;                         :uuid-extension ".ics"
+;;                         :readonly t
+;;                         ;; :sync-direction "cal->org"
+;;                         :sync-direction "twoway"
+;;                         :url "https://caldav.feishu.cn/jixiufeng_luojilab"
+;;                         :inbox ,(expand-file-name "caldav.txt.gpg" dropbox-dir))
+;;           (:calendar-id "primary"
+;;                         :get-event-by-report nil
+;;                         :readonly nil
+;;                         :uuid-extension ""
+;;                         :sync-direction "twoway"
+;;                         :url "https://calendar.dingtalk.com/dav/u_fukx3svp"
+;;                         :inbox ,(expand-file-name "todo.txt.gpg" dropbox-dir))))
 
-  (defun vmacs-org-caldav-sync()
-    ;; f and b 前一周
-    (let ((buf (current-buffer)))
-      (when (member this-command
-                    '(org-agenda-redo
-                      org-agenda-todo
-                      ;; org-agenda
-                      org-agenda-date-prompt))
-        (save-window-excursion
-          (save-excursion
-            (org-caldav-sync)
-            (switch-to-buffer buf))))))
+;;   (defun vmacs-org-caldav-sync()
+;;     ;; f and b 前一周
+;;     (let ((buf (current-buffer)))
+;;       (when (member this-command
+;;                     '(org-agenda-redo
+;;                       org-agenda-todo
+;;                       ;; org-agenda
+;;                       org-agenda-date-prompt))
+;;         (save-window-excursion
+;;           (save-excursion
+;;             (org-caldav-sync)
+;;             (switch-to-buffer buf))))))
 
-  (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
-  (run-with-idle-timer 300 t #'(lambda()(org-agenda nil "w")(org-caldav-sync) (org-agenda-exit) )) ;idle 300=5*60s,
+;;   (add-hook 'org-agenda-mode-hook #'vmacs-org-caldav-sync)
+;;   (run-with-idle-timer 300 t #'(lambda()(org-agenda nil "w")(org-caldav-sync) (org-agenda-exit) )) ;idle 300=5*60s,
 
 
-  ;; Usually a good idea to set the timezone manually
-  ;; (setq org-icalendar-date-time-format ":%Y%m%dT%H%M%S")
-  (setq org-icalendar-timezone "Asia/Shanghai")
-  ;; ali dingding 对todo 的支持有问题，暂不同步todo
-  (setq org-icalendar-include-todo nil
-        org-caldav-sync-todo nil)  )
+;;   ;; Usually a good idea to set the timezone manually
+;;   ;; (setq org-icalendar-date-time-format ":%Y%m%dT%H%M%S")
+;;   (setq org-icalendar-timezone "Asia/Shanghai")
+;;   ;; ali dingding 对todo 的支持有问题，暂不同步todo
+;;   (setq org-icalendar-include-todo nil
+;;         org-caldav-sync-todo nil)  )
 (when (require 'org-alert nil t)
   ;; support  for khalel calendar
   ;; - When: <2024-07-02 14:00>--<2024-07-02 15:00>
