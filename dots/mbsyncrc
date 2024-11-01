@@ -36,39 +36,39 @@
 
 
 ##############################################
-IMAPAccount 139
-Host imap.139.com
-Port 993
-User jixiuf@139.com
-# 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
-# security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
-# security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine smtp.139.com login jixiuf@139.com password/ {print $NF}'"
-# PassCmd "security find-internet-password -g -a jixiuf@139.com -s smtp.139.com -w"
-SSLType IMAPS
-SSLVersions TLSv1.2
+# IMAPAccount 139
+# Host imap.139.com
+# Port 993
+# User jixiuf@139.com
+# # 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
+# # security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
+# # security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
+# PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine smtp.139.com login jixiuf@139.com password/ {print $NF}'"
+# # PassCmd "security find-internet-password -g -a jixiuf@139.com -s smtp.139.com -w"
+# SSLType IMAPS
+# SSLVersions TLSv1.2
 
-IMAPStore 139-remote
-Account 139
+# IMAPStore 139-remote
+# Account 139
 
-# This section describes the local storage
-MaildirStore 139-local
-Path ~/maildir/139/
-Inbox ~/maildir/139/inbox
-# The SubFolders option allows to represent all
-# IMAP subfolders as local subfolders
-SubFolders Verbatim
+# # This section describes the local storage
+# MaildirStore 139-local
+# Path ~/maildir/139/
+# Inbox ~/maildir/139/inbox
+# # The SubFolders option allows to represent all
+# # IMAP subfolders as local subfolders
+# SubFolders Verbatim
 
-# This section a "channel", a connection between remote and local
-Channel 139
-Far :139-remote:
-Near :139-local:
-Patterns *
-Expunge Both
-CopyArrivalDate yes
-Sync All
-Create Near
-SyncState *
+# # This section a "channel", a connection between remote and local
+# Channel 139
+# Far :139-remote:
+# Near :139-local:
+# Patterns *
+# Expunge Both
+# CopyArrivalDate yes
+# Sync All
+# Create Near
+# SyncState *
 
 ##############################################
 IMAPAccount qq
@@ -98,6 +98,42 @@ SubFolders Verbatim
 Channel qq
 Far :qq-remote:
 Near :qq-local:
+Patterns *
+Expunge Both
+CopyArrivalDate yes
+Sync All
+Create Near
+SyncState *
+
+
+# #####
+IMAPAccount emacs
+Host imap.qq.com
+Port 993
+User tyytwqqq001@qq.com
+# 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
+# security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
+# security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com login tyytwqqq001@qq.com password/ {print $NF}'"
+# PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
+SSLType IMAPS
+SSLVersions TLSv1.2
+
+IMAPStore emacs-remote
+Account emacs
+
+# This section describes the local storage
+MaildirStore emacs-local
+Path ~/maildir/emacs/
+Inbox ~/maildir/emacs/inbox
+# The SubFolders option allows to represent all
+# IMAP subfolders as local subfolders
+SubFolders Verbatim
+
+# This section a "channel", a connection between remote and local
+Channel emacs
+Far :emacs-remote:
+Near :emacs-local:
 Patterns *
 Expunge Both
 CopyArrivalDate yes

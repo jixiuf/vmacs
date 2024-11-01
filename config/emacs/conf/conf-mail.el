@@ -79,14 +79,15 @@
  ;;                          ("/139/inbox" . ?1)
  ;;                          ("/qq/inbox" . ?q))
  )
-(add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/luojilab/inbox or maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
+(add-to-list 'mu4e-bookmarks '(:name "inbox" :query "(maildir:/qq/inbox or maildir:/emacs/inbox or maildir:/luojilab/inbox or maildir:/139/inbox) AND NOT flag:trashed" :key ?i))
 (add-to-list 'mu4e-bookmarks '(:name "qq" :query "maildir:/qq/inbox  AND NOT flag:trashed" :key ?q))
+(add-to-list 'mu4e-bookmarks '(:name "emacs" :query "maildir:/emacs/inbox  AND NOT flag:trashed" :key ?e))
 ;; (add-to-list 'mu4e-bookmarks '(:name "luojilab" :query "maildir:/luojilab/inbox  AND NOT flag:trashed" :key ?l))
-(add-to-list 'mu4e-bookmarks '(:name "139(10086)" :query "maildir:/139/inbox  AND NOT flag:trashed" :key ?1))
-(add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\"  or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
-(add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\"  or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
-(add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts  or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
-(add-to-list 'mu4e-bookmarks '(:name "trash" :query "(maildir:/qq/Junk or  maildir:/139/&XfJSIJZk-)" :key ?j))
+;; (add-to-list 'mu4e-bookmarks '(:name "139(10086)" :query "maildir:/139/inbox  AND NOT flag:trashed" :key ?1))
+(add-to-list 'mu4e-bookmarks '(:name "sent" :query "(maildir:/qq/\"Sent Messages\" or maildir:/emacs/\"Sent Messages\"  or maildir:/139/&XfJT0ZAB-) AND NOT flag:trashed" :key ?s))
+(add-to-list 'mu4e-bookmarks '(:name "removed" :query "(maildir:/qq/\"Deleted Messages\" or maildir:/emacs/\"Deleted Messages\"  or maildir:/139/&XfJSIJZk-) AND NOT flag:trashed" :key ?r))
+(add-to-list 'mu4e-bookmarks '(:name "drafts" :query "(maildir:/qq/Drafts or maildir:/emacs/Drafts  or maildir:/139/&g0l6P3ux-) AND NOT flag:trashed" :key ?d))
+(add-to-list 'mu4e-bookmarks '(:name "trash" :query "(maildir:/qq/Junk ormaildir:/emacs/Junk or  maildir:/139/&XfJSIJZk-)" :key ?j))
 
 (when (fboundp 'imagemagick-register-types) (imagemagick-register-types))
 
@@ -115,6 +116,22 @@
                   (mu4e-sent-folder      . "/qq/Sent Messages")
                   (mu4e-drafts-folder    . "/qq/Drafts")
                   (mu4e-trash-folder     . "/qq/Deleted Messages")))
+        ,(make-mu4e-context
+          :name "emacs"
+          :enter-func (lambda () (mu4e-message "Entering emacs context"))
+          ;; :leave-func (lambda () (mu4e-message "Leaving qq context"))
+          ;; we match based on the contact-fields of the message
+          :match-func (lambda (msg)
+                        (when msg (mu4e-message-contact-field-matches msg '(:to :from :cc :bcc) (concat "tyytwqqq001" "@" "qq.com"  ))))
+          :vars '((smtpmail-smtp-user    . "tyytwqqq001@qq.com")
+                  (smtpmail-smtp-server  . "smtp.qq.com")
+                  (smtpmail-smtp-service . 465)
+                  (smtpmail-stream-type  . ssl)
+                  (user-full-name        . "tyytwqqq001@qq.com")
+                  (user-mail-address     . "tyytwqqq001@qq.com")
+                  (mu4e-sent-folder      . "/emacs/Sent Messages")
+                  (mu4e-drafts-folder    . "/emacs/Drafts")
+                  (mu4e-trash-folder     . "/emacs/Deleted Messages")))
         ,(make-mu4e-context
           :name "10086(139)"
           :enter-func (lambda () (mu4e-message "Entering 10086(139) context"))
