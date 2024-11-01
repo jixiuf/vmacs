@@ -56,6 +56,7 @@
 (setenv "XAPIAN_CJK_NGRAM" "yes")
 (setq
  mu4e-headers-skip-duplicates t
+ mu4e-search-results-limit 5000
  mu4e-compose-keep-self-cc t
  mu4e-index-lazy-check t
  mu4e-view-show-images t
