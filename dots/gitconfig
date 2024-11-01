@@ -153,7 +153,12 @@
 # git config --global url."git@gitlab.luojilab.com:".insteadof "https://gitlab.luojilab.com/"
 [url "git@gitlab.luojilab.com:"]
 	insteadof = https://gitlab.luojilab.com/
-
+[url "git@git.sr.ht:"]
+  pushInsteadOf = "https://git.sr.ht/"
+[url "git@codeberg.org:"]
+  pushInsteadOf = "https://codeberg.org/"
+[url "git@github.com:"]
+  pushInsteadOf = "https://github.com/"
 # [url "file:///Users/jixiuf/repos/libvterm-nvim/.git"]
 # 	insteadof = https://github.com/neovim/libvterm.git
 [pull]
