@@ -1,6 +1,10 @@
 #!/bin/bash
 
 KEEPASS_DB_PATH="$HOME/Documents/jianguo/jianguo/keepass/pass.kdbx"
+CACHE_FILE="$HOME/.cache/keepassxc/cache"
+PATH="/home/jixiuf/venv/bin:$PATH"
+
+
 # my master key is encrpted by gpg
 master=$(gpg -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
 # master=$(pass show bitwarden.com | head -n 1)
@@ -18,43 +22,43 @@ classMap["org.keepassxc.KeePassXC"]="bitwarden.com"
 classMap["kitty"]="bitwarden.com"
 classMap["polkit-gnome-authentication-agent-1"]="bitwarden.com"
 # 取网站根域名
-declare -A TLD='()'
-initTld () {
-    local tld
-    while read -r tld; do
-        [[ -n ${tld//*[ \/;*]*} ]] && TLD["${tld#\!}"]=''
-    done < <(
-        if [ ! -f "/tmp/public_suffix_list.dat"  ]; then
-            curl --dns-servers 1.1.1.1 https://publicsuffix.org/list/public_suffix_list.dat |grep -v "^//"|grep -v "^$" >/tmp/public_suffix_list.dat
-        fi
-        cat /tmp/public_suffix_list.dat
-    )
-}
-tldExtract () {
-    if [[ $1 == -v ]] ;then local _tld_out_var=$2;shift 2;fi
-    local dom tld=$1 _tld_out_var
-    while [[ ! -v TLD[${tld}] ]] && [[ -n $tld ]]; do
-        IFS=. read -r dom tld <<< "$tld"
-    done
-    if [[ -v _tld_out_var ]] ;then
-        if [ -z "${dom}" ]; then
-            printf -v $_tld_out_var '%s' "$tld"
-        elif [ -z "$tld"]; then
-            printf -v $_tld_out_var '%s' "$dom"
-        else
-            printf -v $_tld_out_var '%s.%s' "$dom" "$tld"
-        fi
-    else
-        if [ -z "${dom}" ]; then
-            echo "${tld}"
-        elif [ -z "$tld"]; then
-            echo "${dom}"
-        else
-            echo "${dom}.${tld}"
-        fi
-    fi
-}
-initTld
+# declare -A TLD='()'
+# initTld () {
+#     local tld
+#     while read -r tld; do
+#         [[ -n ${tld//*[ \/;*]*} ]] && TLD["${tld#\!}"]=''
+#     done < <(
+#         if [ ! -f "/tmp/public_suffix_list.dat"  ]; then
+#             curl --dns-servers 1.1.1.1 https://publicsuffix.org/list/public_suffix_list.dat |grep -v "^//"|grep -v "^$" >~/.cache/public_suffix_list.dat
+#         fi
+#         cat ~/.cache/public_suffix_list.dat
+#     )
+# }
+# tldExtract () {
+#     if [[ $1 == -v ]] ;then local _tld_out_var=$2;shift 2;fi
+#     local dom tld=$1 _tld_out_var
+#     while [[ ! -v TLD[${tld}] ]] && [[ -n $tld ]]; do
+#         IFS=. read -r dom tld <<< "$tld"
+#     done
+#     if [[ -v _tld_out_var ]] ;then
+#         if [ -z "${dom}" ]; then
+#             printf -v $_tld_out_var '%s' "$tld"
+#         elif [ -z "$tld"]; then
+#             printf -v $_tld_out_var '%s' "$dom"
+#         else
+#             printf -v $_tld_out_var '%s.%s' "$dom" "$tld"
+#         fi
+#     else
+#         if [ -z "${dom}" ]; then
+#             echo "${tld}"
+#         elif [ -z "$tld"]; then
+#             echo "${dom}"
+#         else
+#             echo "${dom}.${tld}"
+#         fi
+#     fi
+# }
+# initTld
 
 init_input() {
     appinfo=`hyprctl activewindow -j`
@@ -72,7 +76,7 @@ init_input() {
             if [[ "$domain" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
                 echo $domain
             else
-                domain=$(tldExtract $domain)
+                domain=$(echo $domain | python -c "import sys; import tldextract; ext = tldextract.extract(sys.stdin.read().strip()); print(ext.domain + '.' + ext.suffix)"|| pip install tldextract)
                 echo $domain
             fi
         elif [[ -n  "$domain"  ]]; then
@@ -105,10 +109,10 @@ type_backspace() {
     echo key backspace|dotoolc
 }
 
-CACHE_FILE="/tmp/keepassxc_cache"
 
 # 检查缓存文件是否存在，如果不存在或者是空的，就刷新缓存
 if [ ! -s "$CACHE_FILE" ]; then
+    # echo $master | keepassxc-cli export "$KEEPASS_DB_PATH" -f csv |grep -v 回收站|grep -v 模板| python3 -c "import sys, csv; [print(format('{}/{},{}'.format(row[0], row[1].replace('根群组/', ''),row[2])).replace('根群组/','')) for row in csv.reader(sys.stdin)]"> "$CACHE_FILE"
     echo $master | keepassxc-cli ls "$KEEPASS_DB_PATH" -f -R -q | grep -v 回收站 > "$CACHE_FILE"
 fi
 

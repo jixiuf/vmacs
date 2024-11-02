@@ -1,0 +1,45 @@
+# This is the default config of kpmenu
+# You can store it into $HOME/.config/kpmenu/config
+# Supported: dmenu, rofi, wofi, custom
+menu = "custom"
+# Supported: xsel, wl-clipboard, custom
+clipboardTool = "wl-clipboard"
+clipboardTimeout = "15s"
+nocache = false
+cacheOneTime = false
+cacheTimeout = 60
+nootp = false
+daemon=true
+autotype=false
+customAutotypeWindowID=""" hyprctl activewindow -j| jq -c '"\\(.title) - \\(.class)"' """
+# customAutotypeTyper="quasiauto -ms 300"
+autotypeNoAuto=true
+# Executable of menus used to prompt actions
+customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
+
+customPromptMenu =  """rofi -dmenu  -i  -config ~/.config/rofi/config-bwmenu.rasi """
+customPromptEntries = """rofi -dmenu  -i -mesg "C-7:user,C-8:passwd C-9:TOTP C-RET:passwd+RET" -p "Select entry" -config ~/.config/rofi/config-bwmenu.rasi -kb-custom-1 "Control+7" -kb-custom-2 "Control+8" -kb-custom-3 "Control+9" -kb-custom-4 "Control+Return" """ 
+customPromptFields = """rofi -dmenu  -i -mesg "C-7:user,C-8:passwd C-9:TOTP C-RET:passwd+RET" -p "Select entry" -config ~/.config/rofi/config-bwmenu.rasi -kb-custom-1 "Control+7" -kb-custom-2 "Control+8" -kb-custom-3 "Control+9" -kb-custom-4 "Control+Return" """
+# Executable of clipboard commands
+#customClipboardCopy = 
+#customClipboardPaste = 
+#customClipboardClean = 
+
+passwordBackground = "black"
+textPassword = "密码"
+textMenu = "选择"
+textEntry = "条目"
+textField = "字段"
+formatEntry = "{Title} - {UserName}"
+#ArgsPassword =
+#ArgsMenu =
+#ArgsEntry =
+#ArgsField =
+
+#Database =
+#KeyFile =
+#Password =
+fieldOrder = "Password UserName URL"
+fillOtherFields = true
+#FillBlacklist =
+database ="/home/jixiuf/Documents/jianguo/jianguo/keepass/pass.kdbx"
