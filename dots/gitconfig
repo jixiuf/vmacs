@@ -7,7 +7,12 @@
 	smtpuser = jixiuf@qq.com
 	smtpencryption = ssl
 	smtpserverport = 465
-    
+[credential]
+    # https://github.com/git/git/blob/master/contrib/credential/netrc/git-credential-netrc.perl
+    # put git-credential-netrc.perl in path (do not rename ) 
+	helper = netrc.perl  -f ~/.authinfo.gpg
+    # format: machinef smtp.qq.com port 465 login your@qq.com  protocol smtp  password yourpasspw
+    # git send-email --to="target@qq.com" HEAD^    
 [github]
 	user = jixiuf
 [includeIf "gitdir:~/go/src/gitlab.luojilab.com/"]

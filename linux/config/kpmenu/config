@@ -13,7 +13,7 @@ daemon=true
 autotype=false
 customAutotypeWindowID=""" hyprctl activewindow -j| jq -c '"\\(.title) - \\(.class)"' """
 # customAutotypeTyper="quasiauto -ms 300"
-autotypeNoAuto=true
+# autotypeNoAuto=true
 # Executable of menus used to prompt actions
 customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
 
@@ -31,14 +31,14 @@ textMenu = "选择"
 textEntry = "条目"
 textField = "字段"
 formatEntry = "{Title} - {UserName}"
-#ArgsPassword =
-#ArgsMenu =
-#ArgsEntry =
-#ArgsField =
+#argsPassword =
+#argsMenu =
+#argsEntry =
+#argsField =
 
-#Database =
-#KeyFile =
-#Password =
+#database =
+#keyFile =
+#password =
 fieldOrder = "Password UserName URL"
 fillOtherFields = true
 #FillBlacklist =
