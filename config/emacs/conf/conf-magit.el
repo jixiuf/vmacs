@@ -62,15 +62,13 @@
 (transient-insert-suffix 'magit-pull "F" '("p" magit-fetch-from-pushremote))
 (transient-insert-suffix 'magit-pull "F" '("U" magit-fetch-from-upstream))
 
+(transient-insert-suffix 'magit-patch "c" '("m" "email" vmacs-magit-send-email))
 
 
 
 ;; 不想小指按p ,将push 常用功能 放到v上
 (transient-suffix-put 'magit-push "p" :key "v")
 (transient-suffix-put 'magit-rebase "p" :key "r")
-;; (magit-define-popup-action 'magit-fetch-popup ?f "Pull or svn rebase" 'vmacs-magit-pull-default)
-;; (magit-define-popup-action 'magit-rebase-popup ?g "Refresh" 'magit-refresh)
-;; (magit-define-popup-action 'magit-rebase-popup ?r "Refresh" 'magit-refresh)
 (define-key transient-map        "q" 'transient-quit-one)
 (define-key transient-edit-map   "q" 'transient-quit-one)
 (define-key transient-sticky-map "q" 'transient-quit-seq)
@@ -180,6 +178,24 @@ In other cases `magit-find-file' (which see) has to be used."
 
 (fset 'magit-diff-visit-file 'vmacs-magit-diff-visit-file)
 
+(defun vmacs-magit-send-email(range)
+  (interactive (list (magit-diff-read-range-or-commit "Create patches for range or commit"
+                                                      nil current-prefix-arg)))
+  (unless (string-search ".." range)
+    (setq range    (format "%s~..%s" range range)))
+  (let ((lines (magit-git-lines "format-patch" "--stdout" range)))
+    (with-current-buffer
+        (call-interactively #'mu4e-compose-new)
+      (end-of-buffer)
+      (insert "\n")
+      (dolist (line lines)
+        (insert line)
+        (insert "\n"))
+      (beginning-of-buffer)
+      (end-of-line)
+      )
+    )
+  )
 
 (provide 'conf-magit)
 

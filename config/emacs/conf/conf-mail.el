@@ -37,10 +37,13 @@
       (setq browse-url-browser-function 'xwidget-webkit-browse-url))
     (mu4e-action-view-in-browser (or msg (mu4e-message-at-point)))
     ))
-(setq mu4e-view-actions
-      '( ("capture message"  . mu4e-action-capture-message)
-         ("view in browser"  . vmacs-mu4e-brower)
-         ("show this thread" . mu4e-action-show-thread)))
+;; mu4e-view-actions by `a'
+(setq mu4e-view-actions                 ;
+      '(("apply git patches" . mu4e-action-git-apply-patch)
+        ("mgit am patch" . mu4e-action-git-apply-mbox)
+        ("capture message"  . mu4e-action-capture-message)
+        ("view in browser"  . vmacs-mu4e-brower)
+        ("show this thread" . mu4e-action-show-thread)))
 
 
 (defun vmacs-xwidget-hook()
