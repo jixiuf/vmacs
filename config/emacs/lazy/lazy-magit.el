@@ -1,7 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
-(eval-when-compile
-  (require  'ediff)
-  (require 'magit))
+(require 'magit)
+
 ;;;###autoload
 (defun toggle-diff-whitespace()
   (interactive)
@@ -44,6 +43,8 @@
    ((equal major-mode 'magit-status-mode)
     (magit-refresh)))
   )
+
+
 ;; (setq-default magit-log-format-graph-function 'magit-log-format-unicode-graph)
 
 ;; ;;;###autoload
@@ -136,5 +137,125 @@
 ;;       (call-interactively #'magit-find-file))))
 
 
+(defun git-email--extract-headers (patch-file)
+  "Extract all the headers from a PATCH-FILE."
+  (with-temp-buffer
+    (insert-file-contents patch-file)
+    ;; Find the first headers, and jump to the start of it's line
+    (re-search-forward "\\([A-Za-z0-9-]+\\): \\(.*\\)")
+    (beginning-of-line)
+    (let ((headers (mail-header-extract-no-properties)))
+      ;; Headers are returned as downcased symbols, but all
+      ;; compose-mail functions expect headers to be capitialized
+      ;; strings.
+      (dolist (h headers headers)
+        (when (symbolp (car h))
+          (setcar h (capitalize (symbol-name (car h)))))))))
 
+(defun git-email--send-files (files)
+  "Send email for each file in FILES."
+  (dolist (file files)
+    (git-email--compose-email file)
+    ))
+
+(defun git-email--compose-email (patch-file)
+  "Given a PATCH-FILE, compose an email.
+Extracts the relevant headers and the diff from the PATCH-FILE and inserts
+them into the message buffer."
+  (let* ((headers (git-email--extract-headers patch-file))
+         ;; Remove empty headers.
+         (used-headers (seq-filter
+                        (lambda (header)
+                          (not (string-equal (cdr header) "")))
+                        headers))
+         (to-address (cdr (assoc "To" used-headers 'string-equal)))
+         (diff (git-email--extract-diff patch-file))
+         (dir default-directory))
+    (mu4e-compose-new
+     to-address
+     (cdr (assoc "Subject" used-headers 'string-equal))
+     ;; Remove "from" header, as it interferes with mu4e's
+     ;; built in context feature.
+     (seq-filter (lambda (header)
+                   (not (eq (car header) 'from)))
+                 (seq-filter #'git-email--remove-subject used-headers)))
+    (setq default-directory dir)
+    ;; Insert diff at the beginning of the body
+    (goto-char (point-min))
+    (let ((_ (or (re-search-forward
+                  "^<#part \\(encrypt\\|sign\\)=.*mime>$"
+                  nil t)
+                 (re-search-forward (regexp-quote mail-header-separator) nil t))))
+      (save-excursion
+        (insert (git-email--fontify-using-faces
+                 (git-email--fontify-diff diff)))))
+    ;; Jump to subject or 'to' address if they are emtpy
+    (goto-char (point-min))
+    (re-search-forward "To: " nil t)))
+
+(defun git-email--extract-diff (patch-file)
+  "Extract the diff from PATCH-FILE."
+  (with-temp-buffer
+    (insert-file-contents patch-file)
+    (goto-char (point-min))
+    (buffer-substring
+     (- (re-search-forward "\n\n") 1)
+     (point-max))))
+
+(defun git-email--remove-subject (header)
+  "Remove HEADER if it is the subject."
+  (not (string-equal (car header) "Subject")))
+
+;; See https://emacs.stackexchange.com/a/5408
+(defun git-email--fontify-diff (text)
+  "Fontify TEXT as diffs in `message-mode'."
+  (with-temp-buffer
+    (erase-buffer)
+    (insert text)
+    (delay-mode-hooks (diff-mode))
+    (font-lock-default-function #'diff-mode)
+    (font-lock-default-fontify-region (point-min)
+                                      (point-max)
+                                      nil)
+    (buffer-string)))
+
+(defun git-email-magit-patch-send (range args files)
+  "Send a set of patches via email."
+  ;; This is largely copied from magit-patch's `magit-patch-create'
+  ;; function.
+  (interactive
+   (if (not (eq transient-current-command 'magit-patch-create))
+       (list nil nil nil)
+     (cons (if-let ((revs (magit-region-values 'commit)))
+               (if (length= revs 1)
+                   (list "-1" (car revs))
+                 (concat (car (last revs)) "^.." (car revs)))
+             (let ((range (magit-read-range-or-commit
+                           "Format range or commit")))
+               (if (string-search ".." range)
+                   range
+                 (format "%s~..%s" range range))))
+           (let ((args (transient-args 'magit-patch-create)))
+             (list (-filter #'stringp args)
+                   (cdr (assoc "--" args)))))))
+  (let ((files (nreverse
+                (split-string
+                 (magit--with-temp-process-buffer
+                   (let* ((status (magit-process-git t "format-patch" range args "--" files))
+                          (output (buffer-string)))
+                     output))))))
+    (git-email--send-files files)
+    (mapc #'delete-file files)))
+
+
+(defun git-email--fontify-using-faces (text)
+  "Fontify TEXT using faces."
+  (let ((pos 0)
+        next)
+    (while (setq next (next-single-property-change pos 'face text))
+      (put-text-property pos next 'font-lock-face
+                         (get-text-property pos 'face text) text)
+      (setq pos next))
+    (add-text-properties 0  (length text) '(fontified t) text)
+    text))
 (provide 'lazy-magit)

@@ -63,7 +63,10 @@
 (transient-insert-suffix 'magit-pull "F" '("U" magit-fetch-from-upstream))
 
 (with-eval-after-load 'magit-patch
-  (transient-insert-suffix 'magit-patch "c" '("m" "email" vmacs-magit-send-email)))
+  (transient-append-suffix 'magit-patch-create "c"
+  '(1 "s" "Send patch" git-email-magit-patch-send))
+
+  )
 
 
 
@@ -179,24 +182,6 @@ In other cases `magit-find-file' (which see) has to be used."
 
 (fset 'magit-diff-visit-file 'vmacs-magit-diff-visit-file)
 
-(defun vmacs-magit-send-email(range)
-  (interactive (list (magit-diff-read-range-or-commit "Create patches for range or commit"
-                                                      nil current-prefix-arg)))
-  (unless (string-search ".." range)
-    (setq range    (format "%s~..%s" range range)))
-  (let ((lines (magit-git-lines "format-patch" "--stdout" range)))
-    (with-current-buffer
-        (call-interactively #'mu4e-compose-new)
-      (end-of-buffer)
-      (insert "\n")
-      (dolist (line lines)
-        (insert line)
-        (insert "\n"))
-      (beginning-of-buffer)
-      (end-of-line)
-      )
-    )
-  )
 
 (provide 'conf-magit)
 
