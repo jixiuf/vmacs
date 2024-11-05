@@ -7,6 +7,7 @@
 	smtpuser = jixiuf@qq.com
 	smtpencryption = ssl
 	smtpserverport = 465
+	# annotate = yes # 发送前动用editor打开patch 预览
 [credential]
     # https://github.com/git/git/blob/master/contrib/credential/netrc/git-credential-netrc.perl
     # put git-credential-netrc.perl in path (do not rename ) 

@@ -152,13 +152,13 @@
         (when (symbolp (car h))
           (setcar h (capitalize (symbol-name (car h)))))))))
 
-(defun git-email--send-files (files)
+(defun git-email--send-files (files subject)
   "Send email for each file in FILES."
   (dolist (file files)
-    (git-email--compose-email file)
+    (git-email--compose-email file subject)
     ))
 
-(defun git-email--compose-email (patch-file)
+(defun git-email--compose-email (patch-file &optional subject)
   "Given a PATCH-FILE, compose an email.
 Extracts the relevant headers and the diff from the PATCH-FILE and inserts
 them into the message buffer."
@@ -168,17 +168,22 @@ them into the message buffer."
                         (lambda (header)
                           (not (string-equal (cdr header) "")))
                         headers))
-         (to-address (cdr (assoc "To" used-headers 'string-equal)))
+         (to-address (assoc "To" used-headers 'string-equal))
          (diff (git-email--extract-diff patch-file))
-         (dir default-directory))
+         (dir default-directory)
+         (mu4e-compose-context-policy 'ask-if-none))
+    (require 'conf-mail)
+    (mu4e-context-switch t "qq" )
     (mu4e-compose-new
      to-address
-     (cdr (assoc "Subject" used-headers 'string-equal))
+     (or (cdr (assoc "Subject" used-headers 'string-equal)) subject)
      ;; Remove "from" header, as it interferes with mu4e's
      ;; built in context feature.
-     (seq-filter (lambda (header)
-                   (not (eq (car header) 'from)))
-                 (seq-filter #'git-email--remove-subject used-headers)))
+     (seq-filter #'git-email--remove-subject used-headers)
+     ;; (seq-filter (lambda (header)
+     ;;               (not (eq (car header) 'from)))
+     ;;             (seq-filter #'git-email--remove-subject used-headers))
+     )
     (setq default-directory dir)
     ;; Insert diff at the beginning of the body
     (goto-char (point-min))
@@ -188,7 +193,8 @@ them into the message buffer."
                  (re-search-forward (regexp-quote mail-header-separator) nil t))))
       (save-excursion
         (insert (git-email--fontify-using-faces
-                 (git-email--fontify-diff diff)))))
+                 (git-email--fontify-diff diff)))
+        (set-buffer-modified-p nil)))
     ;; Jump to subject or 'to' address if they are emtpy
     (goto-char (point-min))
     (re-search-forward "To: " nil t)))
@@ -219,13 +225,14 @@ them into the message buffer."
                                       nil)
     (buffer-string)))
 
-(defun git-email-magit-patch-send (range args files)
+;;;###autoload (autoload 'git-email-magit-patch-send "lazy-magit" nil t)
+(defun git-email-magit-patch-send (range args files )
   "Send a set of patches via email."
   ;; This is largely copied from magit-patch's `magit-patch-create'
   ;; function.
   (interactive
    (if (not (eq transient-current-command 'magit-patch-create))
-       (list nil nil nil)
+       (list nil nil nil nil)
      (cons (if-let ((revs (magit-region-values 'commit)))
                (if (length= revs 1)
                    (list "-1" (car revs))
@@ -244,7 +251,8 @@ them into the message buffer."
                    (let* ((status (magit-process-git t "format-patch" range args "--" files))
                           (output (buffer-string)))
                      output))))))
-    (git-email--send-files files)
+    
+    (git-email--send-files files (read-string "subject: "))
     (mapc #'delete-file files)))
 
 

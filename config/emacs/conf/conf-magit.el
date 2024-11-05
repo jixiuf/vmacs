@@ -63,10 +63,15 @@
 (transient-insert-suffix 'magit-pull "F" '("U" magit-fetch-from-upstream))
 
 (with-eval-after-load 'magit-patch
+  ;; Wcs: 发送邮件
+  ;; git send-email 是多个patch 多次发送
+  ;; git send-email --to="jixiuf@qq.com"     --cover-letter HEAD~3
+  ;; git send-email --to="jixiuf@qq.com"      HEAD~3
+  ;; git config --add sendemail.to jixiuf@qq.com  # 默认收信人
+  ;; --cover-letter 的意思是在patch之前发一封 封面信（即介绍patch信息的）
+  ;; 目前magit 下 每封都要填TO: Subject ,似乎繁琐了一些
   (transient-append-suffix 'magit-patch-create "c"
-  '(1 "s" "Send patch" git-email-magit-patch-send))
-
-  )
+  '(1 "s" "Send patch" git-email-magit-patch-send)))
 
 
 

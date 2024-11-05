@@ -17,8 +17,8 @@
     (hs-minor-mode 1)
     ;; The depth of -10 places this before eglot's willSave notification,
     ;; so that that notification reports the actual contents that will be saved.
-    (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
-    (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
+    ;; (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
+    ;; (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
     (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
     (local-set-key (kbd "C-c C-e") 'dape-eval)
     (local-set-key (kbd "C-c C-f") 'dape-continue)
