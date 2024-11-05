@@ -62,7 +62,8 @@
 (transient-insert-suffix 'magit-pull "F" '("p" magit-fetch-from-pushremote))
 (transient-insert-suffix 'magit-pull "F" '("U" magit-fetch-from-upstream))
 
-(transient-insert-suffix 'magit-patch "c" '("m" "email" vmacs-magit-send-email))
+(with-eval-after-load 'magit-patch
+  (transient-insert-suffix 'magit-patch "c" '("m" "email" vmacs-magit-send-email)))
 
 
 
