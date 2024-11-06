@@ -152,7 +152,7 @@
         (when (symbolp (car h))
           (setcar h (capitalize (symbol-name (car h)))))))))
 
-(defun git-email--send-files (files subject)
+(defun git-email--send-files (files &optional subject)
   "Send email for each file in FILES."
   (dolist (file files)
     (git-email--compose-email file subject)
@@ -168,21 +168,24 @@ them into the message buffer."
                         (lambda (header)
                           (not (string-equal (cdr header) "")))
                         headers))
-         (to-address (assoc "To" used-headers 'string-equal))
+         (to-address (cdr (assoc "To" used-headers 'string-equal)))
          (diff (git-email--extract-diff patch-file))
          (dir default-directory)
          (mu4e-compose-context-policy 'ask-if-none))
+    (require 'mu4e)
     (require 'conf-mail)
+    (mu4e t)
+    (sit-for 0.3)
     (mu4e-context-switch t "qq" )
     (mu4e-compose-new
      to-address
      (or (cdr (assoc "Subject" used-headers 'string-equal)) subject)
      ;; Remove "from" header, as it interferes with mu4e's
      ;; built in context feature.
-     (seq-filter #'git-email--remove-subject used-headers)
-     ;; (seq-filter (lambda (header)
-     ;;               (not (eq (car header) 'from)))
-     ;;             (seq-filter #'git-email--remove-subject used-headers))
+     ;; (seq-filter #'git-email--remove-subject used-headers)
+     (seq-filter (lambda (header)
+                   (not (eq (car header) 'from)))
+                 (seq-filter #'git-email--remove-subject used-headers))
      )
     (setq default-directory dir)
     ;; Insert diff at the beginning of the body
@@ -251,8 +254,7 @@ them into the message buffer."
                    (let* ((status (magit-process-git t "format-patch" range args "--" files))
                           (output (buffer-string)))
                      output))))))
-    
-    (git-email--send-files files (read-string "subject: "))
+    (git-email--send-files files)
     (mapc #'delete-file files)))
 
 

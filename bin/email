@@ -1,0 +1,4 @@
+#!/bin/bash
+# for firefox send mail with emacs mu4e
+emacsclient --alternate-editor= --eval "(message-mailto (pop server-eval-args-left))" $@
+

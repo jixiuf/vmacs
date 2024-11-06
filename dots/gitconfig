@@ -7,7 +7,8 @@
 	smtpuser = jixiuf@qq.com
 	smtpencryption = ssl
 	smtpserverport = 465
-	# annotate = yes # 发送前动用editor打开patch 预览
+	annotate = yes # 发送前动用editor打开patch 预览
+    to =  jixiuf@qq.com
 [credential]
     # https://github.com/git/git/blob/master/contrib/credential/netrc/git-credential-netrc.perl
     # put git-credential-netrc.perl in path (do not rename ) 
@@ -71,6 +72,7 @@
     r5 =  reset --hard HEAD~5
     r6 =  reset --hard HEAD~6
     r7 =  reset --hard HEAD~7
+    r =  reset --hard 
     parent=merge-base  HEAD  #git merge-base  branch1 branch2
 	st = status
 	br = branch

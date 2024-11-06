@@ -101,6 +101,7 @@
       message-send-mail-function 'smtpmail-send-it
       message-sendmail-f-is-evil t
       message-kill-buffer-on-exit t
+      message-mail-user-agent t
       )
 
 (setq mu4e-contexts
