@@ -9,10 +9,14 @@ cacheOneTime = false
 cacheTimeout = 60
 nootp = false
 daemon=true
-autotype=false
 customAutotypeWindowID=""" hyprctl activewindow -j| jq -c '"\\(.title) - \\(.class)"' """
 customAutotypeTyper="dotoolc"
+autotype=false
+
+# Always prompt user to select the entry to autotype
 # autotypeNoAuto=true
+# Always confirm autotype, even when there's only 1 selection
+# autotypeConfirm=true
 # Executable of menus used to prompt actions
 customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
 
