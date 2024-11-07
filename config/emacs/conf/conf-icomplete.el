@@ -110,11 +110,10 @@ Monospaced font whihc is fixed idth and height is recommended."
     (orderless-regexp (pinyinlib-build-regexp-string str)))
   ;; 默认按空格开隔的每个关键字支持 regexp/literal/initialism 3 种算法
   (setq orderless-matching-styles '(completion--regex-pinyin orderless-regexp
-                                    orderless-literal orderless-initialism
-                                    orderless-flex))
+                                                             orderless-literal orderless-initialism))
   ;; Define orderless style with initialism by default
   (orderless-define-completion-style +orderless-with-initialism
-    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp orderless-flex)))
+    (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp )))
   (setq completion-category-overrides '((eglot (styles orderless))
                                         (multi-category (styles . (basic partial-completion orderless)))
                                         ;; (buffer (styles +orderless-with-initialism)) ;; partial-completion is tried first
@@ -137,8 +136,15 @@ Monospaced font whihc is fixed idth and height is recommended."
                        (+ consult--tofu-char consult--tofu-range -1))
              "$")))
       (concat word consult-suffix)))
-  (add-to-list 'orderless-affix-dispatch-alist
-               '(?$ . +orderless-fix-dollar)))
+  (setq orderless-affix-dispatch-alist
+        `((?$ . +orderless-fix-dollar)
+          (?% . ,#'char-fold-to-regexp)
+          (?! . ,#'orderless-not)
+          (?& . ,#'orderless-annotation)
+          (?, . ,#'orderless-flex)
+          (?= . ,#'orderless-literal)
+          (?^ . ,#'orderless-literal-prefix)
+          (?~ . ,#'orderless-initialism)))  )
 
 
 
