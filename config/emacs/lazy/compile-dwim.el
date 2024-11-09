@@ -388,9 +388,9 @@ that alist."
     ;; (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     (if current-prefix-arg
         (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise  --cd  'dterm' --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm --tmux-session dterm" compile-command))
-        (call-process "sh" nil nil nil "-c"
                       (format "hypr-run-or-raise --workspace current --cd --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' 'foot.*|dterm|bterm|Alacritty|kitty' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=bterm --tmux-session bterm" compile-command))
+        (call-process "sh" nil nil nil "-c"
+                      (format "hypr-run-or-raise  --cd  'dterm' --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm --tmux-session dterm" compile-command))
 )))
 
 ;; (defun term-compile ()
