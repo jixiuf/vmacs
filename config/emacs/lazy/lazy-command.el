@@ -936,7 +936,9 @@ Move point to end-of-line ,if point was already at that position,
         (call-process "hypr-focus-last-win" nil nil nil
                       "--move-to-current-workspace-if-special"
                       "--disable-front-fullscreen"
-                      "--hide-front-special-window")))
+                      "--hide-front-special-window"))
+      (delete-frame)
+      )
      ((equal (buffer-name buf) "*scratch*")
       (backup-scratch)
       ;; (copy-region-as-kill (point-min)(point-max))

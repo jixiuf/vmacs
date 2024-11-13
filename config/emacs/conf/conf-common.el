@@ -79,8 +79,8 @@
  fill-column 100
  tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  tramp-shell-prompt-pattern (concat "\\(?:^\\|\r\\)" "[^]#@$%>\n]*#?[]#$@%>] *\\(\e\\[[0-9;]*[a-zA-Z-.] *\\)*")
- comint-prompt-regexp "^[^#$%>\n]*[#$%>] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
- shell-prompt-pattern "^[^#$%>\n]*[#$%>] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
+ comint-prompt-regexp "^[^#$%\n]*[#$%] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
+ shell-prompt-pattern "^[^#$%\n]*[#$%] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
  tramp-default-method "ssh" ;Faster than the default scp
  tramp-verbose 1
  find-function-C-source-directory "~/repos/emacs/src/"
@@ -217,33 +217,31 @@
     (gfm-mode)))
 
 ;; (global-set-key (kbd "C-x C-e") 'eval-print-last-sexp)
-(defun vmacs-pager()
-  (when (string-prefix-p "*pager" (buffer-name))
-    (require 'ansi-color)
-    (require 'ansi-osc)
-    (save-place-local-mode -1)
-    (setq comint-use-prompt-regexp t )
-    (shell-mode)
-    (compilation-minor-mode 1)
-    (ansi-osc-apply-on-region  (point-min)(point-max))
-    (ansi-color-apply-on-region (point-min)(point-max))
-    (set-buffer-modified-p nil)
-    (read-only-mode)
-    (goto-char (point-max))
-    (skip-chars-backward " \t\n")
-    (delete-file (buffer-file-name))
-    (tab-line-mode -1)
-    (forward-char 1)
-    (meow-normal-mode)
-    (local-set-key "q" #'vmacs-kill-buffer-dwim))
-  ;; (evil-define-key 'normal 'local  "a" #'vmacs-kill-buffer-dwim)
-  ;; (evil-define-key 'normal 'local  "q" #'vmacs-kill-buffer-dwim))
-  )
-(add-hook 'find-file-hook #'vmacs-pager)
-(defun vmacs-pager-done ()
-  (when (string-prefix-p "*pager" (buffer-name))
-    (delete-file (buffer-file-name))))
-(add-hook 'server-done-hook #'vmacs-pager-done)
+(defun vmacs-pager(&optional file)
+  (require 'ansi-color)
+  (require 'ansi-osc)
+  (let ((buf (generate-new-buffer "*pager")))
+    (with-current-buffer buf
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (setq default-directory (buffer-substring (point-min)( point-at-eol)))
+      (save-place-local-mode -1)
+      (setq comint-use-prompt-regexp t)
+      (shell-mode)
+      ;; (compilation-minor-mode 1)
+      (ansi-osc-apply-on-region  (point-min)(point-max))
+      (define-key comint-mode-map (kbd "M-p")  'comint-previous-prompt)
+      (define-key comint-mode-map (kbd "M-n")  'comint-next-prompt)
+      (ansi-color-apply-on-region (point-min)(point-max))
+      (set-buffer-modified-p nil)
+      (read-only-mode)
+      (goto-char (point-max))
+      (skip-chars-backward " \t\n")
+      (delete-file file)
+      (tab-line-mode -1)
+      (forward-char 1)
+      (meow-normal-mode))
+    (switch-to-buffer buf)))
 
 (defun vmacs-calc-hook()
   (require 'calc-bin)
