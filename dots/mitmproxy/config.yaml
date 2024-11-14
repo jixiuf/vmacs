@@ -1,7 +1,7 @@
 ---
 console_eventlog_verbosity: error
 console_mouse: false
-console_palette: dark
+console_palette: solarized_dark
 listen_port: 8888
 # allow_hosts:
 #   - entree.igetget.com
