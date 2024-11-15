@@ -40,10 +40,12 @@
    '("z" . "C-c Mz")
    '("q" . "C-c Mq")
    '("<escape>" . "C-c M<escape>"))
+
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
    '("j" . "s-M-j")
    '("k" . "s-M-k")
+   '("s" . "C-x C-s")
    ;; Use SPC (0-9) for digit arguments.
    '("1" . meow-digit-argument)
    '("2" . meow-digit-argument)
@@ -57,7 +59,6 @@
    '("0" . meow-digit-argument)
    '("/" . meow-keypad-describe-key)
    '("?" . meow-cheatsheet))
-  
   (meow-normal-define-key
    '("g" . "C-c G")
    ;; see vmacs-normal-mode-map in conf=keybind.el
@@ -147,7 +148,6 @@
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
 (global-set-key (kbd "C-s") #'isearch-forward)
 (global-set-key (kbd "M-y") #'vmacs-yank-pop)
-
 
 (require 'meow)
 (meow-setup)

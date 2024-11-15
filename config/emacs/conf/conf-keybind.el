@@ -159,8 +159,7 @@
 (global-set-key  (kbd "C-d") 'vmacs-delete-char)
 
 
-;; (setq-default buffer-save-without-query nil)
-(vmacs-leader "s" 'save-buffer)
+
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 (vmacs-leader  "fg" #'vmacs-ai)
