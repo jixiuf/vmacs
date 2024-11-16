@@ -26,6 +26,7 @@
 (with-eval-after-load 'org-ai (require 'conf-ai))
 (with-eval-after-load 'aider (require 'conf-ai))
 (with-eval-after-load 'sql (require 'conf-sql))
+(with-eval-after-load 'erc (require 'conf-erc))
 
 ;; (require 'conf-evil)
 ;; mac 上处理 evil-mode 与中文输入法
