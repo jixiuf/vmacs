@@ -107,33 +107,33 @@ SyncState *
 
 
 # #####
-IMAPAccount emacs
+IMAPAccount vmacs
 Host imap.qq.com
 Port 993
-User tyytwqqq001@qq.com
+User vmacs@qq.com
 # 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
 # security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
 # security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com port 465 login tyytwqqq001@qq.com  protocol smtp password/ {print $NF}'"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com port 465 login vmacs@qq.com  protocol smtp  password/ {print $NF}'"
 # PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
 SSLType IMAPS
 SSLVersions TLSv1.2
 
-IMAPStore emacs-remote
-Account emacs
+IMAPStore vmacs-remote
+Account vmacs
 
 # This section describes the local storage
-MaildirStore emacs-local
-Path ~/maildir/emacs/
-Inbox ~/maildir/emacs/inbox
+MaildirStore vmacs-local
+Path ~/maildir/vmacs/
+Inbox ~/maildir/vmacs/inbox
 # The SubFolders option allows to represent all
 # IMAP subfolders as local subfolders
 SubFolders Verbatim
 
 # This section a "channel", a connection between remote and local
-Channel emacs
-Far :emacs-remote:
-Near :emacs-local:
+Channel vmacs
+Far :vmacs-remote:
+Near :vmacs-local:
 Patterns *
 Expunge Both
 CopyArrivalDate yes
