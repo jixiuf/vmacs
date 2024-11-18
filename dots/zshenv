@@ -119,7 +119,7 @@ if [ $(uname -s ) = "Darwin" ] ; then
 fi
 
 if [ -x /usr/local/bin/ec ]; then
-    export EDITOR=/usr/local/bin/ec
+    export EDITOR=/usr/local/bin/em
 fi
 
 export GOTRACEBACK=crash prog

@@ -9,7 +9,6 @@ function call_emacs_daemon(){
     fi
     # do not why pgrep doesnot work in Emacs/term.el
     # emacsDaemonCount=`pgrep -f "$EMACSCMD --daemon"|wc -l`
-    echo $EMACSCMD
     emacsDaemonCount=`ps -ef|grep "$EMACSCMD --daemon"|grep -v grep|wc -l`
     emacsBgDaemonCount=`ps -ef|grep "$EMACSCMD --bg-daemon"|grep -v grep|wc -l`
     emacsfgDaemonCount=`ps -ef|grep "$EMACSCMD --fg-daemon"|grep -v grep|wc -l`

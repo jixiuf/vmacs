@@ -277,7 +277,9 @@ bindkey "^[[A" history-beginning-search-backward-end # up
 bindkey "^[r" history-incremental-search-backward  # M-r
 # 用当前命令行下的内容搜索 history,prefix 匹配
 # bindkey \^R history-beginning-search-backward-end  # C-r
-
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
 bindkey "^[n" down-line-or-history
 bindkey "^[p" up-line-or-history
 bindkey "7;13u" kill-whole-line # cmd+ctrl+u = C-u

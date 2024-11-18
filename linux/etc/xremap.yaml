@@ -216,10 +216,12 @@ keymap:
       C-x:
         remap:
           C-x: C-x              # C-xC-x send C-x
+          C-e: [C-x, C-e]
           C-c: super-C-q
       C-c:
         remap:
           C-c: C-c              # C-xC-x send C-x
+          C-d: [C-x, C-e]
           C-f: C-Shift-M        # hints
           C-j: { launch: ["open-with"]}
       
@@ -240,10 +242,12 @@ keymap:
       C-x:
         remap:
           C-x: C-x              # C-xC-x send C-x
+          C-e: [C-x, C-e]
           C-c: super-C-q
       C-c:
         remap:
           C-c: C-c              # C-xC-x send C-x
+          C-d: [C-x, C-e]
           C-f: [C-Shift-m]         # open file:linenum
           C-j: { launch: ["open-with"]}
 
