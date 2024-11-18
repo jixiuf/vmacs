@@ -58,7 +58,7 @@ if [ -n "$appinfo" ]; then
         # DISABLE_AUTO_TITLE=true
         # source $ZSH/oh-my-zsh.sh
         cwd=$title
-        if [[ $cwd == TMUX:* ]]; then
+        while [[ $cwd == TMUX:* ]]; do
             # Remove the prefix "TMUX:" and then split the remaining string by ":"
             # format of tmux window title： "TMUX:session:path"
             # set -g set-titles on
@@ -70,7 +70,7 @@ if [ -n "$appinfo" ]; then
 
             cwd=${cwd#*GNU/Emacs<}
             cwd=${cwd%>*}
-        fi
+        done
         cwd="${cwd/#\~/$HOME}"  # replace ~ -> $HOME
         echo $cwd
         exit 0
