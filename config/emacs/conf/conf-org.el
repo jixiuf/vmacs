@@ -202,7 +202,7 @@ linktoc=all
  org-agenda-skip-scheduled-if-done t
  org-agenda-span 'week
  org-default-notes-file (expand-file-name "notes.txt.gpg" dropbox-dir)
- org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt.gpg" dropbox-dir))
+ org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) )
  org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d)")
                      (sequence "Info(i)"))
  org-capture-templates `(("t" "Todo" entry (file ,(expand-file-name "todo.txt.gpg" dropbox-dir))
