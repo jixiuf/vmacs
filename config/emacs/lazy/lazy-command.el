@@ -215,7 +215,7 @@ based on the current context and previous history."
                                          suggested-configs)))
                              dape-history)))
         (when hist
-          (setq hist (nth 1 (dape--config-from-string hist t)))
+          (setq hist (nth 1 (dape--config-from-string hist)))
           (when (and
                  (equal (plist-get  hist 'command-cwd) (plist-get  cfg 'command-cwd))
                  (equal (plist-get  hist 'command) (plist-get  cfg 'command))

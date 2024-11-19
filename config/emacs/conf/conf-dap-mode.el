@@ -9,7 +9,7 @@
         (value . 120)
         (type . 20)))
 (setq dape-buffer-window-arrangement 'right)
-(setq dape-on-start-hooks '())
+(setq dape-start-hook '())
 (setq dape-info-buffer-window-groups
       '((dape-info-scope-mode dape-info-watch-mode
                               dape-info-stack-mode dape-info-modules-mode
@@ -59,6 +59,7 @@ Non interactive global minor mode."
                fn (dape-config-autoport dape-config-tramp)
                command "dlv"
                command-args ("dap" "--listen" "127.0.0.1::autoport")
+               command-insert-stderr t
                command-cwd (lambda()(if (string-suffix-p "_test.go" (buffer-name))
                                      default-directory (dape-cwd)))
                port :autoport
