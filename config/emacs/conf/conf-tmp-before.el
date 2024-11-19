@@ -1,7 +1,7 @@
- (when (file-directory-p "~/repos/dape")
-   (add-to-list 'load-path "~/repos/dape"))
- (when (file-directory-p "~/repos/eglot-java/")
-   (add-to-list 'load-path "~/repos/eglot-java/"))
+ ;; (when (file-directory-p "~/repos/dape")
+ ;;   (add-to-list 'load-path "~/repos/dape"))
+ ;; (when (file-directory-p "~/repos/eglot-java/")
+ ;;   (add-to-list 'load-path "~/repos/eglot-java/"))
 
 ;; (add-to-list 'load-path "~/repos/emacs-application-framework")
 ;; (require 'eaf)

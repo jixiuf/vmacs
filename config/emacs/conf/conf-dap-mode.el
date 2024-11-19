@@ -9,12 +9,14 @@
         (value . 120)
         (type . 20)))
 (setq dape-buffer-window-arrangement 'right)
-(setq dape-start-hook '())
+(setq dape-start-hook '(dape-repl-dwim))
 (setq dape-info-buffer-window-groups
       '((dape-info-scope-mode dape-info-watch-mode
                               dape-info-stack-mode dape-info-modules-mode
                               dape-info-sources-mode dape-info-breakpoints-mode
                               dape-info-threads-mode)))
+(with-eval-after-load 'comint
+  (add-hook 'comint-output-filter-functions 'comint-osc-process-output 100))
 (defvar-keymap dape-active-mode-map
   :doc "Keymap used when `dape-active-mode' is active."
   "M-n" 'dape-next

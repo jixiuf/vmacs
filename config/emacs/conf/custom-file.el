@@ -52,7 +52,7 @@
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
-   '(async beacon cape clipetty consult-dir dired-filetype-face emamux embark embark-consult
+   '(async beacon cape clipetty consult-dir dape dired-filetype-face emamux embark embark-consult
            exec-path-from-shell git-link go-translate golden-ratio-scroll-screen goto-chg kkp
            lua-mode magit magit-todos marginalia markdown-mode meow orderless org-ai org-alert
            org-msg ox-gfm pinyinlib plz posframe protobuf-mode verb vundo with-editor yasnippet))

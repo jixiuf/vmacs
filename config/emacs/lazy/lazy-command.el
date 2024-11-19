@@ -157,8 +157,15 @@ surrounded by word boundaries."
 (defun dape-repl-dwim()
   (interactive)
   (if (equal (buffer-name) "*dape-repl*")
-      (delete-window)
-    (call-interactively #'dape-repl)))
+      (switch-to-buffer (other-buffer))
+    (let ((buffer-name "*dape-repl*")
+          window)
+      (with-current-buffer (get-buffer-create buffer-name)
+        (unless (eq major-mode 'dape-repl-mode)
+          (dape-repl-mode))
+        (setq-local truncate-lines nil)
+        ;; (when (called-interactively-p 'interactive)
+        (switch-to-buffer buffer-name)))))
 
 ;;;###autoload
 (defun dape-eval()

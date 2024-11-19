@@ -195,6 +195,7 @@
 (add-to-list 'meow-mode-state-list '(messages-buffer-mode . normal))
 (add-to-list 'meow-mode-state-list '(grep-mode . normal))
 (add-to-list 'meow-mode-state-list '(markdown-mode . normal))
+(add-to-list 'meow-mode-state-list '(dape-repl-mode . normal))
 
 (with-eval-after-load 'org-agenda
   (set-keymap-parent org-agenda-mode-map meow-normal-state-keymap))

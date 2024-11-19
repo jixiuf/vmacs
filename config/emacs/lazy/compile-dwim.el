@@ -86,9 +86,16 @@ Its value should be 'always or list like (filename run compile).")
          "lua %n.lua"
          ;; "mxmlc %f"
          "lua %n.lua")
-    (dired (mode . dired-mode)
+    (dired (or (mode . dired-mode)
+               (name . "magit:")
+               (name . "magit-")
+               (mode . magit-status-mode)
+               (mode . magit-mode))
           (compile-dwim-make)
         dape-dired)
+    (dape (mode . dape-repl-mode)
+           dape-dwim
+        dape-dwim)
     (go (name . "_test\\.go$")
         compile-go-test-current
         dape-dwim)
@@ -234,7 +241,7 @@ that alist."
          (and (buffer-file-name buf)
               (string-match (cdr filter) (buffer-file-name buf))))
         ((eq (car filter) 'mode)
-         (eq (cdr filter) (buffer-local-value 'major-mode buf)))
+         (provided-mode-derived-p (buffer-local-value 'major-mode buf) (cdr filter)))
         (t (error "Unimplement filter: %s" filter))))
 
 (defun compile-dwim-match (buf filters)
@@ -327,6 +334,8 @@ that alist."
 (defun compile-dwim-compile (force &optional sentinel)
   (interactive "P")
   (if (and (not (buffer-file-name))
+           (not (eq major-mode 'dape-repl-mode))
+           (not (derived-mode-p 'magit-mode))
            (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
     (compile-dwim-make-local-vars)
@@ -410,6 +419,8 @@ that alist."
 (defun compile-dwim-run ()
   (interactive)
   (if (and (not (buffer-file-name))
+           (not (eq major-mode 'dape-repl-mode))
+           (not (derived-mode-p 'magit-mode))
            (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
     (compile-dwim-make-local-vars)
@@ -453,7 +464,7 @@ if found return the directory or nil"
         nil
         ))))
 (defun dape-dired()
-  (if (eq major-mode 'dired-mode)
+  (if (derived-mode-p '(magit-mode dired-mode))
     (cond
      ((locate-dominating-file default-directory "go.mod")
       (with-temp-buffer
