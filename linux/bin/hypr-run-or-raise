@@ -144,7 +144,7 @@ focus_last_win(){
     #     hyprctl dispatch "focuscurrentorlast"
 }
 #
-where="(.class  | test(\"$target\"; \"i\"))"
+where="((.class  | test(\"$target\"; \"i\")) or (.title  | test(\"$target\"; \"i\")))"
 if [ -n "$float_only" ]; then
     # only match floating app
     where="$where and $float_only "
@@ -173,7 +173,7 @@ if [ ! "$target_appinfo" ]; then
     fi
     target_class=`echo $target_appinfo|jq -r '.class'`
     target_title=`echo $target_appinfo|jq -r '.title'`
-    if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
+    if [[ "$target" =~ ^($TERM_CLASS_REGEX)$  ]]; then
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
@@ -186,6 +186,7 @@ if [ ! "$target_appinfo" ]; then
 else
     front_app=`hyprctl activewindow -j`
     front_class=`echo $front_app|jq -r '.class'`
+    front_title=`echo $front_app|jq -r '.title'`
     front_addr=`echo $front_app|jq -r '.address'`
     front_floating=`echo $front_app|jq -r '.floating'`
     # front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
@@ -195,7 +196,7 @@ else
     addrs=`echo $target_appinfo|jq -rc '.address'`
     last_target_addr=`echo $target_appinfo|jq -rc '.address'|tail -n 1`
     first_target_addr=`echo $target_appinfo|jq -rc '.address'|head -n 1`
-    if [[ ! ("$front_class" =~ $target) ]]; then
+    if [[ ! (("$front_class" =~ $target) || ("$front_title" =~ $target)) ]]; then
         target_appinfo=`echo $target_appinfo |  jq -rc 'select(.address  | test("'"$first_target_addr"'"; "i"))'`
     elif [[  "$front_addr" == "$last_target_addr"  ]]; then
         if [  -n "$toggle" ]; then
