@@ -321,6 +321,14 @@ keymap:
   #     esc: Enter
   #     C-c: Enter
   #     C-s: Enter
+  - name: weixin
+    application:
+      only: [weixin]
+    remap:
+      esc:
+        - { launch: ["close-win"] }
+      Super-C-w: 
+        - { launch: ["close-win"] }
   - name: org.gnome.Nautilus
     application:
       only: [org.gnome.Nautilus]

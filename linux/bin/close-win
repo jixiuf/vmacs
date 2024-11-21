@@ -1,0 +1,21 @@
+#!/bin/bash
+x=$(hyprctl activewindow -j|jq -r '.at'|jq '.[0]'|bc)
+y=$(hyprctl activewindow -j|jq -r '.at'|jq '.[1]'|bc)
+width=$(hyprctl activewindow -j|jq -r '.size'|jq '.[0]'|bc)
+height=$(hyprctl activewindow -j|jq -r '.size'|jq '.[1]'|bc)
+close_btn_x=$(echo $x+$width-20|bc)
+close_btn_y=$(echo $y+13|bc)
+oldpos=$(hyprctl cursorpos|sed 's/,//g')
+appinfo=`hyprctl activewindow -j`
+class=`echo $appinfo|jq -r '.class'`
+pid=`echo $appinfo|jq -r '.pid'`
+wincnt=$(hyprctl clients -j | jq -rc '.[]|select(.class  | test("'"$class"'"; "i"))'|wc -l)
+echo "oooooo $wincnt $pid">/tmp/a
+if [ "$wincnt" = "1" ]; then
+    kill $pid
+else
+    hyprctl dispatch movecursor $close_btn_x $close_btn_y
+    echo 'mousemove 1 1'|dotoolc
+    echo 'click left'|dotoolc
+    hyprctl dispatch movecursor $oldpos
+fi
