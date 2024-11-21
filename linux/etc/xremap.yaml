@@ -338,19 +338,16 @@ keymap:
     application:
       only: [Bytedance-lark]
     remap:
+      Super-C-w: Super-C-q
       C-comma: C-leftbrace
       C-dot: C-rightbrace
       C-n: down
       C-p: up
       C-v:
-        - { launch: ["sh","-c","echo mouseto 0 0 |dotoolc"] }
-        - { launch: ["sh","-c","echo mousemove 180 380 |dotoolc"] }
-        - { launch: ["sh","-c","echo click left |dotoolc"] }
+        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;echo click left |dotoolc;echo click left |dotoolc"] }
         - Pagedown
       M-v:
-        - { launch: ["sh","-c","echo mouseto 0 0 |dotoolc"] }
-        - { launch: ["sh","-c","echo mousemove 180 380 |dotoolc"] }
-        - { launch: ["sh","-c","echo click left |dotoolc"] }
+        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;echo click left |dotoolc;echo click left |dotoolc"] }
         - Pageup
 
       # C-j: C-RIGHTBRACE
