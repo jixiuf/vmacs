@@ -335,8 +335,10 @@ keymap:
     remap:
       Super-C-w: Super-C-q
   - name: Bytedance-lark
-    application:
-      only: [Bytedance-lark]
+    window:
+      only: [/^飞书$/ ]
+    # application:
+    #   only: [Bytedance-lark Bytedance-feishu]
     remap:
       Super-C-w: Super-C-q
       C-comma: C-leftbrace
