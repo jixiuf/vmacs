@@ -18,15 +18,27 @@
   "." 'goto-last-change-reverse
   )
 (defvar-keymap  m-mode-map              ;meow: m
-  "f" #'mark-defun
-  "m" #'set-mark-command                ;C-@
+  "f" #'narrow-to-defun
+  "h" #'mark-whole-buffer
   "v" #'rectangle-mark-mode
   "q" #'fill-paragraph
   "d" #'gt-do-translate
   "," #'pop-to-mark-command
   "t" #'org-capture
   "s" #'hs-toggle-hiding
-  )
+  ;; "g" #'meow-grab
+  "m" #'vmacs-meow-grab-set-mark                ;C-@
+  "r" #'meow-swap-grab
+  "y" #'meow-sync-grab
+  "b" #'vmacs-meow-grab
+  "n" #'narrow-to-region
+  "w" #'vmacs-widen)
+(vmacs-leader (kbd "nw") 'vmacs-widen)
+(vmacs-leader (kbd "nn") 'narrow-to-region)
+(vmacs-leader (kbd "nf") 'narrow-to-defun)
+(vmacs-leader (kbd "nb") 'vmacs-meow-grab)
+(vmacs-leader (kbd "ng") 'vmacs-meow-grab-set-mark)
+
 (vmacs-leader (kbd "wd") 'gt-do-translate)
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
@@ -181,16 +193,8 @@
 (global-set-key (kbd "C-x C-u") #'vundo)
 (vmacs-leader (kbd "l") 'ibuffer)
 (vmacs-leader (kbd "j") 'dired-jump)
-(vmacs-leader (kbd "nw") (vmacs-defun vmacs-widen
-                           (meow--cancel-second-selection)
-                           (meow--cancel-selection)
-                           (widen)))
-(vmacs-leader (kbd "nn") 'narrow-to-region)
-(vmacs-leader (kbd "nf") 'narrow-to-defun)
-(vmacs-leader (kbd "nb") 'vmacs-meow-grab)
-(vmacs-leader (kbd "ng") 'meow-grab)
-(vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
-(vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
+;; (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
+;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "u") 'backward-up-list)
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (vmacs-leader (kbd "m") 'execute-extended-command)

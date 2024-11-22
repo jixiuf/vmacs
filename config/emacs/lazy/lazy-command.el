@@ -580,6 +580,20 @@ numeric, repeat times.
     (meow-grab)))
 
 ;;;###autoload
+(defun vmacs-meow-grab-set-mark()
+  (interactive)
+  (save-excursion
+    (meow-grab)
+    (call-interactively #'set-mark-command)))
+;;;###autoload
+(defun vmacs-widen()
+  (interactive)
+  (meow--cancel-second-selection)
+  (meow--cancel-selection)
+  (widen))
+
+
+;;;###autoload
 (defun meow-negative-find ()
   (interactive)
   (let ((current-prefix-arg -1))
