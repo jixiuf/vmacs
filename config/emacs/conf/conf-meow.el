@@ -159,6 +159,7 @@
 (add-to-list 'meow-selection-command-fallback '(meow-replace . vmacs-meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
+(add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-pop-grab))
 (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 
 
@@ -217,6 +218,10 @@
   "goto origin position after `yy',need fallback (meow-save . meow-line) "
   (let ((region (region-active-p)))
     (apply orig-fun args)
+    (when (meow--second-sel-buffer)
+      (save-excursion
+        (meow-sync-grab)
+        (message "meow-sync-grab is called")))
     (when region
       (meow-pop-all-selection))))
 

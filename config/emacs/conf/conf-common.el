@@ -177,7 +177,7 @@
 (add-to-list 'magic-mode-alist
              `(,(lambda ()
                   (looking-at "[ \t\n]*{[ \t\n]*\""))
-               . js-mode))
+               . json-ts-mode))
 (global-set-key "\C-j" 'open-line-or-new-line-dep-pos)
 (define-key lisp-interaction-mode-map "\C-j" 'open-line-or-new-line-dep-pos)
 

@@ -13,30 +13,6 @@
       )
   )
 ;;;###autoload
-(defun vmacs-meow-yank()
-  (interactive)
-(if (bound-and-true-p rectangle-mark-mode)
-      (call-interactively #'yank-rectangle)
-      (call-interactively #'meow-yank)))
-;;;###autoload
-(defun vmacs-meow-change()
-  (interactive)
-  (if (bound-and-true-p rectangle-mark-mode)
-      (call-interactively #'string-rectangle)
-    (call-interactively #'meow-change)))
-;;;###autoload
-;;;###autoload
-(defun vmacs-meow-replace()
-  (interactive)
-  (if (bound-and-true-p rectangle-mark-mode)
-      (progn
-        (call-interactively #'delete-rectangle)
-        (rectangle-exchange-point-and-mark)
-        (call-interactively #'yank-rectangle))
-    (call-interactively #'meow-replace)))
-
-  
-;;;###autoload
 (defun vmacs-kill-ring-save()
   (interactive)
   (if (bound-and-true-p rectangle-mark-mode)
@@ -493,6 +469,58 @@ numeric, repeat times.
     (thread-first
       (meow--make-selection '(expand . char) (point) (point))
       (meow--select))))
+;;;###autoload
+(defun vmacs-meow-grab()
+  (interactive)
+  (save-excursion
+    (unless (region-active-p)
+      (set-mark (point-max))
+      (goto-char (point-min)))
+    (when (= (region-end) (point))
+      (meow-reverse))
+    (meow-grab)))
+
+;;;###autoload
+(defun vmacs-meow-grab-set-mark()
+  (interactive)
+  (save-excursion
+    (if (region-active-p)
+        (meow-grab)
+      (call-interactively #'set-mark-command)
+      (meow-grab))))
+
+;;;###autoload
+(defun vmacs-widen()
+  (interactive)
+  (meow--cancel-second-selection)
+  (meow--cancel-selection)
+  (widen))
+;;;###autoload
+(defun vmacs-meow-yank()
+  (interactive)
+(if (bound-and-true-p rectangle-mark-mode)
+    (call-interactively #'yank-rectangle)
+      (call-interactively #'meow-yank)))
+
+;;;###autoload
+(defun vmacs-meow-change()
+  (interactive)
+  (if (bound-and-true-p rectangle-mark-mode)
+      (call-interactively #'string-rectangle)
+    (call-interactively #'meow-change)))
+;;;###autoload
+(defun vmacs-meow-replace()
+  (interactive)
+  (if (bound-and-true-p rectangle-mark-mode)
+      (progn
+        (call-interactively #'delete-rectangle)
+        (rectangle-exchange-point-and-mark)
+        (call-interactively #'yank-rectangle))
+    (if (not(meow--second-sel-buffer))
+        (call-interactively #'meow-replace)
+      (meow-swap-grab)
+      (message "meow-swap-grab is called"))))
+
 
 ;;;###autoload
 (defun vmacs-meow-iedit()
@@ -567,30 +595,6 @@ numeric, repeat times.
 ;;     (setq eglot--change-idle-timer nil))
 ;;   (push-mark)
 ;;   (call-interactively #'xref-find-definitions))
-
-;;;###autoload
-(defun vmacs-meow-grab()
-  (interactive)
-  (save-excursion
-    (unless (region-active-p)
-      (set-mark (point-max))
-      (goto-char (point-min)))
-    (when (= (region-end) (point))
-      (meow-reverse))
-    (meow-grab)))
-
-;;;###autoload
-(defun vmacs-meow-grab-set-mark()
-  (interactive)
-  (save-excursion
-    (meow-grab)
-    (call-interactively #'set-mark-command)))
-;;;###autoload
-(defun vmacs-widen()
-  (interactive)
-  (meow--cancel-second-selection)
-  (meow--cancel-selection)
-  (widen))
 
 
 ;;;###autoload
