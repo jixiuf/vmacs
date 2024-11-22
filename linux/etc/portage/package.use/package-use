@@ -66,5 +66,6 @@ sys-kernel/installkernel dracut
 dev-java/openjdk-bin source
 dev-libs/jemalloc stats
 
+# sys-devel/gcc jit
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
