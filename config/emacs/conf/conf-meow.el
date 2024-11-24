@@ -159,7 +159,7 @@
 (add-to-list 'meow-selection-command-fallback '(meow-replace . vmacs-meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
-(add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-pop-grab))
+(add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
 (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 
 

@@ -18,19 +18,19 @@
   "." 'goto-last-change-reverse
   )
 (defvar-keymap  m-mode-map              ;meow: m
-  "f" #'narrow-to-defun
+  "f" #'mark-defun
+  "d" #'narrow-to-defun
   "h" #'mark-whole-buffer
   "v" #'rectangle-mark-mode
   "q" #'fill-paragraph
-  "d" #'gt-do-translate
+  "s" #'gt-do-translate
   "," #'pop-to-mark-command
   "t" #'org-capture
-  "s" #'hs-toggle-hiding
-  ;; "g" #'meow-grab
+  "z" #'hs-toggle-hiding		;
   "m" #'vmacs-meow-grab-set-mark                ;C-@
   "r" #'meow-swap-grab
   "y" #'meow-sync-grab
-  "b" #'vmacs-meow-grab
+  "g" #'vmacs-meow-grab
   "n" #'narrow-to-region
   "w" #'vmacs-widen)
 (vmacs-leader (kbd "nw") 'vmacs-widen)
@@ -213,7 +213,7 @@
 
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
-(global-set-key (kbd "C-;") #'query-replace-iedit-mode)
+(global-set-key (kbd "C-;") #'vmacs-meow-iedit)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 (global-set-key (kbd "C-c g s") #'query-replace) ;space gs
 (global-set-key (kbd "C-c g r") #'re-builder)    ;query-replace-regexp
