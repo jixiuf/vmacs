@@ -33,12 +33,6 @@
   "g" #'vmacs-meow-grab
   "n" #'narrow-to-region
   "w" #'vmacs-widen)
-(vmacs-leader (kbd "nw") 'vmacs-widen)
-(vmacs-leader (kbd "nn") 'narrow-to-region)
-(vmacs-leader (kbd "nf") 'narrow-to-defun)
-(vmacs-leader (kbd "nb") 'vmacs-meow-grab)
-(vmacs-leader (kbd "ng") 'vmacs-meow-grab-set-mark)
-
 (vmacs-leader (kbd "wd") 'gt-do-translate)
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
