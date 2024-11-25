@@ -486,7 +486,8 @@ numeric, repeat times.
   (save-excursion
     (if (region-active-p)
         (meow-grab)
-      (call-interactively #'set-mark-command)
+      (require 'xref)
+      (xref--push-markers (current-buffer) (point))
       (meow-grab))))
 
 ;;;###autoload

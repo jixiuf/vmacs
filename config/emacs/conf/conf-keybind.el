@@ -85,12 +85,16 @@
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
 (define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
-(add-hook 'isearch-mode-hook #'push-mark)
+(add-hook 'isearch-mode-hook (lambda()(xref--push-markers (current-buffer) (point))))
 ;; (setq isearch-lazy-count t)
 ;; (setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
-(vmacs-leader "," #'pop-global-mark)
-(advice-add 'pop-global-mark :before #'deactivate-mark)
+(vmacs-leader "," #'xref-go-back)
+(with-eval-after-load 'xref
+  ;; for clean up second-selection set by vmacs-meow-grab-set-mark
+  (add-hook 'xref-after-jump-hook #'meow--cancel-second-selection))
+;; (vmacs-leader "," #'pop-global-mark)
+;; (advice-add 'pop-global-mark :before #'deactivate-mark)
 
 (setq shell-command-buffer-name "*Messages*")
 (setq shell-command-default-error-buffer "*Messages*")
