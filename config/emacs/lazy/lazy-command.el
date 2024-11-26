@@ -488,6 +488,7 @@ numeric, repeat times.
         (meow-grab)
       (require 'xref)
       (xref--push-markers (current-buffer) (point))
+      (call-interactively #'set-mark-command)
       (meow-grab))))
 
 ;;;###autoload
