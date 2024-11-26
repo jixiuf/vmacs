@@ -151,9 +151,7 @@ if [ -n "$float_only" ]; then
 fi
 if [ -n "$workspace" ]; then
     where="$where and $workspace "
-
 fi
-echo $where
 
 select="hyprctl clients -j | jq -rc 'map(select("$where"))|sort_by(.monitor, .workspace.id, .at[0],.at[1])|.[]'"
 target_appinfo=`eval $select`
