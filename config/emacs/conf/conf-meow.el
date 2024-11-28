@@ -93,12 +93,15 @@
    '("M-s-." . meow-end-of-thing)
    '("a" . vmacs-meow-append)
    '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("v" . meow-back-symbol)
+   ;; '("v" . meow-back-symbol)
    '("x" . meow-delete)
    '("X" . meow-backward-delete)
-   '("E" . meow-next-word)
-   '("e" . meow-next-symbol)
+   '("E" . "M-f")
+   ;; '("e" . meow-next-symbol)
+   '("e" . vmacs-forward-symbol)
+   '("v" . vmacs-backward-symbol)
+   '("b" . "M-b")
+   ;; '("b" . meow-back-word)
    '("f" . meow-find)
    '("F" . meow-negative-find)
    ;; '("g" . meow-cancel-selection)
@@ -156,7 +159,8 @@
   (add-hook 'after-init-hook #'which-key-mode))
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . vmacs-meow-line)) ;support: yy y3y
-(add-to-list 'meow-selection-command-fallback '(meow-replace . vmacs-meow-yank))
+(add-to-list 'meow-selection-command-fallback '(vmacs-meow-replace . vmacs-forward-word)) ;support: yy y3y
+;; (add-to-list 'meow-selection-command-fallback '(meow-replace . backward-word))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
 (add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection

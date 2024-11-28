@@ -5,6 +5,20 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun vmacs-backward-symbol()
+  (interactive)
+  (forward-symbol -1))
+;;;###autoload
+(defun vmacs-forward-symbol()
+  (interactive)
+  (forward-symbol 2)
+  (forward-symbol -1))
+(defun vmacs-forward-word()
+  (interactive)
+  (forward-word 2)
+  (forward-word -1))
+
+;;;###autoload
 (defun vmacs-delete-char()
   (interactive)
   (unless (eobp)
