@@ -180,6 +180,8 @@
                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
                     )
 
+(meow-thing-register 'sexp 'sexp 'sexp)
+(add-to-list 'meow-char-thing-table '(?x . sexp))
 (add-to-list 'meow-char-thing-table '(?` . quoted))
 (add-to-list 'meow-char-thing-table '(?o . org-block))
 (add-to-list 'meow-char-thing-table '(?, . go-package))

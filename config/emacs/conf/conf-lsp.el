@@ -10,7 +10,9 @@
 (defun vmacs-eglot-organize-imports() (eglot-code-actions nil nil "source.organizeImports" t))
 (setq codeium/metadata/api_key (auth-source-pick-first-password :host "codeium.com"))
 (autoload 'dape-breakpoint-toggle "dape" "" t)
+(add-hook 'prog-mode-hook 'subword-mode)
 (defun vmacs-lsp-hook()
+
   ;; (eglot-ensure)
   (when (eglot-managed-p)
     (eldoc-mode)
