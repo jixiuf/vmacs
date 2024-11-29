@@ -3,6 +3,8 @@
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
+(setq meow-select-on-append t)
+(setq meow-select-on-insert t)
 (setq meow-keypad-self-insert-undefined nil)
 ;; (setq meow-use-cursor-position-hack t)  ;a 的行为向后一字符,行尾会到下一行
 
@@ -20,6 +22,7 @@
    '("N" . "C-c MN")
    '("z" . "C-c Mz")
    '("q" . "C-c Mq")
+   '(":" . viper-ex)
    '("<escape>" . "C-c M<escape>"))
 
   (meow-leader-define-key
@@ -70,7 +73,7 @@
    '("]" . meow-end-of-thing)
    '("<" . indent-rigidly-left-to-tab-stop)
    '(">" . indent-rigidly-right-to-tab-stop)
-   '("a" . vmacs-meow-append)
+   '("a" . meow-append)
    '("A" . meow-open-below)
    ;; '("v" . meow-back-symbol)
    '("x" . meow-delete)
@@ -102,9 +105,9 @@
    '("o" . meow-open-below)
    '("C-o" . meow-block)
    '("O" . meow-to-block)
-   '("c" . vmacs-meow-change)
-   '("r" . vmacs-meow-replace)
-   '("p" . vmacs-meow-yank)
+   '("c" . meow-change)
+   '("r" . meow-replace)
+   '("p" . meow-yank)
    '("Q" . meow-goto-line)
    '("d" . meow-kill)
    '("t" . meow-till)
@@ -136,15 +139,21 @@
 
 (when (require 'which-key nil t)
   (add-hook 'after-init-hook #'which-key-mode))
-(define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 (add-to-list 'meow-selection-command-fallback '(meow-save . meow-bounds-of-thing)) ;support: yyy
-(add-to-list 'meow-selection-command-fallback '(vmacs-meow-replace . meow-inner-of-thing)) ;rrr
-;; (add-to-list 'meow-selection-command-fallback '(meow-replace . backward-word))
+(add-to-list 'meow-selection-command-fallback '(meow-replace . meow-inner-of-thing)) ;rrr
+(add-to-list 'meow-selection-command-fallback '(meow-beacon-replace . meow-inner-of-thing)) ;rrr
+
 (add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
 (add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
-(define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
+;; (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
+;; (define-key meow-beacon-state-keymap [remap meow-save] 'meow-bounds-of-thing)
+(define-key meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 
+
+(with-eval-after-load 'help
+  (set-keymap-parent help-mode-map meow-normal-state-keymap)
+  (keymap-unset help-mode-map "r" t))
 
 (meow-thing-register 'quoted
                      '(regexp "`\\|'" "`\\|'")
@@ -230,6 +239,44 @@
 (meow-setup-line-number)
 ;; (add-hook 'meow-insert-exit-hook 'corfu-quit)
 
+(define-advice meow-change (:around (orig-fun &rest args) rect)
+  (if (bound-and-true-p rectangle-mark-mode)
+      (call-interactively #'string-rectangle)
+    (apply orig-fun args)))
+(define-advice meow-yank (:around (orig-fun &rest args) rect)
+  (if (bound-and-true-p rectangle-mark-mode)
+      (call-interactively #'yank-rectangle)
+    (apply orig-fun args)))
+
+(define-advice meow-replace (:around (orig-fun &rest args) rect-and-grab)
+  (interactive)
+  (if (bound-and-true-p rectangle-mark-mode)
+      (progn
+        (call-interactively #'delete-rectangle)
+        (rectangle-exchange-point-and-mark)
+        (call-interactively #'yank-rectangle))
+    (if (or(not(meow--second-sel-buffer))
+           (not (region-active-p))
+           (and meow--beacon-defining-kbd-macro
+                (not(meow--second-sel-buffer)))
+           (meow-beacon-mode-p))
+        (apply orig-fun args)
+      (meow-swap-grab)
+      (message "meow-swap-grab is called"))))
+
+(define-advice meow-beacon-replace (:around (orig-fun &rest args) rect-and-grab)
+  (interactive)
+  (if (or(not(meow--second-sel-buffer))
+         (not (region-active-p))
+         (and meow--beacon-defining-kbd-macro
+                (not(meow--second-sel-buffer)))
+         (meow-beacon-mode-p))
+      (apply orig-fun args)
+    (meow-swap-grab)
+    (message "meow-swap-grab is called")))
+
+
+
 (define-advice meow-inner-of-thing (:around (orig-fun &rest args) mark-thing)
   (let* ((thing (cdr (assoc (car args) meow-char-thing-table)))
          (func (intern(format "meow-mark-%s" thing)))
@@ -246,8 +293,12 @@
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
   "goto origin position after `yy',need fallback (meow-save . meow-line) "
   (let ((region (region-active-p)))
-    (apply orig-fun args)
-    (when (meow--second-sel-buffer)
+    (if (or(not(meow--second-sel-buffer))
+           (not (region-active-p))
+           (and meow--beacon-defining-kbd-macro
+                (not(meow--second-sel-buffer)))
+           (meow-beacon-mode-p))
+        (apply orig-fun args)
       (save-excursion
         (meow-sync-grab)
         (message "meow-sync-grab is called")))
@@ -292,12 +343,12 @@
 
 (advice-add 'keyboard-quit :before #'vmacs-pop-all-selection)
 
-(define-advice meow-mark-symbol (:around (orig-fun &rest args) dwim)
-  "makr symbol or word"
-  (if (not (eq last-command 'meow-mark-symbol))
-      (apply orig-fun args)
-    (meow-pop-all-selection)
-    (call-interactively #'meow-mark-word)))
+;; (define-advice meow-mark-symbol (:around (orig-fun &rest args) dwim)
+;;   "makr symbol or word"
+;;   (if (not (eq last-command 'meow-mark-symbol))
+;;       (apply orig-fun args)
+;;     (meow-pop-all-selection)
+;;     (call-interactively #'meow-mark-word)))
 
 ;; (lambda () (interactive)
 ;;    (if (or defining-kbd-macro executing-kbd-macro)

@@ -511,31 +511,6 @@ numeric, repeat times.
   (meow--cancel-second-selection)
   (meow--cancel-selection)
   (widen))
-;;;###autoload
-(defun vmacs-meow-yank()
-  (interactive)
-(if (bound-and-true-p rectangle-mark-mode)
-    (call-interactively #'yank-rectangle)
-      (call-interactively #'meow-yank)))
-
-;;;###autoload
-(defun vmacs-meow-change()
-  (interactive)
-  (if (bound-and-true-p rectangle-mark-mode)
-      (call-interactively #'string-rectangle)
-    (call-interactively #'meow-change)))
-;;;###autoload
-(defun vmacs-meow-replace()
-  (interactive)
-  (if (bound-and-true-p rectangle-mark-mode)
-      (progn
-        (call-interactively #'delete-rectangle)
-        (rectangle-exchange-point-and-mark)
-        (call-interactively #'yank-rectangle))
-    (if (not(meow--second-sel-buffer))
-        (call-interactively #'meow-replace)
-      (meow-swap-grab)
-      (message "meow-swap-grab is called"))))
 
 
 ;;;###autoload

@@ -31,6 +31,7 @@
   "r" #'meow-swap-grab
   "y" #'meow-sync-grab
   "g" #'vmacs-meow-grab
+  "b" #'meow-grab
   "n" #'narrow-to-region
   "w" #'vmacs-widen)
 (vmacs-leader (kbd "wd") 'gt-do-translate)

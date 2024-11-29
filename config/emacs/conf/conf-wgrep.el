@@ -6,13 +6,14 @@
       grep-use-null-device nil)
 
 (with-eval-after-load 'replace
-  (define-key occur-mode-map "l" (kbd "C-f"))
+  ;; (keymap-unset occur-mode-map "l" t)
+  ;; (define-key occur-mode-map "l" (kbd "C-f"))
   (define-key occur-edit-mode-map (kbd "C-n") 'next-error-no-select)
   (define-key occur-edit-mode-map (kbd "C-p") 'previous-error-no-select)
   (set-keymap-parent occur-mode-map meow-normal-state-keymap)
   (add-hook 'occur-hook #'occur-edit-mode))
 (with-eval-after-load 'grep
-  (define-key grep-mode-map (kbd "e") nil)
+  ;; (define-key grep-mode-map (kbd "e") nil)
   ;; (set-keymap-parent grep-mode-map meow-normal-state-keymap)
   (define-key grep-mode-map (kbd "C-c Ni") #'grep-change-to-grep-edit-mode) ;i
   (define-key grep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
