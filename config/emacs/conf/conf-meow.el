@@ -5,24 +5,6 @@
 (setq meow-use-clipboard t)
 (setq meow-keypad-self-insert-undefined nil)
 ;; (setq meow-use-cursor-position-hack t)  ;a 的行为向后一字符,行尾会到下一行
-(setq meow-char-thing-table
-      '((?r . round)                    ;()
-        (?s . square)                   ;[]
-        (?c . curly)                    ;{}
-        (?g . string)
-        (?e . symbol)
-        ;; (?w . window)
-        (?b . buffer)
-        (?p . paragraph)
-        (?s . line)
-        (?v . visual-line)
-        (?f . defun)
-        (?. . sentence)))
-(setq meow-thing-selection-directions
-  '((inner . backward)
-    (bounds . backward)
-    (beginning . backward)
-    (end . forward)))
 
 
 (defun meow-setup ()
@@ -133,7 +115,7 @@
    '("U" . meow-undo-in-selection)
    '("?" . isearch-backward)
    '("W" . meow-mark-word)
-   '("w" . meow-mark-symbol)
+   '("w" . vmacs-forward-word)
    '("C-r" . vmacs-meow-reverse)
    '("%" . vmacs-meow-reverse)
    '(";" . vmacs-meow-reverse)
@@ -158,40 +140,72 @@
 (when (require 'which-key nil t)
   (add-hook 'after-init-hook #'which-key-mode))
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
-(add-to-list 'meow-selection-command-fallback '(meow-save . vmacs-meow-line)) ;support: yy y3y
-(add-to-list 'meow-selection-command-fallback '(vmacs-meow-replace . vmacs-forward-word)) ;support: yy y3y
+(add-to-list 'meow-selection-command-fallback '(meow-save . meow-bounds-of-thing)) ;support: yy y3y
+(add-to-list 'meow-selection-command-fallback '(vmacs-meow-replace . meow-inner-of-thing)) ;support: yy y3y
 ;; (add-to-list 'meow-selection-command-fallback '(meow-replace . backward-word))
-(add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
-(add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
+(add-to-list 'meow-selection-command-fallback '(meow-kill . meow-end-of-thing)) ;suppert: dd d3d
+(add-to-list 'meow-selection-command-fallback '(meow-change . meow-beginning-of-thing)) ;suppert: cc c3c
 (add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
 (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 
 
 (meow-thing-register 'quoted
-                    '(regexp "`\\|'" "`\\|'")
-                    '(regexp "`\\|'" "`\\|'"))
+                     '(regexp "`\\|'" "`\\|'")
+                     '(regexp "`\\|'" "`\\|'"))
 (meow-thing-register 'go-package
-                    '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
-                    '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
+                     '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
+                     '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
 
 ;; org-mode begin_src or markdown ``` block
 (meow-thing-register 'org-block
-                    '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
-                    '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
-                    )
+                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
+                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
+                     )
 
 (meow-thing-register 'sexp 'sexp 'sexp)
-(add-to-list 'meow-char-thing-table '(?x . sexp))
-(add-to-list 'meow-char-thing-table '(?` . quoted))
-(add-to-list 'meow-char-thing-table '(?o . org-block))
-(add-to-list 'meow-char-thing-table '(?, . go-package))
+(meow-thing-register 'word 'word 'word)
+(setq meow-char-thing-table
+      '((?w . word)
+        (?r . symbol)                    ;()
+        (?e . symbol)
+        (?x . sexp)
+        (?f . defun)
+        (?. . sentence)
+        (?` . quoted)
+        (?g . string)
+        (?o . org-block)
+        (?, . go-package)
+        (?( . round)                    ;()
+          (?8 . round)                    ;()
+          (?9 . round)                    ;()
+          (?0 . round)
+          (?) . round)                    ;()
+        (?[ . square)                   ;[]
+          (?] . square)                   ;[]
+        (?{ . curly)                    ;{}
+        (?c . curly)                    ;{}
+        ;; (?w . window)
+        (?b . buffer)
+        (?p . paragraph)
+        (?s . line)
+        (?y . line)
+        (?d . line)
+        (?c . line)
+        (?v . visual-line)))
+
+(setq meow-thing-selection-directions
+      '((inner . forward)
+        (bounds . backward)
+        (beginning . backward)
+        (end . forward)))
+
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
 (setq meow-keypad-start-keys
-  '((?c . ?c)
-    ;; (?h . ?h)
-    (?x . ?x))
-)
+      '((?c . ?c)
+        ;; (?h . ?h)
+        (?x . ?x))
+      )
 
 (add-to-list 'meow-mode-state-list '(reb-mode . insert))
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
@@ -218,6 +232,18 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (meow-setup-line-number)
 ;; (add-hook 'meow-insert-exit-hook 'corfu-quit)
+
+(define-advice meow-inner-of-thing (:around (orig-fun &rest args) mark-thing)
+  (let* ((thing (cdr (assoc (car args) meow-char-thing-table)))
+         (func (intern(format "meow-mark-%s" thing)))
+         (back (equal 'backward (meow--thing-get-direction 'inner))))
+    (apply orig-fun args)
+    (if (fboundp func)
+        (call-interactively func)
+      (let ((search (regexp-quote (buffer-substring-no-properties (region-beginning)(region-end)))))
+        (unless (string-empty-p search)
+          (meow--push-search search)
+          (meow--highlight-regexp-in-buffer search))))))
 
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
