@@ -8,7 +8,6 @@
 
 
 (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
    '("j" . "C-c Mj")
    '("h" . "C-c Mh")
@@ -65,14 +64,12 @@
    '("1" . meow-expand-or-digit-argument)
    '("-" . negative-argument)
    '("M-j" . vmacs-meow-join)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
+   '("," . meow-beginning-of-thing)
+   '("." . meow-end-of-thing)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
    '("<" . indent-rigidly-left-to-tab-stop)
    '(">" . indent-rigidly-right-to-tab-stop)
-   '("M-s-," . meow-beginning-of-thing)
-   '("M-s-." . meow-end-of-thing)
    '("a" . vmacs-meow-append)
    '("A" . meow-open-below)
    ;; '("v" . meow-back-symbol)
@@ -140,11 +137,11 @@
 (when (require 'which-key nil t)
   (add-hook 'after-init-hook #'which-key-mode))
 (define-key   meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
-(add-to-list 'meow-selection-command-fallback '(meow-save . meow-bounds-of-thing)) ;support: yy y3y
-(add-to-list 'meow-selection-command-fallback '(vmacs-meow-replace . meow-inner-of-thing)) ;support: yy y3y
+(add-to-list 'meow-selection-command-fallback '(meow-save . meow-bounds-of-thing)) ;support: yyy
+(add-to-list 'meow-selection-command-fallback '(vmacs-meow-replace . meow-inner-of-thing)) ;rrr
 ;; (add-to-list 'meow-selection-command-fallback '(meow-replace . backward-word))
-(add-to-list 'meow-selection-command-fallback '(meow-kill . meow-end-of-thing)) ;suppert: dd d3d
-(add-to-list 'meow-selection-command-fallback '(meow-change . meow-beginning-of-thing)) ;suppert: cc c3c
+(add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
+(add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
 (add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
 (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 
@@ -183,7 +180,7 @@
         (?[ . square)                   ;[]
           (?] . square)                   ;[]
         (?{ . curly)                    ;{}
-        (?c . curly)                    ;{}
+        ;; (?c . curly)                    ;{}
         ;; (?w . window)
         (?b . buffer)
         (?p . paragraph)
@@ -193,11 +190,11 @@
         (?c . line)
         (?v . visual-line)))
 
-(setq meow-thing-selection-directions
-      '((inner . forward)
-        (bounds . backward)
-        (beginning . backward)
-        (end . forward)))
+;; (setq meow-thing-selection-directions
+;;       '((inner . forward)
+;;         (bounds . backward)
+;;         (beginning . backward)
+;;         (end . forward)))
 
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
