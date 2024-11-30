@@ -34,7 +34,7 @@ modmap:
         alone_timeout_millis: 1000 # Optional
       capslock :
         held: [alt_l,super_l]
-        alone: capslock # Required
+        alone: f3 # Required
         alone_timeout_millis: 1000 # Optional
   - name: Not Emacs
     application:

@@ -1,8 +1,16 @@
 (autoload #'viper-ex  "viper" t)
 (setq meow--kbd-kill-region "C-k")
 ;https://github.com/meow-edit/meow/discussions/661
-;; (setq meow-next-thing-include-syntax   '((word "_w" "_w")
-;;     (symbol "_w" "_w")))
+(setq meow-next-thing-include-syntax
+      '((word "w" "w")(symbol "w" "w")))
+(setq meow-expand-hint-counts
+  '((word . 0)
+    (line . 30)
+    (block . 30)
+    (find . 30)
+    (till . 30)
+    (symbol . 0)))
+
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
@@ -56,7 +64,6 @@
    '("/" . "C-c N/")
    '("z" . "C-c Nz")
    '("=" . "C-c N=")
-   '("q" . "C-c q")
    '("m" . "C-c Nm")
    '("0" . meow-expand-or-digit-argument)
    '("9" . meow-expand-or-digit-argument)
@@ -70,10 +77,12 @@
    '("1" . meow-expand-or-digit-argument)
    '("-" . negative-argument)
    '("M-j" . vmacs-meow-join)
-   '("," . meow-beginning-of-thing)
-   '("." . meow-end-of-thing)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
+   '("q" . meow-beginning-of-thing)
+   '(";" . meow-end-of-thing)
    '("<" . indent-rigidly-left-to-tab-stop)
    '(">" . indent-rigidly-right-to-tab-stop)
    '("a" . meow-append)
@@ -82,13 +91,15 @@
    '("x" . meow-delete)
    '("X" . meow-backward-delete)
    '("W" . meow-mark-word)
-   ;; '("w" . meow-next-word)
-   '("w" . vmacs-forward-word)
+   '("w" . meow-next-word)
+   ;; '("w" . vmacs-forward-word)
    '("E" . "M-f")
-   ;; '("e" . meow-next-symbol)
-   '("e" . vmacs-forward-symbol)
-   '("v" . vmacs-backward-symbol)
-   '("b" . "M-b")
+   '("e" . meow-next-symbol)
+   ;; '("e" . vmacs-forward-symbol)
+   '("v" . meow-back-symbol)
+   ;; '("v" . vmacs-backward-symbol)
+   '("b" . meow-back-word)
+   ;; '("b" . "M-b")
    ;; '("b" . meow-back-word)
    '("f" . meow-find)
    '("F" . meow-negative-find)
@@ -122,11 +133,10 @@
    '("?" . isearch-backward)
    '("C-r" . vmacs-meow-reverse)
    '("%" . vmacs-meow-reverse)
-   '(";" . vmacs-meow-reverse)
-   '("s" . vmacs-meow-line)
+   '("s" . meow-mark-line)
    '("S" . meow-goto-line)
    '("y" . meow-save)
-   '("`" . meow-end-or-call-kmacro)
+   '("`" . meow-start-kmacro-or-insert-counter)
    '("R" . meow-swap-grab)
    '("Y" . meow-sync-grab)
    '("\\" . just-one-space-or-delete-horizontal-space)
@@ -147,8 +157,8 @@
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-inner-of-thing)) ;rrr
 (add-to-list 'meow-selection-command-fallback '(meow-beacon-replace . meow-inner-of-thing)) ;rrr
 
-(add-to-list 'meow-selection-command-fallback '(meow-kill . vmacs-meow-line)) ;suppert: dd d3d
-(add-to-list 'meow-selection-command-fallback '(meow-change . vmacs-meow-line)) ;suppert: cc c3c
+(add-to-list 'meow-selection-command-fallback '(meow-kill . meow-mark-line)) ;suppert: dd d3d
+(add-to-list 'meow-selection-command-fallback '(meow-change . meow-mark-line)) ;suppert: cc c3c
 (add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
 ;; (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 ;; (define-key meow-beacon-state-keymap [remap meow-save] 'meow-bounds-of-thing)
@@ -281,15 +291,13 @@
     (meow-swap-grab)
     (message "meow-swap-grab is called")))
 
-
-
 (define-advice meow-inner-of-thing (:around (orig-fun &rest args) mark-thing)
   (let* ((thing (cdr (assoc (car args) meow-char-thing-table)))
          (func (intern(format "meow-mark-%s" thing)))
          (back (equal 'backward (meow--thing-get-direction 'inner))))
-    (apply orig-fun args)
     (if (fboundp func)
         (call-interactively func)
+      (apply orig-fun args)
       (let ((search (regexp-quote (buffer-substring-no-properties (region-beginning)(region-end)))))
         (unless (string-empty-p search)
           (meow--push-search search)

@@ -326,8 +326,8 @@ Use with numeric argument to move multiple lines at once."
       (goto-char (point-min)))
      ((equal seltype '(expand . line))
       (if (meow--direction-backward-p)
-          (vmacs-meow-line 1 t)
-          (vmacs-meow-line -1 t)))
+          (meow-mark-line 1 t)
+          (meow-mark-line -1 t)))
      (t
       (setq this-command #'previous-line)
       (meow--execute-kbd-macro meow--kbd-backward-line)
@@ -352,15 +352,15 @@ Use with numeric argument to move multiple lines at once."
       (goto-char (point-max)))
      ((equal seltype '(expand . line))
       (if (meow--direction-backward-p)
-          (vmacs-meow-line -1 t)
-          (vmacs-meow-line 1 t)))
+          (meow-mark-line -1 t)
+          (meow-mark-line 1 t)))
      (t
       (setq this-command #'next-line)
       (meow--execute-kbd-macro meow--kbd-forward-line)
       ))))
 
 ;;;###autoload
-(defun vmacs-meow-line (n &optional expand)
+(defun meow-mark-line (n &optional expand)
   "Select the current line, eol is not included.
 
 Create selection with type (expand . line).
