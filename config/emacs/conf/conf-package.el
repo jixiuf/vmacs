@@ -12,8 +12,8 @@
                              ))
 
 (setq treesit-language-source-alist
-      '((go . ("https://github.com/tree-sitter/tree-sitter-go.git" "v0.23.1"))
-	    (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git" "v1.0.2"))
+      '((go . ("https://github.com/tree-sitter/tree-sitter-go.git" "v0.23.4"))
+	    (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git" "v1.1.0"))
         (java . ("https://github.com/tree-sitter/tree-sitter-java.git" "v0.20.2"))
 	    (rust . ("https://github.com/tree-sitter/tree-sitter-rust.git" "v0.23.0"))
 	    (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" "v0.2.0"))
