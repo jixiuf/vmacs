@@ -183,6 +183,9 @@
                      '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
                      '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
                      )
+(meow-thing-register 'code-block
+                     '(regexp "{\n?" "\n?[\t\\| ]*}")
+                     '(regexp "{" "}"))
 
 (meow-thing-register 'sexp 'sexp 'sexp)
 (meow-thing-register 'word 'word 'word)
@@ -205,6 +208,7 @@
         (?[ . square)                   ;[]
           (?] . square)                   ;[]
         (?{ . curly)                    ;{}
+        (?c . code-block)                    ;{}
         ;; (?c . curly)                    ;{}
         ;; (?w . window)
         (?b . buffer)
@@ -212,7 +216,6 @@
         (?s . line)
         (?y . line)
         (?d . line)
-        (?c . line)
         (?v . visual-line)))
 
 ;; (setq meow-thing-selection-directions
