@@ -1,5 +1,8 @@
 (autoload #'viper-ex  "viper" t)
 (setq meow--kbd-kill-region "C-k")
+;https://github.com/meow-edit/meow/discussions/661
+;; (setq meow-next-thing-include-syntax   '((word "_w" "_w")
+;;     (symbol "_w" "_w")))
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
@@ -78,6 +81,9 @@
    ;; '("v" . meow-back-symbol)
    '("x" . meow-delete)
    '("X" . meow-backward-delete)
+   '("W" . meow-mark-word)
+   ;; '("w" . meow-next-word)
+   '("w" . vmacs-forward-word)
    '("E" . "M-f")
    ;; '("e" . meow-next-symbol)
    '("e" . vmacs-forward-symbol)
@@ -114,8 +120,6 @@
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
    '("?" . isearch-backward)
-   '("W" . meow-mark-word)
-   '("w" . vmacs-forward-word)
    '("C-r" . vmacs-meow-reverse)
    '("%" . vmacs-meow-reverse)
    '(";" . vmacs-meow-reverse)
@@ -150,9 +154,11 @@
 ;; (define-key meow-beacon-state-keymap [remap meow-save] 'meow-bounds-of-thing)
 (define-key meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 
-
+(defmacro meow-set-keymap-parent (map &optional parent)
+  `(set-keymap-parent ,map (make-composed-keymap (keymap-parent ,map)
+                                                 (or ,parent meow-normal-state-keymap))))
 (with-eval-after-load 'help
-  (set-keymap-parent help-mode-map meow-normal-state-keymap)
+  (meow-set-keymap-parent help-mode-map)
   (keymap-unset help-mode-map "r" t))
 
 (meow-thing-register 'quoted

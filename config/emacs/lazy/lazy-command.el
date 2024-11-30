@@ -255,7 +255,15 @@ based on the current context and previous history."
   (interactive)
   (if current-prefix-arg
       (meow-pop-all-selection)
-    (meow-cancel-selection)))
+    (cond
+     ((and meow--beacon-defining-kbd-macro
+           (not (region-active-p)))
+      (meow-end-or-call-kmacro))
+     ((and defining-kbd-macro
+           (not (region-active-p)))
+      (meow-end-or-call-kmacro))
+     (t
+      (meow-cancel-selection)))))
 
 ;;;###autoload
 (defun vmacs-yank-pop()
@@ -417,21 +425,23 @@ numeric, repeat times.
           (meow--select))
         (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))))))
 
-;;;###autoload
-(defun vmacs-meow-append ()
-  "Move to the end of selection, switch to INSERT state."
-  (interactive)
-  (if meow--temp-normal
-      (progn
-        (message "Quit temporary normal mode")
-        (meow--switch-state 'motion))
-    (if (not (region-active-p))
-        (when (and meow-use-cursor-position-hack
-                   (< (point) (line-end-position)))
-          (forward-char 1))
-      (meow--direction-forward)
-      (meow--cancel-selection))
-    (meow--switch-state 'insert)))
+;; ;;;###autoload
+;; (defun vmacs-meow-append ()
+;;   "Move to the end of selection, switch to INSERT state."
+;;   (interactive)
+;;   (if meow--temp-normal
+;;       (progn
+;;         (message "Quit temporary normal mode")
+;;         (meow--switch-state 'motion))
+;;     (if (not (region-active-p))
+;;         (when (and meow-use-cursor-position-hack
+;;                    (< (point) (line-end-position)))
+;;           (forward-char 1))
+;;       (meow--direction-forward)
+;;       (meow--cancel-selection))
+;;     (meow--switch-state 'insert))
+;;   (when meow-select-on-append
+;;       (setq-local meow--insert-pos (point))))
 
 ;;;###autoload
 (defun meow-search-reverse ()
