@@ -4,12 +4,12 @@
 (setq meow-next-thing-include-syntax
       '((word "w" "w")(symbol "w" "w")))
 (setq meow-expand-hint-counts
-  '((word . 0)
+  '((word . 4)
     (line . 30)
     (block . 30)
     (find . 30)
     (till . 30)
-    (symbol . 0)))
+    (symbol . 4)))
 
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)

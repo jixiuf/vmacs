@@ -26,9 +26,6 @@
 ;; hangul:-*-Apple SD Gothic Neo-normal-normal-normal-*-16-*-*-*-p-0-iso10646-1")
 ;; (add-to-list 'default-frame-alist '(font . "fontset-mymac"))
 ;; (set-frame-font "fontset-mymac" )
-(custom-theme-set-faces
- 'modus-vivendi
- '(secondary-selection ((t (:extend t :background "gray15")))))
 (defface font-lock-todo-face
   '((t (:foreground "Red" :box (:line-width 2 :color "grey75" :style released-button) :height 1.2
         :inherit default)))
@@ -54,6 +51,23 @@
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
 
+(defun my-modus-themes-custom-faces (&optional f)
+  (run-with-timer 0.01 nil
+                  #'(lambda()
+                      (modus-themes-with-colors
+                        (custom-set-faces
+                         `(secondary-selection ((t (:extend t :background "gray12"))))
+                         ;; FIXME: What is a "region cursor" and should it differ from the position highlights below?
+                         ;; `(meow-region-cursor-1 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-0)))
+                         ;; `(meow-region-cursor-2 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-1)))
+                         ;; `(meow-region-cursor-3 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-2)))
+
+                         `(meow-position-highlight-number-1 ((,c :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
+                         `(meow-position-highlight-number-2 ((,c :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
+                         `(meow-position-highlight-number-3 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-2)))))
+                      )))
+(my-modus-themes-custom-faces)
+(add-hook 'after-make-frame-functions #'my-modus-themes-custom-faces)
 
 ;; (setq-default undo-tree-mode-lighter " Ü") ;undo
 ;; (setq-default helm-completion-mode-string " H")
