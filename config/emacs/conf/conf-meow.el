@@ -167,8 +167,8 @@
 (defmacro meow-set-keymap-parent (map &optional parent)
   `(set-keymap-parent ,map (make-composed-keymap (keymap-parent ,map)
                                                  (or ,parent meow-normal-state-keymap))))
-(with-eval-after-load 'help
-  (meow-set-keymap-parent help-mode-map)
+(with-eval-after-load 'help-mode
+  (meow-set-keymap-parent help-mode-map) ;
   (keymap-unset help-mode-map "r" t))
 
 (meow-thing-register 'quoted

@@ -62,9 +62,6 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (add-hook 'minibuffer-setup-hook #'vmacs-minibuffer-hook)
 
-
-
-
 ;; (setq icomplete-max-delay-chars 3)
 (setq icomplete-delay-completions-threshold 2000)
 (setq icomplete-compute-delay 0)
@@ -76,11 +73,8 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (setq tab-always-indent 'complete)
 (setq completion-in-region-function #'consult-completion-in-region)
-(global-completion-preview-mode)
 ;; (setq read-buffer-completion-ignore-case nil)
 ;; (setq read-file-name-completion-ignore-case nil)
-(setq completion-preview-ignore-case t)
-(setq completion-ignore-case t)
 ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
 ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
 (setq read-extended-command-predicate #'command-completion-default-include-p)
@@ -90,15 +84,19 @@ Monospaced font whihc is fixed idth and height is recommended."
   (interactive)
   (completion-preview-hide)
   (indent-for-tab-command))
-(define-key completion-preview-active-mode-map (kbd "C-n") #'vmacs-complete)
-(define-key completion-preview-active-mode-map (kbd "C-i") #'vmacs-complete)
-(define-key completion-preview-active-mode-map (kbd "C-o") #'completion-preview-complete)
-(define-key completion-preview-active-mode-map (kbd "C-j") #'completion-preview-insert)
-(define-key completion-preview-active-mode-map (kbd "C-s") #'completion-preview-next-candidate)
-(define-key completion-preview-active-mode-map (kbd "M-f") #'completion-preview-insert-word)
-(setq completion-preview-minimum-symbol-length nil)
-(setq completion-preview-idle-delay 0.001)
-(setq completion-preview-completion-styles '(basic partial-completion initials orderless))
+(when (require 'completion-preview nil t)(global-completion-preview-mode))
+(with-eval-after-load 'completion-preview
+  (define-key completion-preview-active-mode-map (kbd "C-n") #'vmacs-complete)
+  (define-key completion-preview-active-mode-map (kbd "C-i") #'vmacs-complete)
+  (define-key completion-preview-active-mode-map (kbd "C-o") #'completion-preview-complete)
+  (define-key completion-preview-active-mode-map (kbd "C-j") #'completion-preview-insert)
+  (define-key completion-preview-active-mode-map (kbd "C-s") #'completion-preview-next-candidate)
+  (define-key completion-preview-active-mode-map (kbd "M-f") #'completion-preview-insert-word)
+  (setq completion-preview-minimum-symbol-length nil)
+  (setq completion-preview-idle-delay 0.001)
+  (setq completion-preview-completion-styles '(basic partial-completion initials orderless)))
+(setq completion-preview-ignore-case t)
+(setq completion-ignore-case t)
 (setq icomplete-tidy-shadowed-file-names t)
 (setq icomplete-separator (propertize " 👈 " 'face  '(foreground-color . "lightgreen")))
 (setq completion-styles '(basic partial-completion substring initials  flex))
