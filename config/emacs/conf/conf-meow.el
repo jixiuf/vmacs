@@ -180,13 +180,29 @@
 
 ;; org-mode begin_src or markdown ``` block
 (meow-thing-register 'org-block
-                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
-                     '(regexp "^[ \\|\t]*\\(#\\+begin_\\|```\\)[^\n]*\n" "^[ \\|\t]*\\(#\\+end_[^\n]*\\|```\\)$")
-                     )
-(meow-thing-register 'code-block
-                     '(regexp "{\n?" "\n?[\t\\| ]*}")
-                     '(regexp "{" "}"))
+                     '(pair-regexp (
+                                    "\\(^[ \\|\t]*#\\+begin_[^\n]*\n\\)"
+                                    "\\(^[ \\|\t]*```[^\n]*\n\\)"
+                                    )
+                                   (
+                                    "\\(^[ \\|\t]*\\(#\\+end_[^\n]*\\)$\\)"
+                                    "\\(^[ \\|\t]*```$\\)"
+                                    ))
+                     '(pair-regexp (
+                                    "\\(^[ \\|\t]*#\\+begin_[^\n]*\n\\)"
+                                    "\\(^[ \\|\t]*```[^\n]*\n\\)"
+                                    )
+                                   (
+                                    "\\(^[ \\|\t]*\\(#\\+end_[^\n]*\\)$\\)"
+                                    "\\(^[ \\|\t]*```$\\)"
+                                    )))
 
+(meow-thing-register 'code-block
+                     '(pair-regexp ("([\n\t ]*" "\\[[\n\t ]*" "{[\n\t ]*" )
+                                   ("[\n\t ]*)" "[\n\t ]*\\]" "[\n\t ]*}" ) )
+                     '(pair-regexp ("(" "\\[" "{" )
+                                   (")" "\\]" "}" )))
+ 
 (meow-thing-register 'sexp 'sexp 'sexp)
 (meow-thing-register 'word 'word 'word)
 (setq meow-char-thing-table
@@ -198,6 +214,7 @@
         (?. . sentence)
         (?` . quoted)
         (?g . string)
+        (?c . code-block)
         (?o . org-block)
         (?, . go-package)
         (?( . round)                    ;()
