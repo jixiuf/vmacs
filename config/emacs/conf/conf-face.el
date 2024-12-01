@@ -62,9 +62,9 @@
                          ;; `(meow-region-cursor-2 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-1)))
                          ;; `(meow-region-cursor-3 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-2)))
 
-                         `(meow-position-highlight-number-1 ((,c :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
-                         `(meow-position-highlight-number-2 ((,c :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
-                         `(meow-position-highlight-number-3 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-2)))))
+                         `(meow-position-highlight-number-1 ((t :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
+                         `(meow-position-highlight-number-2 ((t :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
+                         `(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) :background ,bg-char-2)))))
                       )))
 (my-modus-themes-custom-faces)
 (add-hook 'after-make-frame-functions #'my-modus-themes-custom-faces)
