@@ -82,7 +82,8 @@
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
    '("q" . meow-beginning-of-thing)
-   '(";" . meow-end-of-thing)
+   '("p" . meow-end-of-thing)
+   '(";" . meow-mark-symbol)
    '("<" . indent-rigidly-left-to-tab-stop)
    '(">" . indent-rigidly-right-to-tab-stop)
    '("a" . meow-append)
@@ -124,7 +125,7 @@
    '("O" . meow-to-block)
    '("c" . meow-change)
    '("r" . meow-replace)
-   '("p" . meow-yank)
+   ;; '("p" . meow-yank)
    '("Q" . meow-goto-line)
    '("d" . meow-kill)
    '("t" . meow-till)
@@ -211,11 +212,12 @@
 (meow-thing-register 'word 'word 'word)
 (setq meow-char-thing-table
       '((?w . word)
-        (?r . symbol)                    ;()
+        (?. . word)
+        (?r . go-package)
+        (?, . symbol)
         (?e . symbol)
         (?x . sexp)
         (?f . defun)
-        (?. . sentence)
         (?` . grave-quoted)
         (?' . quoted)
         (?q . quoted)
@@ -223,7 +225,6 @@
         (?a . arguments)
         (?c . code-block)
         (?o . org-block)
-        (?, . go-package)
         (?( . round)                    ;()
           (?8 . round)                    ;()
           (?9 . round)                    ;()
@@ -305,7 +306,9 @@
          (func (intern(format "meow-mark-%s" thing)))
          (back (equal 'backward (meow--thing-get-direction 'inner))))
     (if (fboundp func)
-        (call-interactively func)
+        (progn
+          (call-interactively func)
+          (setq this-command func))
       (apply orig-fun args)
       (let ((search (regexp-quote (buffer-substring-no-properties (region-beginning)(region-end)))))
         (unless (string-empty-p search)
@@ -358,17 +361,17 @@
 
 (advice-add 'keyboard-quit :before #'vmacs-pop-all-selection)
 
-;; (define-advice meow-mark-symbol (:around (orig-fun &rest args) dwim)
-;;   "makr symbol or word"
-;;   (if (not (eq last-command 'meow-mark-symbol))
-;;       (apply orig-fun args)
-;;     (meow-pop-all-selection)
-;;     (call-interactively #'meow-mark-word)))
-
-;; (lambda () (interactive)
-;;    (if (or defining-kbd-macro executing-kbd-macro)
-;;        (call-interactively #'end-kbd-macro)
-;;      (call-interactively #'kmacro-start-macro)))
+(define-advice meow-mark-symbol (:around (orig-fun &rest args) dwim)
+  "makr symbol or word"
+  (cond
+   ((eq last-command 'meow-mark-word)
+    (meow-pop-all-selection)
+    (setq this-command 'meow-pop-all-selection))
+   ((eq last-command 'meow-mark-symbol)
+    (meow-pop-all-selection)
+    (call-interactively #'meow-mark-word)
+    (setq this-command 'meow-mark-word))
+   (t (apply orig-fun args))))
 
 (provide 'conf-meow)
 
