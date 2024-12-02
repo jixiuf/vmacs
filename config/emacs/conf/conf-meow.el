@@ -19,6 +19,7 @@
 (setq meow-select-on-insert t)
 (setq meow-keypad-self-insert-undefined nil)
 ;; (setq meow-use-cursor-position-hack t)  ;a 的行为向后一字符,行尾会到下一行
+(setq meow-keypad-leader-dispatch "C-c")
 
 
 (defun meow-setup ()
@@ -253,6 +254,7 @@
 
 
 (setq meow-keypad-ctrl-meta-prefix ?e)
+(setq meow-keypad-meta-prefix ?M)
 (setq meow-keypad-start-keys
       '((?c . ?c)
         ;; (?h . ?h)
@@ -369,7 +371,7 @@
       ;; 则光标移动到行首（类似vim），否则行尾
       (when linep (exchange-point-and-mark)))))
 
-(global-set-key (kbd "C-h") 'negative-argument)
+;; (global-set-key (kbd "C-h") 'negative-argument)
 (global-set-key (kbd "C-u") 'meow-universal-argument)
 
 (defun vmacs-pop-all-selection ()

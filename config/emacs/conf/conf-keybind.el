@@ -32,6 +32,8 @@
   "b" #'meow-grab
   "n" #'narrow-to-region
   "w" #'vmacs-widen)
+(global-set-key (kbd "C-c m") m-mode-map)
+
 (vmacs-leader (kbd "wd") 'gt-do-translate)
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
@@ -194,7 +196,6 @@
 ;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "u") 'backward-up-list)
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
-(vmacs-leader (kbd "m") 'execute-extended-command)
 (vmacs-leader (kbd "wc") 'toggle-case-fold)
 (vmacs-leader (kbd "wl") #'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
