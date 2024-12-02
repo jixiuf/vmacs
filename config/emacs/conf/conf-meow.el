@@ -1,5 +1,4 @@
 (autoload #'viper-ex  "viper" t)
-(setq meow--kbd-kill-region "C-k")
 ;https://github.com/meow-edit/meow/discussions/661
 (setq meow-next-thing-include-syntax
       '((word "w" "w")(symbol "w" "w")))
@@ -11,6 +10,8 @@
     (till . 30)
     (symbol . 4)))
 
+(setq meow--delete-region-function #'kill-region)
+(setq meow--kbd-kill-region "C-k")
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
@@ -314,6 +315,21 @@
         (unless (string-empty-p search)
           (meow--push-search search)
           (meow--highlight-regexp-in-buffer search))))))
+
+(define-advice meow-bounds-of-thing (:around (orig-fun &rest args) mark-thing)
+  (let* ((thing (cdr (assoc (car args) meow-char-thing-table)))
+         (func (intern(format "meow-mark-%s" thing)))
+         (back (equal 'backward (meow--thing-get-direction 'inner))))
+    (if (fboundp func)
+        (progn
+          (call-interactively func)
+          (setq this-command func))
+      (apply orig-fun args)
+      (let ((search (regexp-quote (buffer-substring-no-properties (region-beginning)(region-end)))))
+        (unless (string-empty-p search)
+          (meow--push-search search)
+          (meow--highlight-regexp-in-buffer search))))))
+
 
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
