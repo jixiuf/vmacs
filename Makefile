@@ -62,3 +62,5 @@ sudo:
 			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
 		fi;\
 	done;
+meow:
+	make -C config/emacs meow

@@ -55,7 +55,8 @@ deps:
 # curl https://raw.githubusercontent.com/yjwen/org-reveal/master/ox-reveal.el >./lazy/ox-reveal.el
 # curl https://raw.githubusercontent.com/magit/libegit2/master/libgit.el > ./lazy/libgit.el
 
-
+meow:
+	emacs -q -L submodule/meow/ -l submodule/meow/meow.el -l init-meow.el --eval "(setq inhibit-startup-screen t)"
 rime:
 	rm -rf rime/
 	mkdir -p rime
