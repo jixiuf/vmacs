@@ -153,10 +153,8 @@
 
 (when (require 'which-key nil t)
   (add-hook 'after-init-hook #'which-key-mode))
-(add-to-list 'meow-selection-command-fallback '(meow-save . meow-bounds-of-thing)) ;support: yyy
-(add-to-list 'meow-selection-command-fallback '(meow-replace . meow-inner-of-thing)) ;rrr
-(add-to-list 'meow-selection-command-fallback '(meow-beacon-replace . meow-inner-of-thing)) ;rrr
-
+(add-to-list 'meow-selection-command-fallback '(meow-save . meow-mark-line)) ;support: yyy
+(add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . meow-mark-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . meow-mark-line)) ;suppert: cc c3c
 (add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
