@@ -122,7 +122,7 @@
    '("*" . vmacs-meow-search-symbol)
    '("#" . vmacs-meow-search-symbol-prev)
    '("o" . meow-open-below)
-   '("C-o" . meow-block)
+   '("C-o" . meow-inner-block)
    '("O" . meow-to-block)
    '("c" . meow-change)
    '("r" . meow-replace)
@@ -388,6 +388,63 @@
     (call-interactively #'meow-mark-word)
     (setq this-command 'meow-mark-word))
    (t (apply orig-fun args))))
+
+
+;; C-c u
+(define-advice backward-up-list (:around (orig-fun &rest args) mark)
+  "makr block"
+  (let ((oldpos (point))
+        beginning end)
+    (apply orig-fun args)
+    (setq beginning (point))
+    (setq end (save-excursion (forward-list) (point)))
+    (when (>= end oldpos beginning)
+      (goto-char beginning)
+      (set-mark end)
+      (activate-mark))))
+
+
+(defun meow-inner-block (arg)
+  "Mark the block or expand to parent block."
+  (interactive "P")
+  (let ((ra (region-active-p))
+        (back (xor (meow--direction-backward-p) (< (prefix-numeric-value arg) 0)))
+        (depth (car (syntax-ppss)))
+        (orig-pos (point))
+        (orig-mark (mark))
+        p m p-inner m-inner)
+    (save-mark-and-excursion
+      (while (and (if back (re-search-backward "\\s(" nil t) (re-search-forward "\\s)" nil t))
+                  (or (meow--in-string-p)
+                      (if ra (>= (car (syntax-ppss)) depth) (> (car (syntax-ppss)) depth)))))
+      (when (and (if ra (< (car (syntax-ppss)) depth) (<= (car (syntax-ppss)) depth))
+                 (not (= (point) orig-pos)))
+        (setq p (point))
+        (when (ignore-errors (forward-list (if back 1 -1)))
+          (setq m (point)))))
+    (when (and p m)
+      (save-mark-and-excursion
+        (if back
+            (progn
+              (goto-char p)
+              (when (looking-at (format"%c[ \t\n]*" (following-char)))
+                (setq p-inner (match-end 0)))
+              (goto-char m)
+              (when (looking-back (format "[ \t\n]*%c" (preceding-char)) nil t)
+                (setq m-inner (match-beginning 0))))
+          (goto-char p)
+          (when (looking-back (format "[ \n\t]*%c" (preceding-char) ) nil t)
+            (setq p-inner (match-beginning 0)))
+          (goto-char m)
+          (when (looking-at (format "%c[ \n\t]*" (following-char)))
+            (setq m-inner (match-end 0))))
+        (unless (and (equal orig-mark m-inner)(equal orig-pos p-inner))
+          (setq m m-inner)
+          (setq p p-inner)))
+      (thread-first
+        (meow--make-selection '(expand . block) m p)
+        (meow--select))
+      (meow--maybe-highlight-num-positions '(meow--backward-block . meow--forward-block)))))
 
 (provide 'conf-meow)
 
