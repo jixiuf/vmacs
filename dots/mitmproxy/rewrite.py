@@ -10,6 +10,7 @@ URL_PREFIX_MAP = {
     # "http://entree.dev.didatrip.com/badge/": "http://localhost:3831/badge/",
     # "http://entree.dev.didatrip.com/bauhinia/": "http://127.0.0.1:3880/bauhinia/",
     "http://entree.dev.didatrip.com/label/": "http://localhost:3890/label/",
+    "http://entree.dev.didatrip.com/mustard/": "http://localhost:5669/mustard/",
     "https://entree-ali.igetget.com/label/": "http://localhost:3890/label/",
     "https://entree.igetget.com/hotfix/": "http://10.1.0.140:8080/hotfix/",
     "https://entree-ali.igetget.com/hotfix/": "http://10.1.0.140:8080/hotfix/",

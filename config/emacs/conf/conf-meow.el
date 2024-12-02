@@ -143,7 +143,7 @@
    '("Y" . meow-sync-grab)
    '("\\" . just-one-space-or-delete-horizontal-space)
    '(":" . viper-ex)
-   '("<escape>" . vmacs-pop-selection)
+   '("<escape>" . vmacs-cancel-selection)
    ))
 (global-set-key (kbd "C-8") #'vmacs-meow-search-symbol)
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
@@ -159,7 +159,8 @@
 (add-to-list 'meow-selection-command-fallback '(meow-replace . meow-yank))
 (add-to-list 'meow-selection-command-fallback '(meow-kill . meow-mark-line)) ;suppert: dd d3d
 (add-to-list 'meow-selection-command-fallback '(meow-change . meow-mark-line)) ;suppert: cc c3c
-(add-to-list 'meow-selection-command-fallback '(vmacs-pop-selection . meow-grab)) ;for cancel meow--cancel-second-selection
+(add-to-list 'meow-selection-command-fallback '(meow-pop-selection . meow-selection)) ;suppert: cc c3c
+(add-to-list 'meow-selection-command-fallback '(vmacs-cancel-selection . meow-grab)) ;for cancel meow--cancel-second-selection
 ;; (define-key  meow-beacon-state-keymap "a" 'meow-beacon-append)
 ;; (define-key meow-beacon-state-keymap [remap meow-save] 'meow-bounds-of-thing)
 (define-key meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)

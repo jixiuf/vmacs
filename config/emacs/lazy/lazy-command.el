@@ -251,7 +251,7 @@ based on the current context and previous history."
    "*Messages*" "*Messages*"))
 
 ;;;###autoload
-(defun vmacs-pop-selection()
+(defun vmacs-cancel-selection()
   (interactive)
   (if current-prefix-arg
       (meow-pop-all-selection)
@@ -263,7 +263,21 @@ based on the current context and previous history."
            (not (region-active-p)))
       (meow-end-or-call-kmacro))
      (t
-      (meow-cancel-selection)))))
+      (let ((last-select meow--selection))
+        (unless last-select
+          (when (region-active-p)
+            (setq last-select `((expand . char) ,(mark) ,(point)))))
+        (meow-cancel-selection)
+        (when last-select
+          (setq meow--selection-history (list last-select))))))))
+
+;;;###autoload
+(defun meow-selection()
+  (interactive)
+  (let ((last-select (car meow--selection-history)))
+    (if last-select
+        (meow--select last-select)
+      (meow-pop-grab))))
 
 ;;;###autoload
 (defun vmacs-yank-pop()

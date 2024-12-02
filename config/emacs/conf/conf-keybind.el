@@ -18,9 +18,7 @@
   "." 'goto-last-change-reverse
   )
 (defvar-keymap  m-mode-map              ;meow: m
-  "f" #'mark-defun
-  "d" #'narrow-to-defun
-  "h" #'mark-whole-buffer
+  "f" #'narrow-to-defun
   "v" #'rectangle-mark-mode
   "q" #'fill-paragraph
   "s" #'gt-do-translate
