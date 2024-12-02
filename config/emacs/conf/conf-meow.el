@@ -300,25 +300,7 @@
         (call-interactively #'delete-rectangle)
         (rectangle-exchange-point-and-mark)
         (call-interactively #'yank-rectangle))
-    (if (or(not(meow--second-sel-buffer))
-           (not (region-active-p))
-           (and meow--beacon-defining-kbd-macro
-                (not(meow--second-sel-buffer)))
-           (meow-beacon-mode-p))
-        (apply orig-fun args)
-      (meow-swap-grab)
-      (message "meow-swap-grab is called"))))
-
-(define-advice meow-beacon-replace (:around (orig-fun &rest args) rect-and-grab)
-  (interactive)
-  (if (or(not(meow--second-sel-buffer))
-         (not (region-active-p))
-         (and meow--beacon-defining-kbd-macro
-                (not(meow--second-sel-buffer)))
-         (meow-beacon-mode-p))
-      (apply orig-fun args)
-    (meow-swap-grab)
-    (message "meow-swap-grab is called")))
+    (apply orig-fun args)))
 
 (define-advice meow-inner-of-thing (:around (orig-fun &rest args) mark-thing)
   (let* ((thing (cdr (assoc (car args) meow-char-thing-table)))
@@ -336,15 +318,7 @@
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
   "goto origin position after `yy',need fallback (meow-save . meow-line) "
   (let ((region (region-active-p)))
-    (if (or(not(meow--second-sel-buffer))
-           (not (region-active-p))
-           (and meow--beacon-defining-kbd-macro
-                (not(meow--second-sel-buffer)))
-           (meow-beacon-mode-p))
-        (apply orig-fun args)
-      (save-excursion
-        (meow-sync-grab)
-        (message "meow-sync-grab is called")))
+    (apply orig-fun args)
     (when region
       (meow-pop-all-selection))))
 
