@@ -172,12 +172,18 @@
   (keymap-unset help-mode-map "r" t))
 
 (meow-thing-register 'quoted
-                     '(regexp "`\\|'" "`\\|'")
-                     '(regexp "`\\|'" "`\\|'"))
+                     '(regexp "`\\|'\\|\"" "`\\|'\\|\"")
+                     '(regexp "`\\|'\\|\"" "`\\|'\\|\""))
+(meow-thing-register 'grave-quoted
+                     '(regexp "`" "`\\|'")
+                     '(regexp "`" "`\\|'"))
 (meow-thing-register 'go-package
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
 
+(meow-thing-register 'arguments
+                     '(regexp "[(,]" "[),]")
+                     '(regexp "[(,]" "[),]"))
 ;; org-mode begin_src or markdown ``` block
 (meow-thing-register 'org-block
                      '(pair-regexp (
@@ -212,8 +218,11 @@
         (?x . sexp)
         (?f . defun)
         (?. . sentence)
-        (?` . quoted)
+        (?` . grave-quoted)
+        (?' . quoted)
+        (?q . quoted)
         (?g . string)
+        (?a . arguments)
         (?c . code-block)
         (?o . org-block)
         (?, . go-package)
