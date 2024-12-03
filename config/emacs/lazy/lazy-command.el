@@ -624,7 +624,7 @@ numeric, repeat times.
   (let* ((start (if (use-region-p) (region-beginning) (point-min)))
          (end (if (use-region-p) (region-end) (point-max))))
     (shell-command-on-region start end
-                             "python -c \"import sys, json; data = sys.stdin.read(); result = json.loads(data.strip()); print(result)\""
+                             "python -c \"import sys, json; [print(json.loads(line.strip())) for line in sys.stdin if line.strip()]\""
                              nil t)))
 
 
