@@ -228,13 +228,13 @@
         (?a . arguments)
         (?c . code-block)
         (?o . org-block)
-        (?( . round)                    ;()
+        (?\( . round)                    ;()
           (?8 . round)                    ;()
           (?9 . round)                    ;()
           (?0 . round)
-          (?) . round)                    ;()
-        (?[ . square)                   ;[]
-          (?] . square)                   ;[]
+          (?\) . round)                    ;()
+        (?\[ . square)                   ;[]
+          (?\] . square)                   ;[]
         (?{ . curly)                    ;{}
         (?c . code-block)                    ;{}
         ;; (?c . curly)                    ;{}
