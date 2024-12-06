@@ -81,8 +81,8 @@
 (define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (add-hook 'isearch-mode-hook (lambda()(require 'xref) (xref--push-markers (current-buffer) (point))))
-;; (setq isearch-lazy-count t)
-;; (setq lazy-highlight-cleanup nil)
+(setq isearch-lazy-count t)
+(setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
 (vmacs-leader "," #'xref-go-back)
 (with-eval-after-load 'xref

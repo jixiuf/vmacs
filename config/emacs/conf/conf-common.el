@@ -10,6 +10,7 @@
  initial-buffer-choice t                ;默认打开 scratch buffer
  ;; initial-buffer-choice "~/"
 
+ treesit-max-buffer-size 107374182   ;100m
 
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
