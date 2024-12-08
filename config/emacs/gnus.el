@@ -1,3 +1,4 @@
+;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
 (setq message-send-mail-function 'smtpmail-send-it)
 (when (member (system-name) '("jxfhome" "jxfluoji"))
   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
@@ -45,10 +46,11 @@
   (setq gnus-sum-thread-tree-vertical        "│")
   (setq gnus-sum-thread-tree-leaf-with-other "├─► ")
   (setq gnus-sum-thread-tree-single-leaf     "╰─► "))
+;; https://www.math.utah.edu/docs/info/gnus_5.html#SEC51
 (setq gnus-summary-line-format
       (concat
        "%0{%U%R%z%}"
-       "%3{│%}" "%1{%d%}" "%3{│%}" ;; date
+       "%3{│%}" "%1{%&user-date; %}" "%3{│%}" ;; date
        "  "
        "%4{%-20,20f%}"               ;; name
        "  "
@@ -60,12 +62,14 @@
 (setq gnus-article-date-headers (quote (local)))
 (setq gnus-summary-mode-hook 'hl-line-mode)
 (setq gnus-group-mode-hook (quote (gnus-topic-mode hl-line-mode)))
-;; (setq gnus-user-date-format-alist (quote (
-;; 					  ((gnus-seconds-today) . "今%H:%M")
-;; 					  ((+ 86400 (gnus-seconds-today)) . "昨%H:%M")
-;; 					  ((gnus-seconds-year) . "%a %b %d %H:%M")
-;; 					  (t . "%a %b %d %Y %H:%M"))))
+;; gnus-summary-line-format 内通过%&user-date; 自定义时间格式
+(setq gnus-user-date-format-alist (quote (
+					  ((gnus-seconds-today) . "%H:%M")
+					  ((+ 86400 (gnus-seconds-today)) . "昨%H:%M")
+					  ((gnus-seconds-year) . "%a %b %d %H:%M")
+					  (t . "%a %b %d %Y %H:%M"))))
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
+;; set gnus-parameter
 
 ;; (setq nnml-directory "~/gmail")
 ;; (setq message-directory "~/gmail")
@@ -76,6 +80,12 @@
 ;;                          ))
 ;; (gnus-topic-set-parameters "vmacs" '((display . 200)))
 ;; (gnus-topic-set-parameters "jixiuf" '((display . 200))))
+(setq gnus-parameters
+  '(("nnimap.*"
+     (gnus-use-scoring nil)
+     (expiry-wait . 2)
+     (display . all))))
+
 ;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
 (setq gnus-posting-styles
       `((".*" ; Matches all groups of messages with default qq
