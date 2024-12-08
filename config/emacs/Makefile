@@ -1,10 +1,12 @@
 # -*- coding:utf-8 -*-
 .PHONY: eshell lib rime
+PWD := `pwd`
+LINK_CMD := ln -s -f
 EMACSCMD ?= emacs
 LIBRARY_PATH=/usr/local/opt/gcc/lib/gcc/10:/usr/local/opt/gcc/lib/gcc/10/gcc/x86_64-apple-darwin19/10.2.0
 BATCH  = $(EMACSCMD) -batch -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init.el
 EMACS_BASE  = $(EMACSCMD)  -Q $(LOAD_PATH)  -l ./early-init.el --eval "(package-initialize)" -l ./init-base.el
-all:clean deps update-autoload-cookie
+all:clean  update-autoload-cookie deps
 base:
 	$(EMACS_BASE)  --debug-init
 compile:lib
@@ -23,6 +25,8 @@ compile:lib
 	fi
 	make update-autoload-cookie
 update-autoload-cookie:
+	$(LINK_CMD) $(PWD)/gnus.el ~/.gnus.el
+
 	@echo "生成 lisp/update-autoload-cookie.el"
 	@-rm lazy-loaddefs.el lisp/lazy-loaddefs.el
 	@$(BATCH) -l ./conf/conf-lazy-load.el
