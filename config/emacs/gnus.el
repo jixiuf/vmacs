@@ -1,8 +1,8 @@
 (setq message-send-mail-function 'smtpmail-send-it)
-(setq user-mail-address (concat "jixiuf" "@" "qq.com"))
-(setq user-full-name "jixiuf")
+(when (member (system-name) '("jxfhome" "jxfluoji"))
+  (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
 
-(setq smtpmail-smtp-user (concat "jixiuf" "@" "qq.com")
+(setq smtpmail-smtp-user user-mail-address
       smtpmail-smtp-server "smtp.qq.com"
       smtpmail-smtp-service 465
       smtpmail-stream-type 'ssl)
@@ -17,21 +17,22 @@
 (setq gnus-select-method '(nnnil ""))
 
 (setq gnus-secondary-select-methods
-      '((nnmaildir "jixiuf"
-                  (directory "~/maildir/qq")
-                  )
-        (nnmaildir ""
-                   (directory "~/maildir/qq/&UXZO1mWHTvZZOQ-/")
-                  )
+      `(
+        ;; (nnmaildir "jixiuf"
+        ;;           (directory "~/maildir/qq")
+        ;;           )
+        ;; (nnmaildir ""
+        ;;            (directory "~/maildir/qq/&UXZO1mWHTvZZOQ-/")
+        ;;           )
         ;; (nnml "vmacs"
         ;;           (directory "~/maildir/vmacs")
         ;;           )
-        ;; (nnimap "jixiuf"
-        ;;         (nnimap-address "imap.qq.com")
-        ;;         (nnimap-inbox "INBOX")
-        ;;         (nnimap-expunge t)
-        ;;         (nnimap-server-port 993)
-        ;;         (nnimap-stream ssl))
+        (nnimap ,user-full-name
+                (nnimap-address "imap.qq.com")
+                (nnimap-inbox "INBOX")
+                (nnimap-expunge t)
+                (nnimap-server-port 993)
+                (nnimap-stream ssl))
         ))
 (setq mail-sources
       '((maildir :path "~/maildir/")))
@@ -77,12 +78,27 @@
 ;; (gnus-topic-set-parameters "jixiuf" '((display . 200))))
 ;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
 (setq gnus-posting-styles
-      '((".*" ; Matches all groups of messages with default qq
-         (address (concat (format "jixiuf <jixiuf%s%s>" "@qq" ".com") )))
+      `((".*" ; Matches all groups of messages with default qq
+         (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) )))
         ("vmacs" ; Matches Gnus group called "vmacs"
-         (address (concat "vmacs" "@" "qq" ".com"))
-         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 vmacs" "@" "qq" ".com")))))
+         (address ,user-mail-address-2)
+         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address-2)))))
 
 ;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 
+(defun toggle-from()
+  "Toggle addresses in the From: field of the message buffer."
+  (interactive)
+  (save-excursion
+    (message-goto-from)
+    (if (string-match (concat "^From:\s-*.*" user-work-mail-address) (thing-at-point 'line))
+	(progn 
+	  (beginning-of-line)
+	  (message-delete-line)
+	  (insert (concat "From: " user-full-name " <" user-mail-address ">\n")))
+      (message-goto-from)
+      (when (string-match (concat "^from:\s-*.*" user-mail-address) (thing-at-point 'line))
+	(beginning-of-line)
+	(message-delete-line)
+    (insert (concat "From: " user-full-name " <" user-work-mail-address ">\n"))))))
 (provide 'gnus)
