@@ -6,6 +6,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
+ '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
  '(meow-position-highlight-number-1 ((t :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
  '(meow-position-highlight-number-2 ((t :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
  '(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) :background "#625a00")))

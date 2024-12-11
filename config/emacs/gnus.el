@@ -12,6 +12,16 @@
 ;;Debug
 (setq smtpmail-debug-info t)
 (setq smtpmail-debug-verb t)
+;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
+(setq gnus-posting-styles
+      `((".*" ; Matches all groups of messages with default qq
+         (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) )))
+        ("vmacs" ; Matches Gnus group called "vmacs"
+         (address ,user-mail-address-2)
+         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address-2)))))
+
+;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
 
 ;;; sending mail end
 
@@ -19,23 +29,17 @@
 (with-eval-after-load 'gnus-group
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old gnus G
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old gnus g, now gr
-(with-eval-after-load 'gnus-summary
+(with-eval-after-load 'gnus-sum
+  (define-key gnus-summary-mode-map (kbd "v") #'gnus-summary-next-page)     ;old space
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article)) ;old gnus g ,now gr
 
 (setq gnus-select-method '(nnnil ""))
 
 (setq gnus-secondary-select-methods
-      `(
-        (nnmaildir "jixiuf"
-                  (directory "~/maildir/qq")
-                  )
-        (nnmaildir ""
-                   (directory "~/maildir/qq/&UXZO1mWHTvZZOQ-/")
-                  )
-        ;; (nnml "vmacs"
-        ;;           (directory "~/maildir/vmacs")
-        ;;           )
+      `((nnmaildir "jixiuf" (directory "~/maildir/qq"))
+        ;; (nntp "news.gmane.org")
+        (nnmaildir "vmacs"  (directory "~/maildir/vmacs"))
         ;; (nnimap ,user-mail-address
         ;;         (nnimap-address "localhost")
         ;;         ;; (nnimap-inbox "inbox")
@@ -66,6 +70,15 @@
   (setq gnus-sum-thread-tree-single-leaf     "╰─► "))
 (setq gnus-thread-sort-functions
       '((not gnus-thread-sort-by-date)))
+;; (setq gnus-thread-sort-functions (quote ((not gnus-thread-sort-by-most-recent-number))))
+(setq gnus-use-dribble-file nil)
+(setq gnus-always-read-dribble-file nil)
+(setq gnus-save-newsrc-file nil)
+(setq gnus-read-newsrc-file nil)
+(setq gnus-fetch-old-headers t)
+(setq gnus-article-date-headers (quote (local)))
+(setq gnus-summary-mode-hook 'hl-line-mode)
+(setq gnus-group-mode-hook (quote (gnus-topic-mode hl-line-mode)))
 
 ;; https://www.math.utah.edu/docs/info/gnus_5.html#SEC51
 (setq gnus-summary-line-format
@@ -81,14 +94,6 @@
        "%1{%B%}"
        "%s\n"))
 ;; (setq gnus-activate-level 4)
-(setq gnus-use-dribble-file nil)
-(setq gnus-always-read-dribble-file nil)
-(setq gnus-save-newsrc-file nil)
-(setq gnus-read-newsrc-file nil)
-(setq gnus-fetch-old-headers t)
-(setq gnus-article-date-headers (quote (local)))
-(setq gnus-summary-mode-hook 'hl-line-mode)
-(setq gnus-group-mode-hook (quote (gnus-topic-mode hl-line-mode)))
 ;; gnus-summary-line-format 内通过%&user-date; 自定义时间格式
 (setq gnus-user-date-format-alist (quote (
 					  ((gnus-seconds-today) . "%a %b%d %H:%M 今")
@@ -98,8 +103,6 @@
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; set gnus-parameter
 
-;; (setq nnml-directory "~/gmail")
-;; (setq message-directory "~/gmail")
 ;; (setq gnus-summary-display-arrow t)
 ;; (setq gnus-topic-alist '(("vmacs" ; the key of topic
 ;;                           "nnmaildir+vmacs:inbox"
@@ -108,16 +111,6 @@
 ;; (gnus-topic-set-parameters "vmacs" '((display . 200)))
 ;; (gnus-topic-set-parameters "jixiuf" '((display . 200))))
 
-
-;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
-(setq gnus-posting-styles
-      `((".*" ; Matches all groups of messages with default qq
-         (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) )))
-        ("vmacs" ; Matches Gnus group called "vmacs"
-         (address ,user-mail-address-2)
-         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address-2)))))
-
-;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 
 (defun toggle-from()
   "Toggle addresses in the From: field of the message buffer."
@@ -134,4 +127,7 @@
 	(beginning-of-line)
 	(message-delete-line)
     (insert (concat "From: " user-full-name " <" user-work-mail-address ">\n"))))))
+;; (setq gnus-summary-highlight)
+
+
 (provide 'gnus)
