@@ -166,12 +166,6 @@
 ;; (define-key meow-beacon-state-keymap [remap meow-save] 'meow-bounds-of-thing)
 (define-key meow-beacon-state-keymap (kbd "C-c C-c") #'meow-beacon-apply-kmacro)
 
-(defmacro meow-set-keymap-parent (map &optional parent)
-  `(set-keymap-parent ,map (make-composed-keymap (keymap-parent ,map)
-                                                 (or ,parent meow-normal-state-keymap))))
-(with-eval-after-load 'help-mode
-  (meow-set-keymap-parent help-mode-map) ;
-  (keymap-unset help-mode-map "r" t))
 
 (meow-thing-register 'quoted
                      '(regexp "`\\|'\\|\"" "`\\|'\\|\"")
@@ -271,10 +265,16 @@
 (add-to-list 'meow-mode-state-list '(grep-mode . normal))
 (add-to-list 'meow-mode-state-list '(markdown-mode . normal))
 (add-to-list 'meow-mode-state-list '(dape-repl-mode . normal))
-
-(with-eval-after-load 'org-agenda
-  (set-keymap-parent org-agenda-mode-map meow-normal-state-keymap))
 (add-to-list 'meow-mode-state-list '(org-agenda-mode . motion))
+(defmacro meow-set-keymap-parent (map &optional parent)
+  `(set-keymap-parent ,map (make-composed-keymap (keymap-parent ,map)
+                                                 (or ,parent meow-normal-state-keymap))))
+(with-eval-after-load 'org-agenda  (meow-set-keymap-parent org-agenda-mode-map))
+(with-eval-after-load 'help-mode
+  (meow-set-keymap-parent help-mode-map) ;
+  (keymap-unset help-mode-map "r" t))
+;; (with-eval-after-load 'gnus
+;; )
 (meow-global-mode 1)
 
 (defun vmacs-meow-frame(&optional f)
