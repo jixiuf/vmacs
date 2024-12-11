@@ -57,13 +57,16 @@
      (display . all))))
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
 (when window-system
-  (setq gnus-sum-thread-tree-indent "  ")
+  (setq gnus-sum-thread-tree-indent " ")
   (setq gnus-sum-thread-tree-root "") ;; "● ")
   (setq gnus-sum-thread-tree-false-root "") ;; "◯ ")
   (setq gnus-sum-thread-tree-single-indent "") ;; "◎ ")
   (setq gnus-sum-thread-tree-vertical        "│")
   (setq gnus-sum-thread-tree-leaf-with-other "├─► ")
   (setq gnus-sum-thread-tree-single-leaf     "╰─► "))
+(setq gnus-thread-sort-functions
+      '((not gnus-thread-sort-by-date)))
+
 ;; https://www.math.utah.edu/docs/info/gnus_5.html#SEC51
 (setq gnus-summary-line-format
       (concat
