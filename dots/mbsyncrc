@@ -1,5 +1,39 @@
 # First section: remote IMAP account
 # mbsync -a
+##############################################
+IMAPAccount qq
+Host imap.qq.com
+Port 993
+User jixiuf@qq.com
+# 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
+# security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
+# security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com port 465 login jixiuf@qq.com  protocol smtp  password/ {print $NF}'"
+# PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
+SSLType IMAPS
+SSLVersions TLSv1.2
+
+IMAPStore qq-remote
+Account qq
+
+# This section describes the local storage
+MaildirStore qq-local
+Path ~/maildir/qq/
+Inbox ~/maildir/qq/inbox
+# The SubFolders option allows to represent all
+# IMAP subfolders as local subfolders
+SubFolders Verbatim
+
+# This section a "channel", a connection between remote and local
+Channel qq
+Far :qq-remote:
+Near :qq-local:
+Patterns *
+Expunge Both
+CopyArrivalDate yes
+Sync All
+Create Near
+SyncState *
 
 # IMAPAccount luojilab
 # Host imap.feishu.cn 
@@ -70,73 +104,39 @@
 # Create Near
 # SyncState *
 
-##############################################
-IMAPAccount qq
-Host imap.qq.com
-Port 993
-User jixiuf@qq.com
-# 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
-# security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
-# security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com port 465 login jixiuf@qq.com  protocol smtp  password/ {print $NF}'"
-# PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
-SSLType IMAPS
-SSLVersions TLSv1.2
-
-IMAPStore qq-remote
-Account qq
-
-# This section describes the local storage
-MaildirStore qq-local
-Path ~/maildir/qq/
-Inbox ~/maildir/qq/inbox
-# The SubFolders option allows to represent all
-# IMAP subfolders as local subfolders
-SubFolders Verbatim
-
-# This section a "channel", a connection between remote and local
-Channel qq
-Far :qq-remote:
-Near :qq-local:
-Patterns *
-Expunge Both
-CopyArrivalDate yes
-Sync All
-Create Near
-SyncState *
 
 
-# #####
-IMAPAccount vmacs
-Host imap.qq.com
-Port 993
-User vmacs@qq.com
-# 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
-# security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
-# security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com port 465 login vmacs@qq.com  protocol smtp  password/ {print $NF}'"
-# PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
-SSLType IMAPS
-SSLVersions TLSv1.2
+# # #####
+# IMAPAccount vmacs
+# Host imap.qq.com
+# Port 993
+# User vmacs@qq.com
+# # 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
+# # security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
+# # security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
+# PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null | awk '/machine smtp.qq.com port 465 login vmacs@qq.com  protocol smtp  password/ {print $NF}'"
+# # PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
+# SSLType IMAPS
+# SSLVersions TLSv1.2
 
-IMAPStore vmacs-remote
-Account vmacs
+# IMAPStore vmacs-remote
+# Account vmacs
 
-# This section describes the local storage
-MaildirStore vmacs-local
-Path ~/maildir/vmacs/
-Inbox ~/maildir/vmacs/inbox
-# The SubFolders option allows to represent all
-# IMAP subfolders as local subfolders
-SubFolders Verbatim
+# # This section describes the local storage
+# MaildirStore vmacs-local
+# Path ~/maildir/vmacs/
+# Inbox ~/maildir/vmacs/inbox
+# # The SubFolders option allows to represent all
+# # IMAP subfolders as local subfolders
+# SubFolders Verbatim
 
-# This section a "channel", a connection between remote and local
-Channel vmacs
-Far :vmacs-remote:
-Near :vmacs-local:
-Patterns *
-Expunge Both
-CopyArrivalDate yes
-Sync All
-Create Near
-SyncState *
+# # This section a "channel", a connection between remote and local
+# Channel vmacs
+# Far :vmacs-remote:
+# Near :vmacs-local:
+# Patterns *
+# Expunge Both
+# CopyArrivalDate yes
+# Sync All
+# Create Near
+# SyncState *
