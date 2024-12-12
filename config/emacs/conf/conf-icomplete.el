@@ -321,7 +321,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (global-set-key (kbd "C-x r x" ) #'consult-register)
 
 
-(vmacs-leader (kbd "i") (vmacs-defun vmacs-mu4e (call-process "killall" nil nil nil  "mbsync")(require 'mu4e)(mu4e t)(mu4e-search-bookmark)))
+(vmacs-leader (kbd "i") #'gnus)
 
 (vmacs-leader "<SPC>" 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)

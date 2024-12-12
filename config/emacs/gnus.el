@@ -4,6 +4,8 @@
 (when (member (system-name) '("jxfhome" "jxfluoji"))
   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
 
+;; C-c C-m f – Attach file
+;; C-c C-d – Save message as draft
 (setq smtpmail-smtp-user user-mail-address
       smtpmail-smtp-server "smtp.qq.com"
       smtpmail-smtp-service 465
