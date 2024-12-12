@@ -3,7 +3,8 @@
 (when (member (system-name) '("jxfhome" "jxfluoji"))
   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
 
-;; C-c C-m f – Attach file
+;; 转发:C-c C-f forward ,可在邮件列表中用 # 选多个 合并转发
+;; C-c C-a – Attach file
 ;; C-c C-d – Save message as draft
 ;; C-c C-b: goto body
 ;; C-c C-f C-t: goto To:
@@ -54,11 +55,15 @@
 
 ;;; sending mail end here.
 
+;; Make all mails visible: 
+;; Select a group and press C-u RET in “Group Buffer”. Or C-u M-g in “Summary Buffer”.
 (with-eval-after-load 'gnus-group
 ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old  G
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old  g, now gr
 (with-eval-after-load 'gnus-sum
+  ;; d:标记为已读
+  ;; r 回复
   ;; 交换t T 后 tk:标记当前thread分支为已读
   (define-key gnus-summary-mode-map  "t" #'gnus-summary-thread-map)     ;old T
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
@@ -68,9 +73,11 @@
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article)) ;old gnus g ,now gr
 
-(setq gnus-select-method `(nnmaildir ,user-full-name (directory "~/maildir/qq"))) ;(nnnil "")
+(setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
-      `((nnmaildir "vmacs"  (directory "~/maildir/vmacs"))
+      `((nnmaildir ,user-full-name (directory "~/maildir/qq"))
+        ;; (nntp "news.gwene.org")
+        (nnmaildir "vmacs"  (directory "~/maildir/vmacs"))
         ;; (nntp "news.gmane.org")
         ;; (nnimap ,user-mail-address
         ;;         (nnimap-address "localhost")
@@ -86,8 +93,18 @@
         ;;         (nnimap-server-port 993)
         ;;         (nnimap-stream ssl))
         ))
+;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Parameters.html
 (setq gnus-parameters
-  '(("nnmaildir.*"
+  '(("nnmaildir.*vmacs:.*"
+     (gnus-show-threads t)
+     ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
+     (gnus-use-scoring nil)
+     ;; (expiry-wait . 2)
+     (display . all))
+    ("nnmaildir.*jixiuf:.*"
+     (gnus-show-threads
+      nil)
+     (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
      (gnus-use-scoring nil)
      ;; (expiry-wait . 2)
      (display . all))))
@@ -108,9 +125,32 @@
 (setq gnus-save-newsrc-file nil)
 (setq gnus-read-newsrc-file nil)
 (setq gnus-fetch-old-headers t)
-(setq gnus-article-date-headers (quote (local)))
+(setq gnus-article-date-headers '(local))
 (setq gnus-summary-mode-hook 'hl-line-mode)
-(setq gnus-group-mode-hook (quote (gnus-topic-mode hl-line-mode)))
+(setq gnus-group-mode-hook  '(gnus-topic-mode hl-line-mode))
+
+(setq gnus-topic-topology '(("Gnus" visible)
+                                 (("misc" visible))
+                                 (("jixiuf" visible nil nil))
+                                 (("vmacs" visible nil nil))))
+(setq gnus-topic-alist
+      '(("jixiuf" ; the key of topic
+         "nnmaildir+jixiuf:inbox"
+         "nnmaildir+jixiuf:Deleted Messages"
+         "nnmaildir+jixiuf:Junk"
+         "nnmaildir+jixiuf:Drafts"
+         "nnmaildir+jixiuf:Sent Messages")
+        ("vmacs" ; the key of topic
+         "nnmaildir+vmacs:inbox"
+         "nnmaildir+vmacs:Deleted Messages"
+         "nnmaildir+vmacs:Junk"
+         "nnmaildir+vmacs:Drafts"
+         "nnmaildir+vmacs:Sent Messages")
+        ("misc" ; the key of topic
+         ;; "nnfolder+archive:sent.2015-12"
+         ;; "nnfolder+archive:sent.2016"
+         "nndraft:drafts")
+        ("Gnus")))
 
 ;; https://www.math.utah.edu/docs/info/gnus_5.html#SEC51
 (setq gnus-summary-line-format
@@ -133,18 +173,6 @@
 					  ((gnus-seconds-year) . "%a %b%d %H:%M")
 					  (t . "%a %Y%b%d %H:%M"))))
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
-;; set gnus-parameter
-
 ;; (setq gnus-summary-display-arrow t)
-;; (setq gnus-topic-alist '(("vmacs" ; the key of topic
-;;                           "nnmaildir+vmacs:inbox"
-;;                           )
-;;                          ))
-;; (gnus-topic-set-parameters "vmacs" '((display . 200)))
-;; (gnus-topic-set-parameters "jixiuf" '((display . 200))))
-
-
-;; (setq gnus-summary-highlight)
-
 
 (provide 'gnus)
