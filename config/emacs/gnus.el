@@ -32,6 +32,9 @@
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old gnus G
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old gnus g, now gr
 (with-eval-after-load 'gnus-sum
+  (define-key gnus-summary-mode-map (kbd "t") #'gnus-summary-thread-map)     ;old T
+  (define-key gnus-summary-mode-map (kbd "T") #'gnus-summary-toggle-header)     ;old t
+
   (define-key gnus-summary-mode-map (kbd "v") #'gnus-summary-next-page)     ;old space
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article)) ;old gnus g ,now gr
@@ -94,7 +97,7 @@
        "%3{│%}"
        " "
        "%1{%B%}"
-       "%s\n"))
+       "%S\n"))
 ;; (setq gnus-activate-level 4)
 ;; gnus-summary-line-format 内通过%&user-date; 自定义时间格式
 (setq gnus-user-date-format-alist (quote (
