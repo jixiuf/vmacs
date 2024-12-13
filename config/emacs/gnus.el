@@ -157,10 +157,10 @@
       (concat
        "%0{%U%R%z%}"
        ;; "%3{│%}" "%1{%d%}" "%3{│%}" ;; date
-       "%3{│%}" "%3{%-18,18&user-date; %}" "%3{│%}" ;; date
-       "  "
-       "%4{%-20,20f%}"               ;; name
-       "  "
+       "%3{│%}" "%3{%-16,16&user-date;%}" "%3{│%}" ;; date
+       ""
+       "%4{%-12,12f%}"               ;; name
+       " "
        "%3{│%}"
        " "
        "%1{%B%}"
@@ -168,10 +168,10 @@
 ;; (setq gnus-activate-level 4)
 ;; gnus-summary-line-format 内通过%&user-date; 自定义时间格式
 (setq gnus-user-date-format-alist (quote (
-					  ((gnus-seconds-today) . "%a %b%d %H:%M 今")
-					  ((+ 86400 (gnus-seconds-today)) . "%a %b%d %H:%M 昨")
-					  ((gnus-seconds-year) . "%a %b%d %H:%M")
-					  (t . "%a %Y%b%d %H:%M"))))
+					  ((gnus-seconds-today) . "%a%b%d %H:%M今")
+					  ((+ 86400 (gnus-seconds-today)) . "%a%b%d %H:%M昨")
+					  ((gnus-seconds-year) . "%a%b%d %H:%M")
+					  (t . "%a%Y%b%d %H:%M"))))
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
 

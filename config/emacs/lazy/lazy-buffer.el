@@ -74,6 +74,7 @@
 
 (defvar boring-window-modes
   '(help-mode compilation-mode log-view-mode log-edit-mode
+              gnus-article-mode
               org-agenda-mode magit-revision-mode ibuffer-mode))
 
 
