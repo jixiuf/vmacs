@@ -104,7 +104,7 @@
      ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
      (gnus-use-scoring nil)
      ;; (expiry-wait . 2)
-     (display . 10000))                 ;big enouch without confirm
+     (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
     ("nnmaildir.*jixiuf:.*"
      (gnus-show-threads
       nil)
