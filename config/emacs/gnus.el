@@ -62,14 +62,17 @@
   ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
   (define-key gnus-group-mode-map (kbd "C-c Mn") #'gnus-group-next-unread-group)     ;old  n
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old  G
+  (define-key gnus-group-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old  g, now gr
 (with-eval-after-load 'gnus-sum
-  ;; d:标记为已读
+  ;; d:标记为已读  C-k:整个subject 已读
   ;; r 回复
   ;; 交换t T 后 tk:标记当前thread分支为已读
   (define-key gnus-summary-mode-map  "t" #'gnus-summary-thread-map)     ;old T
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
+  (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
+  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-rescan-group);gr old M-g
 
   (define-key gnus-summary-mode-map  "v" #'gnus-summary-next-page)     ;old space
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
@@ -181,8 +184,19 @@
          "nndraft:drafts")
         ("Gnus")))
 
-
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
+
+(defun mbsync()
+  (interactive)
+  (let ((process (start-process "mbsync" "*Messages*" "mbsync" "-aq")))
+    (set-process-sentinel
+     process
+     (lambda (proc _)
+       (when (eq (process-status proc) 'exit)
+         (when (eq major-mode 'gnus-group-mode)
+           (gnus-group-get-new-news))
+         (when (eq major-mode 'gnus-summary-mode)
+           (gnus-summary-rescan-group)))))))
 
 (provide 'gnus)
