@@ -55,10 +55,12 @@
 
 ;;; sending mail end here.
 
-;; Make all mails visible: 
+;; Make all mails visible:
 ;; Select a group and press C-u RET in “Group Buffer”. Or C-u M-g in “Summary Buffer”.
 (with-eval-after-load 'gnus-group
-;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
+  ;; L or l (meow:caplock+l) 显示所有group
+  ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
+  (define-key gnus-group-mode-map (kbd "C-c Mn") #'gnus-group-next-unread-group)     ;old  n
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old  G
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old  g, now gr
 (with-eval-after-load 'gnus-sum
@@ -73,6 +75,8 @@
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article)) ;old gnus g ,now gr
 
+(setq gnus-interactive-exit nil)     ;退出时不必确认
+(setq gnus-expert-user t)
 (setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
       `((nnmaildir ,user-full-name (directory "~/maildir/qq"))
@@ -100,7 +104,7 @@
      ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
      (gnus-use-scoring nil)
      ;; (expiry-wait . 2)
-     (display . all))
+     (display . 10000))                 ;big enouch without confirm
     ("nnmaildir.*jixiuf:.*"
      (gnus-show-threads
       nil)
@@ -128,30 +132,8 @@
 (setq gnus-article-date-headers '(local))
 (setq gnus-summary-mode-hook 'hl-line-mode)
 (setq gnus-group-mode-hook  '(gnus-topic-mode hl-line-mode))
-
-(setq gnus-topic-topology '(("Gnus" visible)
-                                 (("misc" visible))
-                                 (("jixiuf" visible nil nil))
-                                 (("vmacs" visible nil nil))))
-(setq gnus-topic-alist
-      '(("jixiuf" ; the key of topic
-         "nnmaildir+jixiuf:inbox"
-         "nnmaildir+jixiuf:Deleted Messages"
-         "nnmaildir+jixiuf:Junk"
-         "nnmaildir+jixiuf:Drafts"
-         "nnmaildir+jixiuf:Sent Messages")
-        ("vmacs" ; the key of topic
-         "nnmaildir+vmacs:inbox"
-         "nnmaildir+vmacs:Deleted Messages"
-         "nnmaildir+vmacs:Junk"
-         "nnmaildir+vmacs:Drafts"
-         "nnmaildir+vmacs:Sent Messages")
-        ("misc" ; the key of topic
-         ;; "nnfolder+archive:sent.2015-12"
-         ;; "nnfolder+archive:sent.2016"
-         "nndraft:drafts")
-        ("Gnus")))
-
+;; gnus-level-subscribed:5
+(setq gnus-group-line-format "Lv%L\ %M\ %S\ %p\ %P\ %5y/%-5t:%B%(%g%)\n")
 ;; https://www.math.utah.edu/docs/info/gnus_5.html#SEC51
 (setq gnus-summary-line-format
       (concat
@@ -172,6 +154,34 @@
 					  ((+ 86400 (gnus-seconds-today)) . "%a%b%d %H:%M昨")
 					  ((gnus-seconds-year) . "%a%b%d %H:%M")
 					  (t . "%a%Y%b%d %H:%M"))))
+(setq gnus-permanently-visible-groups;不管有没有未读，都展示
+      "nnmaildir\\+jixiuf:Sent Messages\\|inbox$\\|nnmaildir\\+jixiuf:Drafts")
+(delete 'gnus-topic-alist gnus-variable-list)
+(delete 'gnus-topic-topology gnus-variable-list)
+(setq gnus-topic-topology '(("Gnus" visible)
+                                 (("misc" visible))
+                                 (("jixiuf" visible))
+                                 (("vmacs" visible ))))
+(setq gnus-topic-alist
+      '(("jixiuf" ; the key of topic
+         "nnmaildir+jixiuf:inbox"
+         "nnmaildir+jixiuf:Deleted Messages"
+         "nnmaildir+jixiuf:Junk"
+         "nnmaildir+jixiuf:Drafts"
+         "nnmaildir+jixiuf:Sent Messages")
+        ("vmacs" ; the key of topic
+         "nnmaildir+vmacs:inbox"
+         "nnmaildir+vmacs:Deleted Messages"
+         "nnmaildir+vmacs:Junk"
+         "nnmaildir+vmacs:Drafts"
+         "nnmaildir+vmacs:Sent Messages")
+        ("misc" ; the key of topic
+         ;; "nnfolder+archive:sent.2015-12"
+         ;; "nnfolder+archive:sent.2016"
+         "nndraft:drafts")
+        ("Gnus")))
+
+
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
 
