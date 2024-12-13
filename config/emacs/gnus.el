@@ -73,6 +73,7 @@
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
   (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-rescan-group);gr old M-g
+  (define-key gnus-summary-mode-map (kbd "C-c M/") #'gnus-summary-limit-map);/
 
   (define-key gnus-summary-mode-map  "v" #'gnus-summary-next-page)     ;old space
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
@@ -80,11 +81,20 @@
 
 (setq gnus-interactive-exit nil)     ;退出时不必确认
 (setq gnus-expert-user t)
+(setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
+(setq message-directory "~/maildir/")
+;; (with-eval-after-load 'gnus-search
+;;   (add-to-list 'gnus-search-default-engines '((nnmaildir:vmacs . gnus-search-find-grep))))
+;; (setq gnus-search-mu-remove-prefix (expand-file-name "~/maildir/vmacs"))
 (setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
       `((nnmaildir ,user-full-name (directory "~/maildir/qq"))
+        ;; (nntp "news.gmane.io")
         ;; (nntp "news.gwene.org")
-        (nnmaildir "vmacs"  (directory "~/maildir/vmacs"))
+        (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
+                   (nnmaildir-directory "~/maildir/vmacs")
+                   (gnus-search-engine gnus-search-find-grep)
+                   )
         ;; (nntp "news.gmane.org")
         ;; (nnimap ,user-mail-address
         ;;         (nnimap-address "localhost")
@@ -135,6 +145,7 @@
 (setq gnus-article-date-headers '(local))
 (setq gnus-summary-mode-hook 'hl-line-mode)
 (setq gnus-group-mode-hook  '(gnus-topic-mode hl-line-mode))
+;; (setq gnus-message-archive-method '(nnmaildir "archive" (directory "~/maildir/archive")))
 ;; gnus-level-subscribed:5
 (setq gnus-group-line-format "Lv%L\ %M\ %S\ %p\ %P\ %5y/%-5t:%B%(%g%)\n")
 ;; https://www.math.utah.edu/docs/info/gnus_5.html#SEC51
@@ -186,6 +197,8 @@
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
+;; (setq gnus-exit-gnus-hook (quote (mm-destroy-postponed-undisplay-list)))
+(setq gnus-exit-gnus-hook #'mbsync)
 
 (defun mbsync()
   (interactive)
