@@ -28,6 +28,7 @@
          (address ,user-mail-address-2)
          ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address-2)))))
 
+;; (setq gnus-search-ignored-newsgroups "nndraft:drafts")
 ;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 (with-eval-after-load 'message
   ;; From: 后 tab 键 切换 发送邮箱
@@ -83,11 +84,15 @@
 (setq gnus-interactive-exit nil)     ;退出时不必确认
 (setq gnus-expert-user t)
 ;; GG 搜索支持 subject:keyword from:keyword body:keyword cc:keyword tag:notmuch
+;; 可以 #选多个group 进行搜索
+;; Gg 则后将搜索结果保存为一个virtual group
 (setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
-(with-eval-after-load 'gnus-search
-  (add-to-list 'gnus-search-default-engines '((nndraft . gnus-search-notmuch))))
-;; (setq gnus-search-notmuch-remove-prefix (expand-file-name"~/maildir/"))
-;; (setq gnus-search-notmuch-config-file (expand-file-name "~/.notmuch-config"))
+
+;; nndraft 会导致在group 上GG搜索时失败，
+;; 我不想显示这个nndraft 目前没找到办法，可以使用u subscribed
+;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
+;; (with-eval-after-load 'gnus-search ; 这段没生效
+;;   (add-to-list 'gnus-search-default-engines '((nndraft . gnus-search-notmuch))))
 
 (setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
@@ -127,9 +132,8 @@
      ;; (expiry-wait . 2)
      (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
     ("nnmaildir.*jixiuf:.*"
-     (gnus-show-threads
-      nil)
-     (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
+     (gnus-show-threads nil)
+     (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
      (gnus-use-scoring nil)
      ;; (expiry-wait . 2)
      (display . all))))
@@ -200,7 +204,10 @@
         ("misc" ; the key of topic
          ;; "nnfolder+archive:sent.2015-12"
          ;; "nnfolder+archive:sent.2016"
-         "nndraft:drafts")
+         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u subscribed
+         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
+         "nndraft:drafts"
+         )
         ("Gnus")))
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
@@ -211,6 +218,7 @@
 (defun mbsync()
   (interactive)
   (let ((process (start-process "mbsync" "*Messages*" "mbsync" "-aq")))
+    (set-process-query-on-exit-flag process nil)
     (set-process-sentinel
      process
      (lambda (proc _)
