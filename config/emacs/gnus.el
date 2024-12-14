@@ -2,8 +2,9 @@
 ;; 使用notmuch 对邮件进行索引,gnus使用notmuch的搜索功能
 ;; 从而利用gnus 的nnselect+gnus-search-notmuch功能对邮件进行分组
 ;; 可以实现以下分组:
-;; 1. unread
+;; 1. unread (需要利用 notmuch 的tag）
 ;; 2. 根据cc to bcc 等header 对mail list 的邮件进行分组
+;; 这种方式 因邮件在本地,notmuch索引搜索也很快，几乎无卡顿
 ;;
 ;; 我的多个邮箱 通过自动转发功能 汇总到一个邮箱，mbsync同步时只同步这一个，速度会快一些
 

@@ -39,6 +39,6 @@ for maildir in "$HOME/maildir/"*/; do
 done
 
 # 如果有新邮件，发送一次通知
-# if [ -n "$notification" ]; then
+if [ -n "$notification" ]; then
   /usr/bin/notify-send -a "Mbsync" "✉ 新邮件!" "${notification}"
-# fi
+fi
