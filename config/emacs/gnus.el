@@ -86,6 +86,8 @@
 ;; GG 搜索支持 subject:keyword from:keyword body:keyword cc:keyword tag:notmuch
 ;; 可以 #选多个group 进行搜索
 ;; Gg 则后将搜索结果保存为一个virtual group
+;; 另外可以 GV 创建空的virtuall group ,然后 Gv 将其他group加入到那个空组
+;; 如将所有邮箱的inbox 加到这个虚组中
 (setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
 
 ;; nndraft 会导致在group 上GG搜索时失败，
@@ -125,18 +127,25 @@
         ))
 ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Parameters.html
 (setq gnus-parameters
-  '(("nnmaildir.*vmacs:.*"
-     (gnus-show-threads t)
-     ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
-     (gnus-use-scoring nil)
-     ;; (expiry-wait . 2)
-     (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
-    ("nnmaildir.*jixiuf:.*"
-     (gnus-show-threads nil)
-     (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
-     (gnus-use-scoring nil)
-     ;; (expiry-wait . 2)
-     (display . all))))
+      '(("nnvirtual:.*"
+         (gnus-show-threads t)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
+         (gnus-use-scoring nil)
+         ;; (expiry-wait . 2)
+         (display . 500))
+        ("nnmaildir.*vmacs:.*"
+         (gnus-show-threads t)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         (gnus-use-scoring nil)
+         ;; (expiry-wait . 2)
+         (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
+        ("nnmaildir.*jixiuf:.*"
+         (gnus-show-threads nil)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         (gnus-use-scoring nil)
+         ;; (expiry-wait . 2)
+         (display . all))))
 ;; (setq mm-discouraged-alternatives '( "text/html" "text/richtext"))
 (when window-system
   (setq gnus-sum-thread-tree-indent " ")
@@ -181,7 +190,7 @@
 					  ((gnus-seconds-year) . "%a%b%d %H:%M")
 					  (t . "%a%Y%b%d %H:%M"))))
 (setq gnus-permanently-visible-groups;不管有没有未读，都展示
-      "nnmaildir\\+jixiuf:Sent Messages\\|inbox$\\|nnmaildir\\+jixiuf:Drafts")
+      "unread$\\|inbox$")
 (delete 'gnus-topic-alist gnus-variable-list)
 (delete 'gnus-topic-topology gnus-variable-list)
 (setq gnus-topic-topology '(("Gnus" visible)
@@ -204,6 +213,18 @@
         ("misc" ; the key of topic
          ;; "nnfolder+archive:sent.2015-12"
          ;; "nnfolder+archive:sent.2016"
+         ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
+         "nnvirtual:inbox"
+         ;;"nnselect:unread"    通过 Gg 后输入groupname:unread,然后用 tag:unread 作关键词搜索后的结果
+         ;; 创建完"nnselect:unread" 后需要通过 Gp 编辑这个group ,在(nnselect-specs 的上一行添加
+         ;; (nnselect-rescan t)  (nnselect-always-regenerate t)
+         ;; 确保重新进入会刷新
+         ;; 保存后，然后重新打开gnus 能其将这段配置写入 .newsrc.eld 文件后即可
+         ;; 这个搜索需要信赖gnus-search-notmuch 的支持 notmuch 的配置文件中
+         ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
+         ;; [new]
+         ;; tags=unread;inbox;
+         "nnselect:unread"
          ;; 我不想显示这个nndraft 目前没找到办法，可以使用u subscribed
          ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
          "nndraft:drafts"
