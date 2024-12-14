@@ -82,7 +82,6 @@
 (setq gnus-interactive-exit nil)     ;退出时不必确认
 (setq gnus-expert-user t)
 (setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
-(setq message-directory "~/maildir/")
 ;; (with-eval-after-load 'gnus-search
 ;;   (add-to-list 'gnus-search-default-engines '((nnmaildir:vmacs . gnus-search-find-grep))))
 ;; (setq gnus-search-mu-remove-prefix (expand-file-name "~/maildir/vmacs"))

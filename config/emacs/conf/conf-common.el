@@ -11,6 +11,9 @@
  ;; initial-buffer-choice "~/"
 
  treesit-max-buffer-size 107374182   ;100m
+ gnus-directory "~/maildir/news"
+ message-directory "~/maildir/"
+
 
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
