@@ -10,6 +10,7 @@ default:
 	make -C config/emacs
 
 deploy:
+	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
 	@-for file in dots/*; do \
 		link_name=$$(echo "$$file" | tr ':' '/'); \
 		name=$$(basename "$$link_name"); \
