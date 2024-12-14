@@ -2,6 +2,8 @@
 Description=Mbsync synchronization service
 
 [Service]
+#cjk 
+Environment="XAPIAN_CJK_NGRAM=1"
 Type=oneshot
 ExecStart=/usr/bin/mbsync -Va
 ExecStartPost=/usr/bin/sh -c '/usr/bin/notmuch new;/usr/local/bin/mbsync-notify'

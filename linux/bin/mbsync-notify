@@ -21,21 +21,24 @@ fi
 #count new mail for every maildir, only in INBOX
 # since there are maildirs/accounts in a format `~/Mail/account1/subacc1`,
 # `~/Mail/account1/subacc2`, `~/Mail/account2/subacc1` etc
-# there should be such an expansion
-maildirnew="$HOME/maildir/*/inbox/new/"
-new="$(find $maildirnew -type f | wc -l)"
+notification=""
+# 遍历每个maildir目录
+for maildir in "$HOME/maildir/"*/; do
+  inbox_dir="${maildir}inbox"
+  if [ -d "$inbox_dir" ]; then
+      new_count=$(find "${maildir}inbox/new/" -type f | wc -l)
+      old_count=$(find "${maildir}inbox/cur/" -type f | wc -l)
+      if [ "$new_count" -gt 0 ]; then
+          if [ "$notification" = "" ]; then
+              notification+="目录: $(basename "$maildir") 新: $new_count 旧: $old_count"
+          else
+              notification+="\n目录: $(basename "$maildir") 新: $new_count 旧: $old_count"
+          fi
+      fi
+  fi
+done
 
-#count old mail for every maildir
-maildirold="$HOME/maildir/*/inbox/cur/"
-old="$(find $maildirold -type f | wc -l)"
-
-#`notify-send` requires connection to DBUS_SESSION_BUS_ADDRESS
-# and one way is to export display and use X server authority cookies thru .Xauthority
-# see here https://askubuntu.com/questions/298608/notify-send-doesnt-work-from-crontab
-export DISPLAY=:0;
-# export XAUTHORITY=~/.Xauthority
-
-
-if [ $new -gt 0 ]; then
-  /usr/bin/notify-send  -a "Mbsync" "✉New mail!" "New: $new Old: $old"
-fi
+# 如果有新邮件，发送一次通知
+# if [ -n "$notification" ]; then
+  /usr/bin/notify-send -a "Mbsync" "✉ 新邮件!" "${notification}"
+# fi
