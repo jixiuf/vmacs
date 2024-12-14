@@ -1,3 +1,12 @@
+;; 目前我采用的方案是 mbsync 同步邮件到本地
+;; 使用notmuch 对邮件进行索引,gnus使用notmuch的搜索功能
+;; 从而利用gnus 的nnselect+gnus-search-notmuch功能对邮件进行分组
+;; 可以实现以下分组:
+;; 1. unread
+;; 2. 根据cc to bcc 等header 对mail list 的邮件进行分组
+;;
+;; 我的多个邮箱 通过自动转发功能 汇总到一个邮箱，mbsync同步时只同步这一个，速度会快一些
+
 ;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
 ;; https://ericabrahamsen.net/tech/2014/oct/gnus-dovecot-lucene.html
 (when (member (system-name) '("jxfhome" "jxfluoji"))
@@ -103,11 +112,11 @@
                    (gnus-search-engine gnus-search-notmuch
                                        (remove-prefix ,(expand-file-name"~/maildir/qq"))
                                        (config-file ,(expand-file-name "~/.notmuch-config"))))
-        (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
-                   ;; (nnmaildir-directory "~/maildir/vmacs")
-                   (gnus-search-engine gnus-search-notmuch
-                                       (remove-prefix ,(expand-file-name"~/maildir/vmacs"))
-                                       (config-file ,(expand-file-name "~/.notmuch-config"))))
+        ;; (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
+        ;;            ;; (nnmaildir-directory "~/maildir/vmacs")
+        ;;            (gnus-search-engine gnus-search-notmuch
+        ;;                                (remove-prefix ,(expand-file-name"~/maildir/vmacs"))
+        ;;                                (config-file ,(expand-file-name "~/.notmuch-config"))))
         ;; (nntp "news.gmane.io")
         ;; (nntp "news.gwene.org")
         ;; (nntp "news.gmane.org")
@@ -134,18 +143,27 @@
          (gnus-use-scoring nil)
          ;; (expiry-wait . 2)
          (display . 500))
-        ("nnmaildir.*vmacs:.*"
+        ("nnselect:.*"
+         (gnus-show-threads t)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
+         (gnus-use-scoring nil)
+         ;; (expiry-wait . 2)
+         (display . 500))
+        ;; ("nnmaildir.*vmacs:.*"
+        ;;  (gnus-show-threads t)
+        ;;  (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+        ;;  (gnus-use-scoring nil)
+        ;;  ;; (expiry-wait . 2)
+        ;;  (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
+        ("nnmaildir.*jixiuf:.*"
          (gnus-show-threads t)
          (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
          (gnus-use-scoring nil)
+         (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
+         ;; (display . all)
          ;; (expiry-wait . 2)
-         (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
-        ("nnmaildir.*jixiuf:.*"
-         (gnus-show-threads nil)
-         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
-         (gnus-use-scoring nil)
-         ;; (expiry-wait . 2)
-         (display . all))))
+         )))
 ;; (setq mm-discouraged-alternatives '( "text/html" "text/richtext"))
 (when window-system
   (setq gnus-sum-thread-tree-indent " ")
@@ -190,13 +208,16 @@
 					  ((gnus-seconds-year) . "%a%b%d %H:%M")
 					  (t . "%a%Y%b%d %H:%M"))))
 (setq gnus-permanently-visible-groups;不管有没有未读，都展示
-      "unread$\\|inbox$")
+      "qq$\\|gmail$\\|emacs$\\|inbox$")
+;; Gnus的默认配置, 生成 "sent.%Y-%m" 格式的 Send-Mail存档, 这与imap的Send-Messages重复, 因此关闭改功能
+(setq gnus-message-archive-group nil)
+
 (delete 'gnus-topic-alist gnus-variable-list)
 (delete 'gnus-topic-topology gnus-variable-list)
 (setq gnus-topic-topology '(("Gnus" visible)
                                  (("misc" visible))
-                                 (("jixiuf" visible))
-                                 (("vmacs" visible ))))
+                                 (("jixiuf" visible))))
+
 (setq gnus-topic-alist
       '(("jixiuf" ; the key of topic
          "nnmaildir+jixiuf:inbox"
@@ -204,18 +225,13 @@
          "nnmaildir+jixiuf:Junk"
          "nnmaildir+jixiuf:Drafts"
          "nnmaildir+jixiuf:Sent Messages")
-        ("vmacs" ; the key of topic
-         "nnmaildir+vmacs:inbox"
-         "nnmaildir+vmacs:Deleted Messages"
-         "nnmaildir+vmacs:Junk"
-         "nnmaildir+vmacs:Drafts"
-         "nnmaildir+vmacs:Sent Messages")
         ("misc" ; the key of topic
-         ;; "nnfolder+archive:sent.2015-12"
-         ;; "nnfolder+archive:sent.2016"
          ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
+         ;; 目前只用到一个邮箱，暂时用不上 ,nnvirtual的另一个缺点上 不能在其上继续使用GG  进行搜索
          "nnvirtual:inbox"
+         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Selection-Groups.html
          ;;"nnselect:unread"    通过 Gg 后输入groupname:unread,然后用 tag:unread 作关键词搜索后的结果
+         ;; (query . "tag:unread")
          ;; 创建完"nnselect:unread" 后需要通过 Gp 编辑这个group ,在(nnselect-specs 的上一行添加
          ;; (nnselect-rescan t)  (nnselect-always-regenerate t)
          ;; 确保重新进入会刷新
@@ -225,20 +241,34 @@
          ;; [new]
          ;; tags=unread;inbox;
          "nnselect:unread"
-         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u subscribed
+         ;; like "nnselect:unread" but with
+         ;; address: 发件人+收件人 包括密送 抄送等,
+         ;; recipient: 只包括收件人+密送 抄送等
+         ;; (query . "address:emacs-devel@gnu.org or address:debbugs.gnu.org")
+         ;; (query . "recipient:emacs-devel@gnu.org")
+         ;;gnus 的语法 https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
+         ;; notmuch 的语法 https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
+         ;; notmuch 会使用如下命令查询，因duplicate 去重，若自己给自己发邮件，发件箱也会存一份完全一样的，
+         ;; 去重后导致只返回发件箱的，但过滤条件就会再次过滤只显示发件箱就会导致少显示几条
+         ;; notmuch  search --output=files --duplicate=1 "to:mail2@qq.com or  or to:mail1@formail.com"
+         "nnselect:emacs"
+         "nnselect:qq"
+         "nnselect:gmail"
+         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
          ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
          "nndraft:drafts"
+         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
          )
         ("Gnus")))
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
 ;; (setq gnus-exit-gnus-hook (quote (mm-destroy-postponed-undisplay-list)))
-(setq gnus-exit-gnus-hook #'mbsync)
+(setq gnus-after-exiting-gnus-hook #'mbsync)
 
 (defun mbsync()
   (interactive)
-  (let ((process (start-process "mbsync" "*Messages*" "mbsync" "-aq")))
+  (let ((process (start-process "mbsync" "*Messages*" "sh" "-c" "mbsync -aq;notmuch new")))
     (set-process-query-on-exit-flag process nil)
     (set-process-sentinel
      process

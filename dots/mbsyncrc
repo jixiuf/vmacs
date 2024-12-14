@@ -39,40 +39,40 @@ SyncState *
 
 ####################################################
 
-# #####
-IMAPAccount vmacs
-Host imap.qq.com
-Port 993
-User vmacs@qq.com
-# 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
-# security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
-# security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null |grep imap.qq.com|grep vmacs@qq.com| awk '/password/ {print $NF}'"
-# PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
-SSLType IMAPS
-SSLVersions TLSv1.2
+# # #####
+# IMAPAccount vmacs
+# Host imap.qq.com
+# Port 993
+# User vmacs@qq.com
+# # 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
+# # security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
+# # security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
+# PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null |grep imap.qq.com|grep vmacs@qq.com| awk '/password/ {print $NF}'"
+# # PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
+# SSLType IMAPS
+# SSLVersions TLSv1.2
 
-IMAPStore vmacs-remote
-Account vmacs
+# IMAPStore vmacs-remote
+# Account vmacs
 
-# This section describes the local storage
-MaildirStore vmacs-local
-Path ~/maildir/vmacs/
-Inbox ~/maildir/vmacs/inbox
-# The SubFolders option allows to represent all
-# IMAP subfolders as local subfolders
-SubFolders Verbatim
+# # This section describes the local storage
+# MaildirStore vmacs-local
+# Path ~/maildir/vmacs/
+# Inbox ~/maildir/vmacs/inbox
+# # The SubFolders option allows to represent all
+# # IMAP subfolders as local subfolders
+# SubFolders Verbatim
 
-# This section a "channel", a connection between remote and local
-Channel vmacs
-Far :vmacs-remote:
-Near :vmacs-local:
-Patterns *
-Expunge Both
-CopyArrivalDate yes
-Sync All
-Create Near
-SyncState *
+# # This section a "channel", a connection between remote and local
+# Channel vmacs
+# Far :vmacs-remote:
+# Near :vmacs-local:
+# Patterns *
+# Expunge Both
+# CopyArrivalDate yes
+# Sync All
+# Create Near
+# SyncState *
 
 # IMAPAccount luojilab
 # Host imap.feishu.cn 
