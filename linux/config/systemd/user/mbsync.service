@@ -4,6 +4,6 @@ Description=Mbsync synchronization service
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/mbsync -Va
-ExecStartPost=/usr/bin/sh -c '/usr/bin/mu index;/usr/local/bin/mbsync-notify'
+ExecStartPost=/usr/bin/sh -c '/usr/bin/notmuch new;/usr/local/bin/mbsync-notify'
 [Install]
 WantedBy=default.target

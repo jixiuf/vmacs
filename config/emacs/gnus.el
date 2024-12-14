@@ -62,12 +62,13 @@
   ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
   (define-key gnus-group-mode-map (kbd "C-c Mn") #'gnus-group-next-unread-group)     ;old  n
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old  G
+  (define-key gnus-group-mode-map (kbd "C-c M/") #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
   (define-key gnus-group-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old  g, now gr
 (with-eval-after-load 'gnus-sum
   ;; d:标记为已读  C-k:整个subject 已读
   ;; r 回复
-  ;; 交换t T 后 tk:标记当前thread分支为已读
+  ;; 交换t T 后 tk:标记当前thread子分支为已读
   (define-key gnus-summary-mode-map  "t" #'gnus-summary-thread-map)     ;old T
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
@@ -81,19 +82,27 @@
 
 (setq gnus-interactive-exit nil)     ;退出时不必确认
 (setq gnus-expert-user t)
+;; GG 搜索支持 subject:keyword from:keyword body:keyword cc:keyword tag:notmuch
 (setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
-;; (with-eval-after-load 'gnus-search
-;;   (add-to-list 'gnus-search-default-engines '((nnmaildir:vmacs . gnus-search-find-grep))))
-;; (setq gnus-search-mu-remove-prefix (expand-file-name "~/maildir/vmacs"))
+(with-eval-after-load 'gnus-search
+  (add-to-list 'gnus-search-default-engines '((nndraft . gnus-search-notmuch))))
+;; (setq gnus-search-notmuch-remove-prefix (expand-file-name"~/maildir/"))
+;; (setq gnus-search-notmuch-config-file (expand-file-name "~/.notmuch-config"))
+
 (setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
-      `((nnmaildir ,user-full-name (directory "~/maildir/qq"))
+      `((nnmaildir ,user-full-name
+                   (directory "~/maildir/qq")
+                   (gnus-search-engine gnus-search-notmuch
+                                       (remove-prefix ,(expand-file-name"~/maildir/qq"))
+                                       (config-file ,(expand-file-name "~/.notmuch-config"))))
+        (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
+                   ;; (nnmaildir-directory "~/maildir/vmacs")
+                   (gnus-search-engine gnus-search-notmuch
+                                       (remove-prefix ,(expand-file-name"~/maildir/vmacs"))
+                                       (config-file ,(expand-file-name "~/.notmuch-config"))))
         ;; (nntp "news.gmane.io")
         ;; (nntp "news.gwene.org")
-        (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
-                   (nnmaildir-directory "~/maildir/vmacs")
-                   (gnus-search-engine gnus-search-find-grep)
-                   )
         ;; (nntp "news.gmane.org")
         ;; (nnimap ,user-mail-address
         ;;         (nnimap-address "localhost")
