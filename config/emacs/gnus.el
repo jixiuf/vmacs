@@ -155,6 +155,7 @@
          ;; 默认情况下newsrc 会缓存搜索的结果(nnselect-always-regenerate t) 后则不缓存
          ;; 每次都重新生成
          (nnselect-always-regenerate t)
+         ;; C-c C-s C-a 排序 author, C-c C-s C-d:date
          (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
          (display . 500))
@@ -305,5 +306,18 @@
            (gnus-group-get-new-news))
          (when (eq major-mode 'gnus-summary-mode)
            (gnus-summary-rescan-group)))))))
+
+;; (unless (gnus-group-entry "nnselect:gmail")
+;;   (gnus-group-make-group
+;;    "gmail"
+;;    (list 'nnselect "nnselect")
+;;    nil
+;;    (list
+;;     '(nnselect-specs (nnselect-function . gnus-search-run-query)
+;;                      (nnselect-args (search-query-spec (query . "recipient:jixiuf@gmail.com") (raw))
+;;                                     (search-group-spec ("nnmaildir:jixiuf" "nnmaildir+jixiuf:inbox"))))
+;;     (cons 'nnselect-artlist nil))))
+
+
 
 (provide 'gnus)
