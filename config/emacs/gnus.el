@@ -30,14 +30,32 @@
       smtpmail-debug-info t
       smtpmail-debug-verb t)
 
+;; Message 根据from: 自动设置 "X-Message-SMTP-Method" 功能。
+(defun vmacs-message-server-alist-function ()
+  "guess smpt server by From: header"
+  (let* ((from (cadr (mail-extract-address-components
+                      (save-restriction
+                        (widen)
+                        (message-narrow-to-headers-or-head)
+                        (message-fetch-field "From")))))
+         (auth (auth-source-search :user from :protocol "smtp" :require '(:host))))
+    (when auth
+      (let* ((entry (car auth))
+             (host (plist-get entry :host))
+             (port (plist-get entry :port)))
+        (format "smtp %s %s %s" host (or port "465") from)))))
+;; machine smtp.qq.com port 465 login yourmail@qq.com  protocol smtp  password yourpasswd
+(setq message-server-alist '((vmacs-message-server-alist-function)))
+
+
 ;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
 (setq gnus-posting-styles
       `((".*" ; Matches all groups of messages with default qq
          (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) ))
-         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address)))
+         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address)))
         ("vmacs" ; Matches Gnus group called "vmacs"
          (address ,user-mail-address-2)
-         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address-2)))))
+         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address-2)))))
 
 ;; (setq gnus-search-ignored-newsgroups "nndraft:drafts")
 ;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
