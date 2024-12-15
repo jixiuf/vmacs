@@ -22,6 +22,7 @@
 ;; C-c C-f C-c: goto Cc:
 ;; C-c C-c :send
 ;; C-c C-k : 丢弃
+;; nndraft:drafts 中的草稿可以e 后编辑
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-smtp-user user-mail-address
       smtpmail-smtp-server "smtp.qq.com"
@@ -31,6 +32,7 @@
       smtpmail-debug-verb t)
 
 ;; Message 根据from: 自动设置 "X-Message-SMTP-Method" 功能。
+;; 当已经有X-Message-SMTP-Method header时 此方法无效
 (defun vmacs-message-server-alist-function ()
   "guess smpt server by From: header"
   (let* ((from (cadr (mail-extract-address-components
@@ -49,10 +51,17 @@
 
 
 ;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
-(setq gnus-posting-styles
+;; 回复消息时自动设置X-Message-SMTP-Method
+(setq gnus-posting-styles               ;C-h S check info of gnus-posting-styles
       `((".*" ; Matches all groups of messages with default qq
          (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) ))
          ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address)))
+        ((header "to" ,user-mail-address-2)
+         (address ,user-mail-address-2)
+         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address-2)))
+        ((header "to" ,user-mail-address-3)
+         (address ,user-mail-address-3)
+         ("X-Message-SMTP-Method" (concat "smtp smtp.gmail.com 465 " ,user-mail-address-3)))
         ("vmacs" ; Matches Gnus group called "vmacs"
          (address ,user-mail-address-2)
          ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address-2)))))
