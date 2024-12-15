@@ -140,7 +140,7 @@
         ))
 ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Parameters.html
 (setq gnus-parameters
-      '(("nnvirtual:.*"
+      `(("nnvirtual:.*"
          (gnus-show-threads t)
          (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
@@ -158,9 +158,9 @@
          (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
          (display . 500))
-        ("nnmaildir.*jixiuf:.*"
-         (gnus-show-threads t)
-         (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
+        (,(format "nnmaildir.*%s:.*" user-full-name)
+         (gnus-show-threads nil)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
          ;;expiry-wait expire-group 对gnus-secondary-select-methods中配的maildir 似乎未生效
          ;; (expire-group .  "nnmaildir+jixiuf:Deleted Messages")
          ;; (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
@@ -174,15 +174,16 @@
          ;; 比如说我的group是nnmaildir+jixiuf:inbox 它应该匹配gnus-parameters中"nnmaildir.*jixiuf:.*"
          ;; 中配置的parameters,但并没有,所以我下面又单独加了 "inbox",Sent Messages等的规则
          ;; 删除后移动哪个组  nnmail-expiry-wait  nnmail-expiry-target
+         ;; 也可以使用Bm 移动邮件的操作，来实现挪到“已删除邮件箱的功能”
          (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
          ;;  ;;; 删除后移动哪个组 nnmail-expiry-target
-         (expire-group .  "nnmaildir+jixiuf:Deleted Messages")
+         (expire-group .  ,(format "nnmaildir+%s:Deleted Messages" user-full-name))
          )
         ("Sent Messages\\|Drafts"
          (gnus-show-threads nil)
          (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
-         (expire-group . "nnmaildir+jixiuf:Deleted Messages")
+         (expire-group . ,(format "nnmaildir+%s:Deleted Messages" user-full-name))
          (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
          (gnus-use-scoring nil))
         ("Deleted Messages\\|Junk"
@@ -241,17 +242,16 @@
 
 (delete 'gnus-topic-alist gnus-variable-list)
 (delete 'gnus-topic-topology gnus-variable-list)
-(setq gnus-topic-topology '(("Gnus" visible)
+(setq gnus-topic-topology `(("Gnus" visible)
                                  (("misc" visible))
-                                 (("jixiuf" visible))))
-
+                                 ((,user-full-name visible))))
 (setq gnus-topic-alist
-      '(("jixiuf" ; the key of topic
-         "nnmaildir+jixiuf:inbox"
-         "nnmaildir+jixiuf:Deleted Messages"
-         "nnmaildir+jixiuf:Junk"
-         "nnmaildir+jixiuf:Drafts"
-         "nnmaildir+jixiuf:Sent Messages")
+      `((,user-full-name ; the key of topic
+         ,(format "nnmaildir+%s:inbox" user-full-name)
+         ,(format "nnmaildir+%s:Deleted Messages" user-full-name)
+         ,(format "nnmaildir+%s:Junk" user-full-name)
+         ,(format "nnmaildir+%s:Drafts" user-full-name)
+         ,(format "nnmaildir+%s:Sent Messages" user-full-name))
         ("misc" ; the key of topic
          ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
          ;; 目前只用到一个邮箱，暂时用不上 ,nnvirtual的另一个缺点上 不能在其上继续使用GG  进行搜索
