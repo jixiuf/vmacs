@@ -98,6 +98,7 @@
 (setq gnus-expert-user t)
 ;; GG 搜索支持 subject:keyword from:keyword body:keyword cc:keyword tag:notmuch
 ;; 可以 #选多个group 进行搜索
+;; 搜索后可以 C-cC-p 将这个搜索结果保存为一个nnselect:组
 ;; Gg 则后将搜索结果保存为一个virtual group
 ;; 另外可以 GV 创建空的virtuall group ,然后 Gv 将其他group加入到那个空组
 ;; 如将所有邮箱的inbox 加到这个虚组中
@@ -307,17 +308,97 @@
          (when (eq major-mode 'gnus-summary-mode)
            (gnus-summary-rescan-group)))))))
 
-;; (unless (gnus-group-entry "nnselect:gmail")
-;;   (gnus-group-make-group
-;;    "gmail"
-;;    (list 'nnselect "nnselect")
-;;    nil
-;;    (list
-;;     '(nnselect-specs (nnselect-function . gnus-search-run-query)
-;;                      (nnselect-args (search-query-spec (query . "recipient:jixiuf@gmail.com") (raw))
-;;                                     (search-group-spec ("nnmaildir:jixiuf" "nnmaildir+jixiuf:inbox"))))
-;;     (cons 'nnselect-artlist nil))))
+(add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
+(defun init-my-gnus-group()
+  ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
+  ;; 不用再需要重新创建，而是通过代码自动化了
+  ;;  下面用到的 user-mail-address-3 是我的gamil邮箱地址，没在此文件中定义
+  ;; 如果是手工创建nnselect 组：流程如下:
+  ;; 在groupbuffer中 将光标移动到你要搜索的那个group上 或用 # 选多个组
+  ;; 然后 Gg 后输入groupname: gmail ,然后输入搜索用的关键字: recipient:yourmailaddress
+  ;; gnus 的搜索语法 https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
+  ;; 我用到的搜索实现是 gnus-search-notmuch
+  ;; 此时刷新group 就会出现一个名为 nnselect:gmail 的新组
+  ;; 然后光标移动到这个组上 按下GE 编辑这个组 在 nnselect-specs的上一行
+  ;; 添加   (nnselect-rescan t) (nnselect-always-regenerate t)
+  ;; 只有这样 下次再进入这个组的时候 才会重新搜索，否则这个组就只是一个快照
+  ;; 当然也可以通过 gnus-parameters 为这个组设置 这两个属性
+  ;; 我的这个函数 就是将 GE编辑时的部分内容 copy出来通过gnus-group-make-group 实现的
+  ;; 编写过程中如果有部Kg 可以通过C-k 删掉某group，以便重建
+  (unless (gnus-group-entry "nnselect:gmail")
+    (gnus-group-make-group
+     "gmail"
+     (list 'nnselect "nnselect")
+     nil
+     (list
+      `(nnselect-specs (nnselect-function . gnus-search-run-query)
+                       (nnselect-args (search-query-spec (query . ,(format "recipient:%s" user-mail-address-3))
+                                                         (raw))
+                                      (search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                                                          ,(format "nnmaildir+%s:inbox" user-full-name)))))
+      '(nnselect-rescan t)
+      '(nnselect-always-regenerate t)
+      (cons 'nnselect-artlist nil))))
 
+  ;; 下面是创建 nnselect:emacs 这个emacs相关邮件定阅分组
+  (unless (gnus-group-entry "nnselect:emacs")
+    (gnus-group-make-group
+     "emacs"
+     (list 'nnselect "nnselect")
+     nil
+     (list
+      `(nnselect-specs (nnselect-function . gnus-search-run-query)
+                       (nnselect-args
+                        (search-query-spec
+                         (query
+                          . "address:emacs-devel@gnu.org or address:debbugs.gnu.org or address:emacs-tangents@gnu.org")
+                         (raw))
+                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
+      '(nnselect-rescan t)
+      '(nnselect-always-regenerate t)
+      (cons 'nnselect-artlist nil))))
+
+  ;; 未读邮件单独一个分组 nnselect:unread
+  (unless (gnus-group-entry "nnselect:unread")
+    (gnus-group-make-group
+     "unread"
+     (list 'nnselect "nnselect")
+     nil
+     (list
+      `(nnselect-specs (nnselect-function . gnus-search-run-query)
+                       (nnselect-args
+                        (search-query-spec
+                         ;; 这个搜索需要信赖 gnus-search-notmuch 的支持 notmuch 的配置文件中
+                         ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
+                         ;; [new]
+                         ;; tags=unread;inbox;
+                         (query . "tag:unread")
+                         (raw))
+                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
+      '(nnselect-rescan t)
+      '(nnselect-always-regenerate t)
+      (cons 'nnselect-artlist nil))))
+
+  ;; 直发我个人邮箱的分组 nnselect:qq
+  (unless (gnus-group-entry "nnselect:qq")
+    (gnus-group-make-group
+     "qq"
+     (list 'nnselect "nnselect")
+     nil
+     (list
+      `(nnselect-specs (nnselect-function . gnus-search-run-query)
+                       (nnselect-args
+                        (search-query-spec
+                         (query . ,qq-mail-query) ;如 recipient:yourmail@qq.com
+                         (raw))
+                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
+      '(nnselect-rescan t)
+      '(nnselect-always-regenerate t)
+      (cons 'nnselect-artlist nil))))
+  )
 
 
 (provide 'gnus)
