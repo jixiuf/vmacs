@@ -33,7 +33,8 @@
 ;; https://www.bounga.org/tips/2020/05/03/multiple-smtp-accounts-in-gnus-without-external-tools/
 (setq gnus-posting-styles
       `((".*" ; Matches all groups of messages with default qq
-         (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) )))
+         (address (concat (format "%s <%s>" ,user-full-name ,user-mail-address) ))
+         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address)))
         ("vmacs" ; Matches Gnus group called "vmacs"
          (address ,user-mail-address-2)
          ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 587 " ,user-mail-address-2)))))
@@ -142,30 +143,21 @@
       '(("nnvirtual:.*"
          (gnus-show-threads t)
          (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
-         ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
          (gnus-use-scoring nil)
-         ;; (expiry-wait . 2)
          (display . 500))
         ("nnselect:.*"
          (gnus-show-threads t)
          (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
-         ;; (gnus-article-sort-functions '((not gnus-article-sort-by-date)))
          (gnus-use-scoring nil)
-         ;; (expiry-wait . 2)
          (display . 500))
-        ;; ("nnmaildir.*vmacs:.*"
-        ;;  (gnus-show-threads t)
-        ;;  (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
-        ;;  (gnus-use-scoring nil)
-        ;;  ;; (expiry-wait . 2)
-        ;;  (display . 500))  ;C-u ret 可指定别的数量               ;big enouch without confirm
         ("nnmaildir.*jixiuf:.*"
          (gnus-show-threads t)
          (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
+         (expire-group .  "Deleted Messages")   ;;; 删除后移动哪个组(对maildir 似乎未生效) nnmail-expiry-target
          (gnus-use-scoring nil)
          (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
          ;; (display . all)
-         ;; (expiry-wait . 2)
          )))
 ;; (setq mm-discouraged-alternatives '( "text/html" "text/richtext"))
 (when window-system
