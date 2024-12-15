@@ -142,23 +142,55 @@
 (setq gnus-parameters
       '(("nnvirtual:.*"
          (gnus-show-threads t)
-         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
          (display . 500))
         ("nnselect:.*"
          (gnus-show-threads t)
-         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
+         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Selection-Groups.html
+         ;; 如果不加(nnselect-rescan t)
+         ;; g: gnus-group-get-new-news 的时候 并不会重新搜索以刷新nnselect 的group内容
+         ;; 但我的nnselect 是notmuch本地搜索返回的结果相对较快，故打开此开关
+         (nnselect-rescan t)
+         ;; 默认情况下newsrc 会缓存搜索的结果(nnselect-always-regenerate t) 后则不缓存
+         ;; 每次都重新生成
+         (nnselect-always-regenerate t)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
          (display . 500))
         ("nnmaildir.*jixiuf:.*"
          (gnus-show-threads t)
-         (gnus-article-sort-functions '((not gnus-article-sort-by-number)))
-         (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
-         (expire-group .  "Deleted Messages")   ;;; 删除后移动哪个组(对maildir 似乎未生效) nnmail-expiry-target
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
+         ;;expiry-wait expire-group 对gnus-secondary-select-methods中配的maildir 似乎未生效
+         ;; (expire-group .  "nnmaildir+jixiuf:Deleted Messages")
+         ;; (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
          (gnus-use-scoring nil)
          (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
          ;; (display . all)
-         )))
+         )
+        ("inbox"
+         ;; "nnmaildir.*jixiuf:.*"中配置的expiry-wait expire-group
+         ;; 对gnus-secondary-select-methods中配的maildir 似乎未生效
+         ;; 比如说我的group是nnmaildir+jixiuf:inbox 它应该匹配gnus-parameters中"nnmaildir.*jixiuf:.*"
+         ;; 中配置的parameters,但并没有,所以我下面又单独加了 "inbox",Sent Messages等的规则
+         ;; 删除后移动哪个组  nnmail-expiry-wait  nnmail-expiry-target
+         (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
+         ;;  ;;; 删除后移动哪个组 nnmail-expiry-target
+         (expire-group .  "nnmaildir+jixiuf:Deleted Messages")
+         )
+        ("Sent Messages\\|Drafts"
+         (gnus-show-threads nil)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
+         (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
+         (expire-group . "nnmaildir+jixiuf:Deleted Messages")
+         (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
+         (gnus-use-scoring nil))
+        ("Deleted Messages\\|Junk"
+         (gnus-show-threads nil)
+         (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
+         (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
+         (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
+         (gnus-use-scoring nil))))
 ;; (setq mm-discouraged-alternatives '( "text/html" "text/richtext"))
 (when window-system
   (setq gnus-sum-thread-tree-indent " ")
