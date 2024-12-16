@@ -98,6 +98,7 @@
 ;; Make all mails visible:
 ;; Select a group and press C-u RET in “Group Buffer”. Or C-u M-g in “Summary Buffer”.
 (with-eval-after-load 'gnus-group
+  (require 'transient)
   (transient-define-prefix gnus-select-group ()
     "swith to group with transient."
     [["Switch to Group"
@@ -212,7 +213,6 @@
          (gnus-use-scoring nil)
          (display . 500))
         ("nnselect:.*"
-         (gnus-show-threads t)
          ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Selection-Groups.html
          ;; 如果不加(nnselect-rescan t)
          ;; g: gnus-group-get-new-news 的时候 并不会重新搜索以刷新nnselect 的group内容
@@ -220,11 +220,15 @@
          (nnselect-rescan t)
          ;; 默认情况下newsrc 会缓存搜索的结果(nnselect-always-regenerate t) 后则不缓存
          ;; 每次都重新生成
-         (nnselect-always-regenerate t)
+         ;; (nnselect-always-regenerate t)
+         (gnus-show-threads t)
          ;; C-c C-s C-a 排序 author, C-c C-s C-d:date
-         (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
+         ;; 排序越靠后 优先级越高
+         (gnus-thread-sort-functions '(gnus-thread-sort-by-number
+                                   gnus-thread-sort-by-most-recent-date))
+         ;; (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
-         (display . 3000))
+         (display . 500))
         (,(format "nnmaildir.*%s:.*" user-full-name)
          (gnus-show-threads nil)
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
@@ -268,9 +272,6 @@
   (setq gnus-sum-thread-tree-vertical        "│")
   (setq gnus-sum-thread-tree-leaf-with-other "├─► ")
   (setq gnus-sum-thread-tree-single-leaf     "╰─► "))
-(setq gnus-thread-sort-functions
-      '((not gnus-thread-sort-by-date)))
-;; (setq gnus-thread-sort-functions (quote ((not gnus-thread-sort-by-most-recent-number))))
 (setq gnus-use-dribble-file nil)
 (setq gnus-always-read-dribble-file nil)
 (setq gnus-save-newsrc-file nil)
@@ -428,15 +429,15 @@
                        (nnselect-args
                         (search-query-spec
                          (query
-                          . "address:emacs-devel@gnu.org or address:debbugs.gnu.org or address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
+                          . "address:emacs-devel@gnu.org or address:bug-gnu-emacs@gnu.org or address:@debbugs.gnu.org or address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
                          (raw))
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
+      ;; '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
-(unless (gnus-group-entry "nnselect:emacs-info")
+  (unless (gnus-group-entry "nnselect:emacs-info")
     (gnus-group-make-group
      "emacs-info"
      (list 'nnselect "nnselect")
@@ -451,7 +452,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
+      ;; '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
   ;; 未读邮件单独一个分组 nnselect:unread
@@ -473,9 +474,9 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
+      ;; '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
-(unless (gnus-group-entry "nnselect:feed")
+  (unless (gnus-group-entry "nnselect:feed")
     (gnus-group-make-group
      "feed"
      (list 'nnselect "nnselect")
@@ -490,7 +491,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
+      ;; '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
   ;; 直发我个人邮箱的分组 nnselect:qq
@@ -508,7 +509,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
+      ;; '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
   )
 
