@@ -202,7 +202,7 @@
          ;; C-c C-s C-a 排序 author, C-c C-s C-d:date
          (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
-         (display . 500))
+         (display . 3000))
         (,(format "nnmaildir.*%s:.*" user-full-name)
          (gnus-show-threads nil)
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
@@ -304,15 +304,6 @@
          ,(format "nnmaildir+%s:Drafts" user-full-name)
          ,(format "nnmaildir+%s:Sent Messages" user-full-name))
         ("misc" ; the key of topic
-         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
-         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
-         "nndraft:drafts"
-         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
-         )
-        ("Gnus"
-         ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
-         ;; 目前只用到一个邮箱，暂时用不上 ,nnvirtual的另一个缺点上 不能在其上继续使用GG  进行搜索
-         "nnvirtual:inbox"
          ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Selection-Groups.html
          ;;"nnselect:unread"    通过 Gg 后输入groupname:unread,然后用 tag:unread 作关键词搜索后的结果
          ;; (query . "tag:unread")
@@ -325,6 +316,16 @@
          ;; [new]
          ;; tags=unread;inbox;
          "nnselect:unread"
+
+         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
+         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
+         "nndraft:drafts"
+         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
+         )
+        ("Gnus"
+         ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
+         ;; 目前只用到一个邮箱，暂时用不上 ,nnvirtual的另一个缺点上 不能在其上继续使用GG  进行搜索
+         "nnvirtual:inbox"
          ;; like "nnselect:unread" but with
          ;; address: 发件人+收件人 包括密送 抄送等,
          ;; recipient: 只包括收件人+密送 抄送等
