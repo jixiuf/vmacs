@@ -114,12 +114,28 @@
   (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-rescan-group);gr old M-g
   (define-key gnus-summary-mode-map (kbd "C-c M/") #'gnus-summary-limit-map);/
+  ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式 
+  (define-key gnus-summary-mode-map  (kbd "C-m") #'(lambda()(interactive)
+                                                     (call-interactively #'gnus-summary-scroll-up)             ;old RET
+                                                     (gnus-summary-select-article-buffer) ;old h
+                                                     ))
 
   (define-key gnus-summary-mode-map  "r" #'gnus-summary-mark-as-read-forward)     ;old d mark readed
   (define-key gnus-summary-mode-map  "d" #'gnus-summary-mark-as-expirable)     ;old E delete mail
   (define-key gnus-summary-mode-map  "v" #'gnus-summary-next-page)     ;old space
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
-  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article)) ;old gnus g ,now gr
+  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article) ;gr
+  ) ;old gnus g ,now gr
+(with-eval-after-load 'gnus-art
+  (define-key gnus-article-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
+  ;; 下面几个key 通过在article buffer 中直接实现next/prev article
+  ;; 需要gnus-widen-article-window=t
+  (define-key gnus-article-mode-map  (kbd "C-m") #'gnus-article-show-summary)     ;old h/s
+  (define-key gnus-article-mode-map  (kbd "C-j") (kbd "C-m GN C-m"))     ;next article
+  (define-key gnus-article-mode-map  (kbd "C-k") (kbd "C-m GP C-m"))     ;prev article
+  (define-key gnus-article-mode-map  (kbd "M-n") (kbd "C-m Gn C-m"))     ;next unread article
+  (define-key gnus-article-mode-map  (kbd "M-p") (kbd "C-m Gp C-m"))     ;prev unread article
+  )
 
 (setq gnus-interactive-exit nil)     ;退出时不必确认
 (setq gnus-expert-user t)
@@ -239,6 +255,12 @@
 (setq gnus-read-newsrc-file nil)
 (setq gnus-fetch-old-headers t)
 (setq gnus-article-date-headers '(local))
+;; 默认展示article 上，最上方25%为summary 所占，
+;; M-x:gnus-summary-select-article-buffer (default:h) 此选项则仅展示article
+;; summary buffer 中 s/h 是一对命令，h 相当于hide summary,s 则show summary
+;; 会根据gnus-widen-article-window 的值 来决定 summary buffer是否展示
+(setq gnus-widen-article-window t)
+(setq gnus-single-article-buffer t)
 (setq gnus-summary-mode-hook 'hl-line-mode)
 (setq gnus-group-mode-hook  '(gnus-topic-mode hl-line-mode))
 ;; (setq gnus-message-archive-method '(nnmaildir "archive" (directory "~/maildir/archive")))
