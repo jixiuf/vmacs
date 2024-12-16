@@ -266,6 +266,9 @@
 
 (with-eval-after-load 'go-translate
   ;; https://github.com/lorniu/go-translate/blob/master/README-zh.org
+  (add-to-list 'plz-curl-default-args "--dns-servers"  t)
+  (add-to-list 'plz-curl-default-args "1.1.1.1"  t)
+  
   (setq gt-langs '(en zh))
   (setq gt-buffer-render-window-config
         '((display-buffer-same-window)))
