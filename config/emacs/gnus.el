@@ -62,10 +62,7 @@
          ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address-2)))
         ((header "to" ,user-mail-address-3)
          (address ,user-mail-address-3)
-         ("X-Message-SMTP-Method" (concat "smtp smtp.gmail.com 465 " ,user-mail-address-3)))
-        ("vmacs" ; Matches Gnus group called "vmacs"
-         (address ,user-mail-address-2)
-         ("X-Message-SMTP-Method" (concat "smtp smtp.qq.com 465 " ,user-mail-address-2)))))
+         ("X-Message-SMTP-Method" (concat "smtp smtp.gmail.com 465 " ,user-mail-address-3)))))
 
 ;; (setq gnus-search-ignored-newsgroups "nndraft:drafts")
 ;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
