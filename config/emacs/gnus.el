@@ -10,8 +10,8 @@
 
 ;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
 ;; https://ericabrahamsen.net/tech/2014/oct/gnus-dovecot-lucene.html
-(when (member (system-name) '("jxfhome" "jxfluoji"))
-  (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
+;; (when (member (system-name) '("jxfhome" "jxfluoji"))
+;;   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
 
 ;; 转发:C-c C-f forward ,可在邮件列表中用 # 选多个 合并转发
 ;; C-c C-a – Attach file
@@ -304,6 +304,12 @@
          ,(format "nnmaildir+%s:Drafts" user-full-name)
          ,(format "nnmaildir+%s:Sent Messages" user-full-name))
         ("misc" ; the key of topic
+         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
+         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
+         "nndraft:drafts"
+         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
+         )
+        ("Gnus"
          ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
          ;; 目前只用到一个邮箱，暂时用不上 ,nnvirtual的另一个缺点上 不能在其上继续使用GG  进行搜索
          "nnvirtual:inbox"
@@ -332,13 +338,9 @@
          "nnselect:emacs"
          "nnselect:emacs-info"
          "nnselect:qq"
+         "nnselect:feed"
          "nnselect:gmail"
-         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
-         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
-         "nndraft:drafts"
-         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
-         )
-        ("Gnus")))
+         )))
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
@@ -419,7 +421,7 @@
                        (nnselect-args
                         (search-query-spec
                          (query
-                          . "address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
+                          . "recipient:emacs-tangents@gnu.org or recipient:info-gnu-emacs@gnu.org")
                          (raw))
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
@@ -442,6 +444,23 @@
                          ;; [new]
                          ;; tags=unread;inbox;
                          (query . "tag:unread")
+                         (raw))
+                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
+      '(nnselect-rescan t)
+      '(nnselect-always-regenerate t)
+      (cons 'nnselect-artlist nil))))
+(unless (gnus-group-entry "nnselect:feed")
+    (gnus-group-make-group
+     "feed"
+     (list 'nnselect "nnselect")
+     nil
+     (list
+      `(nnselect-specs (nnselect-function . gnus-search-run-query)
+                       (nnselect-args
+                        (search-query-spec
+                         (query
+                          . "from:.*@quoramail.com or from:.*@quora.com")
                          (raw))
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
