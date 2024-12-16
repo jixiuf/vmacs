@@ -22,6 +22,7 @@
 ;; C-c C-f C-c: goto Cc:
 ;; C-c C-c :send
 ;; C-c C-k : 丢弃
+;; R:只回复发件人，F：回复包括cc,bcc等
 ;; nndraft:drafts 中的草稿可以e 后编辑
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-smtp-user user-mail-address
@@ -97,13 +98,30 @@
 ;; Make all mails visible:
 ;; Select a group and press C-u RET in “Group Buffer”. Or C-u M-g in “Summary Buffer”.
 (with-eval-after-load 'gnus-group
+  (transient-define-prefix gnus-select-group ()
+    "swith to group with transient."
+    [["Switch to Group"
+      ("u"  "unread"  (lambda()(interactive) (when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit))(gnus-group-read-group nil t "nnselect:unread")) )
+      ("q"  "qq"    (lambda()(interactive) (when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit))(gnus-group-read-group nil t "nnselect:qq")) )
+      ("i"  "jixiuf:inbox"    (lambda()(interactive) (when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit))(gnus-group-read-group nil t "nnmaildir+jixiuf:inbox")) )
+      ("s"  "jixiuf:sent"    (lambda()(interactive) (when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit))(gnus-group-read-group nil t "nnmaildir+jixiuf:Sent Messages")) )
+      ("d"  "jixiuf:draft"    (lambda()(interactive) (when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit))(gnus-group-read-group nil t "nnmaildir+jixiuf:Drafts")) )
+      ("j"  "jixiuf:junk"    (lambda()(interactive)(when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit)) (gnus-group-read-group nil t "nnmaildir+jixiuf:Junk")) )
+      ("t"  "jixiuf:trush"    (lambda()(interactive)(when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit)) (gnus-group-read-group nil t "nnmaildir+jixiuf:Deleted Messages")) )
+      ("g"  "gmail"    (lambda()(interactive) (when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit))(gnus-group-read-group nil t "nnselect:gmail")) )
+      ("e"  "emacs"    (lambda()(interactive)(when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit)) (gnus-group-read-group nil t "nnselect:emacs")) )
+      ("n"  "emacs-news"    (lambda()(interactive)(when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit)) (gnus-group-read-group nil t "nnselect:emacs-info")) )
+      ("f"  "feed"    (lambda()(interactive)(when (eq major-mode 'gnus-summary-mode)(gnus-summary-exit)) (gnus-group-read-group nil t "nnselect:feed")) )
+      ]])
   ;; L or l (meow:caplock+l) 显示所有group
   ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
   (define-key gnus-group-mode-map (kbd "C-c Mn") #'gnus-group-next-unread-group)     ;old  n
   (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old  G
   (define-key gnus-group-mode-map (kbd "C-c M/") #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
   (define-key gnus-group-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
+  (define-key gnus-group-mode-map (kbd "b") #'gnus-select-group)
   (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old  g, now gr
+
 (with-eval-after-load 'gnus-sum
   ;; d:标记为已读  C-k:整个subject 已读
   ;; r 回复
@@ -114,6 +132,7 @@
   (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-rescan-group);gr old M-g
   (define-key gnus-summary-mode-map (kbd "C-c M/") #'gnus-summary-limit-map);/
+  (define-key gnus-summary-mode-map "b" #'gnus-select-group)
   ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
   (define-key gnus-summary-mode-map  (kbd "C-m") #'(lambda()(interactive)
                                                      (call-interactively #'gnus-summary-scroll-up)             ;old RET
@@ -123,13 +142,16 @@
   (define-key gnus-summary-mode-map  "r" #'gnus-summary-mark-as-read-forward)     ;old d mark readed
   (define-key gnus-summary-mode-map  "d" #'gnus-summary-mark-as-expirable)     ;old E delete mail
   (define-key gnus-summary-mode-map  "v" #'gnus-summary-next-page)     ;old space
+  (define-key gnus-summary-mode-map  "u" #'gnus-summary-exit)
+  (define-key gnus-summary-mode-map  "D" #'gnus-summary-delete-article)   ;B DEL 直接删
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
-  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-show-article) ;gr
+  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-reselect-current-group) ;gr
   ) ;old gnus g ,now gr
 (with-eval-after-load 'gnus-art
   (define-key gnus-article-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
+  (define-key gnus-article-mode-map "b" #'gnus-select-group)
   (define-key gnus-article-mode-map  (kbd "C-m") #'gnus-article-show-summary)     ;old h/s
   (define-key gnus-article-mode-map  (kbd "C-j") (kbd "C-m GN C-m"))     ;next article
   (define-key gnus-article-mode-map  (kbd "C-k") (kbd "C-m GP C-m"))     ;prev article
@@ -342,6 +364,8 @@
          "nnselect:feed"
          "nnselect:gmail"
          )))
+
+
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
