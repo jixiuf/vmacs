@@ -114,7 +114,7 @@
   (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-rescan-group);gr old M-g
   (define-key gnus-summary-mode-map (kbd "C-c M/") #'gnus-summary-limit-map);/
-  ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式 
+  ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
   (define-key gnus-summary-mode-map  (kbd "C-m") #'(lambda()(interactive)
                                                      (call-interactively #'gnus-summary-scroll-up)             ;old RET
                                                      (gnus-summary-select-article-buffer) ;old h
@@ -160,11 +160,11 @@
                    (gnus-search-engine gnus-search-notmuch
                                        (remove-prefix ,(expand-file-name"~/maildir/qq"))
                                        (config-file ,(expand-file-name "~/.notmuch-config"))))
-        ;; (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
-        ;;            ;; (nnmaildir-directory "~/maildir/vmacs")
-        ;;            (gnus-search-engine gnus-search-notmuch
-        ;;                                (remove-prefix ,(expand-file-name"~/maildir/vmacs"))
-        ;;                                (config-file ,(expand-file-name "~/.notmuch-config"))))
+        (nnmaildir "vmacs"  (directory "~/maildir/vmacs")
+                   ;; (nnmaildir-directory "~/maildir/vmacs")
+                   (gnus-search-engine gnus-search-notmuch
+                                       (remove-prefix ,(expand-file-name"~/maildir/vmacs"))
+                                       (config-file ,(expand-file-name "~/.notmuch-config"))))
         ;; (nntp "news.gmane.io")
         ;; (nntp "news.gwene.org")
         ;; (nntp "news.gmane.org")
@@ -330,6 +330,7 @@
          ;; 去重后导致只返回发件箱的，但过滤条件就会再次过滤只显示发件箱就会导致少显示几条
          ;; notmuch  search --output=files --duplicate=1 "to:mail2@qq.com or  or to:mail1@formail.com"
          "nnselect:emacs"
+         "nnselect:emacs-info"
          "nnselect:qq"
          "nnselect:gmail"
          ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
@@ -400,7 +401,25 @@
                        (nnselect-args
                         (search-query-spec
                          (query
-                          . "address:emacs-devel@gnu.org or address:debbugs.gnu.org or address:emacs-tangents@gnu.org")
+                          . "address:emacs-devel@gnu.org or address:debbugs.gnu.org or address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
+                         (raw))
+                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
+      '(nnselect-rescan t)
+      '(nnselect-always-regenerate t)
+      (cons 'nnselect-artlist nil))))
+
+(unless (gnus-group-entry "nnselect:emacs-info")
+    (gnus-group-make-group
+     "emacs-info"
+     (list 'nnselect "nnselect")
+     nil
+     (list
+      `(nnselect-specs (nnselect-function . gnus-search-run-query)
+                       (nnselect-args
+                        (search-query-spec
+                         (query
+                          . "address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
                          (raw))
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
