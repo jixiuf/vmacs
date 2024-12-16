@@ -1,5 +1,5 @@
 ;;; org-ai-useful.el --- A few useful functions and commands -*- lexical-binding: t; -*-
-(setq org-ai-default-chat-model "gpt-4o-mini")
+(setq org-ai-default-chat-model "gpt-4o")
 (setq org-ai-default-chat-system-prompt (car ai-system-prompts))
 (setq org-ai-image-directory "~/Documents/jianguo/jianguo/ai/images/")
 (setq org-ai-openai-api-token nil)
