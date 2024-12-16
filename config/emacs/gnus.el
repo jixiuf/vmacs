@@ -222,7 +222,7 @@
          ;; C-c C-s C-a 排序 author, C-c C-s C-d:date
          ;; 排序越靠后 优先级越高
          (gnus-thread-sort-functions '(gnus-thread-sort-by-number
-                                   gnus-thread-sort-by-most-recent-date))
+                                       gnus-thread-sort-by-most-recent-date))
          ;; (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
          (gnus-use-scoring nil)
          (display . 500))
@@ -302,10 +302,10 @@
 ;; (setq gnus-activate-level 4)
 ;; gnus-summary-line-format 内通过%&user-date; 自定义时间格式
 (setq gnus-user-date-format-alist (quote (
-					  ((gnus-seconds-today) . "%a%b%d %H:%M今")
-					  ((+ 86400 (gnus-seconds-today)) . "%a%b%d %H:%M昨")
-					  ((gnus-seconds-year) . "%a%b%d %H:%M")
-					  (t . "%a%Y%b%d %H:%M"))))
+					                      ((gnus-seconds-today) . "%a%b%d %H:%M今")
+					                      ((+ 86400 (gnus-seconds-today)) . "%a%b%d %H:%M昨")
+					                      ((gnus-seconds-year) . "%a%b%d %H:%M")
+					                      (t . "%a%Y%b%d %H:%M"))))
 (setq gnus-permanently-visible-groups;不管有没有未读，都展示
       "qq$\\|gmail$\\|emacs$\\|inbox$")
 ;; Gnus的默认配置, 生成 "sent.%Y-%m" 格式的 Send-Mail存档, 这与imap的Send-Messages重复, 因此关闭改功能
@@ -314,8 +314,8 @@
 (delete 'gnus-topic-alist gnus-variable-list)
 (delete 'gnus-topic-topology gnus-variable-list)
 (setq gnus-topic-topology `(("Gnus" visible)
-                                 (("misc" visible))
-                                 ((,user-full-name visible))))
+                            (("misc" visible))
+                            ((,user-full-name visible))))
 (setq gnus-topic-alist
       `((,user-full-name ; the key of topic
          ,(format "nnmaildir+%s:inbox" user-full-name)
@@ -324,6 +324,12 @@
          ,(format "nnmaildir+%s:Drafts" user-full-name)
          ,(format "nnmaildir+%s:Sent Messages" user-full-name))
         ("misc" ; the key of topic
+         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
+         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
+         "nndraft:drafts"
+         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
+         )
+        ("Gnus"
          ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Selection-Groups.html
          ;;"nnselect:unread"    通过 Gg 后输入groupname:unread,然后用 tag:unread 作关键词搜索后的结果
          ;; (query . "tag:unread")
@@ -336,13 +342,6 @@
          ;; [new]
          ;; tags=unread;inbox;
          "nnselect:unread"
-
-         ;; 我不想显示这个nndraft 目前没找到办法，可以使用u unsubscribed
-         ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
-         "nndraft:drafts"
-         ;; "nnfolder+archive:sent.2024-12" // imap server 端会有发件箱，用不到sent了
-         )
-        ("Gnus"
          ;; 通过 GV 创建"nnvirtual:inbox",后 再通过 Gv 依次将各邮箱的inbox 加入到这个virtual group 后
          ;; 目前只用到一个邮箱，暂时用不上 ,nnvirtual的另一个缺点上 不能在其上继续使用GG  进行搜索
          "nnvirtual:inbox"
@@ -383,6 +382,14 @@
          (when (eq major-mode 'gnus-summary-mode)
            (gnus-summary-rescan-group)))))))
 
+(defun gnus-query(args)
+  (gnus-search-run-query
+   (list
+    `(search-query-spec
+      (query . ,(car args))
+      (raw))
+    `(search-group-spec (,(format "nnmaildir:%s" user-full-name)
+                         ,(format "nnmaildir+%s:inbox" user-full-name))))))
 (add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
 (defun init-my-gnus-group()
   ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
@@ -400,6 +407,23 @@
   ;; 当然也可以通过 gnus-parameters 为这个组设置 这两个属性
   ;; 我的这个函数 就是将 GE编辑时的部分内容 copy出来通过gnus-group-make-group 实现的
   ;; 编写过程中如果有部Kg 可以通过C-k 删掉某group，以便重建
+
+  ;; 未读邮件单独一个分组 nnselect:unread
+  (unless (gnus-group-entry "nnselect:unread")
+    (gnus-group-make-group "unread"
+                           (list 'nnselect "nnselect")
+                           nil
+                           (list
+                            ;; 这个搜索需要依赖 gnus-search-notmuch 的支持 notmuch 的配置文件中
+                            ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
+                            ;; [new]
+                            ;; tags=unread;inbox;
+                            `(nnselect-specs (nnselect-function . gnus-query)
+                                             (nnselect-args . ("thread:* tag:unread")))
+                            '(nnselect-rescan t)
+                            ;; '(nnselect-always-regenerate t)
+                            (cons 'nnselect-artlist nil))))
+
   (unless (gnus-group-entry "nnselect:gmail")
     (gnus-group-make-group
      "gmail"
@@ -452,27 +476,6 @@
       ;; '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
-  ;; 未读邮件单独一个分组 nnselect:unread
-  (unless (gnus-group-entry "nnselect:unread")
-    (gnus-group-make-group
-     "unread"
-     (list 'nnselect "nnselect")
-     nil
-     (list
-      `(nnselect-specs (nnselect-function . gnus-search-run-query)
-                       (nnselect-args
-                        (search-query-spec
-                         ;; 这个搜索需要信赖 gnus-search-notmuch 的支持 notmuch 的配置文件中
-                         ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
-                         ;; [new]
-                         ;; tags=unread;inbox;
-                         (query . "tag:unread")
-                         (raw))
-                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
-                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
-      '(nnselect-rescan t)
-      ;; '(nnselect-always-regenerate t)
-      (cons 'nnselect-artlist nil))))
   (unless (gnus-group-entry "nnselect:feed")
     (gnus-group-make-group
      "feed"
