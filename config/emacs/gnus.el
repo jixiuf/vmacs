@@ -367,7 +367,7 @@
        '("^From:" "^To:" "^Cc:" "^Subject:" "^Newsgroups:" "^Date:"
          "Followup-To:" "Reply-To:" "^Organization:" "^X-Newsreader:" "^List-Id"
          "^Sender" "^X-Mailer:"))        ;T 查看article所有header
-(setq gnus-article-time-format "%Y")
+;; (setq gnus-article-time-format "%F %Y") ; 未生效？
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)

@@ -1,6 +1,15 @@
 (setq widen-automatically nil)         ;for goto-line
+
 (defvar-keymap  g-mode-map             ;meow: g
+  "4" #'query-replace ;space g4
+  "5" #'re-builder                                 ;;query-replace-regexp
   "g" #'vmacs-goto-line
+  "T" #'consult-grep
+  "t" #'consult-ripgrep
+  "q" #'grep
+  "e" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
+  "s" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "w" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
   "/" #'consult-focus-lines
   "z" #'consult-hide-lines
   "r" #'revert-buffer
@@ -17,6 +26,8 @@
   "," 'goto-last-change
   "." 'goto-last-change-reverse
   )
+(global-set-key (kbd "C-c G") g-mode-map)
+(global-set-key (kbd "C-c g") g-mode-map)
 (defvar-keymap  m-mode-map              ;meow: m
   "f" #'narrow-to-defun
   "v" #'rectangle-mark-mode
@@ -38,7 +49,6 @@
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
 
-(global-set-key (kbd "C-c G") g-mode-map)
 (defvar-keymap  vmacs-normal-mode-map
   "="  #'meow-indent
   "i" #'meow-insert
@@ -213,10 +223,7 @@
 
 (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
-(global-set-key (kbd "C-c g s") #'query-replace) ;space gs
-(global-set-key (kbd "C-c g r") #'re-builder)    ;query-replace-regexp
 
-(global-set-key (kbd "C-c ga") #'vmacs-replace-all)
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
 (defvar vmacs-do-nothing-map
   (let ((map (make-keymap)))

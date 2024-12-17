@@ -44,11 +44,11 @@
                   "a" #'xref-find-apropos
                   "c" #'eglot-find-declaration
                   "i" #'eglot-find-implementation
-                  "t" #'eglot-find-typeDefinition
+                  "D" #'eglot-find-typeDefinition
                   "n" #'flymake-goto-next-error
                   "p" #'flymake-goto-prev-error
                   "l" #'flymake-show-project-diagnostics
-                  "s" #'eglot-reconnect
+                  "S" #'eglot-reconnect
                   "h" #'eglot-code-actions)
   ;; brew install llvm
   ;;clangd https://clangd.llvm.org/installation.html
