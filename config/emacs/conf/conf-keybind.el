@@ -84,7 +84,7 @@
 (setq isearch-lazy-count t)
 (setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
-(vmacs-leader "," #'xref-go-back)
+(vmacs-leader "n" #'xref-go-back)
 (with-eval-after-load 'xref
   ;; for clean up second-selection set by vmacs-meow-grab-set-mark
   (add-hook 'xref-after-jump-hook #'meow--cancel-second-selection))

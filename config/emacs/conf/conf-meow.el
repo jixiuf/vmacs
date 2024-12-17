@@ -150,6 +150,8 @@
 (global-set-key (kbd "C-3") #'vmacs-meow-search-symbol-prev)
 (global-set-key (kbd "C-s") #'isearch-forward)
 (global-set-key (kbd "M-y") #'vmacs-yank-pop)
+(vmacs-leader "," #'meow-inner-of-thing)
+(vmacs-leader "." #'meow-bounds-of-thing)
 
 (require 'meow)
 (meow-setup)
