@@ -221,11 +221,12 @@
          (gnus-show-threads t)
          ;; C-c C-s C-a 排序 author, C-c C-s C-d:date
          ;; 排序越靠后 优先级越高
-         (gnus-thread-sort-functions '(gnus-thread-sort-by-number
-                                       gnus-thread-sort-by-most-recent-date))
-         ;; (gnus-article-sort-functions '((not gnus-article-sort-by-number))) ;not 是倒序的意思
+         (gnus-thread-sort-functions '((not gnus-thread-sort-by-number)
+                                       (not gnus-thread-sort-by-date)
+                                     gnus-thread-sort-by-most-recent-date))
+         (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
          (gnus-use-scoring nil)
-         (display . 500))
+         (display . 2000))
         (,(format "nnmaildir.*%s:.*" user-full-name)
          (gnus-show-threads nil)
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
@@ -362,7 +363,11 @@
          "nnselect:gmail"
          )))
 
-
+(setq gnus-visible-headers
+       '("^From:" "^To:" "^Cc:" "^Subject:" "^Newsgroups:" "^Date:"
+         "Followup-To:" "Reply-To:" "^Organization:" "^X-Newsreader:" "^List-Id"
+         "^Sender" "^X-Mailer:"))        ;T 查看article所有header
+(setq gnus-article-time-format "%Y")
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
@@ -450,7 +455,7 @@
                        (nnselect-args
                         (search-query-spec
                          (query
-                          . "address:emacs-devel@gnu.org or address:bug-gnu-emacs@gnu.org or address:@debbugs.gnu.org or address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
+                          . "address:@guile-emacs.org or address:emacs-devel@gnu.org or address:bug-gnu-emacs@gnu.org or address:@debbugs.gnu.org or address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
                          (raw))
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
