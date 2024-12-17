@@ -88,7 +88,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (with-eval-after-load 'completion-preview
   (define-key completion-preview-active-mode-map (kbd "C-n") #'vmacs-complete)
   (define-key completion-preview-active-mode-map (kbd "C-i") #'vmacs-complete)
-  (define-key completion-preview-active-mode-map (kbd "C-o") #'completion-preview-complete)
+  (define-key completion-preview-active-mode-map (kbd "C-o") #'completion-preview-insert)
   (define-key completion-preview-active-mode-map (kbd "C-j") #'completion-preview-insert)
   (define-key completion-preview-active-mode-map (kbd "C-s") #'completion-preview-next-candidate)
   (define-key completion-preview-active-mode-map (kbd "M-f") #'completion-preview-insert-word)
