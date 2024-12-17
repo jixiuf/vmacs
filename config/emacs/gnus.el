@@ -150,9 +150,11 @@
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
   (define-key gnus-article-mode-map "b" #'gnus-select-group)
-  (define-key gnus-article-mode-map  (kbd "C-m") #'gnus-article-show-summary)     ;old h/s
+  (define-key gnus-article-mode-map  (kbd "C-m") (kbd "s C-x 1"))     ;swtch go summary buffer
   (define-key gnus-article-mode-map  (kbd "C-j") (kbd "C-m GN C-m"))     ;next article
   (define-key gnus-article-mode-map  (kbd "C-k") (kbd "C-m GP C-m"))     ;prev article
+  (define-key gnus-article-mode-map  (kbd "C-i") (kbd "C-m GN C-m"))     ;next article
+  (define-key gnus-article-mode-map  (kbd "C-o") (kbd "C-m GP C-m"))     ;prev article
   (define-key gnus-article-mode-map  (kbd "M-n") (kbd "C-m Gn C-m"))     ;next unread article
   (define-key gnus-article-mode-map  (kbd "M-p") (kbd "C-m Gp C-m"))     ;prev unread article
   )
@@ -282,6 +284,9 @@
 ;; 会根据gnus-widen-article-window 的值 来决定 summary buffer是否展示
 (setq gnus-widen-article-window t)
 (setq gnus-single-article-buffer t)
+;; default 200, stop gnus to ask me "how many articles from"
+(setq gnus-large-newsgroup nil)
+(setq gnus-visual-mark-article-hook nil)
 (setq gnus-summary-mode-hook 'hl-line-mode)
 (setq gnus-group-mode-hook  '(gnus-topic-mode hl-line-mode))
 ;; (setq gnus-message-archive-method '(nnmaildir "archive" (directory "~/maildir/archive")))
