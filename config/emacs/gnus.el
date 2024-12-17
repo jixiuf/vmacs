@@ -1,3 +1,5 @@
+;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
+
 ;; 目前我采用的方案是 mbsync 同步邮件到本地
 ;; 使用notmuch 对邮件进行索引,gnus使用notmuch的搜索功能
 ;; 从而利用gnus 的nnselect+gnus-search-notmuch功能对邮件进行分组
@@ -8,10 +10,16 @@
 ;;
 ;; 我的多个邮箱 通过自动转发功能 汇总到一个邮箱，mbsync同步时只同步这一个，速度会快一些
 
-;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
-;; https://ericabrahamsen.net/tech/2014/oct/gnus-dovecot-lucene.html
+;; 另外我在 conf/conf-private.el.gpg 中定义了自己的邮箱地址等信息，未在此文件中列出
 ;; (when (member (system-name) '("jxfhome" "jxfluoji"))
 ;;   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
+;; (setq user-mail-address (concat "mymail1" "@" "qq.com"))
+;; (setq user-mail-address-2 (concat "mymail2" "@" "foxmail.com"))
+;; (setq user-mail-address-3 (concat "mymail3" "@" "gmail.com"))
+;; (setq user-work-mail-address (concat "work" "@" "gamil.com"))
+;; (setq qq-mail-query "(recipient:mail1@qq.com or recipient:mail2@qq.com)  and  -from:.*@quoramail.com and -from:.*@quora.com and -recipient:.*@debbugs.gnu.org and -from:.*@debbugs.gnu.org  and -from:emacs-devel@gnu.org and -recipient:emacs-devel@gnu.org and  -from:bug-gnu-emacs@gnu.org")
+;; (setq user-full-name "jixiuf")
+
 
 ;; 转发:C-c C-f forward ,可在邮件列表中用 # 选多个 合并转发
 ;; C-c C-a – Attach file
@@ -33,7 +41,9 @@
       smtpmail-debug-verb t)
 
 ;; Message 根据from: 自动设置 "X-Message-SMTP-Method" 功能。
-;; 当已经有X-Message-SMTP-Method header时 此方法无效
+;; 当header中已经有X-Message-SMTP-Method header时 此方法无效
+;; 需要 .authinfo .authinfo.gpg 中有以下格式的配置
+;; machine smtp.qq.com port 465 login yourmail@qq.com  protocol smtp  password yourpasswd
 (defun vmacs-message-server-alist-function ()
   "guess smpt server by From: header"
   (let* ((from (cadr (mail-extract-address-components
@@ -47,7 +57,6 @@
              (host (plist-get entry :host))
              (port (plist-get entry :port)))
         (format "smtp %s %s %s" host (or port "465") from)))))
-;; machine smtp.qq.com port 465 login yourmail@qq.com  protocol smtp  password yourpasswd
 (setq message-server-alist '((vmacs-message-server-alist-function)))
 
 
@@ -144,19 +153,28 @@
   (define-key gnus-summary-mode-map  "D" #'gnus-summary-delete-article)   ;B DEL 直接删
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-reselect-current-group) ;gr
+  (meow-set-keymap-parent gnus-summary-mode-map)
+  (keymap-unset gnus-summary-mode-map ";" t)
+  (keymap-unset gnus-summary-mode-map "," t)
+  (keymap-unset gnus-summary-mode-map "." t)
+  (keymap-unset gnus-summary-mode-map "m" t)
   ) ;old gnus g ,now gr
 (with-eval-after-load 'gnus-art
+  (meow-set-keymap-parent gnus-article-mode-map)
+  (keymap-unset gnus-article-mode-map ";" t)
+  (keymap-unset gnus-article-mode-map "m" t)
   (define-key gnus-article-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
   (define-key gnus-article-mode-map "b" #'gnus-select-group)
+  (define-key gnus-article-mode-map  (kbd "u") (kbd "s C-x 1"))     ;swtch go summary buffer
   (define-key gnus-article-mode-map  (kbd "C-m") (kbd "s C-x 1"))     ;swtch go summary buffer
-  (define-key gnus-article-mode-map  (kbd "C-j") (kbd "C-m GN C-m"))     ;next article
-  (define-key gnus-article-mode-map  (kbd "C-k") (kbd "C-m GP C-m"))     ;prev article
-  (define-key gnus-article-mode-map  (kbd "C-i") (kbd "C-m GN C-m"))     ;next article
-  (define-key gnus-article-mode-map  (kbd "C-o") (kbd "C-m GP C-m"))     ;prev article
-  (define-key gnus-article-mode-map  (kbd "M-n") (kbd "C-m Gn C-m"))     ;next unread article
-  (define-key gnus-article-mode-map  (kbd "M-p") (kbd "C-m Gp C-m"))     ;prev unread article
+  (define-key gnus-article-mode-map  (kbd "C-j") (kbd "GN C-m"))     ;next article
+  (define-key gnus-article-mode-map  (kbd "C-k") (kbd "GP C-m"))     ;prev article
+  (define-key gnus-article-mode-map  (kbd "M-h") (kbd "GP C-m"))     ;prev article
+  (define-key gnus-article-mode-map  (kbd "M-l") (kbd "GN C-m"))     ;next article
+  (define-key gnus-article-mode-map  (kbd "M-n") (kbd "Gn C-m"))     ;next unread article
+  (define-key gnus-article-mode-map  (kbd "M-p") (kbd "Gp C-m"))     ;prev unread article
   )
 
 (setq gnus-interactive-exit nil)     ;退出时不必确认
@@ -223,12 +241,12 @@
          (gnus-show-threads t)
          ;; C-c C-s C-a 排序 author, C-c C-s C-d:date
          ;; 排序越靠后 优先级越高
-         (gnus-thread-sort-functions '((not gnus-thread-sort-by-number)
+         (gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date
                                        (not gnus-thread-sort-by-date)
-                                     gnus-thread-sort-by-most-recent-date))
+                                     ))
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
          (gnus-use-scoring nil)
-         (display . 2000))
+         (display . all))
         (,(format "nnmaildir.*%s:.*" user-full-name)
          (gnus-show-threads nil)
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
@@ -297,7 +315,7 @@
       (concat
        "%0{%U%R%z%}"
        ;; "%3{│%}" "%1{%d%}" "%3{│%}" ;; date
-       "%3{│%}" "%3{%-16,16&user-date;%}" "%3{│%}" ;; date
+       "%3{│%}" "%3{%-18,18&user-date;%}" "%3{│%}" ;; date
        ""
        "%4{%-12,12f%}"               ;; name
        " "
@@ -311,7 +329,7 @@
 					                      ((gnus-seconds-today) . "%a%b%d %H:%M今")
 					                      ((+ 86400 (gnus-seconds-today)) . "%a%b%d %H:%M昨")
 					                      ((gnus-seconds-year) . "%a%b%d %H:%M")
-					                      (t . "%a%Y%b%d %H:%M"))))
+					                      (t . "%a%y年%b%d %H:%M"))))
 (setq gnus-permanently-visible-groups;不管有没有未读，都展示
       "qq$\\|gmail$\\|emacs$\\|inbox$")
 ;; Gnus的默认配置, 生成 "sent.%Y-%m" 格式的 Send-Mail存档, 这与imap的Send-Messages重复, 因此关闭改功能
