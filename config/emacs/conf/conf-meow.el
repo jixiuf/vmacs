@@ -276,8 +276,7 @@
 (with-eval-after-load 'help-mode
   (meow-set-keymap-parent help-mode-map) ;
   (keymap-unset help-mode-map "r" t))
-;; (with-eval-after-load 'gnus
-;; )
+(with-eval-after-load 'info (meow-set-keymap-parent Info-mode-map))
 (meow-global-mode 1)
 
 (defun vmacs-meow-frame(&optional f)
