@@ -177,23 +177,6 @@
   (define-key gnus-article-mode-map  (kbd "M-p") (kbd "Gp C-m"))     ;prev unread article
   )
 
-(setq gnus-interactive-exit nil)     ;退出时不必确认
-(setq gnus-expert-user t)
-;; GG 搜索支持 subject:keyword from:keyword body:keyword cc:keyword tag:notmuch
-;; 可以 #选多个group 进行搜索
-;; 搜索后可以 C-cC-p 将这个搜索结果保存为一个nnselect:组
-;; Gg 则后将搜索结果保存为一个virtual group
-;; 另外可以 GV 创建空的virtuall group ,然后 Gv 将其他group加入到那个空组
-;; 如将所有邮箱的inbox 加到这个虚组中
-;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
-(setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
-
-;; nndraft 会导致在group 上GG搜索时失败，
-;; 我不想显示这个nndraft 目前没找到办法，可以使用u subscribed
-;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
-;; (with-eval-after-load 'gnus-search ; 这段没生效
-;;   (add-to-list 'gnus-search-default-engines '((nndraft . gnus-search-notmuch))))
-
 (setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
       `((nnmaildir ,user-full-name
@@ -335,6 +318,22 @@
       "qq$\\|gmail$\\|emacs$\\|inbox$")
 ;; Gnus的默认配置, 生成 "sent.%Y-%m" 格式的 Send-Mail存档, 这与imap的Send-Messages重复, 因此关闭改功能
 (setq gnus-message-archive-group nil)
+(setq gnus-interactive-exit nil)     ;退出时不必确认
+(setq gnus-expert-user t)
+;; GG 搜索支持 subject:keyword from:keyword body:keyword cc:keyword tag:notmuch
+;; 可以 #选多个group 进行搜索
+;; 搜索后可以 C-cC-p 将这个搜索结果保存为一个nnselect:组
+;; Gg 则后将搜索结果保存为一个virtual group
+;; 另外可以 GV 创建空的virtuall group ,然后 Gv 将其他group加入到那个空组
+;; 如将所有邮箱的inbox 加到这个虚组中
+;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
+(setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
+
+;; nndraft 会导致在group 上GG搜索时失败，
+;; 我不想显示这个nndraft 目前没找到办法，可以使用u subscribed
+;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Drafts.html
+;; (with-eval-after-load 'gnus-search ; 这段没生效
+;;   (add-to-list 'gnus-search-default-engines '((nndraft . gnus-search-notmuch))))
 
 (delete 'gnus-topic-alist gnus-variable-list)
 (delete 'gnus-topic-topology gnus-variable-list)
@@ -479,6 +478,12 @@
                        (nnselect-args
                         (search-query-spec
                          ;;(raw . t) 或者在query 中加上 raw:* 使用notmuch 的原生语法搜索，注 需要在 .notmuch-config 中加入以下内容 ,
+                         ;; [index]
+                         ;; # 支持的搜索自定义header
+                         ;; # https://stackoverflow.com/questions/37480617/search-for-custom-header-value-in-notmuch
+                         ;; # after change config run:  notmuch reindex '*'
+                         ;; # then search with: notmuch search List:emacs-devel.gnu.org
+                         ;; header.List=List-Id
                          ;; see gnus-search-use-parsed-queries
                          ;; and https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
                          ;; notmuch raw原生语法 https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
@@ -487,12 +492,6 @@
                           ;; 如 raw:* (List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) 
                           ;; 用于支持搜索自定义header:此处为List
                           ;; 可在article中 按t 查看所有header
-                          ;; [index]
-                          ;; # 支持的搜索自定义header
-                          ;; # https://stackoverflow.com/questions/37480617/search-for-custom-header-value-in-notmuch
-                          ;; # after change config run:  notmuch reindex '*'
-                          ;; # then search with: notmuch search List:emacs-devel.gnu.org
-                          ;; header.List=List-Id
                           . "(List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
                          )
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
