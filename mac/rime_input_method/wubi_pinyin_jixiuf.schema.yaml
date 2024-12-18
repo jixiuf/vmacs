@@ -107,7 +107,7 @@ pinyin:                         # 针对script_translator@pinyin
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  initial_quality: 1 # 优先级
+  initial_quality: 5 # 优先级
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true
@@ -135,7 +135,7 @@ translator:                     # 五笔模式白 translator
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   max_phrase_length: 4
-  initial_quality: 9          # 优先级
+  initial_quality: 5          # 优先级
   disable_user_dict_for_patterns:
     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
     - "^[a-y]$"                   # 对单字母打出的字不进行调频
