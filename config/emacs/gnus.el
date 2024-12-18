@@ -497,7 +497,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      ;; '(nnselect-always-regenerate t)
+      '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
   (unless (gnus-group-entry "nnselect:emacs-info")
@@ -515,7 +515,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      ;; '(nnselect-always-regenerate t)
+      '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
   (unless (gnus-group-entry "nnselect:feed")
@@ -533,7 +533,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      ;; '(nnselect-always-regenerate t)
+      '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
 
   ;; 直发我个人邮箱的分组 nnselect:qq
@@ -551,7 +551,7 @@
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
-      ;; '(nnselect-always-regenerate t)
+      '(nnselect-always-regenerate t)
       (cons 'nnselect-artlist nil))))
   )
 
