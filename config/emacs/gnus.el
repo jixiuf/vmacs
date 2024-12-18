@@ -13,12 +13,17 @@
 ;; 另外我在 conf/conf-private.el.gpg 中定义了自己的邮箱地址等信息，未在此文件中列出
 ;; (when (member (system-name) '("jxfhome" "jxfluoji"))
 ;;   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
+;; 你可以定义以下几个变量后，直接用我的这个配置 就能用行，
+;; 要做的就是，
+;; 1. 邮箱个数不匹配的话调整下这几个变量相关的地方即可
+;; 2. 调整快捷键相关的一些配置,(我是meow用户， 好些C-c Mn 的配置对你没意义)
+;;
 ;; (setq user-mail-address (concat "mymail1" "@" "qq.com"))
 ;; (setq user-mail-address-2 (concat "mymail2" "@" "foxmail.com"))
 ;; (setq user-mail-address-3 (concat "mymail3" "@" "gmail.com"))
 ;; (setq user-work-mail-address (concat "work" "@" "gamil.com"))
 ;; (setq qq-mail-query "(recipient:mail1@qq.com or recipient:mail2@qq.com)  and  -from:.*@quoramail.com and -from:.*@quora.com and -recipient:.*@debbugs.gnu.org and -from:.*@debbugs.gnu.org  and -from:emacs-devel@gnu.org and -recipient:emacs-devel@gnu.org and  -from:bug-gnu-emacs@gnu.org")
-;; (setq user-full-name "jixiuf")
+;; (setq user-full-name "yourname")
 
 
 ;; 转发:C-c C-f forward ,可在邮件列表中用 # 选多个 合并转发
