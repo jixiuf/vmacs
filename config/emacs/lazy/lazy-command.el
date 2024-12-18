@@ -300,7 +300,7 @@ based on the current context and previous history."
                   last-command-event
                 (get last-command-event 'ascii-character))))
     (if (or (< n 0)
-            (eq (point) (point-min)))
+            (= 1 (line-number-at-pos)))
         (if (= n 1)
             (goto-char (point-max))
           (goto-line n))
