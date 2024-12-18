@@ -169,12 +169,12 @@
   (define-key gnus-article-mode-map "b" #'gnus-select-group)
   (define-key gnus-article-mode-map  (kbd "u") (kbd "s C-x 1"))     ;swtch go summary buffer
   (define-key gnus-article-mode-map  (kbd "C-m") (kbd "s C-x 1"))     ;swtch go summary buffer
-  (define-key gnus-article-mode-map  (kbd "C-j") (kbd "GN C-m"))     ;next article
-  (define-key gnus-article-mode-map  (kbd "C-k") (kbd "GP C-m"))     ;prev article
-  (define-key gnus-article-mode-map  (kbd "M-h") (kbd "GP C-m"))     ;prev article
-  (define-key gnus-article-mode-map  (kbd "M-l") (kbd "GN C-m"))     ;next article
-  (define-key gnus-article-mode-map  (kbd "M-n") (kbd "Gn C-m"))     ;next unread article
-  (define-key gnus-article-mode-map  (kbd "M-p") (kbd "Gp C-m"))     ;prev unread article
+  (define-key gnus-article-mode-map  (kbd "C-j") (kbd "sGN C-m"))     ;next article
+  (define-key gnus-article-mode-map  (kbd "C-k") (kbd "sGP C-m"))     ;prev article
+  (define-key gnus-article-mode-map  (kbd "M-h") (kbd "sGP C-m"))     ;prev article
+  (define-key gnus-article-mode-map  (kbd "M-l") (kbd "sGN C-m"))     ;next article
+  (define-key gnus-article-mode-map  (kbd "M-n") (kbd "s M-n C-m"))     ;next unread article
+  (define-key gnus-article-mode-map  (kbd "M-p") (kbd "s M-p C-m"))     ;prev unread article
   )
 
 (setq gnus-select-method '(nnnil ""))
