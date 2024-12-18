@@ -279,7 +279,8 @@
 (setq gnus-save-newsrc-file nil)
 (setq gnus-read-newsrc-file nil)
 (setq gnus-fetch-old-headers t)
-(setq gnus-article-date-headers '(local))
+(setq gnus-article-date-headers '(user-defined))
+(setq gnus-article-time-format "%a, %Y-%b-%d %T %Z")
 ;; 默认展示article 上，最上方25%为summary 所占，
 ;; M-x:gnus-summary-select-article-buffer (default:h) 此选项则仅展示article
 ;; summary buffer 中 s/h 是一对命令，h 相当于hide summary,s 则show summary
@@ -390,7 +391,6 @@
        '("^From:" "^To:" "^Cc:" "^Subject:" "^Newsgroups:" "^Date:"
          "Followup-To:" "Reply-To:" "^Organization:" "^X-Newsreader:" "^List-Id"
          "^Sender" "^X-Mailer:"))        ;T 查看article所有header
-;; (setq gnus-article-time-format "%F %Y") ; 未生效？
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
