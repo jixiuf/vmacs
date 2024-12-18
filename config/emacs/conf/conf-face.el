@@ -58,8 +58,8 @@
                         (custom-set-faces
                          '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
                          '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
-                         `(region ((t (:extend t :foreground nil :background "#5a5a5a"))))
-                         `(secondary-selection ((t (:extend t :foreground nil :background "#020202"))))
+                         `(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
+                         `(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
                          ;; FIXME: What is a "region cursor" and should it differ from the position highlights below?
                          ;; `(meow-region-cursor-1 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-0)))
                          ;; `(meow-region-cursor-2 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-1)))
