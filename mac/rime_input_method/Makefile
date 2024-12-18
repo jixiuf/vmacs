@@ -6,6 +6,13 @@ deploy:
 # 五笔拼音中的拼音会用到此词库
 # 拼音 词库扩展
 #词典可以用 深蓝词库工具 导入，网上可下载
+	@if [ ! -f amz-v2n3m1-zh-hans.gram  ]; then \
+	 wget https://github.com/amzxyz/RIME-LMDG/releases/download/v2n3/amz-v2n3m1-zh-hans.gram;\
+	fi
+	@if [ `uname -s` = "Darwin" ] ; then \
+	  make mac ; \
+	fi
+mac:
 	rm -rf ~/Library/Rime/
 	mkdir -p  ~/Library/Rime/
 	ln -s -f "$(CURDIR)/en_dicts" ~/Library/Rime/en_dicts
@@ -14,6 +21,8 @@ deploy:
 	ln -s -f "$(CURDIR)/default.custom.yaml" ~/Library/Rime/default.custom.yaml
 	ln -s -f "$(CURDIR)/pinyin_jixiuf.schema.yaml" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/wubi_pinyin_jixiuf.schema.yaml" ~/Library/Rime/
+	ln -s -f "$(CURDIR)/wubi_pinyin_jixiuf.schema.custom.yaml" ~/Library/Rime/
+	ln -s -f "$(CURDIR)/amz-v2n3m1-zh-hans.gram" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/double_pinyin_flypy_jixiuf.schema.yaml" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/"*.yaml ~/Library/Rime/
 	ln -s -f "$(CURDIR)/"*.txt ~/Library/Rime/

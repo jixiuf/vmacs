@@ -82,6 +82,10 @@ engine:
 simplifier:
   option_name: zh_simp
   # 你好不错
+grammar:
+  language: amz-v2n3m1-zh-hans
+  collocation_max_length: 5
+  collocation_min_length: 2
 
 speller:
   delimiter: " ;'"              # 分词用
@@ -104,15 +108,28 @@ pinyin:                         # 针对script_translator@pinyin
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
   initial_quality: 1 # 优先级
+  # https://github.com/amzxyz/RIME-LMDG
+  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+  contextual_suggestions: true
+  max_homophones: 7
+  max_homographs: 7
 
 # wubi:                     # 五笔模式白 translator
 translator:                     # 五笔模式白 translator
   # dictionary: wubi86
+
+  # https://github.com/amzxyz/RIME-LMDG
+  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+  # 有可能并不支持五笔，先开着看看效果
+  contextual_suggestions: true  #   # 开启ai https://emacs-china.org/t/rime/28508/31
+  max_homophones: 7
+  max_homographs: 7
+
   dictionary: wubi_pinyin_jixiuf.extend
   # prism: wubi_pinyin_jixiuf     # 不必指定，用默认的即可 生成的prism.bin文件的名字，默认wubi_pinyin_jixiuf.prism.bin
   enable_charset_filter: true
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
-  enable_sentence: true         # 是否開啓自動造句
+  enable_sentence: false         # 是否開啓自動造句
   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
   enable_encoder: true          #  是否開啓自動造詞

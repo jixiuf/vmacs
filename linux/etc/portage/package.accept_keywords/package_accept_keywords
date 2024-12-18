@@ -73,6 +73,7 @@ app-misc/jaq       ~amd64
 net-wireless/iwgtk ~amd64
 dev-util/mongodb-compass-bin ~amd64
 app-laptop/tiny-dfr ~amd64
+app-i18n/librime-octagram **
 # dev-libs/tree-sitter ~amd64 
 # Local Variables:
 # mode: conf
