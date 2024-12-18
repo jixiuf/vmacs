@@ -185,6 +185,7 @@
 ;; Gg 则后将搜索结果保存为一个virtual group
 ;; 另外可以 GV 创建空的virtuall group ,然后 Gv 将其他group加入到那个空组
 ;; 如将所有邮箱的inbox 加到这个虚组中
+;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
 (setq gnus-search-use-parsed-queries t) ;GG search group, and / :  limit in summary buffer
 
 ;; nndraft 会导致在group 上GG搜索时失败，
@@ -449,7 +450,7 @@
                             `(nnselect-specs (nnselect-function . gnus-query)
                                              (nnselect-args . ("thread:* tag:unread")))
                             '(nnselect-rescan t)
-                            ;; '(nnselect-always-regenerate t)
+                            '(nnselect-always-regenerate t)
                             (cons 'nnselect-artlist nil))))
 
   (unless (gnus-group-entry "nnselect:gmail")
@@ -477,9 +478,23 @@
       `(nnselect-specs (nnselect-function . gnus-search-run-query)
                        (nnselect-args
                         (search-query-spec
+                         ;;(raw . t) 或者在query 中加上 raw:* 使用notmuch 的原生语法搜索，注 需要在 .notmuch-config 中加入以下内容 ,
+                         ;; see gnus-search-use-parsed-queries
+                         ;; and https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
+                         ;; notmuch raw原生语法 https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
+                         (raw . t)
                          (query
-                          . "address:@guile-emacs.org or address:emacs-devel@gnu.org or address:bug-gnu-emacs@gnu.org or address:@debbugs.gnu.org or address:emacs-tangents@gnu.org or address:info-gnu-emacs@gnu.org")
-                         (raw))
+                          ;; 如 raw:* (List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) 
+                          ;; 用于支持搜索自定义header:此处为List
+                          ;; 可在article中 按t 查看所有header
+                          ;; [index]
+                          ;; # 支持的搜索自定义header
+                          ;; # https://stackoverflow.com/questions/37480617/search-for-custom-header-value-in-notmuch
+                          ;; # after change config run:  notmuch reindex '*'
+                          ;; # then search with: notmuch search List:emacs-devel.gnu.org
+                          ;; header.List=List-Id
+                          . "(List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
+                         )
                         (search-group-spec (,(format "nnmaildir:%s" user-full-name)
                                             ,(format "nnmaildir+%s:inbox" user-full-name)))))
       '(nnselect-rescan t)
