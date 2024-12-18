@@ -45,7 +45,7 @@
   "w" #'vmacs-widen)
 (global-set-key (kbd "C-c m") m-mode-map)
 
-(vmacs-leader (kbd "wd") 'gt-do-translate)
+
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
 
@@ -180,7 +180,7 @@
 (global-set-key  (kbd "C-d") 'vmacs-delete-char)
 
 
-
+(vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 (vmacs-leader  "fg" #'vmacs-ai)
