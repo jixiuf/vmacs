@@ -11,8 +11,9 @@
 ;; 我的多个邮箱 通过自动转发功能 汇总到一个邮箱，mbsync同步时只同步这一个，速度会快一些
 
 ;; 另外我在 conf/conf-private.el.gpg 中定义了自己的邮箱地址等信息，未在此文件中列出
-;; (when (member (system-name) '("jxfhome" "jxfluoji"))
-;;   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
+(require 'gnus)
+(unless (featurep 'conf-private)
+  (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
 ;; 你可以定义以下几个变量后，直接用我的这个配置 就能用行，
 ;; 要做的就是，
 ;; 1. 邮箱个数不匹配的话调整下这几个变量相关的地方即可
@@ -158,14 +159,12 @@
   (define-key gnus-summary-mode-map  "D" #'gnus-summary-delete-article)   ;B DEL 直接删
   (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
   (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-reselect-current-group) ;gr
-  (meow-set-keymap-parent gnus-summary-mode-map)
   (keymap-unset gnus-summary-mode-map ";" t)
   (keymap-unset gnus-summary-mode-map "," t)
   (keymap-unset gnus-summary-mode-map "." t)
   (keymap-unset gnus-summary-mode-map "m" t)
   ) ;old gnus g ,now gr
 (with-eval-after-load 'gnus-art
-  (meow-set-keymap-parent gnus-article-mode-map)
   (keymap-unset gnus-article-mode-map ";" t)
   (keymap-unset gnus-article-mode-map "m" t)
   (define-key gnus-article-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
