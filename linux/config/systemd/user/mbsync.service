@@ -6,6 +6,6 @@ Description=Mbsync synchronization service
 Environment="XAPIAN_CJK_NGRAM=1"
 Type=oneshot
 ExecStart=/usr/bin/mbsync -Va
-ExecStartPost=/usr/bin/sh -c '/usr/bin/notmuch new;/usr/local/bin/mbsync-notify'
+ExecStartPost=/usr/bin/sh -c 'notmuch new;notmuch reindex "*"; emacs --batch -q -l ~/.gnus.el --eval \'(gnus-refresh)\';mbsync-notify'
 [Install]
 WantedBy=default.target

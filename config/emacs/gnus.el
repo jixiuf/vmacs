@@ -414,6 +414,17 @@
          (when (eq major-mode 'gnus-summary-mode)
            (gnus-summary-rescan-group)))))))
 
+;; emacs --batch -q -l .gnus.el --eval '(gnus-refresh)'
+(defun gnus-refresh()
+  (gnus)
+  ;; (call-process "sh" nil nil nil "-c" "mbsync -aq;notmuch new")
+  (with-current-buffer (switch-to-buffer "gnus")
+    (goto-char (point-min))
+    (gnus-group-get-new-news-this-group 10)
+    (gnus-group-get-new-news)
+    (gnus-group-exit)) 
+  )
+
 (defun gnus-query(args)
   (gnus-search-run-query
    (list

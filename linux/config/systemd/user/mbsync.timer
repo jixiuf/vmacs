@@ -2,7 +2,7 @@
 Description=Mysync synchronization timer
 
 [Timer]
-OnBootSec=2m
+OnBootSec=5m
 OnUnitActiveSec=20m
 Unit=mbsync.service
 
