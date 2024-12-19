@@ -61,3 +61,4 @@ linux/config/fcitx5/conf/cached_layouts
 /linux/config/systemd/user/default.target.wants/disable-keyboard.service
 /dots/notmuch-config
 /mac/rime_input_method/amz-v2n3m1-zh-hans.gram
+/mac/rime_input_method/.temp.userdb/
