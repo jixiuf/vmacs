@@ -56,6 +56,7 @@
                   #'(lambda()
                       (modus-themes-with-colors
                         (custom-set-faces
+                         '(show-paren-match ((t (:foreground "SpringGreen3" :underline t :weight bold))))
                          '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
                          '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
                          `(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))

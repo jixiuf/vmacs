@@ -90,6 +90,10 @@
  find-function-C-source-directory "~/repos/emacs/src/"
  Man-notify-method 'bully
  )
+(setq show-paren-when-point-inside-paren t
+      show-paren-when-point-in-periphery t
+      show-paren-context-when-offscreen t
+      show-paren-delay 0.2)
 ;; Increase undo limits. Why?
 ;; .. ability to go far back in history can be useful, modern systems have sufficient memory.
 ;; Limit of 64mb.
