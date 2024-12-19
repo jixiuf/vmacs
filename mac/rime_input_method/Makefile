@@ -6,8 +6,11 @@ deploy:
 # 五笔拼音中的拼音会用到此词库
 # 拼音 词库扩展
 #词典可以用 深蓝词库工具 导入，网上可下载
-	@if [ ! -f amz-v2n3m1-zh-hans.gram  ]; then \
-	 wget https://github.com/amzxyz/RIME-LMDG/releases/download/v2n3/amz-v2n3m1-zh-hans.gram;\
+# wget -c https://github.com/amzxyz/rime_wanxiang_pro/raw/refs/heads/main/amz-v3n2m1-zh-hans.gram
+# wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/v2n3/amz-v2n3m1-zh-hans.gram;\
+
+	@if [ ! -f amz-v3n2m1-zh-hans.gram  ]; then \
+		wget -c https://github.com/amzxyz/rime_wanxiang_pro/raw/refs/heads/main/amz-v3n2m1-zh-hans.gram;\
 	fi
 	@if [ `uname -s` = "Darwin" ] ; then \
 	  make mac ; \
