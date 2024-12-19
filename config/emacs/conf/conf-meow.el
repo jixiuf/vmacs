@@ -269,14 +269,27 @@
 (add-to-list 'meow-mode-state-list '(markdown-mode . normal))
 (add-to-list 'meow-mode-state-list '(dape-repl-mode . normal))
 (add-to-list 'meow-mode-state-list '(org-agenda-mode . motion))
-(defmacro meow-set-keymap-parent (map &optional parent)
-  `(set-keymap-parent ,map (make-composed-keymap (keymap-parent ,map)
-                                                 (or ,parent meow-normal-state-keymap))))
-(with-eval-after-load 'org-agenda  (meow-set-keymap-parent org-agenda-mode-map))
-(with-eval-after-load 'help-mode
-  (meow-set-keymap-parent help-mode-map) ;
-  (keymap-unset help-mode-map "r" t))
-(with-eval-after-load 'info (meow-set-keymap-parent Info-mode-map))
+
+(defmacro meow-set-keymap-parent (map-or-mode &optional parent)
+  "Set the parent keymap for MAP-OR-MODE to PARENT.
+
+MAP-OR-MODE can be a map or a mode
+Returns PARENT. PARENT should be nil or another keymap.
+Default is 'meow-normal-state-keymap' when PARENT is nil."
+  `(let ((map (if (keymapp ,map-or-mode)
+                  ,map-or-mode
+                (let ((map-name (intern (concat (symbol-name ,map-or-mode) "-map"))))
+                  (when (boundp map-name)
+                    (symbol-value map-name))))))
+     (when (keymapp map)
+       (set-keymap-parent map (make-composed-keymap (keymap-parent map)
+                                                    (or ,parent meow-normal-state-keymap))))))
+
+(defun meow-motion-set-keymap-parent()
+  (meow-set-keymap-parent major-mode meow-normal-state-keymap))
+
+(add-hook 'meow-motion-mode-hook #'meow-motion-set-keymap-parent)
+
 (meow-global-mode 1)
 
 (defun vmacs-meow-frame(&optional f)
