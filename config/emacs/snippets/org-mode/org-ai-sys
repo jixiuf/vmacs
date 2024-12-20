@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-#name : org-ai-system
-#key : sys
-# --
-
-:SYS: ${1:$$(yas-completing-read "system:" ai-system-prompts nil nil nil nil org-ai-default-chat-system-prompt)}

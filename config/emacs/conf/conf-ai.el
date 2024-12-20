@@ -1,55 +1,43 @@
-;;; org-ai-useful.el --- A few useful functions and commands -*- lexical-binding: t; -*-
-(setq org-ai-default-chat-model "gpt-4o")
-(setq org-ai-default-chat-system-prompt (car ai-system-prompts))
-(setq org-ai-image-directory "~/Documents/jianguo/jianguo/ai/images/")
-(setq org-ai-openai-api-token nil)
-;; (setq org-ai-auto-fill nil)
-(require 'org-ai)
-(add-hook 'org-mode-hook #'org-ai-mode)
+;;; -*- lexical-binding: t; -*-
+(require 'gptel)
+(setq gptel-model 'gpt-4o)
+(setq gptel-default-mode 'org-mode)
+(setq gptel-display-buffer-action  '(pop-to-buffer-same-window))
+(add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+(keymap-set gptel-mode-map "C-c C-c" #'vmacs-gptel-send)
+(keymap-set gptel-mode-map "C-c C-v" #'gptel-menu)
+(keymap-set gptel-mode-map "C-c C-d" #'vmacs-gptel-prompt)
 
-(defun vmacs-ai-after-chat-insertion-hook (&optional type arg2 )
-  (when (string-equal default-directory "~/Documents/jianguo/jianguo/ai/")
+(defun vmacs-gptel-send(&optional arg)
+  (interactive)
+  (gptel--restore-state)
+  (gptel-send arg))
+
+(defun vmacs-gptel-prompt(&optional arg)
+  (interactive)
+  (let* ((keys (mapcar #'car gptel-directives))
+         (select (completing-read "Select directive key: " keys)))
+    (when select
+      (when-let* ((val (alist-get (intern select) gptel-directives)))
+        (setq select val))
+      (setq-local gptel--system-message select)
+      (when gptel-mode
+        (gptel-org-set-properties (point-min))
+        (when (gptel--get-buffer-bounds)
+          (gptel-org--save-state))
+        (vmacs-ai-after-chat-insertion-hook)
+        ))))
+
+(defun vmacs-ai-after-chat-insertion-hook (&optional beg end)
+  (when gptel-mode
     (unless buffer-file-name
       (setq buffer-file-name
             (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))
-                              default-directory)))
-    (when (eq type 'end)
-      (run-with-timer 0.01 nil #'(lambda() (write-file buffer-file-name)))
-      ;; (epa-file-write-region (point-min) (point-max) buffer-file-name)
-      ))
-  ;; (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))
-  )
+                              "~/Documents/jianguo/jianguo/ai/")))
+    (write-file buffer-file-name)))
 
-(add-hook 'org-ai-after-chat-insertion-hook #'vmacs-ai-after-chat-insertion-hook)
-;; (keymap-global-set "<f6>" "C-u C-c <return> <return>")
-(with-eval-after-load 'org-ai
-  (cl-defun org-ai--output-to-buffer (start end text-prompt-fn output-buffer &optional &key show-output-buffer callback)
-    "Get the currently selected text, create a prompt, insert the response.
-`OUTPUT-BUFFER' is the buffer to insert the response in.
-`TEXT-PROMPT-FN' is a function that takes the selected text as
-argument and returns a prompt.
-`START' is the buffer position of the region.
-`END' is the buffer position of the region.
-`OUTPUT-BUFFER' is the name or the buffer to insert the response in.
-`CALLBACK' is a function to call after the response is inserted."
-    (let* ((text (buffer-substring-no-properties start end))
-           (full-prompt (funcall text-prompt-fn text))
-           (output-buffer (get-buffer-create output-buffer)))
-      (with-current-buffer output-buffer
-        (read-only-mode -1)
-        (erase-buffer)
-        (toggle-truncate-lines -1)
-        (when show-output-buffer
-          (display-buffer output-buffer)))
-      (org-ai-prompt full-prompt :output-buffer output-buffer :callback callback))))
+(add-hook 'gptel-post-response-functions #'vmacs-ai-after-chat-insertion-hook)
 
-
-;; (setq aider-args '("--model" "gpt-4o-mini"))
-;; ;; (setq aider-args nil)
-;; ;; https://aider.chat/docs/git.html
-;; (require 'conf-program-python)
-;; (setenv "AIDER_AUTO_COMMITS" "false")
-;; ;; (setenv "AIDER_DEEPSEEK" "true")
 (provide 'conf-ai)
 
 ;; Local Variables:

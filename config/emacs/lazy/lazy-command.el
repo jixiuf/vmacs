@@ -236,11 +236,17 @@ based on the current context and previous history."
         (name "*ai*"))
     (with-current-buffer (generate-new-buffer name)
       (org-mode)
-      (require 'org-ai)
-      (org-ai-mode)
+      (require 'conf-ai)
       (yas-minor-mode 1)
-      (insert "ai")
-      (yas-expand-from-trigger-key)
+      (insert "\n*** ")
+      ;; (yas-expand-from-trigger-key)
+      (unless buffer-file-name
+        (setq buffer-file-name
+              (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))
+                                "~/Documents/jianguo/jianguo/ai/")))
+      (set-buffer-modified-p nil)
+      (gptel-mode)
+      (meow-insert)
       (display-buffer (current-buffer) '(pop-to-buffer)))))
 
 ;;;###autoload
