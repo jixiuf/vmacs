@@ -11,6 +11,9 @@
  '(meow-position-highlight-number-1 ((t :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
  '(meow-position-highlight-number-2 ((t :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
  '(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) :background "#625a00")))
+ '(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
+ '(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
+ '(show-paren-match ((t (:foreground "SpringGreen3" :underline t :weight bold))))
  '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
  '(whitespace-missing-newline-at-eof ((t (:foreground "yellow")))))
 (custom-set-variables
@@ -58,9 +61,9 @@
  '(modus-themes-scale-title 1.5)
  '(package-selected-packages
    '(async beacon cape clipetty consult-dir dape dired-filetype-face emamux embark embark-consult
-           exec-path-from-shell git-link go-translate golden-ratio-scroll-screen goto-chg kkp
-           lua-mode magit magit-todos marginalia markdown-mode meow orderless org-ai org-alert
-           org-msg ox-gfm pinyinlib plz posframe protobuf-mode verb vundo with-editor yasnippet))
+           exec-path-from-shell git-link go-translate golden-ratio-scroll-screen goto-chg gptel kkp
+           lua-mode magit magit-todos marginalia markdown-mode meow orderless org-alert org-msg
+           ox-gfm pinyinlib plz posframe protobuf-mode verb vundo with-editor yasnippet))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
