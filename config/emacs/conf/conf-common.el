@@ -73,7 +73,7 @@
  ring-bell-function 'ignore
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
- truncate-lines nil ;一行过长时 是否 wrap 显示
+ truncate-lines t ;一行过长时 是否 wrap 显示
  bidi-display-reordering  nil
  bidi-inhibit-bpa t
  long-line-threshold 1000
@@ -90,7 +90,7 @@
  find-function-C-source-directory "~/repos/emacs/src/"
  Man-notify-method 'bully
  )
-(global-visual-line-mode)
+;; (global-visual-line-mode)
 (setq show-paren-when-point-inside-paren t
       show-paren-when-point-in-periphery t
       show-paren-context-when-offscreen t
