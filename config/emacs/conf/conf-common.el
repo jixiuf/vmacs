@@ -73,7 +73,7 @@
  ring-bell-function 'ignore
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
- truncate-lines t ;一行过长时 是否 wrap 显示
+ truncate-lines nil ;一行过长时 是否 wrap 显示
  bidi-display-reordering  nil
  bidi-inhibit-bpa t
  long-line-threshold 1000
@@ -90,6 +90,7 @@
  find-function-C-source-directory "~/repos/emacs/src/"
  Man-notify-method 'bully
  )
+(global-visual-line-mode)
 (setq show-paren-when-point-inside-paren t
       show-paren-when-point-in-periphery t
       show-paren-context-when-offscreen t
@@ -276,7 +277,7 @@
   (setq gt-langs '(en zh))
   (setq gt-buffer-render-window-config
         '((display-buffer-same-window)))
-  (setq gt-chatgpt-system-prompt "你是一个翻译助手，尽量做到信达雅，英语专用名词可以不用翻译,意译而不要直译")
+  (setq gt-chatgpt-system-prompt "You are a highly skilled translation engine with expertise in the technology sector. maintaining the original format, technical terms, and abbreviations. Do not add any explanations or annotations to the translated text.")
   (setq gt-default-translator
         (gt-translator
          :taker   (list (gt-taker :pick nil :if 'selection) ;有选中则使用选中的内这
