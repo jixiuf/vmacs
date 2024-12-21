@@ -409,25 +409,32 @@
          (when (eq major-mode 'gnus-summary-mode)
            (gnus-summary-rescan-group)))))))
 
-;; emacs --batch -q -l .gnus.el --eval '(gnus-refresh)'
-(defun gnus-refresh()
-  (gnus)
-  ;; (call-process "sh" nil nil nil "-c" "mbsync -aq;notmuch new")
-  (with-current-buffer (switch-to-buffer "gnus")
-    (goto-char (point-min))
-    (gnus-group-get-new-news-this-group 10)
-    (gnus-group-get-new-news)
-    (gnus-group-exit)) 
-  )
-
 (defun gnus-query(args)
   (gnus-search-run-query
    (list
     `(search-query-spec
       (query . ,(car args))
-      (raw))
+      (raw . ,(nth 1 args)))
+    ;; 这里如果是从多个mailbox中搜，格式为
+    ;; `(search-group-spec  ("nnmaildir:mail1" "nnmaildir+mail1:inbox")
+    ;;                      ("nnmaildir:mail2" "nnmaildir+mail2:inbox"))
     `(search-group-spec (,(format "nnmaildir:%s" user-full-name)
                          ,(format "nnmaildir+%s:inbox" user-full-name))))))
+
+;; raw-p:nil 时 用gnus 的general搜索语法 https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
+;; raw-p:t 时 notmuch 原生语法https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
+(defun gnus-make-query-group(name raw-p query)
+  (unless (gnus-group-entry (format "nnselect:%s" name))
+    (gnus-group-make-group name
+                           (list 'nnselect "nnselect")
+                           nil
+                           (list
+                            `(nnselect-specs (nnselect-function . gnus-query)
+                                             (nnselect-args  ,query ,raw-p))
+                            '(nnselect-rescan t)
+                            '(nnselect-always-regenerate t)
+                            (cons 'nnselect-artlist nil)))))
+
 (add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
 (defun init-my-gnus-group()
   ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
@@ -447,122 +454,30 @@
   ;; 编写过程中如果有部Kg 可以通过C-k 删掉某group，以便重建
 
   ;; 未读邮件单独一个分组 nnselect:unread
-  (unless (gnus-group-entry "nnselect:unread")
-    (gnus-group-make-group "unread"
-                           (list 'nnselect "nnselect")
-                           nil
-                           (list
-                            ;; 这个搜索需要依赖 gnus-search-notmuch 的支持 notmuch 的配置文件中
-                            ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
-                            ;; [new]
-                            ;; tags=unread;inbox;
-                            `(nnselect-specs (nnselect-function . gnus-query)
-                                             (nnselect-args . ("thread:* tag:unread")))
-                            '(nnselect-rescan t)
-                            '(nnselect-always-regenerate t)
-                            (cons 'nnselect-artlist nil))))
-
-  (unless (gnus-group-entry "nnselect:gmail")
-    (gnus-group-make-group
-     "gmail"
-     (list 'nnselect "nnselect")
-     nil
-     (list
-      `(nnselect-specs (nnselect-function . gnus-search-run-query)
-                       (nnselect-args (search-query-spec (query . ,(format "recipient:%s" user-mail-address-3))
-                                                         (raw))
-                                      (search-group-spec (,(format "nnmaildir:%s" user-full-name)
-                                                          ,(format "nnmaildir+%s:inbox" user-full-name)))))
-      '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
-      (cons 'nnselect-artlist nil))))
-
+  ;; unread这个搜索需要依赖 gnus-search-notmuch 的支持 notmuch 的配置文件中
+  ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
+  ;; [new]
+  ;; tags=unread;inbox;
+  (gnus-make-query-group "unread" nil "thread:* tag:unread")
+  (gnus-make-query-group "gmail" t (format "to:%s" user-mail-address-3))
   ;; 下面是创建 nnselect:emacs 这个emacs相关邮件定阅分组
-  (unless (gnus-group-entry "nnselect:emacs")
-    (gnus-group-make-group
-     "emacs"
-     (list 'nnselect "nnselect")
-     nil
-     (list
-      `(nnselect-specs (nnselect-function . gnus-search-run-query)
-                       (nnselect-args
-                        (search-query-spec
-                         ;;(raw . t) 或者在query 中加上 raw:* 使用notmuch 的原生语法搜索，注 需要在 .notmuch-config 中加入以下内容 ,
-                         ;; [index]
-                         ;; # 支持的搜索自定义header
-                         ;; # https://stackoverflow.com/questions/37480617/search-for-custom-header-value-in-notmuch
-                         ;; # after change config run:  notmuch reindex '*'
-                         ;; # then search with: notmuch search List:emacs-devel.gnu.org
-                         ;; header.List=List-Id
-                         ;; see gnus-search-use-parsed-queries
-                         ;; and https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
-                         ;; notmuch raw原生语法 https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
-                         (raw . t)
-                         (query
-                          ;; 如 raw:* (List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) 
-                          ;; 用于支持搜索自定义header:此处为List
-                          ;; 可在article中 按t 查看所有header
-                          . "(List:info-gnu-emacs.gnu.org or List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
-                         )
-                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
-                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
-      '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
-      (cons 'nnselect-artlist nil))))
-
-  (unless (gnus-group-entry "nnselect:emacs-info")
-    (gnus-group-make-group
-     "emacs-info"
-     (list 'nnselect "nnselect")
-     nil
-     (list
-      `(nnselect-specs (nnselect-function . gnus-search-run-query)
-                       (nnselect-args
-                        (search-query-spec
-                         (query
-                          . "recipient:emacs-tangents@gnu.org or recipient:info-gnu-emacs@gnu.org")
-                         (raw))
-                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
-                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
-      '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
-      (cons 'nnselect-artlist nil))))
-
-  (unless (gnus-group-entry "nnselect:feed")
-    (gnus-group-make-group
-     "feed"
-     (list 'nnselect "nnselect")
-     nil
-     (list
-      `(nnselect-specs (nnselect-function . gnus-search-run-query)
-                       (nnselect-args
-                        (search-query-spec
-                         (query
-                          . "from:.*@quoramail.com or from:.*@quora.com")
-                         (raw))
-                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
-                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
-      '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
-      (cons 'nnselect-artlist nil))))
-
-  ;; 直发我个人邮箱的分组 nnselect:qq
-  (unless (gnus-group-entry "nnselect:qq")
-    (gnus-group-make-group
-     "qq"
-     (list 'nnselect "nnselect")
-     nil
-     (list
-      `(nnselect-specs (nnselect-function . gnus-search-run-query)
-                       (nnselect-args
-                        (search-query-spec
-                         (query . ,qq-mail-query) ;如 recipient:yourmail@qq.com
-                         (raw))
-                        (search-group-spec (,(format "nnmaildir:%s" user-full-name)
-                                            ,(format "nnmaildir+%s:inbox" user-full-name)))))
-      '(nnselect-rescan t)
-      '(nnselect-always-regenerate t)
-      (cons 'nnselect-artlist nil))))
+  ;;(raw . t) 或者在query 中加上 raw:* 使用notmuch 的原生语法搜索，注 需要在 .notmuch-config 中加入以下内容 ,
+  ;; [index]
+  ;; # 支持的搜索自定义header
+  ;; # https://stackoverflow.com/questions/37480617/search-for-custom-header-value-in-notmuch
+  ;; # after change config run:  notmuch reindex '*'
+  ;; # then search with: notmuch search List:emacs-devel.gnu.org
+  ;; header.List=List-Id
+  ;; see gnus-search-use-parsed-queries
+  ;; and https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
+  ;; notmuch raw原生语法 https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
+  ;; 如 raw:* (List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org)
+  ;; 用于支持搜索自定义header:此处为List
+  ;; 可在article中 按t 查看所有header
+  (gnus-make-query-group "emacs" t "(List:info-gnu-emacs.gnu.org or List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
+  (gnus-make-query-group "emacs-news" t "to:emacs-tangents@gnu.org or to:info-gnu-emacs@gnu.org")
+  (gnus-make-query-group "feed" t "from:quoramail.com or from:quora.com")
+  (gnus-make-query-group "qq" nil qq-mail-query)
   )
 
 
