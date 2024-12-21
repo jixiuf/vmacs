@@ -414,6 +414,7 @@
    (list
     `(search-query-spec
       (query . ,(car args))
+      ;;(raw . t) 或者在query 中加上 raw:* 使用notmuch 的原生语法搜索
       (raw . ,(nth 1 args)))
     ;; 这里如果是从多个mailbox中搜，格式为
     ;; `(search-group-spec  ("nnmaildir:mail1" "nnmaildir+mail1:inbox")
@@ -441,8 +442,8 @@
   ;; 不用再需要重新创建，而是通过代码自动化了
   ;;  下面用到的 user-mail-address-3 是我的gamil邮箱地址，没在此文件中定义
   ;; 如果是手工创建nnselect 组：流程如下:
-  ;; 在groupbuffer中 将光标移动到你要搜索的那个group上 或用 # 选多个组
-  ;; 然后 Gg 后输入groupname: gmail ,然后输入搜索用的关键字: recipient:yourmailaddress
+  ;; 在groupbuffer中 将光标移动到你要搜索的那个group上 或用 '#' 选多个组
+  ;; 然后 Gg 后输入groupname如 gmail ,然后输入搜索用的关键字: recipient:yourmailaddress
   ;; gnus 的搜索语法 https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
   ;; 我用到的搜索实现是 gnus-search-notmuch
   ;; 此时刷新group 就会出现一个名为 nnselect:gmail 的新组
@@ -451,7 +452,7 @@
   ;; 只有这样 下次再进入这个组的时候 才会重新搜索，否则这个组就只是一个快照
   ;; 当然也可以通过 gnus-parameters 为这个组设置 这两个属性
   ;; 我的这个函数 就是将 GE编辑时的部分内容 copy出来通过gnus-group-make-group 实现的
-  ;; 编写过程中如果有部Kg 可以通过C-k 删掉某group，以便重建
+  ;; 编写过程中如果有错 可以通过C-k 删掉某group，以便重建
 
   ;; 未读邮件单独一个分组 nnselect:unread
   ;; unread这个搜索需要依赖 gnus-search-notmuch 的支持 notmuch 的配置文件中
@@ -461,13 +462,13 @@
   (gnus-make-query-group "unread" nil "thread:* tag:unread")
   (gnus-make-query-group "gmail" t (format "to:%s" user-mail-address-3))
   ;; 下面是创建 nnselect:emacs 这个emacs相关邮件定阅分组
-  ;;(raw . t) 或者在query 中加上 raw:* 使用notmuch 的原生语法搜索，注 需要在 .notmuch-config 中加入以下内容 ,
+  ;; notmuch 的配置文件中配置如下以支持的搜索自定义header
   ;; [index]
-  ;; # 支持的搜索自定义header
   ;; # https://stackoverflow.com/questions/37480617/search-for-custom-header-value-in-notmuch
   ;; # after change config run:  notmuch reindex '*'
   ;; # then search with: notmuch search List:emacs-devel.gnu.org
   ;; header.List=List-Id
+  ;;
   ;; see gnus-search-use-parsed-queries
   ;; and https://www.gnu.org/software/emacs/manual/html_node/gnus/Search-Queries.html
   ;; notmuch raw原生语法 https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#notmuch-search-terms-7
