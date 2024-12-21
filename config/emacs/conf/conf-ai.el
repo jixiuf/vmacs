@@ -1,15 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'gptel)
-(setq doubao
-      (gptel-make-openai "Doubao"             ;Name, whatever you'd like
-        :host "ark.cn-beijing.volces.com"
-        :endpoint "/api/v3/chat/completions" ;or equivalent
-        :stream t                             ;Enable streaming responses
-        :key #'gptel-api-key
-        :models '(ep-20240819160851-v4k7q)))
-
-(setq gptel-model 'ep-20240819160851-v4k7q)
-(setq gptel-backend doubao)
 (setq gptel-default-mode 'org-mode)
 (setq gptel-display-buffer-action  '(pop-to-buffer-same-window))
 (add-hook 'gptel-post-response-functions 'gptel-end-of-response)

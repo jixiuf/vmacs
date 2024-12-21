@@ -188,7 +188,7 @@
                    (gnus-search-engine gnus-search-notmuch
                                        (remove-prefix ,(expand-file-name"~/maildir/qq"))
                                        (config-file ,(expand-file-name "~/.notmuch-config"))))
-        (nntp "news.gmane.io")
+        ;; (nntp "news.gmane.io")
         ;; (nntp "news.gwene.org")
         ;; (nntp "news.gmane.org")
         ;; (nnimap ,user-mail-address
