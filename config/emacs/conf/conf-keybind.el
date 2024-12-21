@@ -29,6 +29,7 @@
 (global-set-key (kbd "C-c G") g-mode-map)
 (global-set-key (kbd "C-c g") g-mode-map)
 (defvar-keymap  m-mode-map              ;meow: m
+  "4" #'toggle-truncate-lines
   "f" #'narrow-to-defun
   "v" #'rectangle-mark-mode
   "q" #'fill-paragraph
