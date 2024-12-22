@@ -475,7 +475,7 @@
   ;; 如 raw:* (List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org)
   ;; 用于支持搜索自定义header:此处为List
   ;; 可在article中 按t 查看所有header
-  (gnus-make-query-group "emacs" t "(List:info-gnu-emacs.gnu.org or List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
+  (gnus-make-query-group "emacs" t "(List:info-gnu-emacs.gnu.org or List:bug-gnu-emacs@gnu.org or List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
   (gnus-make-query-group "emacs-news" t "to:emacs-tangents@gnu.org or to:info-gnu-emacs@gnu.org")
   (gnus-make-query-group "feed" t "from:quoramail.com or from:quora.com")
   (gnus-make-query-group "qq" nil qq-mail-query)

@@ -36,7 +36,8 @@
    '("z" . "C-c Mz")
    '("q" . "C-c Mq")
    '(":" . viper-ex)
-   '("<escape>" . "C-c M<escape>"))
+   '("<escape>" . vmacs-cancel-selection)
+   )
 
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.

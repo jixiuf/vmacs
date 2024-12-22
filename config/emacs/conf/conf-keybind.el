@@ -18,14 +18,14 @@
   "n" #'next-error
   "p" #'previous-error
   "b" #'pop-global-mark
-  "k" #'vmacs-meow-grab
   "u" #'upcase-dwim
   "U" #'downcase-dwim
   "m" #'push-mark-command
   "P" #'project-or-external-find-file
   "d" #'xref-find-definitions
-  "," 'goto-last-change
-  "." 'goto-last-change-reverse
+  "," #'goto-last-change
+  "." #'goto-last-change-reverse
+  "f" #'gptel-rewrite
   )
 (global-set-key (kbd "C-c G") g-mode-map)
 (global-set-key (kbd "C-c g") g-mode-map)
@@ -74,8 +74,7 @@
   "/"  #'isearch-forward-regexp
   "n"  #'meow-search
   "N"  #'meow-search-reverse
-  "z"   #'meow-pop-selection
-  "<escape>"  #'keyboard-quit)
+  "z"   #'meow-pop-selection)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
 
@@ -186,10 +185,6 @@
 (vmacs-leader "b" 'meow-last-buffer)
 (vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 (vmacs-leader  "fg" #'vmacs-ai)
-(autoload 'org-ai-refactor-code "org-ai" "" t)
-(global-set-key  (kbd "C-c Gf") 'org-ai-refactor-code) ;gf
-;; (autoload 'aider-transient-menu "aider" "" t)
-;; (global-set-key  (kbd "C-c Gf") 'aider-transient-menu) ;gf
 
 
 (vmacs-leader  "fm" (vmacs-defun switch-to-message
