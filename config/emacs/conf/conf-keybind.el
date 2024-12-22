@@ -6,10 +6,11 @@
   "g" #'vmacs-goto-line
   "T" #'consult-grep
   "t" #'consult-ripgrep
-  "q" #'grep
-  "e" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
-  "s" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "w" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "e" #'grep
+  "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
+  "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "X" #'consult-ripgrep-root-symbol
+  "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
   "/" #'consult-focus-lines
   "z" #'consult-hide-lines
   "r" #'revert-buffer
