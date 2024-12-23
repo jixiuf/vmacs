@@ -287,7 +287,8 @@ Default is 'meow-normal-state-keymap' when PARENT is nil."
                                                     (or ,parent meow-normal-state-keymap))))))
 
 (defun meow-motion-set-keymap-parent()
-  (meow-set-keymap-parent major-mode meow-normal-state-keymap))
+  (unless (member major-mode '(wdired-mode))
+    (meow-set-keymap-parent major-mode meow-normal-state-keymap)))
 
 (add-hook 'meow-motion-mode-hook #'meow-motion-set-keymap-parent)
 
