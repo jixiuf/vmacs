@@ -133,7 +133,7 @@
   (define-key gnus-group-mode-map (kbd "C-c M/") #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
   (define-key gnus-group-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-group-mode-map (kbd "b") #'gnus-select-group)
-  (define-key gnus-group-mode-map (kbd "C-c Gr") #'gnus-group-get-new-news))     ;old  g, now gr
+  (define-key gnus-group-mode-map (kbd "C-c Gr") #'notmuch))     ;old  g, now gr
 
 (with-eval-after-load 'gnus-sum
   ;; d:标记为已读  C-k:整个subject 已读
@@ -143,7 +143,7 @@
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
   (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
-  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-rescan-group);gr old M-g
+  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'notmuch);gr old M-g
   (define-key gnus-summary-mode-map (kbd "C-c M/") #'gnus-summary-limit-map);/
   (define-key gnus-summary-mode-map "b" #'gnus-select-group)
   ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
@@ -395,6 +395,18 @@
 ;; (setq gnus-summary-display-arrow t)
 ;; (setq gnus-exit-gnus-hook (quote (mm-destroy-postponed-undisplay-list)))
 (setq gnus-after-exiting-gnus-hook #'mbsync)
+(defun notmuch()
+  (interactive)
+  (let ((process (start-process "notmuch" "*Messages*" "notmuch" "new")))
+    (set-process-query-on-exit-flag process nil)
+    (set-process-sentinel
+     process
+     (lambda (proc _)
+       (when (eq (process-status proc) 'exit)
+         (when (eq major-mode 'gnus-group-mode)
+           (gnus-group-get-new-news))
+         (when (eq major-mode 'gnus-summary-mode)
+           (gnus-summary-rescan-group)))))))
 
 (defun mbsync()
   (interactive)
