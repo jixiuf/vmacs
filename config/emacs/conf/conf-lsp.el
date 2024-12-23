@@ -11,8 +11,15 @@
 (setq codeium/metadata/api_key (auth-source-pick-first-password :host "codeium.com"))
 (autoload 'dape-breakpoint-toggle "dape" "" t)
 (add-hook 'prog-mode-hook 'subword-mode)
-(defun vmacs-lsp-hook()
+(with-eval-after-load 'copilot
+  (define-key copilot-completion-map (kbd "C-p") 'copilot-previous-completion)
+  (define-key copilot-completion-map (kbd "C-n") 'copilot-next-completion)
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  
+  (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
 
+(defun vmacs-lsp-hook()
+  (copilot-mode)
   ;; (eglot-ensure)
   (when (eglot-managed-p)
     (eldoc-mode)
@@ -25,7 +32,7 @@
     (local-set-key (kbd "C-c C-e") 'dape-eval)
     (local-set-key (kbd "C-c C-f") 'dape-continue)
     (autoload 'codeium-completion-at-point "codeium" "" t) 
-    (local-set-key (kbd "C-<return>") (cape-capf-interactive #'codeium-completion-at-point))
+    (local-set-key (kbd "C-<return>") (cape-capf-interactive #'copilot-complete))
 
     ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
     ;; (add-hook 'completion-at-point-functions
