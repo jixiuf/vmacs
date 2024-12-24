@@ -10,7 +10,7 @@
     (till . 30)
     (symbol . 4)))
 
-(setq meow--delete-region-function #'kill-region)
+;; (setq meow--delete-region-function #'kill-region)
 (setq meow--kbd-kill-region "C-k")
 (setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
