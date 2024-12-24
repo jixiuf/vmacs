@@ -5,7 +5,7 @@ Description=Mbsync synchronization service
 #cjk 
 Environment="XAPIAN_CJK_NGRAM=1"
 Type=oneshot
-ExecStart=/usr/bin/sh -c '/usr/bin/mbsync -a'
+ExecStart=/usr/bin/sh -c '/usr/bin/mbsync -a;notmuch new'
 ExecStartPost=/usr/bin/sh -c 'sleep 30;notmuch new;mbsync-notify'
 [Install]
 WantedBy=default.target

@@ -285,9 +285,13 @@ Default is 'meow-normal-state-keymap' when PARENT is nil."
      (when (keymapp map)
        (set-keymap-parent map (make-composed-keymap (keymap-parent map)
                                                     (or ,parent meow-normal-state-keymap))))))
+;; (keymap-unset occur-mode-map "l" t)
 
+(defvar meow-motion-parent-keymaps (make-hash-table :test #'equal))
 (defun meow-motion-set-keymap-parent()
-  (unless (member major-mode '(wdired-mode))
+  (when (and meow-motion-mode
+             (not (gethash major-mode meow-motion-parent-keymaps)))
+    (puthash major-mode t meow-motion-parent-keymaps)
     (meow-set-keymap-parent major-mode meow-normal-state-keymap)))
 
 (add-hook 'meow-motion-mode-hook #'meow-motion-set-keymap-parent)
