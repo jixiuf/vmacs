@@ -74,9 +74,10 @@ net-wireless/iwgtk ~amd64
 dev-util/mongodb-compass-bin ~amd64
 app-laptop/tiny-dfr ~amd64
 app-i18n/librime-octagram **
-
 gui-apps/satty  ~amd64
-# dev-libs/tree-sitter ~amd64 
+app-emulation/fuse  ~amd64
+app-emulation/libspectrum  ~amd64
+
 # Local Variables:
 # mode: conf
 # End:

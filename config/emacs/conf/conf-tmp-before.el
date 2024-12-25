@@ -1,5 +1,5 @@
- ;; (when (file-directory-p "~/repos/dape")
- ;;   (add-to-list 'load-path "~/repos/dape"))
+ (when (file-directory-p "~/repos/go-translate/")
+   (add-to-list 'load-path "~/repos/go-translate/"))
  ;; (when (file-directory-p "~/repos/eglot-java/")
  ;;   (add-to-list 'load-path "~/repos/eglot-java/"))
 
