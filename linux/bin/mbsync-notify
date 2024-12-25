@@ -7,7 +7,7 @@
 
 # do not duplicate
 killall mbsync &>/dev/null
-
+notmuch new
 #run mbsync once for all accs with named configs file, with quiet interface
 # or specify account name as argument and define separate cron tasks for each acc
 if [ -n $1 ]
