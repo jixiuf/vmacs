@@ -32,6 +32,7 @@
 ;; gpg --export-ssh-key jixiuf > .ssh/id_rsa.pub # 导出ssh 用公钥
 ;; 导出私钥
 ;; gpg --export-secret-keys -a mailorname>pri.key
+;; gpg --export-secret-key --armor jixiuf
 
 
 ;; 导入  公钥或私钥
