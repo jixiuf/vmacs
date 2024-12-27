@@ -14,6 +14,7 @@
 (with-eval-after-load 'copilot
   (define-key copilot-completion-map (kbd "C-p") 'copilot-previous-completion)
   (define-key copilot-completion-map (kbd "C-n") 'copilot-next-completion)
+  (define-key copilot-completion-map (kbd "C-o") 'copilot-accept-completion)
   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
   
   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
