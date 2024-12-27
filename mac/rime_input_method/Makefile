@@ -9,8 +9,8 @@ deploy:
 # wget -c https://github.com/amzxyz/rime_wanxiang_pro/raw/refs/heads/main/amz-v3n2m1-zh-hans.gram
 # wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/v2n3/amz-v2n3m1-zh-hans.gram;\
 
-	@if [ ! -f amz-v3n2m1-zh-hans.gram  ]; then \
-		wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/v3n2/amz-v3n2m1-zh-hans.gram;\
+	@if [ ! -f wanxiang-lts-zh-hans.gram  ]; then \
+		wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram;\
 	fi
 	@if [ `uname -s` = "Darwin" ] ; then \
 	  make mac ; \
@@ -25,7 +25,7 @@ mac:
 	ln -s -f "$(CURDIR)/pinyin_jixiuf.schema.yaml" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/wubi_pinyin_jixiuf.schema.yaml" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/wubi_pinyin_jixiuf.schema.custom.yaml" ~/Library/Rime/
-	ln -s -f "$(CURDIR)/amz-v3n2m1-zh-hans.gram" ~/Library/Rime/
+	ln -s -f "$(CURDIR)/wanxiang-lts-zh-hans.gram" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/double_pinyin_flypy_jixiuf.schema.yaml" ~/Library/Rime/
 	ln -s -f "$(CURDIR)/"*.yaml ~/Library/Rime/
 	ln -s -f "$(CURDIR)/"*.txt ~/Library/Rime/

@@ -83,7 +83,7 @@ simplifier:
   option_name: zh_simp
   # 你好不错
 grammar:
-  language: amz-v3n2m1-zh-hans
+  language: wanxiang-lts-zh-hans
   collocation_max_length: 5
   collocation_min_length: 2
 
