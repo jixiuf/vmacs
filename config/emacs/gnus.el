@@ -291,6 +291,9 @@
 (setq gnus-visual-mark-article-hook nil)
 (setq gnus-summary-mode-hook 'hl-line-mode)
 (setq gnus-group-mode-hook  '(gnus-topic-mode hl-line-mode))
+(setq gnus-article-truncate-lines nil)
+(setq gnus-article-prepare-hook  '( gnus-summary-update-info))
+
 ;; (setq gnus-message-archive-method '(nnmaildir "archive" (directory "~/maildir/archive")))
 ;; gnus-level-subscribed:5
 (setq gnus-group-line-format "Lv%L\ %M\ %S\ %p\ %P\ %5y/%-5t:%B%(%g%)\n")
