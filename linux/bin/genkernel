@@ -18,7 +18,11 @@ sudo make  && sudo make modules_install  && sudo make install
 ver=$(basename "$(pwd)")
 if [ "$ver" = "linux" ]; then
     ver=$(basename "$(realpath $(pwd))"|sed s/linux-//g)
+else
+    ver=$(basename "$(pwd)"|sed s/linux-//g)
 fi
+sudo mv -f /boot/vmlinuz /boot/vmlinuz-$ver
+sudo mv -f /boot/System.map /boot/System.map-$ver
 sudo dracut -a lvm --force  --kver=$ver
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 sudo emerge @module-rebuild
