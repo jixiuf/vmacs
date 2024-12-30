@@ -47,7 +47,7 @@ dev-lang/rust-bin rust-src rust-analyzer rustfmt
 net-mail/mu emacs
 >=app-arch/brotli-1.0.9-r6 python
 >=app-misc/mime-types-2.1.53 nginx
-app-crypt/pinentry emacs keyring -qt6
+app-crypt/pinentry  keyring -qt6
 dev-lang/php gd
 media-libs/gd fontconfig
 gui-apps/rofi-wayland  drun windowmode

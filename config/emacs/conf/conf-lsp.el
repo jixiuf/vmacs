@@ -8,7 +8,6 @@
 ;; :documentHighlightProvider 禁用高亮光标下的单词
 (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
 (defun vmacs-eglot-organize-imports() (eglot-code-actions nil nil "source.organizeImports" t))
-(setq codeium/metadata/api_key (auth-source-pick-first-password :host "codeium.com"))
 (autoload 'dape-breakpoint-toggle "dape" "" t)
 (add-hook 'prog-mode-hook 'subword-mode)
 (with-eval-after-load 'copilot
