@@ -307,7 +307,7 @@
   (define-key gt-overlay-render-map (kbd "<escape>") #'gt-delete-render-overlays)
   (define-key gt-overlay-render-map (kbd "M-w") #'gt-overlay-render-save-to-kill-ring))
 
-
+(with-eval-after-load 'conf-mode  (keymap-unset conf-mode-map "C-c SPC" t))
 (provide 'conf-common)
 
 ;; Local Variables:
