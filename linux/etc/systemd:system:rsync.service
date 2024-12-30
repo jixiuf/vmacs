@@ -2,4 +2,4 @@
 Description=Backs up files
 
 [Service]
-ExecStart=sh -c '/usr/bin/rsync -avz -CERrltm  --delete /var/cache/binpkgs root@bj-mjq-dev-apm-1:/data/binpkgs;/usr/bin/rsync -avz -CERrltm  --delete /var/db/repos/gentoo root@bj-mjq-dev-apm-1:/mnt/gentoo'
+ExecStart=sh -c '/usr/bin/rsync -avz -CERrltm  --delete /var/cache/binpkgs root@bj-mjq-dev-apm-1:/data/binpkgs;/usr/bin/rsync -avz -CERrltm  --delete /var/db/repos/gentoo root@bj-mjq-dev-apm-1:/data/gentoo'

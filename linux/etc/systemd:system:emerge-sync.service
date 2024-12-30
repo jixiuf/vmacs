@@ -4,6 +4,7 @@ Description=Sync Portage Tree
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/emerge --sync
+ExecStartPost=sh -c '/usr/bin/rsync -avz -CERrltm  --delete /var/cache/binpkgs root@bj-mjq-dev-apm-1:/data/binpkgs;/usr/bin/rsync -avz -CERrltm  --delete /var/db/repos/gentoo root@bj-mjq-dev-apm-1:/data/gentoo'
 [Install]
 WantedBy=multi-user.target
 # WantedBy=graphical-session.target
