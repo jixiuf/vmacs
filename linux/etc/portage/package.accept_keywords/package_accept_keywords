@@ -77,7 +77,7 @@ app-i18n/librime-octagram **
 gui-apps/satty  ~amd64
 app-emulation/fuse  ~amd64
 app-emulation/libspectrum  ~amd64
-
+dev-libs/hyprgraphics  ~amd64
 # Local Variables:
 # mode: conf
 # End:
