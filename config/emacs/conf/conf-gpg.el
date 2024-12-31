@@ -34,6 +34,16 @@
 ;; gpg --export-secret-keys -a mailorname>pri.key
 ;; gpg --export-secret-key --armor jixiuf
 
+;; https://chenhe.me/post/yubikey-starting-gpg
+;; 只需导出主密钥的私钥，即可自动包含主+子密钥的公钥+私钥。
+;; 导出后建议用对称加密再加一次密用于离线存储
+;; gpg --armor --export-secret-keys --export-options backup -o /tmp/gpg-backup.priv jixiuf
+;; gpg -c /tmp/gpg-backup.priv
+;; 
+;; gpg -d /tmp/gpg-backup.priv.gpg >/tmp/gpg-backup.priv
+;; gpg --import --import-options restore /tmp/gpg-backup.priv # 导入
+;; --import-options restore 导入一些常规导入中跳过的数据，包括 GunPG 专有数据。
+
 
 ;; 导入  公钥或私钥
 ;; gpg --import file.key

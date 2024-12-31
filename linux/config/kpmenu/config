@@ -18,7 +18,8 @@ autotype=false
 # Always confirm autotype, even when there's only 1 selection
 # autotypeConfirm=true
 # Executable of menus used to prompt actions
-customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
+# customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
+customPromptPassword =""" echo -n '' """
 
 customPromptMenu =  """rofi -dmenu  -i  -config ~/.config/rofi/config-bwmenu.rasi """
 customPromptEntries = """rofi -dmenu  -i -mesg "C-7:user,C-8:passwd C-9:TOTP C-RET:passwd+RET C-0:URL" -p "Select entry" -config ~/.config/rofi/config-bwmenu.rasi -kb-custom-1 "Control+7" -kb-custom-2 "Control+8" -kb-custom-3 "Control+9" -kb-custom-4 "Control+Return" -kb-custom-5 "Control+0" """
@@ -40,8 +41,11 @@ formatEntry = "{Title} - {UserName}"
 #argsField =
 
 #database =
-#keyFile =
-#password =
+# keyFile ="/home/jixiuf/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/pass.key"
+password =""
+#if  yubikeyChallengeResponseSlot not empty use yubikey challenge response
+# this need command "ykchalresp" from Yubikey Personalization
+yubikeyChallengeResponseSlot="2"
 fieldOrder = "Password UserName URL"
 fillOtherFields = true
 #FillBlacklist =
