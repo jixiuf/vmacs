@@ -1,0 +1,24 @@
+#!/bin/sh
+# 如果有 yubikey
+secret=~/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/yubikey-otp-challenge-response-secret.gpg
+db=~/Documents/jianguo/jianguo/keepass/pass.kdbx
+yukikey=~/Documents/jianguo/jianguo/keepass/pass.key
+masterkey=/tmp/master.key
+tmpkey=/tmp/pass.key
+cacheconfig=~/.cache/keepassxc/keepassxc.ini
+# appinfo=`hyprctl activewindow -j`
+# class=`echo $appinfo|jq -r '.class'|head -n 1`
+master=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
+# echo -n $master|sha256sum
+# 非16进制写入tmpkey 文件
+echo -n $master|sha256sum|awk '{print $1}'|xxd -r -p >$masterkey
+# 生成 yubikey 对应的key
+gpg  --pinentry-mode ask -d $secret |keepassxc-cr-recovery -f $db $yukikey
+ykinfo -s
+if [ $? -eq 0 ]; then
+    # use yubikey
+    ln -sf $masterkey $tmpkey
+else
+    ln -sf $yukikey $tmpkey
+fi
+

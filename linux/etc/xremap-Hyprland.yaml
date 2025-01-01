@@ -24,7 +24,7 @@ keymap:
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
 
-      super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise  --toggle --move-to-current-workspace-if-floating --hide-front-floating-window org.keepassxc.KeePassXC keepassxc"] }
+      super-C-8: { launch: ["hyprctl","dispatch","exec","keepass;hypr-run-or-raise  --toggle --move-to-current-workspace-if-floating --hide-front-floating-window org.keepassxc.KeePassXC keepassxc"] }
       super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
       super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
       super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
