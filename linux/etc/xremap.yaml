@@ -435,6 +435,7 @@ keymap:
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       
+      # super-C-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       super-C-7: { launch: ["sh","-c","gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       super-M-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
       super-C-Grave: { launch: ["sh" ,"-c","dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases;swaylock"] }
