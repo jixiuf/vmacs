@@ -14,8 +14,9 @@ center_floating_window=""
 cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
+exec_before_show=""
 
-TEMP=$( getopt --options h --longoptions workspace:,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions exec-before-show:,workspace:,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -89,6 +90,11 @@ for i in "$@"; do
             ;;
         --term-class*)
             TERM_CLASS_REGEX="$2"
+            shift
+            shift
+            ;;
+        --exec-before-show*)
+            exec_before_show="$2"
             shift
             shift
             ;;
@@ -225,6 +231,9 @@ else
     target_class=`echo $target_appinfo|jq -r '.class'`
     target_title=`echo $target_appinfo|jq -r '.title'`
     target_ws_id=`echo $target_appinfo|jq -r '.workspace.id'`
+    if [ -n "$exec_before_show" ]; then
+        $exec_before_show
+    fi
 
     # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
     if [[ "$front_ws_name" == *"special"* ]]; then

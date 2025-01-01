@@ -41,8 +41,8 @@ formatEntry = "{Title} - {UserName}"
 #argsField =
 
 #database =
-# keyFile ="/home/jixiuf/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/pass.key"
-password =""
+keyFile ="/tmp/master.key"
+# password =""
 # this need command "ykchalresp" from Yubikey Personalization
 keyFileData=""" ykchalresp -x -2 -H %salt || echo -n "$salt"|xxd -r -p | openssl dgst -sha1 -hmac "$(gpg --pinentry-mode ask -d ~/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/yubikey-otp-challenge-response-secret.gpg|xxd -r -p)"|awk '{print $2}' """
 fieldOrder = "Password UserName URL"
