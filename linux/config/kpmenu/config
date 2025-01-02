@@ -18,8 +18,8 @@ autotype=false
 # Always confirm autotype, even when there's only 1 selection
 # autotypeConfirm=true
 # Executable of menus used to prompt actions
-# customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
-customPromptPassword =""" echo -n '' """
+customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
+# customPromptPassword =""" echo -n '' """
 
 customPromptMenu =  """rofi -dmenu  -i  -config ~/.config/rofi/config-bwmenu.rasi """
 customPromptEntries = """rofi -dmenu  -i -mesg "C-7:user,C-8:passwd C-9:TOTP C-RET:passwd+RET C-0:URL" -p "Select entry" -config ~/.config/rofi/config-bwmenu.rasi -kb-custom-1 "Control+7" -kb-custom-2 "Control+8" -kb-custom-3 "Control+9" -kb-custom-4 "Control+Return" -kb-custom-5 "Control+0" """
@@ -41,10 +41,11 @@ formatEntry = "{Title} - {UserName}"
 #argsField =
 
 #database =
-keyFile ="/tmp/master.key"
+keyFile ="/home/jixiuf/Documents/jianguo/jianguo/keepass/pass.key"
 # password =""
 # this need command "ykchalresp" from Yubikey Personalization
-keyFileData=""" ykchalresp -x -2 -H %salt || echo -n "%salt"|xxd -r -p | openssl dgst -sha1 -hmac "$(gpg --pinentry-mode ask -d ~/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/yubikey-otp-challenge-response-secret.gpg|xxd -r -p)"|awk '{print $2}' """
+# keyFileData=""" cat /home/jixiuf/Documents/jianguo/jianguo/keepass/pass.key|xxd -p """
+# keyFileData=""" ykchalresp -x -2 -H %salt || echo -n "%salt"|xxd -r -p | openssl dgst -sha1 -hmac "$(gpg --pinentry-mode ask -d ~/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/yubikey-otp-challenge-response-secret.gpg|xxd -r -p)"|awk '{print $2}' """
 fieldOrder = "Password UserName URL"
 fillOtherFields = true
 #FillBlacklist =

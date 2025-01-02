@@ -11,14 +11,14 @@ cacheconfig=~/.cache/keepassxc/keepassxc.ini
 master=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
 # echo -n $master|sha256sum
 # 非16进制写入tmpkey 文件
-echo -n $master|sha256sum|awk '{print $1}'|xxd -r -p >$masterkey
+echo -n $master|sha256sum|awk '{print $1}'|xxd -r -p > $yukikey
 # 生成 yubikey 对应的key
-gpg  --pinentry-mode ask -d $secret |keepassxc-cr-recovery -f $db $yukikey
-ykinfo -s
-if [ $? -eq 0 ]; then
-    # use yubikey
-    ln -sf $masterkey $tmpkey
-else
-    ln -sf $yukikey $tmpkey
-fi
+# gpg  --pinentry-mode ask -d $secret |keepassxc-cr-recovery -f $db $yukikey
+# ykinfo -s
+# if [ $? -eq 0 ]; then
+#     # use yubikey
+#     ln -sf $masterkey $tmpkey
+# else
+#     ln -sf $yukikey $tmpkey
+# fi
 
