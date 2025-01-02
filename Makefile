@@ -10,6 +10,7 @@ default:
 	make -C config/emacs
 
 deploy:
+	rm ~/.gnupg
 	$(LINK_CMD) ~/Documents/jianguo/jianguo/keepass/gnupg ~/.gnupg
 	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
 	@-for file in dots/*; do \
