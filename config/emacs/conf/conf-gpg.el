@@ -21,7 +21,7 @@
 
 ;; 生成公钥私钥
 ;; gpg --gen-key 其间会让输入用户名 邮箱等,可以用不同的邮箱来代表公钥私钥
-;; gpg --export --full-gen-key # 生成可以用于签名、加密、认证的命令,如用于ssh
+;; gpg --expert --full-gen-key # 生成可以用于签名、加密、认证的命令,如用于ssh
 
 ;; gpg --list-keys --with-subkey-fingerprint   #查看公钥 or gpg -k --with-subkey-fingerprint
 ;; gpg --list-secret-keys --with-subkey-fingerprint --with-keygrip # 查看私钥 or -K
@@ -36,6 +36,14 @@
 
 ;; gpg --export-ssh-key jixiuf > .ssh/id_rsa.pub # 导出ssh 用主公钥
 ;; gpg --export-ssh-key 685E0C5B177B0B2A!  # 注意感叹号  导出ssh 用子公钥
+
+;; 导入ssh 私钥进gpg
+;; ssh-add ~/.ssh/id_rsa
+;; 1.1 gpg -K --with-keygrip
+;; 1.2 ls -lt $(gpgconf --list-dirs homedir)/private-keys-v1.d
+;; 对比1.1 1.2 的 keygrip ,1.2多出来的那个 就是新添加的id_rsa 对应的keygrip
+;;  然后 gpg --expert --edit-key jixiuf  后 addkey,选添加   (13) 现有密钥
+;; 后输入刚才的 keygrip, save 后退出
 
 ;; 导出私钥
 ;; gpg --export-secret-keys -a mailorname>pri.key
@@ -57,6 +65,9 @@
 ;; gpg --import --import-options restore /tmp/gpg-backup.priv # 导入
 ;; --import-options restore 导入一些常规导入中跳过的数据，包括 GunPG 专有数据。
 
+;; 删除 密钥、公钥
+;; gpg --delete-keys F0DD604F43BD7D28BAB3AEEFDCCDED2EB72F6BAC
+;; gpg --delete-secret-keys F0DD604F43BD7D28BAB3AEEFDCCDED2EB72F6BAC
 
 ;; 导入  公钥或私钥
 ;; gpg --import file.key
@@ -133,7 +144,9 @@
 ;; ;; 总是使用对称加密
 ;; ;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
 (setq-default epa-file-select-keys nil)
-(setq-default epa-file-encrypt-to '("jixiuf")) ;默认用哪个公钥私钥解密
+;; 你可以使用 `epa-file-encrypt-to` 变量来设置一个或多个接收者的公钥，
+;; 从而允许将文件加密给这些指定的多个用户。
+(setq-default epa-file-encrypt-to '("64A4E9D76C3E01A33A7B94EC5F6AFBDF19672E4A")) ;默认用哪个公钥私钥解密
 (defun vmacs-gpg-find-file-hook ()
   "auto encrypt use key in `epa-file-encrypt-to'"
   (require 'epa-hook)
