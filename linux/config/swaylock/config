@@ -1,8 +1,7 @@
-daemonize
+# daemonize
 show-failed-attempts
 color=1f1d2e80
-indicator
-indicator-radius=150
+indicator-radius=70
 indicator-thickness=15
 line-color=1f1d2e
 ring-color=191724
@@ -24,9 +23,6 @@ ring-clear-color=9ccfd8
 line-clear-color=1f1d2e
 line-wrong-color=1f1d2e
 bs-hl-color=31748f
-fade-in=0.5
 ignore-empty-password
 
 #24 HRS clock format and standard Europe Date Format
-timestr=%H:%M:%S
-datestr=%d %B, %a

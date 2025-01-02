@@ -23,16 +23,29 @@
 ;; gpg --gen-key 其间会让输入用户名 邮箱等,可以用不同的邮箱来代表公钥私钥
 ;; gpg --export --full-gen-key # 生成可以用于签名、加密、认证的命令,如用于ssh
 
-;; gpg --list-keys   #查看公钥 or -k
-;; gpg --list-secret-keys # 查看私钥 or -K
-;; gpg -K --with-keygrip
+;; gpg --list-keys --with-subkey-fingerprint   #查看公钥 or gpg -k --with-subkey-fingerprint
+;; gpg --list-secret-keys --with-subkey-fingerprint --with-keygrip # 查看私钥 or -K
+;; gpg -K --with-keygrip --with-subkey-fingerprint
 ;; 导出公钥
-;; gpg --export -a jixiuf >pub.key #-a 表示 ascii 码可打印形式 mailorname 为刚才输入的用户名与邮箱
-;; 1 gpg --export-ssh-key <key id> > .ssh/id_rsa.pub
-;; gpg --export-ssh-key jixiuf > .ssh/id_rsa.pub # 导出ssh 用公钥
+;;    gpg --export -a jixiuf >pub.key #-a or --armor表示 ascii 码可打印形式 mailorname 为刚才输入的用户名与邮箱
+;; 导出子公钥
+;;    gpg --export -a 685E0C5B177B0B2A!  # 注意 指纹后缀+感叹号 或全指纹
+
+;; 导出ssh 公钥 (需要有authentication(A) 能力)
+;; gpg --export-ssh-key <key id> > .ssh/id_rsa.pub
+
+;; gpg --export-ssh-key jixiuf > .ssh/id_rsa.pub # 导出ssh 用主公钥
+;; gpg --export-ssh-key 685E0C5B177B0B2A!  # 注意感叹号  导出ssh 用子公钥
+
 ;; 导出私钥
 ;; gpg --export-secret-keys -a mailorname>pri.key
 ;; gpg --export-secret-key --armor jixiuf
+;; 子密钥的管理
+;;  gpg --expert --edit-key jixiuf
+;;  然后用 key+ 数字 选中要操作的subkey 如  key 1
+;; 然后进行操作 如 delkey,keytocard,addkey(保存到yubikey)
+;; 然后 save
+;; 另外一点可在--edit-key 界面看子subkey 的id
 
 ;; https://chenhe.me/post/yubikey-starting-gpg
 ;; 只需导出主密钥的私钥，即可自动包含主+子密钥的公钥+私钥。
