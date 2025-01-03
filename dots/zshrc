@@ -184,9 +184,9 @@ if [ $(uname -s ) = "Linux" ] ; then
     alias emek='sudo -E emerge -aq --autounmask-write --autounmask-continue  --getbinpkg=n --keep-going'
     alias emet='sudo -E emerge -aq --oneshot --keep-going '
     alias emerge='sudo -E emerge '
-    alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo emerge @preserved-rebuild;sudo eclean packages'
+    alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo -E emerge @preserved-rebuild;sudo -E eclean packages'
     alias emeU='sudo -E emerge --ask -q --keep-going  --emptytree @world'
-    alias esync="sudo rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/;sudo -E emerge --sync;sudo rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/"
+    alias esync="sudo -E rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/;sudo -E emerge --sync;sudo -E rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/"
     emec() {        if [ -z "$1" ]; then sudo -E emerge -ac;else sudo -E emerge -aqvC "$@";fi ;sudo -E emaint binhost -f   }
     alias emes='sudo -E emerge -aSqv'
     alias env-update="sudo env-update"
