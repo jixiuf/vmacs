@@ -312,8 +312,8 @@ keymap:
       C-u: C-b                  #username
       C-l: C-u                  #url    address 
       super-C-c: C-c                  #copy password 
-      super-C-w: [C-l,super-M-h]
-      super-C-q: [C-l,super-M-h]
+      super-C-w: [super-M-h]
+      super-C-q: [super-M-h]
 # 
   # - name: flameshot
   #   application:
