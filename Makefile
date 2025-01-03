@@ -10,16 +10,17 @@ default:
 	make -C config/emacs
 
 deploy:
-	@-rm -f ~/.gnupg
-	$(LINK_CMD) ~/Documents/jianguo/jianguo/keepass/gnupg ~/.gnupg
 	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
 	@-for file in dots/*; do \
 		link_name=$$(echo "$$file" | tr ':' '/'); \
-		name=$$(basename "$$link_name"); \
+		name="$${link_name#"dots/"}";\
 		rm -rf ~/.$$name ;\
 		$(LINK_CMD) $(PWD)/$$file ~/.$$name ;\
 	done
+	@-rm -f ~/.notmuch-config.gpg
 
+	@-rm -f ~/.gnupg
+	$(LINK_CMD) ~/Documents/jianguo/jianguo/keepass/gnupg ~/.gnupg
 	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
 	gpg -d ~/.ssh/config.gpg > ~/.ssh/config 2>/dev/null
 	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys 2>/dev/null
