@@ -1,12 +1,5 @@
 #!/bin/bash
-ykinfo -s
-if [ $? -eq 0 ]; then
-    # use yubikey
-    cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout master
-else
-    cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout fa35b516fdff0dcbdcd7716ddc02274bd348a584
-fi
-
+onyubikey
 kpmenu --daemon&
 systemctl --user restart emacs
 gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1| keepassxc --pw-stdin --keyfile ~/Documents/jianguo/jianguo/keepass/pass.key  ~/Documents/jianguo/jianguo/keepass/pass.kdbx&

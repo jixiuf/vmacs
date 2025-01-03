@@ -1,0 +1,9 @@
+#!/bin/bash
+
+ykinfo -s
+if [ $? -eq 0 ]; then
+    # use yubikey
+    cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout master
+else
+    cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout fa35b516fdff0dcbdcd7716ddc02274bd348a584
+fi
