@@ -20,6 +20,13 @@ deploy:
 	@-rm -f ~/.notmuch-config.gpg
 
 	@-rm -f ~/.gnupg
+	mkdir -p ~/.gnupg
+	@-for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
+		name="$${link_name#"~/Documents/jianguo/jianguo/keepass/gnupg/"}";\
+		rm -rf ~/.$$name ;\
+		$(LINK_CMD) $$file ~/.gnupg/$$name ;\
+	done
+
 	$(LINK_CMD) ~/Documents/jianguo/jianguo/keepass/gnupg ~/.gnupg
 	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
 	gpg -d ~/.ssh/config.gpg > ~/.ssh/config 2>/dev/null
