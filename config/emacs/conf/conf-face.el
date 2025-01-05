@@ -57,6 +57,8 @@
                   #'(lambda()
                       (modus-themes-with-colors
                         (custom-set-faces
+                         '(font-lock-comment-face ((t (:inherit modus-themes-slant :slant italic ))))
+                         ;; '(italic ((t (:slant italic :weight light :height 151 :width normal ))))
                          '(show-paren-match ((t (:foreground "SpringGreen3" :underline t :weight bold))))
                          '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
                          '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))

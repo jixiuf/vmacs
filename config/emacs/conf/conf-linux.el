@@ -74,11 +74,12 @@
   (when (display-graphic-p)
     (with-selected-frame (or f (selected-frame))
       (set-fontset-font "fontset-default" 'emoji "Noto Color Emoji-12")
-      (set-fontset-font "fontset-default" 'symbol "LXGW WenKai Mono")
+      ;; (set-fontset-font "fontset-default" 'symbol "LXGW WenKai Mono")
       (setq default-text-properties '(line-spacing 0.06 line-height 1.15))
       ;; (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 175)
-      (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd Light" :height 1.0)
-      (set-face-attribute 'default nil :font "Sarasa Term SC Nerd Light" )
+      ;; (set-face-attribute 'fixed-pitch nil :font "Sarasa Term SC Nerd Light" :height 1.0)
+      ;; (set-face-attribute 'default nil :font "Sarasa Term SC Nerd Light" )
+
       ;; https://github.com/lxgw/LxgwWenKai
       ;; (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
       )))
