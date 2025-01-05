@@ -199,6 +199,7 @@
 (global-set-key (kbd "C-x C-u") #'vundo)
 (vmacs-leader (kbd "l") 'ibuffer)
 (vmacs-leader (kbd "j") 'dired-jump)
+(vmacs-leader (kbd "d") 'dired-jump)
 ;; (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 ;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "u") 'backward-up-list)
