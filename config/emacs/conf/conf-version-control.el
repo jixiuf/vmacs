@@ -23,6 +23,7 @@
 (vmacs-leader (kbd "vt") #'vc-create-tag)
 
 (vmacs-leader (kbd "vj") #'magit-status) ;like dired-jump
+(vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
 (vmacs-leader (kbd "vu") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader (kbd "vp") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader (kbd "vs") #'magit-file-dispatch)      ;space-vs[n/p] 查看此文件上/下一个版本
