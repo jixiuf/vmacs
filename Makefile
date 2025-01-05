@@ -23,7 +23,6 @@ deploy:
 	mkdir -p ~/.gnupg
 	@-for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
 		name="$${link_name#"~/Documents/jianguo/jianguo/keepass/gnupg/"}";\
-		rm -rf ~/.$$name ;\
 		$(LINK_CMD) $$file ~/.gnupg/$$name ;\
 	done
 
