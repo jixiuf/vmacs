@@ -1,0 +1,15 @@
+#  -*- mode:conf -*-
+# ykinfo -a
+# cat /proc/bus/input/devices 可查看所有device的 busid vendorid  等
+# I: Bus=0003 Vendor=05ac Product=027c Version=0001
+# 注意需要将小定变大定， 如05AC
+# sudo udevadm control --reload-rules
+# get 1050/407/543 from :
+# udevadm monitor --kernel --property --subsystem-match=usb
+# journalctl -u systemd-udevd
+# "/usr/bin/loginctl lock-sessions"
+ACTION=="remove", SUBSYSTEM=="usb", ENV{INTERFACE}=="3/1/1",ENV{PRODUCT}=="1050/407/543", RUN+="/usr/local/bin/onyubikey"
+ACTION=="add", SUBSYSTEM=="usb", ENV{INTERFACE}=="3/1/1",ENV{PRODUCT}=="1050/407/543", RUN+="/usr/local/bin/onyubikey"
+ACTION=="remove", SUBSYSTEM=="usb", ENV{INTERFACE}=="3/1/1",ENV{PRODUCT}=="1050/407/543", RUN+="/usr/bin/loginctl lock-sessions"
+# ACTION=="remove",  ENV{HID_NAME}=="Yubico YubiKey FIDO", ENV{ID_VENDOR_ID}=="1050", ENV{ID_MODEL_ID}=="0406|0407", RUN+=
+# ACTION=="add",    ENV{HID_NAME}=="Yubico YubiKey FIDO", ENV{ID_VENDOR_ID}=="1050", ENV{ID_MODEL_ID}=="0406|0407", RUN+="/usr/local/bin/onyubikey"

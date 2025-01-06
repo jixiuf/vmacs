@@ -3,7 +3,7 @@
 ykinfo -s
 if [ $? -eq 0 ]; then
     # use yubikey
-    cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout master
+    sudo -u jixiuf sh -c 'cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout master'
 else
-    cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout 782cb34ee36b4aaacb7990cc602f5ac1ae699b87
+    sudo -u jixiuf sh -c 'cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout HEAD~1'
 fi
