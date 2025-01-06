@@ -57,7 +57,7 @@ net-wireless/wpa_supplicant p2p
 sys-apps/xdg-desktop-portal screencast
 gui-apps/nwg hyprland
 
-app-admin/keepassxc browser yubikey
+app-admin/keepassxc browser yubikey autotype
 media-libs/freetype brotli
 media-libs/opencolorio -opengl
 gui-apps/wf-recorder pulseaudio
