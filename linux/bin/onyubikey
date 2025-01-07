@@ -1,7 +1,5 @@
 #!/bin/bash
-
-ykinfo -s
-if [ $? -eq 0 ]; then
+if ls /dev/hidraw* &> /dev/null; then
     # use yubikey
     sudo -u jixiuf sh -c 'cd ~/Documents/jianguo/jianguo/keepass/gnupg/;git checkout master'
 else

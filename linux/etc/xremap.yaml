@@ -309,8 +309,8 @@ keymap:
     remap:
     # https://keepassxc.org/docs/KeePassXC_UserGuide#_keyboard_shortcuts
       C-s: C-f
+      C-i: C-u                  #urI    address 
       C-u: C-b                  #username
-      C-l: C-u                  #url    address 
       super-C-c: C-c                  #copy password 
       super-C-w: [super-M-h]
       super-C-q: [super-M-h]
