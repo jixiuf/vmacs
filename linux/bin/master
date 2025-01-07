@@ -1,3 +1,4 @@
 #!/bin/bash
-pass=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
+pass=$(kpmenu --autotype --customAutotypeTyper=echo  --autotypeSequence '{PASSWORD}' --customAutotypeWindowID="echo bitwarden.com")
+# pass=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
 echo -n $pass
