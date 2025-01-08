@@ -19,11 +19,14 @@ deploy:
 	done
 	@-rm -f ~/.notmuch-config.gpg
 
-	@-rm -f ~/.gnupg
+	@-unlink ~/.gnupg
 	mkdir -p ~/.gnupg
-	@-for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
-		name="$${link_name#"~/Documents/jianguo/jianguo/keepass/gnupg/"}";\
-		$(LINK_CMD) $$file ~/.gnupg/$$name ;\
+	for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
+		name="$$(basename $$file)"; \
+		if [ ! "$$name" = "private-keys-v1.d" ]; then \
+			echo $$name; \
+			$(LINK_CMD) $$file ~/.gnupg/$$name; \
+		fi; \
 	done
 
 	$(LINK_CMD) ~/Documents/jianguo/jianguo/keepass/gnupg ~/.gnupg
