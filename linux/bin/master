@@ -1,4 +1,4 @@
 #!/bin/bash
-pass=$(kpmenu --autotype --customAutotypeTyper=echo  --autotypeSequence '{PASSWORD}' --customAutotypeWindowID="echo bitwarden.com")
+pass=$(XDG_CONFIG_HOME=/home/jixiuf/.config kpmenu  --autotype --customAutotypeTyper=echo  --autotypeSequence '{PASSWORD}' --customAutotypeWindowID='echo bitwarden.com')
 # pass=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
 echo -n $pass
