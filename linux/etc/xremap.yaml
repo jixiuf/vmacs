@@ -36,6 +36,10 @@ modmap:
         held: [alt_l,super_l]
         alone: f3 # Required
         alone_timeout_millis: 1000 # Optional
+      shift_r :
+        held: shift_r
+        alone: f9 # Required
+        alone_timeout_millis: 1000 # Optional
   - name: Not Emacs
     application:
       not: emacs
@@ -437,6 +441,7 @@ keymap:
       
       # super-C-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       super-C-7: { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then    kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else    kpmenu --autotype ;fi"] }
+      f9: { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then    kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else    kpmenu --autotype ;fi"] }
       super-M-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
       super-C-Grave: { launch: ["sh" ,"-c","dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases;swaylock"] }
       # super-C-Esc: { launch: ["swaylock"] }

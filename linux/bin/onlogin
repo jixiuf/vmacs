@@ -1,6 +1,5 @@
 #!/bin/bash
 onyubikey
 # sudo eselect pinentry set  pinentry-qt5
-kpmenu --daemon&
+master| keepassxc --pw-stdin --keyfile ~/Documents/jianguo/jianguo/keepass/pass.key  ~/Documents/jianguo/jianguo/keepass/pass.kdbx&
 systemctl --user restart emacs
-gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1| keepassxc --pw-stdin --keyfile ~/Documents/jianguo/jianguo/keepass/pass.key  ~/Documents/jianguo/jianguo/keepass/pass.kdbx&
