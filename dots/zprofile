@@ -1,4 +1,6 @@
 #!/bin/zsh
+# rename zshenv->zprofile ,/etc/zsh/zprofile 会覆盖这里的PATH
+
 # appendPath(newPath)
 # 如果 newPath 已经在 PATH 下了， 则不添加
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
@@ -173,7 +175,11 @@ fi
 #     export ANDROID_SDK_ROOT=~/Documents/android/ADT/sdk
 # fi
 # export ANDROID_NDK_ROOT=~/Documents/android/NDK
-# export ANDROID_HOME=~/Documents/android/ADT/sdk
+if [ -d ~/Android/Sdk ]; then
+    export ANDROID_HOME=~/Android/Sdk
+    export ANDROID_SDK_ROOT=$ANDROID_HOME
+    appendPath "$ANDROID_SDK_ROOT/platform-tools"
+fi
 # export NDK_ROOT=~/Documents/android/NDK
 
 
@@ -181,6 +187,5 @@ fi
 # appendPath "$PNGQUANT_ROOT"
 # appendPath "$ANDROID_SDK_ROOT/build-tools/android-4.4.2"
 # appendPath "$ANDROID_SDK_ROOT/tools"
-# appendPath "$ANDROID_SDK_ROOT/platform-tools"
 # 不知道为什么 GIT_CONFIG_PARAMETERS 有值时 git 命令使用不了
 unset GIT_CONFIG_PARAMETERS
