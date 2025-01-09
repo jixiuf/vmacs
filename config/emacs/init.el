@@ -49,10 +49,9 @@
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'js (require 'conf-program-js))
 
-;; (when (vmacs-not-dumping-p)
-(when (eq system-type 'darwin)
-  (require 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
+(setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH" "EDITOR" "PYTHONPATH" "LC_ALL" "LANG" "JAVA_HOME"))
+(require 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
 (with-eval-after-load 'dired (require 'conf-dired)) ;emacs 文件浏览器，directory 管理理
 
 

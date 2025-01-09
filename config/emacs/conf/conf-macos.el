@@ -45,14 +45,6 @@
 
 ;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
 ;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
-;; 从 shell 中获取环境变量
-(setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH" "EDITOR" "PYTHONPATH" "LC_ALL" "LANG" "JAVA_HOME"))
-
-;; 设成 nil 则不从 .zshrc 读 只从 .zshenv 读（可以加快速度，但是需要你将环境变量相关的都放到 .zshenv 中，而非 .zshrc 中）
-(setq exec-path-from-shell-shell-name "zsh")
-(setq exec-path-from-shell-check-startup-files nil) ;
-(setq exec-path-from-shell-arguments '("-l" )) ;remove -i read form .zshenv
-
 ;; (setq-default server-auth-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-socket-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-name "emacs-server-file")
