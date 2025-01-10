@@ -16,6 +16,7 @@ modmap:
         alone: esc
         alone_timeout_millis: 1000
       ctrl_l : super_l
+      alt_r : f9
   - name: Global for luojilab
     device:
       #evtest
