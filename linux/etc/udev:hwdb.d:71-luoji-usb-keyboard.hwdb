@@ -17,6 +17,7 @@ evdev:input:b0003v05ACp0256e0111*
   KEYBOARD_KEY_700e3=leftalt
   KEYBOARD_KEY_700e0=leftmeta
   KEYBOARD_KEY_700e6=rightmeta
+  KEYBOARD_KEY_700e5=f9
 # esc-> ` 
   KEYBOARD_KEY_70029=grave
 #  `->esc  
