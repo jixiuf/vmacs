@@ -81,7 +81,7 @@
  syntax-wholeline-max 1000
  ;; display-line-numbers 'absolute
  fill-column 100
- tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-]*@[[:alnum:]]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
+ tramp-adb-prompt "^\\(?:[[:digit:]]*|?\\)?\\(?:[[:alnum:]-:/]*@?[[:alnum:]-:/]*[^#\\$]*\\)?[#\\$][[:space:]]" ;加了一个  "-"
  tramp-shell-prompt-pattern (concat "\\(?:^\\|\r\\)" "[^]#@$%>\n]*#?[]#$@%>] *\\(\e\\[[0-9;]*[a-zA-Z-.] *\\)*")
  comint-prompt-regexp "^[^#$%\n]*[#$%] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
  shell-prompt-pattern "^[^#$%\n]*[#$%] *"  ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
