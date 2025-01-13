@@ -220,7 +220,7 @@ src_configure() {
 	append-flags -fno-fast-math -ffp-contract=off
 
 	local myconf
-	myconf+=" --with-mps=yes"
+	myconf+=" --with-mps=debug"
 
 
 	# Prevents e.g. tests interfering with running Emacs.
