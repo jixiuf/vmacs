@@ -1,4 +1,4 @@
-((magit-commit "--pinentry-mode ask --gpg-sign=F23B3CC93AC66530E3923F2A678A5B058CF46A08")
+((magit-commit "--gpg-sign=F23B3CC93AC66530E3923F2A678A5B058CF46A08" "--pinentry-mode=ask")
  (magit-log:magit-log-mode "-n50" "--graph" "--color" "--decorate")
  (magit-patch-create)
  (magit-pull "--rebase" "--autostash")
