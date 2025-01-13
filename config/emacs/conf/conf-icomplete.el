@@ -231,7 +231,6 @@ Monospaced font whihc is fixed idth and height is recommended."
 
 (define-key icomplete-minibuffer-map (kbd "SPC") 'vmacs-minibuffer-space)
 
-(setq consult-project-root-function #'vc-root-dir)
 (with-eval-after-load 'consult
   (with-eval-after-load 'embark
     (require 'embark-consult nil t)
