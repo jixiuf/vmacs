@@ -9,6 +9,7 @@ default:
 	make deploy
 	make -C config/emacs
 
+
 deploy:
 	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
 	@-for file in dots/*; do \
