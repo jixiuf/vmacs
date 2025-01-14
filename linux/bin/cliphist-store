@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+PROG=$( basename "$0" )
+USAGE="keepassxc-safe wrapper for cliphist.
+run this in Hyprland as:
+    exec-once = wl-paste --watch cliphist-store
+and then use these bindings, or similar:
+"
+# what program did the 'copy' originate from?
+if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
+    front_app=`hyprctl activewindow -j`
+    front_class=`echo $front_app|jq -r '.class'`
+else
+    front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+    front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+fi
+
+# if you want something to be not saved then lock it here eg wrap 'pass' in a script
+if [[ $front_class != "org.keepassxc.KeePassXC" ]]; then
+    tr -d '\r' | cliphist store --max-items 500
+fi
+
+# Local Variables:
+# mode: shell-script
+# End:
