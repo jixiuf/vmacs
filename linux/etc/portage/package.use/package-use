@@ -12,7 +12,6 @@ sys-auth/seatd server
 >=app-crypt/gcr-3.41.1-r2:0 gtk
 gui-wm/hyprland X
 >=gui-libs/wlroots-0.16.2 x11-backend
-app-i18n/rime-data -double-pinyin -essay -luna-pinyin -octagram  -stroke -terra-pinyin  -wubi 
 >=dev-qt/qtgui-5.15.9 egl
 dev-qt/qtbase egl
 media-libs/mesa llvm 
@@ -53,6 +52,7 @@ sys-kernel/installkernel dracut
 dev-java/openjdk-bin source
 dev-libs/jemalloc stats
 app-i18n/librime-lua LUA_SINGLE_TARGET: lua5-4
+ net-libs/nodejs npm
 # sys-devel/gcc jit
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
