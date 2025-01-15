@@ -1,17 +1,9 @@
 # -*- mode:conf -*-
-*/* CPU_FLAGS_X86: aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3
+# */* CPU_FLAGS_X86: aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3
 net-libs/libssh server
 sys-libs/zlib minizip
-app-editors/vim -X
-x11-terms/kitty -X
 app-editors/emacs  libxml2 gui gtk json   gzip-el cairo dynamic-loading xft harfbuzz tree-sitter  sqlite gif sound  dbus imagemagick -X
 sys-auth/seatd server 
-x11-libs/pango X
-x11-libs/cairo X
-x11-libs/gtk+ X
-dev-cpp/gtkmm X
-dev-cpp/cairomm X
-x11-libs/libxkbcommon X
 >=gui-apps/swaybg-1.2.0 gdk-pixbuf
 >=app-emacs/emacs-common-1.8 gui
 >=app-text/xmlto-0.0.28-r10 text
@@ -23,13 +15,8 @@ gui-wm/hyprland X
 app-i18n/rime-data -double-pinyin -essay -luna-pinyin -octagram  -stroke -terra-pinyin  -wubi 
 >=dev-qt/qtgui-5.15.9 egl
 dev-qt/qtbase egl
-media-libs/mesa llvm vulkan
+media-libs/mesa llvm 
 sys-fs/lvm2 lvm 
-media-libs/freetype X
->=media-libs/libglvnd-1.6.0 X
->=gui-libs/wlroots-0.16.2 X
->=x11-libs/cairo-1.17.8 X
->=media-libs/libpulse-16.1-r2 X
 >=dev-libs/libdbusmenu-16.04.0-r2 gtk3
 gui-apps/waybar wifi  network pipewire upower tray experimental
 >=media-video/pipewire-0.3.65-r1 ffmpeg  extra bluetooth dbus  sound-server 

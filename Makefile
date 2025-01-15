@@ -5,12 +5,21 @@ LINK_CMD := ln -s -f
 LINK_CMD_HARD := ln -f
 NORMAL_FILES_COMMON := `echo ssh password-store pam-gnupg gnupg mitmproxy authinfo.gpg gitconfig gitattributes gitignore  vimrc  zshenv zshrc   bashrc  fzf.zsh  mbsyncrc mailrc msmtprc`
 default:
-	sudo make sudo
 	make deploy
 	make -C config/emacs
+	sudo make sudo
 
 
 deploy:
+	@-unlink ~/.gnupg
+	mkdir -p ~/.gnupg
+	for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
+		name="$$(basename $$file)"; \
+		if [ ! "$$name" = "private-keys-v1.d" ]; then \
+			$(LINK_CMD) $$file ~/.gnupg/$$name; \
+		fi; \
+	done
+	make -C ~/Documents/jianguo/jianguo/keepass/gpg-backup restore
 	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
 	@-for file in dots/*; do \
 		link_name=$$(echo "$$file" | tr ':' '/'); \
@@ -20,17 +29,7 @@ deploy:
 	done
 	@-rm -f ~/.notmuch-config.gpg
 
-	@-unlink ~/.gnupg
-	mkdir -p ~/.gnupg
-	for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
-		name="$$(basename $$file)"; \
-		if [ ! "$$name" = "private-keys-v1.d" ]; then \
-			echo $$name; \
-			$(LINK_CMD) $$file ~/.gnupg/$$name; \
-		fi; \
-	done
 
-	$(LINK_CMD) ~/Documents/jianguo/jianguo/keepass/gnupg ~/.gnupg
 	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
 	gpg -d ~/.ssh/config.gpg > ~/.ssh/config 2>/dev/null
 	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys 2>/dev/null

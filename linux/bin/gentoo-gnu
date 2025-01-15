@@ -1,0 +1,160 @@
+#!/bin/bash
+
+# fork from /usr/bin/getuto
+# This bash script maintains /etc/portage/gnupg in a Gentoo installation.
+
+# If the directory does not exist yet, it will be set up such that
+# the Gentoo Release Engineering keys are trusted for signing binary
+# packages.
+# The keys are taken from sec-keys/openpgp-keys-gentoo-release.
+# If the directory already exists, then all keys in it will be refreshed
+# from keyservers.
+# In addition sanity checks and corrections are performed ...
+
+# Runtime requirements:
+# app-crypt/gnupg
+# dev-libs/openssl
+# sec-keys/openpgp-keys-gentoo-release
+# sys-apps/gentoo-functions
+
+[[ ${PORTAGE_DEBUG} || ${GETUTO_DEBUG} ]] && set -x
+
+export GNUPGHOME="${ROOT%/}"/home/jixiuf/.gnupg
+
+LASTRUNFILE=${GNUPGHOME}/.getuto.last
+QUIET='1'
+QUIET_GPG=''
+
+[[ $1 == '-v' ]] && QUIET=''
+[[ -n ${QUIET} ]] && QUIET_GPG='--quiet'
+
+if [[ -f /lib/gentoo/functions.sh && -v TERM && -n "${TERM}" && "${TERM}" != dumb ]] ; then
+	source /lib/gentoo/functions.sh
+else
+	ebegin() {
+		echo "$@"
+	}
+	eend() {
+		true
+	}
+	einfo() {
+		echo "$@"
+	}
+fi
+
+gpgconf --kill gpg-agent dirmngr
+set -e
+
+mykeyservers=(
+	"hkps://keys.openpgp.org"
+	"hkps://keys.gentoo.org"
+)
+
+getuto_refresh() {
+	DAY=86400
+	NOW=$(date +%s)
+	if [[ -f ${LASTRUNFILE} ]] ; then
+		LST=$(date -r ${LASTRUNFILE} +%s)
+	else
+		LST='0'
+	fi
+
+	if (( ${NOW} - ${DAY} >= ${LST} )) ; then
+		einfo "Updating gnupg keyring for package signatures"
+
+		# Always re-import the system keys because it might be our only source of updates
+		# for e.g. revocations, renewals, etc if we're on a firewalled machine.
+		gpg ${QUIET_GPG} --no-permission-warning --batch --import "${ROOT%/}"/usr/share/openpgp-keys/gentoo-release.asc
+
+		# Refresh all keys from the keyserver if we can.
+		for keyserver in "${mykeyservers[@]}" ; do
+			# TODO: keys.openpgp.org lacks a UID for our keys, need to verify email
+			gpg ${QUIET_GPG} --no-permission-warning --batch --keyserver "${keyserver}" --refresh-keys || true
+		done
+		# We only sign (-> ultimate trust) the keys we originally import, so this is fine and
+		# just serves as an additional refresh method.
+		gpg ${QUIET_GPG} --no-permission-warning --auto-key-locate=clear,nodefault,wkd --locate-key releng@gentoo.org infrastructure@gentoo.org repomirrorci@gentoo.org || true
+
+		touch ${LASTRUNFILE}
+	else
+		[[ -n ${QUIET} ]] || einfo "gnupg keyring for package signatures already up-to-date."
+	fi
+
+	# If we got here, everything is fine. Empty a silly string to keep the grep happy
+	# on the output of getuto_refresh.
+	[[ -n ${QUIET} ]] && echo OK || true
+}
+
+
+if [[  -d ${GNUPGHOME} ]] ; then
+	# The directory does not exist yet.
+	ebegin "Initializing ${GNUPGHOME}"
+
+	mkdir -p "${GNUPGHOME}"
+	chmod u=rwx,go=rx "${GNUPGHOME}"
+
+	gpg --batch --list-secret-keys --keyid-format=long --with-colons \
+		| grep "^fpr" \
+		| sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' \
+	> "${GNUPGHOME}/mykeyid"
+	mykeyid=$(<"${GNUPGHOME}/mykeyid")
+
+	# Import all release engineering keys.
+	if [[ ! -f "${ROOT%/}"/usr/share/openpgp-keys/gentoo-release.asc ]] ; then
+		echo "\"${ROOT%/}\"/usr/share/openpgp-keys/gentoo-release.asc not found. Is sec-keys/openpgp-keys-gentoo-release installed?"
+		exit 1
+	fi
+
+	gpg ${QUIET_GPG} --batch --import "${ROOT%/}"/usr/share/openpgp-keys/gentoo-release.asc
+
+	# List all release engineering keys (https://serverfault.com/a/946428)
+	myrelkeys=$(gpg --batch --list-keys --keyid-format=long --with-colons \
+			| grep "^fpr" \
+			| sed -n 's/^fpr:::::::::\([[:alnum:]]\+\):/\1/p' \
+			| grep -v "${mykeyid}")
+
+	# TODO: keys.openpgp.org lacks a UID for our keys, need to verify email
+	for keyserver in "${mykeyservers[@]}" ; do
+		gpg ${QUIET_GPG} --batch --keyserver "${keyserver}" --recv-keys ${myrelkeys} || true
+	done
+	# We only sign (-> ultimate trust) the keys we originally import, so this is fine and
+	# just serves as an additional refresh method.
+	gpg ${QUIET_GPG} --auto-key-locate=clear,nodefault,wkd --locate-key releng@gentoo.org infrastructure@gentoo.org repomirrorci@gentoo.org || true
+
+	# Locally sign all release engineering keys.
+	for relkeyid in ${myrelkeys} ; do
+		# We have to use --quick-lsign-key for this to work with batch: https://dev.gnupg.org/T1606
+		if ! gpg ${QUIET_GPG} --batch --yes  --pinentry-mode ask --quick-lsign-key "${relkeyid}" ; then
+			# But that won't work for subkeys, so fallback to a hackier method.
+			set -o pipefail
+			echo -e "y\ny\n" | gpg ${QUIET_GPG} --command-fd 0 --yes   --pinentry-mode ask --lsign-key "${relkeyid}"
+			set +o pipefail
+		fi
+	done
+
+	# Update the trustdb
+	gpg ${QUIET_GPG} --batch --check-trustdb
+
+	# Make sure the trustdb is world-readable.
+	chmod ugo+r "${GNUPGHOME}/trustdb.gpg"
+
+	eend
+else
+	# The keydir already exists, so our job is to just to refresh and check
+	# permissions.
+
+	# We want to be able to filter error messages
+	export LC_ALL=C.UTF8
+
+	if [[ -n ${QUIET} ]] ; then
+		getuto_refresh |& grep -qv ": no user ID"
+	else
+		getuto_refresh
+	fi
+fi
+
+# Make sure the trustdb is world-readable (again).
+chmod ugo+r "${GNUPGHOME}/trustdb.gpg"
+
+# Clean up.
+gpgconf --kill gpg-agent dirmngr
