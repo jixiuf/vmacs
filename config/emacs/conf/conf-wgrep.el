@@ -86,7 +86,7 @@
                   (list (point-min)
                         (point-max)))))
     (apply orig-fun args)
-    (message "Return:Query Replace,C-cC-k:quit C-r:\\(\\)"))
+    (message "Return:Replace,C-cC-k:quit C-r:()    g:all, c:act e:edit replacement C-e:临时退出 C-cC-c:恢复"))
 
   (define-key reb-mode-map (kbd "M-n") #'reb-next-match)
   (define-key reb-mode-map (kbd "M-p") #'reb-prev-match)
