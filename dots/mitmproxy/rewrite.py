@@ -16,6 +16,7 @@ URL_PREFIX_MAP = {
     "https://entree-ali.igetget.com/hotfix/": "http://10.1.0.140:8080/hotfix/",
     "http://odobpkg.test.svc.luojilab.dc/":"http://127.0.0.1:17946/",
     "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:3890/",
+    "https://dbs.luojilab.com/bsai/":"http://127.0.0.1:28767/bsai/",
     # 填写你的映射字典
 }
 
