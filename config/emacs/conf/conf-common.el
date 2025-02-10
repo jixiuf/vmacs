@@ -140,7 +140,7 @@
                  ("\\.mxml" . nxml-mode)
                  ("\\.proto\\'" . protobuf-mode)
                  ("\\.thrift" . thrift-mode)
-                 ("\\.md" . markdown-mode)
+                 ("\\.md$" . markdown-mode)
                  ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
                  ("\\.rs$" . rust-ts-mode)
