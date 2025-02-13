@@ -358,7 +358,7 @@ keymap:
       # C-j: C-RIGHTBRACE
   - name: global_emacs
     application:
-      only: [Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark]
+      only: [MongoDB Compass,Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark]
     remap:
       super-C-w: C-w
       M-f: C-right
