@@ -8,7 +8,7 @@
                 (left . 1)
                 (height . 30)
                 (width . 100)
-                ;; (font . "Sarasa Mono SC Nerd-22")
+ ;               (font . "Sarasa Mono SC Nerd-22")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;
@@ -27,8 +27,8 @@
     (set-fontset-font t 'symbol "Apple Symbols")
     ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
     ;; https://github.com/lxgw/LxgwWenKai
-    (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
-    (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
+;    (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+ ;   (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
     ))
 
 (add-hook 'after-init-hook #'vmacs-set-font)

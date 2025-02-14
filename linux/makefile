@@ -66,6 +66,8 @@ sudo:
         fi;\
 		$(LINK_CMD) $(PWD)/$$file /$$link_name ;\
 	done
+	cp -f ~/.ssh/config /etc/ssh/ssh_config.d/1config.conf
+	chmod 644  /etc/ssh/ssh_config.d/1config.conf
 	mkdir -p /usr/local/{bin,}
 	chown jixiuf:users /usr/local  -R
 	on-keyboard-update >/dev/null 2>/dev/null

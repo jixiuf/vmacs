@@ -34,26 +34,28 @@
 (defvar vmacs--fullscreen-window-configuration nil)
 (defun vmacs-fullscreen()
   (interactive)
-  (if (> (length (window-list)) 1)
-      (progn
-        (setq vmacs--fullscreen-window-configuration (current-window-configuration))
-        (vmacs-delete-other-frame)
-        (when (and (string-equal "0" (string-trim
-                                      (shell-command-to-string
-                                       "hyprctl activewindow -j| jq -rc '.fullscreen'")))
-                   (not (string-equal "1" (string-trim
-                                           (shell-command-to-string
-                                            "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
-                        (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+  (if (eq system-type 'gnu/linux)
+      (if (> (length (window-list)) 1)
+          (progn
+            (setq vmacs--fullscreen-window-configuration (current-window-configuration))
+            (vmacs-delete-other-frame)
+            (when (and (string-equal "0" (string-trim
+                                          (shell-command-to-string
+                                           "hyprctl activewindow -j| jq -rc '.fullscreen'")))
+                       (not (string-equal "1" (string-trim
+                                               (shell-command-to-string
+                                                "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
+                            (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+              (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+        (when vmacs--fullscreen-window-configuration
+          (set-window-configuration vmacs--fullscreen-window-configuration)
+          (setq vmacs--fullscreen-window-configuration nil))
+        (if (string-equal "1" (string-trim
+                               (shell-command-to-string
+                                "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
+            (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "0")
           (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
-    (when vmacs--fullscreen-window-configuration
-      (set-window-configuration vmacs--fullscreen-window-configuration)
-      (setq vmacs--fullscreen-window-configuration nil))
-    (if (string-equal "1" (string-trim
-                           (shell-command-to-string
-                            "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
-        (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "0")
-      (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1"))))
+    (toggle-frame-maximized)))
 
 (global-set-key (kbd "C-s-o") 'vmacs-other-window)
 (global-set-key (kbd "C-x o") 'vmacs-other-window)
