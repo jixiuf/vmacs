@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# 
+if [ `uname -s` = "Linux" ] ; then
+    pass=$(kpmenu --autotype --customAutotypeTyper=echo  --autotypeSequence '{PASSWORD}' --customAutotypeWindowID="echo bitwarden.com")
+    # pass=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
+    echo -n $pass
+else
+    # security add-internet-password  -a jixiuf -s bitwarden.com -w 'mypass'
+    security find-internet-password -g -a jixiuf -s bitwarden.com  -w  
+fi
+
