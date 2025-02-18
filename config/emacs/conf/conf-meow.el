@@ -12,7 +12,6 @@
 
 ;; (setq meow--delete-region-function #'kill-region)
 (setq meow--kbd-kill-region "C-k")
-(setq meow-motion-remap-prefix "s-M-")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
 (setq meow-select-on-append t)
@@ -23,7 +22,7 @@
 
 
 (defun meow-setup ()
-  (meow-motion-overwrite-define-key
+  (meow-motion-define-key
    '("j" . "C-c Mj")
    '("h" . "C-c Mh")
    '("l" . "C-c Ml")
