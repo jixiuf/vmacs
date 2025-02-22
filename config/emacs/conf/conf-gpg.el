@@ -140,7 +140,7 @@
 ;;; easypg，emacs 自带
 (require 'epa-file)
 (epa-file-enable)
-(setf epg-pinentry-mode 'loopback)
+(setf epg-pinentry-mode 'ask)
 ;; ;; 总是使用对称加密
 ;; ;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
 (setq-default epa-file-select-keys nil)
