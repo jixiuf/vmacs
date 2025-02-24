@@ -1,6 +1,5 @@
 app-editors/emacs ~amd64 **
 app-editors/vscode ~amd64
-app-i18n/* ~amd64 
 app-office/bytedance-feishu ~amd64
 dev-db/dbeaver-bin  ~amd64 
 dev-go/delve ~amd64
