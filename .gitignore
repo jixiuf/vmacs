@@ -66,3 +66,4 @@ linux/config/fcitx5/conf/cached_layouts
 /mac/rime_input_method/wanxiang-lts-zh-hans.gram
 /dots/gnupg/reader_0.status
 /dots/ssh/id_rsa_bak
+/linux/etc/portage/local/metadata/md5-cache/
