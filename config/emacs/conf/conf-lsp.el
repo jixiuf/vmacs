@@ -1,7 +1,7 @@
 ;;; -*- coding:utf-8 -*-
 
 ;; (setq eglot-confirm-server-edits nil)
-(setq eglot-autoshutdown nil)
+(setq eglot-autoshutdown t)
 (setq eglot-sync-connect 0)
 (setq eglot-extend-to-xref t)
 (setq eglot-events-buffer-config (list :size 0 :format 'full))
