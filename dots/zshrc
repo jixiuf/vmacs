@@ -485,5 +485,13 @@ go env -w GOPROXY="https://goproxy.cn,direct"
 # echo '{"c":[{"a":1,"b":"2"}]}'|jq '.c[]'| json2csv
 # echo '[{"a":1,"b":"2"}]'|jq '.[]'| json2csv
 # echo '{"a":1,"b":2}\n{"a":3,"b":4}' | json2csv
-alias json2csv="jq -sr '(.[0] | keys_unsorted) as \$headers |\$headers, (.[] | [ .[\$headers[]] ]) |@csv'"
-
+# 忽略a,c 字段
+# echo '{"a":1,"b":2,"c":3}\n{"a":3,"b":4,"c":3}' | json2csv 'a,c'
+json2csv() {
+    jq -sr --arg exclude "${1}" '
+    (.[0] | keys_unsorted |
+    if ($exclude != "") then
+        map(select(. as $f | $exclude | split(",") | contains([$f]) | not))
+    else . end) as $headers
+    | [$headers[]], (.[] | [.[$headers[]]]) | @csv'
+}
