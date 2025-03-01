@@ -495,3 +495,7 @@ json2csv() {
     else . end) as $headers
     | [$headers[]], (.[] | [.[$headers[]]]) | @csv'
 }
+# rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/
+# rsync -avz -CErltm  --delete src dst
+# 同步两个目录
+alias rcp='rsync -avz -CErltm  --delete '
