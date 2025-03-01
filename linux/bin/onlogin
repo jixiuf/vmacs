@@ -1,5 +1,5 @@
 #!/bin/bash
 onyubikey
 # sudo eselect pinentry set  pinentry-qt5
-master| keepassxc --pw-stdin --keyfile ~/Documents/jianguo/jianguo/keepass/pass.key  ~/Documents/jianguo/jianguo/keepass/pass.kdbx&
+#master| keepassxc --pw-stdin --keyfile ~/Documents/jianguo/jianguo/keepass/pass.key  ~/Documents/jianguo/jianguo/keepass/pass.kdbx&
 systemctl --user restart emacs
