@@ -28,7 +28,7 @@ ACTION=="add",ENV{ID_FS_TYPE}!="ntfs", RUN+="/bin/mkdir -p /mnt/usb-%k", RUN+="/
 #  如果文件系统是ntfs ,以ntfs-3g 的形式挂载，实现可读写
 # 同时挂载到/media/sd[a-z][0-9] 的形式
 
-ACTION=="add",ENV{ID_FS_TYPE}=="ntfs", RUN+="/bin/mkdir -p /mnt/usb-%k", RUN+="/bin/mount -t ntfs-3g -o $env{mount_options},rw /dev/%k /mnt/usb-%k"
+ACTION=="add",ENV{ID_FS_TYPE}=="ntfs", RUN+="/bin/mkdir -p /mnt/usb-%k", RUN+="/bin/mount -t ntfs3 -o $env{mount_options},rw /dev/%k /mnt/usb-%k"
 # Clean up after removal
 #
 ACTION=="remove", ENV{dir_name}!="",  RUN+="/bin/umount -l /mnt/usb-%k",  RUN+="/bin/rmdir /mnt/usb-%k" ,  RUN+="/bin/rm /mnt/usb-%k" 
