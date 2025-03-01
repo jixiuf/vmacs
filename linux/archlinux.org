@@ -207,8 +207,9 @@ HOOKS=(base udev ... block lvm2 filesystems)
 pacman -S ttf-dejavu
 fc-cache -fv
 grub-mkfont -s 36 -o /boot/grub/fonts/DejaVuSansMono.pf2 /usr/share/fonts/TTF/DejaVuSansMono.ttf
+sudo grub-mkfont -s 36 -o /boot/grub/fonts/zh.pf2 ~/.fonts/sarasa-term-sc-nerd-regular.ttf
 #+end_src
-** 编辑/etc/defaults/grub
+** 编辑 /etc/defaults/grub
 #+begin_example
 GRUB_FONT=/boot/grub/fonts/DejaVuSansMono.pf2
 #+end_example
