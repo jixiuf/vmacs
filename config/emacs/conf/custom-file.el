@@ -14,7 +14,7 @@
  '(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) :background "#625a00")))
  '(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
  '(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
- '(show-paren-match ((t (:foreground "SpringGreen3" :underline t :weight bold))))
+ '(show-paren-match ((t (:foreground "SpringGreen3"  :weight bold))))
  '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
  '(whitespace-missing-newline-at-eof ((t (:foreground "yellow")))))
 (custom-set-variables

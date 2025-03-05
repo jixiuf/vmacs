@@ -67,12 +67,12 @@ Monospaced font whihc is fixed idth and height is recommended."
 (setq icomplete-compute-delay 0)
 (setq icomplete-show-matches-on-no-input t)
 (setq icomplete-hide-common-prefix nil)
-;; (setq icomplete-in-buffer t)
+(setq icomplete-in-buffer t)
+(setq icomplete-vertical-in-buffer-adjust-list t)
 ;; ;; https://github.com/emacs-mirror/emacs/blob/master/etc/NEWS.30#L135
-;; (advice-add 'completion-at-point :after #'minibuffer-hide-completions)
-
+(advice-add 'completion-at-point :after #'minibuffer-hide-completions)
 (setq tab-always-indent 'complete)
-(setq completion-in-region-function #'consult-completion-in-region)
+;; (setq completion-in-region-function #'completion--in-region)
 ;; (setq read-buffer-completion-ignore-case nil)
 ;; (setq read-file-name-completion-ignore-case nil)
 ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
@@ -151,7 +151,7 @@ Monospaced font whihc is fixed idth and height is recommended."
 (icomplete-mode 1)
 ;; (icomplete-vertical-mode 1)
 (add-hook 'minibuffer-setup-hook #'vmacs-icomplete-vertical-mode)
-;; (add-hook 'completion-in-region-mode-hook #'vmacs-icomplete-vertical-mode)
+(add-hook 'completion-in-region-mode-hook #'vmacs-icomplete-vertical-mode)
 (defun vmacs-icomplete-vertical-mode()
   (setq-local truncate-lines t)
   (when  (member this-command '(xref-find-references
@@ -166,17 +166,17 @@ Monospaced font whihc is fixed idth and height is recommended."
                                 consult-grep consult-completion-in-region
                                 consult-line consult-ripgrep-default-symbol
                                 consult-ripgrep-root-symbol consult-ripgrep-default))
+    (setq-local icomplete-vertical-mode t)
     (when (minibufferp)
-      (setq-local icomplete-vertical-mode t)
       (add-hook 'icomplete-minibuffer-setup-hook
                 #'icomplete--vertical-minibuffer-setup nil t)
       ;; for complete-in-buffer
       ;; (local-set-key  (kbd "<escape>") 'keyboard-quit)
-      ;; (setq-local icomplete-hide-common-prefix nil
-      ;;             ;; Ask `icomplete-completions' to return enough completions candidates.
-      ;;             max-mini-window-height 8
-      ;;             icomplete-prospects-height 25
-      ;;             redisplay-adhoc-scroll-in-resize-mini-windows nil)
+      (setq-local icomplete-hide-common-prefix nil
+                  ;; Ask `icomplete-completions' to return enough completions candidates.
+                  max-mini-window-height 8
+                  icomplete-prospects-height 25
+                  redisplay-adhoc-scroll-in-resize-mini-windows nil)
       )))
 
 
