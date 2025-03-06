@@ -53,6 +53,7 @@ dev-java/openjdk-bin source
 dev-libs/jemalloc stats
 app-i18n/librime-lua LUA_SINGLE_TARGET: lua5-4
  net-libs/nodejs npm
+ gui-apps/xremap wlroots
 # sys-devel/gcc jit
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit

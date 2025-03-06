@@ -77,7 +77,8 @@ gui-apps/satty  ~amd64
 app-emulation/fuse  ~amd64
 app-emulation/libspectrum  ~amd64
 dev-libs/hyprgraphics  ~amd64
-gui-libs/hyprland-qtutils   ~amd64 
+gui-libs/hyprland-qtutils   ~amd64
+gui-apps/xremap   ~amd64
 # Local Variables:
 # mode: conf
 # End:
