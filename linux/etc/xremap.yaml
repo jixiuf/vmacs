@@ -6,6 +6,11 @@
 # super = cmd on macos and win on windows
 # journalctl -u xremap
 keypress_delay_ms: 10           # https://github.com/k0kubun/xremap/issues/179
+# shared:
+#   sleep: &sleep {sleep: 100}  # increase this delay to be larger than your bouncekeys delay
+  # f11: [a, { sleep: 500 }, b]
+  # C-delete: [{set_mark: false}, C-shift-right, *sleep, C-shift-right, *sleep, C-shift-left, delete]
+
 modmap:
   - name: Global for jxfhome
     device:
@@ -440,6 +445,7 @@ keymap:
       super-C-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
       f9: 
         - super-Space
+        - {sleep: 20 }
         - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then    kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else    kpmenu --autotype ;fi"] }
       super-C-Grave: { launch: ["sh" ,"-c","dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases;swaylock"] }
       # super-C-Esc: { launch: ["swaylock"] }
