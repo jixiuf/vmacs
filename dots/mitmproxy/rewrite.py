@@ -19,6 +19,10 @@ URL_PREFIX_MAP = {
     "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:3890/",
     "http://token-default.test.svc.luojilab.dc/":"http://token-default.test.svc.luojilab.dc/",
     "https://dbs.luojilab.com/bsai/":"http://127.0.0.1:28767/bsai/",
+    "http://bschool.dev.didatrip.com/scrm/":"http://127.0.0.1:2654/scrm/",
+    "http://entree.dev.didatrip.com/ddpush/":"http://localhost:23587/ddpush/",
+    
+    
     # 填写你的映射字典
 }
 proxy_hosts = {
