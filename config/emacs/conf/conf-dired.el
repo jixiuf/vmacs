@@ -117,10 +117,14 @@
 ;; "i" 'wdired-change-to-wdired-mode
 (define-key dired-mode-map  "\M-o" 'dired-omit-mode );不显示一些不重要的文件
 (define-key dired-mode-map  "L" 'dired-add-to-load-path-or-load-it )
-(define-key dired-mode-map  "v" 'add-dir-local-variable)
+(define-key dired-mode-map  "V" 'add-dir-local-variable)
 (define-key dired-mode-map  "," 'consult-dir)
 (define-key dired-mode-map  "f" 'open-in-filemanager)
 (define-key dired-mode-map  (kbd "<mouse-2>") #'dired-mouse-find-file)
+(with-eval-after-load 'image-mode
+  (define-key image-mode-map  (kbd "C-f") #'image-scroll-up)
+  (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
+(define-key image-mode-map  (kbd "C-c Mn") #'image-next-file))
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state

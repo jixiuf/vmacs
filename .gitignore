@@ -68,3 +68,4 @@ linux/config/fcitx5/conf/cached_layouts
 /dots/ssh/id_rsa_bak
 /linux/etc/portage/local/metadata/md5-cache/
 /config/emacs/tramp
+/config/emacs/image-dired/
