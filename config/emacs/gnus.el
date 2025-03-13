@@ -171,6 +171,7 @@
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
   (define-key gnus-article-mode-map "b" #'gnus-select-group)
+  (define-key gnus-article-mode-map  (kbd "R") #'gnus-article-wide-reply-with-original)     ;reply to all
   (define-key gnus-article-mode-map  (kbd "u") (kbd "s C-x 1"))     ;swtch go summary buffer
   (define-key gnus-article-mode-map  (kbd "C-m") (kbd "s C-x 1"))     ;swtch go summary buffer
   (define-key gnus-article-mode-map  (kbd "C-j") (kbd "sGN C-m"))     ;next article

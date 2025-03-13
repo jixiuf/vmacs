@@ -19,7 +19,7 @@ keymap:
       super-C-M-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --tmux-session $RANDOM"] }
       super-C-comma: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --workspace 4 --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       super-C-g: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle weixin weixin-uos" ] }
-      super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'Bytedance-lark|Bytedance-feishu|^飞书$' -- bytedance-feishu-stable 2>&1" ] }
+      super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'Bytedance-lark|Bytedance-feishu|^飞书$' -- bytedance-feishu-stable  -- --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime 2>&1" ] }
       super-C-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle org.gnome.Nautilus nautilus"] }
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
