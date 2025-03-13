@@ -152,6 +152,7 @@
                                                      (gnus-summary-select-article-buffer) ;old h
                                                      ))
 
+  (define-key gnus-summary-mode-map  (kbd "R") #'gnus-summary-wide-reply-with-original)     ;reply to all
   (define-key gnus-summary-mode-map  "r" #'gnus-summary-mark-as-read-forward)     ;old d mark readed
   (define-key gnus-summary-mode-map  "d" #'gnus-summary-mark-as-expirable)     ;old E delete mail
   (define-key gnus-summary-mode-map  "v" #'gnus-summary-next-page)     ;old space
