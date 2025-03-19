@@ -14,7 +14,7 @@
  '(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) :background "#625a00")))
  '(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
  '(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
- '(show-paren-match ((t (:foreground "SpringGreen3"  :weight bold))))
+ '(show-paren-match ((t (:foreground "SpringGreen3" :weight bold))))
  '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
  '(whitespace-missing-newline-at-eof ((t (:foreground "yellow")))))
 (custom-set-variables
@@ -63,9 +63,9 @@
  '(package-selected-packages
    '(async beacon cape clipetty consult-dir copilot dape dired-filetype-face emamux embark
            embark-consult exec-path-from-shell git-link go-translate golden-ratio-scroll-screen
-           goto-chg gptel kkp lua-mode magit magit-todos marginalia markdown-mode orderless
-           org-alert org-msg ox-gfm pinyinlib plz posframe protobuf-mode verb vundo with-editor
-           yasnippet))
+           goto-chg gptel kkp lua-mode magit magit-todos marginalia markdown-mode meow-tree-sitter
+           orderless org-alert org-msg ox-gfm pinyinlib plz posframe protobuf-mode verb vundo
+           with-editor yasnippet))
  '(package-vc-selected-packages
    '((copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
  '(proced-enable-color-flag t)

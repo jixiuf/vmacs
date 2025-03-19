@@ -179,7 +179,6 @@
 (meow-thing-register 'go-package
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
-
 (meow-thing-register 'arguments
                      '(regexp "[(,]" "[),]")
                      '(regexp "[(,]" "[),]"))
@@ -222,7 +221,7 @@
         (?' . quoted)
         (?q . quoted)
         (?g . string)
-        (?a . arguments)
+        ;; (?a . arguments)
         (?c . code-block)
         (?o . org-block)
         (?\( . round)                    ;()
@@ -242,6 +241,9 @@
         (?y . line)
         (?d . line)
         (?v . visual-line)))
+(meow-tree-sitter-register-thing ?a "parameter")
+(meow-tree-sitter-register-thing ?\; "comment")
+(meow-tree-sitter-register-thing ?m "function") ;method
 
 ;; (setq meow-thing-selection-directions
 ;;       '((inner . forward)
