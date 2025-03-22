@@ -9,7 +9,8 @@
 
 (vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
 (vmacs-leader (kbd "vr") #'vc-revert)
-(vmacs-leader (kbd "vl") #'magit-log-buffer-file)
+(vmacs-leader (kbd "vl") #'vc-print-log)
+;; (vmacs-leader (kbd "vl") #'magit-log-buffer-file)
 (vmacs-leader (kbd "vL") #'vc-print-root-log)
 (vmacs-leader (kbd "v+") #'vc-update)
 (vmacs-leader (kbd "vf") #'vmacs-magit-pull-default)
@@ -52,8 +53,8 @@
  ;; --ignore-eol-style: 忽略行尾样式的改变。
  vc-svn-diff-switches '("-x --ignore-eol-style")
  diff-switches "-ubB"
+ ;; diff-jump-to-old-file t 控制 diff-mode 中RET C-u 的行为，
  )
-
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
