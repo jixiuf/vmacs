@@ -198,7 +198,7 @@
   (let ((filename (car args)))
     (if (cl-find-if
          (lambda (regexp) (string-match regexp filename))
-         '("\\.pdf\\'" "\\.mp4\\'" "\\.wav\\'" "\\.avi\\'" "\\.gif\\'" "\\.docx?\\'"))
+         '("\\.pdf\\'" "\\.mp3\\'" "\\.mp4\\'" "\\.wav\\'" "\\.avi\\'" "\\.gif\\'" "\\.docx?\\'"))
         (xdg-open filename)
       (apply orig-fun args))))
 
