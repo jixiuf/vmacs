@@ -42,8 +42,9 @@
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
+ ;; vc-git-print-log-follow t ; 似乎与 vc-log-short-style 有冲突 C-xvl 展示异常
+ vc-log-short-style '(directory file)
  vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
- vc-git-print-log-follow t
  ;; vc-git-revision-complete-only-branches
  ;; svn diff --help
  ;; -b (--ignore-space-change): 忽略空白数量的修改。
@@ -64,15 +65,15 @@
   (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
   (define-key log-view-mode-map (kbd "M-p") #'log-view-msg-prev)
   ;; log-view-diff 默认绑定在=上
-  (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
-    (let (pos1 pos2 (marked-entities (log-view-get-marked)))
-      (if (= (length marked-entities) 2)
-          (progn
-            (setq pos1 (progn (log-view-goto-rev (car marked-entities)) (point)))
-            (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities)) (point)))
-            (apply orig-fun (if (< pos1 pos2) (list pos1 pos2) (list pos2 pos1)) )
-            )
-        (apply orig-fun args))))
+  ;; (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
+  ;;   (let (pos1 pos2 (marked-entities (log-view-get-marked)))
+  ;;     (if (= (length marked-entities) 2)
+  ;;         (progn
+  ;;           (setq pos1 (progn (log-view-goto-rev (car marked-entities)) (point)))
+  ;;           (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities)) (point)))
+  ;;           (apply orig-fun (if (< pos1 pos2) (list pos1 pos2) (list pos2 pos1)) )
+  ;;           )
+  ;;       (apply orig-fun args))))
   )
 
 ;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
