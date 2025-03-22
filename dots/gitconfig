@@ -111,6 +111,8 @@
 	# ignored = !git ls-files -v | grep ^[a-z]
     # ignored = !git ls-files -v | grep "^[[:lower:]]" | awk '{print $2}'
 	ignored = !git ls-files -v | grep "^[[:lower:]]"
+    # 交互式选择修改片段提交，成功则提交，失败则重置暂存区。$@传递所有参数给add命令，-- 明确分隔文件参数。
+    record = !sh -c 'git add -p -- "$@" && git commit || git reset' -
 
 [color]
 	branch = auto
