@@ -60,6 +60,9 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
+  (define-key log-view-mode-map (kbd "C-o") #'log-view-msg-prev)
+  (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
+  (define-key log-view-mode-map (kbd "M-p") #'log-view-msg-prev)
   ;; log-view-diff 默认绑定在=上
   (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
     (let (pos1 pos2 (marked-entities (log-view-get-marked)))
