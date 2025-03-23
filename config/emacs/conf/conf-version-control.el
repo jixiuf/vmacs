@@ -1,3 +1,5 @@
+Amend: yes
+
 ;;; -*- coding:utf-8-unix -*-
 ;;;; version control :VC
 ;;在进行`C-xvv' `C-xvi'等操作时不必进行确认,
@@ -12,6 +14,7 @@
 (vmacs-leader (kbd "vl") #'vc-print-log)
 ;; (vmacs-leader (kbd "vl") #'magit-log-buffer-file)
 (vmacs-leader (kbd "vL") #'vc-print-root-log)
+(vmacs-leader (kbd "v.") #'vc-print-root-log)
 (vmacs-leader (kbd "v+") #'vc-update)
 (vmacs-leader (kbd "vf") #'vmacs-magit-pull-default)
 (vmacs-leader (kbd "vg") #'vc-annotate)
