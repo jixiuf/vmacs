@@ -82,21 +82,21 @@
 
 
 (require 'magit)
-(defun magit-svn-repos-p(&optional dir)
+(defun git-svn-repos-p(&optional dir)
   (let ((topdir (vc-root-dir)))
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
 
 ;;;###autoload
-(defun vmacs-magit-push-default(&optional args  _upstream)
+(defun vc-push-default(&optional args  _upstream)
   (interactive)
-  (if (magit-svn-repos-p)
+  (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "dcommit" args)
     (vc-push args)))
 
 ;;;###autoload
 (defun vmacs-magit-pull-default(&optional args  _upstream)
   (interactive)
-  (if (magit-svn-repos-p)
+  (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "rebase" args)
     (call-interactively 'vc-pull)))
 
@@ -106,15 +106,24 @@
   (call-interactively 'vc-next-action)
   (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
          (state (nth 3 vc-fileset)))
-    (call-interactively 'vmacs-magit-push-default)
-    ;; (when (and (eq state 'up-to-date)
-    ;;            (not (zerop (vmacs-magit-get-unpushed-count))))
-    ;;   (call-interactively 'vmacs-magit-push-default))
-    ))
+    (when (and (eq state 'up-to-date)
+               (not (zerop (vc-get-unpushed-count))))
+      (call-interactively 'vc-push-default))))
 
-(defun vmacs-magit-get-unpushed-count()
-  (--when-let (magit-get-push-branch)
-    (car (magit-rev-diff-count "HEAD" it))))
+(defun vc-get-unpushed-count()
+  "从git status OUTPUT中提取领先的提交数"
+  (with-temp-buffer
+    (insert (vc-git--run-command-string "status"))
+    (goto-char (point-min))
+    (if (re-search-forward "领先.*共[ \t]*\\([0-9]+\\)[ \t]*个提交" nil t)
+        (string-to-number (match-string 1))
+      0)))
+
+;; (defun vc-git-current-branch()
+;;   (string-trim
+;;    (vc-git--run-command-string
+;;     nil "symbolic-ref" "--short" "HEAD")))
+
 
 (provide 'lazy-version-control)
 
