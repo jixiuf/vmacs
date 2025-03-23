@@ -91,7 +91,9 @@
   (interactive)
   (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "dcommit" args)
-    (vc-push args)))
+    (vc-git--pushpull "push" nil '("--force-with-lease"))
+    ;; (vc-push args)
+    ))
 
 ;;;###autoload
 (defun vc-pull-default(&optional args  _upstream)
