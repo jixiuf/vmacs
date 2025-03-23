@@ -275,7 +275,8 @@ based on the current context and previous history."
             (setq last-select `((expand . char) ,(mark) ,(point)))))
         (meow-cancel-selection)
         (when last-select
-          (setq meow--selection-history (list last-select))))))))
+          (setq meow--selection-history (list last-select)))))))
+  (vmacs-bury-boring-windows))
 
 ;;;###autoload
 (defun meow-selection()
