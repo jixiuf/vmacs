@@ -94,7 +94,7 @@
     (vc-push args)))
 
 ;;;###autoload
-(defun vmacs-magit-pull-default(&optional args  _upstream)
+(defun vc-pull-default(&optional args  _upstream)
   (interactive)
   (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "rebase" args)

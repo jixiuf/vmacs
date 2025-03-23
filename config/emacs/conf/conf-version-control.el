@@ -11,7 +11,7 @@
 (vmacs-leader (kbd "vL") #'vc-print-root-log)
 (vmacs-leader (kbd "v.") #'vc-print-root-log)
 (vmacs-leader (kbd "v+") #'vc-update)
-(vmacs-leader (kbd "vf") #'vmacs-magit-pull-default)
+(vmacs-leader (kbd "vf") #'vc-pull-default)
 (vmacs-leader (kbd "vg") #'vc-annotate)
 (vmacs-leader (kbd "vd") #'(lambda()(interactive) (vc-dir (vc-root-dir))))
 (vmacs-leader (kbd "v=") #'vc-diff)
@@ -23,11 +23,15 @@
 
 (vmacs-leader (kbd "vj") #'magit-status) ;like dired-jump
 (vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
-(vmacs-leader (kbd "vp") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
+(vmacs-leader (kbd "vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader (kbd "vs") #'vc-git-stage)
 (vmacs-leader (kbd "vu") #'vc-git-unstage)
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
+(vmacs-leader (kbd "vzz") #'vc-git-stash)
+(vmacs-leader (kbd "vza") #'vc-git-stash-apply)
+(vmacs-leader (kbd "vzA") #'vc-git-stash-pop)
+(vmacs-leader (kbd "vzd") #'vc-git-stash-delete)
 
 
 
