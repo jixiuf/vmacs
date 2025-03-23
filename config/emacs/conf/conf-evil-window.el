@@ -168,7 +168,7 @@
          (inhibit-same-window . nil))
         ("\\*vc-git"
          (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
-         (window-height . 3))
+         (window-height . 4))
         ;; default
         ;; (".*" (display-buffer-pop-up-frame))
         )
