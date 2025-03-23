@@ -166,9 +166,9 @@
         (vmacs-same-window-buffer
          (display-buffer-same-window)
          (inhibit-same-window . nil))
-        ;; ("\\*xref\\*"
-        ;;  (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
-        ;;  )
+        ("\\*vc-git"
+         (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
+         (window-height . 3))
         ;; default
         ;; (".*" (display-buffer-pop-up-frame))
         )
