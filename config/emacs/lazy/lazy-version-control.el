@@ -100,7 +100,9 @@
   (interactive)
   (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "rebase" args)
-    (call-interactively 'vc-pull)))
+    (vc-git--pushpull "pull" nil '("--rebase"))
+    ;; (call-interactively 'vc-pull)
+    ))
 
 ;;;###autoload
 (defun vmacs-vc-next-action()
