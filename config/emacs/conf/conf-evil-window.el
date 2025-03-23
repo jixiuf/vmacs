@@ -160,7 +160,9 @@
 ;; https://emacs-china.org/t/display-buffer-alist/8162/4
 (setq display-buffer-alist
       '(((lambda (bufname _)
-           (memq this-command '(diff-goto-source vmacs-cancel-selection next-error previous-error compile-goto-error)))
+           (memq this-command '(diff-goto-source vmacs-cancel-selection
+                                                 push-button
+                                                 next-error previous-error compile-goto-error)))
          (display-buffer-same-window )
          (inhibit-same-window . nil))
         (vmacs-same-window-buffer
