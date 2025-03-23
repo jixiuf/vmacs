@@ -168,7 +168,7 @@
         (vmacs-same-window-buffer
          (display-buffer-same-window)
          (inhibit-same-window . nil))
-        ("\\*vc-git"
+        ("\\*vc-git "
          (display-buffer-reuse-window display-buffer-at-bottom) ;display-buffer-in-direction
          (window-height . 4))
         ;; default

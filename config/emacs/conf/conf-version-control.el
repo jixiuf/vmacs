@@ -4,6 +4,29 @@
 ;; ca 两部分都要
 ;; cRET 选择光标下的
 
+(setq-default
+ ;; 只让vc支持git svn , 可以加快vc的一些处理
+ vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
+ vc-find-revision-no-save t
+ log-edit-hook nil
+ vc-follow-symlinks t
+ vc-annotate-background-mode nil
+ vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
+ ;; git diff C-xv= 进行比较时,忽略空格造成的影响
+ ;; vc-git-print-log-follow t ; 似乎与 vc-log-short-style 有冲突 C-xvl 展示异常
+ ;; vc--inhibit-async-window t             ;vc-pull vc-push 不显示window
+ vc-log-short-style '(directory file)
+ vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
+ ;; vc-git-revision-complete-only-branches
+ ;; svn diff --help
+ ;; -b (--ignore-space-change): 忽略空白数量的修改。
+ ;; -w (--ignore-all-space): 忽略所有的空白。
+ ;; --ignore-eol-style: 忽略行尾样式的改变。
+ vc-svn-diff-switches '("-x --ignore-eol-style")
+ diff-switches "-ubB"
+ ;; diff-jump-to-old-file t 控制 diff-mode 中RET C-u 的行为，
+ )
+
 (vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
 (vmacs-leader (kbd "vr") #'vc-revert)
 (vmacs-leader (kbd "vl") #'vc-print-log)
@@ -28,36 +51,17 @@
 (vmacs-leader (kbd "vu") #'vc-git-unstage)
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
-(vmacs-leader (kbd "vzz") #'vc-git-stash)
-(vmacs-leader (kbd "vza") #'vc-git-stash-apply)
-(vmacs-leader (kbd "vzA") #'vc-git-stash-pop)
-(vmacs-leader (kbd "vzd") #'vc-git-stash-delete)
-
-
-
-
-(setq-default
- ;; 只让vc支持git svn , 可以加快vc的一些处理
- vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
- vc-find-revision-no-save t
- log-edit-hook nil
- vc-follow-symlinks t
- vc-annotate-background-mode nil
- vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
- ;; git diff C-xv= 进行比较时,忽略空格造成的影响
- ;; vc-git-print-log-follow t ; 似乎与 vc-log-short-style 有冲突 C-xvl 展示异常
- ;; vc--inhibit-async-window t             ;vc-pull vc-push 不显示window
- vc-log-short-style '(directory file)
- vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
- ;; vc-git-revision-complete-only-branches
- ;; svn diff --help
- ;; -b (--ignore-space-change): 忽略空白数量的修改。
- ;; -w (--ignore-all-space): 忽略所有的空白。
- ;; --ignore-eol-style: 忽略行尾样式的改变。
- vc-svn-diff-switches '("-x --ignore-eol-style")
- diff-switches "-ubB"
- ;; diff-jump-to-old-file t 控制 diff-mode 中RET C-u 的行为，
- )
+(with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd ".") #'vc-print-root-log)
+  (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
+(with-eval-after-load 'vc-git
+  (vmacs-leader (kbd "vz") vc-git-stash-shared-map)
+  (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
+  (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
+  (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply)
+  (define-key vc-git-stash-shared-map "A" #'vc-git-stash-pop)
+  (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete)
+  )
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
@@ -65,7 +69,8 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
-  (define-key log-view-mode-map (kbd "C-o") #'log-view-msg-prev)
+  (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
+  (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
   (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
   (define-key log-view-mode-map (kbd "M-p") #'log-view-msg-prev)
   ;; log-view-diff 默认绑定在=上
