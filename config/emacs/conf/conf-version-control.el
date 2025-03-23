@@ -1,5 +1,3 @@
-Amend: yes
-
 ;;; -*- coding:utf-8-unix -*-
 ;;;; version control :VC
 ;;在进行`C-xvv' `C-xvi'等操作时不必进行确认,
