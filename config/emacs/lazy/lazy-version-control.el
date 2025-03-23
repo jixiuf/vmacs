@@ -124,6 +124,27 @@
 ;;    (vc-git--run-command-string
 ;;     nil "symbolic-ref" "--short" "HEAD")))
 
+;; In vc-git and vc-dir for git buffers, make (C-x v) a run git add, u run git
+;; reset, and r run git reset and checkout from head.
+(defun vmacs-vc-git-command (verb fn vc-fileset)
+  (let* ((fileset-arg (or vc-fileset (vc-deduce-fileset nil t)))
+         (backend (car fileset-arg))
+         (files (nth 1 fileset-arg)))
+    (if (eq backend 'Git)
+        (progn (funcall fn files)
+               (message (concat verb " " (number-to-string (length files))
+                                " file(s).")))
+      (message "Not in a vc git buffer."))))
+
+(defun vc-git-stage (&optional revision vc-fileset comment)
+  (interactive "P")
+  (vmacs-vc-git-command "Staged" 'vc-git-register vc-fileset))
+
+(defun vc-git-unstage (&optional revision vc-fileset comment)
+  (interactive "P")
+  (vmacs-vc-git-command "Unstaged"
+                        (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))
+                        vc-fileset))
 
 (provide 'lazy-version-control)
 

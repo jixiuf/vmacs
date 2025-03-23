@@ -1,6 +1,3 @@
-;;; -*- coding:utf-8-unix -*-
-;;;; version control :VC
-;;在进行`C-xvv' `C-xvi'等操作时不必进行确认,
 ;; smerge
 ;; cn next
 ;; cu （upper） 选择上面的部分，cl (lower) 选下部分
@@ -26,9 +23,9 @@
 
 (vmacs-leader (kbd "vj") #'magit-status) ;like dired-jump
 (vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
-(vmacs-leader (kbd "vu") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader (kbd "vp") #'vmacs-magit-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader (kbd "vs") #'magit-file-dispatch)      ;space-vs[n/p] 查看此文件上/下一个版本
+(vmacs-leader (kbd "vs") #'vc-git-stage)
+(vmacs-leader (kbd "vu") #'vc-git-unstage)
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
 
