@@ -1,12 +1,12 @@
 ;;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require  'vc)
-  (require  'ediff)
+  ;; (require  'ediff)
   (require 'dash)
   (require 'ediff-vers)
   (require  'vc-dir))
 
-(declare-function ediff-vc-internal "ediff-vers")
+;; (declare-function ediff-vc-internal "ediff-vers")
 
 
 ;; c-xvl列出当前文件的历史版本
@@ -81,7 +81,7 @@
            (message "%s " (with-current-buffer  (process-buffer proc) (buffer-string)))))))))
 
 
-(require 'magit)
+;; (require 'magit)
 (defun git-svn-repos-p(&optional dir)
   (let ((topdir (vc-root-dir)))
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
@@ -136,10 +136,12 @@
                                 " file(s).")))
       (message "Not in a vc git buffer."))))
 
+;;;###autoload
 (defun vc-git-stage (&optional revision vc-fileset comment)
   (interactive "P")
   (vmacs-vc-git-command "Staged" 'vc-git-register vc-fileset))
 
+;;;###autoload
 (defun vc-git-unstage (&optional revision vc-fileset comment)
   (interactive "P")
   (vmacs-vc-git-command "Unstaged"
