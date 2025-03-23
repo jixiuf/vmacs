@@ -214,7 +214,8 @@
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))
     (minibuffer-keyboard-quit))
-  (when (equal last-command 'keyboard-quit)
+  (when (member last-command
+                '(keyboard-quit vmacs-cancel-selection))
     (bury-boring-windows)))
 
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
