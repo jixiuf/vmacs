@@ -119,7 +119,9 @@
   (with-temp-buffer
     (insert (vc-git--run-command-string "status"))
     (goto-char (point-min))
-    (if (re-search-forward "领先.*共[ \t]*\\([0-9]+\\)[ \t]*个提交" nil t)
+    (if (or (re-search-forward "领先.*共[ \t]*\\([0-9]+\\)[ \t]*个提交" nil t)
+            (re-search-forward "您的分支和 '.*' 出现了偏离，" nil t)
+            )
         (string-to-number (match-string 1))
       0)))
 
@@ -152,6 +154,17 @@
                         (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))
                         vc-fileset))
 
+;;;###autoload
+(defun vc-reset (&optional args)
+  (interactive "P")
+  (print args)
+  (let ((commit (log-view-current-tag (point))))
+    (if args
+        (vc-git--out-str  "reset"  commit "--hard" )
+      (vc-git--out-str  "reset"  commit )))
+  (revert-buffer)
+  
+  )
 (provide 'lazy-version-control)
 
 ;; Local Variables:

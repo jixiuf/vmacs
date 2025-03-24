@@ -69,6 +69,7 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
+  (define-key log-view-mode-map (kbd "x") #'vc-reset)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
   (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
