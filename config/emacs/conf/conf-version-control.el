@@ -62,7 +62,7 @@
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
   (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply)
   (define-key vc-git-stash-shared-map "A" #'vc-git-stash-pop)
-  (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete)
+  (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point)
   )
 
 ;; c-xvl列出当前文件的历史版本
