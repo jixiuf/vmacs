@@ -161,6 +161,29 @@
         (vc-git--out-str  "reset"  commit "--hard" )
       (vc-git--out-str  "reset"  commit)))
   (revert-buffer))
+
+;;;###autoload
+(defun vc-print-branch (branch &optional end)
+  "Show the change log for BRANCH in another window.
+The command prompts for the branch whose change log to show.
+C-u prompts for the end of log to show"
+  (interactive
+   (let* ((backend (vc-responsible-backend default-directory))
+          (rootdir (vc-call-backend backend 'root default-directory)))
+     (list
+      (vc-read-revision "Branch to log: " (list rootdir) backend)
+      (if current-prefix-arg
+          (setq end (vc-read-revision "Dnd to log: " (list rootdir) backend))))))
+  (when (equal branch "")
+    (error "No branch specified"))
+  (let* ((backend (vc-responsible-backend default-directory))
+         (rootdir (vc-call-backend backend 'root default-directory)))
+    (vc-print-log-internal backend
+                           (list rootdir) branch t
+                           (if end end
+                             (when (> vc-log-show-limit 0) vc-log-show-limit))
+                           )))
+
 (provide 'lazy-version-control)
 
 ;; Local Variables:
