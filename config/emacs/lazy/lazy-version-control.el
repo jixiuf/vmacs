@@ -154,16 +154,13 @@
                         vc-fileset))
 
 ;;;###autoload
-(defun vc-reset (&optional args)
+(defun vc-git-reset (&optional args)
   (interactive "P")
-  (print args)
   (let ((commit (log-view-current-tag (point))))
     (if args
         (vc-git--out-str  "reset"  commit "--hard" )
-      (vc-git--out-str  "reset"  commit )))
-  (revert-buffer)
-  
-  )
+      (vc-git--out-str  "reset"  commit)))
+  (revert-buffer))
 (provide 'lazy-version-control)
 
 ;; Local Variables:

@@ -10,6 +10,7 @@
  vc-find-revision-no-save t
  log-edit-hook nil
  vc-follow-symlinks t
+ diff-font-lock-prettify nil
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
@@ -52,6 +53,7 @@
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
   (define-key vc-dir-mode-map (kbd ".") #'vc-print-root-log)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
 (with-eval-after-load 'vc-git
@@ -69,7 +71,7 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
-  (define-key log-view-mode-map (kbd "x") #'vc-reset)
+  (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
   (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
