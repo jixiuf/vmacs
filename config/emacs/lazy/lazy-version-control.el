@@ -119,9 +119,8 @@
   (with-temp-buffer
     (insert (vc-git--run-command-string "status"))
     (goto-char (point-min))
-    (if (or (re-search-forward "领先.*共[ \t]*\\([0-9]+\\)[ \t]*个提交" nil t)
-            (re-search-forward "您的分支和 '.*' 出现了偏离，" nil t)
-            )
+    (if (or (save-excursion (re-search-forward "领先.*共[ \t]*\\([0-9]+\\)[ \t]*个提交" nil t))
+            (re-search-forward "您的分支和 '.*' 出现了偏离，[ \t\n]*并且分别有 \\([0-9]+\\) 和 \\([0-9]+\\) 处不同的提交。" nil t)            )
         (string-to-number (match-string 1))
       0)))
 
