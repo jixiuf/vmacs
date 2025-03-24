@@ -53,6 +53,7 @@
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
   (define-key vc-dir-mode-map (kbd ".") #'vc-print-root-log)
@@ -61,8 +62,8 @@
   (vmacs-leader (kbd "vz") vc-git-stash-shared-map)
   (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
-  (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply)
-  (define-key vc-git-stash-shared-map "A" #'vc-git-stash-pop)
+  (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply-at-point)
+  (define-key vc-git-stash-map "A" #'vc-git-stash-pop-at-point)
   (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point)
   )
 
