@@ -53,6 +53,7 @@
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
   (define-key vc-dir-mode-map (kbd ".") #'vc-print-root-log)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
@@ -71,6 +72,8 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
+  (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
+  
   (define-key log-view-mode-map (kbd ".") #'vc-print-branch)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
