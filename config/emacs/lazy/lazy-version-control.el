@@ -103,14 +103,13 @@
     (if current-prefix-arg
         (vc-git--pushpull "fetch" nil '("--all" "--tags"))
       (vc-git--pushpull "pull" nil '("--rebase" "--stat")))))
-
 ;;;###autoload
 (defun vmacs-vc-next-action()
   (interactive)
   (call-interactively 'vc-next-action)
   (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
          (state (nth 3 vc-fileset)))
-    (when (and (eq state 'up-to-date)
+    (when (and (or (eq state 'up-to-date) (not state))
                (not (zerop (vc-get-unpushed-count))))
       (call-interactively 'vc-push-default))))
 
