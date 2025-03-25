@@ -194,30 +194,30 @@ Return a list of two integers: (A>B B>A).
     (cons branch tracking-branch)))
 
 ;;;###autoload
-(defun vc-print-remote-branch ()
+(defun vc-git-print-remote-branch ()
   (interactive)
   (let ((branch (vc-git-current-branch)))
     (vc-print-branch-log (cdr branch))))
 
 ;;;###autoload
-(defun vc-print-log-unpushed ()
+(defun vc-git-print-log-unpushed ()
   (interactive)
   (let* ((branch (vc-git-current-branch))
          (cnt (car (vc-rev-diff-count (car branch) (cdr branch))))
          (vc-log-show-limit cnt))
     (message "%d git logs of unpushed to: %s" cnt (cdr branch))
     (unless (zerop cnt)
-      (vc-print-branch-log (cdr branch) ))))
+      (vc-print-branch-log (car branch) ))))
 
 ;;;###autoload
-(defun vc-print-log-unpulled ()
+(defun vc-git-print-log-unpulled ()
   (interactive)
   (let* ((branch (vc-git-current-branch))
          (cnt (cadr (vc-rev-diff-count (car branch) (cdr branch))))
-         (vc-log-show-limit (1+ cnt)))
+         (vc-log-show-limit cnt))
     (message "%d git logs of unpulled to: %s" cnt (cdr branch))
     (unless (zerop cnt)
-      (vc-print-branch-log (car branch)))))
+      (vc-print-branch-log (cdr branch)))))
 
 (provide 'lazy-version-control)
 
