@@ -204,7 +204,7 @@ C-u prompts for the end of log to show"
      (list
       (vc-read-revision "Branch to log: " (list rootdir) backend)
       (if current-prefix-arg
-          (setq end (vc-read-revision "Dnd to log: " (list rootdir) backend))))))
+          (setq end (vc-read-revision "End commit to log: " (list rootdir) backend))))))
   (when (equal branch "")
     (error "No branch specified"))
   (let* ((backend (vc-responsible-backend default-directory))
@@ -214,6 +214,21 @@ C-u prompts for the end of log to show"
                            (if end end
                              (when (> vc-log-show-limit 0) vc-log-show-limit))
                            )))
+;;;###autoload
+(defun vc-print-remote-branch (&optional end)
+  (interactive
+   (let* ((backend (vc-responsible-backend default-directory))
+          (rootdir (vc-call-backend backend 'root default-directory)))
+     (list
+      (if current-prefix-arg
+          (setq end (vc-read-revision "End commit to log: " (list rootdir) backend))))))
+  (let ((branch (vc-git-current-branch)))
+    (vc-print-branch (cdr branch) end)))
+;;;###autoload
+(defun vc-print-log-unpushed ()
+  (interactive)
+  (let ((branch (vc-git-current-branch)))
+    (vc-print-branch (cdr branch) (car branch))))
 
 (provide 'lazy-version-control)
 
