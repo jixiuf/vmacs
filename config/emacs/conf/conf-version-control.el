@@ -45,7 +45,7 @@
 (vmacs-leader (kbd "vb") #'vc-retrieve-tag) ;change branch/tag
 (vmacs-leader (kbd "vt") #'vc-create-tag)
 
-(vmacs-leader (kbd "vj") #'magit-status) ;like dired-jump
+(vmacs-leader (kbd "vj") #'vc-dir-root) ;like dired-jump
 (vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
 (vmacs-leader (kbd "vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
 (vmacs-leader (kbd "vs") #'vc-git-stage)
