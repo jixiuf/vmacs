@@ -53,6 +53,8 @@
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
+  (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
   (define-key vc-dir-mode-map (kbd "f") #'vc-pull-default)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
@@ -76,6 +78,7 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
+  (define-key log-view-mode-map (kbd ",") #'project-switch-project)
   (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
   (define-key log-view-mode-map (kbd "f") #'vc-pull-default)
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
@@ -97,7 +100,13 @@
   ;;           )
   ;;       (apply orig-fun args))))
   )
-
+(with-eval-after-load 'diff-mode
+  ;; (define-key diff-mode-shared-map (kbd "s") #'vc-git-stage)
+  ;; (define-key diff-mode-shared-map (kbd "u") #'vc-git-unstage)
+  (require 'outline)
+  (define-key diff-mode-shared-map (kbd "TAB") #'outline-cycle)
+  (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
+)
 ;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
 ;;现在想生成一个补丁文件,将这个补丁文件应用到a 上,就会变成b
 ;;生成这个补丁文件的命令是diff
