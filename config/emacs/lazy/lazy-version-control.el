@@ -113,20 +113,21 @@
                (not (zerop (vc-get-unpushed-count))))
       (call-interactively 'vc-push-default))))
 
+(defun vc-rev-diff-count (a b &optional)
+  "Return the commits in A but not B and vice versa.
+Return a list of two integers: (A>B B>A).
+"
+  (mapcar #'string-to-number
+          (split-string (vc-git--out-str "rev-list"
+                                         "--count" "--left-right"
+                                         ;; (and first-parent "--first-parent")
+                                         (concat a "..." b))
+                        "\t")))
+
 (defun vc-get-unpushed-count()
   "从git status OUTPUT中提取领先的提交数"
-  (with-temp-buffer
-    (insert (vc-git--run-command-string "status"))
-    (goto-char (point-min))
-    (if (or (save-excursion (re-search-forward "领先.*共[ \t]*\\([0-9]+\\)[ \t]*个提交" nil t))
-            (re-search-forward "您的分支和 '.*' 出现了偏离，[ \t\n]*并且分别有 \\([0-9]+\\) 和 \\([0-9]+\\) 处不同的提交。" nil t)            )
-        (string-to-number (match-string 1))
-      0)))
-
-;; (defun vc-git-current-branch()
-;;   (string-trim
-;;    (vc-git--run-command-string
-;;     nil "symbolic-ref" "--short" "HEAD")))
+  (let ((branch (vc-git-current-branch)))
+    (car (vc-rev-diff-count (car branch) (cdr branch)))))
 
 ;; In vc-git and vc-dir for git buffers, make (C-x v) a run git add, u run git
 ;; reset, and r run git reset and checkout from head.
@@ -168,6 +169,29 @@
     (vc-git-command nil 'async nil
                       "rebase" "-i"  commit))
   (revert-buffer))
+
+;; fork from vc-git-dir-extra-headers
+(defun vc-git-current-branch ()
+  "return current local branch and remote tracking-branch"
+  (let ((str (vc-git--out-str "symbolic-ref" "HEAD"))
+	    branch remote-url   tracking-branch)
+    (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
+	  (setq branch (match-string 2 str))
+      (let ((remote (vc-git--out-str
+                     "config" (concat "branch." branch ".remote")))
+            (merge (vc-git--out-str
+                    "config" (concat "branch." branch ".merge"))))
+        (when (string-match "\\([^\n]+\\)" remote)
+	      (setq remote (match-string 1 remote)))
+        (when (string-match "^\\(refs/heads/\\)?\\(.+\\)$" merge)
+          (setq tracking-branch (match-string 2 merge)))
+        (pcase remote
+          ("."
+           (setq remote-url "none (tracking local branch)"))
+          ((pred (not string-empty-p))
+           (setq
+            tracking-branch (concat remote "/" tracking-branch))))))
+    (cons branch tracking-branch)))
 
 ;;;###autoload
 (defun vc-print-branch (branch &optional end)
