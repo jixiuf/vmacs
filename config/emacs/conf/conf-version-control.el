@@ -66,6 +66,7 @@
 (with-eval-after-load 'vc-git
   (vmacs-leader (kbd "vz") vc-git-stash-shared-map)
   (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
+  (define-key vc-git-stash-shared-map (kbd "d") #'vc-git-stash-show-at-point)
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
   (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply-at-point)
   (define-key vc-git-stash-map "A" #'vc-git-stash-pop-at-point)
