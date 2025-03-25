@@ -53,6 +53,7 @@
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "f") #'vc-pull-default)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
