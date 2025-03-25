@@ -190,6 +190,7 @@
                         "*vc-change-log*"
                         "*Help*"
                         "*vc-diff*"
+                        "*vc-log*"
                         "*ai*"
                         "*org-ai-refactor*"
                         "*Diff*"
