@@ -103,8 +103,7 @@
 (with-eval-after-load 'diff-mode
   ;; (define-key diff-mode-shared-map (kbd "s") #'vc-git-stage)
   ;; (define-key diff-mode-shared-map (kbd "u") #'vc-git-unstage)
-  (require 'outline)
-  (define-key diff-mode-shared-map (kbd "TAB") #'outline-cycle)
+  (add-hook 'diff-mode-hook #'outline-minor-mode)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
 )
 ;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
