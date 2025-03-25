@@ -1,6 +1,3 @@
-[submodule "config/emacs/submodule/meow"]
-	path = config/emacs/submodule/meow
-	url = https://github.com/jixiuf/meow.git
 [submodule "config/emacs/submodule/eglot-java"]
 	path = config/emacs/submodule/eglot-java
 	url = https://github.com/jixiuf/eglot-java.git

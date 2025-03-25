@@ -77,7 +77,8 @@
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
   (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
-  
+  (define-key log-view-mode-map (kbd "f") #'vc-pull-default)
+  (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
   (define-key log-view-mode-map (kbd ".") #'vc-print-branch)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
