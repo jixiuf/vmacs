@@ -91,18 +91,18 @@
   (interactive)
   (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "dcommit" args)
-    (vc-git--pushpull "push" nil '("--force-with-lease"))
-    ;; (vc-push args)
-    ))
+    (if current-prefix-arg
+        (vc-git--pushpull "push" nil '("--force"))
+      (vc-git--pushpull "push" nil '("--force-with-lease")))))
 
 ;;;###autoload
 (defun vc-pull-default(&optional args  _upstream)
   (interactive)
   (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "rebase" args)
-    (vc-git--pushpull "pull" nil '("--rebase"))
-    ;; (call-interactively 'vc-pull)
-    ))
+    (if current-prefix-arg
+        (vc-git--pushpull "fetch" nil '("--all" "--tags"))
+      (vc-git--pushpull "pull" nil '("--rebase")))))
 
 ;;;###autoload
 (defun vmacs-vc-next-action()
@@ -161,6 +161,7 @@
         (vc-git--out-str  "reset"  commit "--hard" )
       (vc-git--out-str  "reset"  commit)))
   (revert-buffer))
+
 ;;;###autoload
 (defun vc-git-rebase (&optional args)
   (interactive "P")
