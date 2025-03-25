@@ -102,7 +102,7 @@
       (vc-git--out-ok  "svn" "rebase" args)
     (if current-prefix-arg
         (vc-git--pushpull "fetch" nil '("--all" "--tags"))
-      (vc-git--pushpull "pull" nil '("--rebase")))))
+      (vc-git--pushpull "pull" nil '("--rebase" "--stat")))))
 
 ;;;###autoload
 (defun vmacs-vc-next-action()
