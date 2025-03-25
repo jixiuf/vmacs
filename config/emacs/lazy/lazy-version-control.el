@@ -165,8 +165,8 @@
 (defun vc-git-rebase (&optional args)
   (interactive "P")
   (let ((commit (log-view-current-tag (point))))
-    (vc-git--out-str  "rebase" "-i"  commit)
-    )
+    (vc-git-command nil 'async nil
+                      "rebase" "-i"  commit))
   (revert-buffer))
 
 ;;;###autoload
