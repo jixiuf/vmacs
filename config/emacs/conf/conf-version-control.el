@@ -84,7 +84,7 @@
   (define-key log-view-mode-map (kbd "f") #'vc-pull-default)
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
-  (define-key log-view-mode-map (kbd ".") #'vc-print-branch)
+  (define-key log-view-mode-map (kbd ".") #'vc-print-branch-log)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
