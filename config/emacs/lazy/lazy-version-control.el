@@ -161,6 +161,13 @@
         (vc-git--out-str  "reset"  commit "--hard" )
       (vc-git--out-str  "reset"  commit)))
   (revert-buffer))
+;;;###autoload
+(defun vc-git-rebase (&optional args)
+  (interactive "P")
+  (let ((commit (log-view-current-tag (point))))
+    (vc-git--out-str  "rebase" "-i"  commit)
+    )
+  (revert-buffer))
 
 ;;;###autoload
 (defun vc-print-branch (branch &optional end)

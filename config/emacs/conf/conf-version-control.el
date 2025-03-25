@@ -76,6 +76,7 @@
 (with-eval-after-load 'log-view
   (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
   
+  (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
   (define-key log-view-mode-map (kbd ".") #'vc-print-branch)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
