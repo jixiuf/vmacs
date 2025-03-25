@@ -58,7 +58,8 @@
   (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
   (define-key vc-dir-mode-map (kbd ".") #'vc-print-root-log)
   (define-key vc-dir-mode-map (kbd "C-c Gr") #'vc-dir-hide-up-to-date)
-  (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
+  (with-eval-after-load 'vc-git
+    (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)))
 (with-eval-after-load 'vc-git
   (vmacs-leader (kbd "vz") vc-git-stash-shared-map)
   (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
