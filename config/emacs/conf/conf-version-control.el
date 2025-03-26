@@ -17,7 +17,7 @@
  ;; vc-git-print-log-follow t ; 似乎与 vc-log-short-style 有冲突 C-xvl 展示异常
  ;; vc--inhibit-async-window t             ;vc-pull vc-push 不显示window
  vc-log-short-style '(directory file)
- vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")
+ vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--textconv")
  ;; vc-git-revision-complete-only-branches
  ;; svn diff --help
  ;; -b (--ignore-space-change): 忽略空白数量的修改。
