@@ -161,6 +161,7 @@
 (setq display-buffer-alist
       '(((lambda (bufname _)
            (memq this-command '(diff-goto-source vmacs-cancel-selection
+                                                 vmacs-vc-next-action
                                                  push-button vc-git-stash-show-at-point
                                                  next-error previous-error compile-goto-error)))
          (display-buffer-same-window )
