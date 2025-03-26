@@ -96,7 +96,7 @@
       (vc-git--pushpull "push" nil '("--force-with-lease")))))
 
 ;;;###autoload
-(defun vc-push-other(&optional args  _upstream)
+(defun vc-push-other(&optional args)
   (interactive)
   (let* ((br (vc-git-current-branch))
          (branch (vc-read-revision
@@ -116,6 +116,36 @@
       (vc-git--pushpull "push" nil
                         `("--force-with-lease"
                           ,remote ,(format "%s:%s" branch remote-br))))))
+
+;;;###autoload
+(defun vc-git-delete ()
+  "删除 Git 分支、远程分支或标签。"
+  (interactive)
+  (let* ((refs (split-string (shell-command-to-string "git for-each-ref --format='%(refname)'") "\n" t))
+         (filtered-refs (seq-filter (lambda (ref) (string-match-p "^refs/\\(heads\\|remotes\\|tags\\)/" ref)) refs))
+         (choices (mapcar (lambda (ref) (replace-regexp-in-string "^refs/\\(heads/\\|remotes/\\)?" "" ref)) filtered-refs))
+         (selected (completing-read "选择要删除的引用: " choices)))
+    (when (and selected (not (string-empty-p selected)))
+      (let* ((full-ref (car (seq-filter (lambda (ref) (string-suffix-p selected ref)) filtered-refs)))
+             (command (cond
+                       ((string-prefix-p "refs/heads/" full-ref)
+                        (format "git branch -D %s" selected))
+                       ((string-prefix-p "refs/remotes/" full-ref)
+                        (let* ((remote-branch (replace-regexp-in-string "^refs/remotes/" "" full-ref))
+                               (remote (car (split-string remote-branch "/")))
+                               (branch (replace-regexp-in-string "^[^/]+/" "" remote-branch)))
+                          (format "git push %s :%s" remote branch)))
+                       ((string-prefix-p "refs/tags/" full-ref)
+                        (let* ((remote-refs (seq-filter (lambda (ref) (string-prefix-p "refs/remotes/" ref)) filtered-refs))
+                               (remotes (delete-dups (mapcar (lambda (ref) (car (split-string (replace-regexp-in-string "^refs/remotes/" "" ref) "/"))) remote-refs)))
+                               (tag (replace-regexp-in-string "^tags/" "" selected))
+                               (push-commands (mapcar (lambda (remote)
+                                                        (format "git push %s :refs/%s" remote selected))
+                                                      remotes)))
+                          (format "git tag -d %s && %s" tag (string-join push-commands " && ")))))))
+        (let ((display-buffer-alist
+                 '((t (display-buffer-no-window )))))
+          (async-shell-command command (messages-buffer) (messages-buffer)))))))
 
 ;;;###autoload
 (defun vc-pull-default(&optional args  _upstream)
