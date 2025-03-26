@@ -62,12 +62,14 @@
   (define-key vc-dir-mode-map (kbd ".i") #'vc-log-incoming) ;unpulled
   (define-key vc-dir-mode-map (kbd ".o") #'vc-log-outgoing) ;unpushed
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
+  (define-key vc-dir-mode-map (kbd "r") #'vc-revert)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
   (define-key vc-dir-mode-map (kbd "f") #'vc-pull-default)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "bd") #'vc-git-delete)
+  (define-key vc-dir-mode-map (kbd "bm") #'vc-merge)
   (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
   (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
   (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
