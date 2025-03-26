@@ -138,8 +138,12 @@
 ;; 　　因此签名都用在义务宣言上，表明自己说过的负责，不会不认帐。大家不会没事去冒名。（比如欠条）
 ;; 　　如果对于别人会冒名的宣言，比如（出售机密，勒索等）如果签名没有被加密，B就可能向不知道秘密的人买秘密。
 ;;; easypg，emacs 自带
+
+
 (require 'epa-file)
 (epa-file-enable)
+(setopt epa-file-name-regexp (purecopy "\\.gpg\\(~\\|\\.~[0-9abcdef]+~\\)?\\'"))
+
 (setf epg-pinentry-mode 'ask)
 ;; ;; 总是使用对称加密
 ;; ;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
@@ -150,10 +154,24 @@
 (defun vmacs-gpg-find-file-hook ()
   "auto encrypt use key in `epa-file-encrypt-to'"
   (require 'epa-hook)
-  (when (epa-file-name-p (buffer-file-name))
+  (when (epa-file-name-p (buffer-name))
     (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))))
 
 (add-hook 'find-file-hooks 'vmacs-gpg-find-file-hook)
+;; (setopt epa-file-name-regexp (purecopy "\\.gpg\\(~\\|\\.~[0-9abcdef]+~\\)?\\'"))
+;; log-view-find-revision
+(with-eval-after-load 'log-view
+  (define-advice log-view-find-revision (:around (orig-fun &rest args) decrypt-gpg)
+    "Auto Decrypt gpg file"
+    (with-current-buffer (apply orig-fun args)
+      (when (epa-file-name-p (buffer-name))
+        (let ((epa-replace-original-text t))
+          (epa-decrypt-region (point-min) (point-max)))
+        (require 'epa-hook)
+        (setq-local epa-file-encrypt-to (default-value 'epa-file-encrypt-to))
+        (set-buffer-modified-p nil)))))
+
+
 
 ;; ;; -*- epa-file-encrypt-to: ("your@email.address") -*-
 ;; ;; 允许缓存密码，否则编辑时每次保存都要输入密码
