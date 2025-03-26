@@ -31,6 +31,15 @@
 # 	# merge = master
 [push]
 	default = current
+[pull]
+	rebase = true
+	autoStash = true
+    
+[rebase]
+	autoStash = true
+[merge]
+	autoStash = true
+    
 
 # [mergetool "ediff"]
 # 	cmd = emacsclient --eval \"(git-mergetool-emacsclient-ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$MERGED\\\")\"
@@ -39,18 +48,6 @@
 # 	prompt = false
 # [merge]
 # 	tool = ediff
-
-	# run : git difftool
-# [diff]
-# 	tool = ediff
-[diff "lisp"]
-	# http://wandrian.net/2012-03-11-1727-custom-git-hunk-headers-for-lisp.html
-	xfuncname="^(\\((def|test).*)$"
-	# xfuncname = "^\\(.*$"
-# [difftool]
-# 	prompt = false
-# [difftool "ediff"]
-# 	cmd = emacsclient --eval \"(ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" )\"
 
 [alias]
 	sub=submodule
@@ -156,8 +153,8 @@
 	# autosetuprebase = always
 # [pull]
 	# rebase = true
-[diff "plist"]
-	textconv = plutil -convert xml1 -o -
+[push]
+	default = upstream
 [status]
     showUntrackedFiles=all
 # git config --global url."git@gitlab.luojilab.com:".insteadof "https://gitlab.luojilab.com/"
@@ -171,9 +168,6 @@
   pushInsteadOf = "https://github.com/"
 # [url "file:///Users/jixiuf/repos/libvterm-nvim/.git"]
 # 	insteadof = https://github.com/neovim/libvterm.git
-[pull]
-	rebase = true
-	autoStash = true
 [init]
 	defaultBranch = master
 [safe]
@@ -181,7 +175,17 @@
 	directory = /home/jixiuf/repos/emacs
 [diff "gpg"]
 	textconv = gpg -q --no-tty --decrypt
-[rebase]
-	autoStash = true
-[merge]
-	autoStash = true
+[diff "plist"]
+	textconv = plutil -convert xml1 -o -
+	# run : git difftool
+# [diff]
+# 	tool = ediff
+[diff "lisp"]
+	# http://wandrian.net/2012-03-11-1727-custom-git-hunk-headers-for-lisp.html
+	xfuncname="^(\\((def|test).*)$"
+	# xfuncname = "^\\(.*$"
+# [difftool]
+# 	prompt = false
+# [difftool "ediff"]
+# 	cmd = emacsclient --eval \"(ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" )\"
+
