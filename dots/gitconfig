@@ -180,7 +180,7 @@
 	directory = /var/tmp/portage/gui-wm/sway-9999/work/sway-9999
 	directory = /home/jixiuf/repos/emacs
 [diff "gpg"]
-	textconv = gpg --no-tty --decrypt
+	textconv = gpg -q --no-tty --decrypt
 [rebase]
 	autoStash = true
 [merge]
