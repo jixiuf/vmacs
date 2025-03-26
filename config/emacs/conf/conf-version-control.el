@@ -30,6 +30,7 @@
  )
 
 (vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
+(vmacs-leader (kbd "vo") #'vc-push-other)
 (vmacs-leader (kbd "vr") #'vc-revert)
 (vmacs-leader (kbd "vl") #'vc-print-log)
 ;; (vmacs-leader (kbd "vl") #'magit-log-buffer-file)
@@ -60,6 +61,7 @@
   (define-key vc-dir-mode-map (kbd ".r") #'vc-git-print-remote-branch)
   (define-key vc-dir-mode-map (kbd ".i") #'vc-log-incoming) ;unpulled
   (define-key vc-dir-mode-map (kbd ".o") #'vc-log-outgoing) ;unpushed
+  (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
   (define-key vc-dir-mode-map (kbd "f") #'vc-pull-default)

@@ -96,6 +96,28 @@
       (vc-git--pushpull "push" nil '("--force-with-lease")))))
 
 ;;;###autoload
+(defun vc-push-other(&optional args  _upstream)
+  (interactive)
+  (let* ((br (vc-git-current-branch))
+         (branch (vc-read-revision
+                  (if current-prefix-arg "Push(--force) : "
+                    "Push : ")
+                  nil nil (car br)))
+         (remote-br (vc-read-revision "To: " nil nil (nth 1 br)))
+         remote)
+    (when (string-match "^\\(.+?\\)/\\(.+\\)$" remote-br)
+      (setq remote (match-string 1 remote-br))
+      (setq remote-br (match-string 2 remote-br))
+      )
+    (if current-prefix-arg
+        (vc-git--pushpull "push" nil
+                        `("--force"
+                          ,remote ,(format "%s:%s" branch remote-br)))
+      (vc-git--pushpull "push" nil
+                        `("--force-with-lease"
+                          ,remote ,(format "%s:%s" branch remote-br))))))
+
+;;;###autoload
 (defun vc-pull-default(&optional args  _upstream)
   (interactive)
   (if (git-svn-repos-p)
@@ -127,7 +149,7 @@ Return a list of two integers: (A>B B>A).
 (defun vc-get-unpushed-count()
   "从git status OUTPUT中提取领先的提交数"
   (let ((branch (vc-git-current-branch)))
-    (car (vc-rev-diff-count (car branch) (cdr branch)))))
+    (car (vc-rev-diff-count (car branch) (cadr branch)))))
 
 ;; In vc-git and vc-dir for git buffers, make (C-x v) a run git add, u run git
 ;; reset, and r run git reset and checkout from head.
@@ -174,38 +196,36 @@ Return a list of two integers: (A>B B>A).
 (defun vc-git-current-branch ()
   "return current local branch and remote tracking-branch"
   (let ((str (vc-git--out-str "symbolic-ref" "HEAD"))
-	    branch remote-url   tracking-branch)
+	    branch  remote  tracking-branch remote-branch)
     (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
 	  (setq branch (match-string 2 str))
-      (let ((remote (vc-git--out-str
-                     "config" (concat "branch." branch ".remote")))
-            (merge (vc-git--out-str
+      (setq remote (vc-git--out-str
+                    "config" (concat "branch." branch ".remote")))
+      (let ((merge (vc-git--out-str
                     "config" (concat "branch." branch ".merge"))))
         (when (string-match "\\([^\n]+\\)" remote)
 	      (setq remote (match-string 1 remote)))
         (when (string-match "^\\(refs/heads/\\)?\\(.+\\)$" merge)
           (setq tracking-branch (match-string 2 merge)))
         (pcase remote
-          ("."
-           (setq remote-url "none (tracking local branch)"))
+          ("." (setq remote ""))
           ((pred (not string-empty-p))
-           (setq
-            tracking-branch (concat remote "/" tracking-branch))))))
-    (cons branch tracking-branch)))
+           (setq remote-branch (concat remote "/" tracking-branch))))))
+    (list branch remote-branch remote tracking-branch)))
 
 ;;;###autoload
 (defun vc-git-print-remote-branch ()
   (interactive)
   (let ((branch (vc-git-current-branch)))
-    (vc-print-branch-log (cdr branch))))
+    (vc-print-branch-log (cadr branch))))
 
 ;;;###autoload
 (defun vc-git-print-log-unpushed ()
   (interactive)
   (let* ((branch (vc-git-current-branch))
-         (cnt (car (vc-rev-diff-count (car branch) (cdr branch))))
+         (cnt (car (vc-rev-diff-count (car branch) (cadr branch))))
          (vc-log-show-limit cnt))
-    (message "%d commits unpushed to: %s" cnt (cdr branch))
+    (message "%d commits unpushed to: %s" cnt (cadr branch))
     (unless (zerop cnt)
       (vc-print-branch-log (car branch) ))))
 
@@ -213,11 +233,11 @@ Return a list of two integers: (A>B B>A).
 (defun vc-git-print-log-unpulled ()
   (interactive)
   (let* ((branch (vc-git-current-branch))
-         (cnt (cadr (vc-rev-diff-count (car branch) (cdr branch))))
+         (cnt (cadr (vc-rev-diff-count (car branch) (cadr branch))))
          (vc-log-show-limit cnt))
-    (message "%d commits unpulled to: %s" cnt (cdr branch))
+    (message "%d commits unpulled to: %s" cnt (cadr branch))
     (unless (zerop cnt)
-      (vc-print-branch-log (cdr branch)))))
+      (vc-print-branch-log (cadr branch)))))
 
 (provide 'lazy-version-control)
 
