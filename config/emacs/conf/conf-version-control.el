@@ -10,13 +10,14 @@
  vc-find-revision-no-save t
  log-edit-hook nil
  vc-follow-symlinks t
- diff-font-lock-prettify nil
+ diff-font-lock-prettify t
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
  ;; vc-git-print-log-follow t ; 似乎与 vc-log-short-style 有冲突 C-xvl 展示异常
  ;; vc--inhibit-async-window t             ;vc-pull vc-push 不显示window
- vc-log-short-style '(directory file)
+ vc-log-short-style '(directory file)   ;C-xvl列出当前文件的历史版本时 不展示详情
+ ;; --textconv 以支持 gpg 文件的diff
  vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--textconv")
  ;; vc-git-revision-complete-only-branches
  ;; svn diff --help
