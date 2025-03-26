@@ -82,6 +82,7 @@
 ;; 然后调用此函数即可
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
+  (require 'vc-dir)
   (define-key log-view-mode-map (kbd ",") #'project-switch-project)
   (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
   (define-key log-view-mode-map (kbd "f") #'vc-pull-default)
@@ -109,7 +110,17 @@
   ;; (define-key diff-mode-shared-map (kbd "u") #'vc-git-unstage)
   (add-hook 'diff-mode-hook #'outline-minor-mode)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
-)
+  )
+;; 下面的vc-run-delayed 用法挺好的，可以等待buffer中的进程结束后再执行代码
+;; (define-advice vc-switch-branch (:after (&rest _) commits-behind)
+;;   (let ((buffer (get-buffer-create "*vc-commits-behind*")))
+;;     (vc-call-backend (vc-deduce-backend) 'log-incoming buffer "")
+;;     (vc-run-delayed
+;;       (with-current-buffer buffer
+;;         (let ((lines (count-lines (point-min) (point-max))))
+;;           (unless (zerop lines)
+;;             (display-warning :warning (format "%s commits behind" lines))))))))
+
 ;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
 ;;现在想生成一个补丁文件,将这个补丁文件应用到a 上,就会变成b
 ;;生成这个补丁文件的命令是diff
