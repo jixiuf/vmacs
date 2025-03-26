@@ -205,7 +205,7 @@ Return a list of two integers: (A>B B>A).
   (let* ((branch (vc-git-current-branch))
          (cnt (car (vc-rev-diff-count (car branch) (cdr branch))))
          (vc-log-show-limit cnt))
-    (message "%d git logs of unpushed to: %s" cnt (cdr branch))
+    (message "%d commits unpushed to: %s" cnt (cdr branch))
     (unless (zerop cnt)
       (vc-print-branch-log (car branch) ))))
 
@@ -215,7 +215,7 @@ Return a list of two integers: (A>B B>A).
   (let* ((branch (vc-git-current-branch))
          (cnt (cadr (vc-rev-diff-count (car branch) (cdr branch))))
          (vc-log-show-limit cnt))
-    (message "%d git logs of unpulled to: %s" cnt (cdr branch))
+    (message "%d commits unpulled to: %s" cnt (cdr branch))
     (unless (zerop cnt)
       (vc-print-branch-log (cdr branch)))))
 

@@ -58,13 +58,15 @@
   (define-key vc-dir-mode-map (kbd ".f") #'vc-git-print-log-unpulled)
   (define-key vc-dir-mode-map (kbd ".v") #'vc-git-print-log-unpushed)
   (define-key vc-dir-mode-map (kbd ".r") #'vc-git-print-remote-branch)
+  (define-key vc-dir-mode-map (kbd ".i") #'vc-log-incoming) ;unpulled
+  (define-key vc-dir-mode-map (kbd ".o") #'vc-log-outgoing) ;unpushed
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
   (define-key vc-dir-mode-map (kbd "f") #'vc-pull-default)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
-  (define-key vc-dir-mode-map (kbd "C-c Gr") #'vc-dir-hide-up-to-date)
+  (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
   (with-eval-after-load 'vc-git
     (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)))
 (with-eval-after-load 'vc-git
