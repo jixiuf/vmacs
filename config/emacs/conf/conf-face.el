@@ -5,6 +5,7 @@
 ;; Sarasa Mono SC Nerd-18 等高等宽字体  更纱黑体
 ;; https://ericzhuochen.com/blog/post/emacs-1-font/
 ;; https://github.com/be5invis/Sarasa-Gothic
+;; https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts
 ;; ;; 1l0oOLiI
 ;; aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
 ;; 你你你你你你你你你你你你你你你你你你你你|
@@ -12,6 +13,10 @@
 ;; 。。。。。。。。。。。。。。。。。。。。|
 ;; 👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈|
 ;; 1111111111111111111111111111111111111111|
+;; iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii|
+;; llllllllllllllllllllllllllllllllllllllll|
+;; oooooooooooooooooooooooooooooooooooooooo|
+;; 0000000000000000000000000000000000000000|
 ;; 東東東東東東東東東東東東東東東東東東東東|
 ;; ここここここここここここここここここここ|
 ;; ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
