@@ -48,6 +48,7 @@
 (with-eval-after-load 'compile (require 'conf-compile))
 (with-eval-after-load 'cc-mode (require 'conf-program-objc))
 (with-eval-after-load 'js (require 'conf-program-js))
+(with-eval-after-load 'json-ts-mode (require 'conf-program-js))
 
 (setq exec-path-from-shell-variables '("PATH" "MANPATH" "GOROOT" "GOPATH" "EDITOR" "PYTHONPATH" "LC_ALL" "LANG" "JAVA_HOME"))
 (require 'exec-path-from-shell)
