@@ -6,6 +6,7 @@
 ;; https://ericzhuochen.com/blog/post/emacs-1-font/
 ;; https://github.com/be5invis/Sarasa-Gothic
 ;; https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts
+;; https://github.com/subframe7536/maple-font 也等高等宽字体
 ;; ;; 1l0oOLiI
 ;; aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa|
 ;; 你你你你你你你你你你你你你你你你你你你你|
