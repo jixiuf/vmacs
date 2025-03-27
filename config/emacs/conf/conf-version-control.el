@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; smerge
 ;; cn next
 ;; cu （upper） 选择上面的部分，cl (lower) 选下部分
@@ -69,6 +70,7 @@
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "bd") #'vc-git-delete)
+  (define-key vc-dir-mode-map (kbd "bs") nil)
   (define-key vc-dir-mode-map (kbd "bm") #'vc-merge)
   (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
   (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
@@ -95,11 +97,13 @@
   (require 'vc-dir)
   (define-key log-view-mode-map (kbd ",") #'project-switch-project)
   (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
+  (define-key log-view-mode-map (kbd "o") (lookup-key vc-dir-mode-map "o"))
   (define-key log-view-mode-map (kbd "f") #'vc-pull-default)
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
   (define-key log-view-mode-map (kbd ".") (lookup-key vc-dir-mode-map "."))
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
+  (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
   (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
@@ -121,10 +125,11 @@
   (add-hook 'diff-mode-hook #'outline-minor-mode)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
   )
+
 ;; 下面的vc-run-delayed 用法挺好的，可以等待buffer中的进程结束后再执行代码
-;; (define-advice vc-switch-branch (:after (&rest _) commits-behind)
+;; (define-advice vc-dir-root (:after (&rest _) commits-behind)
 ;;   (let ((buffer (get-buffer-create "*vc-commits-behind*")))
-;;     (vc-call-backend (vc-deduce-backend) 'log-incoming buffer "")
+;;     (vc-call-backend (vc-deduce-backend) 'log-incoming  buffer "")
 ;;     (vc-run-delayed
 ;;       (with-current-buffer buffer
 ;;         (let ((lines (count-lines (point-min) (point-max))))

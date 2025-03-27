@@ -124,7 +124,7 @@
   (let* ((refs (split-string (shell-command-to-string "git for-each-ref --format='%(refname)'") "\n" t))
          (filtered-refs (seq-filter (lambda (ref) (string-match-p "^refs/\\(heads\\|remotes\\|tags\\)/" ref)) refs))
          (choices (mapcar (lambda (ref) (replace-regexp-in-string "^refs/\\(heads/\\|remotes/\\)?" "" ref)) filtered-refs))
-         (selected (completing-read "选择要删除的引用: " choices)))
+         (selected (completing-read "Delete(branch or tag): " choices)))
     (when (and selected (not (string-empty-p selected)))
       (let* ((full-ref (car (seq-filter (lambda (ref) (string-suffix-p selected ref)) filtered-refs)))
              (command (cond
@@ -268,6 +268,25 @@ Return a list of two integers: (A>B B>A).
     (message "%d commits unpulled to: %s" cnt (cadr branch))
     (unless (zerop cnt)
       (vc-print-branch-log (cadr branch)))))
+
+;; fork from vc-git-log-incoming
+(defun vc-git-async-log-incoming (buffer remote-location)
+  (vc-setup-buffer buffer)
+  (vc-git-command nil 0 nil "fetch"
+                  (unless (string= remote-location "")
+                    ;; `remote-location' is in format "repository/branch",
+                    ;; so remove everything except a repository name.
+                    (replace-regexp-in-string
+                     "/.*" "" remote-location)))
+  (apply #'vc-git-command buffer 'async nil
+         `("log"
+           "--no-color" "--graph" "--decorate" "--date=short"
+           ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+           "--abbrev-commit"
+           ,@(ensure-list vc-git-shortlog-switches)
+           ,(concat "HEAD.." (if (string= remote-location "")
+			         "@{upstream}"
+		               remote-location)))))
 
 (provide 'lazy-version-control)
 
