@@ -36,8 +36,8 @@
 
 (defvar-keymap  vc-r-map
   "i" #'vc-git-rebase-i
-  "rr" #'vc-git-rebase
-  "rv" #'vc-git-revert-commit
+  "r" #'vc-git-rebase
+  "v" #'vc-git-revert-commit
   )
 (defvar-keymap  vc-log-map
   (kbd ".") #'vc-print-root-log
@@ -118,7 +118,7 @@
   (define-key log-view-mode-map (kbd "o") #'vc-push-other)
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd ",") #'project-switch-project)
-  (define-key log-view-mode-map (kbd "r") #'vc-git-rebase-i)
+  (define-key log-view-mode-map (kbd "r") vc-r-map)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
