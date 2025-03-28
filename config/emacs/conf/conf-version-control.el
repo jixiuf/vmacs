@@ -29,34 +29,6 @@
  diff-switches "-ubB"
  ;; diff-jump-to-old-file t 控制 diff-mode 中RET C-u 的行为，
  )
-
-(vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
-(vmacs-leader (kbd "vo") #'vc-push-other)
-(vmacs-leader (kbd "vr") #'vc-revert)
-(vmacs-leader (kbd "vl") #'vc-print-log)
-;; (vmacs-leader (kbd "vl") #'magit-log-buffer-file)
-(vmacs-leader (kbd "vL") #'vc-print-root-log)
-(vmacs-leader (kbd "v.") #'vc-print-root-log)
-(vmacs-leader (kbd "v+") #'vc-update)
-(vmacs-leader (kbd "vff") #'vc-pull-default)
-(vmacs-leader (kbd "vfa") #'vc-git-fetch-all)
-(vmacs-leader (kbd "vft") #'vc-git-fetch-tags)
-(vmacs-leader (kbd "vg") #'vc-annotate)
-(vmacs-leader (kbd "vd") #'vc-dir-root)
-(vmacs-leader (kbd "v=") #'vc-diff)
-(vmacs-leader (kbd "vh") #'vc-root-diff)
-(vmacs-leader (kbd "=") #'vc-diff)
-(vmacs-leader (kbd "+") #'vc-ediff)
-(vmacs-leader (kbd "vb") #'vc-retrieve-tag) ;change branch/tag
-(vmacs-leader (kbd "vt") #'vc-create-tag)
-
-(vmacs-leader (kbd "vj") #'vc-dir-root) ;like dired-jump
-(vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
-(vmacs-leader (kbd "vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader (kbd "vs") #'vc-git-stage)
-(vmacs-leader (kbd "vu") #'vc-git-unstage)
-(vmacs-leader (kbd "ve") #'magit-commit-extend)
-(vmacs-leader (kbd "va") #'magit-commit-amend)
 (defvar-keymap  vc-fetch-map
   (kbd "f") #'vc-pull-default
   (kbd "a") #'vc-git-fetch-all
@@ -77,8 +49,32 @@
   "l" #'vc-print-branch-log
   "m" #'vc-merge)
 
+(vmacs-leader (kbd "vf") vc-fetch-map)
+(vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
+(vmacs-leader (kbd "vo") #'vc-push-other)
+(vmacs-leader (kbd "vr") #'vc-revert)
+(vmacs-leader (kbd "vl") #'vc-print-log)
+;; (vmacs-leader (kbd "vl") #'magit-log-buffer-file)
+(vmacs-leader (kbd "v.") vc-log-map)
+(vmacs-leader (kbd "vg") #'vc-annotate)
+(vmacs-leader (kbd "vd") #'vc-dir-root)
+(vmacs-leader (kbd "v=") #'vc-diff)
+(vmacs-leader (kbd "vh") #'vc-root-diff)
+(vmacs-leader (kbd "=") #'vc-diff)
+;; (vmacs-leader (kbd "+") #'vc-ediff)
+(vmacs-leader (kbd "vb") vc-branch-map)
+(vmacs-leader (kbd "vt") #'vc-create-tag)
+
+(vmacs-leader (kbd "vj") #'vc-dir-root) ;like dired-jump
+(vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
+(vmacs-leader (kbd "vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
+;; (vmacs-leader (kbd "vs") #'vc-git-stage)
+;; (vmacs-leader (kbd "vu") #'vc-git-unstage)
+;; (vmacs-leader (kbd "ve") #'magit-commit-extend)
+;; (vmacs-leader (kbd "va") #'magit-commit-amend)
+
+(vmacs-leader (kbd "vz") #'vc-git-stash)
 (with-eval-after-load 'vc-git
-  (vmacs-leader (kbd "vz") vc-git-stash-shared-map)
   (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
   (define-key vc-git-stash-shared-map (kbd "d") #'vc-git-stash-show-at-point)
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
@@ -114,8 +110,8 @@
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)
   (define-key log-view-mode-map (kbd "o") #'vc-push-other)
-  (define-key log-view-mode-map (kbd ",") #'project-switch-project)
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
+  (define-key log-view-mode-map (kbd ",") #'project-switch-project)
   (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "SPC") nil)
@@ -136,6 +132,7 @@
   ;; (define-key diff-mode-shared-map (kbd "s") #'vc-git-stage)
   ;; (define-key diff-mode-shared-map (kbd "u") #'vc-git-unstage)
   (add-hook 'diff-mode-hook #'outline-minor-mode)
+  (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
   )
 
