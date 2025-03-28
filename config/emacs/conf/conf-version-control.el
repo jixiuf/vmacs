@@ -47,6 +47,7 @@
   "d" #'vc-git-delete
   "c" #'vc-create-branch
   "l" #'vc-print-branch-log
+  "r" #'vc-git-rebase
   "m" #'vc-merge)
 
 (vmacs-leader (kbd "vf") vc-fetch-map)
@@ -112,7 +113,7 @@
   (define-key log-view-mode-map (kbd "o") #'vc-push-other)
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd ",") #'project-switch-project)
-  (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
+  (define-key log-view-mode-map (kbd "r") #'vc-git-rebase-i)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)

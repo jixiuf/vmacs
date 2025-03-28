@@ -224,12 +224,30 @@ Return a list of two integers: (A>B B>A).
   (revert-buffer))
 
 ;;;###autoload
-(defun vc-git-rebase (&optional args)
+(defun vc-git-rebase-i (&optional args)
   (interactive "P")
   (let ((commit (log-view-current-tag (point))))
     (vc-git-command nil 'async nil
                       "rebase" "-i"  commit))
   (revert-buffer))
+(defun vc-git-rebase ()
+  "Rebase changes into the current Git branch.
+This prompts for a branch to merge from."
+  (let* ((root (vc-git-root default-directory))
+	 (buffer (format "*vc-git : %s*" (expand-file-name root)))
+	 (branches (cdr (vc-git-branches)))
+	 (merge-source
+	  (completing-read "Merge from branch: "
+			   (if (or (member "FETCH_HEAD" branches)
+				   (not (file-readable-p
+                                         (vc-git--git-path "FETCH_HEAD"))))
+			       branches
+			     (cons "FETCH_HEAD" branches))
+			   nil t)))
+    (apply #'vc-do-async-command buffer root vc-git-program "rebase"
+	   (list merge-source))
+    (with-current-buffer buffer (vc-run-delayed (vc-compilation-mode 'git)))
+    (vc-set-async-update buffer)))
 
 ;; fork from vc-git-dir-extra-headers
 (defun vc-git-current-branch ()
@@ -272,30 +290,15 @@ Return a list of two integers: (A>B B>A).
 (defun vc-git-print-log-unpulled ()
   (interactive)
   (let* ((branch (vc-git-current-branch))
-         (cnt (cadr (vc-rev-diff-count (car branch) (cadr branch))))
-         (vc-log-show-limit cnt))
+         (remote (cadr branch))
+         cnt vc-log-show-limit)
+    (vc-git-command nil 0 nil "fetch" (nth 2 branch))
+    (setq cnt (cadr (vc-rev-diff-count (car branch) remote)))
+    (setq vc-log-show-limit cnt)
     (message "%d commits unpulled to: %s" cnt (cadr branch))
     (unless (zerop cnt)
       (vc-print-branch-log (cadr branch)))))
 
-;; fork from vc-git-log-incoming
-(defun vc-git-async-log-incoming (buffer remote-location)
-  (vc-setup-buffer buffer)
-  (vc-git-command nil 0 nil "fetch"
-                  (unless (string= remote-location "")
-                    ;; `remote-location' is in format "repository/branch",
-                    ;; so remove everything except a repository name.
-                    (replace-regexp-in-string
-                     "/.*" "" remote-location)))
-  (apply #'vc-git-command buffer 'async nil
-         `("log"
-           "--no-color" "--graph" "--decorate" "--date=short"
-           ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-           "--abbrev-commit"
-           ,@(ensure-list vc-git-shortlog-switches)
-           ,(concat "HEAD.." (if (string= remote-location "")
-			         "@{upstream}"
-		               remote-location)))))
 
 (provide 'lazy-version-control)
 
