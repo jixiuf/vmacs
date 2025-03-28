@@ -235,9 +235,11 @@ Return a list of two integers: (A>B B>A).
 ;;;###autoload
 (defun vc-git-rebase-i (&optional args)
   (interactive "P")
-  (let ((commit (log-view-current-tag (point))))
-    (vc-git-command nil 'async nil
-                      "rebase" "-i"  commit))
+  (let* ((root (vc-git-root default-directory))
+         (commit (log-view-current-tag (point)))
+	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
+    (vc-git-command buffer 'async nil
+                    "rebase" "-i"  commit))
   (revert-buffer))
 ;;;###autoload
 (defun vc-git-rebase-continue ()
