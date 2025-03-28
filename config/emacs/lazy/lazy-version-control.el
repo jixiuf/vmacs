@@ -224,6 +224,13 @@ Return a list of two integers: (A>B B>A).
   (revert-buffer))
 
 ;;;###autoload
+(defun vc-git-revert-commit (&optional args)
+  (interactive "P")
+  (let ((commit (log-view-current-tag (point))))
+    (vc-git--out-str  "revert"  commit))
+  (revert-buffer))
+
+;;;###autoload
 (defun vc-git-rebase-i (&optional args)
   (interactive "P")
   (let ((commit (log-view-current-tag (point))))

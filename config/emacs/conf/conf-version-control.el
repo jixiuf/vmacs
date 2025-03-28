@@ -34,6 +34,11 @@
   (kbd "a") #'vc-git-fetch-all
   (kbd "t") #'vc-git-fetch-tags)
 
+(defvar-keymap  vc-r-map
+  "i" #'vc-git-rebase-i
+  "rr" #'vc-git-rebase
+  "rv" #'vc-git-revert-commit
+  )
 (defvar-keymap  vc-log-map
   (kbd ".") #'vc-print-root-log
   (kbd "i") #'vc-log-incoming ;unpulled
