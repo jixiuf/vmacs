@@ -38,6 +38,9 @@
   "i" #'vc-git-rebase-i
   "r" #'vc-git-rebase
   "v" #'vc-git-revert-commit
+  "c" #'vc-git-rebase-continue
+  "a" #'vc-git-rebase-abort
+  "s" #'vc-git-rebase-skip
   )
 (defvar-keymap  vc-log-map
   (kbd ".") #'vc-print-root-log
