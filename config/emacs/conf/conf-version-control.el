@@ -40,7 +40,7 @@
   "d" #'vc-revert
   "v" #'vc-git-revert-commit
   "c" #'vc-git-rebase-continue
-  "a" #'vc-git-rebase-abort
+  "q" #'vc-git-rebase-abort
   "s" #'vc-git-rebase-skip
   )
 (defvar-keymap  vc-log-map
@@ -50,10 +50,12 @@
   (kbd "f") #'vc-git-print-log-unpulled
   (kbd "v") #'vc-git-print-log-unpushed
   (kbd "r") #'vc-git-print-remote-branch)
-(defvar-keymap  vc-apply-map
-  "a" #'vc-git-apply-abort
-  "c" #'vc-git-apply-continue
-  "s" #'vc-git-apply-skip
+(defvar-keymap  vc-cherry-pick-map
+  "a" #'vc-git-cherry-pick-commit
+  "A" #'vc-git-cherry-pick-commit
+  "q" #'vc-git-cherry-pick-abort
+  "c" #'vc-git-cherry-pick-continue
+  "s" #'vc-git-cherry-pick-skip
   )
 
 (defvar-keymap  vc-branch-map
@@ -98,7 +100,7 @@
   (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
-  (define-key vc-dir-mode-map (kbd "a") vc-apply-map)
+  (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
@@ -122,6 +124,8 @@
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
   (require 'vc-dir)
+  
+  (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key log-view-mode-map (kbd "f") vc-fetch-map)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)

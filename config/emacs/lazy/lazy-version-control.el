@@ -255,17 +255,26 @@ Return a list of two integers: (A>B B>A).
   (vc-git-command nil 'async nil "rebase" "--abort"))
 
 ;;;###autoload
-(defun vc-git-apply-continue ()
-  (interactive)
-  (vc-git-command nil 'async nil "apply" "--continue"))
+(defun vc-git-cherry-pick-commit (&optional args)
+  (interactive "P")
+  (let* ((root (vc-git-root default-directory))
+         (commit (log-view-current-tag (point)))
+	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
+    (save-excursion
+      (vc-git-command buffer 0 nil "cherry-pick" commit))))
+
 ;;;###autoload
-(defun vc-git-apply-skip ()
+(defun vc-git-cherry-pick-continue ()
   (interactive)
-  (vc-git-command nil 'async nil "apply" "--skip"))
+  (vc-git-command nil 'async nil "cherry-pick" "--continue"))
 ;;;###autoload
-(defun vc-git-apply-abort ()
+(defun vc-git-cherry-pick-skip ()
   (interactive)
-  (vc-git-command nil 'async nil "apply" "--abort"))
+  (vc-git-command nil 'async nil "cherry-pick" "--skip"))
+;;;###autoload
+(defun vc-git-cherry-pick-abort ()
+  (interactive)
+  (vc-git-command nil 'async nil "cherry-pick" "--abort"))
 
 (defun vc-git-rebase ()
   "Rebase changes into the current Git branch.
@@ -275,7 +284,7 @@ This prompts for a branch to merge from."
 	 (buffer (format "*vc-git : %s*" (expand-file-name root)))
 	 (branches (cdr (vc-git-branches)))
 	 (merge-source
-	  (completing-read "Merge from branch: "
+	  (completing-read "Rebase from branch: "
 			   (if (or (member "FETCH_HEAD" branches)
 				   (not (file-readable-p
                                          (vc-git--git-path "FETCH_HEAD"))))
