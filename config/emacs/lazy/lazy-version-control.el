@@ -156,6 +156,15 @@
         (vc-git--pushpull "fetch" nil '("--all" "--tags"))
       (vc-git--pushpull "pull" nil '("--rebase" "--stat")))))
 ;;;###autoload
+(defun vc-git-fetch-all()
+  (interactive)
+  (vc-git--pushpull "fetch" nil '("--all")))
+;;;###autoload
+(defun vc-git-fetch-tags()
+  (interactive)
+  (vc-git--pushpull "fetch" nil '("--tags")))
+
+;;;###autoload
 (defun vmacs-vc-next-action()
   (interactive)
   (call-interactively 'vc-next-action)

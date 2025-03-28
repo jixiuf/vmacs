@@ -11,7 +11,7 @@
  vc-find-revision-no-save t
  log-edit-hook nil
  vc-follow-symlinks t
- ;; diff-font-lock-prettify t
+ diff-font-lock-prettify t
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
  ;; git diff C-xv= 进行比较时,忽略空格造成的影响
@@ -38,7 +38,9 @@
 (vmacs-leader (kbd "vL") #'vc-print-root-log)
 (vmacs-leader (kbd "v.") #'vc-print-root-log)
 (vmacs-leader (kbd "v+") #'vc-update)
-(vmacs-leader (kbd "vf") #'vc-pull-default)
+(vmacs-leader (kbd "vff") #'vc-pull-default)
+(vmacs-leader (kbd "vfa") #'vc-git-fetch-all)
+(vmacs-leader (kbd "vft") #'vc-git-fetch-tags)
 (vmacs-leader (kbd "vg") #'vc-annotate)
 (vmacs-leader (kbd "vd") #'vc-dir-root)
 (vmacs-leader (kbd "v=") #'vc-diff)
@@ -66,7 +68,10 @@
   (define-key vc-dir-mode-map (kbd "r") #'vc-revert)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
-  (define-key vc-dir-mode-map (kbd "f") #'vc-pull-default)
+  (define-key vc-dir-mode-map (kbd "f") nil)
+  (define-key vc-dir-mode-map (kbd "ff") #'vc-pull-default)
+  (define-key vc-dir-mode-map (kbd "fa") #'vc-git-fetch-all)
+  (define-key vc-dir-mode-map (kbd "ft") #'vc-git-fetch-tags)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
   (define-key vc-dir-mode-map (kbd "bd") #'vc-git-delete)
@@ -98,7 +103,11 @@
   (define-key log-view-mode-map (kbd ",") #'project-switch-project)
   (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
   (define-key log-view-mode-map (kbd "o") (lookup-key vc-dir-mode-map "o"))
-  (define-key log-view-mode-map (kbd "f") #'vc-pull-default)
+  (define-key log-view-mode-map (kbd "f") nil)
+  (define-key log-view-mode-map (kbd "ff") #'vc-pull-default)
+  (define-key log-view-mode-map (kbd "fa") #'vc-git-fetch-all)
+  (define-key log-view-mode-map (kbd "ft") #'vc-git-fetch-tags)
+
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
   (define-key log-view-mode-map (kbd ".") (lookup-key vc-dir-mode-map "."))
