@@ -86,7 +86,7 @@
 (with-eval-after-load 'vc-dir
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
-  (define-key vc-dir-mode-map (kbd "b") #'vc-branch-map)
+  (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "r") #'vc-revert)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)

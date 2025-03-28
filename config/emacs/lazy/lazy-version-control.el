@@ -233,6 +233,7 @@ Return a list of two integers: (A>B B>A).
 (defun vc-git-rebase ()
   "Rebase changes into the current Git branch.
 This prompts for a branch to merge from."
+  (interactive)
   (let* ((root (vc-git-root default-directory))
 	 (buffer (format "*vc-git : %s*" (expand-file-name root)))
 	 (branches (cdr (vc-git-branches)))
