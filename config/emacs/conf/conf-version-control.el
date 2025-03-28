@@ -57,32 +57,26 @@
 (vmacs-leader (kbd "vu") #'vc-git-unstage)
 (vmacs-leader (kbd "ve") #'magit-commit-extend)
 (vmacs-leader (kbd "va") #'magit-commit-amend)
-(with-eval-after-load 'vc-dir
-  (define-key vc-dir-mode-map (kbd "..") #'vc-print-root-log)
-  (define-key vc-dir-mode-map (kbd ".f") #'vc-git-print-log-unpulled)
-  (define-key vc-dir-mode-map (kbd ".v") #'vc-git-print-log-unpushed)
-  (define-key vc-dir-mode-map (kbd ".r") #'vc-git-print-remote-branch)
-  (define-key vc-dir-mode-map (kbd ".i") #'vc-log-incoming) ;unpulled
-  (define-key vc-dir-mode-map (kbd ".o") #'vc-log-outgoing) ;unpushed
-  (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
-  (define-key vc-dir-mode-map (kbd "r") #'vc-revert)
-  (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
-  (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
-  (define-key vc-dir-mode-map (kbd "f") nil)
-  (define-key vc-dir-mode-map (kbd "ff") #'vc-pull-default)
-  (define-key vc-dir-mode-map (kbd "fa") #'vc-git-fetch-all)
-  (define-key vc-dir-mode-map (kbd "ft") #'vc-git-fetch-tags)
-  (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
-  (define-key vc-dir-mode-map (kbd "bb") #'vc-switch-branch)
-  (define-key vc-dir-mode-map (kbd "bd") #'vc-git-delete)
-  (define-key vc-dir-mode-map (kbd "bs") nil)
-  (define-key vc-dir-mode-map (kbd "bm") #'vc-merge)
-  (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
-  (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
-  (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
-  (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
-  (with-eval-after-load 'vc-git
-    (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)))
+(defvar-keymap  vc-fetch-map
+  (kbd "f") #'vc-pull-default
+  (kbd "a") #'vc-git-fetch-all
+  (kbd "t") #'vc-git-fetch-tags)
+
+(defvar-keymap  vc-log-map
+  (kbd ".") #'vc-print-root-log
+  (kbd "i") #'vc-log-incoming ;unpulled
+  (kbd "o") #'vc-log-outgoing ;unpushed
+  (kbd "f") #'vc-git-print-log-unpulled
+  (kbd "v") #'vc-git-print-log-unpushed
+  (kbd "r") #'vc-git-print-remote-branch)
+
+(defvar-keymap  vc-branch-map
+  "b" #'vc-switch-branch
+  "d" #'vc-git-delete
+  "c" #'vc-create-branch
+  "l" #'vc-print-branch-log
+  "m" #'vc-merge)
+
 (with-eval-after-load 'vc-git
   (vmacs-leader (kbd "vz") vc-git-stash-shared-map)
   (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
@@ -90,8 +84,24 @@
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
   (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply-at-point)
   (define-key vc-git-stash-map "A" #'vc-git-stash-pop-at-point)
-  (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point)
-  )
+  (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point))
+
+(with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd ".") vc-log-map)
+  (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
+  (define-key vc-dir-mode-map (kbd "b") #'vc-branch-map)
+  (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
+  (define-key vc-dir-mode-map (kbd "r") #'vc-revert)
+  (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
+  (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
+  (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
+  (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
+  (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
+  (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
+  (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
+  (require 'vc-git)
+  (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
+
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
@@ -100,23 +110,17 @@
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
   (require 'vc-dir)
+  (define-key log-view-mode-map (kbd "f") vc-fetch-map)
+  (define-key log-view-mode-map (kbd ".") vc-log-map)
+  (define-key log-view-mode-map (kbd "b") vc-branch-map)
+  (define-key log-view-mode-map (kbd "o") #'vc-push-other)
   (define-key log-view-mode-map (kbd ",") #'project-switch-project)
-  (define-key log-view-mode-map (kbd "b") (lookup-key vc-dir-mode-map "b"))
-  (define-key log-view-mode-map (kbd "o") (lookup-key vc-dir-mode-map "o"))
-  (define-key log-view-mode-map (kbd "f") nil)
-  (define-key log-view-mode-map (kbd "ff") #'vc-pull-default)
-  (define-key log-view-mode-map (kbd "fa") #'vc-git-fetch-all)
-  (define-key log-view-mode-map (kbd "ft") #'vc-git-fetch-tags)
-
   (define-key log-view-mode-map (kbd "v") #'vc-push-default)
   (define-key log-view-mode-map (kbd "r") #'vc-git-rebase)
-  (define-key log-view-mode-map (kbd ".") (lookup-key vc-dir-mode-map "."))
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
-  (define-key log-view-mode-map (kbd "M-n") #'log-view-msg-next)
-  (define-key log-view-mode-map (kbd "M-p") #'log-view-msg-prev)
   ;; log-view-diff 默认绑定在=上
   ;; (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
   ;;   (let (pos1 pos2 (marked-entities (log-view-get-marked)))
