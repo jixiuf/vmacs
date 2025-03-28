@@ -85,8 +85,8 @@
 (vmacs-leader (kbd "vj") #'vc-dir-root) ;like dired-jump
 (vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
 (vmacs-leader (kbd "vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
-;; (vmacs-leader (kbd "vs") #'vc-git-stage)
-;; (vmacs-leader (kbd "vu") #'vc-git-unstage)
+(vmacs-leader (kbd "vs") #'vc-git-stage)
+(vmacs-leader (kbd "vu") #'vc-git-unstage)
 ;; (vmacs-leader (kbd "ve") #'magit-commit-extend)
 ;; (vmacs-leader (kbd "va") #'magit-commit-amend)
 
