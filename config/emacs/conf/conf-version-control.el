@@ -37,6 +37,7 @@
 (defvar-keymap  vc-r-map
   "i" #'vc-git-rebase-i
   "r" #'vc-git-rebase
+  "d" #'vc-revert
   "v" #'vc-git-revert-commit
   "c" #'vc-git-rebase-continue
   "a" #'vc-git-rebase-abort
@@ -49,6 +50,11 @@
   (kbd "f") #'vc-git-print-log-unpulled
   (kbd "v") #'vc-git-print-log-unpushed
   (kbd "r") #'vc-git-print-remote-branch)
+(defvar-keymap  vc-apply-map
+  "a" #'vc-git-apply-abort
+  "c" #'vc-git-apply-continue
+  "s" #'vc-git-apply-skip
+  )
 
 (defvar-keymap  vc-branch-map
   "b" #'vc-switch-branch
@@ -92,11 +98,12 @@
   (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "a") vc-apply-map)
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
-  (define-key vc-dir-mode-map (kbd "r") #'vc-revert)
+  (define-key vc-dir-mode-map (kbd "r") vc-r-map)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd ",") #'project-switch-project)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)

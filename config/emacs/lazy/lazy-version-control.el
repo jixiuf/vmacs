@@ -254,6 +254,19 @@ Return a list of two integers: (A>B B>A).
   (interactive)
   (vc-git-command nil 'async nil "rebase" "--abort"))
 
+;;;###autoload
+(defun vc-git-apply-continue ()
+  (interactive)
+  (vc-git-command nil 'async nil "apply" "--continue"))
+;;;###autoload
+(defun vc-git-apply-skip ()
+  (interactive)
+  (vc-git-command nil 'async nil "apply" "--skip"))
+;;;###autoload
+(defun vc-git-apply-abort ()
+  (interactive)
+  (vc-git-command nil 'async nil "apply" "--abort"))
+
 (defun vc-git-rebase ()
   "Rebase changes into the current Git branch.
 This prompts for a branch to merge from."
