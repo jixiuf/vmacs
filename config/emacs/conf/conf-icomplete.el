@@ -154,11 +154,11 @@
 (add-hook 'completion-in-region-mode-hook #'vmacs-icomplete-vertical-mode)
 (defun vmacs-icomplete-vertical-mode()
   (setq-local truncate-lines t)
-  (when  (member this-command '(xref-find-references
+  (when  (or (member this-command '(xref-find-references
                                 xref-find-definitions xref-find-apropos
                                 eglot-find-declaration eglot-find-implementation
                                 eglot-code-actions execute-extended-command
-                                project-or-external-find-file completion-at-point
+                                project-or-external-find-file
                                 indent-for-tab-command vmacs-yank-pop
                                 describe-function describe-variable
                                 yank-pop vmacs-complete
@@ -166,6 +166,10 @@
                                 consult-grep consult-completion-in-region
                                 consult-line consult-ripgrep-default-symbol
                                 consult-ripgrep-root-symbol consult-ripgrep-default))
+             (and (member this-command '(completion-at-point))
+                  (not (minibufferp)))
+             (member last-command '(consult-todo-project consult-todo-all consult-todo))
+             )
     (setq-local icomplete-vertical-mode t)
     (when (minibufferp)
       (add-hook 'icomplete-minibuffer-setup-hook
