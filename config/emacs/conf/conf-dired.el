@@ -118,7 +118,7 @@
 (define-key dired-mode-map  "\M-o" 'dired-omit-mode );不显示一些不重要的文件
 (define-key dired-mode-map  "L" 'dired-add-to-load-path-or-load-it )
 (define-key dired-mode-map  "V" 'add-dir-local-variable)
-(define-key dired-mode-map  "," 'consult-dir)
+(define-key dired-mode-map  "c" 'consult-dir)
 (define-key dired-mode-map  "f" 'open-in-filemanager)
 (define-key dired-mode-map  (kbd "<mouse-2>") #'dired-mouse-find-file)
 (with-eval-after-load 'image-mode
