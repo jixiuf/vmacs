@@ -106,6 +106,7 @@
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "r") vc-r-map)
+  (define-key vc-dir-mode-map (kbd "x") #'vc-revert)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "c") #'project-switch-project)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
