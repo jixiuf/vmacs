@@ -43,13 +43,6 @@
   "q" #'vc-git-rebase-abort
   "s" #'vc-git-rebase-skip
   )
-(defvar-keymap  vc-log-map
-  (kbd ".") #'vc-print-root-log
-  (kbd "i") #'vc-log-incoming ;unpulled
-  (kbd "o") #'vc-log-outgoing ;unpushed
-  (kbd "f") #'vc-git-print-log-unpulled
-  (kbd "v") #'vc-git-print-log-unpushed
-  (kbd "r") #'vc-git-print-remote-branch)
 (defvar-keymap  vc-cherry-pick-map
   "a" #'vc-git-cherry-pick-commit
   "A" #'vc-git-cherry-pick-commit
@@ -58,12 +51,20 @@
   "s" #'vc-git-cherry-pick-skip
   )
 
+(defvar-keymap  vc-log-map
+  (kbd ".") #'vc-print-root-log
+  "b" #'vc-switch-branch
+  (kbd "i") #'vc-log-incoming ;unpulled
+  (kbd "o") #'vc-log-outgoing ;unpushed
+  (kbd "f") #'vc-git-print-log-unpulled
+  (kbd "v") #'vc-git-print-log-unpushed
+  (kbd "r") #'vc-git-print-remote-branch)
 (defvar-keymap  vc-branch-map
   "b" #'vc-switch-branch
   "d" #'vc-git-delete
   "c" #'vc-create-branch
   "l" #'vc-print-branch-log
-  "r" #'vc-git-rebase
+  "r" #'vc-git-print-remote-branch
   "m" #'vc-merge)
 (global-set-key (kbd "M-p") 'vc-git-prev-revision)
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
@@ -99,7 +100,7 @@
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
   (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply-at-point)
   (define-key vc-git-stash-map "A" #'vc-git-stash-pop-at-point)
-  (define-key vc-git-stash-shared-map "e" #'vc-git-stash-delete-at-point))
+  (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
@@ -109,14 +110,15 @@
   (define-key vc-dir-mode-map (kbd "S") #'vc-git-unstage)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
+  (keymap-unset vc-dir-mode-map "e" t)
   (define-key vc-dir-mode-map (kbd "r") vc-r-map)
   (define-key vc-dir-mode-map (kbd "x") #'vc-revert)
+  (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "c") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
   (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
   (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
-  (define-key vc-dir-mode-map (kbd "e") #'vc-dir-delete-file)
   (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
@@ -129,7 +131,6 @@
 ;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
   (require 'vc-dir)
-  
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key log-view-mode-map (kbd "f") vc-fetch-map)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
