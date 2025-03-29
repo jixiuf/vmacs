@@ -158,7 +158,7 @@
                                 xref-find-definitions xref-find-apropos
                                 eglot-find-declaration eglot-find-implementation
                                 eglot-code-actions execute-extended-command
-                                project-or-external-find-file
+                                project-or-external-find-file vc-switch-project
                                 indent-for-tab-command vmacs-yank-pop
                                 describe-function describe-variable
                                 yank-pop vmacs-complete
