@@ -354,6 +354,79 @@ This prompts for a branch to merge from."
   (interactive)
   (require 'project)
   (vc-dir (funcall project-prompter)))
+
+(defun vc-blob-successor (rev file)
+  "Find next rev of `REV' for file.
+
+return the rev and filepath of file."
+  (let ((lines (split-string
+                (vc-git--out-str
+                 "log" "--format=%h" "--name-only"
+                 "--follow" "HEAD" "--" file)
+                "\n" t )))
+    (catch 'found
+      (while lines
+        (if (and rev (not (string-empty-p rev))
+                 (string-prefix-p rev (nth 2 lines) ))
+            (throw 'found (list (nth 0 lines) (nth 1 lines)))
+          (setq lines (nthcdr 2 lines)))))))
+(defun vc-blob-ancestor (rev file)
+  (let ((lines (split-string
+                (vc-git--out-str
+                 "log" "-2" "--format=%h" "--name-only"
+                 "--follow" (or rev "HEAD") "--" file)
+                "\n" t )))
+    (if rev (cddr lines) (butlast lines 2))))
+
+;;;###autoload
+(defun vc-git-next-revision ()
+  "Visit the next blob which modified the current file."
+  (interactive)
+  (let ((prev-buffer (current-buffer))
+        (filename buffer-file-name)
+        (dir default-directory)
+        rev next)
+    (when (string-match "^\\(.+\\)\\.~\\([^~]+\\)~$" filename)
+      (setq rev (match-string 2 filename))
+      (setq filename (match-string 1 filename))
+      (setq next (vc-blob-successor rev filename))
+      (kill-buffer prev-buffer)
+      (if next
+          (switch-to-buffer
+           (vc-find-revision
+            (expand-file-name (cadr next) (vc-git-root dir))
+            (car next)))
+        (find-file filename)
+        (user-error "magit timemachine: You have reached the end of time")))))
+;;;###autoload
+(defun vc-git-prev-revision ()
+  "Visit the previous blob which modified the current file."
+  (interactive)
+  (let ((prev-buffer (current-buffer))
+        (filename buffer-file-name)
+        (dir default-directory)
+        rev next)
+    (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" filename)
+      (setq rev (match-string 2 filename))
+      (setq filename (match-string 1 filename))
+      (setq next (vc-blob-ancestor rev filename))
+      (if rev (kill-buffer prev-buffer)
+        (save-buffer))
+      (if next
+          (switch-to-buffer
+           (vc-find-revision
+            (expand-file-name (cadr next) (vc-git-root dir))
+            (car next)))
+        (find-file filename)
+        (user-error "magit timemachine: You have reached the beginning of time")))))
+
+;;;###autoload
+(defun vc-remember-project()
+  (let ((dir (abbreviate-file-name
+              (file-truename (directory-file-name (vc-root-dir))))))
+    (unless (file-remote-p dir)
+      (project-remember-project (project-current)))))
+
 (provide 'lazy-version-control)
 
 ;; Local Variables:

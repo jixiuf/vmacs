@@ -17,16 +17,7 @@
 
 ;; recent commit always expand when i open magit status
 (setf (alist-get 'unpushed magit-section-initial-visibility-alist) 'show)
-(defun vmacs-magit-status-list()
-  (interactive)
-  (let (list)
-    (dolist (ele magit-repository-directories)
-      (when (file-exists-p (car ele))
-        (add-to-list 'list ele)))
-    (setq magit-repository-directories list))
-  (magit-status (magit-read-repository)))
-
-(define-key magit-mode-map "," #'vmacs-magit-status-list)
+(define-key magit-mode-map "," #'vc-switch-project)
 
 (remove-hook 'server-switch-hook 'magit-commit-diff)
 
@@ -98,32 +89,12 @@
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
   (magit-todos-mode)
-  ;; brew install git-delta
-  (let ((dir (abbreviate-file-name (file-truename (directory-file-name (magit-toplevel))))))
-    (unless (file-remote-p dir)
-      (delete (cons dir 0) magit-repository-directories)
-      (add-to-list 'magit-repository-directories  (cons dir 0)))))
+  (vc-remember-project)
+  )
 
 (add-hook 'magit-mode-hook 'vmacs-magit-mode-hook)
 
 ;; (add-hook 'magit-post-refresh-hook 'vmacs-update-repo-revision)
-
-
-(define-advice magit-blob-next (:around (orig-fun &rest args) kill-all-blob-after-quit)
-  "kill last viewed buffer"
-  (let ((prev-buffer (current-buffer)))
-    (apply orig-fun args)
-    (kill-buffer prev-buffer)
-    (unless magit-buffer-file-name
-      (user-error "magit timemachine: You have reached the end of time"))))
-
-(define-advice magit-blob-previous (:around (orig-fun &rest args) kill-all-blob-after-quit)
-  "kill last viewed buffer"
-  (let ((prev-buffer (current-buffer)))
-    (apply orig-fun args)
-    (unless (equal magit-buffer-file-name (buffer-file-name prev-buffer))
-      (kill-buffer prev-buffer))))
-
 
 ;;在 magit-log-buffer-file 产生的 log buffer 中
 ;; return : 查看当前 commit 的 diff
@@ -133,13 +104,8 @@
 (define-key magit-commit-section-map  [C-return] 'magit-show-commit) ;old return
 
 (vmacs-leader (kbd "vm") 'vmacs-magit-blob-toggle) ;类似于 time machine
-(define-key magit-blob-mode-map (kbd "M-n") 'magit-blob-next)
-(define-key magit-blob-mode-map (kbd "M-p") 'magit-blob-previous)
-(define-key magit-blob-mode-map (kbd "C-c C-c") 'vmacs-magit-blob-save)
-(define-key magit-blob-mode-map (kbd "s-w") 'vmacs-magit-blob-quit)
-(define-key magit-blob-mode-map (kbd "s-C-w") 'vmacs-magit-blob-quit)
-(global-set-key (kbd "M-p") 'magit-blob-previous)
-(global-set-key (kbd "M-n") 'magit-blob-next)
+;; (global-set-key (kbd "M-p") 'magit-blob-previous)
+;; (global-set-key (kbd "M-n") 'magit-blob-next)
 
 (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
 (define-key magit-status-mode-map (kbd "s-C-w") 'vmacs-magit-kill-buffers)
@@ -156,11 +122,6 @@
 (remove-hook 'magit-status-sections-hook 'magit-insert-bisect-output)
 (remove-hook 'magit-status-sections-hook 'magit-insert-bisect-rest)
 (remove-hook 'magit-status-sections-hook 'magit-insert-bisect-log)
-
-
-
-
-
 (defun vmacs-magit-diff-visit-file (file &optional other-window)
   "From a diff visit the appropriate version of FILE.
 
@@ -175,7 +136,6 @@ In other cases `magit-find-file' (which see) has to be used."
                                    'pop-to-buffer-same-window))
 
 (fset 'magit-diff-visit-file 'vmacs-magit-diff-visit-file)
-
 
 (provide 'conf-magit)
 

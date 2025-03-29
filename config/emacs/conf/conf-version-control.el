@@ -65,6 +65,8 @@
   "l" #'vc-print-branch-log
   "r" #'vc-git-rebase
   "m" #'vc-merge)
+(global-set-key (kbd "M-p") 'vc-git-prev-revision)
+(global-set-key (kbd "M-n") 'vc-git-next-revision)
 
 (vmacs-leader (kbd "vf") vc-fetch-map)
 (vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
@@ -158,7 +160,7 @@
   (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
   )
-(add-hook 'vc-dir-mode-hook #'(lambda() (project-remember-project (project-current))))
+(add-hook 'vc-dir-mode-hook #'vc-remember-project)
 
 (with-eval-after-load 'git-link
   (defun git-link-gitlab (hostname dirname filename branch commit start end)
