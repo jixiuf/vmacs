@@ -146,10 +146,16 @@
                                          'face 'vc-dir-status-warning))))
       (with-temp-buffer
         (vc-git-log-outgoing-sync (current-buffer) "")
-        
-        (setq msg (concat msg (propertize  "Unpushed   :\n"
-                                         'face 'vc-dir-header)))
-        (setq msg (concat msg (buffer-string))))
+        (unless (= (point-max)(point-min))
+          (setq msg (concat msg (propertize  (format"Unpushed(%d):\n"
+                                                    (count-lines (point-min)
+                                                                 (point-max)))
+                                           'face 'vc-dir-header)))
+          (setq msg (concat msg (buffer-substring (point-min)
+                                                  (save-excursion
+                                                    (goto-char (point-min))
+                                                    (forward-line 5)
+                                                    (point)))))))
     msg))
 
 
