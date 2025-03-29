@@ -247,7 +247,22 @@ Return a list of two integers: (A>B B>A).
 ;;;###autoload
 (defun vc-git-rebase-continue ()
   (interactive)
-  (vc-git-command nil 'async nil "rebase" "--continue"))
+  (let ((gitdir (vc-git--git-path)))
+    ;; See contrib/completion/git-prompt.sh in git.git.
+    (when (or (file-directory-p
+	           (expand-file-name "rebase-merge" gitdir))
+	          (file-exists-p
+	           (expand-file-name "rebase-apply/rebasing" gitdir)))
+      (vc-git-command nil 'async nil "rebase" "--continue"))
+    (when (file-exists-p
+	       (expand-file-name "rebase-apply/applying" gitdir))
+      (vc-git-command nil 'async nil "apply" "--continue"))
+    (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+      (vc-git-command nil 'async nil "merge" "--continue"))
+    (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+      (vc-git-command nil 'async nil "revert" "--continue"))
+    
+    ))
 ;;;###autoload
 (defun vc-git-rebase-skip ()
   (interactive)
