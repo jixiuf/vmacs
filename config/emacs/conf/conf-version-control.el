@@ -39,16 +39,16 @@
   "r" #'vc-git-rebase
   "d" #'vc-revert
   "v" #'vc-git-revert-commit
-  "c" #'vc-git-rebase-continue
-  "q" #'vc-git-rebase-abort
-  "s" #'vc-git-rebase-skip
+  "c" #'vc-git-continue
+  "q" #'vc-git-abort
+  "s" #'vc-git-skip
   )
 (defvar-keymap  vc-cherry-pick-map
   "a" #'vc-git-cherry-pick-commit
   "A" #'vc-git-cherry-pick-commit
-  "q" #'vc-git-cherry-pick-abort
-  "c" #'vc-git-cherry-pick-continue
-  "s" #'vc-git-cherry-pick-skip
+  "c" #'vc-git-continue
+  "q" #'vc-git-abort
+  "s" #'vc-git-skip
   )
 
 (defvar-keymap  vc-log-map

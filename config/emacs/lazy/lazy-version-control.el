@@ -245,7 +245,7 @@ Return a list of two integers: (A>B B>A).
                     "rebase" "-i"  commit))
   (revert-buffer))
 ;;;###autoload
-(defun vc-git-rebase-continue ()
+(defun vc-git-continue ()
   (interactive)
   (let ((gitdir (vc-git--git-path)))
     ;; See contrib/completion/git-prompt.sh in git.git.
@@ -261,16 +261,47 @@ Return a list of two integers: (A>B B>A).
       (vc-git-command nil 'async nil "merge" "--continue"))
     (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
       (vc-git-command nil 'async nil "revert" "--continue"))
-    
-    ))
+    (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+      (vc-git-command nil 'async nil "cherry-pick" "--continue"))))
 ;;;###autoload
-(defun vc-git-rebase-skip ()
+(defun vc-git-skip ()
   (interactive)
-  (vc-git-command nil 'async nil "rebase" "--skip"))
+  (let ((gitdir (vc-git--git-path)))
+    ;; See contrib/completion/git-prompt.sh in git.git.
+    (when (or (file-directory-p
+	           (expand-file-name "rebase-merge" gitdir))
+	          (file-exists-p
+	           (expand-file-name "rebase-apply/rebasing" gitdir)))
+      (vc-git-command nil 'async nil "rebase" "--skip"))
+    (when (file-exists-p
+	       (expand-file-name "rebase-apply/applying" gitdir))
+      (vc-git-command nil 'async nil "apply" "--skip"))
+    (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+      (vc-git-command nil 'async nil "merge" "--skip"))
+    (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+      (vc-git-command nil 'async nil "revert" "--skip"))
+    (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+      (vc-git-command nil 'async nil "cherry-pick" "--skip"))))
+
 ;;;###autoload
-(defun vc-git-rebase-abort ()
+(defun vc-git-abort ()
   (interactive)
-  (vc-git-command nil 'async nil "rebase" "--abort"))
+  (let ((gitdir (vc-git--git-path)))
+    ;; See contrib/completion/git-prompt.sh in git.git.
+    (when (or (file-directory-p
+	           (expand-file-name "rebase-merge" gitdir))
+	          (file-exists-p
+	           (expand-file-name "rebase-apply/rebasing" gitdir)))
+      (vc-git-command nil 'async nil "rebase" "--abort"))
+    (when (file-exists-p
+	       (expand-file-name "rebase-apply/applying" gitdir))
+      (vc-git-command nil 'async nil "apply" "--abort"))
+    (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+      (vc-git-command nil 'async nil "merge" "--abort"))
+    (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+      (vc-git-command nil 'async nil "revert" "--abort"))
+    (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+      (vc-git-command nil 'async nil "cherry-pick" "--abort"))))
 
 ;;;###autoload
 (defun vc-git-cherry-pick-commit (&optional args)
@@ -281,18 +312,6 @@ Return a list of two integers: (A>B B>A).
     (save-excursion
       (vc-git-command buffer 0 nil "cherry-pick" commit))))
 
-;;;###autoload
-(defun vc-git-cherry-pick-continue ()
-  (interactive)
-  (vc-git-command nil 'async nil "cherry-pick" "--continue"))
-;;;###autoload
-(defun vc-git-cherry-pick-skip ()
-  (interactive)
-  (vc-git-command nil 'async nil "cherry-pick" "--skip"))
-;;;###autoload
-(defun vc-git-cherry-pick-abort ()
-  (interactive)
-  (vc-git-command nil 'async nil "cherry-pick" "--abort"))
 
 (defun vc-git-rebase ()
   "Rebase changes into the current Git branch.
