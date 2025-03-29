@@ -158,6 +158,7 @@
   (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
   )
+(add-hook 'vc-dir-mode-hook #'(lambda() (project-remember-project (project-current))))
 
 (with-eval-after-load 'git-link
   (defun git-link-gitlab (hostname dirname filename branch commit start end)
