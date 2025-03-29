@@ -187,8 +187,11 @@ Return a list of two integers: (A>B B>A).
 
 (defun vc-get-unpushed-count()
   "从git status OUTPUT中提取领先的提交数"
-  (let ((branch (vc-git-current-branch)))
-    (car (vc-rev-diff-count (car branch) (cadr branch)))))
+  (let* ((branch (vc-git-current-branch))
+         (remote (cadr branch)))
+    (if remote
+        (car (vc-rev-diff-count (car branch) remote))
+        -1)))
 
 ;; In vc-git and vc-dir for git buffers, make (C-x v) a run git add, u run git
 ;; reset, and r run git reset and checkout from head.
