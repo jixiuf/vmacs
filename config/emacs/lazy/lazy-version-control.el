@@ -349,7 +349,11 @@ This prompts for a branch to merge from."
     (unless (zerop cnt)
       (vc-print-branch-log (cadr branch)))))
 
-
+;;;###autoload
+(defun vc-switch-project()
+  (interactive)
+  (require 'project)
+  (vc-dir (funcall project-prompter)))
 (provide 'lazy-version-control)
 
 ;; Local Variables:
