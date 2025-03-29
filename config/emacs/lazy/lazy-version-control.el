@@ -370,6 +370,19 @@ This prompts for a branch to merge from."
     (unless (zerop cnt)
       (vc-print-branch-log (car branch) ))))
 
+(defun vc-git-log-outgoing-sync (buffer remote-location)
+  (vc-setup-buffer buffer)
+  (apply #'vc-git-command buffer 0 nil
+         `("log"
+           "--no-color" "--graph" "--decorate" "--date=short"
+           ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+           "--abbrev-commit"
+           ,@(ensure-list vc-git-shortlog-switches)
+           ,(concat (if (string= remote-location "")
+	                "@{upstream}"
+	              remote-location)
+	            "..HEAD"))))
+
 ;;;###autoload
 (defun vc-git-print-log-unpulled ()
   (interactive)

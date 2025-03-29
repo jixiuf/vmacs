@@ -144,16 +144,11 @@
     (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
       (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
                                          'face 'vc-dir-status-warning))))
-    (let ((buffer (get-buffer-create "*vc-commits-behind*"))
-          (buf (current-buffer))
-          )
-    (vc-call-backend (vc-deduce-backend) 'log-outgoing  buffer "")
-    (vc-run-delayed
-      (with-current-buffer buffer
-        (setq msg (concat msg (buffer-string)))
-        ))
-    (switch-to-buffer buf)
-    )
+      (with-temp-buffer
+        (vc-git-log-outgoing-sync (current-buffer) "")
+        (setq msg (concat msg (propertize  "Unpushed   :\n"
+                                         'face 'vc-dir-header)))
+        (setq msg (concat msg (buffer-string))))
     msg))
 
 
