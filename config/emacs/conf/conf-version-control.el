@@ -146,6 +146,7 @@
                                          'face 'vc-dir-status-warning))))
       (with-temp-buffer
         (vc-git-log-outgoing-sync (current-buffer) "")
+        
         (setq msg (concat msg (propertize  "Unpushed   :\n"
                                          'face 'vc-dir-header)))
         (setq msg (concat msg (buffer-string))))
