@@ -123,6 +123,25 @@
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
 
+(define-advice vc-git-dir-extra-headers (:around (orig-fun &rest args) progress)
+  (interactive)
+  (let ((gitdir (vc-git--git-path))
+        (msg (apply orig-fun args)))
+    (when (file-exists-p
+	       (expand-file-name "rebase-apply/applying" gitdir))
+      (setq msg (concat msg (propertize  "\nApply     : in progress"
+                                         'face 'vc-dir-status-warning))))
+    (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+      (setq msg (concat msg (propertize  "\nMerge     : in progress"
+                                         'face 'vc-dir-status-warning))))
+    (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+      (setq msg (concat msg (propertize  "\nRevert     : in progress"
+                                         'face 'vc-dir-status-warning))))
+    (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+      (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
+                                         'face 'vc-dir-status-warning))))
+    msg))
+
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较

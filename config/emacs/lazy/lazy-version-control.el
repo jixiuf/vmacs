@@ -456,10 +456,13 @@ return the rev and filepath of file."
 
 ;;;###autoload
 (defun vc-remember-project()
-  (let ((dir (abbreviate-file-name
-              (file-truename (directory-file-name (vc-root-dir))))))
-    (unless (file-remote-p dir)
-      (project-remember-project (project-current)))))
+  (let ((filename (directory-file-name (vc-root-dir)))
+        dir)
+    (when filename
+      (setq dir (abbreviate-file-name
+                 (file-truename filename)))
+      (unless (file-remote-p dir)
+        (project-remember-project (project-current))))))
 
 (provide 'lazy-version-control)
 
