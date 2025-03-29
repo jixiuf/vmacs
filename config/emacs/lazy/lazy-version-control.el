@@ -456,7 +456,7 @@ return the rev and filepath of file."
 
 ;;;###autoload
 (defun vc-remember-project()
-  (let ((filename (directory-file-name (vc-root-dir)))
+  (let ((filename (vc-root-dir))
         dir)
     (when filename
       (setq dir (abbreviate-file-name

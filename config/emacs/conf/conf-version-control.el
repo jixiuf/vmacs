@@ -123,10 +123,14 @@
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
 
-(define-advice vc-git-dir-extra-headers (:around (orig-fun &rest args) progress)
+;; 去除一些无效header, 添加一此in progress
+(define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
   (let ((gitdir (vc-git--git-path))
         (msg (apply orig-fun args)))
+    (setq msg (string-trim-left msg "VC backend : Git\n")) ;
+    (setq msg (string-trim-left msg "Working dir:.+?\n"))
+    (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
     (when (file-exists-p
 	       (expand-file-name "rebase-apply/applying" gitdir))
       (setq msg (concat msg (propertize  "\nApply     : in progress"
