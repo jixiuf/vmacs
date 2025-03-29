@@ -103,6 +103,8 @@
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
+  (define-key vc-dir-mode-map (kbd "s") #'vc-git-stage) ;for --continue
+  (define-key vc-dir-mode-map (kbd "S") #'vc-git-unstage)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "r") vc-r-map)
