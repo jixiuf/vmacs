@@ -976,7 +976,7 @@ Move point to end-of-line ,if point was already at that position,
   (interactive)
   (with-current-buffer (or buf (current-buffer))
     (cond
-	 ((string-prefix-p "*pager" (buffer-name buf))
+	 ((string-prefix-p "*pager" (buffer-name ))
       (kill-current-buffer)
 	  (when (and window-system
 				 (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland"))
@@ -986,7 +986,7 @@ Move point to end-of-line ,if point was already at that position,
                       "--hide-front-special-window"))
       (delete-frame)
       )
-     ((equal (buffer-name buf) "*scratch*")
+     ((equal (buffer-name) "*scratch*")
       (backup-scratch)
       ;; (copy-region-as-kill (point-min)(point-max))
       (kill-this-buffer))
@@ -1034,12 +1034,14 @@ Move point to end-of-line ,if point was already at that position,
        (call-interactively 'vmacs-kill-buffer-delete-window))
      ( (derived-mode-p 'xwidget-webkit-mode)
        (call-interactively 'kill-this-buffer))
-     ( (derived-mode-p 'special-mode)
-       (if (get-buffer-process buf)
+     ( (or (derived-mode-p 'special-mode)
+           (string-prefix-p "*vc-git" (buffer-name ))
+           (derived-mode-p 'compilation-mode))
+       (if (get-buffer-process (current-buffer))
            (bury-buffer-and-window)
          (vmacs-kill-buffer-delete-window)))
      (t
-      (message "kill buffer %s" (buffer-name buf))
+      (message "kill buffer %s" (buffer-name ))
       (kill-this-buffer)))))
 
 
