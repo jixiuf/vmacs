@@ -159,6 +159,18 @@
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
   )
 
+(with-eval-after-load 'git-link
+  (defun git-link-gitlab (hostname dirname filename branch commit start end)
+    (format "https://%s/%s/blob/%s/%s"
+            hostname dirname
+            (or branch commit)
+            (concat filename
+                    (when start
+                      (concat "#"
+                              (if end
+                                  (format "L%s-%s" start end)
+                                (format "L%s" start))))))))
+
 ;; 下面的vc-run-delayed 用法挺好的，可以等待buffer中的进程结束后再执行代码
 ;; (define-advice vc-dir-root (:after (&rest _) commits-behind)
 ;;   (let ((buffer (get-buffer-create "*vc-commits-behind*")))

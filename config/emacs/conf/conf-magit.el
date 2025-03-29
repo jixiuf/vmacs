@@ -159,17 +159,6 @@
 
 
 
-(with-eval-after-load 'git-link
-  (defun git-link-gitlab (hostname dirname filename branch commit start end)
-    (format "https://%s/%s/blob/%s/%s"
-            hostname dirname
-            (or branch commit)
-            (concat filename
-                    (when start
-                      (concat "#"
-                              (if end
-                                  (format "L%s-%s" start end)
-                                (format "L%s" start))))))))
 
 
 (defun vmacs-magit-diff-visit-file (file &optional other-window)
