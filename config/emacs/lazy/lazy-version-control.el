@@ -259,7 +259,7 @@ Return a list of two integers: (A>B B>A).
       (vc-git-command nil 'async nil "rebase" "--continue"))
     (when (file-exists-p
 	       (expand-file-name "rebase-apply/applying" gitdir))
-      (vc-git-command nil 'async nil "apply" "--continue"))
+      (vc-git-command nil 'async nil "am" "--continue"))
     (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
       (vc-git-command nil 'async nil "merge" "--continue"))
     (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
@@ -278,7 +278,7 @@ Return a list of two integers: (A>B B>A).
       (vc-git-command nil 'async nil "rebase" "--skip"))
     (when (file-exists-p
 	       (expand-file-name "rebase-apply/applying" gitdir))
-      (vc-git-command nil 'async nil "apply" "--skip"))
+      (vc-git-command nil 'async nil "am" "--skip"))
     (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
       (vc-git-command nil 'async nil "merge" "--skip"))
     (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
@@ -298,7 +298,7 @@ Return a list of two integers: (A>B B>A).
       (vc-git-command nil 'async nil "rebase" "--abort"))
     (when (file-exists-p
 	       (expand-file-name "rebase-apply/applying" gitdir))
-      (vc-git-command nil 'async nil "apply" "--abort"))
+      (vc-git-command nil 'async nil "am" "--abort"))
     (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
       (vc-git-command nil 'async nil "merge" "--abort"))
     (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
