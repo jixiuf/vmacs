@@ -3,7 +3,7 @@
   (require  'vc)
   ;; (require  'ediff)
   (require 'dash)
-  (require 'ediff-vers)
+  ;; (require 'ediff-vers)
   (require  'vc-dir))
 
 ;; (declare-function ediff-vc-internal "ediff-vers")
