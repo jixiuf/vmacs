@@ -224,10 +224,11 @@ Return a list of two integers: (A>B B>A).
 (defun vc-git-reset (&optional args)
   (interactive "P")
   (let ((commit (log-view-current-tag (point))))
-    (if args
-        (vc-git--out-str  "reset"  commit "--hard" )
-      (vc-git--out-str  "reset"  commit)))
-  (revert-buffer))
+    (when (y-or-n-p (format "Do you really want to reset commit %s" commit))
+      (if args
+          (vc-git--out-str  "reset"  commit "--hard" )
+        (vc-git--out-str  "reset"  commit))
+      (revert-buffer))))
 
 ;;;###autoload
 (defun vc-git-revert-commit (&optional args)
@@ -236,7 +237,8 @@ Return a list of two integers: (A>B B>A).
          (commit (log-view-current-tag (point)))
 	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
     (save-excursion
-      (vc-git-command buffer 0 nil "revert" commit))))
+      (when (y-or-n-p (format "Do you really want to revert commit %s" commit))
+        (vc-git-command buffer 0 nil "revert" commit)))))
 
 ;;;###autoload
 (defun vc-git-rebase-i (&optional args)

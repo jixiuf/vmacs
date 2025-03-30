@@ -39,9 +39,6 @@
   "r" #'vc-git-rebase
   "d" #'vc-revert
   "v" #'vc-git-revert-commit
-  "c" #'vc-git-continue
-  "q" #'vc-git-abort
-  "s" #'vc-git-skip
   )
 (defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
 (defvar-keymap  vc-action-map
