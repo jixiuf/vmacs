@@ -122,7 +122,13 @@
   (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
-
+(define-advice vc-dir-refresh (:around (orig-fun &rest args) logview)
+  (apply orig-fun args)
+  (when (eq vc-dir-backend 'Git)
+    (setq-local log-view-vc-backend vc-dir-backend)
+    (setq-local log-view-vc-fileset `(,default-directory))
+    (require 'log-view)
+    (vc-git-log-view-minor-mode)))
 ;; 去除一些无效header, 添加一此in progress
 (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
