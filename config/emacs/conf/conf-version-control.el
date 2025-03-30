@@ -53,7 +53,7 @@
 
 (defvar-keymap  vc-log-map
   (kbd ".") #'vc-print-root-log
-  "b" #'vc-switch-branch
+  "b" #'vc-print-branch-log
   (kbd "i") #'vc-log-incoming ;unpulled
   (kbd "o") #'vc-log-outgoing ;unpushed
   ;; (kbd "f") #'vc-git-print-log-unpulled
@@ -63,8 +63,6 @@
   "b" #'vc-switch-branch
   "d" #'vc-git-delete
   "c" #'vc-create-branch
-  "l" #'vc-print-branch-log
-  "r" #'vc-git-print-remote-branch
   "m" #'vc-merge)
 (global-set-key (kbd "M-p") 'vc-git-prev-revision)
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
