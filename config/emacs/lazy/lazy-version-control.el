@@ -370,6 +370,7 @@ This prompts for a branch to merge from."
     (unless (zerop cnt)
       (vc-print-branch-log (car branch) ))))
 
+;;;###autoload
 (defun vc-git-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)
   (apply #'vc-git-command buffer 0 nil
