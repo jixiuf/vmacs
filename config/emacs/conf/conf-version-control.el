@@ -151,14 +151,10 @@
       (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
         (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
                                            'face 'vc-dir-status-warning))))
-      (setq-local log-view-vc-backend vc-dir-backend)
-      (setq-local log-view-vc-fileset `(,default-directory))
-      (require 'log-view)
-      (vc-git-log-view-minor-mode)
+      (require 'log-view)               ;for log-view-mode-map
       (with-temp-buffer
         (vc-git-log-outgoing-sync (current-buffer) "")
         (unless (= (point-max)(point-min))
-          (log-view-mode)
           (setq msg (concat msg (propertize  (format"Unpushed(%d):\n"
                                                     (count-lines (point-min)
                                                                  (point-max)))
@@ -169,7 +165,7 @@
                                                                 (forward-line 5)
                                                                 (point)))
                                             'keymap log-view-mode-map
-                                            )))))
+                                            ) "\n"))))
       msg)))
 
 
