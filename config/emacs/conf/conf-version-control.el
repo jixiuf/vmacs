@@ -103,6 +103,8 @@
   (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "M-n") #'vc-dir-next-directory)
+  (define-key vc-dir-mode-map (kbd "M-p") #'vc-dir-previous-directory)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
