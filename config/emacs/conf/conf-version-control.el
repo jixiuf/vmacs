@@ -43,14 +43,17 @@
   "q" #'vc-git-abort
   "s" #'vc-git-skip
   )
+(defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
+(defvar-keymap  vc-action-map
+  "c" #'vc-git-continue
+  "a" #'vc-git-abort
+  "s" #'vc-git-skip
+  )
 (defvar-keymap  vc-cherry-pick-map
   "a" #'vc-git-cherry-pick-commit
   "A" #'vc-git-am-apply-patches
   "y" #'vc-git-apply-plain-patches
-  "p" #'vc-prepare-patch                ;create plain patch by mail
-  "c" #'vc-git-continue
-  "q" #'vc-git-abort
-  "s" #'vc-git-skip
+  "p" #'vc-create-plain-mail-patch                ;create plain patch by mail
   )
 
 (defvar-keymap  vc-log-map
@@ -106,6 +109,7 @@
   (define-key vc-dir-mode-map (kbd "M-n") #'vc-dir-next-directory)
   (define-key vc-dir-mode-map (kbd "M-p") #'vc-dir-previous-directory)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
+  (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map)
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
   (define-key vc-dir-mode-map (kbd "s") #'vc-git-stage) ;for --continue
