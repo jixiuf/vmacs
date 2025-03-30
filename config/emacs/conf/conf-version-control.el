@@ -140,6 +140,7 @@
     (vc-dir-mark-all-files nil))
   (apply orig-fun args))
 
+;; for make unpulled/unpushed commit in vc-dir mode work
 (define-advice vc-dir-refresh (:around (orig-fun &rest args) logview)
   (apply orig-fun args)
   (when (eq vc-dir-backend 'Git)
