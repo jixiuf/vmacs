@@ -30,6 +30,8 @@
  ;; diff-jump-to-old-file t 控制 diff-mode 中RET C-u 的行为，
  )
 (defvar-keymap  vc-fetch-map
+  "v" #'vc-push-default
+  "o" #'vc-push-other
   (kbd "f") #'vc-pull-default
   (kbd "a") #'vc-git-fetch-all
   (kbd "t") #'vc-git-fetch-tags)
@@ -70,7 +72,7 @@
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
 
 (vmacs-leader (kbd "vf") vc-fetch-map)
-(vmacs-leader (kbd "vv") #'vmacs-vc-next-action)
+(vmacs-leader (kbd "vv") #'vc-next-action)
 (vmacs-leader (kbd "vo") #'vc-push-other)
 (vmacs-leader (kbd "vr") #'vc-revert)
 (vmacs-leader (kbd "vl") #'vc-print-log)
@@ -112,7 +114,6 @@
   (define-key vc-dir-mode-map (kbd "s") #'vc-git-stage) ;for --continue
   (define-key vc-dir-mode-map (kbd "S") #'vc-git-unstage)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
-  (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (keymap-unset vc-dir-mode-map "e" t)
   (define-key vc-dir-mode-map (kbd "r") vc-r-map)
   (define-key vc-dir-mode-map (kbd "x") #'vc-revert)            ;丢弃当前未提交的修改
@@ -120,7 +121,9 @@
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "c") #'vc-switch-project)
-  (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
+  (define-key vc-dir-mode-map (kbd "v") #'vc-next-action)
+  (define-key vc-dir-mode-map (kbd "p") #'vc-push-default)
+  (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
   (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
   (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))

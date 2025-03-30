@@ -164,37 +164,37 @@
   (interactive)
   (vc-git--pushpull "fetch" nil '("--tags")))
 
-;;;###autoload
-(defun vmacs-vc-next-action()
-  (interactive)
-  (when (and (eq major-mode 'vc-dir-mode)
-             (not (vc-dir-marked-files)))
-    (vc-dir-mark-all-files nil))
-  (call-interactively 'vc-next-action)
-  (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
-         (state (nth 3 vc-fileset)))
-    (when (and (or (eq state 'up-to-date) (not state))
-               (not (zerop (vc-get-unpushed-count))))
-      (call-interactively 'vc-push-default))))
+;;;;;###autoload
+;; (defun vmacs-vc-next-action()
+;;   (interactive)
+;;   (when (and (eq major-mode 'vc-dir-mode)
+;;              (not (vc-dir-marked-files)))
+;;     (vc-dir-mark-all-files nil))
+;;   (call-interactively 'vc-next-action)
+;;   (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
+;;          (state (nth 3 vc-fileset)))
+;;     (when (and (or (eq state 'up-to-date) (not state))
+;;                (not (zerop (vc-get-unpushed-count))))
+;;       (call-interactively 'vc-push-default))))
 
-(defun vc-rev-diff-count (a b &optional)
-  "Return the commits in A but not B and vice versa.
-Return a list of two integers: (A>B B>A).
-"
-  (mapcar #'string-to-number
-          (split-string (vc-git--out-str "rev-list"
-                                         "--count" "--left-right"
-                                         ;; (and first-parent "--first-parent")
-                                         (concat a "..." b))
-                        "\t")))
+;; (defun vc-rev-diff-count (a b &optional)
+;;   "Return the commits in A but not B and vice versa.
+;; Return a list of two integers: (A>B B>A).
+;; "
+;;   (mapcar #'string-to-number
+;;           (split-string (vc-git--out-str "rev-list"
+;;                                          "--count" "--left-right"
+;;                                          ;; (and first-parent "--first-parent")
+;;                                          (concat a "..." b))
+;;                         "\t")))
 
-(defun vc-get-unpushed-count()
-  "从git status OUTPUT中提取领先的提交数"
-  (let* ((branch (vc-git-current-branch))
-         (remote (cadr branch)))
-    (if remote
-        (car (vc-rev-diff-count (car branch) remote))
-        -1)))
+;; (defun vc-get-unpushed-count()
+;;   "从git status OUTPUT中提取领先的提交数"
+;;   (let* ((branch (vc-git-current-branch))
+;;          (remote (cadr branch)))
+;;     (if remote
+;;         (car (vc-rev-diff-count (car branch) remote))
+;;         -1)))
 
 ;; In vc-git and vc-dir for git buffers, make (C-x v) a run git add, u run git
 ;; reset, and r run git reset and checkout from head.
