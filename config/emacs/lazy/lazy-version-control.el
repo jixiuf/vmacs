@@ -363,15 +363,15 @@ This prompts for a branch to merge from."
   (let ((branch (vc-git-current-branch)))
     (vc-print-branch-log (cadr branch))))
 
-;;;###autoload
-(defun vc-git-print-log-unpushed ()
-  (interactive)
-  (let* ((branch (vc-git-current-branch))
-         (cnt (car (vc-rev-diff-count (car branch) (cadr branch))))
-         (vc-log-show-limit cnt))
-    (message "%d commits unpushed to: %s" cnt (cadr branch))
-    (unless (zerop cnt)
-      (vc-print-branch-log (car branch) ))))
+;;;;;###autoload
+;; (defun vc-git-print-log-unpushed ()
+;;   (interactive)
+;;   (let* ((branch (vc-git-current-branch))
+;;          (cnt (car (vc-rev-diff-count (car branch) (cadr branch))))
+;;          (vc-log-show-limit cnt))
+;;     (message "%d commits unpushed to: %s" cnt (cadr branch))
+;;     (unless (zerop cnt)
+;;       (vc-print-branch-log (car branch) ))))
 
 ;;;###autoload
 (defun vc-git-log-outgoing-sync (buffer remote-location)
@@ -405,18 +405,18 @@ This prompts for a branch to merge from."
 		               remote-location)))))
 
 
-;;;###autoload
-(defun vc-git-print-log-unpulled ()
-  (interactive)
-  (let* ((branch (vc-git-current-branch))
-         (remote (cadr branch))
-         cnt vc-log-show-limit)
-    (vc-git-command nil 0 nil "fetch" (nth 2 branch))
-    (setq cnt (cadr (vc-rev-diff-count (car branch) remote)))
-    (setq vc-log-show-limit cnt)
-    (message "%d commits unpulled to: %s" cnt (cadr branch))
-    (unless (zerop cnt)
-      (vc-print-branch-log (cadr branch)))))
+;;;;;###autoload
+;; (defun vc-git-print-log-unpulled ()
+;;   (interactive)
+;;   (let* ((branch (vc-git-current-branch))
+;;          (remote (cadr branch))
+;;          cnt vc-log-show-limit)
+;;     (vc-git-command nil 0 nil "fetch" (nth 2 branch))
+;;     (setq cnt (cadr (vc-rev-diff-count (car branch) remote)))
+;;     (setq vc-log-show-limit cnt)
+;;     (message "%d commits unpulled to: %s" cnt (cadr branch))
+;;     (unless (zerop cnt)
+;;       (vc-print-branch-log (cadr branch)))))
 
 ;;;###autoload
 (defun vc-switch-project()

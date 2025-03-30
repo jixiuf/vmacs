@@ -56,8 +56,8 @@
   "b" #'vc-switch-branch
   (kbd "i") #'vc-log-incoming ;unpulled
   (kbd "o") #'vc-log-outgoing ;unpushed
-  (kbd "f") #'vc-git-print-log-unpulled
-  (kbd "v") #'vc-git-print-log-unpushed
+  ;; (kbd "f") #'vc-git-print-log-unpulled
+  ;; (kbd "v") #'vc-git-print-log-unpushed
   (kbd "r") #'vc-git-print-remote-branch)
 (defvar-keymap  vc-branch-map
   "b" #'vc-switch-branch
