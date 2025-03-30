@@ -45,7 +45,7 @@
   )
 (defvar-keymap  vc-cherry-pick-map
   "a" #'vc-git-cherry-pick-commit
-  "A" #'vc-git-cherry-pick-commit
+  "A" #'vc-git-am-apply-patches
   "c" #'vc-git-continue
   "q" #'vc-git-abort
   "s" #'vc-git-skip
