@@ -118,8 +118,9 @@
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (keymap-unset vc-dir-mode-map "e" t)
   (define-key vc-dir-mode-map (kbd "r") vc-r-map)
-  (define-key vc-dir-mode-map (kbd "x") #'vc-revert)
-  (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)
+  (define-key vc-dir-mode-map (kbd "x") #'vc-revert)            ;丢弃当前未提交的修改
+  (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
+  (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "c") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "v") #'vmacs-vc-next-action)
