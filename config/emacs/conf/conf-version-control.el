@@ -129,7 +129,7 @@
     (setq-local log-view-vc-fileset `(,default-directory))
     (require 'log-view)
     (vc-git-log-view-minor-mode)))
-;; 去除一些无效header, 添加一此in progress
+
 (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
   (when (eq vc-dir-backend 'Git)
@@ -159,6 +159,11 @@
                                                     (count-lines (point-min)
                                                                  (point-max)))
                                              'face 'vc-dir-header)))
+          ;; (print (buffer-substring (point-min)
+          ;;                                                     (save-excursion
+          ;;                                                       (goto-char (point-min))
+          ;;                                                       (forward-line 5)
+          ;;                                                       (point))))
           (setq msg (concat msg (propertize (buffer-substring (point-min)
                                                               (save-excursion
                                                                 (goto-char (point-min))
@@ -182,7 +187,7 @@
                                             'keymap log-view-mode-map
                                             ) "\n"))))
       msg)))
-
+ 
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较

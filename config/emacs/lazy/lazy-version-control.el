@@ -167,6 +167,9 @@
 ;;;###autoload
 (defun vmacs-vc-next-action()
   (interactive)
+  (when (and (eq major-mode 'vc-dir-mode)
+             (not (vc-dir-marked-files)))
+    (vc-dir-mark-all-files nil))
   (call-interactively 'vc-next-action)
   (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
          (state (nth 3 vc-fileset)))
