@@ -477,6 +477,53 @@ return the rev and filepath of file."
                  (file-truename filename)))
       (unless (file-remote-p dir)
         (project-remember-project (project-current))))))
+(defvar log-view-per-file-logs t)
+
+;; copy from vc-git-log-view-mode
+;;;###autoload
+(define-minor-mode vc-git-log-view-minor-mode
+  "Git-Log-View-Minor"
+  :keymap nil
+  (require 'add-log) ;; We need the faces add-log.
+  ;; Don't have file markers, so use impossible regexp.
+  (print (current-buffer))
+  (setq-local log-view-file-re regexp-unmatchable)
+  (setq-local log-view-per-file-logs nil)
+  (print log-view-per-file-logs)
+  (setq-local log-view-message-re
+              (if (not (memq vc-log-view-type '(long log-search with-diff)))
+                  (cadr vc-git-root-log-format)
+                "^commit +\\([0-9a-z]+\\)"))
+  ;; Allow expanding short log entries.
+  (when (memq vc-log-view-type '(short log-outgoing log-incoming mergebase))
+    (setq truncate-lines t)
+    (setq-local log-view-expanded-log-entry-function
+                'vc-git-expanded-log-entry))
+  (setq-local log-view-font-lock-keywords
+       (if (not (memq vc-log-view-type '(long log-search with-diff)))
+	   (list (cons (nth 1 vc-git-root-log-format)
+		       (nth 2 vc-git-root-log-format)))
+	 (append
+	  `((,log-view-message-re (1 'change-log-acknowledgment)))
+	  ;; Handle the case:
+	  ;; user: foo@bar
+	  '(("^\\(?:Author\\|Commit\\):[ \t]+\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)"
+	     (1 'change-log-email))
+	    ;; Handle the case:
+	    ;; user: FirstName LastName <foo@bar>
+	    ("^\\(?:Author\\|Commit\\):[ \t]+\\([^<(]+?\\)[ \t]*[(<]\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)[>)]"
+	     (1 'change-log-name)
+	     (2 'change-log-email))
+	    ("^ +\\(?:\\(?:[Aa]cked\\|[Ss]igned-[Oo]ff\\)-[Bb]y:\\)[ \t]+\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)"
+	     (1 'change-log-name))
+	    ("^ +\\(?:\\(?:[Aa]cked\\|[Ss]igned-[Oo]ff\\)-[Bb]y:\\)[ \t]+\\([^<(]+?\\)[ \t]*[(<]\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)[>)]"
+	     (1 'change-log-name)
+	     (2 'change-log-email))
+	    ("^Merge: \\([0-9a-z]+\\) \\([0-9a-z]+\\)"
+	     (1 'change-log-acknowledgment)
+	     (2 'change-log-acknowledgment))
+	    ("^\\(?:Date:   \\|AuthorDate: \\|CommitDate: \\)\\(.+\\)" (1 'change-log-date))
+	    ("^summary:[ \t]+\\(.+\\)" (1 'log-view-message)))))))
 
 (provide 'lazy-version-control)
 

@@ -126,37 +126,45 @@
 ;; 去除一些无效header, 添加一此in progress
 (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
-  (let ((gitdir (vc-git--git-path))
-        (msg (apply orig-fun args)))
-    (setq msg (string-trim-left msg "VC backend : Git\n")) ;
-    (setq msg (string-trim-left msg "Working dir:.+?\n"))
-    (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
-    (when (file-exists-p
-	       (expand-file-name "rebase-apply/applying" gitdir))
-      (setq msg (concat msg (propertize  "\nApply     : in progress"
-                                         'face 'vc-dir-status-warning))))
-    (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
-      (setq msg (concat msg (propertize  "\nMerge     : in progress"
-                                         'face 'vc-dir-status-warning))))
-    (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
-      (setq msg (concat msg (propertize  "\nRevert     : in progress"
-                                         'face 'vc-dir-status-warning))))
-    (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
-      (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
-                                         'face 'vc-dir-status-warning))))
+  (when (eq vc-dir-backend 'Git)
+    (let ((gitdir (vc-git--git-path))
+          (msg (apply orig-fun args)))
+      (setq msg (string-trim-left msg "VC backend : Git\n")) ;
+      ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
+      (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
+      (when (file-exists-p
+	         (expand-file-name "rebase-apply/applying" gitdir))
+        (setq msg (concat msg (propertize  "\nApply     : in progress"
+                                           'face 'vc-dir-status-warning))))
+      (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+        (setq msg (concat msg (propertize  "\nMerge     : in progress"
+                                           'face 'vc-dir-status-warning))))
+      (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+        (setq msg (concat msg (propertize  "\nRevert     : in progress"
+                                           'face 'vc-dir-status-warning))))
+      (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+        (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
+                                           'face 'vc-dir-status-warning))))
+      (setq-local log-view-vc-backend vc-dir-backend)
+      (setq-local log-view-vc-fileset `(,default-directory))
+      (require 'log-view)
+      (vc-git-log-view-minor-mode)
       (with-temp-buffer
         (vc-git-log-outgoing-sync (current-buffer) "")
         (unless (= (point-max)(point-min))
+          (log-view-mode)
           (setq msg (concat msg (propertize  (format"Unpushed(%d):\n"
                                                     (count-lines (point-min)
                                                                  (point-max)))
-                                           'face 'vc-dir-header)))
-          (setq msg (concat msg (buffer-substring (point-min)
-                                                  (save-excursion
-                                                    (goto-char (point-min))
-                                                    (forward-line 5)
-                                                    (point)))))))
-    msg))
+                                             'face 'vc-dir-header)))
+          (setq msg (concat msg (propertize (buffer-substring (point-min)
+                                                              (save-excursion
+                                                                (goto-char (point-min))
+                                                                (forward-line 5)
+                                                                (point)))
+                                            'keymap log-view-mode-map
+                                            )))))
+      msg)))
 
 
 ;; c-xvl列出当前文件的历史版本
