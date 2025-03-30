@@ -382,7 +382,25 @@ This prompts for a branch to merge from."
            ,(concat (if (string= remote-location "")
 	                "@{upstream}"
 	              remote-location)
-	            "..HEAD"))))
+	                "..HEAD"))))
+(defun vc-git-log-incoming-sync (buffer remote-location)
+  (vc-setup-buffer buffer)
+  (vc-git-command nil 'async nil "fetch"
+                  (unless (string= remote-location "")
+                    ;; `remote-location' is in format "repository/branch",
+                    ;; so remove everything except a repository name.
+                    (replace-regexp-in-string
+                     "/.*" "" remote-location)))
+  (apply #'vc-git-command buffer 0 nil
+         `("log"
+           "--no-color" "--graph" "--decorate" "--date=short"
+           ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+           "--abbrev-commit"
+           ,@(ensure-list vc-git-shortlog-switches)
+           ,(concat "HEAD.." (if (string= remote-location "")
+			         "@{upstream}"
+		               remote-location)))))
+
 
 ;;;###autoload
 (defun vc-git-print-log-unpulled ()

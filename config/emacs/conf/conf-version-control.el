@@ -166,6 +166,21 @@
                                                                 (point)))
                                             'keymap log-view-mode-map
                                             ) "\n"))))
+
+      (with-temp-buffer
+        (vc-git-log-incoming-sync (current-buffer) "")
+        (unless (= (point-max)(point-min))
+          (setq msg (concat msg (propertize  (format"Unpulled(%d):\n"
+                                                    (count-lines (point-min)
+                                                                 (point-max)))
+                                             'face 'vc-dir-header)))
+          (setq msg (concat msg (propertize (buffer-substring (point-min)
+                                                              (save-excursion
+                                                                (goto-char (point-min))
+                                                                (forward-line 5)
+                                                                (point)))
+                                            'keymap log-view-mode-map
+                                            ) "\n"))))
       msg)))
 
 
