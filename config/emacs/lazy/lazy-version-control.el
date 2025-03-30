@@ -486,10 +486,8 @@ return the rev and filepath of file."
   :keymap nil
   (require 'add-log) ;; We need the faces add-log.
   ;; Don't have file markers, so use impossible regexp.
-  (print (current-buffer))
   (setq-local log-view-file-re regexp-unmatchable)
   (setq-local log-view-per-file-logs nil)
-  (print log-view-per-file-logs)
   (setq-local log-view-message-re
               (if (not (memq vc-log-view-type '(long log-search with-diff)))
                   (cadr vc-git-root-log-format)
