@@ -106,6 +106,7 @@
   (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
+  (define-key vc-dir-mode-map (kbd "C-c M:") #'vc-command)
   (define-key vc-dir-mode-map (kbd "M-n") #'vc-dir-next-directory)
   (define-key vc-dir-mode-map (kbd "M-p") #'vc-dir-previous-directory)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
@@ -121,6 +122,7 @@
   (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
+  (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd
   (define-key vc-dir-mode-map (kbd "c") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "v") #'vc-next-action)
   (define-key vc-dir-mode-map (kbd "p") #'vc-push-default)
@@ -130,6 +132,14 @@
   (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
+
+
+(define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)
+  (when (and (eq major-mode 'vc-dir-mode)
+             (not (vc-dir-marked-files)))
+    (vc-dir-mark-all-files nil))
+  (apply orig-fun args))
+
 (define-advice vc-dir-refresh (:around (orig-fun &rest args) logview)
   (apply orig-fun args)
   (when (eq vc-dir-backend 'Git)

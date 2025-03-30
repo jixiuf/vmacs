@@ -34,7 +34,7 @@
    '("N" . "C-c MN")
    '("z" . "C-c Mz")
    '("q" . "C-c Mq")
-   '(":" . viper-ex)
+   '(":" . "C-c M:")
    '("<escape>" . vmacs-cancel-selection)
    )
 

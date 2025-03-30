@@ -74,6 +74,7 @@
   "/"  #'isearch-forward-regexp
   "n"  #'meow-search
   "N"  #'meow-search-reverse
+  ":" #'viper-ex
   "z"   #'meow-pop-selection)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
