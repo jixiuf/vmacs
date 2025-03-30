@@ -320,7 +320,14 @@ Return a list of two integers: (A>B B>A).
   (interactive (list (expand-file-name(read-file-name "Apply patch: "))))
   (let* ((root (vc-git-root default-directory))
 	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
-  (vc-git-command  buffer 0 nil "am"  "--" files)))
+    (vc-git-command  buffer 0 nil "am"  "--" files)))
+;;;###autoload
+(defun vc-git-apply-plain-patches (&optional files )
+  "Apply the patches FILES."
+  (interactive (list (expand-file-name(read-file-name "Apply plain patch: "))))
+  (let* ((root (vc-git-root default-directory))
+	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
+    (vc-git-command  buffer 0 nil "apply"  "--" files)))
 
 
 (defun vc-git-rebase ()

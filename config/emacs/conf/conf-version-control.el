@@ -46,6 +46,8 @@
 (defvar-keymap  vc-cherry-pick-map
   "a" #'vc-git-cherry-pick-commit
   "A" #'vc-git-am-apply-patches
+  "y" #'vc-git-apply-plain-patches
+  "p" #'vc-prepare-patch                ;create plain patch by mail
   "c" #'vc-git-continue
   "q" #'vc-git-abort
   "s" #'vc-git-skip
