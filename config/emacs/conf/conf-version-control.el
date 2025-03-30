@@ -19,7 +19,8 @@
  ;; vc--inhibit-async-window t             ;vc-pull vc-push 不显示window
  vc-log-short-style '(directory file)   ;C-xvl列出当前文件的历史版本时 不展示详情
  ;; --textconv 以支持 gpg 文件的diff
- vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--textconv")
+ ;; 去除 "--ignore-space-change" 否则会导致在 diff-mode 中提交部分hunk的时候失败
+ vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines"  "--textconv")
  ;; vc-git-revision-complete-only-branches
  ;; svn diff --help
  ;; -b (--ignore-space-change): 忽略空白数量的修改。
