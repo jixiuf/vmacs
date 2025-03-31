@@ -107,7 +107,6 @@
   (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
-  (define-key vc-dir-mode-map (kbd "C-c M:") #'vc-command)
   (define-key vc-dir-mode-map (kbd "M-n") #'vc-dir-next-directory)
   (define-key vc-dir-mode-map (kbd "M-p") #'vc-dir-previous-directory)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
@@ -136,6 +135,7 @@
 
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)
+  "Default mark all in *vc-dir*"
   (when (and (eq major-mode 'vc-dir-mode)
              (not (vc-dir-marked-files)))
     (vc-dir-mark-all-files nil))
