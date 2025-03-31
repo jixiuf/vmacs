@@ -35,6 +35,7 @@
  diff-switches "-ubB"
  ;; diff-jump-to-old-file t 控制 diff-mode 中RET C-u 的行为，
  )
+
 (defvar-keymap  vc-fetch-map
   "v" #'vc-push-default
   "o" #'vc-push-other
@@ -43,37 +44,37 @@
   (kbd "t") #'vc-git-fetch-tags)
 
 (defvar-keymap  vc-r-map
-  "i" #'vc-git-rebase-i
-  "r" #'vc-git-rebase
-  "d" #'vc-revert
-  "v" #'vc-git-revert-commit
-  )
-(defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
+  "i" #'vc-git-rebase-i                 ;in log view mode
+  "r" #'vc-git-rebase                   ;  ;in log view mode
+  "d" #'vc-revert                       ;丢弃当前未提交的修改
+  "v" #'vc-git-revert-commit)           ;  ;in log view mode revert 某个commit
+;; for rebase/cherry-pick/am/revert/merge --continue/--skip/--abort
 (defvar-keymap  vc-action-map
-  "c" #'vc-git-continue
+  "c" #'vc-git-continue                 ;
   "a" #'vc-git-abort
-  "s" #'vc-git-skip
-  )
+  "s" #'vc-git-skip)
+
+(defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
+
 (defvar-keymap  vc-cherry-pick-map
-  "a" #'vc-git-cherry-pick-commit
-  "A" #'vc-git-am-apply-patches
-  "y" #'vc-git-apply-plain-patches
+  "a" #'vc-git-cherry-pick-commit       ;将其他分支的commit拿到当前分支
+  "A" #'vc-git-am-apply-patches         ;apply git format-patch 产生的git 专有patch
+  "y" #'vc-git-apply-plain-patches      ;apply 普通的diff patch
   "p" #'vc-create-plain-mail-patch                ;create plain patch by mail
   )
 
 (defvar-keymap  vc-log-map
-  (kbd ".") #'vc-print-root-log
+  "." #'vc-print-root-log
   "b" #'vc-print-branch-log
-  (kbd "i") #'vc-log-incoming ;unpulled
-  (kbd "o") #'vc-log-outgoing ;unpushed
-  ;; (kbd "f") #'vc-git-print-log-unpulled
-  ;; (kbd "v") #'vc-git-print-log-unpushed
-  (kbd "r") #'vc-git-print-remote-branch)
+  "i" #'vc-log-incoming ;unpulled, 很少用的，已经将其插入到vc-dir中的
+  "o" #'vc-log-outgoing ;unpushed, 很少用的，已经将其插入到vc-dir中的
+  "r" #'vc-git-print-remote-branch)     ;log 肖前追踪的remote branch
 (defvar-keymap  vc-branch-map
   "b" #'vc-switch-branch
-  "d" #'vc-git-delete
+  "d" #'vc-git-delete                   ;delete tag/branch/remote-branch
   "c" #'vc-create-branch
   "m" #'vc-merge)
+;; ;git machine 的实现，顺序的遍历当前文件的历史
 (global-set-key (kbd "M-p") 'vc-git-prev-revision)
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
 
