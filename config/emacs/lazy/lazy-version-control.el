@@ -219,10 +219,8 @@
 ;;         (car (vc-rev-diff-count (car branch) remote))
 ;;         -1)))
 
-;; In vc-git and vc-dir for git buffers, make (C-x v) a run git add, u run git
-;; reset, and r run git reset and checkout from head.
-(defun vmacs-vc-git-command (verb fn vc-fileset)
-  (let* ((fileset-arg (or vc-fileset (vc-deduce-fileset nil t)))
+(defun vc-git-cmd (verb fn)
+  (let* ((fileset-arg (vc-deduce-fileset nil t))
          (backend (car fileset-arg))
          (files (nth 1 fileset-arg)))
     (if (eq backend 'Git)
@@ -232,22 +230,25 @@
       (message "Not in a vc git buffer."))))
 
 ;;;###autoload
-(defun vc-git-stage (&optional revision vc-fileset)
-  (interactive "P")
-  (vmacs-vc-git-command "Staged" 'vc-git-register vc-fileset))
+(defun vc-git-stage ()
+  (interactive)
+  (vc-git-cmd "Staged" 'vc-git-register))
 
 ;;;###autoload
-(defun vc-git-unstage (&optional revision vc-fileset)
-  (interactive "P")
-  (vmacs-vc-git-command "Unstaged"
-                        (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))
-                        vc-fileset))
+(defun vc-git-unstage ()
+  (interactive)
+  (vc-git-cmd
+   "Unstaged"
+   (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
 
 ;;;###autoload
 (defun vc-git-reset (&optional args)
   (interactive "P")
   (let ((commit (log-view-current-tag (point))))
-    (when (y-or-n-p (format "Do you really want to reset commit %s" commit))
+    (when (and commit
+               (y-or-n-p (format
+                          "Do you really want to reset commit %s"
+                          commit)))
       (if args
           (vc-git-command nil 0 nil "reset" commit "--hard")
         (vc-git-command nil 0 nil "reset" commit ))
@@ -257,7 +258,10 @@
 (defun vc-git-revert-commit (&optional args)
   (interactive "P")
   (let* ((commit (log-view-current-tag (point))))
-    (when (y-or-n-p (format "Do you really want to revert commit %s" commit))
+    (when (and commit
+               (y-or-n-p (format
+                          "Do you really want to revert commit %s"
+                          commit)))
       (vc-git-command nil 0 nil "revert" commit))))
 
 ;;;###autoload
@@ -266,8 +270,9 @@
   (let* ((root (vc-git-root default-directory))
          (commit (log-view-current-tag (point)))
 	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
-    (vc-git-command buffer 'async nil
-                    "rebase" "-i"  commit))
+    (when commit
+      (vc-git-command buffer 'async nil
+                      "rebase" "-i"  commit)))
   (revert-buffer))
 ;;;###autoload
 (defun vc-git-continue ()
@@ -331,25 +336,24 @@
 ;;;###autoload
 (defun vc-git-cherry-pick-commit (&optional args)
   (interactive "P")
-  (let* ((root (vc-git-root default-directory))
-         (commit (log-view-current-tag (point)))
-	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
-    (save-excursion
-      (vc-git-command buffer 0 nil "cherry-pick" commit))))
+  (let* ((commit (log-view-current-tag (point))))
+    (if commit
+        (vc-git-command nil 0 nil "cherry-pick" commit)
+      (message "should run in log-view-mode"))))
+
 ;;;###autoload
 (defun vc-git-am-apply-patches (&optional files )
   "Apply the patches FILES."
-  (interactive (list (expand-file-name(read-file-name "Apply patch: "))))
-  (let* ((root (vc-git-root default-directory))
-	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
-    (vc-git-command  buffer 0 nil "am"  "--" files)))
+  (interactive (list (expand-file-name
+                      (read-file-name "Apply patch: "))))
+  (vc-git-command nil 0 nil "am"  "--" files))
+
 ;;;###autoload
 (defun vc-git-apply-plain-patches (&optional files )
   "Apply the patches FILES."
-  (interactive (list (expand-file-name(read-file-name "Apply plain patch: "))))
-  (let* ((root (vc-git-root default-directory))
-	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
-    (vc-git-command  buffer 0 nil "apply"  "--" files)))
+  (interactive (list (expand-file-name
+                      (read-file-name "Apply plain patch: "))))
+  (vc-git-command nil 0 nil "apply"  "--" files))
 
 
 (defun vc-git-rebase ()
