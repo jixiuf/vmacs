@@ -1,40 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require  'vc)
-  ;; (require  'ediff)
-  (require 'dash)
-  ;; (require 'ediff-vers)
   (require  'vc-dir))
-
-;; (declare-function ediff-vc-internal "ediff-vers")
-
-
-;; c-xvl列出当前文件的历史版本
-;; 此函数可以对各个历史版本进行比较
-;; 使用方法在你在比较的两个版本中分别用m标记一下
-;; 然后调用此函数即可
-;;;###autoload
-;; (defun log-view-ediff (beg end)
-;;   "the ediff version of `log-view-diff'"
-;;   (interactive
-;;    (list (if mark-active (region-beginning) (point))
-;;          (if mark-active (region-end) (point))))
-;;   (let ((marked-entities (log-view-get-marked)) pos1 pos2)
-;;     (when (= (length marked-entities) 2)
-;;       (setq pos1 (progn (log-view-goto-rev (car marked-entities) ) (point) ))
-;;       (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities) ) (point)))
-;;       (setq beg  (if (< pos1 pos2 ) pos1 pos2))
-;;       (setq end  (if (> pos1 pos2 ) pos1 pos2))
-;;       ))
-;;   (let ((fr (log-view-current-tag beg))
-;;         (to (log-view-current-tag end)))
-;;     (when (string-equal fr to)
-;;       (save-excursion
-;;         (goto-char end)
-;;         (log-view-msg-next)
-;;         (setq to (log-view-current-tag))))
-;;     (require 'ediff-vers)
-;;     (ediff-vc-internal to fr)))
 
 ;;;###autoload
 (defun vc-command (&optional cmd)
@@ -186,39 +153,6 @@
 (defun vc-git-fetch-tags()
   (interactive)
   (vc-git--pushpull "fetch" nil '("--tags")))
-
-;;;;;###autoload
-;; (defun vmacs-vc-next-action()
-;;   (interactive)
-;;   (when (and (eq major-mode 'vc-dir-mode)
-;;              (not (vc-dir-marked-files)))
-;;     (vc-dir-mark-all-files nil))
-;;   (call-interactively 'vc-next-action)
-;;   (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
-;;          (state (nth 3 vc-fileset)))
-;;     (when (and (or (eq state 'up-to-date) (not state))
-;;                (not (zerop (vc-get-unpushed-count))))
-;;       (call-interactively 'vc-push-default))))
-
-;; (defun vc-rev-diff-count (a b &optional)
-;;   "Return the commits in A but not B and vice versa.
-;; Return a list of two integers: (A>B B>A).
-;; "
-;;   (mapcar #'string-to-number
-;;           (split-string (vc-git--out-str "rev-list"
-;;                                          "--count" "--left-right"
-;;                                          ;; (and first-parent "--first-parent")
-;;                                          (concat a "..." b))
-;;                         "\t")))
-
-;; (defun vc-get-unpushed-count()
-;;   "从git status OUTPUT中提取领先的提交数"
-;;   (let* ((branch (vc-git-current-branch))
-;;          (remote (cadr branch)))
-;;     (if remote
-;;         (car (vc-rev-diff-count (car branch) remote))
-;;         -1)))
-
 (defun vc-git-cmd (verb fn)
   (let* ((fileset-arg (vc-deduce-fileset nil t))
          (backend (car fileset-arg))
@@ -403,16 +337,6 @@ This prompts for a branch to merge from."
   (let ((branch (vc-git-current-branch)))
     (vc-print-branch-log (cadr branch))))
 
-;;;;;###autoload
-;; (defun vc-git-print-log-unpushed ()
-;;   (interactive)
-;;   (let* ((branch (vc-git-current-branch))
-;;          (cnt (car (vc-rev-diff-count (car branch) (cadr branch))))
-;;          (vc-log-show-limit cnt))
-;;     (message "%d commits unpushed to: %s" cnt (cadr branch))
-;;     (unless (zerop cnt)
-;;       (vc-print-branch-log (car branch) ))))
-
 ;;;###autoload
 (defun vc-git-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)
@@ -444,19 +368,6 @@ This prompts for a branch to merge from."
 			         "@{upstream}"
 		               remote-location)))))
 
-
-;;;;;###autoload
-;; (defun vc-git-print-log-unpulled ()
-;;   (interactive)
-;;   (let* ((branch (vc-git-current-branch))
-;;          (remote (cadr branch))
-;;          cnt vc-log-show-limit)
-;;     (vc-git-command nil 0 nil "fetch" (nth 2 branch))
-;;     (setq cnt (cadr (vc-rev-diff-count (car branch) remote)))
-;;     (setq vc-log-show-limit cnt)
-;;     (message "%d commits unpulled to: %s" cnt (cadr branch))
-;;     (unless (zerop cnt)
-;;       (vc-print-branch-log (cadr branch)))))
 
 ;;;###autoload
 (defun vc-switch-project()
@@ -583,6 +494,89 @@ return the rev and filepath of file."
 	     (2 'change-log-acknowledgment))
 	    ("^\\(?:Date:   \\|AuthorDate: \\|CommitDate: \\)\\(.+\\)" (1 'change-log-date))
 	    ("^summary:[ \t]+\\(.+\\)" (1 'log-view-message)))))))
+;; c-xvl列出当前文件的历史版本
+;; 此函数可以对各个历史版本进行比较
+;; 使用方法在你在比较的两个版本中分别用m标记一下
+;; 然后调用此函数即可
+;;;###autoload
+;; (defun log-view-ediff (beg end)
+;;   "the ediff version of `log-view-diff'"
+;;   (interactive
+;;    (list (if mark-active (region-beginning) (point))
+;;          (if mark-active (region-end) (point))))
+;;   (let ((marked-entities (log-view-get-marked)) pos1 pos2)
+;;     (when (= (length marked-entities) 2)
+;;       (setq pos1 (progn (log-view-goto-rev (car marked-entities) ) (point) ))
+;;       (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities) ) (point)))
+;;       (setq beg  (if (< pos1 pos2 ) pos1 pos2))
+;;       (setq end  (if (> pos1 pos2 ) pos1 pos2))
+;;       ))
+;;   (let ((fr (log-view-current-tag beg))
+;;         (to (log-view-current-tag end)))
+;;     (when (string-equal fr to)
+;;       (save-excursion
+;;         (goto-char end)
+;;         (log-view-msg-next)
+;;         (setq to (log-view-current-tag))))
+;;     (require 'ediff-vers)
+;;     (ediff-vc-internal to fr)))
+
+;;;;;###autoload
+;; (defun vc-git-print-log-unpulled ()
+;;   (interactive)
+;;   (let* ((branch (vc-git-current-branch))
+;;          (remote (cadr branch))
+;;          cnt vc-log-show-limit)
+;;     (vc-git-command nil 0 nil "fetch" (nth 2 branch))
+;;     (setq cnt (cadr (vc-rev-diff-count (car branch) remote)))
+;;     (setq vc-log-show-limit cnt)
+;;     (message "%d commits unpulled to: %s" cnt (cadr branch))
+;;     (unless (zerop cnt)
+;;       (vc-print-branch-log (cadr branch)))))
+
+;;;;;###autoload
+;; (defun vc-git-print-log-unpushed ()
+;;   (interactive)
+;;   (let* ((branch (vc-git-current-branch))
+;;          (cnt (car (vc-rev-diff-count (car branch) (cadr branch))))
+;;          (vc-log-show-limit cnt))
+;;     (message "%d commits unpushed to: %s" cnt (cadr branch))
+;;     (unless (zerop cnt)
+;;       (vc-print-branch-log (car branch) ))))
+
+
+;;;;;###autoload
+;; (defun vmacs-vc-next-action()
+;;   (interactive)
+;;   (when (and (eq major-mode 'vc-dir-mode)
+;;              (not (vc-dir-marked-files)))
+;;     (vc-dir-mark-all-files nil))
+;;   (call-interactively 'vc-next-action)
+;;   (let* ((vc-fileset (vc-deduce-fileset nil t 'state-model-only-files))
+;;          (state (nth 3 vc-fileset)))
+;;     (when (and (or (eq state 'up-to-date) (not state))
+;;                (not (zerop (vc-get-unpushed-count))))
+;;       (call-interactively 'vc-push-default))))
+
+;; (defun vc-rev-diff-count (a b &optional)
+;;   "Return the commits in A but not B and vice versa.
+;; Return a list of two integers: (A>B B>A).
+;; "
+;;   (mapcar #'string-to-number
+;;           (split-string (vc-git--out-str "rev-list"
+;;                                          "--count" "--left-right"
+;;                                          ;; (and first-parent "--first-parent")
+;;                                          (concat a "..." b))
+;;                         "\t")))
+
+;; (defun vc-get-unpushed-count()
+;;   "从git status OUTPUT中提取领先的提交数"
+;;   (let* ((branch (vc-git-current-branch))
+;;          (remote (cadr branch)))
+;;     (if remote
+;;         (car (vc-rev-diff-count (car branch) remote))
+;;         -1)))
+
 
 (provide 'lazy-version-control)
 
