@@ -5,6 +5,11 @@
 ;; ca 两部分都要
 ;; cRET 选择光标下的
 
+;; magit 可以通过s u 来只选中某一部分 hunk来提交
+;; vc 也可以实现类似的功能，先产生一个diff-mode 的buffer ,然后通过编辑diff-mode
+;; 如通过M-k 删除一个hunk ,C-cC-s 分隔一个hunk 从而更精细的只提交某一部分hunk
+;; 然后在这个diff-mode 中进行C-xvv 即可只提交diff-mode 中的变更
+
 (setq-default
  ;; 只让vc支持git svn , 可以加快vc的一些处理
  vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
