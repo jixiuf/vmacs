@@ -108,43 +108,66 @@
     (when (string-match "^\\(.+?\\)/\\(.+\\)$" remote-br)
       (setq remote (match-string 1 remote-br))
       (setq remote-br (match-string 2 remote-br))
-      )
-    (if current-prefix-arg
+      (if current-prefix-arg
+          (vc-git--pushpull "push" nil
+                            `("--force"
+                              ,remote ,(format "%s:%s" branch remote-br)))
         (vc-git--pushpull "push" nil
-                        `("--force"
-                          ,remote ,(format "%s:%s" branch remote-br)))
-      (vc-git--pushpull "push" nil
-                        `("--force-with-lease"
-                          ,remote ,(format "%s:%s" branch remote-br))))))
+                          `("--force-with-lease"
+                            ,remote ,(format "%s:%s" branch remote-br)))))))
 
 ;;;###autoload
 (defun vc-git-delete ()
   "删除 Git 分支、远程分支或标签。"
   (interactive)
-  (let* ((refs (split-string (shell-command-to-string "git for-each-ref --format='%(refname)'") "\n" t))
-         (filtered-refs (seq-filter (lambda (ref) (string-match-p "^refs/\\(heads\\|remotes\\|tags\\)/" ref)) refs))
-         (choices (mapcar (lambda (ref) (replace-regexp-in-string "^refs/\\(heads/\\|remotes/\\)?" "" ref)) filtered-refs))
+  (let* ((refs (split-string (vc-git--out-str
+                              "for-each-ref"
+                              "--format=%(refname)")
+                             "\n" t))
+         (filtered-refs (seq-filter
+                         (lambda (ref)
+                           (string-match-p
+                            "^refs/\\(heads\\|remotes\\|tags\\)/"
+                            ref))
+                         refs))
+         (choices (mapcar (lambda (ref)
+                            (replace-regexp-in-string
+                             "^refs/\\(heads/\\|remotes/\\)?"
+                             "" ref))
+                          filtered-refs))
          (selected (completing-read "Delete(branch or tag): " choices)))
     (when (and selected (not (string-empty-p selected)))
-      (let* ((full-ref (car (seq-filter (lambda (ref) (string-suffix-p selected ref)) filtered-refs)))
-             (command (cond
-                       ((string-prefix-p "refs/heads/" full-ref)
-                        (format "git branch -D %s" selected))
-                       ((string-prefix-p "refs/remotes/" full-ref)
-                        (let* ((remote-branch (replace-regexp-in-string "^refs/remotes/" "" full-ref))
-                               (remote (car (split-string remote-branch "/")))
-                               (branch (replace-regexp-in-string "^[^/]+/" "" remote-branch)))
-                          (format "git push %s :%s" remote branch)))
-                       ((string-prefix-p "refs/tags/" full-ref)
-                        (let* ((remote-refs (seq-filter (lambda (ref) (string-prefix-p "refs/remotes/" ref)) filtered-refs))
-                               (remotes (delete-dups (mapcar (lambda (ref) (car (split-string (replace-regexp-in-string "^refs/remotes/" "" ref) "/"))) remote-refs)))
-                               (tag (replace-regexp-in-string "^tags/" "" selected))
-                               (push-commands (mapcar (lambda (remote)
-                                                        (format "git push %s :refs/%s" remote selected))
-                                                      remotes)))
-                          (format "git tag -d %s && %s" tag (string-join push-commands " && ")))))))
+      (let* ((full-ref (car (seq-filter (lambda (ref)
+                                          (string-suffix-p selected ref))
+                                        filtered-refs)))
+             (command
+              (cond
+               ((string-prefix-p "refs/heads/" full-ref)
+                (format "git branch -D %s" selected))
+               ((string-prefix-p "refs/remotes/" full-ref)
+                (let* ((remote-branch (replace-regexp-in-string "^refs/remotes/" "" full-ref))
+                       (remote (car (split-string remote-branch "/")))
+                       (branch (replace-regexp-in-string "^[^/]+/" "" remote-branch)))
+                  (format "git push %s :%s" remote branch)))
+               ((string-prefix-p "refs/tags/" full-ref)
+                (let* ((remote-refs (seq-filter
+                                     (lambda (ref)
+                                       (string-prefix-p "refs/remotes/" ref))
+                                     filtered-refs))
+                       (remotes (delete-dups
+                                 (mapcar (lambda (ref)
+                                           (car (split-string
+                                                 (replace-regexp-in-string
+                                                  "^refs/remotes/" "" ref)
+                                                 "/")))
+                                         remote-refs)))
+                       (tag (replace-regexp-in-string "^tags/" "" selected))
+                       (push-commands (mapcar (lambda (remote)
+                                                (format "git push %s :refs/%s" remote selected))
+                                              remotes)))
+                  (format "git tag -d %s && %s" tag (string-join push-commands " && ")))))))
         (let ((display-buffer-alist
-                 '((t (display-buffer-no-window )))))
+               '((t (display-buffer-no-window )))))
           (async-shell-command command (messages-buffer) (messages-buffer)))))))
 
 ;;;###autoload
@@ -209,12 +232,12 @@
       (message "Not in a vc git buffer."))))
 
 ;;;###autoload
-(defun vc-git-stage (&optional revision vc-fileset comment)
+(defun vc-git-stage (&optional revision vc-fileset)
   (interactive "P")
   (vmacs-vc-git-command "Staged" 'vc-git-register vc-fileset))
 
 ;;;###autoload
-(defun vc-git-unstage (&optional revision vc-fileset comment)
+(defun vc-git-unstage (&optional revision vc-fileset)
   (interactive "P")
   (vmacs-vc-git-command "Unstaged"
                         (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))
@@ -226,8 +249,8 @@
   (let ((commit (log-view-current-tag (point))))
     (when (y-or-n-p (format "Do you really want to reset commit %s" commit))
       (if args
-          (vc-git--out-str  "reset"  commit "--hard" )
-        (vc-git--out-str  "reset"  commit))
+          (vc-git-command nil 0 nil "reset" commit "--hard")
+        (vc-git-command nil 0 nil "reset" commit ))
       (revert-buffer))))
 
 ;;;###autoload
