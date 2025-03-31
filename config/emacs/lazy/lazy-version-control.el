@@ -256,12 +256,9 @@
 ;;;###autoload
 (defun vc-git-revert-commit (&optional args)
   (interactive "P")
-  (let* ((root (vc-git-root default-directory))
-         (commit (log-view-current-tag (point)))
-	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
-    (save-excursion
-      (when (y-or-n-p (format "Do you really want to revert commit %s" commit))
-        (vc-git-command buffer 0 nil "revert" commit)))))
+  (let* ((commit (log-view-current-tag (point))))
+    (when (y-or-n-p (format "Do you really want to revert commit %s" commit))
+      (vc-git-command nil 0 nil "revert" commit))))
 
 ;;;###autoload
 (defun vc-git-rebase-i (&optional args)
