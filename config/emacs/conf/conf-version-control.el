@@ -73,7 +73,8 @@
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
 
 (vmacs-leader (kbd "vf") vc-fetch-map)
-(vmacs-leader (kbd "vv") #'vc-next-action)
+(vmacs-leader (kbd "vc") #'vc-next-action)
+(vmacs-leader (kbd "vv") #'vc-push-default)
 (vmacs-leader (kbd "vo") #'vc-push-other)
 (vmacs-leader (kbd "vr") #'vc-revert)
 (vmacs-leader (kbd "vl") #'vc-print-log)
@@ -124,8 +125,8 @@
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd
   (define-key vc-dir-mode-map (kbd "c") #'vc-switch-project)
-  (define-key vc-dir-mode-map (kbd "v") #'vc-next-action)
-  (define-key vc-dir-mode-map (kbd "p") #'vc-push-default)
+  (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
+  (define-key vc-dir-mode-map (kbd "v") #'vc-push-default)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
   (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
