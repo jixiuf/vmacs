@@ -79,6 +79,7 @@ app-emulation/libspectrum  ~amd64
 dev-libs/hyprgraphics  ~amd64
 gui-libs/hyprland-qtutils   ~amd64
 gui-apps/xremap   ~amd64
+app-emacs/emacs-common ~amd64
 # Local Variables:
 # mode: conf
 # End:
