@@ -129,7 +129,7 @@
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd
-  (define-key vc-dir-mode-map (kbd "c") #'vc-switch-project)
+  (define-key vc-dir-mode-map (kbd "i") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
   (define-key vc-dir-mode-map (kbd "v") #'vc-push-default)
   (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
