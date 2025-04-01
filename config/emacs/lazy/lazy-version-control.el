@@ -4,6 +4,12 @@
   (require  'vc-git)
   (require  'vc-dir))
 
+(unless (fboundp 'vc-git--current-branch)
+  (defun vc-git--current-branch ()
+    (vc-git--out-match '("symbolic-ref" "HEAD")
+                       "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
+
+
 (defun git-svn-repos-p(&optional dir)
   (let ((topdir (vc-root-dir)))
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
@@ -295,33 +301,36 @@ This prompts for a branch to merge from."
 ;;;###autoload
 (defun vc-git-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)
-  (apply #'vc-git-command buffer 0 nil
-         `("log"
-           "--no-color" "--graph" "--decorate" "--date=short"
-           ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-           "--abbrev-commit"
-           ,@(ensure-list vc-git-shortlog-switches)
-           ,(concat (if (string= remote-location "")
-	                "@{upstream}"
-	              remote-location)
-	                "..HEAD"))))
+  (when (vc-git--current-branch)
+    (apply #'vc-git-command buffer 0 nil
+           `("log"
+             "--no-color" "--graph" "--decorate" "--date=short"
+             ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+             "--abbrev-commit"
+             ,@(ensure-list vc-git-shortlog-switches)
+             ,(concat (if (string= remote-location "")
+	                      "@{upstream}"
+	                    remote-location)
+	                  "..HEAD")))))
+
 (defun vc-git-log-incoming-sync (buffer remote-location)
   (vc-setup-buffer buffer)
-  (vc-git-command nil 'async nil "fetch"
-                  (unless (string= remote-location "")
-                    ;; `remote-location' is in format "repository/branch",
-                    ;; so remove everything except a repository name.
-                    (replace-regexp-in-string
-                     "/.*" "" remote-location)))
-  (apply #'vc-git-command buffer 0 nil
-         `("log"
-           "--no-color" "--graph" "--decorate" "--date=short"
-           ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-           "--abbrev-commit"
-           ,@(ensure-list vc-git-shortlog-switches)
-           ,(concat "HEAD.." (if (string= remote-location "")
-			         "@{upstream}"
-		               remote-location)))))
+  (when (vc-git--current-branch)
+    (vc-git-command nil 'async nil "fetch"
+                    (unless (string= remote-location "")
+                      ;; `remote-location' is in format "repository/branch",
+                      ;; so remove everything except a repository name.
+                      (replace-regexp-in-string
+                       "/.*" "" remote-location)))
+    (apply #'vc-git-command buffer 0 nil
+           `("log"
+             "--no-color" "--graph" "--decorate" "--date=short"
+             ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+             "--abbrev-commit"
+             ,@(ensure-list vc-git-shortlog-switches)
+             ,(concat "HEAD.." (if (string= remote-location "")
+			                       "@{upstream}"
+		                         remote-location))))))
 
 
 ;;;###autoload
