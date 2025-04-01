@@ -545,31 +545,31 @@ numeric, repeat times.
 
 
 ;;;###autoload
-(defun vmacs-meow-iedit()
-  (interactive)
-  (if (secondary-selection-exist-p)
-      (progn
-        (when (and (meow-insert-mode-p)
-                   (eq meow--beacon-defining-kbd-macro 'quick))
-          (setq meow--beacon-defining-kbd-macro nil)
-          (meow-beacon-insert-exit))
-        (meow--cancel-second-selection)
-        (meow--cancel-selection))
-    (let (region)
-      (when  (meow-insert-mode-p)
-        (meow-insert-exit))
-      (when (region-active-p)
-        (setq region (buffer-substring-no-properties
-                      (region-beginning)(region-end))))
-      (save-mark-and-excursion
-        (set-mark (point-max))
-        (goto-char (point-min))
-        (meow-grab))
-      (if (region-active-p)
-          (progn
-            (goto-char (region-beginning))
-            (meow--search nil region t nil t))
-        (call-interactively #'meow-mark-symbol)))))
+;; (defun vmacs-meow-iedit()
+;;   (interactive)
+;;   (if (secondary-selection-exist-p)
+;;       (progn
+;;         (when (and (meow-insert-mode-p)
+;;                    (eq meow--beacon-defining-kbd-macro 'quick))
+;;           (setq meow--beacon-defining-kbd-macro nil)
+;;           (meow-beacon-insert-exit))
+;;         (meow--cancel-second-selection)
+;;         (meow--cancel-selection))
+;;     (let (region)
+;;       (when  (meow-insert-mode-p)
+;;         (meow-insert-exit))
+;;       (when (region-active-p)
+;;         (setq region (buffer-substring-no-properties
+;;                       (region-beginning)(region-end))))
+;;       (save-mark-and-excursion
+;;         (set-mark (point-max))
+;;         (goto-char (point-min))
+;;         (meow-grab))
+;;       (if (region-active-p)
+;;           (progn
+;;             (goto-char (region-beginning))
+;;             (meow--search nil region t nil t))
+;;         (call-interactively #'meow-mark-symbol)))))
 
 ;;;###autoload
 (defun vmacs-meow-search-symbol()
