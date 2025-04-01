@@ -101,7 +101,6 @@
 
 ;;u原来绑定为unmark ,可以使用它的另一个绑定"*u"来完成
 (require 'dired)
-(define-key dired-mode-map  "i"  #'wdired-change-to-wdired-mode);上层目录
 (define-key dired-mode-map  "l"  #'forward-char)
 (define-key dired-mode-map  "h"  #'backward-char)
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
@@ -118,6 +117,7 @@
 (define-key dired-mode-map  "\M-o" 'dired-omit-mode );不显示一些不重要的文件
 (define-key dired-mode-map  "L" 'dired-add-to-load-path-or-load-it )
 (define-key dired-mode-map  "V" 'add-dir-local-variable)
+(define-key dired-mode-map  "a"  #'wdired-change-to-wdired-mode);上层目录
 (define-key dired-mode-map  "i" 'consult-dir)
   (keymap-unset dired-mode-map "y" t)
 (define-key dired-mode-map  "f" 'open-in-filemanager)

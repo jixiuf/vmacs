@@ -12,30 +12,32 @@
   (define-key occur-edit-mode-map (kbd "C-p") 'previous-error-no-select)
   (set-keymap-parent occur-mode-map meow-normal-state-keymap)
   (add-hook 'occur-hook #'occur-edit-mode))
+
 (with-eval-after-load 'grep
   ;; (define-key grep-mode-map (kbd "e") nil)
   ;; (set-keymap-parent grep-mode-map meow-normal-state-keymap)
-  (define-key grep-mode-map (kbd "C-c Ni") #'grep-change-to-grep-edit-mode) ;i
   (define-key grep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
   (define-key grep-mode-map (kbd "C-c N/") #'consult-focus-lines)
-  (when (boundp 'grep-edit-mode-map)
-    (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
-    (advice-add 'grep-edit-save-changes :after #'meow--switch-to-normal)
+  ;; (when (boundp 'grep-edit-mode-map)
+  ;;   (define-key grep-mode-map (kbd "C-c Ni") #'grep-change-to-grep-edit-mode) ;i
+  ;;   (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
+  ;;   (advice-add 'grep-edit-save-changes :after #'meow--switch-to-normal)
 
 
-    (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)
-    (define-key grep-edit-mode-map (kbd "C-c Nz") #'consult-hide-lines)
-    (define-key grep-edit-mode-map (kbd "C-x C-s") 'grep-edit-save-changes)
-    (define-key grep-edit-mode-map (kbd "M-n") 'compilation-next-error)
-    (define-key grep-edit-mode-map (kbd "M-p") 'compilation-previous-error)
-    (define-key grep-edit-mode-map (kbd "M-s-n") 'compilation-next-file)
-    (define-key grep-edit-mode-map (kbd "M-s-p") 'compilation-previous-file)))
+  ;;   (define-key grep-edit-mode-map (kbd "C-c N/") #'consult-focus-lines)
+  ;;   (define-key grep-edit-mode-map (kbd "C-c Nz") #'consult-hide-lines)
+  ;;   (define-key grep-edit-mode-map (kbd "C-x C-s") 'grep-edit-save-changes)
+  ;;   (define-key grep-edit-mode-map (kbd "M-n") 'compilation-next-error)
+  ;;   (define-key grep-edit-mode-map (kbd "M-p") 'compilation-previous-error)
+  ;;   (define-key grep-edit-mode-map (kbd "M-s-n") 'compilation-next-file)
+  ;;   (define-key grep-edit-mode-map (kbd "M-s-p") 'compilation-previous-file))
+  )
 
 
 (with-eval-after-load 'wgrep
   (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
               wgrep-too-many-file-length 1
-              wgrep-enable-key "i"
+              wgrep-enable-key "C-c Ni"
               wgrep-change-readonly-file t)
   (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
   (define-key wgrep-mode-map (kbd "C-c N/") #'consult-focus-lines)
