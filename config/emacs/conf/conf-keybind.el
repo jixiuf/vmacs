@@ -92,7 +92,7 @@
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
 (define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
-(add-hook 'isearch-mode-hook (lambda()(require 'xref) (xref--push-markers (current-buffer) (point))))
+(add-hook 'isearch-mode-hook (lambda()(require 'xref) (xref--push-markers (current-buffer) (point) (selected-window))))
 (setq isearch-lazy-count t)
 (setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
@@ -219,7 +219,9 @@
 
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
-(global-set-key (kbd "C-;") #'vmacs-meow-iedit)
+;; (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
+(global-set-key (kbd "C-;") #'query-replace-iedit-mode)
+
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map

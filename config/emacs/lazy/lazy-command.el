@@ -532,7 +532,7 @@ numeric, repeat times.
     (if (region-active-p)
         (meow-grab)
       (require 'xref)
-      (xref--push-markers (current-buffer) (point))
+      (xref--push-markers (current-buffer) (point)(selected-window))
       (call-interactively #'set-mark-command)
       (meow-grab))))
 
