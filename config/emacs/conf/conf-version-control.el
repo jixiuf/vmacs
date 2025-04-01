@@ -130,8 +130,9 @@
   (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd
   (define-key vc-dir-mode-map (kbd "i") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
-  (define-key vc-dir-mode-map (kbd "v") #'vc-push-default)
-  (define-key vc-dir-mode-map (kbd "o") #'vc-push-other)
+  (keymap-unset vc-dir-mode-map "v" t)
+  (define-key vc-dir-mode-map (kbd "vv") #'vc-push-default)
+  (define-key vc-dir-mode-map (kbd "vo") #'vc-push-other)
   (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
   (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
   (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
