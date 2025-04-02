@@ -6,8 +6,10 @@
 
 (unless (fboundp 'vc-git--current-branch)
   (defun vc-git--current-branch ()
-    (vc-git--out-match '("symbolic-ref" "HEAD")
-                       "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
+    (let ((str (vc-git--out-str "symbolic-ref" "HEAD")))
+      (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
+	    (setq branch (match-string 2 str))
+        ))))
 
 
 (defun git-svn-repos-p(&optional dir)
