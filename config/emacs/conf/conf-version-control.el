@@ -36,37 +36,37 @@
  )
 
 (defvar-keymap  vc-fetch-map
-  "v" #'vc-push-default
-  "o" #'vc-push-other
-  (kbd "f") #'vc-pull-default
-  (kbd "a") #'vc-git-fetch-all
-  (kbd "t") #'vc-git-fetch-tags)
+  "v" #'vc-push
+  "o" #'vcgit-push-other
+  (kbd "f") #'vcgit-pull-default
+  (kbd "a") #'vcgit-fetch-all
+  (kbd "t") #'vcgit-fetch-tags)
 (defvar-keymap  vc-push-map
-  "v" #'vc-push-default
-  "o" #'vc-push-other
-  "t" #'vc-push-tags)
+  "v" #'vc-push
+  "o" #'vcgit-push-other
+  "t" #'vcgit-push-tags)
 (defvar-keymap  vc-tag-map
   "t" #'vc-create-tag
-  "v" #'vc-push-tags
-  "d" #'vc-git-delete)
+  "v" #'vcgit-push-tags
+  "d" #'vcgit-git-delete)
 
 (defvar-keymap  vc-r-map
-  "i" #'vc-git-rebase-i                 ;in log view mode
-  "r" #'vc-git-rebase                   ;  ;in log view mode
+  "i" #'vcgit-rebase-i                 ;in log view mode
+  "r" #'vcgit-rebase                   ;  ;in log view mode
   "d" #'vc-revert                       ;丢弃当前未提交的修改
-  "v" #'vc-git-revert-commit)           ;  ;in log view mode revert 某个commit
+  "v" #'vcgit-revert-commit)           ;  ;in log view mode revert 某个commit
 ;; for rebase/cherry-pick/am/revert/merge --continue/--skip/--abort
 (defvar-keymap  vc-action-map
-  "c" #'vc-git-continue                 ;
-  "a" #'vc-git-abort
-  "s" #'vc-git-skip)
+  "c" #'vcgit-continue                 ;
+  "a" #'vcgit-abort
+  "s" #'vcgit-skip)
 
 (defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
 
 (defvar-keymap  vc-cherry-pick-map
-  "a" #'vc-git-cherry-pick-commit       ;将其他分支的commit拿到当前分支
-  "A" #'vc-git-am-apply-patches         ;apply git format-patch 产生的git 专有patch
-  "y" #'vc-git-apply-plain-patches      ;apply 普通的diff patch
+  "a" #'vcgit-cherry-pick-commit       ;将其他分支的commit拿到当前分支
+  "A" #'vcgit-am-apply-patches         ;apply git format-patch 产生的git 专有patch
+  "y" #'vcgit-apply-plain-patches      ;apply 普通的diff patch
   "p" #'vc-create-plain-mail-patch                ;create plain patch by mail
   )
 
@@ -74,25 +74,26 @@
   "." #'vc-print-root-log
   "b" #'vc-print-branch-log
   "s" #'vc-log-search
-  "e" #'vc-git-reflog
+  "e" #'vcgit-reflog
   "m" #'vc-log-mergebase
   "i" #'vc-log-incoming ;unpulled, 很少用的，已经将其插入到vc-dir中的
   "o" #'vc-log-outgoing ;unpushed, 很少用的，已经将其插入到vc-dir中的
-  "r" #'vc-git-print-remote-branch)     ;log 肖前追踪的remote branch
+  "r" #'vcgit-print-remote-branch)     ;log 肖前追踪的remote branch
 (defvar-keymap  vc-branch-map
   "b" #'vc-switch-branch
-  "d" #'vc-git-delete                   ;delete tag/branch/remote-branch
+  "d" #'vcgit-git-delete                   ;delete tag/branch/remote-branch
   "c" #'vc-create-branch
   "m" #'vc-merge)
 ;; ;git machine 的实现，顺序的遍历当前文件的历史
-(global-set-key (kbd "M-p") 'vc-git-prev-revision)
-(global-set-key (kbd "M-n") 'vc-git-next-revision)
+(global-set-key (kbd "M-p") 'vcgit-prev-revision)
+(global-set-key (kbd "M-n") 'vcgit-next-revision)
 (global-set-key (kbd "C-c vd") #'magit-status)
 (global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
 (global-set-key (kbd "C-c vk") #'vc-dir-root) ;like dired-jump
 (global-set-key (kbd "C-c vf") vc-fetch-map)
 (global-set-key (kbd "C-c vc") #'vc-next-action)
 (global-set-key (kbd "C-c vv") vc-push-map)
+(global-set-key (kbd "C-c vp") #'vc-push)
 (global-set-key (kbd "C-c vr") #'vc-revert)
 (global-set-key (kbd "C-c vl") #'vc-print-log)
 ;; (global-set-key (kbd "C-c vl") #'magit-log-buffer-file)
@@ -105,9 +106,8 @@
 (global-set-key (kbd "C-c vb") vc-branch-map)
 (global-set-key (kbd "C-c vt") vc-tag-map)
 
-(global-set-key (kbd "C-c vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
-(global-set-key (kbd "C-c vs") #'vc-git-stage)
-(global-set-key (kbd "C-c vu") #'vc-git-unstage)
+(global-set-key (kbd "C-c vs") #'vcgit-stage)
+(global-set-key (kbd "C-c vu") #'vcgit-unstage)
 ;; (global-set-key (kbd "C-c ve") #'magit-commit-extend)
 ;; (global-set-key (kbd "C-c va") #'magit-commit-amend)
 
@@ -127,8 +127,8 @@
   (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map) ;my q for meow-motion
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
-  (define-key vc-dir-mode-map (kbd "s") #'vc-git-stage) ;for --continue
-  (define-key vc-dir-mode-map (kbd "S") #'vc-git-unstage)
+  (define-key vc-dir-mode-map (kbd "s") #'vcgit-stage) ;for --continue
+  (define-key vc-dir-mode-map (kbd "S") #'vcgit-unstage)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (keymap-unset vc-dir-mode-map "e" t)
   (define-key vc-dir-mode-map (kbd "r") vc-r-map)
@@ -162,7 +162,7 @@
     (setq-local log-view-vc-backend vc-dir-backend)
     (setq-local log-view-vc-fileset `(,default-directory))
     (require 'log-view)
-    (vc-git-log-view-minor-mode)))
+    (vcgit-log-view-minor-mode)))
 
 (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
@@ -187,7 +187,7 @@
                                            'face 'vc-dir-status-warning))))
       (require 'log-view)               ;for log-view-mode-map
       (with-temp-buffer
-        (vc-git-log-outgoing-sync (current-buffer) "")
+        (vcgit-log-outgoing-sync (current-buffer) "")
         (unless (= (point-max)(point-min))
           (setq msg (concat msg (propertize  (format"Unpushed(%d):\n"
                                                     (count-lines (point-min)
@@ -203,7 +203,7 @@
                             "\n"))))
 
       (with-temp-buffer
-        (vc-git-log-incoming-sync (current-buffer) "")
+        (vcgit-log-incoming-sync (current-buffer) "")
         (unless (= (point-max)(point-min))
           (setq msg (concat msg (propertize  (format"Unpulled(%d):\n"
                                                     (count-lines (point-min)
@@ -233,7 +233,7 @@
   (define-key log-view-mode-map (kbd "v") vc-push-map)
   (define-key log-view-mode-map (kbd "i") #'vc-switch-project)
   (define-key log-view-mode-map (kbd "r") vc-r-map)
-  (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
+  (define-key log-view-mode-map (kbd "x") #'vcgit-reset)
   (define-key log-view-mode-map (kbd "t") vc-tag-map)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
@@ -250,8 +250,8 @@
   ;;       (apply orig-fun args))))
   )
 (with-eval-after-load 'diff-mode
-  ;; (define-key diff-mode-shared-map (kbd "s") #'vc-git-stage)
-  ;; (define-key diff-mode-shared-map (kbd "u") #'vc-git-unstage)
+  ;; (define-key diff-mode-shared-map (kbd "s") #'vcgit-stage)
+  ;; (define-key diff-mode-shared-map (kbd "u") #'vcgit-unstage)
   (add-hook 'diff-mode-hook #'outline-minor-mode)
   (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)

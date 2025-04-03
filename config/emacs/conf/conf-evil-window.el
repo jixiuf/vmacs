@@ -195,7 +195,7 @@
                         "*Org Agenda*"
                         "*vc-change-log*"
                         "*vc-search-log*"
-                        "*vc-git-reflog*"
+                        "*vcgit-reflog*"
                         "*Help*"
                         "*vc-diff*"
                         "*vc-log*"

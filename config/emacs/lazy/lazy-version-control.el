@@ -5,31 +5,19 @@
   (require  'vc-git)
   (require  'vc-dir))
 
-(unless (fboundp 'vc-git--current-branch)
-  (defun vc-git--current-branch ()
+(unless (fboundp 'vcgit-current-branch)
+  (defun vcgit-current-branch ()
     (let ((str (vc-git--out-str "symbolic-ref" "HEAD")))
       (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
 	    (setq branch (match-string 2 str))
         ))))
 
 
-(defun git-svn-repos-p(&optional dir)
-  (let ((topdir (vc-root-dir)))
-    (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
 
 ;;;###autoload
-(defun vc-push-default(&optional args  )
+(defun vcgit-push-other(&optional args)
   (interactive)
-  (if (git-svn-repos-p)
-      (vc-git--out-ok  "svn" "dcommit" args)
-    (if current-prefix-arg
-        (vc-git--pushpull "push" nil '("--force"))
-      (vc-git--pushpull "push" nil '("--force-with-lease")))))
-
-;;;###autoload
-(defun vc-push-other(&optional args)
-  (interactive)
-  (let* ((br (vc-git-current-branch))
+  (let* ((br (vcgit-current-branch))
          (branch (vc-read-revision
                   (if current-prefix-arg "Push(--force) : "
                     "Push : ")
@@ -46,13 +34,13 @@
         (vc-git--pushpull "push" nil
                           `("--force-with-lease"
                             ,remote ,(format "%s:%s" branch remote-br)))))))
-(defun vc-push-tags ()
+(defun vcgit-push-tags ()
   (interactive)
   (vc-git--pushpull "push" nil '("--tags")))
 
 
 ;;;###autoload
-(defun vc-git-delete ()
+(defun vcgit-git-delete ()
   "删除 Git 分支、远程分支或标签。"
   (interactive)
   (let* ((refs (split-string (vc-git--out-str
@@ -106,22 +94,27 @@
           (async-shell-command command (messages-buffer) (messages-buffer)))))))
 
 ;;;###autoload
-(defun vc-pull-default(&optional args  _upstream)
+(defun vcgit-pull-default(&optional args  _upstream)
   (interactive)
-  (if (git-svn-repos-p)
+  (if (vcgit-svn-repos-p)
       (vc-git--out-ok  "svn" "rebase" args)
     (if current-prefix-arg
         (vc-git--pushpull "fetch" nil '("--all" "--tags"))
       (vc-git--pushpull "pull" nil '("--rebase" "--stat")))))
+(defun vcgit-svn-repos-p(&optional dir)
+  (let ((topdir (vc-root-dir)))
+    (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
+
+
 ;;;###autoload
-(defun vc-git-fetch-all()
+(defun vcgit-fetch-all()
   (interactive)
   (vc-git--pushpull "fetch" nil '("--all")))
 ;;;###autoload
-(defun vc-git-fetch-tags()
+(defun vcgit-fetch-tags()
   (interactive)
   (vc-git--pushpull "fetch" nil '("--tags")))
-(defun vc-git-cmd (verb fn)
+(defun vcgit-cmd (verb fn)
   (let* ((fileset-arg (vc-deduce-fileset nil t))
          (backend (car fileset-arg))
          (files (nth 1 fileset-arg)))
@@ -132,19 +125,19 @@
       (message "Not in a vc git buffer."))))
 
 ;;;###autoload
-(defun vc-git-stage ()
+(defun vcgit-stage ()
   (interactive)
-  (vc-git-cmd "Staged" 'vc-git-register))
+  (vcgit-cmd "Staged" 'vc-git-register))
 
 ;;;###autoload
-(defun vc-git-unstage ()
+(defun vcgit-unstage ()
   (interactive)
-  (vc-git-cmd
+  (vcgit-cmd
    "Unstaged"
    (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
 
 ;;;###autoload
-(defun vc-git-reset (&optional args)
+(defun vcgit-reset (&optional args)
   (interactive "P")
   (let ((commit (log-view-current-tag (point))))
     (when (and commit
@@ -157,7 +150,7 @@
       (revert-buffer))))
 
 ;;;###autoload
-(defun vc-git-revert-commit (&optional args)
+(defun vcgit-revert-commit (&optional args)
   (interactive "P")
   (let* ((commit (log-view-current-tag (point))))
     (when (and commit
@@ -167,7 +160,7 @@
       (vc-git-command nil 0 nil "revert" commit))))
 
 ;;;###autoload
-(defun vc-git-rebase-i (&optional args)
+(defun vcgit-rebase-i (&optional args)
   (interactive "P")
   (let* ((root (vc-git-root default-directory))
          (commit (log-view-current-tag (point)))
@@ -177,7 +170,7 @@
                       "rebase" "-i"  commit)))
   (revert-buffer))
 ;;;###autoload
-(defun vc-git-continue ()
+(defun vcgit-continue ()
   (interactive)
   (let ((gitdir (vc-git--git-path)))
     ;; See contrib/completion/git-prompt.sh in git.git.
@@ -196,7 +189,7 @@
     (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
       (vc-git-command nil 'async nil "cherry-pick" "--continue"))))
 ;;;###autoload
-(defun vc-git-skip ()
+(defun vcgit-skip ()
   (interactive)
   (let ((gitdir (vc-git--git-path)))
     ;; See contrib/completion/git-prompt.sh in git.git.
@@ -216,7 +209,7 @@
       (vc-git-command nil 'async nil "cherry-pick" "--skip"))))
 
 ;;;###autoload
-(defun vc-git-abort ()
+(defun vcgit-abort ()
   (interactive)
   (let ((gitdir (vc-git--git-path)))
     ;; See contrib/completion/git-prompt.sh in git.git.
@@ -236,7 +229,7 @@
       (vc-git-command nil 'async nil "cherry-pick" "--abort"))))
 
 ;;;###autoload
-(defun vc-git-cherry-pick-commit (&optional args)
+(defun vcgit-cherry-pick-commit (&optional args)
   (interactive "P")
   (let* ((commit (log-view-current-tag (point))))
     (if commit
@@ -244,21 +237,21 @@
       (message "should run in log-view-mode"))))
 
 ;;;###autoload
-(defun vc-git-am-apply-patches (&optional files )
+(defun vcgit-am-apply-patches (&optional files )
   "Apply the patches FILES."
   (interactive (list (expand-file-name
                       (read-file-name "Apply patch: "))))
   (vc-git-command nil 0 nil "am"  "--" files))
 
 ;;;###autoload
-(defun vc-git-apply-plain-patches (&optional files )
+(defun vcgit-apply-plain-patches (&optional files )
   "Apply the patches FILES."
   (interactive (list (expand-file-name
                       (read-file-name "Apply plain patch: "))))
   (vc-git-command nil 0 nil "apply"  "--" files))
 
 
-(defun vc-git-rebase ()
+(defun vcgit-rebase ()
   "Rebase changes into the current Git branch.
 This prompts for a branch to merge from."
   (interactive)
@@ -279,7 +272,7 @@ This prompts for a branch to merge from."
     (vc-set-async-update buffer)))
 
 ;; fork from vc-git-dir-extra-headers
-(defun vc-git-current-branch ()
+(defun vcgit-current-branch ()
   "return current local branch and remote tracking-branch"
   (let ((str (vc-git--out-str "symbolic-ref" "HEAD"))
 	    branch  remote  tracking-branch remote-branch)
@@ -306,70 +299,52 @@ This prompts for a branch to merge from."
   (require 'project)
   (vc-dir (funcall project-prompter)))
 
-(defun vc-blob-successor (rev file)
-  "Find next rev of `REV' for file.
-
-return the rev and filepath of file."
-  (let ((lines (split-string
-                (vc-git--out-str
-                 "log" "--format=%h" "--name-only"
-                 "--follow" "HEAD" "--" file)
-                "\n" t )))
-    (catch 'found
-      (while lines
-        (if (and rev (not (string-empty-p rev))
-                 (string-prefix-p rev (nth 2 lines) ))
-            (throw 'found (list (nth 0 lines) (nth 1 lines)))
-          (setq lines (nthcdr 2 lines)))))))
-(defun vc-blob-ancestor (rev file)
-  (let ((lines (split-string
-                (vc-git--out-str
-                 "log" "-2" "--format=%h" "--name-only"
-                 "--follow" (or rev "HEAD") "--" file)
-                "\n" t )))
-    (if rev (cddr lines) (butlast lines 2))))
-
 ;;;###autoload
-(defun vc-git-next-revision ()
+(defun vcgit-next-revision ()
   "Visit the next blob which modified the current file."
   (interactive)
-  (let ((prev-buffer (current-buffer))
-        (filename buffer-file-name)
-        (dir default-directory)
-        rev next)
-    (when (string-match "^\\(.+\\)\\.~\\([^~]+\\)~$" filename)
-      (setq rev (match-string 2 filename))
-      (setq filename (match-string 1 filename))
-      (setq next (vc-blob-successor rev filename))
+  (let* ((buffname (buffer-name))
+         (prev-buffer (current-buffer))
+         (parent-buffer vc-parent-buffer)
+         (fileset-arg (vc-deduce-fileset nil t))
+         (backend (car fileset-arg))
+         (filename (car (cadr fileset-arg)))
+         rev next)
+    (when parent-buffer
+      ;; FIXME: support other bankend for find rev?
+      (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
+        (setq rev (match-string 2 buffname)))
+      (setq next (vc-call-backend backend 'next-revision
+                                  filename rev))
       (kill-buffer prev-buffer)
       (if next
-          (switch-to-buffer
-           (vc-find-revision
-            (expand-file-name (cadr next) (vc-git-root dir))
-            (car next)))
+          (switch-to-buffer (vc-find-revision filename next))
         (find-file filename)
-        (user-error "magit timemachine: You have reached the end of time")))))
+        (user-error "vcgit timemachine: You have reached the end of time")))))
 ;;;###autoload
-(defun vc-git-prev-revision ()
-  "Visit the previous blob which modified the current file."
+(defun vcgit-prev-revision ()
+  "Visit the next blob which modified the current file."
   (interactive)
-  (let ((prev-buffer (current-buffer))
-        (filename buffer-file-name)
-        (dir default-directory)
-        rev next)
-    (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" filename)
-      (setq rev (match-string 2 filename))
-      (setq filename (match-string 1 filename))
-      (setq next (vc-blob-ancestor rev filename))
-      (if rev (kill-buffer prev-buffer)
-        (save-buffer))
-      (if next
-          (switch-to-buffer
-           (vc-find-revision
-            (expand-file-name (cadr next) (vc-git-root dir))
-            (car next)))
-        (find-file filename)
-        (user-error "magit timemachine: You have reached the beginning of time")))))
+  (let* ((buffname (buffer-name))
+         (prev-buffer (current-buffer))
+         (parent-buffer vc-parent-buffer)
+         (fileset-arg (vc-deduce-fileset nil t))
+         (backend (car fileset-arg))
+         (filename (car (cadr fileset-arg)))
+         rev next)
+    ;; FIXME: support other bankend for find rev?
+    (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
+      (setq rev (match-string 2 buffname)))
+    (if rev
+        (setq next (vc-call-backend backend 'previous-revision
+                                    filename rev))
+      (setq next (vc-short-revision filename)))
+    (when parent-buffer
+      (kill-buffer prev-buffer))
+    (if next
+        (switch-to-buffer (vc-find-revision filename next))
+      (find-file filename)
+      (user-error "vcgit timemachine: You have reached the beginning of time"))))
 
 ;;;###autoload
 (defun vc-remember-project()
@@ -384,7 +359,7 @@ return the rev and filepath of file."
 
 ;; copy from vc-git-log-view-mode
 ;;;###autoload
-(define-minor-mode vc-git-log-view-minor-mode
+(define-minor-mode vcgit-log-view-minor-mode
   "Git-Log-View-Minor"
   :keymap nil
   (require 'add-log) ;; We need the faces add-log.
@@ -427,10 +402,10 @@ return the rev and filepath of file."
 	    ("^summary:[ \t]+\\(.+\\)" (1 'log-view-message)))))))
 
 ;;;###autoload
-(defun vc-git-reflog ()
+(defun vcgit-reflog ()
   "Show git reflog in a new buffer with ANSI colors and custom keybindings."
   (interactive)
-  (let* ((buffer (get-buffer-create "*vc-git-reflog*")))
+  (let* ((buffer (get-buffer-create "*vcgit-reflog*")))
 	(with-current-buffer buffer
 	  (let ((inhibit-read-only t))
 	    (erase-buffer)
@@ -449,15 +424,15 @@ return the rev and filepath of file."
 
 
 ;;;###autoload
-(defun vc-git-print-remote-branch ()
+(defun vcgit-print-remote-branch ()
   (interactive)
-  (let ((branch (vc-git-current-branch)))
+  (let ((branch (vcgit-current-branch)))
     (vc-print-branch-log (cadr branch))))
 
 ;;;###autoload
-(defun vc-git-log-outgoing-sync (buffer remote-location)
+(defun vcgit-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)
-  (let ((branchinfo (vc-git-current-branch)))
+  (let ((branchinfo (vcgit-current-branch)))
     (when (and (car branchinfo) (nth 1 branchinfo))
       (apply #'vc-git-command buffer 0 nil
              `("log"
@@ -470,9 +445,9 @@ return the rev and filepath of file."
 	                      remote-location)
 	                    "..HEAD"))))))
 
-(defun vc-git-log-incoming-sync (buffer remote-location)
+(defun vcgit-log-incoming-sync (buffer remote-location)
   (vc-setup-buffer buffer)
-  (let ((branchinfo (vc-git-current-branch)))
+  (let ((branchinfo (vcgit-current-branch)))
     (when (and (car branchinfo) (nth 1 branchinfo))
       (vc-git-command nil 'async nil "fetch"
                       (unless (string= remote-location "")
@@ -521,7 +496,7 @@ return the rev and filepath of file."
 ;;;;;###autoload
 ;; (defun vc-git-print-log-unpulled ()
 ;;   (interactive)
-;;   (let* ((branch (vc-git-current-branch))
+;;   (let* ((branch (vcgit-current-branch))
 ;;          (remote (cadr branch))
 ;;          cnt vc-log-show-limit)
 ;;     (vc-git-command nil 0 nil "fetch" (nth 2 branch))
@@ -534,7 +509,7 @@ return the rev and filepath of file."
 ;;;;;###autoload
 ;; (defun vc-git-print-log-unpushed ()
 ;;   (interactive)
-;;   (let* ((branch (vc-git-current-branch))
+;;   (let* ((branch (vcgit-current-branch))
 ;;          (cnt (car (vc-rev-diff-count (car branch) (cadr branch))))
 ;;          (vc-log-show-limit cnt))
 ;;     (message "%d commits unpushed to: %s" cnt (cadr branch))
@@ -568,12 +543,20 @@ return the rev and filepath of file."
 
 ;; (defun vc-get-unpushed-count()
 ;;   "从git status OUTPUT中提取领先的提交数"
-;;   (let* ((branch (vc-git-current-branch))
+;;   (let* ((branch (vcgit-current-branch))
 ;;          (remote (cadr branch)))
 ;;     (if remote
 ;;         (car (vc-rev-diff-count (car branch) remote))
 ;;         -1)))
 
+;;;###autoload
+;; (defun vc-push-default(&optional args  )
+;;   (interactive)
+;;   (if (vcgit-svn-repos-p)
+;;       (vc-git--out-ok  "svn" "dcommit" args)
+;;     (if current-prefix-arg
+;;         (vc-git--pushpull "push" nil '("--force"))
+;;       (vc-git--pushpull "push" nil '("--force-with-lease")))))
 
 (provide 'lazy-version-control)
 
