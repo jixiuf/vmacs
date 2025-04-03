@@ -39,6 +39,7 @@
               wgrep-too-many-file-length 1
               wgrep-enable-key "C-c Ni"
               wgrep-change-readonly-file t)
+  (define-key grep-mode-map (kbd "C-c Ni") #'wgrep-change-to-wgrep-mode)
   (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
   (define-key wgrep-mode-map (kbd "C-c N/") #'consult-focus-lines)
   (define-key wgrep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
