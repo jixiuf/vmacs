@@ -17,7 +17,7 @@
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
 
 ;;;###autoload
-(defun vc-push-default(&optional args  _upstream)
+(defun vc-push-default(&optional args  )
   (interactive)
   (if (git-svn-repos-p)
       (vc-git--out-ok  "svn" "dcommit" args)
@@ -45,6 +45,10 @@
         (vc-git--pushpull "push" nil
                           `("--force-with-lease"
                             ,remote ,(format "%s:%s" branch remote-br)))))))
+(defun vc-push-tags ()
+  (interactive)
+  (vc-git--pushpull "push" nil '("--tags")))
+
 
 ;;;###autoload
 (defun vc-git-delete ()

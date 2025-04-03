@@ -41,6 +41,14 @@
   (kbd "f") #'vc-pull-default
   (kbd "a") #'vc-git-fetch-all
   (kbd "t") #'vc-git-fetch-tags)
+(defvar-keymap  vc-push-map
+  "v" #'vc-push-default
+  "o" #'vc-push-other
+  "t" #'vc-push-tags)
+(defvar-keymap  vc-tag-map
+  "t" #'vc-create-tag
+  "v" #'vc-push-tags
+  "d" #'vc-git-delete)
 
 (defvar-keymap  vc-r-map
   "i" #'vc-git-rebase-i                 ;in log view mode
@@ -78,35 +86,33 @@
 ;; ;git machine 的实现，顺序的遍历当前文件的历史
 (global-set-key (kbd "M-p") 'vc-git-prev-revision)
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
+(global-set-key (kbd "C-c vf") vc-fetch-map)
+(global-set-key (kbd "C-c vc") #'vc-next-action)
+(global-set-key (kbd "C-c vv") vc-push-map)
+(global-set-key (kbd "C-c vr") #'vc-revert)
+(global-set-key (kbd "C-c vl") #'vc-print-log)
+;; (global-set-key (kbd "C-c vl") #'magit-log-buffer-file)
+(global-set-key (kbd "C-c v.") vc-log-map)
+(global-set-key (kbd "C-c vg") #'vc-annotate)
+(global-set-key (kbd "C-c vd") #'vc-dir-root)
+(global-set-key (kbd "C-c v=") #'vc-diff)
+(global-set-key (kbd "C-c vh") #'vc-root-diff)
+(global-set-key (kbd "C-c =") #'vc-diff)
+;; (global-set-key (kbd "C-c +") #'vc-ediff)
+(global-set-key (kbd "C-c vb") vc-branch-map)
+(global-set-key (kbd "C-c vt") vc-tag-map)
 
-(vmacs-leader (kbd "vf") vc-fetch-map)
-(vmacs-leader (kbd "vc") #'vc-next-action)
-(vmacs-leader (kbd "vv") #'vc-push-default)
-(vmacs-leader (kbd "vo") #'vc-push-other)
-(vmacs-leader (kbd "vr") #'vc-revert)
-(vmacs-leader (kbd "vl") #'vc-print-log)
-;; (vmacs-leader (kbd "vl") #'magit-log-buffer-file)
-(vmacs-leader (kbd "v.") vc-log-map)
-(vmacs-leader (kbd "vg") #'vc-annotate)
-(vmacs-leader (kbd "vd") #'vc-dir-root)
-(vmacs-leader (kbd "v=") #'vc-diff)
-(vmacs-leader (kbd "vh") #'vc-root-diff)
-(vmacs-leader (kbd "=") #'vc-diff)
-;; (vmacs-leader (kbd "+") #'vc-ediff)
-(vmacs-leader (kbd "vb") vc-branch-map)
-(vmacs-leader (kbd "vt") #'vc-create-tag)
+(global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
+(global-set-key (kbd "C-c vk") #'magit-status) ;like dired-jump
+(global-set-key (kbd "C-c vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
+(global-set-key (kbd "C-c vs") #'vc-git-stage)
+(global-set-key (kbd "C-c vu") #'vc-git-unstage)
+;; (global-set-key (kbd "C-c ve") #'magit-commit-extend)
+;; (global-set-key (kbd "C-c va") #'magit-commit-amend)
 
-(vmacs-leader (kbd "vj") #'vc-dir-root) ;like dired-jump
-(vmacs-leader (kbd "vk") #'magit-status) ;like dired-jump
-(vmacs-leader (kbd "vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
-(vmacs-leader (kbd "vs") #'vc-git-stage)
-(vmacs-leader (kbd "vu") #'vc-git-unstage)
-;; (vmacs-leader (kbd "ve") #'magit-commit-extend)
-;; (vmacs-leader (kbd "va") #'magit-commit-amend)
-
-(vmacs-leader (kbd "vz") #'vc-git-stash)
+(global-set-key (kbd "C-c vz") #'vc-git-stash)
 (with-eval-after-load 'vc-git
-  (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply)
+  (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply) ;my a for meow-motion
   (define-key vc-git-stash-shared-map (kbd "d") #'vc-git-stash-show-at-point)
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
   (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply-at-point)
@@ -117,7 +123,7 @@
   (define-key vc-dir-mode-map (kbd "M-n") #'vc-dir-next-directory)
   (define-key vc-dir-mode-map (kbd "M-p") #'vc-dir-previous-directory)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
-  (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map)
+  (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map) ;my q for meow-motion
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
   (define-key vc-dir-mode-map (kbd "s") #'vc-git-stage) ;for --continue
@@ -129,17 +135,16 @@
   (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
-  (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd
+  (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd for meow-motion
   (define-key vc-dir-mode-map (kbd "i") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
   (keymap-unset vc-dir-mode-map "v" t)
-  (define-key vc-dir-mode-map (kbd "vv") #'vc-push-default)
-  (define-key vc-dir-mode-map (kbd "vo") #'vc-push-other)
-  (define-key vc-dir-mode-map (kbd "tt") #'vc-create-tag)
-  (define-key vc-dir-mode-map (kbd "td") #'vc-git-delete)
-  (define-key vc-dir-mode-map (kbd "C-c Gr") #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
+  (define-key vc-dir-mode-map (kbd "v") vc-push-map)
+  (define-key vc-dir-mode-map (kbd "t") vc-tag-map)
+  (define-key vc-dir-mode-map (kbd "C-c Gr") ;gr for meow-motion
+              #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
   (require 'vc-git)
-  (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map))
+  (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)) ;z for meow-motion
 
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)
@@ -187,18 +192,14 @@
                                                     (count-lines (point-min)
                                                                  (point-max)))
                                              'face 'vc-dir-header)))
-          ;; (print (buffer-substring (point-min)
-          ;;                                                     (save-excursion
-          ;;                                                       (goto-char (point-min))
-          ;;                                                       (forward-line 5)
-          ;;                                                       (point))))
           (setq msg (concat msg (propertize (buffer-substring (point-min)
                                                               (save-excursion
                                                                 (goto-char (point-min))
                                                                 (forward-line 5)
                                                                 (point)))
                                             'keymap log-view-mode-map
-                                            ) "\n"))))
+                                            )
+                            "\n"))))
 
       (with-temp-buffer
         (vc-git-log-incoming-sync (current-buffer) "")
@@ -215,7 +216,7 @@
                                             'keymap log-view-mode-map
                                             ) "\n"))))
       msg)))
- 
+
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
@@ -228,11 +229,11 @@
   (define-key log-view-mode-map (kbd "f") vc-fetch-map)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)
-  (define-key log-view-mode-map (kbd "o") #'vc-push-other)
-  (define-key log-view-mode-map (kbd "v") #'vc-push-default)
-  (define-key log-view-mode-map (kbd "c") #'vc-switch-project)
+  (define-key log-view-mode-map (kbd "v") vc-push-map)
+  (define-key log-view-mode-map (kbd "i") #'vc-switch-project)
   (define-key log-view-mode-map (kbd "r") vc-r-map)
   (define-key log-view-mode-map (kbd "x") #'vc-git-reset)
+  (define-key log-view-mode-map (kbd "t") vc-tag-map)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
@@ -253,6 +254,7 @@
   (add-hook 'diff-mode-hook #'outline-minor-mode)
   (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
+  (define-key diff-mode-shared-map (kbd "v") vc-push-map)
   )
 (add-hook 'vc-dir-mode-hook #'vc-remember-project)
 
