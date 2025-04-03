@@ -301,49 +301,6 @@ This prompts for a branch to merge from."
     (list branch remote-branch remote tracking-branch)))
 
 ;;;###autoload
-(defun vc-git-print-remote-branch ()
-  (interactive)
-  (let ((branch (vc-git-current-branch)))
-    (vc-print-branch-log (cadr branch))))
-
-;;;###autoload
-(defun vc-git-log-outgoing-sync (buffer remote-location)
-  (vc-setup-buffer buffer)
-  (let ((branchinfo (vc-git-current-branch)))
-    (when (and (car branchinfo) (nth 1 branchinfo))
-      (apply #'vc-git-command buffer 0 nil
-             `("log"
-               "--no-color" "--graph" "--decorate" "--date=short"
-               ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-               "--abbrev-commit"
-               ,@(ensure-list vc-git-shortlog-switches)
-               ,(concat (if (string= remote-location "")
-	                        "@{upstream}"
-	                      remote-location)
-	                    "..HEAD"))))))
-
-(defun vc-git-log-incoming-sync (buffer remote-location)
-  (vc-setup-buffer buffer)
-  (let ((branchinfo (vc-git-current-branch)))
-    (when (and (car branchinfo) (nth 1 branchinfo))
-      (vc-git-command nil 'async nil "fetch"
-                      (unless (string= remote-location "")
-                        ;; `remote-location' is in format "repository/branch",
-                        ;; so remove everything except a repository name.
-                        (replace-regexp-in-string
-                         "/.*" "" remote-location)))
-      (apply #'vc-git-command buffer 0 nil
-             `("log"
-               "--no-color" "--graph" "--decorate" "--date=short"
-               ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-               "--abbrev-commit"
-               ,@(ensure-list vc-git-shortlog-switches)
-               ,(concat "HEAD.." (if (string= remote-location "")
-			                         "@{upstream}"
-		                           remote-location)))))))
-
-
-;;;###autoload
 (defun vc-switch-project()
   (interactive)
   (require 'project)
@@ -480,13 +437,58 @@ return the rev and filepath of file."
 	    (vc-git-command buffer nil nil
 					    "reflog"
 					    "--color=always"
-					    "--pretty=format:%C(yellow)%h%Creset %C(auto)%d%Creset %Cgreen%gd%Creset %s %Cblue(%cr)%Creset")
+                        "--date=format:%y-%m-%d %H:%M:%S"
+               ;; ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+               "--pretty=format:%C(yellow)%h%Creset %C(cyan)%an%Creset %C(auto)%d%Creset %Cgreen%gd%Creset %s ")
 	    (goto-char (point-min))
 	    (ansi-color-apply-on-region (point-min) (point-max)))
 	  (setq buffer-read-only t)
 	  (setq mode-name "Git-Reflog")
 	  (setq major-mode 'special-mode))
     (pop-to-buffer buffer)))
+
+
+;;;###autoload
+(defun vc-git-print-remote-branch ()
+  (interactive)
+  (let ((branch (vc-git-current-branch)))
+    (vc-print-branch-log (cadr branch))))
+
+;;;###autoload
+(defun vc-git-log-outgoing-sync (buffer remote-location)
+  (vc-setup-buffer buffer)
+  (let ((branchinfo (vc-git-current-branch)))
+    (when (and (car branchinfo) (nth 1 branchinfo))
+      (apply #'vc-git-command buffer 0 nil
+             `("log"
+               "--no-color" "--graph" "--decorate" "--date=short"
+               ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+               "--abbrev-commit"
+               ,@(ensure-list vc-git-shortlog-switches)
+               ,(concat (if (string= remote-location "")
+	                        "@{upstream}"
+	                      remote-location)
+	                    "..HEAD"))))))
+
+(defun vc-git-log-incoming-sync (buffer remote-location)
+  (vc-setup-buffer buffer)
+  (let ((branchinfo (vc-git-current-branch)))
+    (when (and (car branchinfo) (nth 1 branchinfo))
+      (vc-git-command nil 'async nil "fetch"
+                      (unless (string= remote-location "")
+                        ;; `remote-location' is in format "repository/branch",
+                        ;; so remove everything except a repository name.
+                        (replace-regexp-in-string
+                         "/.*" "" remote-location)))
+      (apply #'vc-git-command buffer 0 nil
+             `("log"
+               "--no-color" "--graph" "--decorate" "--date=short"
+               ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+               "--abbrev-commit"
+               ,@(ensure-list vc-git-shortlog-switches)
+               ,(concat "HEAD.." (if (string= remote-location "")
+			                         "@{upstream}"
+		                           remote-location)))))))
 
 
 ;; c-xvl列出当前文件的历史版本
