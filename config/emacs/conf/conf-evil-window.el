@@ -194,6 +194,7 @@
                         " *transient*"
                         "*Org Agenda*"
                         "*vc-change-log*"
+                        "*vc-search-log*"
                         "*Help*"
                         "*vc-diff*"
                         "*vc-log*"
