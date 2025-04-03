@@ -65,6 +65,8 @@
 (defvar-keymap  vc-log-map
   "." #'vc-print-root-log
   "b" #'vc-print-branch-log
+  "s" #'vc-log-search
+  "m" #'vc-log-mergebase
   "i" #'vc-log-incoming ;unpulled, 很少用的，已经将其插入到vc-dir中的
   "o" #'vc-log-outgoing ;unpushed, 很少用的，已经将其插入到vc-dir中的
   "r" #'vc-git-print-remote-branch)     ;log 肖前追踪的remote branch
