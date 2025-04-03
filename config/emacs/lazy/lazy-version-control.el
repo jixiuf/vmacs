@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require  'vc)
+  (require 'project)
   (require  'vc-git)
   (require  'vc-dir))
 
@@ -467,6 +468,27 @@ return the rev and filepath of file."
 	     (2 'change-log-acknowledgment))
 	    ("^\\(?:Date:   \\|AuthorDate: \\|CommitDate: \\)\\(.+\\)" (1 'change-log-date))
 	    ("^summary:[ \t]+\\(.+\\)" (1 'log-view-message)))))))
+
+;;;###autoload
+(defun vc-git-reflog ()
+  "Show git reflog in a new buffer with ANSI colors and custom keybindings."
+  (interactive)
+  (let* ((buffer (get-buffer-create "*vc-git-reflog*")))
+	(with-current-buffer buffer
+	  (let ((inhibit-read-only t))
+	    (erase-buffer)
+	    (vc-git-command buffer nil nil
+					    "reflog"
+					    "--color=always"
+					    "--pretty=format:%C(yellow)%h%Creset %C(auto)%d%Creset %Cgreen%gd%Creset %s %Cblue(%cr)%Creset")
+	    (goto-char (point-min))
+	    (ansi-color-apply-on-region (point-min) (point-max)))
+	  (setq buffer-read-only t)
+	  (setq mode-name "Git-Reflog")
+	  (setq major-mode 'special-mode))
+    (pop-to-buffer buffer)))
+
+
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
 ;; 使用方法在你在比较的两个版本中分别用m标记一下

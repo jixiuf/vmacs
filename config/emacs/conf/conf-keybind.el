@@ -204,6 +204,7 @@
 (vmacs-leader (kbd "l") 'ibuffer)
 (vmacs-leader (kbd "j") 'dired-jump)
 (vmacs-leader (kbd "k") 'dired-jump)
+;; (vmacs-leader "k" ctl-x-r-map)
 ;; (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 ;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "u") 'backward-up-list)
@@ -212,7 +213,6 @@
 (vmacs-leader (kbd "wl") #'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "p" 'list-packages)
-(vmacs-leader "k" ctl-x-r-map)
 
 (defun vmacs-bury-boring-windows ()
   (when (active-minibuffer-window)

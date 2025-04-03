@@ -74,6 +74,7 @@
   "." #'vc-print-root-log
   "b" #'vc-print-branch-log
   "s" #'vc-log-search
+  "e" #'vc-git-reflog
   "m" #'vc-log-mergebase
   "i" #'vc-log-incoming ;unpulled, 很少用的，已经将其插入到vc-dir中的
   "o" #'vc-log-outgoing ;unpushed, 很少用的，已经将其插入到vc-dir中的
@@ -86,6 +87,9 @@
 ;; ;git machine 的实现，顺序的遍历当前文件的历史
 (global-set-key (kbd "M-p") 'vc-git-prev-revision)
 (global-set-key (kbd "M-n") 'vc-git-next-revision)
+(global-set-key (kbd "C-c vd") #'magit-status)
+(global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
+(global-set-key (kbd "C-c vk") #'vc-dir-root) ;like dired-jump
 (global-set-key (kbd "C-c vf") vc-fetch-map)
 (global-set-key (kbd "C-c vc") #'vc-next-action)
 (global-set-key (kbd "C-c vv") vc-push-map)
@@ -94,7 +98,6 @@
 ;; (global-set-key (kbd "C-c vl") #'magit-log-buffer-file)
 (global-set-key (kbd "C-c v.") vc-log-map)
 (global-set-key (kbd "C-c vg") #'vc-annotate)
-(global-set-key (kbd "C-c vd") #'vc-dir-root)
 (global-set-key (kbd "C-c v=") #'vc-diff)
 (global-set-key (kbd "C-c vh") #'vc-root-diff)
 (global-set-key (kbd "C-c =") #'vc-diff)
@@ -102,8 +105,6 @@
 (global-set-key (kbd "C-c vb") vc-branch-map)
 (global-set-key (kbd "C-c vt") vc-tag-map)
 
-(global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
-(global-set-key (kbd "C-c vk") #'magit-status) ;like dired-jump
 (global-set-key (kbd "C-c vp") #'vc-push-default) ;support git svn dcommit if this is a svn repos
 (global-set-key (kbd "C-c vs") #'vc-git-stage)
 (global-set-key (kbd "C-c vu") #'vc-git-unstage)
