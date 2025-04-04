@@ -323,27 +323,25 @@ This prompts for a branch to merge from."
         (user-error "vcgit timemachine: You have reached the end of time")))))
 ;;;###autoload
 (defun vcgit-prev-revision ()
-  "Visit the next blob which modified the current file."
+  "Visit the prev blob which modified the current file."
   (interactive)
   (let* ((buffname (buffer-name))
-         (prev-buffer (current-buffer))
+         (cur-buffer (current-buffer))
          (parent-buffer vc-parent-buffer)
          (fileset-arg (vc-deduce-fileset nil t))
          (backend (car fileset-arg))
          (filename (car (cadr fileset-arg)))
-         rev next)
+         rev prev)
     ;; FIXME: support other bankend for find rev?
     (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
       (setq rev (match-string 2 buffname)))
     (if rev
-        (setq next (vc-call-backend backend 'previous-revision
+        (setq prev (vc-call-backend backend 'previous-revision
                                     filename rev))
-      (setq next (vc-short-revision filename)))
-    (when parent-buffer
-      (kill-buffer prev-buffer))
-    (if next
-        (switch-to-buffer (vc-find-revision filename next))
-      (find-file filename)
+      (setq prev (vc-short-revision filename)))
+    (if prev
+        (progn  (switch-to-buffer (vc-find-revision filename prev))
+                (when parent-buffer (kill-buffer cur-buffer)))
       (user-error "vcgit timemachine: You have reached the beginning of time"))))
 
 ;;;###autoload
