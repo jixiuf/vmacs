@@ -5,8 +5,8 @@
   (require  'vc-git)
   (require  'vc-dir))
 
-(unless (fboundp 'vcgit-current-branch)
-  (defun vcgit-current-branch ()
+(unless (fboundp 'vc-git--current-branch)
+  (defun vc-git--current-branch ()
     (let ((str (vc-git--out-str "symbolic-ref" "HEAD")))
       (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
 	    (match-string 2 str)
