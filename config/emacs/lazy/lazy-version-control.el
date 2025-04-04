@@ -9,13 +9,13 @@
   (defun vcgit-current-branch ()
     (let ((str (vc-git--out-str "symbolic-ref" "HEAD")))
       (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
-	    (setq branch (match-string 2 str))
+	    (match-string 2 str)
         ))))
 
 
 
 ;;;###autoload
-(defun vcgit-push-other(&optional args)
+(defun vcgit-push-other()
   (interactive)
   (let* ((br (vcgit-current-branch))
          (branch (vc-read-revision
@@ -101,7 +101,7 @@
     (if current-prefix-arg
         (vc-git--pushpull "fetch" nil '("--all" "--tags"))
       (vc-git--pushpull "pull" nil '("--rebase" "--stat")))))
-(defun vcgit-svn-repos-p(&optional dir)
+(defun vcgit-svn-repos-p()
   (let ((topdir (vc-root-dir)))
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
 
@@ -150,8 +150,8 @@
       (revert-buffer))))
 
 ;;;###autoload
-(defun vcgit-revert-commit (&optional args)
-  (interactive "P")
+(defun vcgit-revert-commit ()
+  (interactive )
   (let* ((commit (log-view-current-tag (point))))
     (when (and commit
                (y-or-n-p (format
@@ -160,8 +160,8 @@
       (vc-git-command nil 0 nil "revert" commit))))
 
 ;;;###autoload
-(defun vcgit-rebase-i (&optional args)
-  (interactive "P")
+(defun vcgit-rebase-i ()
+  (interactive)
   (let* ((root (vc-git-root default-directory))
          (commit (log-view-current-tag (point)))
 	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
@@ -229,8 +229,8 @@
       (vc-git-command nil 'async nil "cherry-pick" "--abort"))))
 
 ;;;###autoload
-(defun vcgit-cherry-pick-commit (&optional args)
-  (interactive "P")
+(defun vcgit-cherry-pick-commit ()
+  (interactive )
   (let* ((commit (log-view-current-tag (point))))
     (if commit
         (vc-git-command nil 0 nil "cherry-pick" commit)
