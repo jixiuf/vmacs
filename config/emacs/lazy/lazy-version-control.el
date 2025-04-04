@@ -6,23 +6,48 @@
   (require  'vc-dir))
 
 (unless (fboundp 'vc-git--current-branch)
+  (defun vc-git--out-match (args regexp group)
+    "Run `git ARGS...' and return match for group number GROUP of REGEXP.
+Return nil if the output does not match.  The exit status is ignored."
+    (let ((out (apply #'vc-git--out-str args)))
+      (when (string-match regexp out)
+        (match-string group out))))
   (defun vc-git--current-branch ()
-    (let ((str (vc-git--out-str "symbolic-ref" "HEAD")))
-      (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
-	    (match-string 2 str)
-        ))))
+    (vc-git--out-match '("symbolic-ref" "HEAD")
+                       "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
 
+(defun vc-git--branch-remote (&optional branch)
+  "return remote name tracking branch or `.' means tracking local branch "
+  (let ((br (or branch (vc-git--current-branch))))
+    (vc-git--out-match
+     `("config" ,(concat "branch." br ".remote"))
+     "\\([^\n]+\\)" 1)))
+
+(defun vc-git--branch-merge (&optional branch)
+  "return remote branch name for merge "
+  (let ((br (or branch (vc-git--current-branch))))
+    (vc-git--out-match
+     `("config" ,(concat "branch." br ".merge"))
+     "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
+
+(defun vc-git--tracking-branch (&optional branch remote-name)
+  (when-let* ((br (or branch (vc-git--current-branch)))
+              (branch-merge (vc-git--branch-merge br))
+              (branch-remote (vc-git--branch-remote br)))
+    (unless (string= branch-remote ".")
+      (concat branch-remote "/" branch-merge))))
 
 
 ;;;###autoload
 (defun vcgit-push-other()
   (interactive)
-  (let* ((br (vcgit-current-branch))
+  (let* ((br (vc-git--current-branch))
          (branch (vc-read-revision
                   (if current-prefix-arg "Push(--force) : "
                     "Push : ")
-                  nil nil (car br)))
-         (remote-br (vc-read-revision "To: " nil nil (nth 1 br)))
+                  nil nil br))
+         (remote-br (vc-read-revision "To: " nil nil
+                                      (vc-git--tracking-branch br)))
          remote)
     (when (string-match "^\\(.+?\\)/\\(.+\\)$" remote-br)
       (setq remote (match-string 1 remote-br))
@@ -271,28 +296,6 @@ This prompts for a branch to merge from."
     (with-current-buffer buffer (vc-run-delayed (vc-compilation-mode 'git)))
     (vc-set-async-update buffer)))
 
-;; fork from vc-git-dir-extra-headers
-(defun vcgit-current-branch ()
-  "return current local branch and remote tracking-branch"
-  (let ((str (vc-git--out-str "symbolic-ref" "HEAD"))
-	    branch  remote  tracking-branch remote-branch)
-    (when(string-match "^\\(refs/heads/\\)?\\(.+\\)$" str)
-	  (setq branch (match-string 2 str))
-      (setq remote (vc-git--out-str
-                    "config" (concat "branch." branch ".remote")))
-      (let ((merge (vc-git--out-str
-                    "config" (concat "branch." branch ".merge"))))
-        (when (string-match "\\([^\n]+\\)" remote)
-	      (setq remote (match-string 1 remote)))
-        (when (string-match "^\\(refs/heads/\\)?\\(.+\\)$" merge)
-          (setq tracking-branch (match-string 2 merge)))
-        (pcase remote
-          ("." (setq remote ""))
-          ((pred (not string-empty-p))
-           (setq remote-branch (concat remote "/" tracking-branch))))))
-    ;; ("master" "origin/master" "origin" "master")
-    (list branch remote-branch remote tracking-branch)))
-
 ;;;###autoload
 (defun vc-switch-project()
   (interactive)
@@ -416,14 +419,13 @@ This prompts for a branch to merge from."
 ;;;###autoload
 (defun vcgit-print-remote-branch ()
   (interactive)
-  (let ((branch (vcgit-current-branch)))
-    (vc-print-branch-log (cadr branch))))
+  (let ((branch (vc-git--tracking-branch)))
+    (vc-print-branch-log branch)))
 
 ;;;###autoload
 (defun vcgit-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)
-  (let ((branchinfo (vcgit-current-branch)))
-    (when (and (car branchinfo) (nth 1 branchinfo))
+  (when (vc-git--tracking-branch)
       (apply #'vc-git-command buffer 0 nil
              `("log"
                "--no-color" "--graph" "--decorate" "--date=short"
@@ -433,27 +435,26 @@ This prompts for a branch to merge from."
                ,(concat (if (string= remote-location "")
 	                        "@{upstream}"
 	                      remote-location)
-	                    "..HEAD"))))))
+	                    "..HEAD")))))
 
 (defun vcgit-log-incoming-sync (buffer remote-location)
   (vc-setup-buffer buffer)
-  (let ((branchinfo (vcgit-current-branch)))
-    (when (and (car branchinfo) (nth 1 branchinfo))
-      (vc-git-command nil 'async nil "fetch"
-                      (unless (string= remote-location "")
-                        ;; `remote-location' is in format "repository/branch",
-                        ;; so remove everything except a repository name.
-                        (replace-regexp-in-string
-                         "/.*" "" remote-location)))
-      (apply #'vc-git-command buffer 0 nil
-             `("log"
-               "--no-color" "--graph" "--decorate" "--date=short"
-               ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-               "--abbrev-commit"
-               ,@(ensure-list vc-git-shortlog-switches)
-               ,(concat "HEAD.." (if (string= remote-location "")
-			                         "@{upstream}"
-		                           remote-location)))))))
+  (when (vc-git--tracking-branch)
+    (vc-git-command nil 'async nil "fetch"
+                    (unless (string= remote-location "")
+                      ;; `remote-location' is in format "repository/branch",
+                      ;; so remove everything except a repository name.
+                      (replace-regexp-in-string
+                       "/.*" "" remote-location)))
+    (apply #'vc-git-command buffer 0 nil
+           `("log"
+             "--no-color" "--graph" "--decorate" "--date=short"
+             ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+             "--abbrev-commit"
+             ,@(ensure-list vc-git-shortlog-switches)
+             ,(concat "HEAD.." (if (string= remote-location "")
+			                       "@{upstream}"
+		                         remote-location))))))
 
 ;; got from https://www.rahuljuliato.com/posts/vc-git-functions
 (defun vc-diff-on-current-hunk ()
