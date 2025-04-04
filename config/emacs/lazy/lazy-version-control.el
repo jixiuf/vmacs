@@ -469,6 +469,7 @@ This prompts for a branch to merge from."
        ((eq vc-log-view-type 'outgoing)
         (vc-log-outgoing)))
       (vc-run-delayed
+        (sit-for 0.01)
         (let ((lines (count-lines (point-min) (point-max))))
           (unless (zerop lines)
             (setq header (vcgit-format-header header-name limit lines))))
