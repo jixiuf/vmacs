@@ -172,19 +172,20 @@
       (setq msg (string-trim-left msg "VC backend : Git\n")) ;
       ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
       (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
-      (when (file-exists-p
-	         (expand-file-name "rebase-apply/applying" gitdir))
-        (setq msg (concat msg (propertize  "\nApply     : in progress"
-                                           'face 'vc-dir-status-warning))))
-      (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
-        (setq msg (concat msg (propertize  "\nMerge     : in progress"
-                                           'face 'vc-dir-status-warning))))
-      (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
-        (setq msg (concat msg (propertize  "\nRevert     : in progress"
-                                           'face 'vc-dir-status-warning))))
-      (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
-        (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
-                                           'face 'vc-dir-status-warning))))
+      (when (< emacs-major-version 31)
+        (when (file-exists-p
+	           (expand-file-name "rebase-apply/applying" gitdir))
+          (setq msg (concat msg (propertize  "\nApply     : in progress"
+                                             'face 'vc-dir-status-warning))))
+        (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+          (setq msg (concat msg (propertize  "\nMerge     : in progress"
+                                             'face 'vc-dir-status-warning))))
+        (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+          (setq msg (concat msg (propertize  "\nRevert     : in progress"
+                                             'face 'vc-dir-status-warning))))
+        (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+          (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
+                                             'face 'vc-dir-status-warning)))))
       (require 'log-view)               ;for log-view-mode-map
       (with-temp-buffer
         (vcgit-log-outgoing-sync (current-buffer) "")
@@ -219,11 +220,6 @@
       msg)))
 
 
-;; c-xvl列出当前文件的历史版本
-;; 此函数可以对各个历史版本进行比较
-;; 使用方法在你在比较的两个版本中分别用m标记一下
-;; 然后调用此函数即可
-;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
 (with-eval-after-load 'log-view
   (require 'vc-dir)
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
@@ -238,16 +234,6 @@
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
-  ;; log-view-diff 默认绑定在=上
-  ;; (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
-  ;;   (let (pos1 pos2 (marked-entities (log-view-get-marked)))
-  ;;     (if (= (length marked-entities) 2)
-  ;;         (progn
-  ;;           (setq pos1 (progn (log-view-goto-rev (car marked-entities)) (point)))
-  ;;           (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities)) (point)))
-  ;;           (apply orig-fun (if (< pos1 pos2) (list pos1 pos2) (list pos2 pos1)) )
-  ;;           )
-  ;;       (apply orig-fun args))))
   )
 (with-eval-after-load 'diff-mode
   ;; (define-key diff-mode-shared-map (kbd "s") #'vcgit-stage)
@@ -271,15 +257,6 @@
                                   (format "L%s-%s" start end)
                                 (format "L%s" start))))))))
 
-;; 下面的vc-run-delayed 用法挺好的，可以等待buffer中的进程结束后再执行代码
-;; (define-advice vc-dir-root (:after (&rest _) commits-behind)
-;;   (let ((buffer (get-buffer-create "*vc-commits-behind*")))
-;;     (vc-call-backend (vc-deduce-backend) 'log-incoming  buffer "")
-;;     (vc-run-delayed
-;;       (with-current-buffer buffer
-;;         (let ((lines (count-lines (point-min) (point-max))))
-;;           (unless (zerop lines)
-;;             (display-warning :warning (format "%s commits behind" lines))))))))
 
 ;;有一个旧的文件a , 你编辑了a将这个编辑后的文件命令为b
 ;;现在想生成一个补丁文件,将这个补丁文件应用到a 上,就会变成b
@@ -537,6 +514,30 @@
 ;; +            合并A B 的当前 difference region
 ;; =           启用一个新的子会话对当前difference region进行对比
 
+;; log-view-diff 默认绑定在=上
+;; c-xvl列出当前文件的历史版本
+;; 此函数可以对各个历史版本进行比较
+;; 使用方法在你在比较的两个版本中分别用m标记一下
+;; 然后调用此函数即可
+;;;; log-view-diff  "如果mark了两个entity ,则对此mark的进行对比"
+;; (define-advice log-view-diff (:around (orig-fun &rest args) diff-marked-two-entity)
+;;   (let (pos1 pos2 (marked-entities (log-view-get-marked)))
+;;     (if (= (length marked-entities) 2)
+;;         (progn
+;;           (setq pos1 (progn (log-view-goto-rev (car marked-entities)) (point)))
+;;           (setq pos2 (progn (log-view-goto-rev (nth 1 marked-entities)) (point)))
+;;           (apply orig-fun (if (< pos1 pos2) (list pos1 pos2) (list pos2 pos1)) )
+;;           )
+;;       (apply orig-fun args))))
+;; 下面的vc-run-delayed 用法挺好的，可以等待buffer中的进程结束后再执行代码
+;; (define-advice vc-dir-root (:after (&rest _) commits-behind)
+;;   (let ((buffer (get-buffer-create "*vc-commits-behind*")))
+;;     (vc-call-backend (vc-deduce-backend) 'log-incoming  buffer "")
+;;     (vc-run-delayed
+;;       (with-current-buffer buffer
+;;         (let ((lines (count-lines (point-min) (point-max))))
+;;           (unless (zerop lines)
+;;             (display-warning :warning (format "%s commits behind" lines))))))))
 
 (provide 'conf-version-control)
 
