@@ -122,8 +122,9 @@
   (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
-  (define-key vc-dir-mode-map (kbd "M-n") #'vc-dir-next-directory)
-  (define-key vc-dir-mode-map (kbd "M-p") #'vc-dir-previous-directory)
+  (define-key vc-dir-mode-map (kbd "M-n") #'outline-forward-same-level)
+  (define-key vc-dir-mode-map (kbd "M-p") #'outline-backward-same-level)
+  (define-key vc-dir-mode-map (kbd "C-i") #'outline-cycle)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map) ;my q for meow-motion
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
@@ -189,8 +190,14 @@
       (require 'log-view)               ;for log-view-mode-map
       msg)))
 
+(defun vc-dir--outline-level ()
+  1)
 
 (defun vc-insert-header()
+  (setq-local outline-regexp "\\(^ +\\./$\\)\\|\\(^[^* \t\n].*$\\)")
+  (setq-local outline-level #'vc-dir--outline-level)
+
+  (outline-minor-mode)
   (let ((buf (current-buffer)))
     (vcgit-log-incoming-outgoing 'outgoing "Unpushed" 3 buf)
     (vcgit-log-incoming-outgoing 'incoming "Unpulled" 3 buf)
