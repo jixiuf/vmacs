@@ -477,6 +477,7 @@ This prompts for a branch to merge from."
             (delete-window win))
           (switch-to-buffer oldbuf)
           (vc-append-header header)
+          (kill-buffer buffer)
           )))))
 
 (defun vcgit--log-incoming (buffer &optional remote-location)
