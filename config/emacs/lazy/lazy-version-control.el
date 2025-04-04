@@ -428,54 +428,61 @@ This prompts for a branch to merge from."
   (let ((branch (vc-git--tracking-branch)))
     (vc-print-branch-log branch)))
 
-(defun vcgit-log-header (func header limit)
-  (with-temp-buffer
-    (funcall func (current-buffer) "")
-    (if (= (point-max)(point-min))
-        ""
-      (concat (propertize  (format"%s(%d):\n" header
-                                  (count-lines (point-min)
-                                               (point-max)))
-                           'face 'vc-dir-header)
-              (propertize (buffer-substring (point-min)
-                                            (save-excursion
-                                              (goto-char (point-min))
-                                              (if limit
-                                                  (forward-line limit)
-                                                (goto-char (point-max)))
-                                              (point)))
-                          'keymap log-view-mode-map)
-              "\n"))))
-
 ;;;###autoload
-(defun vcgit-log-outgoing-sync (buffer remote-location)
-  (vc-setup-buffer buffer)
-  (when (vc-git--tracking-branch)
-    (vc-git-log-outgoing buffer remote-location)
-    (with-current-buffer buffer
-      (vc-wait-for-processes (get-buffer-process buffer) 3)
-      (buffer-string))))
-(vcgit-log-outgoing-sync "*scratch*" "")
-(vc-git-log-outgoing "*scratch*" "")
-(defun vc-wait-for-processes (&optional procs timeout)
+(defun vcgit-log-header (func header limit buf)
+  (let ((inhibit-redisplay t)
+        (display-buffer-alist
+         '((t (display-buffer-no-window )))))
+    (save-window-excursion
+      (funcall func buf))
+    (with-current-buffer buf
+      (if (= (point-max)(point-min))
+          ""
+        (concat (propertize  (format"%s(%d):\n" header
+                                    (count-lines (point-min)
+                                                 (point-max)))
+                             'face 'vc-dir-header)
+                (propertize (buffer-substring (point-min)
+                                              (save-excursion
+                                                (goto-char (point-min))
+                                                (if limit
+                                                    (forward-line limit)
+                                                  (goto-char (point-max)))
+                                                (point)))
+                            'keymap log-view-mode-map)
+                "\n")))))
+
+(defun vc-wait-for-processes (&optional proc timeout)
   "Wait until PROCS have completed execution.
 If TIMEOUT is non-nil, wait at most that many seconds.  Return non-nil
-if all the processes finished executing before the timeout expired."
+if process finished executing before the timeout expired."
   (let ((expiration (when timeout (time-add (current-time) timeout))))
     (catch 'timeout
-      (dolist (proc procs)
-        (while (if (processp proc)
-                   (process-live-p proc)
-                 (process-attributes proc))
-          (when (input-pending-p)
-            (discard-input))
-          (when (and expiration
-                     (not (time-less-p (current-time) expiration)))
-            (throw 'timeout nil))
-          (sit-for 0.05)))
+      (while (process-live-p proc)
+        (when (input-pending-p)
+          (discard-input))
+        (when (and expiration
+                   (not (time-less-p (current-time) expiration)))
+          (throw 'timeout nil))
+        (sit-for 0.05))
       t)))
 
-(defun vcgit-log-incoming-sync (buffer remote-location)
+;;;###autoload
+(defun vcgit-log-outgoing (buffer &optional remote-location)
+  (when (vc-git--tracking-branch)
+    (vc-log-outgoing (or remote-location ""))
+    (with-current-buffer buffer
+      (vc-wait-for-processes (get-buffer-process buffer))
+      (buffer-string))))
+
+(defun vcgit-log-incoming (buffer &optional remote-location)
+  (when (vc-git--tracking-branch)
+    (vc-log-incoming (or remote-location ""))
+    (with-current-buffer buffer
+      (vc-wait-for-processes (get-buffer-process buffer))
+      (buffer-string))))
+
+(defun vcgit--log-incoming (buffer &optional remote-location)
   (vc-setup-buffer buffer)
   (when (vc-git--tracking-branch)
     (vc-git-command nil 'async nil "fetch"
@@ -493,6 +500,9 @@ if all the processes finished executing before the timeout expired."
              ,(concat "HEAD.." (if (string= remote-location "")
 			                       "@{upstream}"
 		                         remote-location))))))
+
+(advice-add 'vc-git-log-incoming :override 'vcgit--log-incoming)
+
 
 ;; got from https://www.rahuljuliato.com/posts/vc-git-functions
 (defun vc-diff-on-current-hunk ()
