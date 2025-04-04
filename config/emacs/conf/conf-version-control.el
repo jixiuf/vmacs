@@ -101,7 +101,7 @@
 (global-set-key (kbd "C-c vg") #'vc-annotate)
 (global-set-key (kbd "C-c v=") #'vc-diff)
 (global-set-key (kbd "C-c vh") #'vc-root-diff)
-(global-set-key (kbd "C-c =") #'vc-diff)
+(global-set-key (kbd "C-c =") #'vc-diff-on-current-hunk)
 ;; (global-set-key (kbd "C-c +") #'vc-ediff)
 (global-set-key (kbd "C-c vb") vc-branch-map)
 (global-set-key (kbd "C-c vt") vc-tag-map)

@@ -358,10 +358,6 @@ This prompts for a branch to merge from."
 ;; copy from vc-git-log-view-mode
 ;;;###autoload
 (define-minor-mode vcgit-log-view-minor-mode
-  "Git-Log-View-Minor"
-  :keymap nil
-  (require 'add-log) ;; We need the faces add-log.
-  ;; Don't have file markers, so use impossible regexp.
   (setq-local log-view-file-re regexp-unmatchable)
   (setq-local log-view-per-file-logs nil)
   (setq-local log-view-message-re
@@ -407,12 +403,6 @@ This prompts for a branch to merge from."
 	(with-current-buffer buffer
 	  (let ((inhibit-read-only t))
 	    (erase-buffer)
-	    (vc-git-command buffer nil nil
-					    "reflog"
-					    "--color=always"
-                        "--date=format:%y-%m-%d %H:%M:%S"
-               ;; ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-               "--pretty=format:%C(yellow)%h%Creset %C(cyan)%an%Creset %C(auto)%d%Creset %Cgreen%gd%Creset %s ")
 	    (goto-char (point-min))
 	    (ansi-color-apply-on-region (point-min) (point-max)))
 	  (setq buffer-read-only t)
@@ -463,6 +453,31 @@ This prompts for a branch to merge from."
 			                         "@{upstream}"
 		                           remote-location)))))))
 
+;; got from https://www.rahuljuliato.com/posts/vc-git-functions
+(defun vc-diff-on-current-hunk ()
+  "Show the diff for the current file and jump to the hunk containing the current line."
+  (interactive)
+  (let ((current-line (line-number-at-pos)))
+	(message "Current line in file: %d" current-line)
+	(vc-diff) ; Generate the diff buffer
+	(with-current-buffer "*vc-diff*"
+	  (goto-char (point-min))
+	  (let ((found-hunk nil))
+		(while (and (not found-hunk)
+					(re-search-forward "^@@ -\\([0-9]+\\), *[0-9]+ \\+\\([0-9]+\\), *\\([0-9]+\\) @@" nil t))
+		  (let* ((start-line (string-to-number (match-string 2)))
+				   (line-count (string-to-number (match-string 3)))
+				   (end-line (+ start-line line-count)))
+			(message "Found hunk: %d to %d" start-line end-line)
+			(when (and (>= current-line start-line)
+						 (<= current-line end-line))
+			  (message "Current line %d is within hunk range %d to %d" current-line start-line end-line)
+			  (setq found-hunk t)
+			  (goto-char (match-beginning 0))
+              (recenter 2))))
+		(unless found-hunk
+		  (message "Current line %d is not within any hunk range." current-line)
+		  (goto-char (point-min)))))))
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
