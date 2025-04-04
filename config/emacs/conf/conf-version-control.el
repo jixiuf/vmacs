@@ -16,6 +16,7 @@
  vc-find-revision-no-save t
  log-edit-hook nil
  vc-follow-symlinks t
+ vc-allow-rewriting-published-history 'ask
  diff-font-lock-prettify t
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
