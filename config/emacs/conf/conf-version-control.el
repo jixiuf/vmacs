@@ -168,8 +168,7 @@
   (interactive)
   (when (eq vc-dir-backend 'Git)
     (let ((gitdir (vc-git--git-path))
-          (msg (apply orig-fun args))
-          unpull-cnt)
+          (msg (apply orig-fun args)))
       (setq msg (string-trim-left msg "VC backend : Git\n")) ;
       ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
       (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
@@ -188,10 +187,17 @@
           (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
                                              'face 'vc-dir-status-warning)))))
       (require 'log-view)               ;for log-view-mode-map
-      (concat msg
-              (vcgit-log-header 'vcgit-log-incoming "Unpulled" 5 "*vc-incoming*")
-              (vcgit-log-header 'vcgit-log-outgoing "Unpushed" 5 "*vc-outgoing*")))))
+      msg)))
 
+
+(defun vc-insert-header()
+  (let ((buf (current-buffer)))
+    (vcgit-log-incoming-outgoing 'outgoing "Unpushed" 3 buf)
+    (vcgit-log-incoming-outgoing 'incoming "Unpulled" 3 buf)
+    )
+  )
+
+(add-hook 'vc-dir-refresh-hook 'vc-insert-header)
 
 (with-eval-after-load 'log-view
   (require 'vc-dir)

@@ -364,6 +364,21 @@ This prompts for a branch to merge from."
         (project-remember-project (project-current))))))
 (defvar log-view-per-file-logs t)
 
+;;;###autoload
+(defun vcgit-reflog ()
+  "Show git reflog in a new buffer with ANSI colors and custom keybindings."
+  (interactive)
+  (let* ((buffer (get-buffer-create "*vcgit-reflog*")))
+	(with-current-buffer buffer
+	  (let ((inhibit-read-only t))
+	    (erase-buffer)
+	    (goto-char (point-min))
+	    (ansi-color-apply-on-region (point-min) (point-max)))
+	  (setq buffer-read-only t)
+	  (setq mode-name "Git-Reflog")
+	  (setq major-mode 'special-mode))
+    (pop-to-buffer buffer)))
+
 ;; copy from vc-git-log-view-mode
 ;;;###autoload
 (define-minor-mode vcgit-log-view-minor-mode
@@ -406,21 +421,6 @@ This prompts for a branch to merge from."
 	    ("^\\(?:Date:   \\|AuthorDate: \\|CommitDate: \\)\\(.+\\)" (1 'change-log-date))
 	    ("^summary:[ \t]+\\(.+\\)" (1 'log-view-message)))))))
 
-;;;###autoload
-(defun vcgit-reflog ()
-  "Show git reflog in a new buffer with ANSI colors and custom keybindings."
-  (interactive)
-  (let* ((buffer (get-buffer-create "*vcgit-reflog*")))
-	(with-current-buffer buffer
-	  (let ((inhibit-read-only t))
-	    (erase-buffer)
-	    (goto-char (point-min))
-	    (ansi-color-apply-on-region (point-min) (point-max)))
-	  (setq buffer-read-only t)
-	  (setq mode-name "Git-Reflog")
-	  (setq major-mode 'special-mode))
-    (pop-to-buffer buffer)))
-
 
 ;;;###autoload
 (defun vcgit-print-remote-branch ()
@@ -428,59 +428,56 @@ This prompts for a branch to merge from."
   (let ((branch (vc-git--tracking-branch)))
     (vc-print-branch-log branch)))
 
-;;;###autoload
-(defun vcgit-log-header (func header limit buf)
-  (let ((inhibit-redisplay t)
-        (display-buffer-alist
-         '((t (display-buffer-no-window )))))
-    (save-window-excursion
-      (funcall func buf))
-    (with-current-buffer buf
-      (if (= (point-max)(point-min))
-          ""
-        (concat (propertize  (format"%s(%d):\n" header
-                                    (count-lines (point-min)
-                                                 (point-max)))
-                             'face 'vc-dir-header)
-                (propertize (buffer-substring (point-min)
-                                              (save-excursion
-                                                (goto-char (point-min))
-                                                (if limit
-                                                    (forward-line limit)
-                                                  (goto-char (point-max)))
-                                                (point)))
-                            'keymap log-view-mode-map)
-                "\n")))))
+(defun vcgit-format-header (header limit lines)
+  (concat (propertize  (format"%s(%d):\n" header lines)
+                       'face 'vc-dir-header)
+          (propertize (buffer-substring (point-min)
+                                        (save-excursion
+                                          (goto-char (point-min))
+                                          (if limit
+                                              (forward-line limit)
+                                            (goto-char (point-max)))
+                                          (point)))
+                      'keymap log-view-mode-map)
+          "\n"))
 
-(defun vc-wait-for-processes (&optional proc timeout)
-  "Wait until PROCS have completed execution.
-If TIMEOUT is non-nil, wait at most that many seconds.  Return non-nil
-if process finished executing before the timeout expired."
-  (let ((expiration (when timeout (time-add (current-time) timeout))))
-    (catch 'timeout
-      (while (process-live-p proc)
-        (when (input-pending-p)
-          (discard-input))
-        (when (and expiration
-                   (not (time-less-p (current-time) expiration)))
-          (throw 'timeout nil))
-        (sit-for 0.05))
-      t)))
+(defun vc-append-header(header)
+  (let* ((hf (ewoc-get-hf vc-ewoc))
+         (tail (cdr hf))
+         (oldh (car hf)))
+    (setq header (concat oldh header))
+    (ewoc-set-hf vc-ewoc header tail)))
 
-;;;###autoload
-(defun vcgit-log-outgoing (buffer &optional remote-location)
+(defun vcgit-log-incoming-outgoing (vc-log-view-type header-name limit dir-buf)
   (when (vc-git--tracking-branch)
-    (vc-log-outgoing (or remote-location ""))
-    (with-current-buffer buffer
-      (vc-wait-for-processes (get-buffer-process buffer))
-      (buffer-string))))
-
-(defun vcgit-log-incoming (buffer &optional remote-location)
-  (when (vc-git--tracking-branch)
-    (vc-log-incoming (or remote-location ""))
-    (with-current-buffer buffer
-      (vc-wait-for-processes (get-buffer-process buffer))
-      (buffer-string))))
+    (let ((oldbuf  dir-buf)
+          (header "")
+          (inhibit-redisplay t)
+          ;; (display-buffer-alist
+          ;;  '((t (display-buffer-reuse-window display-buffer-in-side-window))))
+          (buffer  (cond
+                    ((eq vc-log-view-type 'incoming)
+                     "*vc-incoming*")
+                    ((eq vc-log-view-type 'outgoing)
+                     "*vc-outgoing*"))))
+      ;; don't known why with save-window-excursion
+      ;; face of log is lost.
+      ;; (save-window-excursion
+      (cond
+       ((eq vc-log-view-type 'incoming)
+        (vc-log-incoming))
+       ((eq vc-log-view-type 'outgoing)
+        (vc-log-outgoing)))
+      (vc-run-delayed
+        (let ((lines (count-lines (point-min) (point-max))))
+          (unless (zerop lines)
+            (setq header (vcgit-format-header header-name limit lines))))
+        (with-current-buffer oldbuf
+          (when-let* ((win (get-buffer-window buffer)))
+            (delete-window win))
+          (switch-to-buffer oldbuf)
+          (vc-append-header header)
+          )))))
 
 (defun vcgit--log-incoming (buffer &optional remote-location)
   (vc-setup-buffer buffer)
@@ -491,7 +488,7 @@ if process finished executing before the timeout expired."
                       ;; so remove everything except a repository name.
                       (replace-regexp-in-string
                        "/.*" "" remote-location)))
-    (apply #'vc-git-command buffer 0 nil
+    (apply #'vc-git-command buffer 'async nil
            `("log"
              "--no-color" "--graph" "--decorate" "--date=short"
              ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
@@ -502,7 +499,6 @@ if process finished executing before the timeout expired."
 		                         remote-location))))))
 
 (advice-add 'vc-git-log-incoming :override 'vcgit--log-incoming)
-
 
 ;; got from https://www.rahuljuliato.com/posts/vc-git-functions
 (defun vc-diff-on-current-hunk ()
@@ -621,6 +617,53 @@ if process finished executing before the timeout expired."
 ;;     (if current-prefix-arg
 ;;         (vc-git--pushpull "push" nil '("--force"))
 ;;       (vc-git--pushpull "push" nil '("--force-with-lease")))))
+
+;; (defun vc-wait-for-processes (&optional proc timeout)
+;;   "Wait until PROCS have completed execution.
+;; If TIMEOUT is non-nil, wait at most that many seconds.  Return non-nil
+;; if process finished executing before the timeout expired."
+;;   (let ((expiration (when timeout (time-add (current-time) timeout))))
+;;     (catch 'timeout
+;;       (while (process-live-p proc)
+;;         (when (input-pending-p)
+;;           (discard-input))
+;;         (when (and expiration
+;;                    (not (time-less-p (current-time) expiration)))
+;;           (throw 'timeout nil))
+;;         (sit-for 0.05))
+;;       t)))
+
+;; ;;;###autoload
+;; (defun vcgit-log-outgoing (buffer &optional remote-location)
+;;   (when (vc-git--tracking-branch)
+;;     (vc-log-outgoing (or remote-location ""))
+;;     (with-current-buffer buffer
+;;       (vc-wait-for-processes (get-buffer-process buffer))
+;;       (buffer-string))))
+;; ;;;###autoload
+;; (defun vcgit-log-header (func header limit buf)
+;;   (let ((inhibit-redisplay t)
+;;         (display-buffer-alist
+;;          '((t (display-buffer-no-window )))))
+;;     (save-window-excursion
+;;       (funcall func buf))
+;;     (with-current-buffer buf
+;;       (if (= (point-max)(point-min))
+;;           ""
+;;         (concat (propertize  (format"%s(%d):\n" header
+;;                                     (count-lines (point-min)
+;;                                                  (point-max)))
+;;                              'face 'vc-dir-header)
+;;                 (propertize (buffer-substring (point-min)
+;;                                               (save-excursion
+;;                                                 (goto-char (point-min))
+;;                                                 (if limit
+;;                                                     (forward-line limit)
+;;                                                   (goto-char (point-max)))
+;;                                                 (point)))
+;;                             'keymap log-view-mode-map)
+;;                 "\n")))))
+
 
 (provide 'lazy-version-control)
 
