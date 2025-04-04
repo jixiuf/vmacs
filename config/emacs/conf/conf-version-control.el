@@ -190,9 +190,8 @@
                                              'face 'vc-dir-status-warning)))))
       (require 'log-view)               ;for log-view-mode-map
       (concat msg
-              (vcgit-header 'vcgit-log-outgoing-sync "Unpushed" 5)
-              (vcgit-header 'vcgit-log-incoming-sync "Unpulled" 5))
-      )))
+              (vcgit-log-header 'vcgit-log-outgoing-sync "Unpushed" 5)
+              (vcgit-log-header 'vcgit-log-incoming-sync "Unpulled" 5)))))
 
 
 (with-eval-after-load 'log-view
