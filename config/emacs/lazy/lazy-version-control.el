@@ -451,16 +451,29 @@ This prompts for a branch to merge from."
 (defun vcgit-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)
   (when (vc-git--tracking-branch)
-      (apply #'vc-git-command buffer 0 nil
-             `("log"
-               "--no-color" "--graph" "--decorate" "--date=short"
-               ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-               "--abbrev-commit"
-               ,@(ensure-list vc-git-shortlog-switches)
-               ,(concat (if (string= remote-location "")
-	                        "@{upstream}"
-	                      remote-location)
-	                    "..HEAD")))))
+    (vc-git-log-outgoing buffer remote-location)
+    (with-current-buffer buffer
+      (vc-wait-for-processes (get-buffer-process buffer) 3)
+      (buffer-string))))
+(vcgit-log-outgoing-sync "*scratch*" "")
+(vc-git-log-outgoing "*scratch*" "")
+(defun vc-wait-for-processes (&optional procs timeout)
+  "Wait until PROCS have completed execution.
+If TIMEOUT is non-nil, wait at most that many seconds.  Return non-nil
+if all the processes finished executing before the timeout expired."
+  (let ((expiration (when timeout (time-add (current-time) timeout))))
+    (catch 'timeout
+      (dolist (proc procs)
+        (while (if (processp proc)
+                   (process-live-p proc)
+                 (process-attributes proc))
+          (when (input-pending-p)
+            (discard-input))
+          (when (and expiration
+                     (not (time-less-p (current-time) expiration)))
+            (throw 'timeout nil))
+          (sit-for 0.05)))
+      t)))
 
 (defun vcgit-log-incoming-sync (buffer remote-location)
   (vc-setup-buffer buffer)
