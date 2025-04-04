@@ -17,26 +17,32 @@ Return nil if the output does not match.  The exit status is ignored."
                        "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
 
 (defun vc-git--branch-remote (&optional branch)
-  "return remote name tracking branch or `.' means tracking local branch "
+  "Return the remote name that the given BRANCH is tracking.
+If BRANCH is not provided, use the current branch.
+If the branch is tracking a local branch, return `.'."
   (let ((br (or branch (vc-git--current-branch))))
     (vc-git--out-match
      `("config" ,(concat "branch." br ".remote"))
      "\\([^\n]+\\)" 1)))
 
 (defun vc-git--branch-merge (&optional branch)
-  "return remote branch name for merge "
+  "Return the remote branch name that the given BRANCH is merging into.
+If BRANCH is not provided, use the current branch."
   (let ((br (or branch (vc-git--current-branch))))
     (vc-git--out-match
      `("config" ,(concat "branch." br ".merge"))
      "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
 
 (defun vc-git--tracking-branch (&optional branch remote-name)
+  "Return the full tracking branch name for the given BRANCH.
+If BRANCH is not provided, use the current branch.
+If REMOTE-NAME is provided, use it instead of fetching the remote name.
+If the branch is not tracking a remote branch, return nil."
   (when-let* ((br (or branch (vc-git--current-branch)))
               (branch-merge (vc-git--branch-merge br))
               (branch-remote (vc-git--branch-remote br)))
     (unless (string= branch-remote ".")
       (concat branch-remote "/" branch-merge))))
-
 
 ;;;###autoload
 (defun vcgit-push-other()
