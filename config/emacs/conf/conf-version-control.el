@@ -148,7 +148,6 @@
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)) ;z for meow-motion
 
-
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)
   "Default mark all in *vc-dir*"
   (when (and (eq major-mode 'vc-dir-mode)
@@ -190,8 +189,8 @@
                                              'face 'vc-dir-status-warning)))))
       (require 'log-view)               ;for log-view-mode-map
       (concat msg
-              (vcgit-log-header 'vcgit-log-outgoing "Unpushed" 5 "*vc-outgoing*")
-              (vcgit-log-header 'vcgit-log-incoming "Unpulled" 5 "*vc-incoming*")))))
+              (vcgit-log-header 'vcgit-log-incoming "Unpulled" 5 "*vc-incoming*")
+              (vcgit-log-header 'vcgit-log-outgoing "Unpushed" 5 "*vc-outgoing*")))))
 
 
 (with-eval-after-load 'log-view
