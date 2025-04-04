@@ -427,7 +427,27 @@ This prompts for a branch to merge from."
   (interactive)
   (let ((branch (vc-git--tracking-branch)))
     (vc-print-branch-log branch)))
+(defun vcgit-header ( func header limit)
+  (with-temp-buffer
+    (funcall func (current-buffer) "")
+    ;; (vcgit-log-outgoing-sync (current-buffer) "")
+    (let ((msg ""))
+      (unless (= (point-max)(point-min))
+        (setq msg (concat msg (propertize  (format"%s(%d):\n" header
+                                                  (count-lines (point-min)
+                                                               (point-max)))
+                                           'face 'vc-dir-header)))
+        (setq msg (concat msg (propertize (buffer-substring (point-min)
+                                                            (save-excursion
+                                                              (goto-char (point-min))
+                                                              (if limit
+                                                                  (forward-line limit)
+                                                                (goto-char (point-max)))
+                                                              (point)))
+                                          'keymap log-view-mode-map)
+                          "\n")))
 
+      msg)))
 ;;;###autoload
 (defun vcgit-log-outgoing-sync (buffer remote-location)
   (vc-setup-buffer buffer)

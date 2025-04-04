@@ -169,7 +169,8 @@
   (interactive)
   (when (eq vc-dir-backend 'Git)
     (let ((gitdir (vc-git--git-path))
-          (msg (apply orig-fun args)))
+          (msg (apply orig-fun args))
+          unpull-cnt)
       (setq msg (string-trim-left msg "VC backend : Git\n")) ;
       ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
       (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
@@ -188,37 +189,10 @@
           (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
                                              'face 'vc-dir-status-warning)))))
       (require 'log-view)               ;for log-view-mode-map
-      (with-temp-buffer
-        (vcgit-log-outgoing-sync (current-buffer) "")
-        (unless (= (point-max)(point-min))
-          (setq msg (concat msg (propertize  (format"Unpushed(%d):\n"
-                                                    (count-lines (point-min)
-                                                                 (point-max)))
-                                             'face 'vc-dir-header)))
-          (setq msg (concat msg (propertize (buffer-substring (point-min)
-                                                              (save-excursion
-                                                                (goto-char (point-min))
-                                                                (forward-line 5)
-                                                                (point)))
-                                            'keymap log-view-mode-map
-                                            )
-                            "\n"))))
-
-      (with-temp-buffer
-        (vcgit-log-incoming-sync (current-buffer) "")
-        (unless (= (point-max)(point-min))
-          (setq msg (concat msg (propertize  (format"Unpulled(%d):\n"
-                                                    (count-lines (point-min)
-                                                                 (point-max)))
-                                             'face 'vc-dir-header)))
-          (setq msg (concat msg (propertize (buffer-substring (point-min)
-                                                              (save-excursion
-                                                                (goto-char (point-min))
-                                                                (forward-line 5)
-                                                                (point)))
-                                            'keymap log-view-mode-map
-                                            ) "\n"))))
-      msg)))
+      (concat msg
+              (vcgit-header 'vcgit-log-outgoing-sync "Unpushed" 5)
+              (vcgit-header 'vcgit-log-incoming-sync "Unpulled" 5))
+      )))
 
 
 (with-eval-after-load 'log-view
