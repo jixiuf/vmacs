@@ -358,6 +358,8 @@ This prompts for a branch to merge from."
 ;; copy from vc-git-log-view-mode
 ;;;###autoload
 (define-minor-mode vcgit-log-view-minor-mode
+  ""
+  :keymap:nil
   (setq-local log-view-file-re regexp-unmatchable)
   (setq-local log-view-per-file-logs nil)
   (setq-local log-view-message-re
