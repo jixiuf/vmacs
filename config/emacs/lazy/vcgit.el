@@ -34,7 +34,7 @@ Return nil if the output does not match.  The exit status is ignored."
     (vc-git--out-match '("symbolic-ref" "HEAD")
                        "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
 
-(defun vc-git--branch-remote (&optional branch)
+(defun vcgit--branch-remote (&optional branch)
   "Return the remote name that the given BRANCH is tracking.
 If BRANCH is not provided, use the current branch.
 If the branch is tracking a local branch, return `.'."
@@ -43,7 +43,7 @@ If the branch is tracking a local branch, return `.'."
      `("config" ,(concat "branch." br ".remote"))
      "\\([^\n]+\\)" 1)))
 
-(defun vc-git--branch-merge (&optional branch)
+(defun vcgit--branch-merge (&optional branch)
   "Return the remote branch name that the given BRANCH is merging into.
 If BRANCH is not provided, use the current branch."
   (let ((br (or branch (vc-git--current-branch))))
@@ -51,14 +51,14 @@ If BRANCH is not provided, use the current branch."
      `("config" ,(concat "branch." br ".merge"))
      "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
 
-(defun vc-git--tracking-branch (&optional branch remote-name)
+(defun vcgit--tracking-branch (&optional branch remote-name)
   "Return the full tracking branch name for the given BRANCH.
 If BRANCH is not provided, use the current branch.
 If REMOTE-NAME is provided, use it instead of fetching the remote name.
 If the branch is not tracking a remote branch, return nil."
   (when-let* ((br (or branch (vc-git--current-branch)))
-              (branch-merge (vc-git--branch-merge br))
-              (branch-remote (or remote-name (vc-git--branch-remote br))))
+              (branch-merge (vcgit--branch-merge br))
+              (branch-remote (or remote-name (vcgit--branch-remote br))))
     (unless (string= branch-remote ".")
       (concat branch-remote "/" branch-merge))))
 
@@ -75,7 +75,7 @@ If the branch is not tracking a remote branch, return nil."
                       'keymap vc-git-log-view-mode-map)
           "\n"))
 
-(defun vc-append-header(header)
+(defun vcgit-append-header(header)
   (let* ((hf (ewoc-get-hf vc-ewoc))
          (tail (cdr hf))
          (oldh (car hf)))
@@ -94,7 +94,7 @@ If the branch is not tracking a remote branch, return nil."
                        ((eq type 'outgoing)
                         "*vc-outgoing*"))))
     (when (or (and (eq type 'recent) branch)
-              (vc-git--tracking-branch))
+              (vcgit--tracking-branch))
       (save-window-excursion
         (save-excursion
           (cond
@@ -112,13 +112,13 @@ If the branch is not tracking a remote branch, return nil."
                 (setq header (vcgit-format-header header-name limit lines)))
               (kill-buffer buffer)
               (with-current-buffer vcdir-buf
-                (vc-append-header header)
+                (vcgit-append-header header)
                 (if (functionp code) (funcall code  lines) (eval code t))))))))))
 
 (defun vcgit--log-incoming (buffer &optional remote-location)
   "Run git fetch async."
   (vc-setup-buffer buffer)
-  (when (vc-git--tracking-branch)
+  (when (vcgit--tracking-branch)
     (vc-git-command nil 'async nil "fetch"
                     (unless (string= remote-location "")
                       ;; `remote-location' is in format "repository/branch",
