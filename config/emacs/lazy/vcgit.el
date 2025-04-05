@@ -4,8 +4,8 @@
 
 ;; lazy enable vcgit-global-minor-mode with:
 ;; (add-hook 'vc-dir-mode-hook #'vcgit-global-minor-mode)
-;; suggested keybnding:
-;; ;;Tab: only when cursor not at the beginning of outline header
+;; Tab: only when cursor not at the beginning of outline header
+;; see outline-minor-mode-cycle-filter
 
 
 (eval-when-compile
