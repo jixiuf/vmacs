@@ -1,4 +1,20 @@
-(global-set-key (kbd "C-c h") help-map)
+;; around demo
+;; origin
+;; (defun compilation-find-file (marker filename directory &rest formats)
+;; (defun lua--compilation-find-file (fn marker filename directory &rest formats)
+;;   (apply fn marker filename directory formats))
+;; (advice-add 'compilation-find-file :around #'lua--compilation-find-file)
+;; 直接启用的
+;; (define-advice vc-dir-refresh (:around (orig-fun &rest args) logview)
+;;   (apply orig-fun args)
+
+;; (defun my-after-advice (&rest args)
+;; 直接访问原参数
+;;   (message "Args: %S" args))
+;; (advice-add 'my-function :after #'my-after-advice)
+;; advice-remove
+
+  (global-set-key (kbd "C-c h") help-map)
 (define-key help-map (kbd "C-f") nil)
 (define-key help-map (kbd "C-m") nil)
 

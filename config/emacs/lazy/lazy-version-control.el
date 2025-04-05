@@ -5,45 +5,6 @@
   (require  'vc-git)
   (require  'vc-dir))
 
-(unless (fboundp 'vc-git--current-branch)
-  (defun vc-git--out-match (args regexp group)
-    "Run `git ARGS...' and return match for group number GROUP of REGEXP.
-Return nil if the output does not match.  The exit status is ignored."
-    (let ((out (apply #'vc-git--out-str args)))
-      (when (string-match regexp out)
-        (match-string group out))))
-  (defun vc-git--current-branch ()
-    (vc-git--out-match '("symbolic-ref" "HEAD")
-                       "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
-
-(defun vc-git--branch-remote (&optional branch)
-  "Return the remote name that the given BRANCH is tracking.
-If BRANCH is not provided, use the current branch.
-If the branch is tracking a local branch, return `.'."
-  (let ((br (or branch (vc-git--current-branch))))
-    (vc-git--out-match
-     `("config" ,(concat "branch." br ".remote"))
-     "\\([^\n]+\\)" 1)))
-
-(defun vc-git--branch-merge (&optional branch)
-  "Return the remote branch name that the given BRANCH is merging into.
-If BRANCH is not provided, use the current branch."
-  (let ((br (or branch (vc-git--current-branch))))
-    (vc-git--out-match
-     `("config" ,(concat "branch." br ".merge"))
-     "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
-
-(defun vc-git--tracking-branch (&optional branch remote-name)
-  "Return the full tracking branch name for the given BRANCH.
-If BRANCH is not provided, use the current branch.
-If REMOTE-NAME is provided, use it instead of fetching the remote name.
-If the branch is not tracking a remote branch, return nil."
-  (when-let* ((br (or branch (vc-git--current-branch)))
-              (branch-merge (vc-git--branch-merge br))
-              (branch-remote (vc-git--branch-remote br)))
-    (unless (string= branch-remote ".")
-      (concat branch-remote "/" branch-merge))))
-
 ;;;###autoload
 (defun vcgit-push-other()
   (interactive)
@@ -72,7 +33,7 @@ If the branch is not tracking a remote branch, return nil."
 
 ;;;###autoload
 (defun vcgit-git-delete ()
-  "删除 Git 分支、远程分支或标签。"
+  "Delete tag branch and remote branch."
   (interactive)
   (let* ((refs (split-string (vc-git--out-str
                               "for-each-ref"
@@ -198,7 +159,7 @@ If the branch is not tracking a remote branch, return nil."
 	     (buffer (format "*vc-git : %s*" (expand-file-name root))))
     (when commit
       (vc-git-command buffer 'async nil
-                      "rebase" "-i"  commit)))
+                      "rebase" "-i"  (concat commit "^1"))))
   (revert-buffer))
 ;;;###autoload
 (defun vcgit-continue ()
@@ -347,7 +308,7 @@ This prompts for a branch to merge from."
     (if rev
         (setq prev (vc-call-backend backend 'previous-revision
                                     filename rev))
-      (setq prev (vc-short-revision filename)))
+      (setq prev (vc-working-revision filename)))
     (if prev
         (progn  (switch-to-buffer (vc-find-revision filename prev))
                 (when parent-buffer (kill-buffer cur-buffer)))
@@ -379,129 +340,12 @@ This prompts for a branch to merge from."
 	  (setq major-mode 'special-mode))
     (pop-to-buffer buffer)))
 
-;; copy from vc-git-log-view-mode
-;;;###autoload
-(define-minor-mode vcgit-log-view-minor-mode
-  ""
-  :keymap:nil
-  (setq-local log-view-file-re regexp-unmatchable)
-  (setq-local log-view-per-file-logs nil)
-  (setq-local log-view-message-re
-              (if (not (memq vc-log-view-type '(long log-search with-diff)))
-                  (cadr vc-git-root-log-format)
-                "^commit +\\([0-9a-z]+\\)"))
-  ;; Allow expanding short log entries.
-  (when (memq vc-log-view-type '(short log-outgoing log-incoming mergebase))
-    (setq truncate-lines t)
-    (setq-local log-view-expanded-log-entry-function
-                'vc-git-expanded-log-entry))
-  (setq-local log-view-font-lock-keywords
-       (if (not (memq vc-log-view-type '(long log-search with-diff)))
-	   (list (cons (nth 1 vc-git-root-log-format)
-		       (nth 2 vc-git-root-log-format)))
-	 (append
-	  `((,log-view-message-re (1 'change-log-acknowledgment)))
-	  ;; Handle the case:
-	  ;; user: foo@bar
-	  '(("^\\(?:Author\\|Commit\\):[ \t]+\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)"
-	     (1 'change-log-email))
-	    ;; Handle the case:
-	    ;; user: FirstName LastName <foo@bar>
-	    ("^\\(?:Author\\|Commit\\):[ \t]+\\([^<(]+?\\)[ \t]*[(<]\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)[>)]"
-	     (1 'change-log-name)
-	     (2 'change-log-email))
-	    ("^ +\\(?:\\(?:[Aa]cked\\|[Ss]igned-[Oo]ff\\)-[Bb]y:\\)[ \t]+\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)"
-	     (1 'change-log-name))
-	    ("^ +\\(?:\\(?:[Aa]cked\\|[Ss]igned-[Oo]ff\\)-[Bb]y:\\)[ \t]+\\([^<(]+?\\)[ \t]*[(<]\\([A-Za-z0-9_.+-]+@[A-Za-z0-9_.-]+\\)[>)]"
-	     (1 'change-log-name)
-	     (2 'change-log-email))
-	    ("^Merge: \\([0-9a-z]+\\) \\([0-9a-z]+\\)"
-	     (1 'change-log-acknowledgment)
-	     (2 'change-log-acknowledgment))
-	    ("^\\(?:Date:   \\|AuthorDate: \\|CommitDate: \\)\\(.+\\)" (1 'change-log-date))
-	    ("^summary:[ \t]+\\(.+\\)" (1 'log-view-message)))))))
-
 
 ;;;###autoload
 (defun vcgit-print-remote-branch ()
   (interactive)
   (let ((branch (vc-git--tracking-branch)))
     (vc-print-branch-log branch)))
-
-(defun vcgit-format-header (header limit lines)
-  (concat (propertize  (format"%s(%d):\n" header lines)
-                       'face 'vc-dir-header)
-          (propertize (buffer-substring (point-min)
-                                        (save-excursion
-                                          (goto-char (point-min))
-                                          (if limit
-                                              (forward-line limit)
-                                            (goto-char (point-max)))
-                                          (point)))
-                      'keymap log-view-mode-map)
-          "\n"))
-
-(defun vc-append-header(header)
-  (let* ((hf (ewoc-get-hf vc-ewoc))
-         (tail (cdr hf))
-         (oldh (car hf)))
-    (setq header (concat oldh header))
-    (ewoc-set-hf vc-ewoc header tail)))
-
-(defun vcgit-log-incoming-outgoing (vc-log-view-type header-name limit dir-buf)
-  (when (vc-git--tracking-branch)
-    (let ((oldbuf  dir-buf)
-          (header "")
-          (inhibit-redisplay t)
-          ;; (display-buffer-alist
-          ;;  '((t (display-buffer-reuse-window display-buffer-in-side-window))))
-          (buffer  (cond
-                    ((eq vc-log-view-type 'incoming)
-                     "*vc-incoming*")
-                    ((eq vc-log-view-type 'outgoing)
-                     "*vc-outgoing*"))))
-      ;; don't known why with save-window-excursion
-      ;; face of log is lost.
-      ;; (save-window-excursion
-      (cond
-       ((eq vc-log-view-type 'incoming)
-        (vc-log-incoming))
-       ((eq vc-log-view-type 'outgoing)
-        (vc-log-outgoing)))
-      (vc-run-delayed
-        (sit-for 0.01)
-        (let ((lines (count-lines (point-min) (point-max))))
-          (unless (zerop lines)
-            (setq header (vcgit-format-header header-name limit lines))))
-        (with-current-buffer oldbuf
-          (when-let* ((win (get-buffer-window buffer)))
-            (delete-window win))
-          (switch-to-buffer oldbuf)
-          (vc-append-header header)
-          (kill-buffer buffer)
-          )))))
-
-(defun vcgit--log-incoming (buffer &optional remote-location)
-  (vc-setup-buffer buffer)
-  (when (vc-git--tracking-branch)
-    (vc-git-command nil 'async nil "fetch"
-                    (unless (string= remote-location "")
-                      ;; `remote-location' is in format "repository/branch",
-                      ;; so remove everything except a repository name.
-                      (replace-regexp-in-string
-                       "/.*" "" remote-location)))
-    (apply #'vc-git-command buffer 'async nil
-           `("log"
-             "--no-color" "--graph" "--decorate" "--date=short"
-             ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-             "--abbrev-commit"
-             ,@(ensure-list vc-git-shortlog-switches)
-             ,(concat "HEAD.." (if (string= remote-location "")
-			                       "@{upstream}"
-		                         remote-location))))))
-
-(advice-add 'vc-git-log-incoming :override 'vcgit--log-incoming)
-
 ;; got from https://www.rahuljuliato.com/posts/vc-git-functions
 (defun vc-diff-on-current-hunk ()
   "Show the diff for the current file and jump to the hunk containing the current line."

@@ -60,6 +60,9 @@
  '(modus-themes-scale-4 1.5)
  '(modus-themes-scale-headings t)
  '(modus-themes-scale-title 1.5)
+ '(outline-minor-mode-cycle t)
+ '(outline-minor-mode-cycle-filter 'bolp)
+ '(outline-minor-mode-use-buttons 'in-margins)
  '(package-selected-packages
    '(async beacon cape clipetty consult-dir consult-todo copilot dape dired-filetype-face emamux embark
            embark-consult exec-path-from-shell git-link go-translate golden-ratio-scroll-screen

@@ -1,3 +1,4 @@
+
 ;;; -*- lexical-binding: t; -*-
 ;; smerge
 ;; cn next
@@ -122,9 +123,13 @@
   (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
-  (define-key vc-dir-mode-map (kbd "M-n") #'outline-forward-same-level)
-  (define-key vc-dir-mode-map (kbd "M-p") #'outline-backward-same-level)
-  (define-key vc-dir-mode-map (kbd "C-i") #'outline-cycle)
+  ;; (setq outline-minor-mode-cycle t) ;tab
+ ;; (setq outline-minor-mode-cycle-filter 'bolp) ; tab only work when at bol
+ ;; (setq outline-minor-mode-use-buttons 'in-margins)
+  (define-key vc-dir-mode-map (kbd "M-n") #'outline-next-visible-heading)
+  (define-key vc-dir-mode-map (kbd "M-p") #'outline-previous-visible-heading)
+  (define-key vc-dir-mode-map (kbd "C-i") #'vc-diff)
+  (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map) ;my q for meow-motion
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
@@ -137,7 +142,6 @@
   (define-key vc-dir-mode-map (kbd "x") #'vc-revert)            ;丢弃当前未提交的修改
   (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
-  (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd for meow-motion
   (define-key vc-dir-mode-map (kbd "i") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
@@ -156,14 +160,6 @@
     (vc-dir-mark-all-files nil))
   (apply orig-fun args))
 
-;; for make unpulled/unpushed commit in vc-dir mode work
-(define-advice vc-dir-refresh (:around (orig-fun &rest args) logview)
-  (apply orig-fun args)
-  (when (eq vc-dir-backend 'Git)
-    (setq-local log-view-vc-backend vc-dir-backend)
-    (setq-local log-view-vc-fileset `(,default-directory))
-    (require 'log-view)
-    (vcgit-log-view-minor-mode)))
 
 (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
@@ -187,28 +183,12 @@
         (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
           (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
                                              'face 'vc-dir-status-warning)))))
-      (require 'log-view)               ;for log-view-mode-map
       msg)))
-
-(defun vc-dir--outline-level ()
-  1)
-
-(defun vc-insert-header()
-  (setq-local outline-regexp "\\(^ +\\./$\\)\\|\\(^[^* \t\n].*$\\)")
-  (setq-local outline-level #'vc-dir--outline-level)
-
-  (outline-minor-mode)
-  (let ((buf (current-buffer)))
-    (vcgit-log-incoming-outgoing 'outgoing "Unpushed" 3 buf)
-    (vcgit-log-incoming-outgoing 'incoming "Unpulled" 3 buf)
-    )
-  )
-
-(add-hook 'vc-dir-refresh-hook 'vc-insert-header)
 
 (with-eval-after-load 'log-view
   (require 'vc-dir)
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
+  (define-key log-view-mode-map (kbd "C-c Ga") #'log-view-annotate-version) ;ga
   (define-key log-view-mode-map (kbd "f") vc-fetch-map)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)
@@ -218,7 +198,10 @@
   (define-key log-view-mode-map (kbd "x") #'vcgit-reset)
   (define-key log-view-mode-map (kbd "t") vc-tag-map)
   (define-key log-view-mode-map (kbd "SPC") nil)
-  (define-key log-view-mode-map (kbd "C-i") #'log-view-toggle-entry-display)
+  (define-key log-view-mode-map (kbd "g") nil)
+  (define-key log-view-mode-map (kbd "C-i") #'log-view-diff)
+  (define-key log-view-mode-map (kbd "o") #'log-view-toggle-entry-display)
+
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
   )
 (with-eval-after-load 'diff-mode
@@ -230,6 +213,7 @@
   (define-key diff-mode-shared-map (kbd "v") vc-push-map)
   )
 (add-hook 'vc-dir-mode-hook #'vc-remember-project)
+(add-hook 'vc-dir-mode-hook #'vcgit-global-minor-mode)
 
 (with-eval-after-load 'git-link
   (defun git-link-gitlab (hostname dirname filename branch commit start end)
