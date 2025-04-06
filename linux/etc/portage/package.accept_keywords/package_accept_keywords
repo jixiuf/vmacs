@@ -48,6 +48,7 @@ app-misc/tmux  ~amd64
 app-misc/tmux  **
 media-video/wireplumber ~amd64
 media-video/pipewire ~amd64
+dev-cpp/glaze ~amd64 #for hyprland
 gui-wm/hyprland ~amd64
 gui-libs/aquamarine ~amd64
 gui-libs/hyprcursor ~amd64
