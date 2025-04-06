@@ -119,12 +119,13 @@ If the branch is not tracking a remote branch, return nil."
   "Run git fetch async."
   (vc-setup-buffer buffer)
   (when (vcgit--tracking-branch)
-    (vc-git-command nil 'async nil "fetch"
-                    (unless (string= remote-location "")
-                      ;; `remote-location' is in format "repository/branch",
-                      ;; so remove everything except a repository name.
-                      (replace-regexp-in-string
-                       "/.*" "" remote-location)))
+    (when (eq this-command 'vc-log-incoming)
+      (vc-git-command nil 0 nil "fetch"
+                      (unless (string= remote-location "")
+                        ;; `remote-location' is in format "repository/branch",
+                        ;; so remove everything except a repository name.
+                        (replace-regexp-in-string
+                         "/.*" "" remote-location))))
     (apply #'vc-git-command buffer 'async nil
            `("log"
              "--no-color" "--graph" "--decorate" "--date=short"
