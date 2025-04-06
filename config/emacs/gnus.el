@@ -415,7 +415,7 @@
 
 (defun mbsync()
   (interactive)
-  (let ((process (start-process "mbsync" "*Messages*" "sh" "-c" "mbsync -aq;notmuch new")))
+  (let ((process (start-process "mbsync" "*Messages*" "sh" "-c" "MODE=ask mbsync -aq;notmuch new")))
     (set-process-query-on-exit-flag process nil)
     (set-process-sentinel
      process
