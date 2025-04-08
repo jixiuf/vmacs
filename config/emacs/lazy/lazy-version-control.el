@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (eval-when-compile
   (require  'vc)
+  (require 'vcgit)
   (require 'project)
   (require  'vc-git)
   (require  'vc-dir))
@@ -14,7 +15,7 @@
                     "Push : ")
                   nil nil br))
          (remote-br (vc-read-revision "To: " nil nil
-                                      (vc-git--tracking-branch br)))
+                                      (vcgit--tracking-branch br)))
          remote)
     (when (string-match "^\\(.+?\\)/\\(.+\\)$" remote-br)
       (setq remote (match-string 1 remote-br))
@@ -344,7 +345,7 @@ This prompts for a branch to merge from."
 ;;;###autoload
 (defun vcgit-print-remote-branch ()
   (interactive)
-  (let ((branch (vc-git--tracking-branch)))
+  (let ((branch (vcgit--tracking-branch)))
     (vc-print-branch-log branch)))
 ;; got from https://www.rahuljuliato.com/posts/vc-git-functions
 (defun vc-diff-on-current-hunk ()
@@ -481,7 +482,7 @@ This prompts for a branch to merge from."
 
 ;; ;;;###autoload
 ;; (defun vcgit-log-outgoing (buffer &optional remote-location)
-;;   (when (vc-git--tracking-branch)
+;;   (when (vcgit--tracking-branch)
 ;;     (vc-log-outgoing (or remote-location ""))
 ;;     (with-current-buffer buffer
 ;;       (vc-wait-for-processes (get-buffer-process buffer))
