@@ -144,6 +144,7 @@
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd for meow-motion
   (define-key vc-dir-mode-map (kbd "i") #'vc-switch-project)
+  (define-key vc-dir-mode-map (kbd "I") #'vc-dir-ignore)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
   (keymap-unset vc-dir-mode-map "v" t)
   (define-key vc-dir-mode-map (kbd "v") vc-push-map)
