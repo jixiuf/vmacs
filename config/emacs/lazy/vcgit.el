@@ -161,6 +161,11 @@ If the branch is not tracking a remote branch, return nil."
   (if (string-match-p vcgit-outline-level2-regexp
                       (match-string 0))
       2 1))
+(defun vcgit--goto-stage ()
+  (goto-char (point-min))
+  (when (re-search-forward "^[ ]+./$")
+    (goto-char (point-at-bol))))
+
 (defun vcgit-todo-open-file-at-line ()
   "Locate the filename using the `compilation-info' face and
  the line number using the `compilation-line-number' face,
@@ -219,8 +224,7 @@ If the branch is not tracking a remote branch, return nil."
                       (vcgit-append-footer
                        (concat "\n" (propertize  "TODOs:" 'face 'vc-dir-header)
                                (concat "\n" results)))
-                      (goto-char (point-min))
-                      (outline-next-heading))
+                      (vcgit--goto-stage))
                     (kill-buffer))))))))
 
 
@@ -258,9 +262,7 @@ If the branch is not tracking a remote branch, return nil."
      (vcgit--dir-unpushed
       'vcgit--dir-recent
       ))
-    (vcgit-dir--todo)
-    ;; move to the first outline header
-    (outline-next-heading)))
+    (vcgit-dir--todo)))
 
 ;;;###autoload
 (define-minor-mode vcgit-global-minor-mode
