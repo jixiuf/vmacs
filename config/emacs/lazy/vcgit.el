@@ -17,10 +17,18 @@
   "VC Git extension"
   :group 'vc)
 
-(defcustom vcgit-log-commit-count 10
+(defcustom vcgit-log-commit-count 6
   "How many recent commits to show in Unpulled/Unpushed header."
   :group 'vcgit
   :type 'number)
+(defcustom vcgit-outline-regexp "\\(^ +.+/$\\)\\|\\(^[^* \t\n].*:$\\)\\|\\(Stash\\)"
+  "Regexp for outline-regexp"
+  :group 'vcgit
+  :type 'string)
+(defcustom vcgit-outline-level2-regexp "\\(?:^ +.+?/.+/\\)\\|\\(?:^[^:]+::\\)"
+  "Regexp for outline-regexp of level 2"
+  :group 'vcgit
+  :type 'string)
 
 ;; functions from emacs31
 (unless (fboundp 'vc-git--current-branch)
@@ -136,7 +144,8 @@ If the branch is not tracking a remote branch, return nil."
 			                       "@{upstream}"
 		                         remote-location))))))
 (defun vcgit--outline-level ()
-  (if (string-match-p "^ +.+?/.+/" (match-string 0))
+  (if (string-match-p vcgit-outline-level2-regexp
+                      (match-string 0))
       2 1))
 
 (defun vcgit--dir-unpulled (&optional code)
@@ -161,7 +170,7 @@ If the branch is not tracking a remote branch, return nil."
                     (cadr vc-git-root-log-format)
                   "^commit +\\([0-9a-z]+\\)"))
     (require 'outline)
-    (setq-local outline-regexp "\\(^ +.+/$\\)\\|\\(^[^* \t\n].*:$\\)\\|\\(Stash\\)")
+    (setq-local outline-regexp vcgit-outline-regexp)
     (setq-local outline-level #'vcgit--outline-level)
     (setq outline-minor-mode-cycle t) ;tab
     (setq outline-minor-mode-cycle-filter 'bolp) ; tab only work when at bol
