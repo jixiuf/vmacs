@@ -81,14 +81,14 @@
 (with-eval-after-load 'diff-mode
   (define-key  diff-mode-map (kbd "C-c Gw") #'toggle-diff-whitespace)) ;gw
 
-(setq magit-todos-branch-list nil)
+;; (setq magit-todos-branch-list nil)
 (defun vmacs-magit-mode-hook()
   ;; (require 'magit-backup)
   ;; (magit-backup-mode -1)
   ;; (magit-auto-revert-mode -1)
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode 1)                    ; magit-wip-log
-  (magit-todos-mode)
+  ;; (magit-todos-mode)
   (vc-remember-project)
   )
 
