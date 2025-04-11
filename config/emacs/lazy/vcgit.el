@@ -30,6 +30,13 @@
   :group 'vcgit
   :type 'string)
 
+(defface vcgit-todo-face
+  '((t (:foreground "Red" :box (:line-width 2 :color "grey75" :style released-button) :height 1.2
+        :inherit default)))
+  "Font Lock mode face used to highlight TODO."
+  :group 'vcgit)
+
+
 ;; functions from emacs31
 (unless (fboundp 'vc-git--current-branch)
   (defun vc-git--out-match (args regexp group)
@@ -90,6 +97,13 @@ If the branch is not tracking a remote branch, return nil."
     (setq header (concat oldh header))
     (ewoc-set-hf vc-ewoc header tail)))
 
+(defun vcgit-append-footer(f)
+  (let* ((hf (ewoc-get-hf vc-ewoc))
+         (footer (cdr hf))
+         (header (car hf)))
+    (setq footer (concat footer f))
+    (ewoc-set-hf vc-ewoc header footer)))
+
 (defun vcgit--log (type header-name limit &optional code)
   (let ((header "")
         (branch (vc-git--current-branch))
@@ -147,6 +161,68 @@ If the branch is not tracking a remote branch, return nil."
   (if (string-match-p vcgit-outline-level2-regexp
                       (match-string 0))
       2 1))
+(defun vcgit-todo-open-file-at-line ()
+  "Locate the filename using the `compilation-info' face and
+ the line number using the `compilation-line-number' face,
+ then open the file and jump to the specified line."
+  (interactive)
+  (let (filepath linenum)
+    (save-excursion
+      (goto-char (point-at-eol))
+      (while (and (not filepath)
+                  (re-search-backward "^.*::$" nil t))
+        (let ((face (get-text-property (point) 'face)))
+          (when (and (listp face) (memq 'compilation-info face))
+            (setq filepath (string-trim-right (thing-at-point 'line t) "::\n"))))))
+    (save-excursion
+      (goto-char (point-at-bol))
+      (let ((face (get-text-property (point) 'face)))
+        (when (and (listp face) (memq 'compilation-line-number face))
+          (setq linenum (string-to-number (thing-at-point 'line t))))))
+    (when filepath
+      (find-file filepath)
+      (when linenum
+        (goto-char (point-min))
+        (forward-line (1- linenum))))))
+
+(defvar-keymap  vc-todo-map
+  "RET" #'vcgit-todo-open-file-at-line)
+
+(defun vcgit-dir--todo ()
+  (let* ((buffer (format "*vc-todo : %s*"
+                         (expand-file-name default-directory)))
+            (curbuf (current-buffer))
+            (process (start-process "vc-todo" buffer
+                                    "rg"  "--line-number"
+                                    "TODO:|FIXME:" ".")))
+           (set-process-sentinel
+            process
+            (lambda (process event)
+              (when (string= event "finished\n")
+                (with-current-buffer (process-buffer process)
+                  (require 'compile)
+                  (font-lock-add-keywords nil '(("\\<\\([0-9]+\\):" 1
+                                                 'compilation-line-number prepend)
+                                                ("^\\([^:]+\\)::$" 1
+                                                 'compilation-info prepend)
+                                                ("\\<\\(FIXME\\|TODO\\|Todo\\|HACK\\|todo\\):" 1
+                                                 'vcgit-todo-face prepend)))
+                  (goto-char (point-min))
+                  (while (re-search-forward "^\\([^:]+?\\)$" nil t)
+                     ;append :: after filename for match outline-regexp
+                    (replace-match "\\&::"))
+                  (font-lock-ensure)
+                  (let ((results (buffer-string)))
+                    (setq results
+                          (propertize results 'keymap vc-todo-map))
+                    (with-current-buffer curbuf
+                      (vcgit-append-footer
+                       (concat "\n" (propertize  "TODOs:" 'face 'vc-dir-header)
+                               (concat "\n" results)))
+                      (goto-char (point-min))
+                      (outline-next-heading))
+                    (kill-buffer))))))))
+
 
 (defun vcgit--dir-unpulled (&optional code)
   (vcgit--log 'incoming "Unpulled" vcgit-log-commit-count code))
@@ -182,6 +258,7 @@ If the branch is not tracking a remote branch, return nil."
      (vcgit--dir-unpushed
       'vcgit--dir-recent
       ))
+    (vcgit-dir--todo)
     ;; move to the first outline header
     (outline-next-heading)))
 
