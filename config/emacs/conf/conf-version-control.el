@@ -185,7 +185,8 @@
           (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
                                              'face 'vc-dir-status-warning)))))
       msg)))
-
+(with-eval-after-load 'outline
+    (keymap-unset outline-overlay-button-map "RET" t))
 (with-eval-after-load 'log-view
   (require 'vc-dir)
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
