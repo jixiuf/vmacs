@@ -21,7 +21,7 @@
                   ((usePlaceholders . t)
                    (completeUnimported . t) ;;
                    (staticcheck . t)
-                   (allowImplicitNetworkAccess . t)
+                   ;; (allowImplicitNetworkAccess . t)
                    (directoryFilters . ["-vendor"])
                    ;; (analyses . ((unusedparams . t) (unusedwrite . t)))
                    ;; (annotations . ((bounds . t) (escape . t) (inline . t) (nil . t)))
