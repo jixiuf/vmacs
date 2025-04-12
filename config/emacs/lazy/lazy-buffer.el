@@ -2,17 +2,18 @@
 (eval-when-compile (require 'cl-macs) (require 'cl-seq))
 (require 'recentf)
 (require 'consult nil t)
-(require 'magit)
+(require 'project)
+;; (require 'magit)
 
 (defvar git-repos-files-cache (make-hash-table :test 'equal))
 (defun vmacs--git-files (&optional n dir )
   "Append git files as virtual buffer"
   (let (result-list
         (default-directory (or dir default-directory))
-        (magit-repos (mapcar 'car magit-repository-directories))
+        (repos (project-known-project-roots))
         list git-dir)
     (unless (file-remote-p default-directory)
-      (setq git-dir (magit-toplevel))
+      (setq git-dir (vc-root-dir))
       (when git-dir
         (setq git-dir (abbreviate-file-name (file-truename (directory-file-name git-dir))))
         (setq default-directory git-dir)
@@ -25,7 +26,7 @@
 
         (setq result-list (append result-list list))))
     (dotimes (idx (or n 3) )
-      (let ((magit-repo (nth idx magit-repos)))
+      (let ((magit-repo (nth idx repos)))
         (when (and magit-repo (file-exists-p magit-repo))
           (setq magit-repo (abbreviate-file-name (directory-file-name (file-truename magit-repo))))
           (unless (string-equal magit-repo git-dir)
@@ -98,13 +99,13 @@
           (when (and (>  (length (window-list)) 1)
                      (not (minibufferp))
                      (or bury-cur-win-if-boring
-                         (not (equal cur-buf-win win)))
-                     (delete-window win))))))))
+                         (not (equal cur-buf-win win))))
+            (delete-window win)))))))
 
 ;;;###autoload
 (defun vmacs-prev-buffer()
-  (interactive)
   "switch to prev buffer ,but skip boring buffer."
+  (interactive)
   (let ((buf-name (buffer-name))
         (found  nil))
     (cl-loop until found do
@@ -118,8 +119,8 @@
 
 ;;;###autoload
 (defun vmacs-next-buffer()
-  (interactive)
   "switch to next buffer ,but skip boring buffer."
+  (interactive)
   (let ((buf-name (buffer-name))
         (found  nil))
     (cl-loop until found do

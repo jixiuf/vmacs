@@ -123,8 +123,8 @@ surrounded by word boundaries."
 
 ;;;###autoload
 (defun query-replace-dwim()
-  (interactive)
   "C-u:only matches surrounded byword boundaries."
+  (interactive)
   (let* ((from (if (use-region-p)
                    (buffer-substring-no-properties (region-beginning) (region-end))
                  (thing-at-point 'symbol)))
@@ -662,9 +662,9 @@ numeric, repeat times.
 open-line if point is at end of line , new-line-and-indent"
   (interactive)
   (let ((pos))
-    (if (or (and (= (point) (point-at-bol))
+    (if (or (and (= (point) (line-beginning-position))
                  (not (looking-at "^[ \t]*$")))
-            (looking-back "^[ \t]*" (point-at-bol)))
+            (looking-back "^[ \t]*" (line-beginning-position)))
         (progn
           (open-line 1)
           (indent-for-tab-command)
@@ -738,9 +738,9 @@ Move point to end-of-line ,if point was already at end of line (ignore white spa
   (if (equal major-mode 'vterm-mode)
       (vterm-end-of-line)
     (if arg (end-of-line)
-      (let ((oldpos (point)) (new-pos)) (beginning-of-line) (if (re-search-forward "[ \t]*$" (point-at-eol) t 1) (setq new-pos  (match-beginning 0)) (setq new-pos (point-at-eol)))
+      (let ((oldpos (point)) (new-pos)) (beginning-of-line) (if (re-search-forward "[ \t]*$" (line-end-position) t 1) (setq new-pos  (match-beginning 0)) (setq new-pos (line-end-position)))
            (when (= oldpos new-pos)
-             (setq new-pos (point-at-eol))
+             (setq new-pos (line-end-position))
              )
            (when (> new-pos (+ (frame-width) oldpos))
              (setq new-pos (+ (frame-width) oldpos)))
@@ -759,10 +759,10 @@ Move point to end-of-line ,if point was already at that position,
   (interactive)
   (let ((oldpos (point)))
     (org-end-of-line)
-    (if  (equal (point-at-eol) (point))
+    (if  (equal (line-end-position) (point))
         (progn
           (beginning-of-line)
-          (when (re-search-forward "[ \t]*$" (point-at-eol) t)
+          (when (re-search-forward "[ \t]*$" (line-end-position) t)
             (goto-char (match-beginning 0)))
           )
       (when (equal oldpos (point))
