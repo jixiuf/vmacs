@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (autoload #'viper-ex  "viper" t)
 ;https://github.com/meow-edit/meow/discussions/661
 (setq meow-next-thing-include-syntax

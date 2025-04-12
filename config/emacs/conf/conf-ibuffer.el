@@ -1,4 +1,4 @@
-;;; -*- coding:utf-8 -*-
+;;; -*- lexical-binding: t; -*-
 ;;ibuffer 的管理(列出所有打开的文件/buffer)
 ;;n p 上下，
 ;; m进行标记,比如对两个buffer进行diff比较，可以m标记这两个认的，然后按M-=来进行对比

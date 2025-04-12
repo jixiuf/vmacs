@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; 如果配置好了， 下面20个汉字与40个英文字母应该等长
 ;;  这个工具不错 https://blindwith.science/2019/07/443.html/
 ;; here are 20 hanzi and 40 english chars, see if they are the same width

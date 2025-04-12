@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; (setq pop-up-frames nil)
 ;; (setq pop-up-windows t)
 ;; (setq pop-up-frames 'graphic-only)

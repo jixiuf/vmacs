@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
  ;; (when (file-directory-p "~/repos/eglot-java/")
  ;;   (add-to-list 'load-path "~/repos/eglot-java/"))
 

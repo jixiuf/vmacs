@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;;; Code:
 
 ;; ~/.emacs.d/conf/目录加到 load-path 中

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;;; conf-gpg.el --- gpg 加密相关
 
 ;;; Code:

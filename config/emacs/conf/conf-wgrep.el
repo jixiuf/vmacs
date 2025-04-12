@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; (add-hook 'grep-setup-hook 'grep-mode-fun)
 ;; Then M-g n or M-g p for the next/previous match.
 ;; With (repeat-mode) consequent next/previous are just n and p.

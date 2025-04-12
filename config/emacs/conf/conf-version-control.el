@@ -1,4 +1,3 @@
-
 ;;; -*- lexical-binding: t; -*-
 ;; smerge
 ;; cn next

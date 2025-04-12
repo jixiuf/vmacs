@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
 
 ;; 目前我采用的方案是 mbsync 同步邮件到本地

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; 用sudo 打开当前编辑的文件或目录
 (global-set-key (kbd "C-c fr") 'sudo-edit)
 ;; su: or /sudo: on remote hosts

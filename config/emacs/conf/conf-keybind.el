@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (setq widen-automatically nil)         ;for goto-line
 
 (defvar-keymap  g-mode-map             ;meow: g

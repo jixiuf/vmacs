@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 (defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))

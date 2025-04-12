@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;;; Code:
 ;;; -*- coding:utf-8 -*-
 ;;; 一些命令注释

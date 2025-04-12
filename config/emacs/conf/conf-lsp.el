@@ -1,4 +1,4 @@
-;;; -*- coding:utf-8 -*-
+;;; -*- lexical-binding: t; -*-
 
 ;; (setq eglot-confirm-server-edits nil)
 (setq eglot-autoshutdown t)

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; 实现以vim操作clipboard的方式来操作clipboard
 
 ;; vim register 的用法

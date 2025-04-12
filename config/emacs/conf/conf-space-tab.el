@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 (setq-default
  c-basic-offset 4
  indent-tabs-mode nil                    ;用空格代替tab

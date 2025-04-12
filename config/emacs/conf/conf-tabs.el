@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (global-tab-line-mode t)
 (global-set-key  (kbd "C-,") 'tab-line-switch-to-prev-tab)
 (global-set-key  (kbd "C-.") 'tab-line-switch-to-next-tab)

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (setq magit-git-executable (executable-find "git"))
 (setq-default
  transient-default-level 5

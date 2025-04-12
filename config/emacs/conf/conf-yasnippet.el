@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; config for yasnippet
 (require 'yasnippet)
 (require 'lazy-camelize)

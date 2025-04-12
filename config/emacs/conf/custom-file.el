@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 (provide 'custom-file)
 ;;下面的值是通过 Emacs 的 custom 系统关于外观的设置,如无必要不要手动修改
 

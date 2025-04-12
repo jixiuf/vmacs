@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; (add-to-list 'load-path "~/repos/emacs-application-framework/")
 ;; (setq eaf-python-command "/Users/jixiuf/.pyenv/versions/3.9.7/bin/python3")
 

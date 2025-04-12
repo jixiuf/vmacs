@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 (with-eval-after-load 'compile
   (setq-default
    compilation-ask-about-save nil         ;编译之前自动保存buffer

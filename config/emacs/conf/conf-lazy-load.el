@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; 懒加载autoload
 ;; 你会发现lazy/目录下的很多函数上面都会有;;;###autoload的标识
 ;; 此文件为 .emacs.d/lazy/内的文件生成autoload cookie

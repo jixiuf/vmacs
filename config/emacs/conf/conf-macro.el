@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; around demo
 ;; origin
 ;; (defun compilation-find-file (marker filename directory &rest formats)
