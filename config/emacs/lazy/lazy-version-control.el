@@ -282,9 +282,10 @@ This prompts for a branch to merge from."
          (filename (car (cadr fileset-arg)))
          rev next)
     (when parent-buffer
-      ;; FIXME: support other bankend for find rev?
-      (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
-        (setq rev (match-string 2 buffname)))
+      (if (bound-and-true-p vc-buffer-revision)
+          (setq rev vc-buffer-revision)
+        (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
+          (setq rev (match-string 2 buffname))))
       (setq next (vc-call-backend backend 'next-revision
                                   filename rev))
       (kill-buffer prev-buffer)
@@ -303,9 +304,10 @@ This prompts for a branch to merge from."
          (backend (car fileset-arg))
          (filename (car (cadr fileset-arg)))
          rev prev)
-    ;; FIXME: support other bankend for find rev?
-    (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
-      (setq rev (match-string 2 buffname)))
+    (if (bound-and-true-p vc-buffer-revision)
+        (setq rev vc-buffer-revision)
+      (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
+        (setq rev (match-string 2 buffname))))
     (if rev
         (setq prev (vc-call-backend backend 'previous-revision
                                     filename rev))
