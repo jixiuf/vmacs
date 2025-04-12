@@ -380,7 +380,7 @@ Default is 'meow-normal-state-keymap' when PARENT is nil."
 
 (define-advice meow-yank (:around (orig-fun &rest args) vim-p-and-auto-selection)
   "Make `yank' behave like paste (p) command in vim."
-  (when-let ((clip (condition-case nil (current-kill 0 t) (error ""))))
+  (when-let* ((clip (condition-case nil (current-kill 0 t) (error ""))))
     (set-text-properties 0 (length clip) nil clip)
     (let ((charp (= 1 (length clip)))
           (linep (string-suffix-p "\n" clip)))
