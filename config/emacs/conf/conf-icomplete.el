@@ -160,6 +160,7 @@
                                 eglot-code-actions execute-extended-command
                                 project-or-external-find-file vc-switch-project
                                 indent-for-tab-command vmacs-yank-pop
+                                ;; consult-isearch-history
                                 describe-function describe-variable
                                 yank-pop vmacs-complete
                                 consult-dir consult-ripgrep
@@ -301,6 +302,21 @@
 
   (plist-put consult--source-recent-file
              :items #'vmacs-consult--source-recentf-items)
+
+  (consult-customize
+   ;; 默认 consult-isearch-history 进入regexp 的narrow
+   consult-isearch-history :initial-narrow ?r
+   ;; ;; Disable preview for `consult-theme' completely.
+   ;; consult-theme :preview-key nil
+   ;; ;; Set preview for `consult-buffer' to key `M-.'
+   ;; consult-buffer :preview-key "M-."
+   ;; ;; For `consult-line' change the prompt and specify multiple preview
+   ;; ;; keybindings. Note that you should bind <S-up> and <S-down> in the
+   ;; ;; `minibuffer-local-completion-map' or `vertico-map' to the commands which
+   ;; ;; select the previous or next candidate.
+   ;; consult-line :prompt "Search: "
+   ;; :preview-key '("S-<down>" "S-<up>"))
+   )
 
   ;; (consult-customize
   ;;  consult-buffer

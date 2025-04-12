@@ -13,6 +13,7 @@
 ;; |ここここここここここここここここここここ|
 ;; |ｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺｺ|
 ;; |까까까까까까까까까까까까까까까까까까까까|
+(set-default-toplevel-value 'lexical-binding t)
 
 (defconst my/start-time (current-time))
 (setq native-comp-jit-compilation-deny-list '("loaddefs"))
