@@ -93,6 +93,8 @@
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
 (define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
+(setq isearch-message-prefix-add "(C-t:rx C-e:edit)")
+
 (add-hook 'isearch-mode-hook (lambda()(require 'xref)
                                (when (equal emacs-major-version "30")
                                  (xref--push-markers (current-buffer) (point) (selected-window))
