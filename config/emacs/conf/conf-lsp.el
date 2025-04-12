@@ -28,7 +28,6 @@
     (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
     (local-set-key (kbd "C-c C-e") 'dape-eval)
     (local-set-key (kbd "C-c C-f") 'dape-continue)
-    (autoload 'codeium-completion-at-point "codeium" "" t) 
     (local-set-key (kbd "C-<return>") (cape-capf-interactive #'copilot-complete))
 
     ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
