@@ -174,6 +174,16 @@
                  )
                auto-mode-alist))
 
+(defun scratch-auto-set-major-mode (&optional arg)
+  (when (and (string= (buffer-name) "*scratch*")
+             (or (eq this-command 'yank)
+                 (eq this-command 'meow-replace)))
+    (set-auto-mode)))
+
+(advice-add 'yank :after #'scratch-auto-set-major-mode)
+(advice-add 'meow-replace :after #'scratch-auto-set-major-mode)
+
+
 (add-to-list 'magic-mode-alist
              `(,(lambda ()
                   (and buffer-file-name
