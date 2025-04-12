@@ -65,10 +65,9 @@
  '(outline-minor-mode-cycle-filter 'bolp)
  '(outline-minor-mode-use-buttons 'in-margins)
  '(package-selected-packages
-   '(async beacon cape clipetty consult-dir copilot dape dired-filetype-face emamux embark
-           embark-consult exec-path-from-shell git-link go-translate golden-ratio-scroll-screen
-           goto-chg gptel kkp lua-mode magit marginalia markdown-mode meow-tree-sitter orderless
-           org-alert org-msg ox-gfm pinyinlib plz posframe protobuf-mode verb vundo wgrep
+   '(async beacon cape clipetty consult-dir copilot dape dired-filetype-face embark embark-consult
+           exec-path-from-shell git-link go-translate golden-ratio-scroll-screen goto-chg gptel kkp
+           lua-mode marginalia meow-tree-sitter orderless org-msg pinyinlib plz verb vundo wgrep
            with-editor yasnippet))
  '(package-vc-selected-packages
    '((copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
