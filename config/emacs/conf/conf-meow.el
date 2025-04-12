@@ -19,7 +19,7 @@
 (setq meow-select-on-insert t)
 (setq meow-keypad-self-insert-undefined nil)
 ;; (setq meow-use-cursor-position-hack t)  ;a 的行为向后一字符,行尾会到下一行
-(setq meow-keypad-leader-dispatch "C-c")
+;; (setq meow-keypad-leader-dispatch "C-c")
 
 
 (defun meow-setup ()
