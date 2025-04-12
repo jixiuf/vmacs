@@ -190,7 +190,6 @@
 
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
 (vmacs-leader "b" 'meow-last-buffer)
-(vmacs-leader "q" 'meow-start-kmacro-or-insert-counter)
 (vmacs-leader  "fg" #'vmacs-ai)
 
 

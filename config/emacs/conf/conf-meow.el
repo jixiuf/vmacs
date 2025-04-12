@@ -140,7 +140,7 @@
    '("s" . meow-mark-line)
    '("S" . meow-goto-line)
    '("y" . meow-save)
-   '("`" . meow-start-kmacro-or-insert-counter)
+   '("`" . kmacro-start-macro-or-insert-counter) ;esc quit
    '("R" . meow-swap-grab)
    '("Y" . meow-sync-grab)
    '("\\" . just-one-space-or-delete-horizontal-space)
