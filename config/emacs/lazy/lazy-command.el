@@ -632,10 +632,15 @@ numeric, repeat times.
   (interactive)
   (let* ((start (if (use-region-p) (region-beginning) (point-min)))
          (end (if (use-region-p) (region-end) (point-max))))
+    (save-excursion
+      (goto-char end)
+      (while (and (> (point) start)
+                  (member (char-before) '(?\s ?\n ?\t ?,)))
+        (delete-char -1))
+      (setq end (point)))
     (shell-command-on-region start end
                              "python -c \"import sys, json; [print(json.loads(line.strip())) for line in sys.stdin if line.strip()]\""
                              nil t)))
-
 
 ;;;###autoload
 (defun vmacs-idle-timer()
