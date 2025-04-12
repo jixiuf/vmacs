@@ -140,6 +140,9 @@
    '("s" . meow-mark-line)
    '("S" . meow-goto-line)
    '("y" . meow-save)
+   ;; 其他几个与kmacro 相关的命令
+   ;; C-xC-kl 可编辑最近执行的几条命令当作宏
+   ;; C-xC-kRET 可编辑最近的宏
    '("`" . kmacro-start-macro-or-insert-counter) ;esc quit
    '("R" . meow-swap-grab)
    '("Y" . meow-sync-grab)
