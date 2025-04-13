@@ -142,8 +142,8 @@
   (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
   (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd for meow-motion
-  (define-key vc-dir-mode-map (kbd "i") #'vc-switch-project)
-  (define-key vc-dir-mode-map (kbd "I") #'vc-dir-ignore)
+  (define-key vc-dir-mode-map (kbd "o") #'vc-switch-project)
+  (define-key vc-dir-mode-map (kbd "i") #'vc-dir-ignore)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
   (keymap-unset vc-dir-mode-map "v" t)
   (define-key vc-dir-mode-map (kbd "v") vc-push-map)
@@ -194,14 +194,14 @@
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)
   (define-key log-view-mode-map (kbd "v") vc-push-map)
-  (define-key log-view-mode-map (kbd "i") #'vc-switch-project)
+  (define-key log-view-mode-map (kbd "o") #'vc-switch-project)
   (define-key log-view-mode-map (kbd "r") vc-r-map)
   (define-key log-view-mode-map (kbd "x") #'vcgit-reset)
   (define-key log-view-mode-map (kbd "t") vc-tag-map)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "g") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-diff)
-  (define-key log-view-mode-map (kbd "o") #'log-view-toggle-entry-display)
+  (define-key log-view-mode-map (kbd "i") #'log-view-toggle-entry-display)
 
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
   )
