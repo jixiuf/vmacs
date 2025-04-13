@@ -1,10 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 (global-tab-line-mode t)
-(global-set-key  (kbd "C-,") 'tab-line-switch-to-prev-tab)
-(global-set-key  (kbd "C-.") 'tab-line-switch-to-next-tab)
+(global-set-key  (kbd "C-,") 'tab-line-switch-to-next-tab)
+(global-set-key  (kbd "C-.") 'tab-line-switch-to-prev-tab)
 (setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator " ")
+(setq tab-line-tabs-function #'tab-line-tabs-window-buffers)
 (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
   "Return a list of tabs that should be displayed in the tab line
 but skip uninterested buffers."
@@ -64,7 +65,6 @@ but skip uninterested buffers."
 ;;      (t                                 ;当前 buffer 是正常 buffer
 ;;       (or (vmacs-boring-buffer-p buf)   ;若 buf 是 boring buf 或 vterm，则跳过
 ;;           (vmacs-vterm-p buf))))))
-
 ;; (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) skip-buffer)
 ;;   "Return a list of tabs that should be displayed in the tab line
 ;; but skip uninterested buffers."
