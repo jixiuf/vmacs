@@ -304,6 +304,9 @@
              :items #'vmacs-consult--source-recentf-items)
 (define-key consult-isearch-history-map (kbd "M-p") #'icomplete-backward-completions)
 (define-key consult-isearch-history-map (kbd "M-n") #'icomplete-forward-completions)
+(define-key consult-isearch-history-map (kbd "C-m") (lambda()(interactive)
+                                                      (run-with-timer 0.05 nil #'isearch-exit)
+                                                      (icomplete-fido-ret)))
 
 
   (consult-customize
