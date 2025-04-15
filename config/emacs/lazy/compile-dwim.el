@@ -87,6 +87,8 @@ Its value should be 'always or list like (filename run compile).")
          ;; "mxmlc %f"
          "lua %n.lua")
     (dired (or (mode . dired-mode)
+               (mode . vc-dir-mode)
+               (mode . log-view-mode)
                (name . "magit:")
                (name . "magit-")
                (mode . magit-status-mode)
@@ -336,6 +338,8 @@ that alist."
   (if (and (not (buffer-file-name))
            (not (eq major-mode 'dape-repl-mode))
            (not (derived-mode-p 'magit-mode))
+           (not (derived-mode-p 'vc-dir-mode))
+           (not (derived-mode-p 'log-view-mode))
            (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
     (compile-dwim-make-local-vars)
@@ -420,6 +424,8 @@ that alist."
   (interactive)
   (if (and (not (buffer-file-name))
            (not (eq major-mode 'dape-repl-mode))
+           (not (derived-mode-p 'vc-dir-mode))
+           (not (derived-mode-p 'log-view-mode))
            (not (derived-mode-p 'magit-mode))
            (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
@@ -464,7 +470,7 @@ if found return the directory or nil"
         nil
         ))))
 (defun dape-dired()
-  (if (derived-mode-p '(magit-mode dired-mode))
+  (if (derived-mode-p '(magit-mode dired-mode vc-dir-mode log-view-mode))
     (cond
      ((locate-dominating-file default-directory "go.mod")
       (with-temp-buffer
