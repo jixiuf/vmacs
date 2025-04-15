@@ -375,6 +375,23 @@ This prompts for a branch to merge from."
 		(unless found-hunk
 		  (message "Current line %d is not within any hunk range." current-line)
 		  (goto-char (point-min)))))))
+(defun log-view-kill-revision ()
+  "Append to `kill-ring' log-view revision at or around point.
+
+When the log-view is in the short format (one compact line per
+revision), the revision is the one on the current line.  If the
+revision is expanded with `log-view-expanded-log-entry-function'
+and point is somewhere inside the expanded text, the revision is
+still the same.
+
+When the log-view is in the long format (detailed view where each
+revision spans several lines), the revision is the one pertinent
+to the text at point."
+  (interactive)
+  (when-let ((revision (cadr (log-view-current-entry (point) t))))
+    (kill-new (format "%s" revision))
+    (message "Copied: %s" revision)))
+
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较

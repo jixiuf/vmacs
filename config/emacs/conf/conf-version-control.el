@@ -191,6 +191,7 @@
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key log-view-mode-map (kbd "C-c Ga") #'log-view-annotate-version) ;ga
   (define-key log-view-mode-map (kbd "f") vc-fetch-map)
+  (define-key log-view-mode-map (kbd "M-w") #'log-view-kill-revision)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)
   (define-key log-view-mode-map (kbd "v") vc-push-map)
