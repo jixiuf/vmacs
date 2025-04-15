@@ -261,7 +261,6 @@
         ;;               (grep-change-to-grep-edit-mode))))
         )))
   (add-hook 'embark-after-export-hook #'(lambda()(rename-buffer "*grep*" t)))
-  (add-to-list 'consult-preview-excluded-files ".*.gpg$")
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (setq consult-buffer-sources

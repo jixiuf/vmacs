@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;; (add-hook 'js-mode-hook 'vmacs-js-mode-hook)
 (add-hook 'json-ts-mode-hook 'vmacs-js-mode-hook)
 ;; (add-hook 'js-json-mode-hook 'vmacs-js-mode-hook)

@@ -15,7 +15,8 @@
                     "Push : ")
                   nil nil br))
          (remote-br (vc-read-revision "To: " nil nil
-                                      (vcgit--tracking-branch br)))
+                                      (vcgit--tracking-branch br)
+                                      (concat (vcgit--branch-remote branch) "/")))
          remote)
     (when (string-match "^\\(.+?\\)/\\(.+\\)$" remote-br)
       (setq remote (match-string 1 remote-br))
