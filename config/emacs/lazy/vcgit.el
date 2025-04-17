@@ -285,11 +285,9 @@ If the branch is not tracking a remote branch, return nil."
 
     (outline-minor-mode)
     ;; insert Unpulled/Unpushed to vc-dir
-    (vcgit--dir-unpulled
-     '(vcgit--dir-unpushed
-      'vcgit--dir-recent
-      )
-     )
+    (vcgit--dir-unpushed)
+    (vcgit--dir-unpulled)
+    (vcgit--dir-recent     )
     
     (vcgit-dir--todo)))
 
