@@ -28,6 +28,12 @@ deploy:
 		$(LINK_CMD) $(PWD)/$$file ~/.$$name ;\
 	done
 	@-rm -f ~/.notmuch-config.gpg
+	@-for file in doth/*; do \
+		link_name=$$(echo "$$file" | tr ':' '/'); \
+		name="$${link_name#"doth/"}";\
+		rm -rf ~/.$$name ;\
+		$(LINK_CMD_HARD) $(PWD)/$$file ~/.$$name ;\
+	done
 
 
 	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
