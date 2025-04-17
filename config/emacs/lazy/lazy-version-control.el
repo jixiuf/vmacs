@@ -26,8 +26,7 @@
                             `("--force"
                               ,remote ,(format "%s:%s" branch remote-br)))
         (vc-git--pushpull "push" nil
-                          `("--force-with-lease"
-                            ,remote ,(format "%s:%s" branch remote-br)))))))
+                          `(,remote ,(format "%s:%s" branch remote-br)))))))
 (defun vcgit-push-tags ()
   (interactive)
   (vc-git--pushpull "push" nil '("--tags")))

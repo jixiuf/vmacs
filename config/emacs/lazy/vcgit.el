@@ -77,19 +77,6 @@ If the branch is not tracking a remote branch, return nil."
     (unless (string= branch-remote ".")
       (concat branch-remote "/" branch-merge))))
 
-(defun vcgit-format-header (header limit lines)
-  (concat (propertize  (format"%s(%d):\n" header lines)
-                       'face 'vc-dir-header)
-          (propertize (buffer-substring (point-min)
-                                        (save-excursion
-                                          (goto-char (point-min))
-                                          (if limit
-                                              (forward-line limit)
-                                            (goto-char (point-max)))
-                                          (point)))
-                      'keymap vc-git-log-view-mode-map)
-          "\n"))
-
 (defun vcgit-append-header(header)
   (let* ((hf (ewoc-get-hf vc-ewoc))
          (tail (cdr hf))
@@ -104,38 +91,84 @@ If the branch is not tracking a remote branch, return nil."
     (setq footer (concat footer f))
     (ewoc-set-hf vc-ewoc header footer)))
 
-(defun vcgit--log (type header-name limit &optional code)
+(defun vcgit--format-header (header body keymap)
+  (concat (propertize  header 'face 'vc-dir-header)
+          "\n"
+          (propertize body 'keymap keymap)
+          "\n"))
+
+(defun vcgit-format-header (header n body keymap)
+  (vcgit--format-header (if n
+                            (format "%s(%d):" header n)
+                          (format "%s:" header))
+                        body keymap))
+
+(defun vcgit--header-common (header-name with-count topn-lines
+                                         func keymap &optional code )
   (let ((header "")
-        (branch (vc-git--current-branch))
         (vcdir-buf (current-buffer))
-        (inhibit-redisplay t)
-        (buffer  (cond ((eq type 'incoming)
-                        "*vc-incoming*")
-                       ((eq type 'recent)
-                        "*vc-change-log*")
-                       ((eq type 'outgoing)
-                        "*vc-outgoing*"))))
-    (when (or (and (eq type 'recent) branch)
-              (vcgit--tracking-branch))
-      (save-window-excursion
-        (save-excursion
-          (cond
-           ((eq type 'recent)
-            (let ((vc-log-show-limit vcgit-log-commit-count))
-              (vc-print-branch-log (vc-git--current-branch))))
-           ((eq type 'incoming)
-            (vc-log-incoming))
-           ((eq type 'outgoing)
-            (vc-log-outgoing)))
-          (vc-run-delayed
-            (let ((lines (count-lines (point-min) (point-max))))
-              (unless (zerop lines)
-                (font-lock-ensure)
-                (setq header (vcgit-format-header header-name limit lines)))
-              (kill-buffer buffer)
-              (with-current-buffer vcdir-buf
-                (vcgit-append-header header)
-                (if (functionp code) (funcall code  lines) (eval code t))))))))))
+        (inhibit-redisplay t))
+    (save-window-excursion
+      (save-excursion
+        (if (if (functionp func) (funcall func) (eval func t))
+            (vc-run-delayed
+              (let ((lines (count-lines (point-min) (point-max))))
+                (unless (zerop lines)
+                  (font-lock-ensure)
+                  (setq header (vcgit-format-header
+                                header-name
+                                (and with-count lines)
+                                (buffer-substring
+                                 (point-min)
+                                 (if topn-lines
+                                     (save-excursion
+                                       (goto-char (point-min))
+                                       (line-end-position topn-lines))
+                                   (point-max)))
+                                keymap)))
+                (with-current-buffer vcdir-buf
+                  (vcgit-append-header header)
+                  (if (functionp code) (funcall code ) (eval code t)))
+                (kill-buffer)))
+          (with-current-buffer vcdir-buf
+            (if (functionp code) (funcall code ) (eval code t))))))))
+
+(defun vcgit--dir-unpulled (&optional code)
+  (vcgit--header-common
+   "Unpulled" t
+   vcgit-log-commit-count
+   #'(lambda()
+       (when-let* ((branch (vc-git--current-branch))
+                   (tranking (vcgit--tracking-branch branch)))
+         (vc-log-incoming)
+         t))
+   vc-git-log-view-mode-map
+   code))
+
+(defun vcgit--dir-unpushed (&optional code)
+  (vcgit--header-common
+   "Unpushed" t
+   vcgit-log-commit-count
+   #'(lambda()
+       (when-let* ((branch (vc-git--current-branch))
+                   (tranking (vcgit--tracking-branch branch)))
+         (vc-log-outgoing)
+         t))
+   vc-git-log-view-mode-map
+   code))
+
+(defun vcgit--dir-recent (&optional code)
+  (vcgit--header-common
+   "Recent" nil
+   vcgit-log-commit-count
+   #'(lambda()
+       (when (vc-git--current-branch)
+         (let ((vc-log-show-limit vcgit-log-commit-count))
+           (vc-print-branch-log (vc-git--current-branch))
+           t)))
+   vc-git-log-view-mode-map
+   code))
+
 
 (defun vcgit--log-incoming (buffer &optional remote-location)
   "Run git fetch async."
@@ -228,14 +261,6 @@ If the branch is not tracking a remote branch, return nil."
                     (kill-buffer))))))))
 
 
-(defun vcgit--dir-unpulled (&optional code)
-  (vcgit--log 'incoming "Unpulled" vcgit-log-commit-count code))
-(defun vcgit--dir-unpushed (&optional code)
-  (vcgit--log 'outgoing "Unpushed" vcgit-log-commit-count code))
-
-(defun vcgit--dir-recent (unpushed-lines)
-  (when (zerop unpushed-lines)
-    (vcgit--log 'recent "Recent" vcgit-log-commit-count)))
 
 (defun vcgit--dir-refresh ()
   (when (eq vc-dir-backend 'Git)
@@ -259,9 +284,11 @@ If the branch is not tracking a remote branch, return nil."
     (outline-minor-mode)
     ;; insert Unpulled/Unpushed to vc-dir
     (vcgit--dir-unpulled
-     (vcgit--dir-unpushed
+     '(vcgit--dir-unpushed
       'vcgit--dir-recent
-      ))
+      )
+     )
+    
     (vcgit-dir--todo)))
 
 ;;;###autoload
