@@ -7,8 +7,19 @@
 (setq-default
  inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭 scratch 消息提示
- initial-major-mode 'emacs-lisp-mode ;scratch init mode
- initial-buffer-choice t                ;默认打开 scratch buffer
+ ;; initial-major-mode 'emacs-lisp-mode ;scratch init mode
+ ;; initial-buffer-choice t                ;默认打开 scratch buffer
+ ;; initial-buffer-choice "~/*scratch*"
+ initial-major-mode #'(lambda()(emacs-lisp-mode)
+                        (setq buffer-file-name "~/scratch.el")
+                        (setq default-directory "~/")
+                        (setq-local write-contents-functions
+                                    ;; 避免autosave总是提醒是否真的保存
+                                    #'(lambda()
+                                        (let ((txt (buffer-string)))
+                                          (with-temp-file buffer-file-name
+                                            (insert txt))))))
+
  ;; initial-buffer-choice "~/"
 
  treesit-max-buffer-size 107374182   ;100m
