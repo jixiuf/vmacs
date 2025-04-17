@@ -21,6 +21,7 @@ gui-apps/waybar wifi  network pipewire upower tray experimental
 >=media-video/pipewire-0.3.65-r1 ffmpeg  extra bluetooth dbus  sound-server 
 media-sound/pulseaudio -daemon
 media-video/ffmpeg  pulseaudio libsoxr opus theora vpx openh264 lame
+dev-vcs/subversion plaintext-password-storage 
 # net-misc/networkmanager 
 >=net-wireless/wpa_supplicant-2.10-r1 dbus
 >=net-dns/dnsmasq-2.89 dbus

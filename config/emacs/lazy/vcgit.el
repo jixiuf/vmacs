@@ -162,10 +162,12 @@ If the branch is not tracking a remote branch, return nil."
    "Recent" nil
    vcgit-log-commit-count
    #'(lambda()
-       (when (vc-git--current-branch)
-         (let ((vc-log-show-limit vcgit-log-commit-count))
-           (vc-print-branch-log (vc-git--current-branch))
-           t)))
+       (let ((vc-log-show-limit vcgit-log-commit-count)
+             (branch (vc-git--current-branch)))
+         (when branch
+           (vc-print-branch-log branch))
+         t)
+       )
    vc-git-log-view-mode-map
    code))
 

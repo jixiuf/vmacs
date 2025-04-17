@@ -163,27 +163,28 @@
 
 (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
   (interactive)
-  (when (eq vc-dir-backend 'Git)
-    (let ((gitdir (vc-git--git-path))
-          (msg (apply orig-fun args)))
-      (setq msg (string-trim-left msg "VC backend : Git\n")) ;
-      ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
-      (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
-      (when (< emacs-major-version 31)
-        (when (file-exists-p
-	           (expand-file-name "rebase-apply/applying" gitdir))
-          (setq msg (concat msg (propertize  "\nApply     : in progress"
-                                             'face 'vc-dir-status-warning))))
-        (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
-          (setq msg (concat msg (propertize  "\nMerge     : in progress"
-                                             'face 'vc-dir-status-warning))))
-        (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
-          (setq msg (concat msg (propertize  "\nRevert     : in progress"
-                                             'face 'vc-dir-status-warning))))
-        (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
-          (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
-                                             'face 'vc-dir-status-warning)))))
-      msg)))
+  (let ((msg (apply orig-fun args)))
+    (when (eq vc-dir-backend 'Git)
+      (let ((gitdir (vc-git--git-path)))
+        (setq msg (string-trim-left msg "VC backend : Git\n")) ;
+        ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
+        (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
+        (when (< emacs-major-version 31)
+          (when (file-exists-p
+	             (expand-file-name "rebase-apply/applying" gitdir))
+            (setq msg (concat msg (propertize  "\nApply     : in progress"
+                                               'face 'vc-dir-status-warning))))
+          (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
+            (setq msg (concat msg (propertize  "\nMerge     : in progress"
+                                               'face 'vc-dir-status-warning))))
+          (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
+            (setq msg (concat msg (propertize  "\nRevert     : in progress"
+                                               'face 'vc-dir-status-warning))))
+          (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
+            (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
+                                               'face 'vc-dir-status-warning)))))
+        ))
+    msg))
 (with-eval-after-load 'outline
     (keymap-unset outline-overlay-button-map "RET" t))
 (with-eval-after-load 'log-view
