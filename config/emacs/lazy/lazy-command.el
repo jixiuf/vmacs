@@ -953,24 +953,26 @@ Move point to end-of-line ,if point was already at that position,
 ;;;###autoload
 (defun scratch-write-contents ()
   ;; 避免autosave总是提醒是否真的保存
-  (with-current-buffer "*scratch*"
-    (let ((txt (buffer-string)))
-      (when buffer-file-name
-        (require 'vc-git)
-        (unless (file-exists-p "~/.git")
-          ;; git init ad ~
-          (vc-git-create-repo)
-          (with-temp-buffer
-            (insert "*")              ;default ignore all files in ~
-            (append-to-file (point-min)(point-max) "~/.git/info/exclude")))
-        (save-window-excursion
-          (with-temp-file buffer-file-name
-            (insert txt))
-          (set-buffer-modified-p nil)
-          (vc-git-register `(,(buffer-file-name)))
-          (vc-git-command nil 'async buffer-file-name
-                          "commit" "-m" "autosave" "-q"
-                          ))))))
+  (when (equal buffer-file-name "~/scratch.el")
+    (with-current-buffer "*scratch*"
+      (let ((txt (buffer-string)))
+        (when buffer-file-name
+          (require 'vc-git)
+          (unless (file-exists-p "~/.git")
+            ;; git init ad ~
+            (vc-git-create-repo)
+            (with-temp-buffer
+              (insert "*")              ;default ignore all files in ~
+              (append-to-file (point-min)(point-max) "~/.git/info/exclude")))
+          (save-window-excursion
+            (with-temp-file buffer-file-name
+              (insert txt))
+            (set-buffer-modified-p nil)
+            (message "ssssssss")
+            (vc-git-register `(,(buffer-file-name)))
+            (vc-git-command nil 'async buffer-file-name
+                            "commit" "-m" "autosave" "-q"
+                            )))))))
 ;; kill buffer 的包装，对于 emacsclient 连上来的 buffer,则表示编辑完了
 ;; 退出 emacsclient,否则就是普通的关闭文件
 (autoload 'server-edit "server")

@@ -4,6 +4,7 @@
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 
 (when (boundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
+;; (add-hook 'after-save-hook #'scratch-write-contents)
 (setq-default
  inhibit-startup-screen t;隐藏启动显示画面
  initial-scratch-message nil;关闭 scratch 消息提示
@@ -185,7 +186,9 @@
   (when (and (string= (buffer-name) "*scratch*")
              (or (eq this-command 'yank)
                  (eq this-command 'meow-replace)))
-    (set-auto-mode)))
+    (set-auto-mode)
+    (setq-local write-contents-functions #'scratch-write-contents)
+    ))
 
 (advice-add 'yank :after #'scratch-auto-set-major-mode)
 (advice-add 'meow-replace :after #'scratch-auto-set-major-mode)
