@@ -13,12 +13,8 @@
  initial-major-mode #'(lambda()(emacs-lisp-mode)
                         (setq buffer-file-name "~/scratch.el")
                         (setq default-directory "~/")
-                        (setq-local write-contents-functions
-                                    ;; 避免autosave总是提醒是否真的保存
-                                    #'(lambda()
-                                        (let ((txt (buffer-string)))
-                                          (with-temp-file buffer-file-name
-                                            (insert txt))))))
+                        ;; 避免autosave总是提醒是否真的保存
+                        (setq-local write-contents-functions #'scratch-write-contents))
 
  ;; initial-buffer-choice "~/"
 
