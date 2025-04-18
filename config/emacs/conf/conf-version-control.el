@@ -187,7 +187,12 @@
         ))
     msg))
 (with-eval-after-load 'outline
-    (keymap-unset outline-overlay-button-map "RET" t))
+  (keymap-unset outline-overlay-button-map "RET" t))
+(defun vc-find-revision-func (file revision &optional backend)
+  (local-set-key (kbd "C-c C-c") #'vcgit-save-revision))
+(advice-add 'vc-find-revision :after #'vc-find-revision-func)
+
+
 (with-eval-after-load 'log-view
   (require 'vc-dir)
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)

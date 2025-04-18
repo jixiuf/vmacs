@@ -318,6 +318,16 @@ This prompts for a branch to merge from."
       (user-error "vcgit timemachine: You have reached the beginning of time"))))
 
 ;;;###autoload
+(defun vcgit-save-revision ()
+  "write revision back to current file"
+  (interactive)
+  (let ((buf (current-buffer)))
+    (when (bound-and-true-p vc-parent-buffer)
+      (with-current-buffer vc-parent-buffer
+        (replace-buffer-contents buf)
+        (kill-buffer buf)))))
+
+;;;###autoload
 (defun vc-remember-project()
   (let ((filename (vc-root-dir))
         dir)
