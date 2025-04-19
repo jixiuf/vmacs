@@ -311,6 +311,12 @@ This prompts for a branch to merge from."
 	(with-current-buffer buffer
 	  (let ((inhibit-read-only t))
 	    (erase-buffer)
+        (vc-git-command buffer nil nil
+			            "reflog"
+			            "--color=always"
+                        "--date=format:%y-%m-%d %H:%M:%S"
+                        ;; ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
+                        "--pretty=format:%C(yellow)%h%Creset %C(cyan)%an%Creset %C(auto)%d%Creset %Cgreen%gd%Creset %s ")
 	    (goto-char (point-min))
 	    (ansi-color-apply-on-region (point-min) (point-max)))
 	  (setq buffer-read-only t)
@@ -325,6 +331,7 @@ This prompts for a branch to merge from."
   (let ((branch (vcgit--tracking-branch)))
     (vc-print-branch-log branch)))
 ;; got from https://www.rahuljuliato.com/posts/vc-git-functions
+;;;###autoload
 (defun vc-diff-on-current-hunk ()
   "Show the diff for the current file and jump to the hunk containing the current line."
   (interactive)
@@ -349,6 +356,7 @@ This prompts for a branch to merge from."
 		(unless found-hunk
 		  (message "Current line %d is not within any hunk range." current-line)
 		  (goto-char (point-min)))))))
+;;;###autoload
 (defun log-view-kill-revision ()
   "Append to `kill-ring' log-view revision at or around point.
 
