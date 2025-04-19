@@ -87,9 +87,8 @@
   "c" #'vc-create-branch
   "m" #'vc-merge)
 ;; ;git machine 的实现，顺序的遍历当前文件的历史
-(global-set-key (kbd "M-p") 'vcgit-prev-revision)
-(global-set-key (kbd "M-n") 'vcgit-next-revision)
-(global-set-key (kbd "C-c vd") #'magit-status)
+(global-set-key (kbd "M-p") 'vc-annotate)
+;; (global-set-key (kbd "C-c vd") #'magit-status)
 (global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
 (global-set-key (kbd "C-c vk") #'vc-dir-root) ;like dired-jump
 (global-set-key (kbd "C-c vf") vc-fetch-map)
@@ -220,7 +219,54 @@
   (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
   (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
   (define-key diff-mode-shared-map (kbd "v") vc-push-map)
+
   )
+
+;;;; `C-xvg' vc-annotate 查看某个特定文件自始至终的变化
+;;位于info 的Emacs>>Maintaining>>Version Control>>Old Revisions
+;; C-x v g     vc-annotate -- show when each line in a tracked file was added and by whom
+;;`C-uC-xvg' 则不是对默认的当前buffer进行操作,让你选择?
+;;某一个特定版本文件的内容在不同的版本都有增减,而vc-annotate 用不同的颜色表示文件中不同
+;;代码的历史, 红色的部分是最近才添加的,蓝色的则是最初就加入的内容,中间过程添加的代码也会用不同的颜色进行标记
+
+;;*Annotate* buffer 的格式是:右边是代码,左边则是右边每一行代码所对应的版本,也就是代表了这一行代码是在哪个版本
+;;的时候添加进来的.
+;;进入Annotate mode 后还可以进行其他操作
+
+;;p  对此文件的上一个版本进行vc-annotate操作
+;;n  ........下........................
+;;j 对`当前行' 所对应的版本的当前文件进行vc-annotate操作,比如当前行的代码是在版本号为3的时候添加进来的,
+;;  则此操作会对此文件版本为3时的内容进行vc-annotate操作
+;;w  通过p n j 操作后有可能你忘记了当前buffer中的内容到底是哪个版本的,可以用w 回到最初运行`C-xvg' 时的版本
+;;   w 表示working revision 其实就是最新的一个版本
+
+;;a `当前行' 则相当于先进行j操作,然后进行p操作,其作用是查看还没有加入当前行的内容时的前一个版本对应的文件是什么样子的
+;;f `当前行' file跟j类似,不过不进行vc-annotate操作,仅显示当前行对应版本的文件内容
+;;d `当前行' diff操作,当前行对应一个版本,用此版本与它的前一个版本进行diff操作,即查看到底这一次的版本变化有哪些变化
+;;D `当前行' diff操作,与d类似,不过此次显示的不仅是当前文件的diff,而是此次提交所有文件的变化.
+;;l `当前行' log 显示日志 ,显示当前行所对应的版本 相应的日志
+;;v 默认右边代码左边版本号,v 则toggle 是否显示版本号,用处不大.
+
+(with-eval-after-load 'vc-annotate
+  (define-key vc-annotate-mode-map (kbd "c") #'vc-annotate-revision-at-line) ;old j
+  (define-key vc-annotate-mode-map (kbd "M-n") #'vc-annotate-next-revision)
+  (define-key vc-annotate-mode-map (kbd "M-p") #'vc-annotate-prev-revision)
+  (define-key vc-annotate-mode-map (kbd ".") #'vc-annotate-show-log-revision-at-line)
+  (define-key vc-annotate-mode-map (kbd "C-c C-c") #'vcgit-save-revision)
+  ;; see  v: vc-annotate-toggle-annotation-visibility
+  (defun vc-annotate-annotation-invisibility(&rest args)
+    (add-to-invisibility-spec 'vc-annotate-annotation)
+    ;; (force-window-update (current-buffer))
+    (when vc-parent-buffer
+      (rename-buffer (concat "Annotate "
+                             (buffer-name vc-parent-buffer)
+                             vc-buffer-revision)
+                     t)))
+  (advice-add 'vc-annotate :after #'vc-annotate-annotation-invisibility)
+  (advice-add 'vc-annotate-next-revision :after #'vc-annotate-annotation-invisibility)
+  (advice-add 'vc-annotate-prev-revision :after #'vc-annotate-annotation-invisibility)
+  
+)
 (add-hook 'vc-dir-mode-hook #'vc-remember-project)
 (add-hook 'vc-dir-mode-hook #'vcgit-global-minor-mode)
 
@@ -337,30 +383,6 @@
 ;;            `=', `+'`l', `i',`v'
 ;;           对多文件进行操作时,文件必须处于相同的状态,或者兼容态
 ;;            (added, modified and removed states 为兼容态
-;;;; `C-xvg' vc-annotate 查看某个特定文件自始至终的变化
-;;位于info 的Emacs>>Maintaining>>Version Control>>Old Revisions
-;; C-x v g     vc-annotate -- show when each line in a tracked file was added and by whom
-;;`C-uC-xvg' 则不是对默认的当前buffer进行操作,让你选择?
-;;某一个特定版本文件的内容在不同的版本都有增减,而vc-annotate 用不同的颜色表示文件中不同
-;;代码的历史, 红色的部分是最近才添加的,蓝色的则是最初就加入的内容,中间过程添加的代码也会用不同的颜色进行标记
-
-;;*Annotate* buffer 的格式是:右边是代码,左边则是右边每一行代码所对应的版本,也就是代表了这一行代码是在哪个版本
-;;的时候添加进来的.
-;;进入Annotate mode 后还可以进行其他操作
-
-;;p  对此文件的上一个版本进行vc-annotate操作
-;;n  ........下........................
-;;j 对`当前行' 所对应的版本的当前文件进行vc-annotate操作,比如当前行的代码是在版本号为3的时候添加进来的,
-;;  则此操作会对此文件版本为3时的内容进行vc-annotate操作
-;;w  通过p n j 操作后有可能你忘记了当前buffer中的内容到底是哪个版本的,可以用w 回到最初运行`C-xvg' 时的版本
-;;   w 表示working revision 其实就是最新的一个版本
-
-;;a `当前行' 则相当于先进行j操作,然后进行p操作,其作用是查看还没有加入当前行的内容时的前一个版本对应的文件是什么样子的
-;;f `当前行' file跟j类似,不过不进行vc-annotate操作,仅显示当前行对应版本的文件内容
-;;d `当前行' diff操作,当前行对应一个版本,用此版本与它的前一个版本进行diff操作,即查看到底这一次的版本变化有哪些变化
-;;D `当前行' diff操作,与d类似,不过此次显示的不仅是当前文件的diff,而是此次提交所有文件的变化.
-;;l `当前行' log 显示日志 ,显示当前行所对应的版本 相应的日志
-;;v 默认右边代码左边版本号,v 则toggle 是否显示版本号,用处不大.
 
 ;; (C-x C-q    by default, C-x C-q is no longer bound, so it's better to use the above binding)
 ;; C-x v c     vc-cancel-version -- delete the latest revision (often it makes more sense to look at an old revision

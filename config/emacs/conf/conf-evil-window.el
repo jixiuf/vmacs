@@ -162,6 +162,9 @@
 (setq display-buffer-alist
       '(((lambda (bufname _)
            (memq this-command '(diff-goto-source vmacs-cancel-selection
+                                                 vc-annotate-goto-line
+                                                 vc-annotate
+                                                 vc-annotate-find-revision-at-line
                                                  log-edit-done
                                                  push-button vc-git-stash-show-at-point
                                                  next-error previous-error compile-goto-error)))
