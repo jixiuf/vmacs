@@ -324,7 +324,10 @@ This prompts for a branch to merge from."
   (let ((buf (current-buffer)))
     (when (bound-and-true-p vc-parent-buffer)
       (with-current-buffer vc-parent-buffer
-        (replace-buffer-contents buf)
+      (when (equal emacs-major-version "30")
+        (replace-buffer-contents  buf)
+        (replace-region-contents (point-min) (point-max) buf)
+        )
         (kill-buffer buf)))))
 
 ;;;###autoload

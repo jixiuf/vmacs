@@ -258,9 +258,8 @@
     (add-to-invisibility-spec 'vc-annotate-annotation)
     ;; (force-window-update (current-buffer))
     (when vc-parent-buffer
-      (rename-buffer (concat "Annotate "
-                             (buffer-name vc-parent-buffer)
-                             vc-buffer-revision)
+      (rename-buffer (format "%s (%s)" (buffer-name vc-parent-buffer)
+                             (or (bound-and-true-p vc-buffer-revision) ""))
                      t)))
   (advice-add 'vc-annotate :after #'vc-annotate-annotation-invisibility)
   (advice-add 'vc-annotate-next-revision :after #'vc-annotate-annotation-invisibility)
