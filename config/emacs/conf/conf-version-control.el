@@ -15,6 +15,7 @@
  vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
  vc-command-messages 'log
  vc-find-revision-no-save t
+ vc-use-short-revision t
  log-edit-hook nil
  vc-follow-symlinks t
  vc-allow-rewriting-published-history 'ask
@@ -258,7 +259,7 @@
     (add-to-invisibility-spec 'vc-annotate-annotation)
     ;; (force-window-update (current-buffer))
     (when vc-parent-buffer
-      (rename-buffer (format "%s (%s)" (buffer-name vc-parent-buffer)
+      (rename-buffer (format "%s~%s" (buffer-name vc-parent-buffer)
                              (or (bound-and-true-p vc-buffer-revision)
                                  (bound-and-true-p vc-annotate-parent-rev)))
                      t)))
