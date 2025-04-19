@@ -89,6 +89,7 @@
   "m" #'vc-merge)
 ;; ;git machine 的实现，顺序的遍历当前文件的历史
 (global-set-key (kbd "M-p") 'vc-annotate)
+(global-set-key (kbd "C-c vg") #'vc-annotate)
 ;; (global-set-key (kbd "C-c vd") #'magit-status)
 (global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
 (global-set-key (kbd "C-c vk") #'vc-dir-root) ;like dired-jump
@@ -100,7 +101,6 @@
 (global-set-key (kbd "C-c vl") #'vc-print-log)
 ;; (global-set-key (kbd "C-c vl") #'magit-log-buffer-file)
 (global-set-key (kbd "C-c v.") vc-log-map)
-(global-set-key (kbd "C-c vg") #'vc-annotate)
 (global-set-key (kbd "C-c v=") #'vc-diff)
 (global-set-key (kbd "C-c vh") #'vc-root-diff)
 (global-set-key (kbd "C-c =") #'vc-diff-on-current-hunk)
