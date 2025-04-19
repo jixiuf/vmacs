@@ -321,14 +321,22 @@ This prompts for a branch to merge from."
 (defun vcgit-save-revision ()
   "write revision back to current file"
   (interactive)
-  (let ((buf (current-buffer)))
+  (let* ((buf (current-buffer))
+         (bufrev buf))
+    (when (equal major-mode 'vc-annotate-mode)
+      (setq bufrev (vc-find-revision (or (bound-and-true-p vc-annotate-parent-file)
+                                         (caadr vc-buffer-overriding-fileset))
+                                     (or (bound-and-true-p vc-buffer-revision)
+                                         vc-annotate-parent-rev))))
     (when (bound-and-true-p vc-parent-buffer)
       (with-current-buffer vc-parent-buffer
-      (when (equal emacs-major-version "30")
-        (replace-buffer-contents  buf)
-        (replace-region-contents (point-min) (point-max) buf)
-        )
-        (kill-buffer buf)))))
+        (if (= emacs-major-version 30)
+            (replace-buffer-contents bufrev 1)
+          (replace-region-contents (point-min) (point-max) bufrev 1))
+        (save-buffer)
+        (kill-buffer buf)
+        (when (buffer-live-p bufrev)
+          (kill-buffer bufrev))))))
 
 ;;;###autoload
 (defun vc-remember-project()
