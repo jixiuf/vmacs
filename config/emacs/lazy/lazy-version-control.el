@@ -270,52 +270,6 @@ This prompts for a branch to merge from."
   (require 'project)
   (vc-dir (funcall project-prompter)))
 
-;;;###autoload
-(defun vcgit-next-revision ()
-  "Visit the next blob which modified the current file."
-  (interactive)
-  (let* ((buffname (buffer-name))
-         (prev-buffer (current-buffer))
-         (parent-buffer vc-parent-buffer)
-         (fileset-arg (vc-deduce-fileset nil t))
-         (backend (car fileset-arg))
-         (filename (car (cadr fileset-arg)))
-         rev next)
-    (when parent-buffer
-      (if (bound-and-true-p vc-buffer-revision)
-          (setq rev vc-buffer-revision)
-        (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
-          (setq rev (match-string 2 buffname))))
-      (setq next (vc-call-backend backend 'next-revision
-                                  filename rev))
-      (kill-buffer prev-buffer)
-      (if next
-          (switch-to-buffer (vc-find-revision filename next))
-        (find-file filename)
-        (user-error "vcgit timemachine: You have reached the end of time")))))
-;;;###autoload
-(defun vcgit-prev-revision ()
-  "Visit the prev blob which modified the current file."
-  (interactive)
-  (let* ((buffname (buffer-name))
-         (cur-buffer (current-buffer))
-         (parent-buffer vc-parent-buffer)
-         (fileset-arg (vc-deduce-fileset nil t))
-         (backend (car fileset-arg))
-         (filename (car (cadr fileset-arg)))
-         rev prev)
-    (if (bound-and-true-p vc-buffer-revision)
-        (setq rev vc-buffer-revision)
-      (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
-        (setq rev (match-string 2 buffname))))
-    (if rev
-        (setq prev (vc-call-backend backend 'previous-revision
-                                    filename rev))
-      (setq prev (vc-working-revision filename)))
-    (if prev
-        (progn  (switch-to-buffer (vc-find-revision filename prev))
-                (when parent-buffer (kill-buffer cur-buffer)))
-      (user-error "vcgit timemachine: You have reached the beginning of time"))))
 
 ;;;###autoload
 (defun vcgit-save-revision ()
@@ -412,6 +366,52 @@ to the text at point."
     (kill-new (format "%s" revision))
     (message "Copied: %s" revision)))
 
+;; ;;;###autoload
+;; (defun vcgit-next-revision ()
+;;   "Visit the next blob which modified the current file."
+;;   (interactive)
+;;   (let* ((buffname (buffer-name))
+;;          (prev-buffer (current-buffer))
+;;          (parent-buffer vc-parent-buffer)
+;;          (fileset-arg (vc-deduce-fileset nil t))
+;;          (backend (car fileset-arg))
+;;          (filename (car (cadr fileset-arg)))
+;;          rev next)
+;;     (when parent-buffer
+;;       (if (bound-and-true-p vc-buffer-revision)
+;;           (setq rev vc-buffer-revision)
+;;         (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
+;;           (setq rev (match-string 2 buffname))))
+;;       (setq next (vc-call-backend backend 'next-revision
+;;                                   filename rev))
+;;       (kill-buffer prev-buffer)
+;;       (if next
+;;           (switch-to-buffer (vc-find-revision filename next))
+;;         (find-file filename)
+;;         (user-error "vcgit timemachine: You have reached the end of time")))))
+;; ;;;###autoload
+;; (defun vcgit-prev-revision ()
+;;   "Visit the prev blob which modified the current file."
+;;   (interactive)
+;;   (let* ((buffname (buffer-name))
+;;          (cur-buffer (current-buffer))
+;;          (parent-buffer vc-parent-buffer)
+;;          (fileset-arg (vc-deduce-fileset nil t))
+;;          (backend (car fileset-arg))
+;;          (filename (car (cadr fileset-arg)))
+;;          rev prev)
+;;     (if (bound-and-true-p vc-buffer-revision)
+;;         (setq rev vc-buffer-revision)
+;;       (when (string-match "^\\([^~]+?\\)\\(?:\\.~\\([^~]+\\)~\\)?$" buffname)
+;;         (setq rev (match-string 2 buffname))))
+;;     (if rev
+;;         (setq prev (vc-call-backend backend 'previous-revision
+;;                                     filename rev))
+;;       (setq prev (vc-working-revision filename)))
+;;     (if prev
+;;         (progn  (switch-to-buffer (vc-find-revision filename prev))
+;;                 (when parent-buffer (kill-buffer cur-buffer)))
+;;       (user-error "vcgit timemachine: You have reached the beginning of time"))))
 
 ;; c-xvl列出当前文件的历史版本
 ;; 此函数可以对各个历史版本进行比较
