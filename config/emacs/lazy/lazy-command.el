@@ -532,7 +532,7 @@ numeric, repeat times.
     (if (region-active-p)
         (meow-grab)
       (require 'xref)
-      (when (equal emacs-major-version "30")
+      (when (equal emacs-major-version 30)
         (xref--push-markers (current-buffer)(point))
         (xref--push-markers (current-buffer) (point)(selected-window)))
       (call-interactively #'set-mark-command)
