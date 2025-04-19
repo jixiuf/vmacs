@@ -188,9 +188,6 @@
     msg))
 (with-eval-after-load 'outline
   (keymap-unset outline-overlay-button-map "RET" t))
-(defun vc-find-revision-func (file revision &optional backend)
-  (local-set-key (kbd "C-c C-c") #'vcgit-save-revision))
-(advice-add 'vc-find-revision :after #'vc-find-revision-func)
 
 
 (with-eval-after-load 'log-view
@@ -254,7 +251,7 @@
   (define-key vc-annotate-mode-map (kbd "M-p") #'vc-annotate-prev-revision)
   (define-key vc-annotate-mode-map (kbd ".") #'vc-annotate-show-log-revision-at-line)
   (define-key vc-annotate-mode-map (kbd "C-c C-c") #'vcgit-save-revision)
-
+  (define-key vc-annotate-mode-map [return] #'vc-annotate-goto-revision-line)
   ;; copy 的时候 忽略invisible 的文字，即 忽略 每行开头的 commit date author 等信息
   ;; 只copy 实际内容
   (defun vc-annotate-filter-visibile ()
@@ -269,7 +266,7 @@
     (add-to-invisibility-spec 'vc-annotate-annotation)
     (vc-annotate-filter-visibile)
     (when vc-parent-buffer
-      (rename-buffer (format "%s~%s" (buffer-name vc-parent-buffer)
+      (rename-buffer (format "%s-%s" (buffer-name vc-parent-buffer)
                              (or (bound-and-true-p vc-buffer-revision)
                                  (bound-and-true-p vc-annotate-parent-rev)))
                      t)))
@@ -278,6 +275,11 @@
   (advice-add 'vc-annotate-prev-revision :after #'vc-annotate-annotation-invisibility)
   
   )
+(defun vc-find-revision-func (file revision &optional backend)
+  (local-set-key (kbd "M-p") #'vcgit-save-revision)
+  (local-set-key (kbd "C-c C-c") #'vcgit-save-revision))
+(advice-add 'vc-find-revision :after #'vc-find-revision-func)
+
 (add-hook 'vc-dir-mode-hook #'vc-remember-project)
 (add-hook 'vc-dir-mode-hook #'vcgit-global-minor-mode)
 
