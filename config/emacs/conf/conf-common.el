@@ -31,10 +31,10 @@
  xterm-extra-capabilities '( modifyOtherKeys reportBackground  )
  xterm-tmux-extra-capabilities xterm-extra-capabilities
  ;;  mode-line 上显示当前文件是什么系统的文件(windows 的换行符是\n\r)
- eol-mnemonic-dos "[w32]"
- eol-mnemonic-unix "[unix]"
- eol-mnemonic-mac "[mac]"
- eol-mnemonic-undecided "[?]"
+ ;; eol-mnemonic-dos "[w32]"
+ ;; eol-mnemonic-unix "[unix]"
+ ;; eol-mnemonic-mac "[mac]"
+ ;; eol-mnemonic-undecided "[?]"
  ;;(setq track-eol t) ;; 当光标在行尾上下移动的时候，始终保持在行尾。
  ;; (setq-default cursor-type 'bar);;光标显示为一竖线
 
@@ -43,7 +43,7 @@
  ;;而是光标在什么地方,就在哪插入(这个时候光标点击的地方不一定是光标的所在位置)
 
  sentence-end "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*"
- sentence-end-double-space nil         ;;设置 sentence-end 可以识别中文标点。不用在 fill 时在句号后插入两个空格。
+ ;; sentence-end-double-space nil         ;;设置 sentence-end 可以识别中文标点。不用在 fill 时在句号后插入两个空格。
 
 
  ;;(require 'tramp)
