@@ -259,7 +259,8 @@
     ;; (force-window-update (current-buffer))
     (when vc-parent-buffer
       (rename-buffer (format "%s (%s)" (buffer-name vc-parent-buffer)
-                             (or (bound-and-true-p vc-buffer-revision) ""))
+                             (or (bound-and-true-p vc-buffer-revision)
+                                 (bound-and-true-p vc-annotate-parent-rev)))
                      t)))
   (advice-add 'vc-annotate :after #'vc-annotate-annotation-invisibility)
   (advice-add 'vc-annotate-next-revision :after #'vc-annotate-annotation-invisibility)
