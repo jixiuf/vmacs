@@ -96,9 +96,10 @@
 (setq isearch-message-prefix-add "(C-t:rx C-e:edit)")
 
 (add-hook 'isearch-mode-hook (lambda()(require 'xref)
-                               (when (equal emacs-major-version 30)
+                               (if (equal emacs-major-version 30)
+                                   (xref--push-markers (current-buffer) (point) )
                                  (xref--push-markers (current-buffer) (point) (selected-window))
-                                 (xref--push-markers (current-buffer) (point) ))))
+                                 )))
 (setq isearch-lazy-count t)
 (setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
