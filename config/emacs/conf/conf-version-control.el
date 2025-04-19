@@ -265,6 +265,8 @@
     ;; 默认隐藏每行开头的 commit date author 等信息,可通过v 来toggle之
     (add-to-invisibility-spec 'vc-annotate-annotation)
     (vc-annotate-filter-visibile)
+          (vc-run-delayed
+            (message "RET:goto rev,c:annotation rev at line v: toggle visible M-n/p: next/prev C-cC-c:reset to current rev"))
     (when vc-parent-buffer
       (rename-buffer (format "%s-%s" (buffer-name vc-parent-buffer)
                              (or (bound-and-true-p vc-buffer-revision)
@@ -272,11 +274,8 @@
                      t)))
   (advice-add 'vc-annotate :after #'vc-annotate-annotation-invisibility)
   (advice-add 'vc-annotate-next-revision :after #'vc-annotate-annotation-invisibility)
-  (advice-add 'vc-annotate-prev-revision :after #'vc-annotate-annotation-invisibility)
-  
-  )
+  (advice-add 'vc-annotate-prev-revision :after #'vc-annotate-annotation-invisibility))
 (defun vc-find-revision-func (file revision &optional backend)
-  (local-set-key (kbd "M-p") #'vcgit-save-revision)
   (local-set-key (kbd "C-c C-c") #'vcgit-save-revision))
 (advice-add 'vc-find-revision :after #'vc-find-revision-func)
 
