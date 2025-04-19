@@ -254,10 +254,20 @@
   (define-key vc-annotate-mode-map (kbd "M-p") #'vc-annotate-prev-revision)
   (define-key vc-annotate-mode-map (kbd ".") #'vc-annotate-show-log-revision-at-line)
   (define-key vc-annotate-mode-map (kbd "C-c C-c") #'vcgit-save-revision)
-  ;; see  v: vc-annotate-toggle-annotation-visibility
+
+  ;; copy 的时候 忽略invisible 的文字，即 忽略 每行开头的 commit date author 等信息
+  ;; 只copy 实际内容
+  (defun vc-annotate-filter-visibile ()
+    (require 'backtrace)
+    (if (memq 'vc-annotate-annotation buffer-invisibility-spec)
+        (setq-local filter-buffer-substring-function #'backtrace--filter-visible)
+      (setq-local filter-buffer-substring-function #'buffer-substring--filter)))
+  (advice-add 'vc-annotate-toggle-annotation-visibility :after #'vc-annotate-filter-visibile)
+
   (defun vc-annotate-annotation-invisibility(&rest args)
+    ;; 默认隐藏每行开头的 commit date author 等信息,可通过v 来toggle之
     (add-to-invisibility-spec 'vc-annotate-annotation)
-    ;; (force-window-update (current-buffer))
+    (vc-annotate-filter-visibile)
     (when vc-parent-buffer
       (rename-buffer (format "%s~%s" (buffer-name vc-parent-buffer)
                              (or (bound-and-true-p vc-buffer-revision)
@@ -267,7 +277,7 @@
   (advice-add 'vc-annotate-next-revision :after #'vc-annotate-annotation-invisibility)
   (advice-add 'vc-annotate-prev-revision :after #'vc-annotate-annotation-invisibility)
   
-)
+  )
 (add-hook 'vc-dir-mode-hook #'vc-remember-project)
 (add-hook 'vc-dir-mode-hook #'vcgit-global-minor-mode)
 
