@@ -166,7 +166,7 @@
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "C-x K") 'vmacs-kill-buffer-dwim)
-(global-set-key (kbd "C-c C-v") 'save-buffers-kill-terminal)
+(global-set-key (kbd "C-c C-v") 'save-buffers-kill-emacs)
 (global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "M-o") 'toggle-camelize)
 (setq golden-ratio-scroll-highlight-flag nil)
