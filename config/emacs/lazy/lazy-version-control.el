@@ -392,6 +392,7 @@ to the text at point."
 ;;   "Visit the next blob which modified the current file."
 ;;   (interactive)
 ;;   (let* ((buffname (buffer-name))
+;;          (line (line-number-at-pos))
 ;;          (prev-buffer (current-buffer))
 ;;          (parent-buffer vc-parent-buffer)
 ;;          (fileset-arg (vc-deduce-fileset nil t))
@@ -409,13 +410,15 @@ to the text at point."
 ;;       (if next
 ;;           (switch-to-buffer (vc-find-revision filename next))
 ;;         (find-file filename)
-;;         (user-error "vcgit timemachine: You have reached the end of time")))))
+;;         (user-error "vcgit timemachine: You have reached the end of time")))
+;;     (forward-line (1- line))))
 ;; ;;;###autoload
 ;; (defun vcgit-prev-revision ()
 ;;   "Visit the prev blob which modified the current file."
 ;;   (interactive)
 ;;   (let* ((buffname (buffer-name))
 ;;          (cur-buffer (current-buffer))
+;;          (line (line-number-at-pos))
 ;;          (parent-buffer vc-parent-buffer)
 ;;          (fileset-arg (vc-deduce-fileset nil t))
 ;;          (backend (car fileset-arg))
@@ -431,7 +434,8 @@ to the text at point."
 ;;       (setq prev (vc-working-revision filename)))
 ;;     (if prev
 ;;         (progn  (switch-to-buffer (vc-find-revision filename prev))
-;;                 (when parent-buffer (kill-buffer cur-buffer)))
+;;                 (when parent-buffer (kill-buffer cur-buffer))
+;;                 (forward-line (1- line)))
 ;;       (user-error "vcgit timemachine: You have reached the beginning of time"))))
 
 ;; c-xvl列出当前文件的历史版本
