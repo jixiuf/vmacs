@@ -363,7 +363,12 @@ Default is 'meow-normal-state-keymap' when PARENT is nil."
 ;; (add-to-list 'meow-selection-command-fallback '(meow-save . meow-line)) ;support: yy y3y
 (define-advice meow-save (:around (orig-fun &rest args) yy-old-pos)
   "goto origin position after `yy',need fallback (meow-save . meow-line) "
-  (let ((region (region-active-p)))
+  (let ((region (region-active-p))
+        (filter-buffer-substring-function filter-buffer-substring-function))
+    (when current-prefix-arg
+      (require 'backtrace)
+      (message "copy ingore invible")
+      (setq filter-buffer-substring-function #'backtrace--filter-visible))
     (apply orig-fun args)
     (when region
       (meow-pop-all-selection))))
