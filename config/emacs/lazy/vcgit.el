@@ -165,8 +165,9 @@ If the branch is not tracking a remote branch, return nil."
        (let ((vc-log-show-limit vcgit-log-commit-count)
              (branch (vc-git--current-branch)))
          (when branch
-           (vc-print-branch-log branch))
-         t)
+           (vc-print-branch-log branch)
+           t)
+         )
        )
    vc-git-log-view-mode-map
    code))
