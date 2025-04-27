@@ -21,6 +21,8 @@ URL_PREFIX_MAP = {
     # "https://dbs.luojilab.com/bsai/":"http://127.0.0.1:28767/bsai/",
     "http://bschool.dev.didatrip.com/scrm/":"http://127.0.0.1:2654/scrm/",
     "http://bschool.dev.didatrip.com/curriculum/":"http://127.0.0.1:3880/curriculum/",
+    "http://quiz-activity.test.svc.luojilab.dc/quiz_activity/":"http://127.0.0.1:58658/quiz_activity/",
+    "http://entree.dev.didatrip.com/quiz_activity/":"http://localhost:58658/quiz_activity/",
     "http://entree.dev.didatrip.com/ddpush/":"http://localhost:23587/ddpush/",
     
     
