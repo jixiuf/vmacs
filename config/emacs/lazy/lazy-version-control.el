@@ -350,9 +350,11 @@ When the log-view is in the long format (detailed view where each
 revision spans several lines), the revision is the one pertinent
 to the text at point."
   (interactive)
-  (when-let* ((revision (cadr (log-view-current-entry (point) t))))
-    (kill-new (format "%s" revision))
-    (message "Copied: %s" revision)))
+  (if (region-active-p)
+      (call-interactively #'copy-region-as-kill)
+    (when-let* ((revision (cadr (log-view-current-entry (point) t))))
+      (kill-new (format "%s" revision))
+      (message "Copied: %s" revision))))
 ;;;###autoload
 (defun vc-annotate-goto-revision-line (&optional args)
   (interactive)
