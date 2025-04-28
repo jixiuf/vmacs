@@ -214,10 +214,9 @@
   ;; (define-key diff-mode-shared-map (kbd "s") #'vcgit-stage)
   ;; (define-key diff-mode-shared-map (kbd "u") #'vcgit-unstage)
   (add-hook 'diff-mode-hook #'outline-minor-mode)
-  (define-key diff-mode-shared-map (kbd "c") #'vc-next-action)
-  (define-key diff-mode-shared-map (kbd "d") #'outline-cycle)
-  (define-key diff-mode-shared-map (kbd "v") vc-push-map)
-
+  (define-key diff-minor-mode-map (kbd "c") #'vc-next-action)
+  (define-key diff-minor-mode-map (kbd "d") #'outline-cycle)
+  (define-key diff-minor-mode-map (kbd "v") vc-push-map)
   )
 
 ;;;; `C-xvg' vc-annotate 查看某个特定文件自始至终的变化
