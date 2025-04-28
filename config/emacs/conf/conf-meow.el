@@ -294,10 +294,12 @@ Default is 'meow-normal-state-keymap' when PARENT is nil."
 
 (defvar meow-motion-parent-keymaps (make-hash-table :test #'equal))
 (defun meow-motion-set-keymap-parent()
-  (when (and meow-motion-mode
-             (not (gethash major-mode meow-motion-parent-keymaps)))
-    (puthash major-mode t meow-motion-parent-keymaps)
-    (meow-set-keymap-parent major-mode meow-normal-state-keymap)))
+  (unless (member major-mode '(diff-mode special-mode))
+    (message "sss %s %s" major-mode (buffer-name))
+    (when (and meow-motion-mode
+               (not (gethash major-mode meow-motion-parent-keymaps)))
+      (puthash major-mode t meow-motion-parent-keymaps)
+      (meow-set-keymap-parent major-mode meow-normal-state-keymap))))
 
 (add-hook 'meow-motion-mode-hook #'meow-motion-set-keymap-parent)
 
