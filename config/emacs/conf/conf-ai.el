@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; -*-
+;;; -*- Lexical-binding: t; -*-
 (require 'gptel)
 (setq gptel-default-mode 'org-mode)
 (setq gptel-display-buffer-action  '(pop-to-buffer-same-window))
@@ -31,7 +31,7 @@
   (when gptel-mode
     (unless buffer-file-name
       (setq buffer-file-name
-            (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))
+            (expand-file-name (format-time-string "%Y%m%d_%H%M%S.ai.txt" (current-time))
                               "~/Documents/jianguo/jianguo/ai/")))
     (write-file buffer-file-name)))
 

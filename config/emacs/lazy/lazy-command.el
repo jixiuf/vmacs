@@ -242,7 +242,7 @@ based on the current context and previous history."
       ;; (yas-expand-from-trigger-key)
       (unless buffer-file-name
         (setq buffer-file-name
-              (expand-file-name (format-time-string "ai-%Y%m%d_%H%M%S.org" (current-time))
+              (expand-file-name (format-time-string "%Y%m%d_%H%M%S.ai.txt" (current-time))
                                 "~/Documents/jianguo/jianguo/ai/")))
       (set-buffer-modified-p nil)
       (gptel-mode)

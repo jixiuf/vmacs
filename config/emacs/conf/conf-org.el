@@ -25,7 +25,6 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (shell . t)
-   (go . t)
    (verb . t)))
 
 (with-eval-after-load 'org-src
@@ -251,6 +250,9 @@ linktoc=all
 ;; C-c C-e export to github markdown
 (eval-after-load "ox" '(require 'ox-gfm nil t))
 (defun vmacs-org-mode-hook()
+  (when (string-suffix-p "ai.txt" (buffer-name))
+    (require 'conf-ai)
+    (gptel-mode))
   (face-remap-add-relative 'default 'vmacs-org-font)
   (modify-syntax-entry ?， "." ) ;; 识别中文标点
   (modify-syntax-entry ?。 "." ) ;; 识别中文标点
