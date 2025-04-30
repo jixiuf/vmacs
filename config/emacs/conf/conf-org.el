@@ -1,9 +1,4 @@
-;; org-mode 相关
-;;(require 'ox-re-reveal)
-;;(setq org-re-reveal-root (format "file://%sreveal.js-3.0.0" (expand-file-name user-emacs-directory)))
-;;(setq org-re-reveal-single-file t)
-;; C-cC-eRR
-
+;;   -*- lexical-binding: t; -*-
 (with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "m") m-mode-map)
@@ -12,7 +7,7 @@
   (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo))
 
 (setq verb-auto-kill-response-buffers t)
-(defun uid() (interactive) (completing-read "uid: " '("10064589" "545473" "60682172")))
+(defun uid() (interactive) (completing-read "uid: " '("10064589" "545473" "60682172" "12880661" "492256045")))
 (with-eval-after-load 'org
   (with-eval-after-load 'verb
     (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
@@ -30,6 +25,7 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (shell . t)
+   (go . t)
    (verb . t)))
 
 (with-eval-after-load 'org-src
@@ -254,11 +250,8 @@ linktoc=all
 
 ;; C-c C-e export to github markdown
 (eval-after-load "ox" '(require 'ox-gfm nil t))
- ;;;###autoload
-(define-derived-mode novel-mode org-mode "Novel"
-  "novel mode")
-
 (defun vmacs-org-mode-hook()
+  (face-remap-add-relative 'default 'vmacs-org-font)
   (modify-syntax-entry ?， "." ) ;; 识别中文标点
   (modify-syntax-entry ?。 "." ) ;; 识别中文标点
   (modify-syntax-entry ?！ "." ) ;; 识别中文标点
@@ -283,25 +276,7 @@ linktoc=all
 Monospaced font whihc is fixed idth and height is recommended."
   :group 'vterm)
 
-(defun vmacs-novel-mode-hook()
-  (vmacs-org-mode-hook)
-  ;; (create-frame-font-large-mac)
-  ;; 不起作用
-  (face-remap-add-relative 'default 'vmacs-org-font)
-  ;; (when (string= khalel-import-org-file (buffer-file-name))
-    ;; (local-set-key (kbd "C-c C-e") 'khalel-edit-calendar-event)
-    ;; (local-set-key (kbd "C-c C-r") 'khalel-import-events)
-    ;; (local-set-key (kbd "C-c C-u") 'khalel-refresh)
-    ;; (local-set-key (kbd "C-c C-y") 'khalel-sync-summary)
-
-    ;; (defun khal-edit-hook()
-    ;;   (when (equal (buffer-name) "*khal-edit*") (setq-local truncate-lines nil)))
-    ;; (add-hook 'comint-mode-hook #'khal-edit-hook)
-    ;; )
-  )
-
 (add-hook 'org-mode-hook 'vmacs-org-mode-hook)
-(add-hook 'novel-mode-hook 'vmacs-novel-mode-hook)
 ;; (when (require 'org-caldav nil t)
 ;;   ;; (setq org-agenda-files  (list (expand-file-name "todo.txt.gpg" dropbox-dir) (expand-file-name "caldav.txt" dropbox-dir)))
 ;;   (setq org-caldav-delete-org-entries 'always)

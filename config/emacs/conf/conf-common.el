@@ -177,7 +177,7 @@
                  ("\\.json$"  . json-ts-mode)
                  ("\\.pac$" . js-mode)
                  ;; ("\\.js$"  . js3-mode)
-                 ("\\.txt$" . novel-mode)
+                 ("\\.txt$" . org-mode)
                  ("\\.mm$" . objc-mode)
                  )
                auto-mode-alist))
