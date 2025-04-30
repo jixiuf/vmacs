@@ -12,6 +12,8 @@ deploy:
 	@if [ ! -f wanxiang-lts-zh-hans.gram  ]; then \
 		wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram;\
 	fi
+	rm -rf "$(CURDIR)/sync"
+	@-ln -s -f ~/Documents/jianguo/jianguo/rime-sync "$(CURDIR)/sync"
 	@if [ `uname -s` = "Darwin" ] ; then \
 	  make mac ; \
 	fi
