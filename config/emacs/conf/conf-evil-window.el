@@ -163,6 +163,7 @@
       '(((lambda (bufname _)
            (memq this-command '(diff-goto-source vmacs-cancel-selection
                                                  vc-annotate-goto-line
+                                                 flymake-show-project-diagnostics
                                                  vc-annotate-goto-revision-line
                                                  vc-annotate
                                                  vc-annotate-find-revision-at-line
