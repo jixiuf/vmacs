@@ -30,10 +30,10 @@ patch:
 
   schema_list:
     # - schema: wubi_rime_ice
-    # - schema: rime_ice
     # - schema: double_pinyin_flypy_jixiuf
     - schema: wubi_pinyin_jixiuf          # 五笔拼音混合輸入
     - schema: pinyin_jixiuf
+    # - schema: rime_ice
     # - schema: double_pinyin_flypy #bash rime-install double-pinyin
     # # - schema: pinyin_simp
     # - schema: wubi_pinyin          # 五笔拼音混合輸入

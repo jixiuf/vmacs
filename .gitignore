@@ -69,3 +69,4 @@ linux/config/fcitx5/conf/cached_layouts
 /linux/etc/portage/local/metadata/md5-cache/
 /config/emacs/tramp
 /config/emacs/image-dired/
+mac/rime_input_method/rime_ice.userdb/
