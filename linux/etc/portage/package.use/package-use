@@ -12,8 +12,8 @@ sys-auth/seatd server
 >=app-crypt/gcr-3.41.1-r2:0 gtk
 gui-wm/hyprland X
 >=gui-libs/wlroots-0.16.2 x11-backend
->=dev-qt/qtgui-5.15.9 egl
-dev-qt/qtbase egl
+# >=dev-qt/qtgui-5.15.9 egl
+# dev-qt/qtbase egl
 media-libs/mesa llvm 
 sys-fs/lvm2 lvm 
 >=dev-libs/libdbusmenu-16.04.0-r2 gtk3
@@ -23,7 +23,7 @@ media-sound/pulseaudio -daemon
 media-video/ffmpeg  pulseaudio libsoxr opus theora vpx openh264 lame
 dev-vcs/subversion plaintext-password-storage 
 # net-misc/networkmanager 
->=net-wireless/wpa_supplicant-2.10-r1 dbus
+>=net-wireless/wpa_supplicant-2.10-r1 dbus -p2p
 >=net-dns/dnsmasq-2.89 dbus
 >=x11-libs/libdrm-2.4.115 video_cards_radeon
 www-client/firefox dbus clang pulseaudio
@@ -53,8 +53,8 @@ sys-kernel/installkernel dracut
 dev-java/openjdk-bin source
 dev-libs/jemalloc stats
 app-i18n/librime-lua LUA_SINGLE_TARGET: lua5-4
- net-libs/nodejs npm
- gui-apps/xremap wlroots
+net-libs/nodejs npm
+gui-apps/xremap wlroots
 # sys-devel/gcc jit
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
