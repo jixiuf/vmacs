@@ -71,6 +71,7 @@ engine:
     # 因为reverse_lookup_translator也能通过反查进行拼音的输入，但是它不支持调频
     # script_translator@pinyin   指定的通过下面tag:pinyin的方式则可以支持
     - table_translator
+    - lua_translator@date_translator      # 时间、日期、星期
     - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
     - reverse_lookup_translator # 用拼音打出的字，会提示五笔编码
   filters:
