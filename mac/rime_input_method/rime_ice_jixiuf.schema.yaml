@@ -271,6 +271,7 @@ speller:
     # - derive/ui$/uei/
     # - derive/iu$/iou/
 
+    # - derive/j/k/               # j 坏了，按下k来代替j
     ### 超级简拼
     - erase/^hm$/ # 响应超级简拼，取消「噷 hm」的独占
     - erase/^m$/  # 响应超级简拼，取消「呣 m」的独占
