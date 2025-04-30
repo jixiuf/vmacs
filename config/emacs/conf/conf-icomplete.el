@@ -73,6 +73,7 @@
 (advice-add 'completion-at-point :after #'minibuffer-hide-completions)
 (setq tab-always-indent 'complete)
 ;; (setq completion-in-region-function #'completion--in-region)
+(setq completion-in-region-function #'consult-completion-in-region)
 ;; (setq read-buffer-completion-ignore-case nil)
 ;; (setq read-file-name-completion-ignore-case nil)
 ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
