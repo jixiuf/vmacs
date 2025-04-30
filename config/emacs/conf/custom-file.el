@@ -67,7 +67,7 @@
  '(package-selected-packages
    '(async beacon cape clipetty consult-dir copilot dape dired-filetype-face embark embark-consult
            exec-path-from-shell git-link go-translate golden-ratio-scroll-screen goto-chg gptel kkp
-           lua-mode marginalia meow-tree-sitter orderless pinyinlib plz verb vundo wgrep with-editor
+           marginalia meow-tree-sitter orderless pinyinlib plz verb vundo wgrep with-editor
            yasnippet))
  '(package-vc-selected-packages
    '((copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))

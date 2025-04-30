@@ -131,7 +131,7 @@
 (put 'upcase-region 'disabled nil)
 (with-eval-after-load 'markdown-mode  (add-hook 'markdown-mode-hook #'auto-fill-mode))
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
-(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-ts-mode))
 (setq-default auto-mode-alist
               (append
                '(("\\.pyx" . python-mode)
@@ -140,7 +140,7 @@
                  ("\\.yml$" . yaml-ts-mode)
                  ("authinfo.gpg" . authinfo-mode)
                  ("\\.yaml$" . yaml-ts-mode)
-                 ("\\.lua$" . lua-mode)
+                 ("\\.lua$" . lua-ts-mode)
                  ("\\.scpt\\'" . applescript-mode)
                  ("\\.applescript$" . applescript-mode)
                  ;; ("crontab\\'" . crontab-mode)
