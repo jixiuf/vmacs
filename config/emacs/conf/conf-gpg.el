@@ -151,6 +151,8 @@
 (setq-default epa-file-select-keys nil)
 ;; 你可以使用 `epa-file-encrypt-to` 变量来设置一个或多个接收者的公钥，
 ;; 从而允许将文件加密给这些指定的多个用户。
+;; 加密的文件 android 上解不开 解决方法见:
+;; https://wiki.archlinux.org/title/GnuPG#Disable_unsupported_AEAD_mechanism
 (setq-default epa-file-encrypt-to '("64A4E9D76C3E01A33A7B94EC5F6AFBDF19672E4A")) ;默认用哪个公钥私钥解密
 (defun vmacs-gpg-find-file-hook ()
   "auto encrypt use key in `epa-file-encrypt-to'"
