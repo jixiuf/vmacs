@@ -140,9 +140,10 @@ translator:                     # 五笔模式白 translator
   # prism: wubi_pinyin_jixiuf     # 不必指定，用默认的即可 生成的prism.bin文件的名字，默认wubi_pinyin_jixiuf.prism.bin
   enable_charset_filter: true
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
-  enable_sentence: false         # 是否開啓自動造句
+  enable_sentence: true         # 是否開啓自動造句
   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+  enable_correction: true  #是否开启自动纠错
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   max_phrase_length: 4
