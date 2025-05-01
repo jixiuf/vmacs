@@ -75,6 +75,7 @@ engine:
     - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
     - table_translator@melt_eng           # 英文输入
     - reverse_lookup_translator # 用拼音打出的字，会提示五笔编码
+    - reverse_lookup_translator@reverse_lookup_stroke # 用拼音打出的字，会提示五笔编码
   filters:
     - lua_filter@long_word_filter       # 长词优先
     - simplifier
@@ -176,6 +177,14 @@ reverse_lookup:
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
     - xform/([jqxy])v/$1u/
+reverse_lookup_stroke:
+  dictionary: stroke
+  enable_completion: true
+  prefix: "u"
+  suffix: "'"
+  tips: 〔笔画hspnz〕
+  preedit_format:
+    - xlit/hspnz/一丨丿丶乙/
 
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
   tags: [ abc ]
@@ -217,6 +226,7 @@ recognizer:
   import_preset: default
   patterns:
     reverse_lookup: "`[a-z]*'?$"
+    reverse_lookup_stroke: "u[a-z]*'?$"
 
     # 加了这句之后与import_preset: symbols 结合使用，当输入/开头时，输入特殊符号，如/xl输出αβ等，詳細见symbals.ymal
     # 比如 /2 输入二貳等
