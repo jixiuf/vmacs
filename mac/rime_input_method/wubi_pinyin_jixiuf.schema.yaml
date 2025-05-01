@@ -14,7 +14,7 @@ schema:
     # - pinyin_jixiuf        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库
     # - pinyin_simp.extend
     - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
-    - liangfen  # 两分拼字，作为反查挂载到拼音方案
+    # - liangfen  # 两分拼字，作为反查挂载到拼音方案
 
 switches:
   # - name: ascii_mode
@@ -73,6 +73,7 @@ engine:
     - table_translator
     - lua_translator@date_translator      # 时间、日期、星期
     - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
+    - table_translator@melt_eng           # 英文输入
     - reverse_lookup_translator # 用拼音打出的字，会提示五笔编码
   filters:
     - simplifier
@@ -104,6 +105,7 @@ speller:
 pinyin:                         # 针对script_translator@pinyin
   dictionary: luna_pinyin.extended
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_correction: true  #是否开启自动纠错
   enable_sentence: true         # 是否開啓自動造句
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
@@ -118,7 +120,6 @@ pinyin:                         # 针对script_translator@pinyin
 # wubi:                     # 五笔模式白 translator
 translator:                     # 五笔模式白 translator
   # dictionary: wubi86
-
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   # 有可能并不支持五笔，先开着看看效果
@@ -141,6 +142,15 @@ translator:                     # 五笔模式白 translator
     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
     - "^[a-y]$"                   # 对单字母打出的字不进行调频
     - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
+
+# 次翻译器，英文
+melt_eng:
+  dictionary: melt_eng     # 挂载词库 melt_eng.dict.yaml
+  enable_sentence: false   # 禁止造句
+  enable_user_dict: false  # 禁用用户词典
+  initial_quality: 1.1     # 初始权重
+  comment_format:          # 自定义提示码
+    - xform/.*//           # 清空提示码
 
 
 abc_segmentor:
