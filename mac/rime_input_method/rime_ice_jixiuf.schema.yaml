@@ -151,7 +151,7 @@ translator:
   max_homophones: 7
   max_homographs: 7
 
-  # enable_sentence: true   # 禁止造句
+  enable_sentence: true   # 禁止造句
   dictionary: rime_ice          # 挂载词库 rime_ice.dict.yaml
   preedit_format:               # preedit_format 影响到输入框的显示和“Shift+回车”上屏的字符
     - xform/([jqxy])v/$1u/      # 显示为 ju qu xu yu
