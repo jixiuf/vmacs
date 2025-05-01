@@ -42,6 +42,8 @@ use_preset_vocabulary: true
 #雙拼不支持 luna_pinyin.cn_en 詞庫，請用戶手動禁用。
 import_tables:
   - pinyin_jixiuf
+  - wubi_pinyin_jixiuf
+  - wubi_pinyin_jixiuf.base
   # - pinyin_simp
   # - luna_pinyin.cn_en
   # - luna_pinyin.computer

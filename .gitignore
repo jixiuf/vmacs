@@ -70,3 +70,6 @@ linux/config/fcitx5/conf/cached_layouts
 /config/emacs/tramp
 /config/emacs/image-dired/
 mac/rime_input_method/rime_ice.userdb/
+mac/rime_input_method/emoji.userdb/
+mac/rime_input_method/easy_en.userdb/
+mac/rime_input_method/jp_sela.userdb/
