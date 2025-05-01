@@ -31,7 +31,8 @@ patch:
   schema_list:
     # - schema: wubi_rime_ice
     # - schema: double_pinyin_flypy_jixiuf
-    - schema: wubi86 # 五笔整句
+    # - schema: wubi86 # 五笔整句
+    # - schema: wubi86_jixiuf # 五笔整句
     - schema: wubi_pinyin_jixiuf          # 五笔拼音混合輸入
     - schema: rime_ice_jixiuf
     # - schema: pinyin_jixiuf

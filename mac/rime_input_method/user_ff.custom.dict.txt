@@ -2,4 +2,5 @@
 #@/db_name	user_ff.custom.dict
 #@/db_type	tabledb
 #@/rime_version	1.12.0
-#@/tick	0
+#@/tick	1
+你	wq,iy	2
