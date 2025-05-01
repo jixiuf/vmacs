@@ -1,5 +1,6 @@
 # Rime schema settings
 # encoding: utf-8
+# 五笔支持长句，3码或1码时需以“/”结尾
 
 schema:
   schema_id: wubi_pinyin_jixiuf
@@ -82,8 +83,8 @@ engine:
     - script_translator@user_dict_set
     - script_translator@add_user_dict
     - table_translator@melt_eng           # 英文输入
-    - reverse_lookup_translator # 用拼音打出的字，会提示五笔编码
-    - reverse_lookup_translator@reverse_lookup_stroke # 用拼音打出的字，会提示五笔编码
+    - reverse_lookup_translator # `用拼音打出的字，会提示五笔编码
+    - reverse_lookup_translator@reverse_lookup_stroke # u用拼音打出的字，会提示五笔编码
   filters:
     # - lua_filter@*long_word_filter                   # 长词优先（顺序要求：长词优先 > Emoji）
     - lua_filter@long_word_filter       # 长词优先
@@ -103,6 +104,7 @@ grammar:
   collocation_min_length: 2
 
 speller:
+  # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
   delimiter: " ;'"              # 分词用
   max_code_length: 5
   # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
@@ -112,7 +114,6 @@ speller:
   alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
   # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
   initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
-  # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
   ## speller 未允许 aj 表示 an
   algebra:
   # 这几个是五笔整句上屏时对1码的字 如"的":"r" 需要输入 "r/" 来告知1码
@@ -144,7 +145,7 @@ pinyin:                         # 针对script_translator@pinyin
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  initial_quality: 6 # 优先级
+  initial_quality: 5 # 优先级
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true
@@ -211,7 +212,7 @@ translator-wubi:
   max_homographs: 7
 
   dictionary: wubi86.extended
-  initial_quality: 5
+  initial_quality: 6
   enable_completion: false
   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
   ##  改为 1 则是只显示单字的输入码，依此类推。
@@ -230,7 +231,7 @@ custom_phrase:
   db_class: stabledb
   enable_completion: false
   enable_sentence: false
-  initial_quality: 5
+  initial_quality: 6
 
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
