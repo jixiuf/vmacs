@@ -76,9 +76,11 @@ engine:
     - table_translator@melt_eng           # 英文输入
     - reverse_lookup_translator # 用拼音打出的字，会提示五笔编码
   filters:
+    - lua_filter@long_word_filter       # 长词优先
     - simplifier
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
+    - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
     - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
 
 simplifier:
@@ -116,6 +118,12 @@ pinyin:                         # 针对script_translator@pinyin
   contextual_suggestions: true
   max_homophones: 7
   max_homographs: 7
+  # preedit_format:               # preedit_format 影响到输入框的显示和“Shift+回车”上屏的字符
+  #   - xform/([jqxy])v/$1u/      # 显示为 ju qu xu yu
+  #   # - xform/([nl])v/$1ü/      # 显示为 nü lü
+  #   # - xform/([nl])ue/$1üe/    # 显示为 nüe lüe
+  #   - xform/([nl])v/$1v/        # 显示为 nv lv
+  #   - xform/([nl])ue/$1ve/      # 显示为 nve lve
 
 # wubi:                     # 五笔模式白 translator
 translator:                     # 五笔模式白 translator
@@ -177,6 +185,19 @@ wubi_comment:                   # 显示五笔编码， 这个配置好像不管
     # 同時顯示羅馬字拼寫
     - "xform/ .*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
+
+# Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
+date_translator:
+  date: /date       # 日期： 2022-11-29
+  time: /time       # 时间： 18:13
+  week: /week       # 星期： 星期二
+  datetime: /dt   # ISO 8601： 2022-11-29T18:13:11+08:00
+  timestamp: /ts  # 时间戳： 1669716794
+# Lua 配置: 长词优先，提升 count 个词语，插入到第 idx 个位置。
+# 示例：将 2 个词插入到第 4、5 个候选项，输入 jie 得到「1接 2 解 3 姐 4 饥饿 5 极恶」
+long_word_filter:
+  count: 2
+  idx: 4
 
 
 
