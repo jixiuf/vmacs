@@ -75,7 +75,7 @@ engine:
     # 因为reverse_lookup_translator也能通过反查进行拼音的输入，但是它不支持调频
     # script_translator@pinyin   指定的通过下面tag:pinyin的方式则可以支持
     - table_translator@custom_phrase # 1、2码置顶
-    # - table_translator
+    # - table_translator #translator
     # - lua_translator@date_translator      # 时间、日期、星期
     - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
     - script_translator@translator-wubi
@@ -215,7 +215,7 @@ translator-wubi:
   enable_completion: false
   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
   ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 0
+  spelling_hints: 2
   comment_format:
     # - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
     # 同時顯示羅馬字拼寫
@@ -245,7 +245,7 @@ user_dict_set:
   enable_sentence: false
   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
   ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 0
+  spelling_hints: 2
   comment_format:
     # 同時顯示羅馬字拼寫
     - "xform/[, ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
