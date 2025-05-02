@@ -16,7 +16,7 @@ schema:
   dependencies:
     # - pinyin_jixiuf        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库
     # - pinyin_simp.extend
-    - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
+    # - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
     # - liangfen  # 两分拼字，作为反查挂载到拼音方案
 
 switches:
@@ -89,7 +89,7 @@ engine:
     - script_translator@translator-wubi
     - script_translator@user_dict_set
     - script_translator@add_user_dict
-    - table_translator@melt_eng           # 英文输入
+    # - table_translator@melt_eng           # 英文输入
     - reverse_lookup_translator # `用拼音打出的字，会提示五笔编码
     - reverse_lookup_translator@reverse_lookup_stroke # u用拼音打出的字，会提示五笔编码
   filters:
@@ -100,7 +100,7 @@ engine:
     # - reverse_lookup_filter@wubi_comment # 展示五笔的编码
     - reverse_lookup_filter@wubi_comment_2 # 展示五笔的编码
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
-    - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
+    # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
     - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
     - lua_filter@*long_sentence_filter
 
@@ -300,13 +300,13 @@ add_user_dict:
 
 
 # 次翻译器，英文
-melt_eng:
-  dictionary: melt_eng     # 挂载词库 melt_eng.dict.yaml
-  enable_sentence: false   # 禁止造句
-  enable_user_dict: false  # 禁用用户词典
-  initial_quality: 1.1     # 初始权重
-  comment_format:          # 自定义提示码
-    - xform/.*//           # 清空提示码
+# melt_eng:
+#   dictionary: melt_eng     # 挂载词库 melt_eng.dict.yaml
+#   enable_sentence: false   # 禁止造句
+#   enable_user_dict: false  # 禁用用户词典
+#   initial_quality: 1.0     # 初始权重
+#   comment_format:          # 自定义提示码
+#     - xform/.*//           # 清空提示码
 
 
 abc_segmentor:
@@ -352,11 +352,11 @@ long_word_filter:
 # 详细介绍 https://dvel.me/posts/make-rime-en-better/#短单词置顶的问题
 # 正常情况： 输入 rug 得到 「1.rug 2.如果 …… 」
 # 降低之后： 输入 rug 得到 「1.如果 2.rug …… 」
-reduce_english_filter:
-  # 降低到第 idx 个位置
-  idx: 2
-  # 要降低的单词，匹配的是输入码，即全小写。
-  words: [rug, bus, ship, laos, bail, bam, bans, bib, bos, chic, chit, dab, dag, dal, dit, dub, dug, fab, gam, ger, gus, hem, hep, hud, kat, lam, lax, lex, lug, lux, moc, mos, mot, mum, nad, nay, nib, nip, pak, pap, pax, rig, rum, sac, sal, sax, sec, shin, sis, ska, slang, sus, tad, taj, tac, tic, yep, yum]
+# reduce_english_filter:
+#   # 降低到第 idx 个位置
+#   idx: 2
+#   # 要降低的单词，匹配的是输入码，即全小写。
+#   words: [rug, bus, ship, laos, bail, bam, bans, bib, bos, chic, chit, dab, dag, dal, dit, dub, dug, fab, gam, ger, gus, hem, hep, hud, kat, lam, lax, lex, lug, lux, moc, mos, mot, mum, nad, nay, nib, nip, pak, pap, pax, rig, rum, sac, sal, sax, sec, shin, sis, ska, slang, sus, tad, taj, tac, tic, yep, yum]
 
 
 
