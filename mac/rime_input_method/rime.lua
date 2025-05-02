@@ -1,7 +1,17 @@
+--  API请参见 https://github.com/hchunhui/librime-lua/wiki/Scripting
 -- Rime lua 扩展：https://github.com/hchunhui/librime-lua
 -------------------------------------------------------------
 -- 日期时间
 -- 提高权重的原因：因为在方案中设置了大于 1 的 initial_quality，导致 rq sj xq dt ts 产出的候选项在所有词语的最后。
+-- 这段与配置文件中的配置相关，可配置 触发的input 如 /date
+-- - lua_translator@date_translator      # 时间、日期、星期
+--
+-- date_translator:
+--   date: /date       # 日期： 2022-11-29
+--   time: /time       # 时间： 18:13
+--   week: /week       # 星期： 星期二
+--   datetime: /dt   # ISO 8601： 2022-11-29T18:13:11+08:00
+--   timestamp: /ts  # 时间戳： 1669716794
 function date_translator(input, seg, env)
     local config = env.engine.schema.config
     local date = config:get_string(env.name_space .. "/date") or "/rq"  or "/date"
@@ -11,7 +21,7 @@ function date_translator(input, seg, env)
     local timestamp = config:get_string(env.name_space .. "/timestamp") or "/ts" or "/datetime"
     -- 日期
     if (input == date) then
-        local cand = Candidate("date", seg.start, seg._end, os.date("%Y-%m-%d"), "")
+        local cand = Candidate("date", seg.start, seg._end, os.date("%Y-%m-%d" .. env.name_space), "")
         cand.quality = 100
         yield(cand)
         local cand = Candidate("date", seg.start, seg._end, os.date("%Y/%m/%d"), "")
@@ -48,10 +58,10 @@ function date_translator(input, seg, env)
     end
     -- ISO 8601/RFC 3339 的时间格式 （固定东八区）（示例 2022-01-07T20:42:51+08:00）
     if (input == datetime) then
-        local cand = Candidate("datetime", seg.start, seg._end, os.date("%Y-%m-%dT%H:%M:%S+08:00"), "")
+        local cand = Candidate("time", seg.start, seg._end, os.date("%Y-%m-%d %H:%M:%S"), "")
         cand.quality = 100
         yield(cand)
-        local cand = Candidate("time", seg.start, seg._end, os.date("%Y%m%d%H%M%S"), "")
+        local cand = Candidate("datetime", seg.start, seg._end, os.date("%Y-%m-%dT%H:%M:%S+08:00"), "")
         cand.quality = 100
         yield(cand)
     end
