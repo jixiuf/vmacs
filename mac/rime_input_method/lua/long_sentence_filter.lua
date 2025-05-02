@@ -118,24 +118,25 @@ local function long_sentence_filter(input, env)
 
     local l = {}
     local first = true
-    local firstSentence = false -- 记录第一个候选词是否是句子类型
+    -- local firstSentence = false -- 记录第一个候选词是否是句子类型
     local ctxInput = env.engine.context.input
     local inputType = judge_input_type(ctxInput) -- pinyin or wubi
     local firstSentenceLength
 
     for cand in input:iter() do
-        if first and cand.type == "sentence" then
-            firstSentence=true
+        if first  then
+            -- firstSentence=true
             firstSentenceLength = utf8.len(cand.text)
             first=false
             -- print("first" .. cand.text .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
         end
-        if firstSentence and firstSentenceLength>4 and cand.type == "sentence"  then
+        if firstSentenceLength>4   then
             --cand.preedit: 得到当前候选词预处理后的输入编码（
             -- 如形码映射字根、音码分音节加变音符，如："ni hao"）(name_space/preedit_format)
             if inputType == judge_input_type(cand.preedit) then
-                -- print(cand.text .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
-                yield(cand)
+                print(cand.text .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
+                -- yield(cand)
+                -- print("long_sentence_filter")
             else
                 table.insert(l, cand)
             end
