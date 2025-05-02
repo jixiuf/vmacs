@@ -79,7 +79,7 @@ engine:
     # script_translator@pinyin   指定的通过下面tag:pinyin的方式则可以支持
     - table_translator@custom_phrase # 1、2码置顶
     # - table_translator #translator
-    # - lua_translator@date_translator      # 时间、日期、星期
+    - lua_translator@date_translator      # 时间、日期、星期
     - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
     - script_translator@translator-wubi
     - script_translator@user_dict_set
