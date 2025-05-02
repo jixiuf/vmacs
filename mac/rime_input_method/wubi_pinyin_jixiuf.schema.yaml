@@ -79,7 +79,11 @@ engine:
     # script_translator@pinyin   指定的通过下面tag:pinyin的方式则可以支持
     - table_translator@custom_phrase # 1、2码置顶
     # - table_translator #translator
-    - lua_translator@date_translator      # 时间、日期、星期
+    # @ 之后多了一个 *。这个星号表示后面的名字是模块名而不是全局变量名。
+    # 当遇到星号时，librime-lua 会使用 require 机制加载模块，
+    # 然后将其返回值作为 Rime 组件加载到输入法框架中。
+    # - lua_translator@date_translator  #去 rime.lua 找date_translator function
+    - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
     - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
     - script_translator@translator-wubi
     - script_translator@user_dict_set
@@ -88,8 +92,9 @@ engine:
     - reverse_lookup_translator # `用拼音打出的字，会提示五笔编码
     - reverse_lookup_translator@reverse_lookup_stroke # u用拼音打出的字，会提示五笔编码
   filters:
-    # - lua_filter@*long_word_filter                   # 长词优先（顺序要求：长词优先 > Emoji）
-    - lua_filter@long_word_filter       # 长词优先
+  # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
+  # 见下面 long_word_filter 相关配置
+    - lua_filter@*long_word_filter
     - simplifier
     # - reverse_lookup_filter@wubi_comment # 展示五笔的编码
     - reverse_lookup_filter@wubi_comment_2 # 展示五笔的编码
@@ -335,6 +340,7 @@ date_translator:
   timestamp: /ts  # 时间戳： 1669716794
 # Lua 配置: 长词优先，提升 count 个词语，插入到第 idx 个位置。
 # 示例：将 2 个词插入到第 4、5 个候选项，输入 jie 得到「1接 2 解 3 姐 4 饥饿 5 极恶」
+# 配合     - lua_filter@*long_word_filter
 long_word_filter:
   count: 2
   idx: 4
