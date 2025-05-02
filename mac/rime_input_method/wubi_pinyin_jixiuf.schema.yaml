@@ -1,4 +1,6 @@
 # Rime schema settings
+# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md#%E4%BA%8Csegmentor
+#  关于lua 开发相关白内容: https://github.com/hchunhui/librime-lua/wiki/Scripting
 # encoding: utf-8
 # 五笔支持长句，3码或1码时需以“/”结尾
 
@@ -60,12 +62,12 @@ engine:
     - express_editor  #編輯器，處理空格、回車上屏、回退鍵等
     # 用 fluency_editor 代替了 express_editor 是语句流，可以用空格断词。
     # - fluency_editor
-  segmentors:
-    - ascii_segmentor
-    - matcher
-    - abc_segmentor             # # 標記輸入碼的類型
-    - punct_segmentor
-    - affix_segmentor@add_user_dict
+  segmentors:                   # 這批組件識別不同內容類型，將輸入碼分段並加上tag
+    - ascii_segmentor           # 標識西文段落〔譬如在西文模式下〕字母直接上屛
+    - matcher                   # 配合recognizer標識符合特定規則的段落，如網址、反查等，加上特定tag
+    - abc_segmentor             # 標識常規的文字段落，加上abc這個tag
+    - punct_segmentor           #  標識句讀段落〔鍵入標點符號用〕加上punct這個tag
+    - affix_segmentor@add_user_dict # 用戶自定義tag
     - affix_segmentor@verbatim ## not as the last of this list
     - fallback_segmentor
     # - affix_segmentor@pinyin
