@@ -74,3 +74,5 @@ mac/rime_input_method/emoji.userdb/
 mac/rime_input_method/easy_en.userdb/
 mac/rime_input_method/jp_sela.userdb/
 mac/rime_input_method/user_ff.custom.dict.userdb/
+mac/rime_input_method/*.userdb/
+mac/rime_input_method/melt_eng_dicts/melt_eng.userdb/

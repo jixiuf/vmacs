@@ -23,20 +23,30 @@
 
 # Rime dictionary ---
 
-#  wubi_pinyin_jixiuf.extend 这个词典的神奇之处是：虽然
-# wubi_pinyin_jixiuf.schema.yaml 已设置为加载名为 wubi_pinyin_jixiuf.extend 的词典，
-# 但配套的用户词典名却是「wubi_pinyin_jixiuf」，即 Rime 自动取句点之前的部分为
+#  egret_wubi.extended 这个词典的神奇之处是：虽然
+# egret_wubi.schema.yaml 已设置为加载名为 egret_wubi.extended 的词典，
+# 但配套的用户词典名却是「egret_wubi」，即 Rime 自动取句点之前的部分为
 # 用户词典名，以保证按以上方法增补了词汇之后，不至於因为改变词典名而抛弃
 # 原有的用户词典。
 
-name: wubi_pinyin_jixiuf.extend
+name: egret_wubi
+# name: egret_wubi.extended
 version: "2013.04.22"
 sort: by_weight
 # use_preset_vocabulary: true
 import_tables:
   # 这里引入别的字库dict
-  - wubi_pinyin_jixiuf
-  - wubi_pinyin_jixiuf.base
+  - dicts/wb86_cn_dicts/8105     # 字表
+  - dicts/wb86_cn_dicts/41448
+  - dicts/wb86_cn_dicts/base     # 基础词库
+  - dicts/wb86_cn_dicts/ext      # 扩展词库
+  - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
+  # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf
+  - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf.base
+
+  # - cn_dicts_common/tencent_core # 精简的腾讯词库
+  # - cn_dicts_common/tencent  # 腾讯词向量（大词库，部署时间较长 选择性开启）
+  # - cn_dicts_common/user # 用户自定义词典
   # - wubi_pinyin_jixiuf.word4
   # - wubi_pinyin_jixiuf.suyu
 # - emoji

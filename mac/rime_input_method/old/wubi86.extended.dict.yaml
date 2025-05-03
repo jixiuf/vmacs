@@ -19,14 +19,14 @@ use_preset_vocabulary: false
 
 import_tables:
   ## 雾凇拼音 https://github.com/iDvel/rime-ice
-  - cn_dicts_wb/8105     # 字表
-  - cn_dicts_wb/41448
-  
-  - cn_dicts_wb/base     # 基础词库
-  - cn_dicts_wb/ext      # 扩展词库
-  - cn_dicts_wb/others   # 一些杂项 容错音和错字 可以不开
+  - dicts/wb86_cn_dicts/8105     # 字表
+  - dicts/wb86_cn_dicts/41448
+  - dicts/wb86_cn_dicts/base     # 基础词库
+  - dicts/wb86_cn_dicts/ext      # 扩展词库
+  - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
+  - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf.base
 
   # - cn_dicts_common/tencent_core # 精简的腾讯词库
   # - cn_dicts_common/tencent  # 腾讯词向量（大词库，部署时间较长 选择性开启）
-  - cn_dicts_common/user # 用户自定义词典
+  # - cn_dicts_common/user # 用户自定义词典
 ...

@@ -124,7 +124,7 @@ local function long_sentence_filter(input, env)
     local firstSentenceLength
 
     for cand in input:iter() do
-        -- cand= cand:get_genuine()
+        cand= cand:get_genuine()
         if first  then
             -- firstSentence=true
             firstSentenceLength = utf8.len(cand.text)
@@ -135,7 +135,7 @@ local function long_sentence_filter(input, env)
             --cand.preedit: 得到当前候选词预处理后的输入编码（
             -- 如形码映射字根、音码分音节加变音符，如："ni hao"）(name_space/preedit_format)
             if inputType == judge_input_type(cand.preedit) then
-                -- print(cand.text .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
+                -- print(cand.text .. cand:get_dynamic_type() .. " " .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
                 yield(cand)
                 -- print("long_sentence_filter")
             else
@@ -146,9 +146,9 @@ local function long_sentence_filter(input, env)
         end
     end
     for i, cand in ipairs(l) do
-        if i<4 then
-            print(cand.text .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
-        end
+        -- if i<4 then
+        --     print(cand.text .. cand:get_dynamic_type() .. " " .. cand.type .. " " .. cand.preedit .. " " .. inputType .. " ".. judge_input_type(cand.preedit))
+        -- end
         yield(cand)
     end
 end
