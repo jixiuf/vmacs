@@ -96,7 +96,7 @@ engine:
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
     # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
     - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
-    - lua_filter@*long_sentence_filter
+    # - lua_filter@*long_sentence_filter
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
 simplifier:
@@ -110,29 +110,15 @@ grammar:
 speller:
   # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
   delimiter: " ;'"              # 分词用
-  max_code_length: 5
-  # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
-  auto_select: true
-  auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
+  # auto_select: true
+  # auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
+  # max_code_length: 4  # 四碼頂字上屏
   # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
   alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
   # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
   initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
-  ## speller 未允许 aj 表示 an
-  algebra:
-  # 这几个是五笔整句上屏时对1码的字 如"的":"r" 需要输入 "r/" 来告知1码
-    - derive|^(\w)(\w),(\w)0.+$|$1$2$3/| # 3码全码的字，3码全码后加/
-    - derive|^(\w)(\w),00.+$|$1$2/| # 1码全码的字，3码全码后加/
-    - derive|^(\w)0,00.+$|$1/| # 1码全码的字，3码全码后加/
-
-    - derive|^.+;(\w)(\w),(\w)0$|$1$2$3/| # 3码全码的字，3码全码后加/
-    - derive|^.+;(\w)(\w),00$|$1$2/| # 1码全码的字，3码全码后加/
-    - derive|^.+;(\w)0,00$|$1/| # 1码全码的字，3码全码后加/
-
 
   #自动顶屏
-  # auto_select: true
-  # max_code_length: 4  # 四碼頂字上屏
 
 #关于五笔拼音同时存在，且也能调拼音词频的配置 http://tieba.baidu.com/p/2283095493
 # 以往要实现五笔拼音混打，用 table_translator 出五笔，拼音只好用 reverse_lookup_translator ，因为 r10n_translator 和 table_translator 是互斥的。
@@ -151,7 +137,7 @@ translator:                 # wubi
   dictionary: egret_wubi
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
   enable_correction: false  #是否开启自动纠错
-  enable_sentence: true         # 是否開啓自動造句
+  enable_sentence: false         # 是否開啓自動造句
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
@@ -188,6 +174,8 @@ wubi_comment:                   # 显示五笔编码， 这个配置好像不管
 
 # 自定义词典加词(ac引导)
 add_user_dict:
+  prefix: "AC"
+  tips: "〔自造词〕"
   tag: add_user_dict
   dictionary: egret_wubi
   initial_quality: -1
@@ -208,23 +196,11 @@ add_user_dict:
     # 同時顯示羅馬字拼寫
     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
-  prefix: "AC"
-  tips: "〔自造词〕"
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true
   max_homophones: 7
   max_homographs: 7
-
-
-# 次翻译器，英文
-# melt_eng:
-#   dictionary: melt_eng     # 挂载词库 melt_eng.dict.yaml
-#   enable_sentence: false   # 禁止造句
-#   enable_user_dict: false  # 禁用用户词典
-#   initial_quality: 1.0     # 初始权重
-#   comment_format:          # 自定义提示码
-#     - xform/.*//           # 清空提示码
 
 
 abc_segmentor:
@@ -258,18 +234,6 @@ long_word_filter:
   idx: 4
 
 
-# Lua 配置: 降低部分英语单词在候选项的位置
-# 详细介绍 https://dvel.me/posts/make-rime-en-better/#短单词置顶的问题
-# 正常情况： 输入 rug 得到 「1.rug 2.如果 …… 」
-# 降低之后： 输入 rug 得到 「1.如果 2.rug …… 」
-# reduce_english_filter:
-#   # 降低到第 idx 个位置
-#   idx: 2
-#   # 要降低的单词，匹配的是输入码，即全小写。
-#   words: [rug, bus, ship, laos, bail, bam, bans, bib, bos, chic, chit, dab, dag, dal, dit, dub, dug, fab, gam, ger, gus, hem, hep, hud, kat, lam, lax, lex, lug, lux, moc, mos, mot, mum, nad, nay, nib, nip, pak, pap, pax, rig, rum, sac, sal, sax, sec, shin, sis, ska, slang, sus, tad, taj, tac, tic, yep, yum]
-
-
-
 # punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
 # 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
 punctuator:
@@ -285,7 +249,7 @@ recognizer:
   import_preset: default
   patterns:
     reverse_lookup: "`[a-z]*'?$"
-    reverse_lookup_stroke: "u[a-z]*'?$"
+    # reverse_lookup_stroke: "u[a-z]*'?$"
     #造词
     add_user_dict: "^AC[A-Za-z]*$"
 
