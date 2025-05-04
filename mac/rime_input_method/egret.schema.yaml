@@ -65,6 +65,9 @@ speller:
 
 translator:
   dictionary: egret
+  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
+  # build 目录下会生成 相应然 prism.bin
+  prism: egret
   user_dict: dicts/egret.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
