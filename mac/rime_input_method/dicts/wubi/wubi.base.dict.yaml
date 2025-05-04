@@ -18,7 +18,7 @@
 # Wozy <wozy.in@gmail.com>
 
 ---
-name: wubi_pinyin_jixiuf.base
+name: wubi.base
 version: "0.6"
 sort: by_weight
 columns:
