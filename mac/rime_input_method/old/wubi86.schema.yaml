@@ -1,127 +1,137 @@
-# Rime schema
-# encoding: utf-8
-# https://github.com/gaboolic/rime-shuangpin-fuzhuma
-
+engine:
+  filters:
+    - uniquifier
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+key_binder:
+  bindings:
+    - {accept: "Shift+Tab", send: "Shift+Left", when: composing} 
+    - {accept: Tab, send: "Shift+Right", when: composing}
+    - {accept: "Alt+Left", send: "Shift+Left", when: composing}
+    - {accept: "Alt+Right", send: "Shift+Right", when: composing}
+    - {accept: minus, send: Page_Up, when: has_menu}
+    - {accept: equal, send: Page_Down, when: has_menu}
+    - {accept: "Control+Shift+3", toggle: ascii_punct, when: always}
+    - {accept: "Control+Shift+numbersign", toggle: ascii_punct, when: always}
+    - {accept: "Control+Shift+4", toggle: traditionalization, when: always}
+    - {accept: "Control+Shift+dollar", toggle: traditionalization, when: always}
+    - {accept: "Control+k", send: "Shift+Delete", when: composing}
+    - {accept: KP_0, send: 0, when: composing}
+    - {accept: KP_1, send: 1, when: composing}
+    - {accept: KP_2, send: 2, when: composing}
+    - {accept: KP_3, send: 3, when: composing}
+    - {accept: KP_4, send: 4, when: composing}
+    - {accept: KP_5, send: 5, when: composing}
+    - {accept: KP_6, send: 6, when: composing}
+    - {accept: KP_7, send: 7, when: composing}
+    - {accept: KP_8, send: 8, when: composing}
+    - {accept: KP_9, send: 9, when: composing}
+    - {accept: KP_Decimal, send: period, when: composing}
+    - {accept: KP_Multiply, send: asterisk, when: composing}
+    - {accept: KP_Add, send: plus, when: composing}
+    - {accept: KP_Subtract, send: minus, when: composing}
+    - {accept: KP_Divide, send: slash, when: composing}
+    - {accept: "Control+m", send: Return, when: composing}
+    - {accept: "Control+w", send: "Control+BackSpace", when: composing}
+    - {accept: semicolon, send: 2, when: has_menu}
+    - {accept: "Control+i", send: "Shift+Right", when: composing}
+    - {accept: "Control+o", send: "Shift+Left", when: composing}
+    - {accept: "Control+e", toggle: chinese_english, when: has_menu}
+    - {accept: "Control+1", send_sequence: "{Home}{Shift+Right}", when: composing}
+    - {accept: "Control+2", send_sequence: "{Home}{Shift+Right}{Shift+Right}", when: composing}
+    - {accept: "Control+3", send_sequence: "{Home}{Shift+Right}{Shift+Right}{Shift+Right}", when: composing}
+    - {accept: "Control+4", send_sequence: "{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}", when: composing}
+    - {accept: "Control+5", send_sequence: "{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}", when: composing}
+    - {accept: "Control+6", send_sequence: "{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}", when: composing}
+    - {accept: "Control+7", send_sequence: "{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}", when: composing}
+  import_preset: default
+mars:
+  opencc_config: martian.json
+  option_name: mars
+menu:
+  page_size: 9
+recognizer:
+  patterns:
+    punct: "^/([0-9]|10|[A-z]+)$"
+    uppercase: "^[A-Z].*$"
+reverse_stroke:
+  dictionary: stroke
+  enable_completion: true
+  preedit_format:
+    - "xlit/hspnz/一丨丿丶乙/"
+  prefix: AB
+  suffix: "'"
+  tag: reverse_stroke
+  tips: "〔筆畫hspnz〕"
 schema:
-  schema_id: wubi86
-  name: 五笔86整句
-  version: "2024-04-24"
   author:
-    - gaboolic （裁缝)
-  description: |
-    五笔整句 https://github.com/gaboolic/rime-shuangpin-fuzhuma
+    - "gaboolic （裁缝)"
   dependencies:
     - stroke
     - emoji
     - easy_en
     - jp_sela
+  description: |
+    五笔整句 https://github.com/gaboolic/rime-shuangpin-fuzhuma
 
-__include: moqi.yaml:/switches_engine
-__include: moqi.yaml:/phrase # 置顶
-__include: moqi.yaml:/reverse #反查配置
-__include: moqi.yaml:/opencc_config # 拆分 英汉互译 火星文
-__include: moqi.yaml:/punctuator # 标点
-__include: moqi.yaml:/guide # 引导前缀配置
-
+  name: "五笔86整句"
+  schema_id: wubi86
+  version: "2024-04-24"
 speller:
-  max_code_length: 5
-  # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
-  auto_select: true
-  auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
-  # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
-  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
-  # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
-  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
-  # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
-  delimiter: " '"
-  ## speller 未允许 aj 表示 an
   algebra:
-    __include: moqi.yaml:/speller_algebra
-
-user_dict_set:
-  dictionary: wubi86.extended
-  initial_quality: 0
-  enable_completion: false
-  enable_sentence: false
-  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
-  ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 0
-  comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-  enable_user_dict: true # 是否开启自动调频
-  user_dict: user_ff.custom.dict
-  db_class: tabledb
-
-# 自定义词典加词(ac引导)
-add_user_dict:
-  tag: add_user_dict
-  dictionary: wubi86.extended
-  initial_quality: -1
-  user_dict: user_ff.custom.dict
-# ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
-  enable_charset_filter: false
-  enable_completion: true
-  enable_encoder: true
-  enable_sentence: true
-  enable_user_dict: true
-  encode_commit_history: false
-  preedit_format:
-    
-  comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-  prefix: "AC"
-  tips: "〔自造词〕"
-
+    - "derive/^(\\w)(\\w),(.+)$/$1$2/"
+  alphabet: "zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|"
+  auto_select: true
+  auto_select_pattern: "^[a-z]+/|^[a-df-zA-DF-Z]\\w{3}|^e\\w{4}"
+  delimiter: " '"
+  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+  max_code_length: 5
+switches:
+  - name: ascii_mode
+    states: ["中文", "西文"]
+  - name: full_shape
+    states: ["半角", "全角"]
+  - name: traditionalization
+    states: ["简", "繁"]
+  - name: emoji
+    states: ["💀", "😄"]
+  - name: chaifen
+    states: ["不拆", "扌斥"]
+  - name: mars
+    reset: 0
+    states: ["地", "煋"]
+  - name: ascii_punct
+    states: ["。，", "．，"]
+traditionalize:
+  opencc_config: s2t.json
+  option_name: traditionalization
+  tags:
+    - abc
+    - number
+    - gregorian_to_lunar
+  tips: none
 translator:
-  dictionary: wubi86.extended
-  initial_quality: 10000
-  enable_completion: false
-  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
-  ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 0
   comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-
-  enable_user_dict: false # 是否开启自动调频
-  preedit_format:
-    
-
-# 快捷键
-key_binder:
-  import_preset: default
-  bindings:
-    #- { when: composing, accept: Tab, send: '[' } ## 取消注释后：tab引导辅助码
-    - { when: composing, accept: Control+m, send: Return }
-    - { when: composing, accept: Control+w, send: Control+BackSpace }
-    - { when: has_menu, accept: semicolon, send: 2 }
-    # - { when: has_menu, accept: slash, send: 3 } # 用/进行选3
-    - { when: composing, accept: Control+i, send: Shift+Right }
-    - { when: composing, accept: Control+o, send: Shift+Left }
-    - { when: has_menu, accept: "Control+e", toggle: chinese_english }
-
-
-    # - { match: "[a-z]{1,3}", accept: Tab,  send_sequence: "/1" }
-    # - { match: "[a-z]{1,3}", accept: "/",  send_sequence: "/1" }
-    # - { match: "[a-z]{1,3}", accept: ".",  send_sequence: "/1" }
-    # - { when: composing, match: "[a-z]{2}", accept: Tab, send: '|' }
-
-    ## 启用光标回退至特定音节后、补充辅助码的功能。补充完辅助码后，可以再按一次tab回到整句检查
-    - { when: composing, accept: Control+1, send_sequence: '{Home}{Shift+Right}' }
-    - { when: composing, accept: Control+2, send_sequence: '{Home}{Shift+Right}{Shift+Right}' }
-    - { when: composing, accept: Control+3, send_sequence: '{Home}{Shift+Right}{Shift+Right}{Shift+Right}' }
-    - { when: composing, accept: Control+4, send_sequence: '{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}' }
-    - { when: composing, accept: Control+5, send_sequence: '{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}' }
-    - { when: composing, accept: Control+6, send_sequence: '{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}' }
-    - { when: composing, accept: Control+7, send_sequence: '{Home}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}{Shift+Right}' }
-
-# 启用語言模型
-#__include: moqi:/octagram/enable_for_sentence
-
-custom_phrase_mqzg:
-  dictionary: ""
-  user_dict: custom_phrase/custom_phrase_xhzg
-  db_class: stabledb
-  enable_sentence: false
+    - "xform/(^|[ '])[^[]+[[]/$1/"
+  dictionary: egret_wubi_sentence
+  prism: wubi86
   enable_completion: false
-  initial_quality: -1 #本表词和系统词重码居后
+  enable_user_dict: false
+  initial_quality: 10000
+  spelling_hints: 0

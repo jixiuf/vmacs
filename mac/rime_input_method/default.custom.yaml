@@ -34,6 +34,7 @@ patch:
     # - schema: wubi86 # 五笔整句
     # - schema: wubi86_jixiuf # 五笔整句
     # - schema: wubi_pinyin_jixiuf          # 五笔拼音混合輸入
+    - schema: egret_wubi_sentence
     - schema: egret_wubi_py
     - schema: egret_wubi
     - schema: egret
