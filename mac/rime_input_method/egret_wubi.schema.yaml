@@ -11,7 +11,7 @@ schema:
   author:
     - 發明人 jixiuf
   description: |
-    五筆字型86版＋漢語拼音混合輸入。
+    五筆字型86版
     部分碼表源自 qq五笔,使用深蓝词库工具.exe转换而成
   dependencies:
     - egret        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库

@@ -1,0 +1,52 @@
+# Rime dictionary: qq五笔导出
+# encoding: utf-8
+# cat w.txt|sort -r| awk -F\t '!a[$1$2]++'|sort>s2.txt
+#  awk -F\t '!a[$1$2]++' 意思是以tab分隔，第一列第二列作key,用来去重，
+
+# 差集
+# https://www.jianshu.com/p/cf428138caab
+# 意思是以tab分隔，第一列作key,只打印key在b.txt中存在，且不存在于a.txt中的
+# awk -F\t 'NR==FNR{ a[$1]=$1 } NR>FNR{ if(a[$1] == ""){ print $0}}' a.txt b.txt
+#NR表示已经处理的行数，FNR表示当前文件处理的行数。所以当NR==FNR时，处理的是aaa.txt，NR>FNR时处理的是bbb.txt
+# 即在处理a.txt时 将a[key]设置上值，在处理b.txt时，判断a[key]是否为空，为空就打印，即为空，说明此key在a.txt中不存在
+# awk   -F\t 'NR==FNR{ a[$1]=$1 } NR>FNR{ if(a[$1] == ""){ print $0}}' wubi_pinyin_jixiuf.base.dict.yaml wubi_pinyin_jixiuf.suyu.dict.yaml>c.txt
+
+# awk -F\t 'NR==FNR{ a[$1]=$1 } NR>FNR{ if(a[$1] == ""){ print $1}}' a.txt b.txt
+
+# a.txt-b.txt:
+# sort a.txt b.txt b.txt | uniq -u
+# sort a.txt b.txt b.txt | uniq -u：将两个文件排序，最后输出a.txt b.txt b.txt文件中只出现过一次的内容，
+# 因为有两个b.txt所以只会输出只在a.txt出现过一次的内容，即是a.txt-b.txt差集
+
+# 求交集 sort a.txt b.txt | uniq -d
+
+
+# Rime dictionary ---
+
+#  egret_wubi.extended 这个词典的神奇之处是：虽然
+# egret_wubi.schema.yaml 已设置为加载名为 egret_wubi.extended 的词典，
+# 但配套的用户词典名却是「egret_wubi」，即 Rime 自动取句点之前的部分为
+# 用户词典名，以保证按以上方法增补了词汇之后，不至於因为改变词典名而抛弃
+# 原有的用户词典。
+
+name: egret_wubi_py
+# name: egret_wubi.extended
+version: "2013.04.22"
+sort: by_weight
+use_preset_vocabulary: false
+import_tables:
+  # 这里引入别的字库dict
+  - dicts/wb86_cn_dicts/8105     # 字表
+  - dicts/wb86_cn_dicts/41448
+  - dicts/wb86_cn_dicts/base     # 基础词库
+  - dicts/wb86_cn_dicts/ext      # 扩展词库
+  - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
+  # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf
+  # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf.base
+  - dicts/rime_ice/8105     # 字表
+  # - dicts/rime_ice/41448  # 大字表（按需启用）
+  - dicts/rime_ice/base     # 基础词库
+  # - dicts/rime_ice/sogou    # 搜狗流行词
+  - dicts/rime_ice/ext      # 扩展词库
+
+...

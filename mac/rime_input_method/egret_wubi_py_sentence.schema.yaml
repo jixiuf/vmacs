@@ -6,16 +6,17 @@
 # 五笔支持长句，单字全码不足4码时 可以“/”结尾
 
 schema:
-  schema_id: egret_wubi_sentence
-  name: "白鹭五笔流"
+  schema_id: egret_wubi_py_sentence
+  name: "白鹭五笔·拼音流"
   version: "0.9"
   author:
     - 發明人 jixiuf
   description: |
-    白鹭五笔流 可直接输入拼音反查,不可以在一句中同时使用拼音与五笔
+    白鹭五笔流·拼音流  可以在一句中即打五笔又打拼音的输入法
   dependencies:
     - egret        # 这里依赖 egret 输入法的字库反查
     - egret_wubi        # 这里依赖 egret 输入法的字库反查
+    - egret_wubi_sentence        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
 
 switches:
@@ -79,7 +80,7 @@ engine:
     - table_translator@translator-wubi
     - script_translator@translator
     - script_translator@add_user_dict
-    - script_translator@pinyin
+    # - script_translator@pinyin
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
@@ -115,8 +116,8 @@ translator:
 
   comment_format:
     - "xform/(^|[ '])[^[]+[[]/$1/"
-  dictionary: egret_wubi_sentence
-  prism: egret_wubi_sentence
+  dictionary: egret_wubi_py
+  prism: egret_wubi_py
   enable_completion: false
   enable_user_dict: false
   initial_quality: 1
@@ -220,30 +221,6 @@ translator-wubi:                 # wubi
 #   enable_charset_filter: true
 #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
 #   max_phrase_length: 4
-pinyin:
-  dictionary: egret
-  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
-  # build 目录下会生成 相应然 prism.bin
-  prism: egret
-  user_dict: dicts/egret.user.dict
-  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
-  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
-  enable_correction: false  #是否开启自动纠错
-  enable_sentence: true         # 是否開啓自動造句
-  enable_encoder: true          #  是否開啓自動造詞
-  encode_commit_history: true   # 是否對已上屛詞自動成詞
-  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  initial_quality: 1 # 优先级
-  preedit_format:               # 上屏码显示格式，
-    - xform/([nl])v/$1ü/
-    - xform/([nl])ue/$1üe/
-    - xform/([jqxy])v/$1u/
-  # https://github.com/amzxyz/RIME-LMDG
-  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
-  contextual_suggestions: true
-  max_homophones: 7
-  max_homographs: 7
 
 reverse_lookup:
   dictionary: egret
@@ -334,5 +311,4 @@ speller:
     - derive|^.+;(\w)(\w),(\w)0$|$1$2$3/| # 3码全码的字，3码全码后加/
     - derive|^.+;(\w)(\w),00$|$1$2/| # 1码全码的字，3码全码后加/
     - derive|^.+;(\w)0,00$|$1/| # 1码全码的字，3码全码后加/
-
 
