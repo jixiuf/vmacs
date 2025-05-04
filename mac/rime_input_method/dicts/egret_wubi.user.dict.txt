@@ -1,0 +1,5 @@
+# Rime table
+#@/db_name	dicts/egret_wubi.user.dict
+#@/db_type	tabledb
+#@/rime_version	1.12.0
+#@/tick	142
