@@ -29,17 +29,11 @@ patch:
       - zh_hant_tw
 
   schema_list:
-    # - schema: wubi_rime_ice
-    # - schema: double_pinyin_flypy_jixiuf
-    # - schema: wubi86 # 五笔整句
-    # - schema: wubi86_jixiuf # 五笔整句
-    # - schema: wubi_pinyin_jixiuf          # 五笔拼音混合輸入
     - schema: egret_wubi_py_sentence
     - schema: egret_wubi_sentence
     - schema: egret_wubi_py
     - schema: egret_wubi
     - schema: egret
-    # - schema: pinyin_jixiuf
     # - schema: rime_ice
     # - schema: double_pinyin_flypy #bash rime-install double-pinyin
     # # - schema: pinyin_simp
