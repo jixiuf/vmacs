@@ -68,10 +68,22 @@ translator:
   user_dict: dicts/egret.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_correction: false  #是否开启自动纠错
+  enable_sentence: true         # 是否開啓自動造句
+  enable_encoder: true          #  是否開啓自動造詞
+  encode_commit_history: true   # 是否對已上屛詞自動成詞
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+  initial_quality: 1 # 优先级
   preedit_format:               # 上屏码显示格式，
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
     - xform/([jqxy])v/$1u/
+  # https://github.com/amzxyz/RIME-LMDG
+  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+  contextual_suggestions: true
+  max_homophones: 7
+  max_homographs: 7
 
 reverse_lookup:
   dictionary: stroke
@@ -81,6 +93,13 @@ reverse_lookup:
   tips: 〔笔画〕
   preedit_format:
     - xlit/hspnz/一丨丿丶乙/
+
+  # https://github.com/amzxyz/RIME-LMDG
+  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+grammar:
+  language: wanxiang-lts-zh-hans
+  collocation_max_length: 5
+  collocation_min_length: 2
 
 punctuator:
   # import_preset: default

@@ -14,9 +14,9 @@ import_tables:
   # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf.base
 
   - dicts/rime_ice/8105     # 字表
-  - dicts/rime_ice/41448  # 大字表（按需启用）
+  # - dicts/rime_ice/41448  # 大字表（按需启用）
   - dicts/rime_ice/base     # 基础词库
-  - dicts/rime_ice/sogou    # 搜狗流行词
+  # - dicts/rime_ice/sogou    # 搜狗流行词
   - dicts/rime_ice/ext      # 扩展词库
   # - dicts/rime_ice/tencent  # 腾讯词向量（大词库，部署时间较长）
   # - dicts/rime_ice/others   # 一些杂项
