@@ -1,0 +1,26 @@
+# Rime dictionary
+# encoding: utf-8
+
+---
+name: egret
+version: "2023-03-04"
+import_tables:
+  # - dicts/wb86_cn_dicts/8105     # 字表
+  # - dicts/wb86_cn_dicts/41448
+  # - dicts/wb86_cn_dicts/base     # 基础词库
+  # - dicts/wb86_cn_dicts/ext      # 扩展词库
+  # - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
+  # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf
+  # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf.base
+
+  - dicts/rime_ice/8105     # 字表
+  - dicts/rime_ice/41448  # 大字表（按需启用）
+  - dicts/rime_ice/base     # 基础词库
+  - dicts/rime_ice/sogou    # 搜狗流行词
+  - dicts/rime_ice/ext      # 扩展词库
+  # - dicts/rime_ice/tencent  # 腾讯词向量（大词库，部署时间较长）
+  # - dicts/rime_ice/others   # 一些杂项
+
+  # 建议把扩展词库放到下面，有重复词条时，最上面的权重生效
+  # - rime_ice_dicts/my_dict
+...

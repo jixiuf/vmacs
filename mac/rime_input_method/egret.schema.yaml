@@ -3,7 +3,7 @@
 
 schema:
   schema_id: egret
-  name: egret
+  name: 白鹭全拼
   version: "0.8"
   author:
     - jixiuf
@@ -64,7 +64,7 @@ speller:
     - derive/([iu])a(o|ng?)$/a$1$2/
 
 translator:
-  dictionary: egret.extended
+  dictionary: egret
   preedit_format:               # 上屏码显示格式，
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
