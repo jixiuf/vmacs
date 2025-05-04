@@ -65,6 +65,9 @@ speller:
 
 translator:
   dictionary: egret
+  user_dict: dicts/egret.user.dict
+  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+  db_class: tabledb
   preedit_format:               # 上屏码显示格式，
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
