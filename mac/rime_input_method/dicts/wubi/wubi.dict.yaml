@@ -24,4 +24,18 @@ encoder:
     - length_in_range: [4, 10]
       formula: "AaBaCaZa"
 ...
+
+# 以下写用户自定义的词
+# table begins
+# 以下为我自己加的词，每次加新词要加wubi_pinyin_jixiuf.userdb/目录清掉重新部署
+# columns: 定義碼表以Tab分隔出的各列，可設text【文本】、code【碼】、weight【權重】、stem【造詞碼】
+# tab 隔开
 工	a	5000000
+不孬	gigi	1
+不为人知	gywt	2
+秀峰	temt	2
+文芳	yyay	200000
+牧风	mf	20000000
+李雪玉	lxy	200000
+王喜萍	wxp	200000
+王昕	wx	2000000

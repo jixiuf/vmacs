@@ -28,6 +28,7 @@
 # 但配套的用户词典名却是「egret_wubi」，即 Rime 自动取句点之前的部分为
 # 用户词典名，以保证按以上方法增补了词汇之后，不至於因为改变词典名而抛弃
 # 原有的用户词典。
+---
 
 name: egret_wubi
 # name: egret_wubi.extended
@@ -36,24 +37,13 @@ sort: by_weight
 # use_preset_vocabulary: true
 import_tables:
   # 这里引入别的字库dict
-  - dicts/wb86_cn_dicts/8105     # 字表
-  - dicts/wb86_cn_dicts/41448
-  - dicts/wb86_cn_dicts/base     # 基础词库
-  - dicts/wb86_cn_dicts/ext      # 扩展词库
-  - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
-  # - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf
-  - dicts/wubi_pinyin_jixiuf/wubi_pinyin_jixiuf.base
-
+  - dicts/wubi/wubi.base
+  - dicts/wubi/wubi
+  - dicts/wubi/wubi.word4
+  - dicts/wubi/wubi.suyu
   # - cn_dicts_common/tencent_core # 精简的腾讯词库
   # - cn_dicts_common/tencent  # 腾讯词向量（大词库，部署时间较长 选择性开启）
   # - cn_dicts_common/user # 用户自定义词典
-  # - wubi_pinyin_jixiuf.word4
-  # - wubi_pinyin_jixiuf.suyu
-# - emoji
-# - wubi_pinyin_jixiuf_qq_chengyu
-# - wubi_pinyin_jixiuf_qq_yanyu
-# - wubi_pinyin_jixiuf_qq_chengyu_pinyin
-# - wubi_dict2
 columns:
   - text
   - code
@@ -63,10 +53,10 @@ encoder:
   exclude_patterns:
     - '^z.*$'
   rules:
-    - length_equal: 2
-      formula: "AaAbBaBb"
-    - length_equal: 3
-      formula: "AaBaCaCb"
+    - length_equal: 2           # #對於二字詞
+      formula: "AaAbBaBb"       # #取第一字首碼与第二码、第二字首碼及第二码
+    - length_equal: 3           #
+      formula: "AaBaCaCb"       # 取第1字首码，第2字首码，第3字首码及第2码
     - length_in_range: [4, 10]
       formula: "AaBaCaZa"
 
@@ -77,10 +67,4 @@ encoder:
 # columns: 定義碼表以Tab分隔出的各列，可設text【文本】、code【碼】、weight【權重】、stem【造詞碼】
 # tab 隔开
 不孬	gigi	1
-不为人知	gywt	2
-秀峰	temt	2
-文芳	yyay	200000
-牧风	mf	20000000
-李雪玉	lxy	200000
-王喜萍	wxp	200000
-王昕	wx	2000000
+
