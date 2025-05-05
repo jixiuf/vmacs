@@ -45,11 +45,11 @@ import_tables:
 
   # 下面引入的全拼字典
   # 来自雾凇拼音 https://github.com/iDvel/rime-ice
-  - dicts/rime_ice/8105     # 字表
-  # - dicts/rime_ice/41448  # 大字表（按需启用）
-  - dicts/rime_ice/base     # 基础词库
-  # - dicts/rime_ice/sogou    # 搜狗流行词
-  - dicts/rime_ice/ext      # 扩展词库
+  - dicts/frost_cn_dicts/8105     # 字表
+  # - dicts/frost_cn_dicts/41448  # 大字表（按需启用）
+  - dicts/frost_cn_dicts/base     # 基础词库
+  # - dicts/frost_cn_dicts/sogou    # 搜狗流行词
+  - dicts/frost_cn_dicts/ext      # 扩展词库
   
   # - dicts/wangxiang_cn_dicts/chars            #字表，包含了所有带拼音的汉字
   # - dicts/wangxiang_cn_dicts/base            #基础词库，2-3字词汇
