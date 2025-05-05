@@ -20,10 +20,10 @@ switches:
       states: [ 半角, 全角 ]
     - name: traditionalization
       states: [ 简, 繁 ]
-    - name: emoji
-      states: [ 💀, 😄 ]
     - name: ascii_punct
-      states: [ 。，, ．， ]
+      states: [ 。, ． ]
+    # - name: emoji
+    #   states: [ 💀, 😄 ]
 
 opencc:
   traditionalize:

@@ -58,6 +58,7 @@ engine:
     # - lua_translator@date_translator  #去 rime.lua 找date_translator function
     - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
     - lua_translator@*lunar              # 农历
+    - lua_translator@*number_translator  # R 输入大写数字
     # - table_translator@custom_phrase # 1、2码置顶
     - table_translator@translator-wubi
     - script_translator@translator
@@ -97,7 +98,7 @@ translator:
     - "xform/(^|[ '])[^[]+[[]/$1/"
   dictionary: egret_wubi_py
   prism: egret_wubi_py
-  user_dict: dicts/egret_wubi_py.user.dict
+  user_dict: user_dicts/egret_wubi_py.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   enable_completion: false
@@ -126,7 +127,7 @@ add_user_dict:
   # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
   # build 目录下会生成 相应然 prism.bin
   prism: egret_wubi_py
-  user_dict: dicts/egret_wubi_py.user.dict
+  user_dict: user_dicts/egret_wubi_py.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   initial_quality: -1
@@ -156,7 +157,7 @@ add_user_dict:
 #
 # custom_phrase:
 #   dictionary: ""
-#   user_dict: dicts/wb86_cn_dicts/custom_phrase
+#   user_dict: user_dicts/wb86_cn_dicts/custom_phrase
 #   db_class: stabledb
 #   enable_completion: false
 #   enable_sentence: false
@@ -201,7 +202,7 @@ translator-wubi:                 # wubi
     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
     - "^[a-y]$"                   # 对单字母打出的字不进行调频
     - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
-  # user_dict: dicts/egret_wubi.user.dict
+  # user_dict: user_dicts/egret_wubi.user.dict
   # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   # db_class: tabledb
 #   enable_charset_filter: true
@@ -214,7 +215,7 @@ reverse_lookup:
   suffix: "'"
   tips: 〔拼音〕
   initial_quality: 1 # 优先级
-  user_dict: dicts/egret.user.dict
+  user_dict: user_dicts/egret.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   overwrite_comment: true # 覆盖其他提示

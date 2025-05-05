@@ -63,6 +63,8 @@ deploy:
 	@if [ `uname -s` = "Darwin" ] ; then \
 	  cd mac && $(MAKE) ; \
 	fi
+	make -C rime
+
 sudo:
 
 	@if [ `uname -s` = "Linux" ] ; then \

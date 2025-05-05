@@ -76,3 +76,7 @@ mac/rime_input_method/jp_sela.userdb/
 mac/rime_input_method/user_ff.custom.dict.userdb/
 mac/rime_input_method/*.userdb/
 mac/rime_input_method/melt_eng_dicts/melt_eng.userdb/
+linux/local/share:fcitx5/rime/
+linux/config/fcitx5/crash.log
+rime/wanxiang-lts-zh-hans.gram
+linux/local/share:fcitx5/rime/wanxiang-lts-zh-hans.gram

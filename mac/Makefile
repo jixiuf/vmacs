@@ -47,7 +47,6 @@ deploy:
 
 	@-mkdir -p ~/.cow
 	@-$(LINK_CMD) $(PWD)/cowrc ~/.cow/rc
-	@make -C rime_input_method/
 # @-$(LINK_CMD) $(PWD)/squirrel_toggle_option $$HOME/bin
 
 # Enable apps at startup
