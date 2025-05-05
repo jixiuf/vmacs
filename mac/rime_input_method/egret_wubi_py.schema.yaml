@@ -18,9 +18,11 @@ schema:
     - stroke # builtin: hspnz(一丨丿丶乙)
     # - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
     # - liangfen  # 两分拼字，作为反查挂载到拼音方案
-__include: egret.common.yaml:/editor
+__include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
+__include: egret.common.yaml:guide
+
 # 各字段含义
 # https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
 
@@ -83,29 +85,19 @@ grammar:
 speller:
   # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
   delimiter: " ;'"              # 分词用
-  max_code_length: 5
+  # max_code_length: 5            # 四碼頂字上屏
   # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
-  auto_select: true
-  auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
-  # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
-  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
-  # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
-  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
-  ## speller 未允许 aj 表示 an
-  algebra:
-  # 这几个是五笔整句上屏时对1码的字 如"的":"r" 需要输入 "r/" 来告知1码
-    - derive|^(\w)(\w),(\w)0.+$|$1$2$3/| # 3码全码的字，3码全码后加/
-    - derive|^(\w)(\w),00.+$|$1$2/| # 1码全码的字，3码全码后加/
-    - derive|^(\w)0,00.+$|$1/| # 1码全码的字，3码全码后加/
-
-    - derive|^.+;(\w)(\w),(\w)0$|$1$2$3/| # 3码全码的字，3码全码后加/
-    - derive|^.+;(\w)(\w),00$|$1$2/| # 1码全码的字，3码全码后加/
-    - derive|^.+;(\w)0,00$|$1/| # 1码全码的字，3码全码后加/
+  # auto_select: true
+  # auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
+  # # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
+  # alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
+  # # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
+  # initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+  # ## speller 未允许 aj 表示 an
 
 
   #自动顶屏
   # auto_select: true
-  # max_code_length: 4  # 四碼頂字上屏
 
 #关于五笔拼音同时存在，且也能调拼音词频的配置 http://tieba.baidu.com/p/2283095493
 # 以往要实现五笔拼音混打，用 table_translator 出五笔，拼音只好用 reverse_lookup_translator ，因为 r10n_translator 和 table_translator 是互斥的。
@@ -213,16 +205,6 @@ add_user_dict:
   max_homographs: 7
 
 
-# 次翻译器，英文
-# melt_eng:
-#   dictionary: melt_eng     # 挂载词库 melt_eng.dict.yaml
-#   enable_sentence: false   # 禁止造句
-#   enable_user_dict: false  # 禁用用户词典
-#   initial_quality: 1.0     # 初始权重
-#   comment_format:          # 自定义提示码
-#     - xform/.*//           # 清空提示码
-
-
 abc_segmentor:
   extra_tags:
     - reverse_lookup
@@ -254,25 +236,3 @@ long_word_filter:
   idx: 4
 
 
-# punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
-# 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
-punctuator:
-  # import_preset: default
-  # 引入symbols.yaml文件坦德标点的处理,比如/xl，则列出αβ
-  import_preset: symbols
-
-# 从default.yaml 导入keybind
-key_binder:
-  import_preset: default
-
-recognizer:
-  import_preset: default
-  patterns:
-    reverse_lookup: "`[a-z]*'?$"
-    reverse_lookup_stroke: "u[a-z]*'?$"
-    #造词
-    add_user_dict: "^AC[A-Za-z]*$"
-
-    # 加了这句之后与import_preset: symbols 结合使用，当输入/开头时，输入特殊符号，如/xl输出αβ等，詳細见symbals.ymal
-    # 比如 /2 输入二貳等
-    punct: "^/([0-9]+[a-z]*|[a-z]+)$"

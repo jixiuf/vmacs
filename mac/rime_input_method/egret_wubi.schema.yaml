@@ -19,9 +19,10 @@ schema:
     - stroke # builtin: hspnz(一丨丿丶乙)
     # - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
     # - liangfen  # 两分拼字，作为反查挂载到拼音方案
-__include: egret.common.yaml:/editor
+__include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
+__include: egret.common.yaml:guide
 
 engine:
   processors:
@@ -218,25 +219,3 @@ long_word_filter:
   count: 2
   idx: 4
 
-# punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
-# 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
-punctuator:
-  # import_preset: default
-  # 引入symbols.yaml文件坦德标点的处理,比如/xl，则列出αβ
-  import_preset: symbols
-
-# 从default.yaml 导入keybind
-key_binder:
-  import_preset: default
-
-recognizer:
-  import_preset: default
-  patterns:
-    reverse_lookup: "`[a-z]*'?$"
-    # reverse_lookup_stroke: "u[a-z]*'?$"
-    #造词
-    add_user_dict: "^AC[A-Za-z]*$"
-
-    # 加了这句之后与import_preset: symbols 结合使用，当输入/开头时，输入特殊符号，如/xl输出αβ等，詳細见symbals.ymal
-    # 比如 /2 输入二貳等
-    punct: "^/([0-9]+[a-z]*|[a-z]+)$"

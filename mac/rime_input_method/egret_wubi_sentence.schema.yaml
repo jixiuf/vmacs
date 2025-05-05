@@ -18,9 +18,10 @@ schema:
     - egret_wubi        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
 
-__include: egret.common.yaml:/editor
+__include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
+__include: egret.common.yaml:guide
 
 engine:
   processors:

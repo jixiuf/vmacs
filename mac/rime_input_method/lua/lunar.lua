@@ -650,7 +650,6 @@ local function translator(input, seg, env)
         (env.engine.schema.config:get_string(env.name_space:gsub('^*', '')) or 'nl')
     env.gregorian_to_lunar = env.gregorian_to_lunar or
         (env.engine.schema.config:get_string('recognizer/patterns/gregorian_to_lunar'):sub(2, 2) or 'N')
-    print("input " .. input .. " " .. env.lunar_key_word .. " " .. env.gregorian_to_lunar)
     if input == env.lunar_key_word then
         local date1, date2 = Date2LunarDate(os.date("%Y%m%d"))
         local lunar_ymd = (Candidate("", seg.start, seg._end, date2, "(输入格式：nl/N20240115)"))
