@@ -18,6 +18,7 @@ patch:
       - F4
     option_list_separator: "／"
     save_options:
+      - ascii_mode
       - full_shape
       - ascii_punct
       - traditionalization

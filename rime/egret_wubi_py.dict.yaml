@@ -43,12 +43,21 @@ import_tables:
   - dicts/wb86_cn_dicts/ext      # 扩展词库
   - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
 
-  # 下面引入的全拼字典
-  # 来自雾凇拼音 https://github.com/iDvel/rime-ice
-  - dicts/rime_ice/8105     # 字表
-  # - dicts/rime_ice/41448  # 大字表（按需启用）
-  - dicts/rime_ice/base     # 基础词库
-  # - dicts/rime_ice/sogou    # 搜狗流行词
-  - dicts/rime_ice/ext      # 扩展词库
+  # # 下面引入的全拼字典
+  # # 来自雾凇拼音 https://github.com/iDvel/rime-ice
+  # - dicts/rime_ice/8105     # 字表
+  # # - dicts/rime_ice/41448  # 大字表（按需启用）
+  # - dicts/rime_ice/base     # 基础词库
+  # # - dicts/rime_ice/sogou    # 搜狗流行词
+  # - dicts/rime_ice/ext      # 扩展词库
+  
+  - dicts/wangxiang_cn_dicts/chars            #字表，包含了所有带拼音的汉字
+  - dicts/wangxiang_cn_dicts/base            #基础词库，2-3字词汇
+  - dicts/wangxiang_cn_dicts/correlation     #关联词库，4字词汇，多为不同词频的2字语句连接起来起到合理组句的能力
+  - dicts/wangxiang_cn_dicts/associational   #联想词库，5字以上词汇，多用于输入前半段第二候选可以出来整段
+  - dicts/wangxiang_cn_dicts/corrections     #错音错字，支持错音和错字输入的兼容，同时供超级注释lua使用会在输入错误音节打出的时候给予提示
+  - dicts/wangxiang_cn_dicts/compatible      #兼容词库，是基础词库的扩充，收录了多场景多种读音的词组
+  - dicts/wangxiang_cn_dicts/poetry          #诗词
+  - dicts/wangxiang_cn_dicts/place           #地名
 
 ...

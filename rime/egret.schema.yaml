@@ -53,24 +53,9 @@ speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
   delimiter: " '"
   algebra:
-    - abbrev/^([a-z]).+$/$1/
-    - abbrev/^([zcs]h).+$/$1/
-    - derive/^([nl])ue$/$1ve/
-    - derive/^([jqxy])u/$1v/
-    - derive/un$/uen/
-    - derive/ui$/uei/
-    - derive/iu$/iou/
-    - derive/([aeiou])ng$/$1gn/
-    - derive/([dtngkhrzcs])o(u|ng)$/$1o/
-    - derive/ong$/on/
-    - derive/ao$/oa/
-    - derive/([iu])a(o|ng?)$/a$1$2/
-# xform --改寫〔不保留原形〕
-# derive --衍生〔保留原形〕
-# abbrev --簡拼〔出字優先級較上兩組更低〕
-# fuzz --畧拼〔此種簡拼僅組詞，不出單字〕
-# xlit --變換〔適合大量一對一變換〕
-# erase --刪除
+    __patch:
+      - egret.common.yaml:algebra_remove_pinyin_tone     #拼音转双拼码在文件头部配置
+      - egret.common.yaml:algebra_pinyin
 
 translator:
   dictionary: egret
