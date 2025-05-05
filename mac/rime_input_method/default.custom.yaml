@@ -22,11 +22,7 @@ patch:
     save_options:
       - full_shape
       - ascii_punct
-      - simplification
-      - extended_charset
-      - zh_hant
-      - zh_hans
-      - zh_hant_tw
+      - traditionalization
 
   schema_list:
     - schema: egret_wubi_py_sentence

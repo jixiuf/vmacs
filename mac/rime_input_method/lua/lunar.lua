@@ -548,8 +548,9 @@ local function Date2LunarDate(Gregorian)
     Year = tonumber(Gregorian.sub(Gregorian, 1, 4))
     Month = tonumber(Gregorian.sub(Gregorian, 5, 6))
     Day = tonumber(Gregorian.sub(Gregorian, 7, 8))
-    if Year > 2100 or Year < 1899 or Month > 12 or Month < 1 or Day < 1 or Day > 31 or string.len(Gregorian) < 8 then
-        return "无效日期", "无效日期"
+    if Year == nil or Month == nil or Day == nil or Year > 2100 or Year < 1899 or Month > 12 or Month < 1 or Day < 1 or
+        Day > 31 or string.len(Gregorian) < 8 then
+        return "无效日期(输入格式：nl/N20240115)", "无效日期(输入格式：nl/N20240115)"
     end
 
     -- 获取两百年内的农历数据
@@ -649,9 +650,10 @@ local function translator(input, seg, env)
         (env.engine.schema.config:get_string(env.name_space:gsub('^*', '')) or 'nl')
     env.gregorian_to_lunar = env.gregorian_to_lunar or
         (env.engine.schema.config:get_string('recognizer/patterns/gregorian_to_lunar'):sub(2, 2) or 'N')
+    print("input " .. input .. " " .. env.lunar_key_word .. " " .. env.gregorian_to_lunar)
     if input == env.lunar_key_word then
         local date1, date2 = Date2LunarDate(os.date("%Y%m%d"))
-        local lunar_ymd = (Candidate("", seg.start, seg._end, date2, ""))
+        local lunar_ymd = (Candidate("", seg.start, seg._end, date2, "(输入格式：nl/N20240115)"))
         lunar_ymd.quality = 999
         yield(lunar_ymd)
         local lunar_date = Candidate("", seg.start, seg._end, date1, "")

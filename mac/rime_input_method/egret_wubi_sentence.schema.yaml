@@ -32,16 +32,9 @@ switches:
     states: [ 常用, 增廣 ]
   - name: ascii_punct
     states: [ 。，, ．， ]
-
-  # - name: simplification
-  #   states: [ 漢字, 汉字 ]
   - name: traditionalization
     states: [ 简, 繁 ]
     reset: 0
-
-  - name: zh_simp               # 字库中如月繁体字，结合engine/filters/simplifier来实现简繁转化
-    reset: 1
-    states: [ 漢字, 汉字 ]
 
 engine:
   processors:
@@ -85,10 +78,9 @@ engine:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
     - lua_filter@*long_word_filter
-    - simplifier
+    - simplifier@traditionalize                     # 简繁切换
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
     # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
-    - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
     - lua_filter@*long_sentence_filter
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
@@ -279,6 +271,12 @@ date_translator:
 long_word_filter:
   count: 2
   idx: 4
+# 简繁切换
+traditionalize:
+  option_name: traditionalization  # 对应 switches 中的 name
+  opencc_config: s2t.json          # s2t.json | s2hk.json | s2tw.json | s2twp.json （Rime 内置配置，在程序目录可找到）
+  tips: none                       # 转换提示: all 都显示 | char 仅单字显示 | none 不显示。
+  tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
 
 
 # punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就

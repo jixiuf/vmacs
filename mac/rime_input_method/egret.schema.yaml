@@ -23,6 +23,9 @@ switches:
     states: [ 半角, 全角 ]
   - name: ascii_punct
     states: [ 。，, ．， ]
+  - name: traditionalization
+    states: [ 简, 繁 ]
+    reset: 0
 
 engine:
   processors:
@@ -45,6 +48,13 @@ engine:
     - punct_translator
     - script_translator
     - reverse_lookup_translator
+  filters:
+  # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
+  # 见下面 long_word_filter 相关配置
+    - lua_filter@*long_word_filter
+    - simplifier@traditionalize                     # 简繁切换
+    # - charset_filter@gbk            # (※3) 默认 GBK
+    - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
@@ -103,6 +113,14 @@ grammar:
   language: wanxiang-lts-zh-hans
   collocation_max_length: 5
   collocation_min_length: 2
+# 简繁切换
+traditionalize:
+  option_name: traditionalization  # 对应 switches 中的 name
+  opencc_config: s2t.json          # s2t.json | s2hk.json | s2tw.json | s2twp.json （Rime 内置配置，在程序目录可找到）
+  tips: none                       # 转换提示: all 都显示 | char 仅单字显示 | none 不显示。
+  tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
+
+
 
 punctuator:
   # import_preset: default

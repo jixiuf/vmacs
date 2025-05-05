@@ -29,20 +29,12 @@ switches:
   #   # states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  - name: extended_charset
-    states: [ 常用, 增廣 ]
   - name: ascii_punct
     states: [ 。，, ．， ]
 
-  # - name: simplification
-  #   states: [ 漢字, 汉字 ]
   - name: traditionalization
     states: [ 简, 繁 ]
     reset: 0
-
-  - name: zh_simp               # 字库中如月繁体字，结合engine/filters/simplifier来实现简繁转化
-    reset: 1
-    states: [ 漢字, 汉字 ]
 
 engine:
   processors:
@@ -76,6 +68,7 @@ engine:
     # 然后将其返回值作为 Rime 组件加载到输入法框架中。
     # - lua_translator@date_translator  #去 rime.lua 找date_translator function
     - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
+    - lua_translator@*lunar              # 农历
     # - table_translator@custom_phrase # 1、2码置顶
     - table_translator@translator-wubi
     - script_translator@translator
@@ -86,15 +79,14 @@ engine:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
     - lua_filter@*long_word_filter
-    - simplifier
+    # - simplifier
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
+    - simplifier@traditionalize                     # 简繁切换
     # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
-    - cjk_minifier  #過濾拼音輸入法中的罕用字  过滤掉一些不常见白字， 若想显示，Ctrl-`切换,比如输入te ,会月生僻字
-    - lua_filter@*long_sentence_filter
+    # - charset_filter@gbk            # (※3) 默认 GBK
+    # - lua_filter@*long_sentence_filter
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
-# simplifier:
-#   option_name: zh_simp
 #   # 你好不错
 grammar:
   language: wanxiang-lts-zh-hans
@@ -257,6 +249,13 @@ long_word_filter:
   count: 2
   idx: 4
 
+# 简繁切换
+traditionalize:
+  option_name: traditionalization  # 对应 switches 中的 name
+  opencc_config: s2t.json          # s2t.json | s2hk.json | s2tw.json | s2twp.json （Rime 内置配置，在程序目录可找到）
+  tips: none                       # 转换提示: all 都显示 | char 仅单字显示 | none 不显示。
+  tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
+
 
 # punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
 # 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
@@ -276,10 +275,12 @@ recognizer:
     # reverse_lookup_stroke: "u[a-z]*'?$"
     #造词
     add_user_dict: "^AC[A-Za-z]*$"
-
     # 加了这句之后与import_preset: symbols 结合使用，当输入/开头时，输入特殊符号，如/xl输出αβ等，詳細见symbals.ymal
     # 比如 /2 输入二貳等
     punct: "^/([0-9]+[a-z]*|[a-z]+)$"
+    number: "^R[0-9]+[.]?[0-9]*"        # 脚本将自动获取第 2 个字符 R 作为触发前缀，响应 lua_translator@*number_translator，数字金额大写
+    calculator: "^cC.+"                 # 响应 lua_translator@*calc_translator，计算器。前缀设定项 calculator/prefix
+    gregorian_to_lunar: "^N[0-9]{1,8}"  # 脚本将自动获取第 2 个字符 N 作为触发前缀，响应 lua_translator@*lunar，公历转农历，输入 N20240115 得到「二〇二三年腊月初五」
 
 speller:
   max_code_length: 5
