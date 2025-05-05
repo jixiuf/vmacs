@@ -1,6 +1,4 @@
-# Squirrel settings
-# encoding: utf-8
-# Mac
+#   -*- coding: utf-8 -*-
 #
 patch:
   # options: always | never | appropriate

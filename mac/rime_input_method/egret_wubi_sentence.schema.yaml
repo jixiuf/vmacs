@@ -1,9 +1,7 @@
-# Rime schema settings
-# 各字段含义
+#   -*- coding: utf-8 -*-
 # https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
 #  关于lua 开发相关白内容: https://github.com/hchunhui/librime-lua/wiki/Scripting
-# encoding: utf-8
-# 五笔支持长句，单字全码不足4码时 可以“/”结尾
+# 五笔支持长句，单字全码不足4码时 可以","结尾
 
 schema:
   schema_id: egret_wubi_sentence
@@ -12,7 +10,7 @@ schema:
   author:
     - 發明人 jixiuf
   description: |
-    白鹭五笔流 可直接输入拼音反查,不可以在一句中同时使用拼音与五笔
+    白鹭五笔流 可输入拼音反查,不可以在一句中同时使用拼音与五笔
   dependencies:
     - egret        # 这里依赖 egret 输入法的字库反查
     - egret_wubi        # 这里依赖 egret 输入法的字库反查
@@ -23,6 +21,7 @@ __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
 __include: egret.common.yaml:guide
 __include: egret.common.yaml:wubi_sentence_speller
+__include: egret.common.yaml:lua_config
 
 engine:
   processors:
@@ -56,6 +55,7 @@ engine:
     # 然后将其返回值作为 Rime 组件加载到输入法框架中。
     # - lua_translator@date_translator  #去 rime.lua 找date_translator function
     - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
+    - lua_translator@*lunar              # 农历
     # - table_translator@custom_phrase # 1、2码置顶
     - table_translator@translator-wubi
     - script_translator@translator
@@ -147,26 +147,26 @@ add_user_dict:
   max_homophones: 7
   max_homographs: 7
 
-custom_phrase:
-  dictionary: ""
-  user_dict: dicts/wb86_cn_dicts/custom_phrase
-  db_class: stabledb
-  enable_completion: false
-  enable_sentence: false
-  initial_quality: 1.1
-  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
-  ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 2
-  comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-    # 同時顯示羅馬字拼寫
-    # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+# custom_phrase:
+#   dictionary: ""
+#   user_dict: dicts/wb86_cn_dicts/custom_phrase
+#   db_class: stabledb
+#   enable_completion: false
+#   enable_sentence: false
+#   initial_quality: 1.1
+#   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
+#   ##  改为 1 则是只显示单字的输入码，依此类推。
+#   spelling_hints: 2
+#   comment_format:
+#     - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
+#     # 同時顯示羅馬字拼寫
+#     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
-  # https://github.com/amzxyz/RIME-LMDG
-  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
-  contextual_suggestions: true
-  max_homophones: 7
-  max_homographs: 7
+#   # https://github.com/amzxyz/RIME-LMDG
+#   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+#   contextual_suggestions: true
+#   max_homophones: 7
+#   max_homographs: 7
 translator-wubi:                 # wubi
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
@@ -244,44 +244,4 @@ abc_segmentor:
   extra_tags:
     - reverse_lookup
     # wubi_comment
-
-
-# Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
-date_translator:
-  date: /date       # 日期： 2022-11-29
-  time: /time       # 时间： 18:13
-  week: /week       # 星期： 星期二
-  datetime: /dt   # ISO 8601： 2022-11-29T18:13:11+08:00
-  timestamp: /ts  # 时间戳： 1669716794
-# Lua 配置: 长词优先，提升 count 个词语，插入到第 idx 个位置。
-# 示例：将 2 个词插入到第 4、5 个候选项，输入 jie 得到「1接 2 解 3 姐 4 饥饿 5 极恶」
-# 配合     - lua_filter@*long_word_filter
-long_word_filter:
-  count: 2
-  idx: 4
-
-
-# punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
-# 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
-punctuator:
-  # import_preset: default
-  # 引入symbols.yaml文件坦德标点的处理,比如/xl，则列出αβ
-  import_preset: symbols
-
-# 从default.yaml 导入keybind
-key_binder:
-  import_preset: default
-
-recognizer:
-  import_preset: default
-  patterns:
-    reverse_lookup: "`[a-z]*'?$"
-    # reverse_lookup_stroke: "u[a-z]*'?$"
-    #造词
-    add_user_dict: "^AC[A-Za-z]*$"
-
-    # 加了这句之后与import_preset: symbols 结合使用，当输入/开头时，输入特殊符号，如/xl输出αβ等，詳細见symbals.ymal
-    # 比如 /2 输入二貳等
-    punct: "^/([0-9]+[a-z]*|[a-z]+)$"
-
 

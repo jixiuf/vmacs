@@ -1,8 +1,6 @@
-# Rime default settings
-# encoding: utf-8
+#   -*- coding: utf-8 -*-
 # 我的配置扩展都在这
 # https://gist.github.com/lotem/2309739
-# config_version: "0.32"
 ########################################################################################################################
 # 如果 default.custom.yaml 裏面已經有其他設定內容，只要以相同的縮進方式添加 patch: 以下的部分，不可重複 patch: 這一行。#
 # 注意 缩进很重要，否则 可能导致 配置不起作用 ，每修改一项， 确保它起作用后再永久保存
@@ -25,9 +23,8 @@ patch:
       - traditionalization
 
   schema_list:
-    - schema: egret_wubi_py_sentence
-    - schema: egret_wubi_sentence
     - schema: egret_wubi_py
+    - schema: egret_wubi_sentence
     - schema: egret_wubi
     - schema: egret
     # - schema: rime_ice

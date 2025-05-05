@@ -1,5 +1,5 @@
+#   -*- coding: utf-8 -*-
 # Rime dictionary: qq五笔导出
-# encoding: utf-8
 # cat w.txt|sort -r| awk -F\t '!a[$1$2]++'|sort>s2.txt
 #  awk -F\t '!a[$1$2]++' 意思是以tab分隔，第一列第二列作key,用来去重，
 

@@ -1,12 +1,12 @@
+#   -*- coding: utf-8 -*-
 # Rime dictionary
-# encoding: utf-8
 # https://github.com/gaboolic/rime-shuangpin-fuzhuma
-# 
+#
 # rime配置的部署位置：
 # ~/.local/share/fcitx5/rime 或者 ~/.config/ibus/rime  (Linux)
 # ~/Library/Rime  (Mac OS)
 # %APPDATA%\Rime  (Windows)
-# 
+#
 #
 
 ---
@@ -25,10 +25,10 @@ import_tables:
   - dicts/wb86_cn_dicts/base     # 基础词库
   - dicts/wb86_cn_dicts/ext      # 扩展词库
   - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
-  
+
   # - cn_dicts_wb/8105     # 字表
   # - cn_dicts_wb/41448
-  
+
   # - cn_dicts_wb/base     # 基础词库
   # - cn_dicts_wb/ext      # 扩展词库
   # - cn_dicts_wb/others   # 一些杂项 容错音和错字 可以不开
@@ -37,4 +37,3 @@ import_tables:
   # # - cn_dicts_common/tencent  # 腾讯词向量（大词库，部署时间较长 选择性开启）
   # - cn_dicts_common/user # 用户自定义词典
 ...
-

@@ -1,3 +1,4 @@
+#   -*- coding: utf-8 -*-
 # editor 用来定制操作键的行为，以下是默认行为 https://github.com/rime/librime/blob/master/src/rime/gear/editor.cc
 editor:
   editor:
@@ -92,3 +93,19 @@ wubi_sentence_speller:
       - derive|^.+;(\w)(\w),(\w)0$|$1$2$3,| # 3码全码的字，3码全码后加","
       - derive|^.+;(\w)(\w),00$|$1$2,| # 2码全码的字，2码全码后加","
       - derive|^.+;(\w)0,00$|$1,| # 1码全码的字，3码全码后加","
+lua_config:
+# Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
+  date_translator:
+    date: /date       # 日期： 2022-11-29
+    time: /time       # 时间： 18:13
+    week: /week       # 星期： 星期二
+    datetime: /dt   # ISO 8601： 2022-11-29T18:13:11+08:00
+    timestamp: /ts  # 时间戳： 1669716794
+  # Lua 配置: 长词优先，提升 count 个词语，插入到第 idx 个位置。
+  # 示例：将 2 个词插入到第 4、5 个候选项，输入 jie 得到「1接 2 解 3 姐 4 饥饿 5 极恶」
+  # 配合     - lua_filter@*long_word_filter
+  long_word_filter:
+    count: 2
+    idx: 4
+
+

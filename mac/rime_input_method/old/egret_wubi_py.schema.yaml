@@ -1,18 +1,16 @@
-#   -*- coding: utf-8 -*-
 # Rime schema settings
-# 各字段含义
-# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
+# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md#%E4%BA%8Csegmentor
 #  关于lua 开发相关白内容: https://github.com/hchunhui/librime-lua/wiki/Scripting
-# 五笔支持长句，3码或1码时需以“/”结尾
+# encoding: utf-8
 
 schema:
-  schema_id: egret_wubi
-  name: "白鹭五笔"
+  schema_id: egret_wubi_py
+  name: "白鹭五笔·拼音"
   version: "0.9"
   author:
     - 發明人 jixiuf
   description: |
-    五筆字型86版
+    五筆字型86版＋漢語拼音混合輸入。
     部分碼表源自 qq五笔,使用深蓝词库工具.exe转换而成
   dependencies:
     - egret        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库
@@ -23,7 +21,11 @@ __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
 __include: egret.common.yaml:guide
+__include: egret.common.yaml:wubi_speller
 __include: egret.common.yaml:lua_config
+
+# 各字段含义
+# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
 
 engine:
   processors:
@@ -64,19 +66,18 @@ engine:
     - lua_translator@*lunar              # 农历
     # - table_translator@custom_phrase # 1、2码置顶
     - table_translator@translator
+    - script_translator@pinyin  # 放到reverse_lookup_translator 之前才可以调频拼音的输入
     - script_translator@add_user_dict
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
     - lua_filter@*long_word_filter
-    - reverse_lookup_filter@wubi_comment # 展示五笔的编码
-    # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
     - simplifier@traditionalize                     # 简繁切换
+    - reverse_lookup_filter@wubi_comment # 展示五笔的编码
+    - lua_filter@*long_sentence_filter
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
-simplifier:
-  option_name: zh_simp
   # 你好不错
 grammar:
   language: wanxiang-lts-zh-hans
@@ -86,15 +87,19 @@ grammar:
 speller:
   # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
   delimiter: " ;'"              # 分词用
+  # max_code_length: 5            # 四碼頂字上屏
+  # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
   # auto_select: true
   # auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
-  # max_code_length: 4  # 四碼頂字上屏
-  # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
+  # # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
   # alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
-  # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
+  # # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
   # initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+  # ## speller 未允许 aj 表示 an
+
 
   #自动顶屏
+  # auto_select: true
 
 #关于五笔拼音同时存在，且也能调拼音词频的配置 http://tieba.baidu.com/p/2283095493
 # 以往要实现五笔拼音混打，用 table_translator 出五笔，拼音只好用 reverse_lookup_translator ，因为 r10n_translator 和 table_translator 是互斥的。
@@ -102,6 +107,29 @@ speller:
 # 这比原来的 table_translator + reverse_lookup_translator 强大之处是拼音也会独立地调频、组词造句鸟。
 # 不过，如果你仍需要拼音反查五笔编码的功能，那就还需要 reverse_lookup_translator
 # 如果没有别名，则 {table|script}_translator 默认用 translator: 节点， reverse_lookup_translator 默认用 reverse_lookup: 节点。
+pinyin:                         # 针对script_translator@pinyin
+  dictionary: egret
+  user_dict: dicts/egret.user.dict
+  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+  db_class: tabledb
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_correction: true  #是否开启自动纠错
+  enable_sentence: true         # 是否開啓自動造句
+  enable_encoder: true          #  是否開啓自動造詞
+  encode_commit_history: true   # 是否對已上屛詞自動成詞
+  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+  initial_quality: 1 # 优先级
+  # https://github.com/amzxyz/RIME-LMDG
+  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+  contextual_suggestions: true
+  max_homophones: 7
+  max_homographs: 7
+  # preedit_format:               # preedit_format 影响到输入框的显示和“Shift+回车”上屏的字符
+  #   - xform/([jqxy])v/$1u/      # 显示为 ju qu xu yu
+  #   # - xform/([nl])v/$1ü/      # 显示为 nü lü
+  #   # - xform/([nl])ue/$1üe/    # 显示为 nüe lüe
+  #   - xform/([nl])v/$1v/        # 显示为 nv lv
+  #   - xform/([nl])ue/$1ve/      # 显示为 nve lve
 
 translator:                 # wubi
   # https://github.com/amzxyz/RIME-LMDG
@@ -111,12 +139,9 @@ translator:                 # wubi
   max_homographs: 7
 
   dictionary: egret_wubi
-  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
-  # build 目录下会生成 相应然 prism.bin
-  prism: egret_wubi
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
   enable_correction: false  #是否开启自动纠错
-  enable_sentence: false         # 是否開啓自動造句
+  enable_sentence: true         # 是否開啓自動造句
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
@@ -144,9 +169,6 @@ translator:                 # wubi
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
   tags: [ abc ]
   dictionary: egret_wubi
-  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
-  # build 目录下会生成 相应然 prism.bin
-  prism: egret_wubi
   # dictionary: wubi86.extended
   overwrite_comment: true  # 覆蓋其他提示
   comment_format:
@@ -156,13 +178,8 @@ wubi_comment:                   # 显示五笔编码， 这个配置好像不管
 
 # 自定义词典加词(ac引导)
 add_user_dict:
-  prefix: "AC"
-  tips: "〔自造词〕"
   tag: add_user_dict
   dictionary: egret_wubi
-  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
-  # build 目录下会生成 相应然 prism.bin
-  prism: egret_wubi
   initial_quality: -1
   user_dict: dicts/egret_wubi.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
@@ -181,6 +198,8 @@ add_user_dict:
     # 同時顯示羅馬字拼寫
     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
+  prefix: "AC"
+  tips: "〔自造词〕"
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true
@@ -198,9 +217,6 @@ reverse_lookup:
   prefix: "`"
   suffix: "'"
   tips: 〔拼音〕
-  user_dict: dicts/egret.user.dict
-  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
   overwrite_comment: true # 覆盖其他提示
   preedit_format: # 上屏码显示格式，
     - xform/([nl])v/$1ü/

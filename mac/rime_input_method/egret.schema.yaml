@@ -1,5 +1,4 @@
-# Rime schema
-# encoding: utf-8
+#   -*- coding: utf-8 -*-
 
 schema:
   schema_id: egret
@@ -17,7 +16,7 @@ __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
 __include: egret.common.yaml:guide
-
+__include: egret.common.yaml:lua_config
 engine:
   processors:
     # 彻底地移除英文状态，似乎注掉ascii_composer更有效
@@ -39,6 +38,8 @@ engine:
     - punct_translator
     - script_translator
     - reverse_lookup_translator
+    - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
+    - lua_translator@*lunar              # 农历
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
