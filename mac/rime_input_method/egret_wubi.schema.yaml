@@ -21,6 +21,7 @@ schema:
     # - liangfen  # 两分拼字，作为反查挂载到拼音方案
 __include: egret.common.yaml:/editor
 __include: egret.common.yaml:switches
+__include: egret.common.yaml:opencc
 
 engine:
   processors:
@@ -216,13 +217,6 @@ date_translator:
 long_word_filter:
   count: 2
   idx: 4
-
-# 简繁切换
-traditionalize:
-  option_name: traditionalization  # 对应 switches 中的 name
-  opencc_config: s2t.json          # s2t.json | s2hk.json | s2tw.json | s2twp.json （Rime 内置配置，在程序目录可找到）
-  tips: none                       # 转换提示: all 都显示 | char 仅单字显示 | none 不显示。
-  tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
 
 # punctuator为标点的意思。下面import为导入，preset为预设，两词连起来就
 # 是导入预设的意思。从哪里导入呢？就是后面的default.yaml文件。
