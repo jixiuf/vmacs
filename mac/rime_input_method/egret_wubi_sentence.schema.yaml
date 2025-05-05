@@ -18,23 +18,8 @@ schema:
     - egret_wubi        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
 
-switches:
-  # - name: ascii_mode
-  #   reset: 0
-  # # # 只保留中文输入法，避免无意间切到英文输入状态，因为我使用系统的英文输入法，还不是rime的
-  # # # states: [ 中文, 西文 ]
-  # # switches/@0/states:  [ 中文]
-  #   states: [ 中文]
-  #   # states: [ 中文, 西文 ]
-  - name: full_shape
-    states: [ 半角, 全角 ]
-  - name: extended_charset
-    states: [ 常用, 增廣 ]
-  - name: ascii_punct
-    states: [ 。，, ．， ]
-  - name: traditionalization
-    states: [ 简, 繁 ]
-    reset: 0
+__include: egret.common.yaml:/editor
+__include: egret.common.yaml:switches
 
 engine:
   processors:

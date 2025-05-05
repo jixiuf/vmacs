@@ -1,5 +1,6 @@
 # Rime schema settings
-# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md#%E4%BA%8Csegmentor
+# 各字段含义
+# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
 #  关于lua 开发相关白内容: https://github.com/hchunhui/librime-lua/wiki/Scripting
 # encoding: utf-8
 # 五笔支持长句，3码或1码时需以“/”结尾
@@ -18,25 +19,8 @@ schema:
     - stroke # builtin: hspnz(一丨丿丶乙)
     # - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
     # - liangfen  # 两分拼字，作为反查挂载到拼音方案
-
-switches:
-  # - name: ascii_mode
-  #   reset: 0
-  # # # 只保留中文输入法，避免无意间切到英文输入状态，因为我使用系统的英文输入法，还不是rime的
-  # # # states: [ 中文, 西文 ]
-  # # switches/@0/states:  [ 中文]
-  #   states: [ 中文]
-  #   # states: [ 中文, 西文 ]
-  - name: full_shape
-    states: [ 半角, 全角 ]
-  - name: ascii_punct
-    states: [ 。，, ．， ]
-  - name: traditionalization
-    states: [ 简, 繁 ]
-    reset: 0
-
-# 各字段含义
-# https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
+__include: egret.common.yaml:/editor
+__include: egret.common.yaml:switches
 
 engine:
   processors:

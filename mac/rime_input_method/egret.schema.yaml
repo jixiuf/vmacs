@@ -13,19 +13,8 @@ schema:
     简化了的rime_ice 用于给五笔做反查用
   dependencies:
     - stroke # builtin: hspnz(一丨丿丶乙)
-
-switches:
-  # - name: ascii_mode
-  #   reset: 0
-  #   states: [ 中文 ]
-    # states: [ 中文, 西文 ]
-  - name: full_shape
-    states: [ 半角, 全角 ]
-  - name: ascii_punct
-    states: [ 。，, ．， ]
-  - name: traditionalization
-    states: [ 简, 繁 ]
-    reset: 0
+__include: egret.common.yaml:/editor
+__include: egret.common.yaml:switches
 
 engine:
   processors:
