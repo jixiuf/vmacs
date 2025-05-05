@@ -27,8 +27,8 @@ speller:
   __include: egret.common.yaml:wubi_sentence_speller
   algebra:
     __patch:
+      # - egret.common.yaml:algebra_remove_pinyin_tone
       - egret.common.yaml:algebra_wubi_sentence
-      - egret.common.yaml:algebra_remove_pinyin_tone
 
 engine:
   processors:
