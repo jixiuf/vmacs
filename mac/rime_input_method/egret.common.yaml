@@ -60,3 +60,35 @@ guide:
       calculator: "^cC.+"                 # 响应 lua_translator@*calc_translator，计算器。前缀设定项 calculator/prefix
       gregorian_to_lunar: "^N[0-9]{1,8}"  # 脚本将自动获取第 2 个字符 N 作为触发前缀，响应 lua_translator@*lunar，公历转农历，输入 N20240115 得到「二〇二三年腊月初五」
 
+# 五笔支持长句，3码或1码时需以“,”结尾
+wubi_sentence_speller:
+  speller:
+    max_code_length: 5
+    # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
+    auto_select: true
+    auto_select_pattern: ^[a-z]+,|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
+    # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
+    alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[|,
+    # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
+    initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+    # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
+    delimiter: " ';"
+    ## speller 未允许 aj 表示 an
+    algebra:
+    # 下面说的双拼 不是双拼输入法的双拼
+      - derive/^(\w)(\w),(.+)$/$1$2/ # 纯双码的情况 (单字 只需要输前两个码的情况)
+      - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(.+)$/$5$6/ # 纯双码的情况(双字 后字需要输前两个码的情况)
+      - derive/^(\w)(\w),(\w)(.+)$/$1$2$3/ # 双码+一位辅助码的情况(单字 后字需要输前3个码的情况)
+      - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(.+)$/$5$6$7/ # 双码+一位辅助码的情况(双字 后字需要输前3个码的情况)
+
+      - derive|^(\w)(\w),(\w)(\w)$|$1$2$3$4,| # 双拼+2位辅助码的情况 结尾加","
+      - derive|^(\w)(\w),(\w)(\w);(.+)$|$1$2$3$4,| # 双拼+2位辅助码的情况 结尾加","
+      - derive|^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(\w)$|$5$6$7$8,| # 双拼+2位辅助码的情况 结尾加","
+
+      - derive|^(\w)(\w),(\w)0.+$|$1$2$3,| # 3码全码的字，3码全码后加","
+      - derive|^(\w)(\w),00.+$|$1$2,| # 2码全码的字，2码全码后加","
+      - derive|^(\w)0,00.+$|$1,| # 1码全码的字，3码全码后加","
+
+      - derive|^.+;(\w)(\w),(\w)0$|$1$2$3,| # 3码全码的字，3码全码后加","
+      - derive|^.+;(\w)(\w),00$|$1$2,| # 2码全码的字，2码全码后加","
+      - derive|^.+;(\w)0,00$|$1,| # 1码全码的字，3码全码后加","

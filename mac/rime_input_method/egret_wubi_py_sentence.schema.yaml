@@ -3,7 +3,7 @@
 # https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_description.md
 #  关于lua 开发相关白内容: https://github.com/hchunhui/librime-lua/wiki/Scripting
 # encoding: utf-8
-# 五笔支持长句，单字全码不足4码时 可以“/”结尾
+# 五笔支持长句，单字全码不足4码时 可以","结尾
 
 schema:
   schema_id: egret_wubi_py_sentence
@@ -22,6 +22,7 @@ __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
 __include: egret.common.yaml:guide
+__include: egret.common.yaml:wubi_sentence_speller
 engine:
   processors:
     # 彻底地移除英文状态，似乎注掉ascii_composer更有效
@@ -96,6 +97,9 @@ translator:
     - "xform/(^|[ '])[^[]+[[]/$1/"
   dictionary: egret_wubi_py
   prism: egret_wubi_py
+  user_dict: dicts/egret_wubi_py.user.dict
+# ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+  db_class: tabledb
   enable_completion: false
   enable_user_dict: false
   initial_quality: 1
@@ -118,14 +122,14 @@ add_user_dict:
   prefix: "AC"
   tips: "〔自造词〕"
   tag: add_user_dict
-  dictionary: egret_wubi_sentence
+  dictionary: egret_wubi_py
   # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
   # build 目录下会生成 相应然 prism.bin
-  prism: egret_wubi_sentence
-  initial_quality: -1
-  user_dict: dicts/egret_wubi_sentence.user.dict
+  prism: egret_wubi_py
+  user_dict: dicts/egret_wubi_py.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
+  initial_quality: -1
   enable_charset_filter: false
   enable_completion: true
   enable_encoder: true
@@ -146,26 +150,30 @@ add_user_dict:
   max_homophones: 7
   max_homographs: 7
 
-custom_phrase:
-  dictionary: ""
-  user_dict: dicts/wb86_cn_dicts/custom_phrase
-  db_class: stabledb
-  enable_completion: false
-  enable_sentence: false
-  initial_quality: 1.1
-  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
-  ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 2
-  comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-    # 同時顯示羅馬字拼寫
-    # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+# rime-wubi-sentence 使用的custom_phrase
+# 而我选择使用下面的 translator-wubi 的dictionary 的形式
+# 加载速度应该会比user_dict文本字典要快
+#
+# custom_phrase:
+#   dictionary: ""
+#   user_dict: dicts/wb86_cn_dicts/custom_phrase
+#   db_class: stabledb
+#   enable_completion: false
+#   enable_sentence: false
+#   initial_quality: 1.1
+#   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
+#   ##  改为 1 则是只显示单字的输入码，依此类推。
+#   spelling_hints: 2
+#   comment_format:
+#     - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
+#     # 同時顯示羅馬字拼寫
+#     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
-  # https://github.com/amzxyz/RIME-LMDG
-  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
-  contextual_suggestions: true
-  max_homophones: 7
-  max_homographs: 7
+#   # https://github.com/amzxyz/RIME-LMDG
+#   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+#   contextual_suggestions: true
+#   max_homophones: 7
+#   max_homographs: 7
 translator-wubi:                 # wubi
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
@@ -235,36 +243,4 @@ long_word_filter:
   count: 2
   idx: 4
 
-
-
-speller:
-  max_code_length: 5
-  # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
-  auto_select: true
-  auto_select_pattern: ^[a-z]+/|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
-  # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
-  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[/|
-  # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
-  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
-  # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
-  delimiter: " ';"
-  ## speller 未允许 aj 表示 an
-  algebra:
-  # 下面说的双拼 不是双拼输入法的双拼
-    - derive/^(\w)(\w),(.+)$/$1$2/ # 纯双拼的情况 (单字 只需要输前两个码的情况)
-    - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(.+)$/$5$6/ # 纯双拼的情况(双字 后字需要输前两个码的情况)
-    - derive/^(\w)(\w),(\w)(.+)$/$1$2$3/ # 双拼+一位辅助码的情况(单字 后字需要输前3个码的情况)
-    - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(.+)$/$5$6$7/ # 双拼+一位辅助码的情况(双字 后字需要输前3个码的情况)
-
-    - derive|^(\w)(\w),(\w)(\w)$|$1$2$3$4/| # 双拼+2位辅助码的情况 结尾加/
-    - derive|^(\w)(\w),(\w)(\w);(.+)$|$1$2$3$4/| # 双拼+2位辅助码的情况 结尾加/
-    - derive|^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(\w)$|$5$6$7$8/| # 双拼+2位辅助码的情况 结尾加/
-
-    - derive|^(\w)(\w),(\w)0.+$|$1$2$3/| # 3码全码的字，3码全码后加/
-    - derive|^(\w)(\w),00.+$|$1$2/| # 1码全码的字，3码全码后加/
-    - derive|^(\w)0,00.+$|$1/| # 1码全码的字，3码全码后加/
-
-    - derive|^.+;(\w)(\w),(\w)0$|$1$2$3/| # 3码全码的字，3码全码后加/
-    - derive|^.+;(\w)(\w),00$|$1$2/| # 1码全码的字，3码全码后加/
-    - derive|^.+;(\w)0,00$|$1/| # 1码全码的字，3码全码后加/
 
