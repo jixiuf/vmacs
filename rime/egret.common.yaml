@@ -61,38 +61,6 @@ guide:
       calculator: "^cC.+"                 # 响应 lua_translator@*calc_translator，计算器。前缀设定项 calculator/prefix
       gregorian_to_lunar: "^N[0-9]{1,8}"  # 脚本将自动获取第 2 个字符 N 作为触发前缀，响应 lua_translator@*lunar，公历转农历，输入 N20240115 得到「二〇二三年腊月初五」
 
-# 五笔支持长句，3码或1码时需以“,”结尾
-wubi_sentence_speller:
-  speller:
-    max_code_length: 5
-    # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
-    auto_select: true
-    auto_select_pattern: ^[a-z]+,|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
-    # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
-    alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[|,
-    # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
-    initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
-    # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
-    delimiter: " ';"
-    ## speller 未允许 aj 表示 an
-    algebra:
-    # 下面说的双拼 不是双拼输入法的双拼
-      - derive/^(\w)(\w),(.+)$/$1$2/ # 纯双码的情况 (单字 只需要输前两个码的情况)
-      - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(.+)$/$5$6/ # 纯双码的情况(双字 后字需要输前两个码的情况)
-      - derive/^(\w)(\w),(\w)(.+)$/$1$2$3/ # 双码+一位辅助码的情况(单字 后字需要输前3个码的情况)
-      - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(.+)$/$5$6$7/ # 双码+一位辅助码的情况(双字 后字需要输前3个码的情况)
-
-      - derive|^(\w)(\w),(\w)(\w)$|$1$2$3$4,| # 双拼+2位辅助码的情况 结尾加","
-      - derive|^(\w)(\w),(\w)(\w);(.+)$|$1$2$3$4,| # 双拼+2位辅助码的情况 结尾加","
-      - derive|^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(\w)$|$5$6$7$8,| # 双拼+2位辅助码的情况 结尾加","
-
-      - derive|^(\w)(\w),(\w)0.+$|$1$2$3,| # 3码全码的字，3码全码后加","
-      - derive|^(\w)(\w),00.+$|$1$2,| # 2码全码的字，2码全码后加","
-      - derive|^(\w)0,00.+$|$1,| # 1码全码的字，3码全码后加","
-
-      - derive|^.+;(\w)(\w),(\w)0$|$1$2$3,| # 3码全码的字，3码全码后加","
-      - derive|^.+;(\w)(\w),00$|$1$2,| # 2码全码的字，2码全码后加","
-      - derive|^.+;(\w)0,00$|$1,| # 1码全码的字，3码全码后加","
 lua_config:
 # Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
   date_translator:
@@ -110,4 +78,102 @@ lua_config:
     # Lua 配置：农历的触发关键字
   lunar: nl  # 农历： 二〇二三年冬月二十 癸卯年（兔）冬月二十
 
+# 全拼 (万象词库为带声调的，此去将声调去除)
+algebra_remove_pinyin_tone:   # 去声调
+  __append:
+    - xform/^([a-z]+)$/$1④/
+    - xform/^(.*)ā(.*)$/$1a$2①/
+    - xform/^(.*)á(.*)$/$1a$2②/
+    - xform/^(.*)ǎ(.*)$/$1a$2③/
+    - xform/^(.*)à(.*)$/$1a$2④/
+    - xform/^(.*)ō(.*)$/$1o$2①/
+    - xform/^(.*)ó(.*)$/$1o$2②/
+    - xform/^(.*)ǒ(.*)$/$1o$2③/
+    - xform/^(.*)ò(.*)$/$1o$2④/
+    - xform/^(.*)ē(.*)$/$1e$2①/
+    - xform/^(.*)é(.*)$/$1e$2②/
+    - xform/^(.*)ě(.*)$/$1e$2③/
+    - xform/^(.*)è(.*)$/$1e$2④/
+    - xform/^(.*)ī(.*)$/$1i$2①/
+    - xform/^(.*)í(.*)$/$1i$2②/
+    - xform/^(.*)ǐ(.*)$/$1i$2③/
+    - xform/^(.*)ì(.*)$/$1i$2④/
+    - xform/^(.*)ū(.*)$/$1u$2①/
+    - xform/^(.*)ú(.*)$/$1u$2②/
+    - xform/^(.*)ǔ(.*)$/$1u$2③/
+    - xform/^(.*)ù(.*)$/$1u$2④/
+    - xform/^(.*)ǖ(.*)$/$1v$2①/
+    - xform/^(.*)ǘ(.*)$/$1v$2②/
+    - xform/^(.*)ǚ(.*)$/$1v$2③/
+    - xform/^(.*)ǜ(.*)$/$1v$2④/
+    - xform/^(.*)ü(.*)$/$1v$2/
+    - xform/^(.*)ń(.*)$/$1n$2②/
+    - xform/^(.*)ň(.*)$/$1n$2③/
+    - xform/^(.*)ǹ(.*)$/$1n$2④/
+    - xlit/①②③④/7890
+    - derive/^ng(\d)$/eng$1/
+    - xform/^n(\d)/en$2/
+    - derive/(.+)(\d)/$1/
+    - derive/([nl])ve(\d)/$1ue$2/                            #让üè兼容ue
+    - derive/^([jqx])v(\d)$/$1u$2/
+    - abbrev/^([qwrtypsdfghjklzxcbnm]).+$/$1/  #不携带元音的声母派生出首字母简码来
+    - abbrev/^([qwrtypsdfghjklzxcbnm]).+(\d)$/$1$2/  #不携带元音的声母派生出首字母简码来+数字声调
+    - abbrev/^([aoe])([ioun])(\d)$/$1/             #携带两个字符的元音首字母派生出简码来
+    - abbrev/^([aoe])([ioun])(\d)$/$1$3/       #携带两个字符的元音首字母派生出简码来+数字声调
 
+algebra_pinyin:
+  __append:
+    - abbrev/^([a-z]).+$/$1/
+    - abbrev/^([zcs]h).+$/$1/
+    - derive/^([nl])ue$/$1ve/
+    - derive/^([jqxy])u/$1v/
+    - derive/un$/uen/
+    - derive/ui$/uei/
+    - derive/iu$/iou/
+    - derive/([aeiou])ng$/$1gn/
+    - derive/([dtngkhrzcs])o(u|ng)$/$1o/
+    - derive/ong$/on/
+    - derive/ao$/oa/
+    - derive/([iu])a(o|ng?)$/a$1$2/
+# xform --改寫〔不保留原形〕
+# derive --衍生〔保留原形〕
+# abbrev --簡拼〔出字優先級較上兩組更低〕
+# fuzz --畧拼〔此種簡拼僅組詞，不出單字〕
+# xlit --變換〔適合大量一對一變換〕
+# erase --刪除
+algebra_wubi_sentence:
+  __append:
+    # 下面说的双拼 不是双拼输入法的双拼
+      - derive/^(\w)(\w),(.+)$/$1$2/ # 纯双码的情况 (单字 只需要输前两个码的情况)
+      - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(.+)$/$5$6/ # 纯双码的情况(双字 后字需要输前两个码的情况)
+      - derive/^(\w)(\w),(\w)(.+)$/$1$2$3/ # 双码+一位辅助码的情况(单字 后字需要输前3个码的情况)
+      - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(.+)$/$5$6$7/ # 双码+一位辅助码的情况(双字 后字需要输前3个码的情况)
+
+      - derive|^(\w)(\w),(\w)(\w)$|$1$2$3$4,| # 双码+2位辅助码的情况 结尾加","
+      - derive|^(\w)(\w),(\w)(\w);(.+)$|$1$2$3$4,| # 双码+2位辅助码的情况 结尾加","
+      - derive|^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(\w)$|$5$6$7$8,| # 双码+2位辅助码的情况 结尾加","
+
+      - derive|^(\w)(\w),(\w)0.+$|$1$2$3,| # 3码全码的字，3码全码后加","
+      - derive|^(\w)(\w),00.+$|$1$2,| # 2码全码的字，2码全码后加","
+      - derive|^(\w)0,00.+$|$1,| # 1码全码的字，3码全码后加","
+
+      - derive|^.+;(\w)(\w),(\w)0$|$1$2$3,| # 3码全码的字，3码全码后加","
+      - derive|^.+;(\w)(\w),00$|$1$2,| # 2码全码的字，2码全码后加","
+      - derive|^.+;(\w)0,00$|$1,| # 1码全码的字，3码全码后加","
+# 五笔支持长句，3码或1码时需以“,”结尾
+wubi_sentence_speller:
+  # speller:
+  max_code_length: 5
+  # table_translator翻译器，支持自动上屏。例如 “zmhu”可以自动上屏“怎么回事”
+  auto_select: true
+  auto_select_pattern: ^[a-z]+,|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
+  # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
+  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[|,
+  # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
+  initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+  # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
+  delimiter: " ';"
+  # ## speller 未允许 aj 表示 an
+  # algebra:
+  #   __patch:
+  #     - algebra_wubi_sentence

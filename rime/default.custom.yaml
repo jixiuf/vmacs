@@ -18,14 +18,15 @@ patch:
       - F4
     option_list_separator: "／"
     save_options:
+      - ascii_mode
       - full_shape
       - ascii_punct
       - traditionalization
 
   schema_list:
     - schema: egret_wubi_py
-    # - schema: egret_wubi_sentence
-    # - schema: egret_wubi
+    - schema: egret_wubi_sentence
+    - schema: egret_wubi
     - schema: egret
     # - schema: rime_ice
     # - schema: double_pinyin_flypy #bash rime-install double-pinyin
