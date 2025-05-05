@@ -22,13 +22,8 @@ __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
 __include: egret.common.yaml:guide
+__include: egret.common.yaml:wubi_sentence_speller
 __include: egret.common.yaml:lua_config
-speller:
-  __include: egret.common.yaml:wubi_sentence_speller
-  algebra:
-    __patch:
-      # - egret.common.yaml:algebra_remove_pinyin_tone
-      - egret.common.yaml:algebra_wubi_sentence
 
 engine:
   processors:
@@ -69,7 +64,7 @@ engine:
     - script_translator@translator
     - script_translator@add_user_dict
     # - script_translator@pinyin
-    # - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
+    - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置

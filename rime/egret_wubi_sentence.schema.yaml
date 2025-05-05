@@ -20,13 +20,8 @@ __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
 __include: egret.common.yaml:guide
+__include: egret.common.yaml:wubi_sentence_speller
 __include: egret.common.yaml:lua_config
-speller:
-  __include: egret.common.yaml:wubi_sentence_speller
-  algebra:
-    __patch:
-      - egret.common.yaml:algebra_wubi_sentence
-
 
 engine:
   processors:
