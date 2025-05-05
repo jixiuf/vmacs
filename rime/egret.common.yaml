@@ -107,5 +107,7 @@ lua_config:
   long_word_filter:
     count: 2
     idx: 4
+    # Lua 配置：农历的触发关键字
+  lunar: nl  # 农历： 二〇二三年冬月二十 癸卯年（兔）冬月二十
 
 
