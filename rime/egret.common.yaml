@@ -135,15 +135,17 @@ algebra_pinyin:
     - derive/ong$/on/
     - derive/ao$/oa/
     - derive/([iu])a(o|ng?)$/a$1$2/
-# xform --改寫〔不保留原形〕
-# derive --衍生〔保留原形〕
-# abbrev --簡拼〔出字優先級較上兩組更低〕
-# fuzz --畧拼〔此種簡拼僅組詞，不出單字〕
-# xlit --變換〔適合大量一對一變換〕
-# erase --刪除
 algebra_wubi_sentence:
   __append:
+  # xform --改寫〔不保留原形〕
+  # derive --衍生〔保留原形〕
+  # abbrev --簡拼〔出字優先級較上兩組更低〕
+  # fuzz --畧拼〔此種簡拼僅組詞，不出單字〕
+  # xlit --變換〔適合大量一對一變換〕
+  # erase --刪除
+  # 阿长与山海经	bs,kg ta,yi gn,gd mm,mm it,xu xc,ag;x0,00	2
     # 下面说的双拼 不是双拼输入法的双拼
+    # 前面部分说的是字典中的规则，后半部分说的是用户可输入对应的格式以匹配这种格式的编码
       - derive/^(\w)(\w),(.+)$/$1$2/ # 纯双码的情况 (单字 只需要输前两个码的情况)
       - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(.+)$/$5$6/ # 纯双码的情况(双字 后字需要输前两个码的情况)
       - derive/^(\w)(\w),(\w)(.+)$/$1$2$3/ # 双码+一位辅助码的情况(单字 后字需要输前3个码的情况)
@@ -168,7 +170,7 @@ wubi_sentence_speller:
   auto_select: true
   auto_select_pattern: ^[a-z]+,|^[a-df-zA-DF-Z]\w{3}|^e\w{4}
   # 如果不想让什么标点直接上屏，可以加在 alphabet，或者编辑标点符号为两个及以上的映射
-  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[|,
+  alphabet: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA[|,/
   # initials 定义仅作为始码的按键，排除 ` 让单个的 ` 可以直接上屏
   initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
   # 第一位<空格>是拼音之间的分隔符；第二位<'>表示可以手动输入单引号来分割拼音。
