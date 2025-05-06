@@ -968,7 +968,6 @@ Move point to end-of-line ,if point was already at that position,
             (with-temp-file buffer-file-name
               (insert txt))
             (set-buffer-modified-p nil)
-            (message "ssssssss")
             (vc-git-register `(,(buffer-file-name)))
             (vc-git-command nil 'async buffer-file-name
                             "commit" "-m" "autosave" "-q"
