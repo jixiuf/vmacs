@@ -110,8 +110,11 @@ translator:
   user_dict: user_dicts/egret_wubi_py.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
-  enable_completion: false
-  enable_user_dict: false
+  # enable_completion: true
+  enable_encoder: true
+  enable_sentence: true
+  enable_user_dict: true
+  encode_commit_history: true
   initial_quality: 1
   spelling_hints: 0
 
