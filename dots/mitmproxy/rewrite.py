@@ -37,7 +37,8 @@ proxy_hosts = {
 # cms oms 调内部服务的时候 会走proxy,如 https://oms.luojilab.com/api/proxy
 # 此处通过脚本 绕过代理 直接请求内部服务， 并且可以通过 上面的 URL_PREFIX_MAP  将请求打向本地的服务
 
-CMS_OMS_API_PROXY=[ "cp.iget.dev.didatrip.com","oms.test.igetget.dc","cms.luojilab.com","oms.luojilab.com"]
+# ,"cms.luojilab.com","oms.luojilab.com"
+CMS_OMS_API_PROXY=[ "cp.iget.dev.didatrip.com","oms.test.igetget.dc"]
 BSCHOOL_API_PROXY=["iget-business-manage.test.svc.luojilab.dc"]
 
 def is_server_responding(url):
