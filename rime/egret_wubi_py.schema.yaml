@@ -65,8 +65,8 @@ engine:
     - lua_translator@*lunar              # 农历
     - lua_translator@*number_translator  # R 输入大写数字
     # - table_translator@custom_phrase # 1、2码置顶
-    - table_translator@translator-wubi
-    - script_translator@translator
+    # - script_translator@translator
+    - lua_translator@*dynamic_translator
     - script_translator@add_user_dict
     # - script_translator@pinyin
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
@@ -79,6 +79,11 @@ engine:
     # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
     # - charset_filter@gbk            # (※3) 默认 GBK
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
+
+ # 见 lua/dynamic_translator.lua 的说明
+dynamic_translator:
+  table_translator: table_translator@custom_phrase
+  script_translator: script_translator@translator
 
 grammar:
   language: wanxiang-lts-zh-hans
@@ -160,7 +165,7 @@ add_user_dict:
   max_homographs: 7
 
 # rime-wubi-sentence 使用的custom_phrase
-# 而我选择使用下面的 translator-wubi 的dictionary 的形式
+# 而我选择使用下面的 custom_phrase 的dictionary 的形式
 # 加载速度应该会比user_dict文本字典要快
 #
 # custom_phrase:
@@ -183,7 +188,7 @@ add_user_dict:
 #   contextual_suggestions: true
 #   max_homophones: 7
 #   max_homographs: 7
-translator-wubi:                 # wubi
+custom_phrase:                 # wubi
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true
@@ -200,7 +205,7 @@ translator-wubi:                 # wubi
   enable_encoder: false          #  是否開啓自動造詞
   encode_commit_history: false   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  initial_quality: 1 # 优先级
+  initial_quality: 1.1 # 优先级
   spelling_hints: 2
   comment_format:
     - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
