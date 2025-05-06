@@ -117,6 +117,7 @@ translator:
   encode_commit_history: true
   initial_quality: 1
   spelling_hints: 0
+  max_phrase_length: 4
 
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
   tags: [ abc ]
@@ -148,7 +149,7 @@ add_user_dict:
   enable_encoder: true
   enable_sentence: true
   enable_user_dict: true
-  encode_commit_history: false
+  encode_commit_history: true
   preedit_format:
 
   spelling_hints: 2
@@ -198,11 +199,11 @@ custom_phrase:                 # wubi
   # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
   # build 目录下会生成 相应然 prism.bin
   prism: egret_wubi
-  enable_user_dict: false        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
   enable_correction: false  #是否开启自动纠错
   enable_sentence: false         # 是否開啓自動造句
-  enable_encoder: false          #  是否開啓自動造詞
-  encode_commit_history: false   # 是否對已上屛詞自動成詞
+  enable_encoder: true          #  是否開啓自動造詞
+  encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
   initial_quality: 10 # 优先级
   spelling_hints: 2
@@ -214,12 +215,12 @@ custom_phrase:                 # wubi
     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
     - "^[a-y]$"                   # 对单字母打出的字不进行调频
     - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
-  # user_dict: user_dicts/egret_wubi.user.dict
+  user_dict: user_dicts/egret_wubi.user.dict
   # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  # db_class: tabledb
+  db_class: tabledb
+  max_phrase_length: 4
 #   enable_charset_filter: true
 #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
-#   max_phrase_length: 4
 
 reverse_lookup:
   dictionary: egret

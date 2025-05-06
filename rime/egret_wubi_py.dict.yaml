@@ -38,7 +38,7 @@ import_tables:
   # 这里引入的五笔字典（可以用于script_translator的）
   # 来自 https://github.com/gaboolic/rime-wubi-sentence
   - dicts/wb86_cn_dicts/8105     # 字表
-  - dicts/wb86_cn_dicts/41448
+  # - dicts/wb86_cn_dicts/41448
   - dicts/wb86_cn_dicts/base     # 基础词库
   - dicts/wb86_cn_dicts/ext      # 扩展词库
   - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
