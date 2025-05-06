@@ -1,0 +1,8 @@
+# dict.schema.yaml
+# 单独用于给其他方案挂载字典用的方案
+schema:
+  schema_id: demo_table
+  name: table 码表方案
+translator:
+  dictionary: demo_table
+  enable_user_dict: false

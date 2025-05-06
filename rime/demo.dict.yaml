@@ -1,0 +1,15 @@
+# 文件：lizi.dict.yaml
+# encoding: utf-8
+---
+name: demo
+version: "1"
+sort: by_weight
+use_preset_vocabulary: false
+...
+时	ui;oc	999000
+间	jm;mo	999000
+世	ui;cv	999000
+界	jx;tj	999000
+事	ui;aa	999000
+件	jm;rn	990000
+视	ui;ju	990000

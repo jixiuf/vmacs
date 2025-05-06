@@ -1,0 +1,77 @@
+# https://ksqsf.moe/posts/2023-06-01-rime-double-pinyin/
+# encoding: utf-8
+schema:
+  schema_id: demo
+  name: 例子
+  version: "0.1"
+  description:
+  dependencies:
+    - demo_table
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中文, 西文 ]
+  - name: full_shape
+    states: [ 半角, 全角 ]
+  - name: simplification
+    reset: 1
+    states: [ 漢字, 汉字 ]
+  - name: ascii_punct
+    states: [ 。，, ．， ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator@demo_table
+    - script_translator
+  filters:
+    - simplifier
+    - uniquifier
+
+speller:
+  delimiter: " '"
+  # alphabet: abcdefghijklmnopqrstuvwxyz;
+  alphabet: abcdefghijklmnopqrstuvwxyz  # 可以删掉 ; 了,algebra帮我们省掉";"的输入
+  algebra:
+  # 拼写运算做的事情很单纯，就是从已有的编码(字典中的)算出一个新编码（用户输入的）
+  #  我们希望一个字的实际输入编码是 yyxx（音音形形）
+  #  ，并且用 y, yy, yyx, yyxx 都可以打出这个字。为此，将
+  #  上面的 speller 一节可以作如下修改：
+  # 假设有码表
+  # 时	ui;oc	999000
+
+  # #可以只输入 $1$2$3部分 即 "uioc" $1=ui $2=o $3=c
+    - derive/^(\w*);(\w)(\w)$/$1$2$3/
+  # #可以只输入 $1$2$3部分 即 "uio" $1=ui $2=o
+    - derive/^(\w*);(\w)(\w)$/$1$2/
+  # #可以只输入 $1$2$3部分 即 "ui" $1=ui
+    - derive/^(\w*);(\w)(\w)$/$1/
+translator:
+  dictionary: demo
+
+# 这里的 initial_quality 可以填一个较大的数字，使得 table 的输出先于 script 翻译器出现。此外，
+# table_translator 应在 script_translator 之前出现：用户输入是依次经过各 translator 的，我们希望
+# table 翻译器先处理输入，如果 table 中没查到，再进入 script 翻译器。
+
+demo_table:
+  dictionary: demo_table
+  initial_quality: 5
+  enable_user_dict: false
+  enable_sentence: false
+  enable_encoder: false
+  encode_commit_history: false
