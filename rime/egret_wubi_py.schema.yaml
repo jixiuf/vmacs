@@ -52,11 +52,8 @@ engine:
     - affix_segmentor@add_user_dict # 用戶自定義tag
     # - lua_segmentor@*segement_demo
     - fallback_segmentor
-    # - affix_segmentor@pinyin
   translators:
-    # lua翻译器
     - punct_translator    # 对应下面的punctuator，用来输入标点
-    # - table_translator #translator
     # @ 之后多了一个 *。这个星号表示后面的名字是模块名而不是全局变量名。
     # 当遇到星号时，librime-lua 会使用 require 机制加载模块，
     # 然后将其返回值作为 Rime 组件加载到输入法框架中。
@@ -68,7 +65,6 @@ engine:
     # - script_translator@translator
     - lua_translator@*dynamic_translator
     - script_translator@add_user_dict
-    # - script_translator@pinyin
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
@@ -171,7 +167,7 @@ add_user_dict:
 # custom_phrase:
 #   dictionary: ""
 #   user_dict: user_dicts/wb86_cn_dicts/custom_phrase
-#   db_class: stabledb
+#   db_class: stabledb        # 只读数据库，无法动态调频；设为 tabledb 可以动态调频
 #   enable_completion: false
 #   enable_sentence: false
 #   initial_quality: 1.1
@@ -205,7 +201,7 @@ custom_phrase:                 # wubi
   enable_encoder: false          #  是否開啓自動造詞
   encode_commit_history: false   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  initial_quality: 1.1 # 优先级
+  initial_quality: 10 # 优先级
   spelling_hints: 2
   comment_format:
     - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
