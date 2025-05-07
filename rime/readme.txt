@@ -5,6 +5,7 @@
 | egret_wubi_py          | 五笔拼音                 |
 | egret_wubi             | 五笔                     |
 | egret                  | 全拼                     |
+效果见 https://emacs-china.org/t/rime/29460
 * 参考
  雾凇拼音 https://github.com/iDvel/rime-ice
  万象拼音：带声调的拼音词库 https://github.com/amzxyz/rime_wanxiang

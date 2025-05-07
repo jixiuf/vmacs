@@ -1,4 +1,4 @@
-;;; -*- Lexical-binding: t; -*-
+;;; -*- lexical-binding: t; -*-
 (require 'gptel)
 (setq gptel-default-mode 'org-mode)
 (setq gptel-display-buffer-action  '(pop-to-buffer-same-window))
