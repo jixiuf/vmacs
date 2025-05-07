@@ -1,0 +1,142 @@
+# Rime dictionary
+# encoding: utf-8
+#https://github.com/amzxyz/RIME-LMDG
+#错音错字对照表
+---
+name: corrections
+version: "2025-05-05 14:11"
+sort: by_weight
+...
+株木琅玛	sr,iy ss,ss gy,ve gc,g0	2
+衾何以堪	wy,ne ws,kg ny,wy;c0,00 fa,dn	0
+墨明棋妙	lf,of je,g0 sa,dw vi,tt	8
+压力山大	df,yi lt,n0 mm,mm dd,dd	399
+鸭梨山大	lq,yg tj,su mm,mm dd,dd	58
+麻麻赖赖	ys,si ys,si gk,im gk,im	12
+绝代双椒	xq,cn wa,y0 cc,y0 sh,ic	0
+毁人不倦	va,mc ww,ww;w0,00 gi,i0;dh,i0;i0,00 wu,db	54
+满山遍野	ia,gw mm,mm yn,mp jf,cb	33
+佛教胜地	wx,jh ft,bt et,gg fb,n0;f0,00	6
+杉杉来吃	se,t0 se,t0 go,i0 kt,nn	2
+一泄千里	gg,ll;g0,00 ia,nn tf,k0 jf,d0	5
+美丽冻人	ug,du gm,yy ua,iy ww,ww;w0,00	6
+老肩巨滑	ft,xb yn,ed an,d0 im,eg	0
+食话食说	wy,ve yt,dg wy,ve yu,kq	0
+大栅栏	dd,dd sm,mg su,fg	53
+东庠岛	ai,i0 yu,dk qy,nm	0
+着落	ud,hf ai,tk	181
+胁差	el,wy ud,af	23
+刚劲	mq,jh ca,ln	90
+井陉	fj,k0 bc,ag	102
+猇亭	qt,hm yp,sj	63
+猇亭区	qt,hm yp,sj aq,i0	2
+屎溺	no,i0 ix,uu	0
+东庠	ai,i0 yu,dk	5
+莒县	ak,kf eg,cu	16
+浚县	ic,wt eg,cu	35
+郯城	oo,bh fd,nt	11
+丽水	gm,yy ii,ii	105
+珲春	gp,lh dw,jf	20
+甪直	te,k0 fh,f0	26
+五厍	gg,hg dl,k0	0
+台州	ck,f0 yt,yh	227
+膻中	ey,lg kh,k0;k0,00	39
+渑池	ik,jn ib,n0	67
+铅山	qm,kg mm,mm	11
+铅山县	qm,kg mm,mm eg,cu	3
+按耐	rp,vg dm,jf	8
+甭介	gi,ej wj,j0	0
+别介	kl,jh wj,j0	31
+槟榔	sp,rw sy,vb	533
+脖颈	ef,pb ca,dm	483
+草薙	aj,j0 at,dy	88
+掺和	rc,de tk,g0;t0,00	438
+称职	tq,iy bk,wy	90
+龇牙	hw,bx ah,te	60
+凑活	ud,wd it,dg	245
+道行	ut,hp tf,hh	269
+给予	xw,gk cb,j0	11360
+厚朴	dj,bd sh,y0	52
+馄饨	qn,jx qn,gn	726
+角色	qe,j0 qc,b0	20042
+结扎	xf,kg rn,n0	126
+钜惠	qa,ng gj,hn	0
+六安	uy,gy pv,f0	109
+女主角	vv,vv yg,d0;y0,00 qe,j0	3684
+埋怨	fj,fg qb,nu	1141
+模板	sa,jd sr,cy	14654
+模具	sa,jd hw,u0	1937
+模样	sa,jd su,dh	5186
+木讷	ss,ss ym,wy	428
+弄堂	ga,j0 ip,kf	126
+暖和	je,fc tk,g0;t0,00	732
+偌大	wa,dk dd,dd	642
+强劲	xk,jy ca,ln	1498
+热列	rv,yo gq,jh	1
+说服	yu,kq eb,cy	5563
+似的	wn,yw rq,yy;r0,00	9146
+藤蔓	ae,ui aj,lc	320
+调换	ym,fk rq,md	618
+胴体	em,gk ws,gg	80
+荨麻	av,fu ys,si	71
+亳州	yp,ta yt,yh	94
+戛然而止	dh,ar qd,ou dm,jj hh,hg	1043
+自怨自艾	th,d0 qb,nu th,d0 aq,u0	401
+洪洞	ia,wy im,gk	27
+蔚县	an,ff eg,cu	42
+嵊州	mt,ux yt,yh	23
+吱声	kf,cy fn,r0	147
+主角	yg,d0;y0,00 qe,j0	24120
+脖颈儿	ef,pb ca,dm qt,n0	1
+草薙剑	aj,j0 at,dy wg,ij	17
+草薙京	aj,j0 at,dy yi,u0	144
+龇着牙	hw,bx ud,hf ah,te	14
+大宛马	dd,dd pq,bb cn,ng	9
+独乐乐	qt,jy qi,i0 qi,i0	13
+海参崴	it,xu cd,er md,gt	304
+贾平凹	sm,u0 gu,hk mm,gd	247
+卡脖子	hh,u0 ef,pb bb,bb	308
+六安市	uy,gy pv,f0 ym,hj	23
+六安县	uy,gy pv,f0 eg,cu	4
+六合区	uy,gy wg,kf aq,i0	3
+螺蛳粉	jl,xi jj,gh ow,vn	551
+温庭筠	ij,lg yt,fp tf,qu	210
+关卡	ud,u0 hh,u0	4772
+三昧真火	dg,gg jf,iy fh,wu oo,oo	49
+优惠券	wd,nn gj,hn ud,vb	3269
+没食子	im,cy wy,ve bb,bb	2
+魔蝎座	ys,sc jj,qn yw,wf	0
+鄱阳湖	to,lb bj,g0 id,eg	1291
+契科夫	dh,vd tu,fh fw,i0	0
+荨麻疹	av,fu ys,si uw,ee	198
+太行山	dy,i0 tf,hh mm,mm	388
+头皮屑	ud,i0 hc,i0 ni,ed	501
+万柏林	dn,v0 sr,g0 ss,y0	2
+雪佛兰	fv,f0 wx,jh uf,f0	366
+鸭绿江	lq,yg xv,iy ia,g0	152
+张柏芝	xt,ay sr,g0 ap,u0	749
+众乐乐	ww,wu qi,i0 qi,i0	20
+阿弥陀佛	bs,kg xq,iy bp,xn wx,jh	371
+安徽六安	pv,f0 tm,gt uy,gy pv,f0	15
+按耐不住	rp,vg dm,jf gi,i0;dh,i0;i0,00 wy,gg	0
+龇牙咧嘴	hw,bx ah,te kg,qj kh,xe	166
+大腹便便	dd,dd et,jt wg,jq wg,jq	147
+歇斯底里	jq,ww ad,wr yq,ay jf,d0	878
+力能扛鼎	lt,n0 ce,xx ra,g0 hn,dn	26
+模棱两可	sa,jd sf,wt gm,ww sk,d0	848
+南京六合	fm,uf yi,u0 uy,gy wg,kf	5
+人模狗样	ww,ww;w0,00 sa,jd qt,qk su,dh	146
+心宽体胖	ny,ny pa,mq ws,gg eu,fh	39
+虚与委蛇	ha,og gn,gd tv,f0 jp,xn	93
+血脉偾张	tl,d0 ey,ni wf,am xt,ay	36
+血脉喷张	tl,d0 ey,ni kf,am xt,ay	0
+一模一样	gg,ll;g0,00 sa,jd gg,ll;g0,00 su,dh	5083
+饮鸩解渴	qn,qw pq,qg qe,vh ij,qn	0
+饮鸩止渴	qn,qw pq,qg hh,hg ij,qn	336
+有模有样	de,f0;e0,00 sa,jd de,f0;e0,00 su,dh	279
+装模作样	uf,ye sa,jd wt,hf su,dh	485
+安徽六安市	pv,f0 tm,gt uy,gy pv,f0 ym,hj	3
+南京六合区	fm,uf yi,u0 uy,gy wg,kf aq,i0	1
+安徽省六安市	pv,f0 tm,gt it,hf uy,gy pv,f0 ym,hj	8
+南无阿弥陀佛	fm,uf fq,v0 bs,kg xq,iy bp,xn wx,jh	42
+南京市六合区	fm,uf yi,u0 ym,hj uy,gy wg,kf aq,i0	2

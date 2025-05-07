@@ -1,9 +1,19 @@
 import os
 frost_path="~/repos/rime-frost/"
-dicts_src_dir=os.path.join(frost_path, "cn_dicts")
-file_list = ['8105.dict.yaml', '41448.dict.yaml', 'base.dict.yaml', 'ext.dict.yaml', 'others.dict.yaml']
-
 word_freq_path = frost_path+"others/知频.txt"
+
+# dicts_src_dir=os.path.join(frost_path, "cn_dicts")
+# file_list = ['8105.dict.yaml', '41448.dict.yaml', 'base.dict.yaml', 'ext.dict.yaml', 'others.dict.yaml']
+# # output='../dicts/wb86_cn_dicts'
+
+dicts_src_dir=os.path.join("../dicts/wangxiang_cn_dicts")
+file_list = ['base.dict.yaml', 'associational.dict.yaml', 'corrections.dict.yaml',
+             'poetry.dict.yaml','place.dict.yaml','compatible.dict.yaml',
+             'chars.dict.yaml', 'correlation.dict.yaml']
+output='../dicts/wb86_wangxiang_cn_dicts'
+
+
+os.makedirs(output, exist_ok=True)
 # Function to read a file
 def read_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -165,7 +175,7 @@ for file_name in file_list:
     # File paths
     cn_dicts_path = os.path.expanduser(dicts_src_dir)
     yaml_file_path = os.path.join(cn_dicts_path, file_name)
-    write_file_path = os.path.join('../dicts/wb86_cn_dicts', file_name)
+    write_file_path = os.path.join(output, file_name)
 
     print(yaml_file_path)
     # Update missing encodings in the file
