@@ -2,7 +2,7 @@
 # Rime dictionary
 
 ---
-name: egret
+name: egret_py
 version: "2023-03-04"
 import_tables:
   # - dicts/wb86_cn_dicts/8105     # 字表

@@ -108,8 +108,8 @@ speller:
 # 不过，如果你仍需要拼音反查五笔编码的功能，那就还需要 reverse_lookup_translator
 # 如果没有别名，则 {table|script}_translator 默认用 translator: 节点， reverse_lookup_translator 默认用 reverse_lookup: 节点。
 pinyin:                         # 针对script_translator@pinyin
-  dictionary: egret
-  user_dict: dicts/egret.user.dict
+  dictionary: egret_py
+  user_dict: dicts/egret_py.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
@@ -213,7 +213,7 @@ abc_segmentor:
     # wubi_comment
 
 reverse_lookup:
-  dictionary: egret
+  dictionary: egret_py
   prefix: "`"
   suffix: "'"
   tips: 〔拼音〕

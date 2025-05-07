@@ -1,7 +1,7 @@
 #   -*- coding: utf-8 -*-
 
 schema:
-  schema_id: egret
+  schema_id: egret_py
   name: 白鹭全拼
   version: "0.8"
   author:
@@ -66,11 +66,11 @@ speller:
       - egret.common.yaml:algebra_pinyin                 # 全拼的一些纠错等
 
 translator:
-  dictionary: egret
+  dictionary: egret_py
   # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
   # build 目录下会生成 相应然 prism.bin
-  prism: egret
-  user_dict: user_dicts/egret.user.dict
+  prism: egret_py
+  user_dict: user_dicts/egret_py.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕

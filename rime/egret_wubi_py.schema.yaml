@@ -234,12 +234,12 @@ emojis:
   tips: " Emoji"
 
 reverse_lookup:
-  dictionary: egret
+  dictionary: egret_py
   prefix: "`"
   suffix: "'"
   tips: 〔拼音〕
   initial_quality: 1 # 优先级
-  user_dict: user_dicts/egret.user.dict
+  user_dict: user_dicts/egret_py.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   overwrite_comment: true # 覆盖其他提示

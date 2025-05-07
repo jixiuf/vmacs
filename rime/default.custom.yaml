@@ -27,7 +27,7 @@ patch:
     - schema: egret_wubi_py
     - schema: egret_wubi_sentence
     - schema: egret_wubi
-    - schema: egret
+    - schema: egret_py
     - schema: emoji
     # - schema: rime_ice
     # - schema: double_pinyin_flypy #bash rime-install double-pinyin
