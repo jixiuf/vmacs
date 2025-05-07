@@ -59,8 +59,10 @@ speller:
   delimiter: " '"
   algebra:
     __patch:
-      - egret.common.yaml:algebra_remove_pinyin_tone     #拼音转双拼码在文件头部配置
-      - egret.common.yaml:algebra_pinyin
+      # - egret.common.yaml:algebra_ziyanma # 自然码双拼
+      # - egret.common.yaml:algebra_fly     #小鹤双拼
+      - egret.common.yaml:algebra_remove_pinyin_tone     #全拼（去掉音调）
+      - egret.common.yaml:algebra_pinyin                 # 全拼的一些纠错等
 
 translator:
   dictionary: egret
