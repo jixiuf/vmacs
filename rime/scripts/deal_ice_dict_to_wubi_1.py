@@ -1,5 +1,9 @@
 import os
+frost_path="~/repos/rime-frost/"
+dicts_src_dir=os.path.join(frost_path, "cn_dicts")
+file_list = ['8105.dict.yaml', '41448.dict.yaml', 'base.dict.yaml', 'ext.dict.yaml', 'others.dict.yaml']
 
+word_freq_path = frost_path+"others/知频.txt"
 # Function to read a file
 def read_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -25,7 +29,7 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
         if '\t' not in line or line.startswith("#"):
             updated_content += line + '\n'
             continue
-        
+
         char_list = line.split('\t')[0]
         if char_list in char_map:
             continue
@@ -61,7 +65,7 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
     write_file(write_file_path, updated_content)
 
 # 载入频率
-freq_file = open(os.path.expanduser("~/vscode/rime-frost/others/知频.txt"), 'r', encoding='utf-8')
+freq_file = open(os.path.expanduser(word_freq_path), 'r', encoding='utf-8')
 word_freq = {}
 for line in freq_file:
     line = line.strip()
@@ -77,17 +81,17 @@ for line in freq_file:
 dict_data = {}
 wb_86_dict_list = ['wubi.dict.yaml']
 for wb_86_dict in wb_86_dict_list:
-    with open('program/'+wb_86_dict, 'r', encoding='utf-8') as dict_file:
+    with open('./'+wb_86_dict, 'r', encoding='utf-8') as dict_file:
         for line in dict_file:
             if "\t" in line and not line.startswith("#"):
-                
+
                 params = line.strip().split('\t')
                 if wb_86_dict == 'wubi.dict.yaml' and len(params) != 4:
                     continue
                 character = params[0]
                 if len(character) !=1:
                     continue
-                
+
                 if wb_86_dict == 'wubi.dict.yaml':
                     encoding = params[3]
 
@@ -97,30 +101,30 @@ for wb_86_dict in wb_86_dict_list:
                     encode_right = encode_right + '0'
 
                 encoding = encode_left + ',' + encode_right
-                
+
                 if character not in dict_data:
                     dict_data[character] = [encoding]
                 else:
                     if encoding not in dict_data[character]:
                         dict_data[character].append(encoding)
 
-with open('program/wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
+with open('./wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
     for line in dict_file:
         if "\t" in line and not line.startswith("#"):
-            
+
             params = line.strip().split('\t')
             if len(params) != 4:
                 continue
             character = params[0]
             if len(character) !=1:
                 continue
-            encoding = params[1] 
+            encoding = params[1]
             if len(encoding) != 1:
                 continue
-            
+
             encoding = encoding +'0,00'
             print(line)
-            
+
             if character not in dict_data:
                 dict_data[character] = [encoding]
             else:
@@ -131,10 +135,10 @@ with open('program/wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
                 if add_flag:
                     dict_data[character].append(encoding)
 
-with open('program/wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
+with open('./wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
     for line in dict_file:
         if "\t" in line and not line.startswith("#"):
-            
+
             params = line.strip().split('\t')
             if len(params) == 4:
                 continue
@@ -142,27 +146,26 @@ with open('program/wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
             if len(character) !=1:
                 continue
             encoding = params[1]
-            
+
             encode_left = encoding[0:2]
             encode_right = encoding[2:]
             if len(encode_right) == 1:
                 encode_right = encode_right + '0'
-            
+
             if character not in dict_data:
                 dict_data[character] = [encoding]
-            
+
 
 
 print(dict_data['巴'])
 print(dict_data['不'])
 print(dict_data['𩽾'])
 
-file_list = ['8105.dict.yaml', '41448.dict.yaml', 'base.dict.yaml', 'ext.dict.yaml', 'others.dict.yaml']
 for file_name in file_list:
     # File paths
-    cn_dicts_path = os.path.expanduser("~/vscode/rime-frost/cn_dicts")
+    cn_dicts_path = os.path.expanduser(dicts_src_dir)
     yaml_file_path = os.path.join(cn_dicts_path, file_name)
-    write_file_path = os.path.join('cn_dicts_wb', file_name)
+    write_file_path = os.path.join('../dicts/wb86_cn_dicts', file_name)
 
     print(yaml_file_path)
     # Update missing encodings in the file
