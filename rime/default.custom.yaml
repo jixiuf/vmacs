@@ -28,6 +28,7 @@ patch:
     - schema: egret_wubi_sentence
     - schema: egret_wubi
     - schema: egret
+    - schema: emoji
     # - schema: rime_ice
     # - schema: double_pinyin_flypy #bash rime-install double-pinyin
     # # - schema: pinyin_simp
@@ -62,7 +63,7 @@ patch:
 
 # 每页多少项
   menu:
-    page_size: 5
+    page_size: 6
 
 # 中西文切換鍵的默認設置寫在 default.yaml 裏面
 # 以下的 default.custom.yaml 在全局範圍重定義該組快速鍵

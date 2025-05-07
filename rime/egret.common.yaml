@@ -22,8 +22,8 @@ switches:
       states: [ 简, 繁 ]
     - name: ascii_punct
       states: [ 。, ． ]
-    # - name: emoji
-    #   states: [ 💀, 😄 ]
+    - name: emoji
+      states: [ 💀, 😄 ]
 
 opencc:
   traditionalize:
@@ -31,6 +31,11 @@ opencc:
     opencc_config: s2t.json          # s2t.json | s2hk.json | s2tw.json | s2twp.json （Rime 内置配置，在程序目录可找到）
     tips: none                       # 转换提示: all 都显示 | char 仅单字显示 | none 不显示。
     tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
+    # Emoji
+    emoji:
+      option_name: emoji
+      opencc_config: emoji.json
+      inherit_comment: false  # 在 corrector.lua 及反查中，emoji 返回空注释
 
 
 
@@ -60,6 +65,7 @@ guide:
       number: "^R[0-9]+[.]?[0-9]*"        # 脚本将自动获取第 2 个字符 R 作为触发前缀，响应 lua_translator@*number_translator，数字金额大写
       calculator: "^cC.+"                 # 响应 lua_translator@*calc_translator，计算器。前缀设定项 calculator/prefix
       gregorian_to_lunar: "^N[0-9]{1,8}"  # 脚本将自动获取第 2 个字符 N 作为触发前缀，响应 lua_translator@*lunar，公历转农历，输入 N20240115 得到「二〇二三年腊月初五」
+      # emojis: "^AE[a-z]*'?$" # "^ae.*$"
 
 lua_config:
 # Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字

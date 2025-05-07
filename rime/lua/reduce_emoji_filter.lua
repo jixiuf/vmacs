@@ -7,9 +7,12 @@ function M.init(env)
   -- 候选页大小
   M.size = config:get_int("menu/page_size") or 0
 end
+local function is_emoji(str)
+end
+
 
 local function isEmoji(cand)
-  return cand:get_dynamic_type() == "Shadow" and not (cand.text:find("([\228-\233][\128-\191]-)") and cand.text:find("[%a]"))
+    return utf8.len(cand.text) and #cand.text ==4
 end
 
 local function splitInput(input, size)

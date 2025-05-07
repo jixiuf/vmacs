@@ -34,9 +34,11 @@ engine:
     - abc_segmentor
     - punct_segmentor
     - fallback_segmentor
+    # - affix_segmentor@emojis
   translators:
     - punct_translator
     - script_translator
+    - script_translator@emojis
     - reverse_lookup_translator
     - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
     - lua_translator@*lunar              # 农历
@@ -44,6 +46,9 @@ engine:
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
+    - simplifier@emoji                              # Emoji 彩色or 黑白
+    - simplifier@traditionalize                     # 简繁切换
+    - lua_filter@*reduce_emoji_filter   # 按需启用，作用是降低Emoji在候选项中的位置排序(顺序要求：Emoji > 降低排序)
     - lua_filter@*long_word_filter
     - simplifier@traditionalize                     # 简繁切换
     # - charset_filter@gbk            # (※3) 默认 GBK
@@ -90,6 +95,14 @@ reverse_lookup:
   tips: 〔笔画〕
   preedit_format:
     - xlit/hspnz/一丨丿丶乙/
+emojis:
+  # tag: emojis
+  dictionary: emoji
+  enable_completion: true
+  initial_quality: 5
+  # prefix: "AE"
+  #suffix: "'"
+  tips: " Emoji"
 
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31

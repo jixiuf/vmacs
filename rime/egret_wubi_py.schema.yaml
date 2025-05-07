@@ -50,7 +50,7 @@ engine:
     - abc_segmentor             # 標識常規的文字段落，加上abc這個tag
     - punct_segmentor           #  標識句讀段落〔鍵入標點符號用〕加上punct這個tag
     - affix_segmentor@add_user_dict # 用戶自定義tag
-    # - lua_segmentor@*segement_demo
+    # - affix_segmentor@emojis
     - fallback_segmentor
   translators:
     - punct_translator    # 对应下面的punctuator，用来输入标点
@@ -65,13 +65,16 @@ engine:
     # - script_translator@translator
     - lua_translator@*dynamic_translator
     - script_translator@add_user_dict
+    - script_translator@emojis
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
     - lua_filter@*long_word_filter
+    - lua_filter@*reduce_emoji_filter   # 按需启用，作用是降低Emoji在候选项中的位置排序(顺序要求：Emoji > 降低排序)
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
     - simplifier@traditionalize                     # 简繁切换
+    - simplifier@emoji                              # Emoji 彩色or 黑白
     # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
     # - charset_filter@gbk            # (※3) 默认 GBK
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
@@ -221,6 +224,14 @@ custom_phrase:                 # wubi
   max_phrase_length: 4
 #   enable_charset_filter: true
 #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
+emojis:
+  # tag: emojis
+  dictionary: emoji
+  enable_completion: true
+  initial_quality: 5
+  # prefix: "AE"
+  #suffix: "'"
+  tips: " Emoji"
 
 reverse_lookup:
   dictionary: egret
@@ -241,5 +252,3 @@ abc_segmentor:
   extra_tags:
     - reverse_lookup
     # wubi_comment
-
-
