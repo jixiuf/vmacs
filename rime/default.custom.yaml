@@ -92,8 +92,8 @@ patch:
     # Shift_L: commit_code
   key_binder:
     # [ ] 以词定字（上屏当前词句的第一个或最后一个字）
-    select_first_character: "bracketleft"
-    select_last_character: "bracketright"
+    select_first_character: "Control+h"
+    select_last_character: "Control+l"
 
     # Shift_R: commit_code
 
@@ -108,8 +108,8 @@ patch:
     # - { when: paging, accept: bracketleft, send: Page_Up }
     # - { when: has_menu, accept: bracketright, send: Page_Down }
     # ,.翻页
-    - { when: paging, accept: comma, send: Page_Up }
-    - { when: has_menu, accept: period, send: Page_Down }
+    - { when: paging, accept: Control+comma, send: Page_Up }
+    - { when: has_menu, accept: Control+period, send: Page_Down }
 
     # dss
     # Emacs style
@@ -131,7 +131,7 @@ patch:
     # - { when: composing, accept: Control+o, send: Page_Up }
     - { when: composing, accept: Control+u, send: Page_Up }
     - { when: composing, accept: Control+v, send: Page_Down }
-    - { when: composing, accept: Control+o, send: Page_Up }
+    # - { when: composing, accept: Control+o, send: Page_Up }
     # paging keys
     - { when: composing, accept: ISO_Left_Tab, send: Page_Up }
     - { when: composing, accept: Shift+Tab, send: Page_Up }

@@ -30,6 +30,7 @@ speller:
 
 engine:
   processors:
+    - lua_processor@*select_character # "C-h" 或 "C-l" 以词定字 serch: select_first_character
     # 彻底地移除英文状态，似乎注掉ascii_composer更有效
     - ascii_composer #處理西文模式及中西文切換 我把此移除验证禁用其英文输入态
     - recognizer #與 matcher 搭配，處理符合特定規則的輸入碼，如網址、反查等
