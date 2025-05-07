@@ -1,5 +1,5 @@
-* rime 白鹭版(egret) 输入方案
-核心卖点: 五笔*拼音整句混输方案 (同一句话可可同时使用五笔与拼音)
+* rime 白鹭(egret) 输入方案
+核心卖点: 五笔*拼音整句混输方案 (同一句话可同时使用五笔与拼音)
 | egret_wubi_py_sentence | 五笔*拼音整句混输        |
 | egret_wubi_sentence    | 五笔整句输入(可拼音反查) |
 | egret_wubi_py          | 五笔拼音                 |
