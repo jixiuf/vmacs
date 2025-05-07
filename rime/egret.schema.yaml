@@ -59,7 +59,7 @@ speller:
   delimiter: " '"
   algebra:
     __patch:
-      # - egret.common.yaml:algebra_remove_pinyin_tone     #拼音转双拼码在文件头部配置
+      - egret.common.yaml:algebra_remove_pinyin_tone     #拼音转双拼码在文件头部配置
       - egret.common.yaml:algebra_pinyin
 
 translator:
