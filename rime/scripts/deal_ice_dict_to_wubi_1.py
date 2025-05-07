@@ -1,4 +1,6 @@
 import os
+use_origin_frq=True             # 使用原始词库的词频 （否则用知频.txt进行更新）
+
 frost_path="~/repos/rime-frost/"
 word_freq_path = frost_path+"others/知频.txt"
 
@@ -40,7 +42,11 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
             updated_content += line + '\n'
             continue
 
-        char_list = line.split('\t')[0]
+        tokens= line.split('\t')
+        char_list = tokens[0]
+        if len(tokens) >2:
+            freq= tokens[2]
+
         if char_list in char_map:
             continue
 
@@ -63,10 +69,11 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
             word_encode_list.append(dict_encode)
 
         word_encode = ' '.join(word_encode_list)
-        if char_list in word_freq:
-            freq = word_freq[char_list]
-        else:
-            freq = 0
+        if not use_origin_frq :
+            if char_list in word_freq:
+                freq = word_freq[char_list]
+            else:
+                freq = 0
         updated_line = f"{char_list}\t{word_encode}\t{freq}"
         updated_content += updated_line + '\n'
         char_map[char_list] = ''
