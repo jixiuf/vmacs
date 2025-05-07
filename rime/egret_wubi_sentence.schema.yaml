@@ -75,6 +75,7 @@ engine:
   # 见下面 long_word_filter 相关配置
     - lua_filter@*long_word_filter
     - lua_filter@*reduce_emoji_filter   # 按需启用，作用是降低Emoji在候选项中的位置排序(顺序要求：Emoji > 降低排序)
+    - lua_filter@*is_in_user_dict # 用户词典的词加上一个*
     - simplifier@traditionalize                     # 简繁切换
     - simplifier@emoji                              # Emoji 彩色or 黑白
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
