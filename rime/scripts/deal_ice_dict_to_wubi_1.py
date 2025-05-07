@@ -133,7 +133,7 @@ with open('./wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
                 continue
 
             encoding = encoding +'0,00'
-            print(line)
+            # print(line)
 
             if character not in dict_data:
                 dict_data[character] = [encoding]
