@@ -1,6 +1,5 @@
 -- https://github.com/hchunhui/librime-lua/wiki/objects
 -- 为五笔拼音混合输入法打长句而生的一个过滤器
--- (不甚完备)
 
 -- ：理论上 拼音不该出现多个声母相临的情况（ 前提将en an in ing 等中的n g等声母替换后 ）
 -- 若声母相临了，则断为wubi,否则为pinyin ，
