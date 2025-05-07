@@ -9,6 +9,7 @@
  雾凇拼音 https://github.com/iDvel/rime-ice
  万象拼音：带声调的拼音词库 https://github.com/amzxyz/rime_wanxiang
  墨奇版 五笔整句输入方案  https://github.com/gaboolic/rime-wubi-sentence
+白霜拼音: https://github.com/gaboolic/rime-frost
  
 * 好文章 https://ksqsf.moe/posts/2023-06-01-rime-double-pinyin/
 ** 拼写运算（spelling algebra）
