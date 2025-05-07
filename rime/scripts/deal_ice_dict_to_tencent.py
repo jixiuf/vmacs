@@ -1,4 +1,8 @@
 import os
+frost_path="~/repos/rime-frost/"
+dicts_src_dir=os.path.join(frost_path, "cn_dicts")
+
+file_list = ['tencent.dict.yaml']
 
 # Function to read a file
 def read_file(file_path):
@@ -33,8 +37,8 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
             character, encoding, frequency = line.split('\t')
         else:
             character, encoding = line.split('\t')
-        
-        
+
+
         if "tencent" in file_path :
             updated_line = f"{character}\t30"
             updated_content += updated_line + '\n'
@@ -62,16 +66,16 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
                     yunmu = pinyin[2:]
                     shengmu_map = { "zh": "v", "ch": "i", "sh": "u" }
                     double_shengmu = shengmu_map[shengmu]
-                
+
                 if double_shengmu == 'a':
                     yunmu = pinyin
-                
+
                 if double_shengmu == 'o':
                     yunmu = pinyin
-                
+
                 if double_shengmu == 'e':
                     yunmu = pinyin
-                
+
                 yunmu_map = {
                     'iu': 'q',
                     'ei': 'w',
@@ -111,7 +115,7 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
 
                     'ian': 'm',
                 };
-                
+
                 if len(yunmu) == 1:
                     double_yummu = yunmu
                 else:
@@ -120,14 +124,14 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
 
                 if len(double_pinyin) != 2:
                     print("!!!!double_pinyin " + double_pinyin + " " + pinyin + " ")
-                
+
             clean_character = character.replace("·", "")
             character_encoding_pre = clean_character[pinyin_index]
             # character_encoding_pre = character[pinyin_index]
             encoding_post = dict_data.get(character_encoding_pre, "[")
             double_list += f"{double_pinyin}[{encoding_post} "
             pinyin_index += 1
-        
+
         double_list = double_list[:-1]
 
         if "[[" in double_list:
@@ -147,7 +151,6 @@ def update_missing_encodings(file_path, write_file_path, dict_data):
     write_file(write_file_path, updated_content)
 
 dict_data = {}
-file_list = ['tencent.dict.yaml']
 # file_list = [ 'tencent.dict.yaml']
 # Load the dict data from the provided file
 # with open('./moqima.txt', 'r', encoding='utf-8') as dict_file:
@@ -157,7 +160,7 @@ file_list = ['tencent.dict.yaml']
 #             if "'" not in encoding:
 #                 encoding_post = encoding
 
-                
+
 #                 if character in '去我而人他有是出哦配啊算的非个和就可了在小从这吧你吗':
 #                     encoding_post = encoding.upper()
 #                 if character not in dict_data:
@@ -167,10 +170,10 @@ file_list = ['tencent.dict.yaml']
 
 for file_name in file_list:
     # File paths
-    cn_dicts_path = os.path.expanduser("~/vscode/rime-frost/cn_dicts")
+    cn_dicts_path = os.path.expanduser(dicts_src_dir)
     yaml_file_path = os.path.join(cn_dicts_path, file_name)
     # yaml_file_path = os.path.join('cn_dicts', file_name)
-    write_file_path = os.path.join('cn_dicts_common', file_name)
+    write_file_path = os.path.join('../dicts/wb86_cn_dicts_common', file_name)
 
     print(yaml_file_path)
     # Update missing encodings in the file
