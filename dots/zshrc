@@ -263,9 +263,9 @@ alias cdd="pushd"
 # {{{ 关于历史纪录的配置
 setopt hist_ignore_all_dups  # 如果你不想保存重复的历史
 #历史纪录条目数量
-export HISTSIZE=1000000
+export HISTSIZE=10000000
 #注销后保存的历史纪录条目数量
-export SAVEHIST=1000000
+export SAVEHIST=10000000
 #以附加的方式写入历史纪录
 setopt INC_APPEND_HISTORY
 alias h='history -nr'
@@ -499,3 +499,10 @@ json2csv() {
 # rsync -avz -CErltm  --delete src dst
 # 同步两个目录
 alias rcp='rsync -avz -CErltm  --delete '
+up(){
+    sudo -u jixiuf sh -c '/usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ root@bj-mjq-dev-apm-1:/data/binpkgs; /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/'
+}
+down(){
+    sudo  sh -c '/usr/bin/rsync -avz -CErltm  --delete  root@bj-mjq-dev-apm-1:/data/binpkgs/* /var/cache/binpkgs/; /usr/bin/rsync -avz -CErltm  --delete root@bj-mjq-dev-apm-1:/data/gentoo/* /var/db/repos/gentoo/'
+}
+
