@@ -34,6 +34,9 @@ grammar:
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
     __patch:
       - egret.common.yaml:grammar
+reverse_lookup:
+    __patch:
+      - egret.common.yaml:reverse_lookup_pinyin
 
 
 engine:
@@ -224,21 +227,6 @@ pinyin:
   contextual_suggestions: true
   max_homophones: 7
   max_homographs: 7
-
-reverse_lookup:
-  dictionary: egret_py
-  prefix: "`"
-  suffix: "'"
-  tips: 〔拼音〕
-  initial_quality: 1 # 优先级
-  user_dict: user_dicts/egret_py.user.dict
-  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
-  overwrite_comment: true # 覆盖其他提示
-  preedit_format: # 上屏码显示格式，
-    - xform/([nl])v/$1ü/
-    - xform/([nl])ue/$1üe/
-    - xform/([jqxy])v/$1u/
 
 abc_segmentor:
   extra_tags:

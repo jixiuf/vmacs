@@ -37,6 +37,9 @@ grammar:
 emojis:
     __patch:
       - egret.common.yaml:emojis
+reverse_lookup:
+    __patch:
+      - egret.common.yaml:reverse_lookup_pinyin
 
 engine:
   processors:
@@ -228,22 +231,6 @@ custom_phrase:                 # wubi
 #   enable_charset_filter: true
 #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
 
-reverse_lookup:
-  dictionary: egret_py
-  prefix: "`"
-  suffix: "'"
-  tips: 〔拼音〕
-  initial_quality: 1 # 优先级
-  user_dict: user_dicts/egret_py.user.dict
-  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
-  overwrite_comment: true # 覆盖其他提示
-  preedit_format: # 上屏码显示格式，
-    __patch:
-      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
-    # - xform/([nl])v/$1ü/
-    # - xform/([nl])ue/$1üe/
-    # - xform/([jqxy])v/$1u/
 
 abc_segmentor:
   extra_tags:

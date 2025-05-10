@@ -25,6 +25,9 @@ grammar:
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
     __patch:
       - egret.common.yaml:grammar
+reverse_lookup:
+    __patch:
+      - egret.common.yaml:reverse_lookup_stroke
 
 engine:
   processors:
@@ -104,11 +107,3 @@ translator:
   max_homophones: 7
   max_homographs: 7
 
-reverse_lookup:
-  dictionary: stroke
-  enable_completion: true
-  prefix: "`"
-  suffix: "'"
-  tips: 〔笔画〕
-  preedit_format:
-    - xlit/hspnz/一丨丿丶乙/

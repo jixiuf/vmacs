@@ -447,3 +447,28 @@ grammar:
   weak_collocation_penalty: -24     #默认-24 对弱搭配词组施加的惩罚值。保持默认值通常是为了有效过滤掉不太常见但仍然合理的词组组合。
   rear_penalty: -30                 #默认-18 对词组中后续词语的位置施加的惩罚值。较高的负值会降低某些词语在句子后部出现的概率，防止句子结构不自然。
 
+
+reverse_lookup_stroke:
+  dictionary: stroke
+  enable_completion: true
+  prefix: "`"
+  suffix: "'"
+  tips: 〔笔画〕
+  preedit_format:
+    - xlit/hspnz/一丨丿丶乙/
+reverse_lookup_pinyin:
+  dictionary: egret_py
+  prefix: "`"
+  suffix: "'"
+  tips: 〔拼音〕
+  initial_quality: 1 # 优先级
+  user_dict: user_dicts/egret_py.user.dict
+  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+  db_class: tabledb
+  overwrite_comment: true # 覆盖其他提示
+  preedit_format: # 上屏码显示格式，
+    __patch:
+      - preedit_pinyin_add_tone     #全拼（显示音调 7890）
+    # - xform/([nl])v/$1ü/
+    # - xform/([nl])ue/$1üe/
+    # - xform/([jqxy])v/$1u/
