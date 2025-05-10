@@ -427,3 +427,14 @@ wubi_sentence_speller:
   # algebra:
   #   __patch:
   #     - algebra_wubi_sentence
+emojis:
+  # tag: emojis
+  dictionary: emoji
+  enable_completion: true
+  initial_quality: 5
+  # prefix: "AE"
+  #suffix: "'"
+  tips: " Emoji"
+  user_dict: user_dicts/emoji.user.dict
+  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+  db_class: tabledb

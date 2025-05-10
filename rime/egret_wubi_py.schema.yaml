@@ -228,13 +228,8 @@ custom_phrase:                 # wubi
 #   enable_charset_filter: true
 #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
 emojis:
-  # tag: emojis
-  dictionary: emoji
-  enable_completion: true
-  initial_quality: 5
-  # prefix: "AE"
-  #suffix: "'"
-  tips: " Emoji"
+    __patch:
+      - egret.common.yaml:emojis
 
 reverse_lookup:
   dictionary: egret_py

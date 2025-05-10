@@ -250,10 +250,5 @@ abc_segmentor:
     # wubi_comment
 
 emojis:
-  # tag: emojis
-  dictionary: emoji
-  enable_completion: true
-  initial_quality: 5
-  # prefix: "AE"
-  #suffix: "'"
-  tips: " Emoji"
+    __patch:
+      - egret.common.yaml:emojis

@@ -104,14 +104,8 @@ reverse_lookup:
   preedit_format:
     - xlit/hspnz/一丨丿丶乙/
 emojis:
-  # tag: emojis
-  dictionary: emoji
-  enable_completion: true
-  initial_quality: 5
-  # prefix: "AE"
-  #suffix: "'"
-  tips: " Emoji"
-
+    __patch:
+      - egret.common.yaml:emojis
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
 grammar:

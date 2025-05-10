@@ -212,12 +212,7 @@ reverse_lookup:
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
     - xform/([jqxy])v/$1u/
-emojis:
-  # tag: emojis
-  dictionary: emoji
-  enable_completion: true
-  initial_quality: 5
-  # prefix: "AE"
-  #suffix: "'"
-  tips: " Emoji"
 
+emojis:
+    __patch:
+      - egret.common.yaml:emojis
