@@ -58,9 +58,9 @@ engine:
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
 speller:
-  # 7890 表示声调1234
+  # 7890 表示声调1234 control+return 可以输入你打的声调
   alphabet: zyxwvutsrqponmlkjihgfedcba7890U
-  delimiter: " '"
+  delimiter: " ';"
   algebra:
     __patch:
       # - egret.common.yaml:algebra_ziyanma # 自然码双拼
@@ -83,14 +83,12 @@ translator:
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
   initial_quality: 1 # 优先级
-  preedit_format:               # 上屏码显示格式，
-    - xform/([nl])v/$1ü/
-    - xform/([nl])ue/$1üe/
-    - xform/([jqxy])v/$1u/
-    - xform/7/1/
-    - xform/8/2/
-    - xform/9/3/
-    - xform/0/4/
+  preedit_format: # 上屏码显示格式，
+    __patch:
+      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
+    # - xform/([nl])v/$1ü/
+    # - xform/([nl])ue/$1üe/
+    # - xform/([jqxy])v/$1u/
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true

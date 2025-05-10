@@ -109,8 +109,6 @@ translator:
   max_homophones: 7
   max_homographs: 7
 
-  comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/"
   dictionary: egret_wubi_py
   prism: egret_wubi_py
   user_dict: user_dicts/egret_wubi_py.user.dict
@@ -123,6 +121,12 @@ translator:
   # encode_commit_history: true #encode_commit_history
   initial_quality: 1
   spelling_hints: 0
+  comment_format:
+    - "xform/(^|[ '])[^[]+[[]/$1/"
+  preedit_format:               # 上屏码显示格式，
+    __patch:
+      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
+  
   # max_phrase_length: 4          # 〔僅table_translator有效〕
 
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
@@ -156,7 +160,9 @@ add_user_dict:
   enable_sentence: true
   enable_user_dict: true
   encode_commit_history: true
-  preedit_format:
+  preedit_format:               # 上屏码显示格式，
+    __patch:
+      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
 
   spelling_hints: 2
   comment_format:
@@ -224,6 +230,9 @@ custom_phrase:                 # wubi
   # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   max_phrase_length: 4
+  preedit_format: # 上屏码显示格式，
+    __patch:
+      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
 #   enable_charset_filter: true
 #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
 emojis:
@@ -246,9 +255,11 @@ reverse_lookup:
   db_class: tabledb
   overwrite_comment: true # 覆盖其他提示
   preedit_format: # 上屏码显示格式，
-    - xform/([nl])v/$1ü/
-    - xform/([nl])ue/$1üe/
-    - xform/([jqxy])v/$1u/
+    __patch:
+      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
+    # - xform/([nl])v/$1ü/
+    # - xform/([nl])ue/$1üe/
+    # - xform/([jqxy])v/$1u/
 
 abc_segmentor:
   extra_tags:

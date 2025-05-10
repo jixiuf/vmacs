@@ -6,6 +6,8 @@ editor:
       space: confirm                        # 空格键：上屏候选项
       Return: commit_raw_input              # 回车键：上屏原始输入
       Control+Return: commit_script_text    # Ctrl+回车键：上屏变换后输入（经过 preedit_format 转换的）
+      Control+j: commit_script_text         # Ctrl+j：上屏变换后输入（经过 preedit_format 转换的）
+      # Control+w: commit_composition
       Control+Shift+Return: commit_comment  # Ctrl+Shift+回车键：上屏 comment
       BackSpace: revert                     # 退格键：向前删除（撤消上次输入）
       Delete: delete                        # Delete 键：向后删除
@@ -127,6 +129,109 @@ algebra_remove_pinyin_tone:   # 去声调
     - abbrev/^([qwrtypsdfghjklzxcbnm]).+(\d)$/$1$2/  #不携带元音的声母派生出首字母简码来+数字声调
     - abbrev/^([aoe])([ioun])(\d)$/$1/             #携带两个字符的元音首字母派生出简码来
     - abbrev/^([aoe])([ioun])(\d)$/$1$3/       #携带两个字符的元音首字母派生出简码来+数字声调
+preedit_pinyin_add_tone:
+  __append:
+  # 7890 表示声调
+    - xform/ai7/āi/
+    - xform/ei7/ēi/
+    - xform/ui7/uī/
+    - xform/ao7/āo/
+    - xform/ou7/ōu/
+    - xform/iu7/iǖ/
+    - xform/ie7/iē/
+    - xform/ue7/uē/
+    - xform/er7/ēr/
+    - xform/an7/ān/
+    - xform/en7/ēn/
+    - xform/in7/īn/
+    - xform/un7/ūn/
+    - xform/vn7/ǖn/
+    - xform/ang7/āng/
+    - xform/eng7/ēng/
+    - xform/ing7/īng/
+    - xform/ong7/ōng/
+    - xform/a7/ā/
+    - xform/o7/ō/
+    - xform/e7/ē/
+    - xform/i7/ī/
+    - xform/u7/ū/
+    - xform/v7/ǖ/
+
+    - xform/ai8/ái/
+    - xform/ei8/éi/
+    - xform/ui8/uí/
+    - xform/ao8/áo/
+    - xform/ou8/óu/
+    - xform/iu8/iǘ/
+    - xform/ie8/ié/
+    - xform/ue8/ué/
+    - xform/er8/ér/
+    - xform/an8/án/
+    - xform/en8/én/
+    - xform/in8/ín/
+    - xform/un8/ún/
+    - xform/vn8/ǘn/
+    - xform/ang8/áng/
+    - xform/eng8/éng/
+    - xform/ing8/íng/
+    - xform/ong8/óng/
+    - xform/a8/á/
+    - xform/o8/ó/
+    - xform/e8/é/
+    - xform/i8/í/
+    - xform/u8/ú/
+    - xform/v8/ǘ/
+
+    - xform/ai9/ǎi/
+    - xform/ei9/ěi/
+    - xform/ui9/uǐ/
+    - xform/ao9/ǎo/
+    - xform/ou9/ǒu/
+    - xform/iu9/iǚ/
+    - xform/ie9/iě/
+    - xform/ue9/uě/
+    - xform/er9/ěr/
+    - xform/an9/ǎn/
+    - xform/en9/ěn/
+    - xform/in9/ǐn/
+    - xform/un9/ǔn/
+    - xform/vn9/ǚn/
+    - xform/ang9/ǎng/
+    - xform/eng9/ěng/
+    - xform/ing9/ǐng/
+    - xform/ong9/ǒng/
+    - xform/a9/ǎ/
+    - xform/o9/ǒ/
+    - xform/e9/ě/
+    - xform/i9/ǐ/
+    - xform/u9/ǔ/
+    - xform/v9/ǚ/
+
+    - xform/ai0/ài/
+    - xform/ei0/èi/
+    - xform/ui0/uì/
+    - xform/ao0/ào/
+    - xform/ou0/òu/
+    - xform/iu0/iù/
+    - xform/ie0/iè/
+    - xform/ue0/uè/
+    - xform/er0/èr/
+    - xform/an0/àn/
+    - xform/en0/èn/
+    - xform/in0/ìn/
+    - xform/un0/ùn/
+    - xform/vn0/ùn/
+    - xform/ang0/àng/
+    - xform/eng0/èng/
+    - xform/ing0/ìng/
+    - xform/ong0/òng/
+    - xform/a0/à/
+    - xform/o0/ò/
+    - xform/e0/è/
+    - xform/i0/ì/
+    - xform/u0/ù/
+    - xform/v0/ù/
+  
 algebra_ziyanma:                               # 自然码
   __append:
     - xform/^([a-z]+)$/$1④/
