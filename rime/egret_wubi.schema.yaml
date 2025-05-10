@@ -144,6 +144,7 @@ translator:                 # wubi
   spelling_hints: 2
   comment_format:
     - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
+    - "xform/,//"
     # 同時顯示羅馬字拼寫
     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
@@ -155,9 +156,6 @@ translator:                 # wubi
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
   tags: [ abc ]
   dictionary: egret_wubi
-  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
-  # build 目录下会生成 相应然 prism.bin
-  prism: egret_wubi
   # dictionary: wubi86.extended
   overwrite_comment: true  # 覆蓋其他提示
   comment_format:
@@ -171,9 +169,6 @@ add_user_dict:
   tips: "〔自造词〕"
   tag: add_user_dict
   dictionary: egret_wubi
-  # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
-  # build 目录下会生成 相应然 prism.bin
-  prism: egret_wubi
   initial_quality: -1
   user_dict: user_dicts/egret_wubi.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
