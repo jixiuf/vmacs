@@ -125,6 +125,9 @@ algebra_remove_pinyin_tone:   # 去声调
     - derive/(.+)(\d)/$1/
     - derive/([nl])ve(\d)/$1ue$2/                            #让üè兼容ue
     - derive/^([jqx])v(\d)$/$1u$2/
+    - derive/^([jqxy])u(\d)/$1v$2/
+    - derive/^([jqxy])iu(\d)/$1iv$2/
+    - derive/^([jqxy])ue(\d)/$1ve$2/
     - abbrev/^([qwrtypsdfghjklzxcbnm]).+$/$1/  #不携带元音的声母派生出首字母简码来
     - abbrev/^([qwrtypsdfghjklzxcbnm]).+(\d)$/$1$2/  #不携带元音的声母派生出首字母简码来+数字声调
     - abbrev/^([aoe])([ioun])(\d)$/$1/             #携带两个字符的元音首字母派生出简码来
@@ -364,8 +367,8 @@ algebra_fly:                    # 小鹤双拼
 
 algebra_pinyin:
   __append:
-    - derive/^([nl])ue$/$1ve/
-    - derive/^([jqxy])u/$1v/
+    # - derive/^([nl])ue$/$1ve/
+    # - derive/^([jqxy])u/$1v/
     # 简拼（只输入声母）?
     # - abbrev/^([a-z]).+$/$1/
     # - abbrev/^([zcs]h).+$/$1/
