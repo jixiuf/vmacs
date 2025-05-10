@@ -72,7 +72,7 @@ engine:
 speller:
   # 7890 表示声调1234 control+return 可以输入你打的声调
   alphabet: zyxwvutsrqponmlkjihgfedcba7890U
-  delimiter: " ';"
+  delimiter: " ;'"
   algebra:
     __patch:
       # - egret.common.yaml:algebra_ziyanma # 自然码双拼

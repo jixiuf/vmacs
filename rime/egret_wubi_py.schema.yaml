@@ -37,9 +37,9 @@ grammar:
 emojis:
     __patch:
       - egret.common.yaml:emojis
-reverse_lookup:
-    __patch:
-      - egret.common.yaml:reverse_lookup_pinyin
+# reverse_lookup:
+#     __patch:
+#       - egret.common.yaml:reverse_lookup_pinyin
 
 engine:
   processors:
@@ -79,14 +79,16 @@ engine:
     - lua_translator@*unicode              # Unicode
     - script_translator@add_user_dict
     - script_translator@emojis
-    - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
+    # - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
   # 见下面 long_word_filter 相关配置
     - lua_filter@*long_word_filter
     - lua_filter@*reduce_emoji_filter   # 按需启用，作用是降低Emoji在候选项中的位置排序(顺序要求：Emoji > 降低排序)
-    - lua_filter@*is_in_user_dict # 用户词典的词加上一个*
+    # - lua_filter@*super_preedit                     #输入码显示全拼并带上音调
+    # - lua_filter@*is_in_user_dict # 用户词典的词加上一个*
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
+    # - reverse_lookup_filter@wubi_py
     - simplifier@traditionalize                     # 简繁切换
     - simplifier@emoji                              # Emoji 彩色or 黑白
     # - lua_filter@reduce_english_filter  # 降低部分英语单词在候选项的位置
@@ -124,10 +126,14 @@ translator:
   enable_user_dict: true
   # encode_commit_history: true #encode_commit_history
   initial_quality: 1
+  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
+  ##  改为 1 则是只显示单字的输入码，依此类推。
   spelling_hints: 0
+  # comment_format: {comment}  #将注释以词典字符串形式完全暴露，通过super_preedit.lua完全接管，灵活配置。
   comment_format:
     - "xform/(^|[ '])[^[]+[[]/$1/"
     - "xform/,//"
+    - "xform/0//"
   preedit_format:               # 上屏码显示格式，
     __patch:
       - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
@@ -137,9 +143,10 @@ translator:
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
   tags: [ abc ]
   dictionary: egret_wubi
-  overwrite_comment: true  # 覆蓋其他提示
+  overwrite_comment: false  # 覆蓋其他提示
+  # comment_format: {comment}  #将注释以词典字符串形式完全暴露，通过super_preedit.lua完全接管，灵活配置。
   comment_format:
-    # 同時顯示羅馬字拼寫
+  #   # 同時顯示羅馬字拼寫
     - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
 # 自定义词典加词(AC引导)
@@ -212,6 +219,8 @@ custom_phrase:                 # wubi
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
   initial_quality: 10 # 优先级
+  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
+  ##  改为 1 则是只显示单字的输入码，依此类推。
   spelling_hints: 2
   comment_format:
     # - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
