@@ -41,6 +41,7 @@ engine:
     - script_translator
     - script_translator@emojis
     - reverse_lookup_translator
+    - lua_translator@*unicode              # Unicode
     - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
     - lua_translator@*lunar              # 农历
     - lua_translator@*number_translator  # R 输入大写数字
@@ -57,7 +58,8 @@ engine:
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
 speller:
-  alphabet: zyxwvutsrqponmlkjihgfedcba
+  # 7890 表示声调1234
+  alphabet: zyxwvutsrqponmlkjihgfedcba7890U
   delimiter: " '"
   algebra:
     __patch:
@@ -85,6 +87,10 @@ translator:
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/
     - xform/([jqxy])v/$1u/
+    - xform/7/1/
+    - xform/8/2/
+    - xform/9/3/
+    - xform/0/4/
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
   contextual_suggestions: true

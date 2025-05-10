@@ -68,6 +68,7 @@ engine:
     - table_translator@translator
     - script_translator@emojis
     - script_translator@add_user_dict
+    - lua_translator@*unicode              # Unicode
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)

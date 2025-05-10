@@ -65,6 +65,7 @@ engine:
     # - table_translator@custom_phrase # 1、2码置顶
     # - script_translator@translator
     - lua_translator@*dynamic_translator
+    - lua_translator@*unicode              # Unicode
     - script_translator@add_user_dict
     - script_translator@emojis
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码

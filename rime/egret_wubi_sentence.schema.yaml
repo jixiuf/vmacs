@@ -63,6 +63,7 @@ engine:
     - lua_translator@*date_translator      # 时间、日期、星期 去 lua/目录下找date_translator.lua
     - lua_translator@*lunar              # 农历
     - lua_translator@*number_translator  # R 输入大写数字
+    - lua_translator@*unicode              # Unicode
     # - table_translator@custom_phrase # 1、2码置顶
     - table_translator@translator-wubi
     - script_translator@translator
