@@ -398,6 +398,7 @@ algebra_wubi_sentence:
       # 一字（词）有两种码的情况+一位辅助码的情况(需要输前3个码的情况)
       - derive/^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(.+)$/$5$6$7/
 
+
       - derive|^(\w)(\w),(\w)(\w)$|$1$2$3$4,| # 输入4个全码后 结尾加"," 以强制4个码匹配全码
       - derive|^(\w)(\w),(\w)(\w);(.+)$|$1$2$3$4,| # 双码+2位辅助码的情况 结尾加","
       - derive|^(\w)(\w),(\w)(\w);(\w)(\w),(\w)(\w)$|$5$6$7$8,| # 双码+2位辅助码的情况 结尾加","
@@ -409,6 +410,9 @@ algebra_wubi_sentence:
       - derive|^.+;(\w)(\w),(\w)0$|$1$2$3,| # 3码全码的字，3码全码后加","
       - derive|^.+;(\w)(\w),00$|$1$2,| # 2码全码的字，2码全码后加","
       - derive|^.+;(\w)0,00$|$1,| # 1码全码的字，3码全码后加","
+      # 简码来 像拼音只输入bpmf
+      # - xform/^(\w)(\w),(.+)$/$1/ # 纯双码的情况 (单字 只需要输前两个码的情况)
+      # - xform/^(\w)(\w),(\w)(\w);(\w)(\w),(.+)$/$5/ # 一字（词）有两种码的情况(输前两个码的情况)
 # 五笔支持长句，3码或1码时需以“,”结尾
 wubi_sentence_speller:
   # speller:
@@ -431,9 +435,9 @@ emojis:
   # tag: emojis
   dictionary: emoji
   enable_completion: true
-  initial_quality: 5
+  initial_quality: 1
   # prefix: "AE"
-  #suffix: "'"
+  # suffix: "/"
   tips: " Emoji"
   user_dict: user_dicts/emoji.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
