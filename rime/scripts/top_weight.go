@@ -10,6 +10,8 @@ import (
 var dicts = map[string]float64{
 	"../dicts/wangxiang_cn_dicts/base.dict.yaml":        450,
 	"../dicts/wangxiang_cn_dicts/correlation.dict.yaml": 300,
+	"../dicts/wb86_cn_dicts/base.dict.yaml":             200,
+	"../dicts/wb86_cn_dicts/ext.dict.yaml":              30,
 }
 
 // 结合 无声调版的 (白霜字库8105.dict.yaml) 与有声调版的 万象拼音大 “字”库
@@ -29,7 +31,7 @@ func main() {
 		}
 		dictOutput := rime.NewDict(dictName)
 		dictOutput.FileComments = fmt.Sprintf(`
-# 本字库使用 sort_base.go 生成
+# 本字库使用 top_weight.go 生成
 #只保留权重>%.0f 的
 %s`, minWeight, baseDict.FileComments)
 		baseDict.Entries.SortByWeight() // 按权重排序

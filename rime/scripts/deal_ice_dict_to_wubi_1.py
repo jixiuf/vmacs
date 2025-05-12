@@ -1,18 +1,18 @@
 import os
-use_origin_frq=True             # 使用原始词库的词频 （否则用知频.txt进行更新）
+use_origin_frq=False             # 使用原始词库的词频 （否则用知频.txt进行更新）
 
 frost_path="~/repos/rime-frost/"
 word_freq_path = frost_path+"others/知频.txt"
 
-# dicts_src_dir=os.path.join(frost_path, "cn_dicts")
-# file_list = ['8105.dict.yaml', '41448.dict.yaml', 'base.dict.yaml', 'ext.dict.yaml', 'others.dict.yaml']
-# # output='../dicts/wb86_cn_dicts'
+dicts_src_dir=os.path.join(frost_path, "cn_dicts")
+file_list = ['8105.dict.yaml', '41448.dict.yaml', 'base.dict.yaml', 'ext.dict.yaml', 'others.dict.yaml']
+output='../dicts/wb86_cn_dicts'
 
-dicts_src_dir=os.path.join("../dicts/wangxiang_cn_dicts")
-file_list = ['base.dict.yaml', 'associational.dict.yaml', 'corrections.dict.yaml',
-             'poetry.dict.yaml','place.dict.yaml','compatible.dict.yaml',
-             'chars.dict.yaml', 'correlation.dict.yaml']
-output='../dicts/wb86_wangxiang_cn_dicts'
+# dicts_src_dir=os.path.join("../dicts/wangxiang_cn_dicts")
+# file_list = ['base.dict.yaml', 'associational.dict.yaml', 'corrections.dict.yaml',
+#              'poetry.dict.yaml','place.dict.yaml','compatible.dict.yaml',
+#              'chars.dict.yaml', 'correlation.dict.yaml']
+# output='../dicts/wb86_wangxiang_cn_dicts'
 
 
 os.makedirs(output, exist_ok=True)
