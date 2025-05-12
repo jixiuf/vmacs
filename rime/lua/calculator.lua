@@ -241,7 +241,6 @@ function M.func(input, seg, env)
   else
     yield(Candidate(input, seg.start, seg._end, express, "解析失败"))
     yield(Candidate(input, seg.start, seg._end, code, "入参"))
-    -- TODO: 错误信息记录到日志中
     -- print("express: " .. express)
     -- print("code: " .. code)
     -- print("result: " .. result)
