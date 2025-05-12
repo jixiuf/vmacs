@@ -37,9 +37,10 @@ sort: by_weight
 # use_preset_vocabulary: true
 import_tables:
   # 这里引入别的字库dict
-  - dicts/wubi/wubi.base
+  # - dicts/wubi/wubi.base
+  - dicts/wubi/wubi.small_base
   - dicts/wubi/wubi
-  - dicts/wubi/wubi.word4
+  # - dicts/wubi/wubi.word4
   # - dicts/wubi/wubi.suyu
   # - cn_dicts_common/tencent_core # 精简的腾讯词库
   # - cn_dicts_common/tencent  # 腾讯词向量（大词库，部署时间较长 选择性开启）

@@ -76,7 +76,7 @@ func (es Entry) Chars() []string {
 	return chars
 
 }
-func (es Entries) ContainsAll(words []string) bool {
+func (es Entries) ContainsAll(words ...string) bool {
 	for _, word := range words {
 		if len(es.Find(word)) == 0 {
 			return false

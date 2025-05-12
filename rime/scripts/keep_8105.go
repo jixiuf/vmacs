@@ -43,7 +43,7 @@ func handle(dict8105 *rime.Dict, dictSrcFile, dictDestFile string) {
 %s
 `, dictSrcFile, srcDict.FileComments)
 	for _, entry := range srcDict.Entries {
-		isAllCharsIn8105 := dict8105.Entries.ContainsAll(entry.Chars())
+		isAllCharsIn8105 := dict8105.Entries.ContainsAll(entry.Chars()...)
 		if isAllCharsIn8105 {
 			destDict.Entries.Add(entry.Clone())
 		}

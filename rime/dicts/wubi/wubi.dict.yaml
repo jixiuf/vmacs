@@ -27,7 +27,6 @@ encoder:
 
 # 以下写用户自定义的词
 # table begins
-# 以下为我自己加的词，每次加新词要加wubi_pinyin_jixiuf.userdb/目录清掉重新部署
 # columns: 定義碼表以Tab分隔出的各列，可設text【文本】、code【碼】、weight【權重】、stem【造詞碼】
 # tab 隔开
 工	a	5000000
