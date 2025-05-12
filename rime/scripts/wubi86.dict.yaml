@@ -22,22 +22,21 @@ name: wubi86
 version: "0.7"
 sort: by_weight
 columns:
-  - text
-  - code
-  - weight
-  - stem
+- text
+- code
+- weight
+- stem
 encoder:
   exclude_patterns:
-    - '^z.*$'
+  - ^z.*$
   rules:
-    - length_equal: 2
-      formula: "AaAbBaBb"
-    - length_equal: 3
-      formula: "AaBaCaCb"
-    - length_in_range: [4, 10]
-      formula: "AaBaCaZa"
+  - length_equal: 2
+    formula: AaAbBaBb
+  - length_equal: 3
+    formula: AaBaCaCb
+  - length_in_range: [4, 10]
+    formula: AaBaCaZa
 ...
-
 工	a	99454797	aa
 了	b	1477224452	bn
 #子	b	1477224451
@@ -136979,3 +136978,14 @@ nm	zzdw	895
 𬭊	qsfg
 𬀪	jmqn
 𫔍	qtol
+⺋	bnn	20	bnn
+龰	hhgy	10	hhgy
+⻊	khf	10	khf
+⺪	nhd	10	nhd
+⺗	nhty	10	nhty
+⺳	pqb	10	pqb
+⺈	qtn	10	qtn
+⺁	rtt	10	rtt
+⺧	tfd	10	tfd
+⺮	ttgy	10	ttgy
+⺷	ugf	10	ugf
