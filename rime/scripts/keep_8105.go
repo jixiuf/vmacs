@@ -31,12 +31,7 @@ func handle(dict8105 *rime.Dict, dictSrcFile, dictDestFile string) {
 		fmt.Println("Error parsing dictionary:", err)
 		return
 	}
-	destDict := rime.NewDict(getDictName(dictDestFile))
-	destDict.Sort = srcDict.Sort
-	destDict.UsePresetVocabulary = srcDict.UsePresetVocabulary
-	destDict.Columns = srcDict.Columns
-	destDict.ImportTables = srcDict.ImportTables
-	destDict.Encoder = srcDict.Encoder
+	destDict := rime.NewDictFrom(getDictName(dictDestFile), srcDict)
 	destDict.FileComments = fmt.Sprintf(`# 本字库使用 keep_8105.go 生成
 # 源字库: %s
 # 仅保留 8105.dict.yaml中汉字组成的词条

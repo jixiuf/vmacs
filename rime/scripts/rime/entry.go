@@ -37,13 +37,15 @@ func (e *Entry) RemoveTone() *Entry {
 type Entries []*Entry
 
 // 如果已经含相同code 的word,则忽略
-func (es *Entries) Add(es2 ...*Entry) {
+func (es *Entries) Add(es2 ...*Entry) (cnt int64) {
 	for _, e := range es2 {
 		found := es.FindByWordAndCode(e.Word, e.Code)
 		if len(found) == 0 {
 			*es = append(*es, e)
+			cnt++
 		}
 	}
+	return
 }
 func (es Entries) Find(word string) (words Entries) {
 	for _, e := range es {

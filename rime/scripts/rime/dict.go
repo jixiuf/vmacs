@@ -41,6 +41,17 @@ func NewDict(name string) *Dict {
 		Comments: yaml.CommentMap{},
 	}
 }
+func NewDictFrom(name string, dict *Dict) *Dict {
+	dict2 := &Dict{}
+	*dict2 = *dict
+	dict2.Name = name
+	dict2.Version = time.Now().Format(time.DateOnly)
+	dict2.Entries = Entries{}
+	dict2.ImportedTablesDict = []*Dict{}
+	dict2.ImportTables = []string{}
+	return dict2
+
+}
 func (e *Entries) SortByWeight() {
 	sort.SliceStable(*e, func(i, j int) bool {
 		return (*e)[i].Weight > (*e)[j].Weight
@@ -174,7 +185,7 @@ func (dict *Dict) Write(filename string) error {
 			file.WriteString(comment + "\n")
 		}
 		if entry.IsCommentedEntry {
-			fmt.Fprintf(file, "# ")
+			fmt.Fprintf(file, "#")
 		}
 
 		fmt.Fprintf(file, "%s\t%s", entry.Word, entry.Code)
