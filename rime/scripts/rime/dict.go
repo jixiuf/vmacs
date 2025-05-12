@@ -41,9 +41,9 @@ func NewDict(name string) *Dict {
 		Comments: yaml.CommentMap{},
 	}
 }
-func (dict *Dict) SortByWeight() {
-	sort.SliceStable(dict.Entries, func(i, j int) bool {
-		return dict.Entries[i].Weight > dict.Entries[j].Weight
+func (e *Entries) SortByWeight() {
+	sort.SliceStable(*e, func(i, j int) bool {
+		return (*e)[i].Weight > (*e)[j].Weight
 	})
 
 }
