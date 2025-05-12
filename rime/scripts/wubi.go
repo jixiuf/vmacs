@@ -6,7 +6,15 @@ import (
 )
 
 func main() {
-	saveWubiChar()
+	loadWubiChars()
+}
+func loadWubiChars() (wubi86CharDict *rime.Dict) {
+	wubi86CharDict, err := rime.ParseDict("wubi86.chars.dict.yaml")
+	if err != nil {
+		fmt.Println("Error parsing dictionary:", err)
+		return
+	}
+	return
 }
 
 // 提取wubi 单字
