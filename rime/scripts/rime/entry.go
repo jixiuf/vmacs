@@ -67,6 +67,23 @@ func (es Entries) Clone() (es2 Entries) {
 	}
 	return
 }
+func (es Entry) Chars() []string {
+	runes := []rune(es.Word)
+	chars := make([]string, len(runes))
+	for i, r := range runes {
+		chars[i] = string(r)
+	}
+	return chars
+
+}
+func (es Entries) ContainsAll(words []string) bool {
+	for _, word := range words {
+		if len(es.Find(word)) == 0 {
+			return false
+		}
+	}
+	return true
+}
 
 var tones = map[string]string{
 	"ā":  "a",
