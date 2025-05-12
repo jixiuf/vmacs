@@ -7,15 +7,15 @@ import (
 	"strings"
 )
 
-var dicts = map[string]float64{
+// 只保留源dict中权重大于 minWeight 的词条
+
+var dicts = map[string]float64{ // value=min_weight
 	"../dicts/wangxiang_cn_dicts/base.dict.yaml":        450,
 	"../dicts/wangxiang_cn_dicts/correlation.dict.yaml": 300,
 	"../dicts/wb86_cn_dicts/base.dict.yaml":             300,
 	"../dicts/wb86_cn_dicts/ext.dict.yaml":              30,
 }
 
-// 结合 无声调版的 (白霜字库8105.dict.yaml) 与有声调版的 万象拼音大 “字”库
-// 筛选出有声调版的 8105.dict.yaml
 func main() {
 	for dict, minWeight := range dicts {
 		dir := filepath.Dir(dict)
