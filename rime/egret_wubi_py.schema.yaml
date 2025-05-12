@@ -16,7 +16,7 @@ schema:
   dependencies:
     - egret        # 这里依赖 egret 输入法的字库反查
     - egret_wubi        # 这里依赖 egret 输入法的字库反查
-    - egret_wubi_sentence        # 这里依赖 egret 输入法的字库反查
+    # - egret_wubi_sentence        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
 __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches

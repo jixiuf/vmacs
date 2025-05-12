@@ -1,5 +1,5 @@
 
-# 本字库使用 sort_base.go 生成
+# 本字库使用 top_weight.go 生成
 #只保留权重>450 的
 # rime dictionary
 # encoding: utf-8

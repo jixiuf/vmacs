@@ -10,7 +10,7 @@ import (
 var dicts = map[string]float64{
 	"../dicts/wangxiang_cn_dicts/base.dict.yaml":        450,
 	"../dicts/wangxiang_cn_dicts/correlation.dict.yaml": 300,
-	"../dicts/wb86_cn_dicts/base.dict.yaml":             200,
+	"../dicts/wb86_cn_dicts/base.dict.yaml":             300,
 	"../dicts/wb86_cn_dicts/ext.dict.yaml":              30,
 }
 
