@@ -38,7 +38,7 @@ sort: by_weight
 import_tables:
   # 这里引入别的字库dict
   # - dicts/wubi/wubi.base
-  - dicts/wubi86/wubi86.small_base
+  - dicts/wubi86/wubi86.small
   - dicts/wubi86/wubi86.user
   # - dicts/wubi/wubi.word4
   # - dicts/wubi/wubi.suyu

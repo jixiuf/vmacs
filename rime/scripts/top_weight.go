@@ -22,7 +22,7 @@ func main() {
 	for dict, minWeight := range dicts {
 		dir := filepath.Dir(dict)
 		dictFileName := filepath.Base(dict)
-		dictName := "small_" + strings.TrimSuffix(dictFileName, ".dict.yaml")
+		dictName := strings.TrimSuffix(dictFileName, ".dict.yaml") + ".small"
 		outputFileName := filepath.Join(dir, fmt.Sprintf("%s.dict.yaml", dictName))
 
 		// 有声调版的 万象拼音大 “字”库
