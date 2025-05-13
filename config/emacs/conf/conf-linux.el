@@ -89,6 +89,8 @@
 (add-hook 'after-make-frame-functions #'vmacs-set-font)
 
 (setq auth-sources '("~/.authinfo.gpg" ))
+(setq pgtk-selection-timeout 300)
+
 
 (provide 'conf-linux)
 
