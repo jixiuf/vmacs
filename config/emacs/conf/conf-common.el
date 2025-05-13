@@ -83,7 +83,7 @@
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否 wrap 显示
- bidi-display-reordering  nil
+ ;; bidi-display-reordering  nil ; panic when چ
  bidi-inhibit-bpa t
  long-line-threshold 1000
  large-hscroll-threshold 1000
