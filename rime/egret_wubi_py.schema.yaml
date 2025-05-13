@@ -117,7 +117,7 @@ translator:
   dictionary: egret_wubi_py
   # prism: 当多个schema 共用同一个dictionary 时 需要用prism 为其指定不同的名字以作区分
   prism: egret_wubi_py
-  user_dict: user_dicts/egret_wubi_py.user.dict
+  user_dict: egret_wubi_py.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   # enable_completion: true       # 〔僅table_translator有效〕
@@ -155,7 +155,7 @@ add_user_dict:
   tips: "〔自造词〕"
   tag: add_user_dict
   dictionary: egret_wubi_py
-  user_dict: user_dicts/egret_wubi_py.user.dict
+  user_dict: egret_wubi_py.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   initial_quality: -1
@@ -187,7 +187,7 @@ add_user_dict:
 #
 # custom_phrase:
 #   dictionary: ""
-#   user_dict: user_dicts/wb86_cn_dicts/custom_phrase
+#   user_dict: wb86_cn_dicts/custom_phrase
 #   db_class: stabledb        # 只读数据库，无法动态调频；设为 tabledb 可以动态调频
 #   enable_completion: false
 #   enable_sentence: false
@@ -230,7 +230,7 @@ custom_phrase:                 # wubi
     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
     - "^[a-y]$"                   # 对单字母打出的字不进行调频
     - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
-  user_dict: user_dicts/egret_wubi.user.dict
+  user_dict: egret_wubi.user.dict
   # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   max_phrase_length: 4

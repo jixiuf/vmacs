@@ -47,7 +47,7 @@ translator:
   dictionary: emoji
   spelling_hints: 0
   comment_format:
-  user_dict: user_dicts/emoji.user.dict
+  user_dict: emoji.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
 

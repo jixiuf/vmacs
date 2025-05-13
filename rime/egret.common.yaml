@@ -440,7 +440,7 @@ emojis:
   # prefix: "AE"
   # suffix: "/"
   tips: " Emoji"
-  user_dict: user_dicts/emoji.user.dict
+  user_dict: emoji.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
 grammar:
@@ -467,7 +467,7 @@ reverse_lookup_pinyin:
   suffix: "'"
   tips: 〔拼音〕
   initial_quality: 1 # 优先级
-  user_dict: user_dicts/egret_py.user.dict
+  user_dict: egret_py.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   overwrite_comment: true # 覆盖其他提示

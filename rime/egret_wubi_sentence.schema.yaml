@@ -133,7 +133,7 @@ add_user_dict:
   tag: add_user_dict
   dictionary: egret_wubi_sentence
   initial_quality: -1
-  user_dict: user_dicts/egret_wubi_sentence.user.dict
+  user_dict: egret_wubi_sentence.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   enable_charset_filter: false
@@ -158,7 +158,7 @@ add_user_dict:
 
 # custom_phrase:
 #   dictionary: ""
-#   user_dict: user_dicts/wb86_cn_dicts/custom_phrase
+#   user_dict: wb86_cn_dicts/custom_phrase
 #   db_class: stabledb
 #   enable_completion: false
 #   enable_sentence: false
@@ -200,7 +200,7 @@ translator-wubi:                 # wubi
     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
     - "^[a-y]$"                   # 对单字母打出的字不进行调频
     - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
-  # user_dict: user_dicts/egret_wubi.user.dict
+  # user_dict: egret_wubi.user.dict
   # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   # db_class: tabledb
 #   enable_charset_filter: true
@@ -208,7 +208,7 @@ translator-wubi:                 # wubi
 #   max_phrase_length: 4
 pinyin:
   dictionary: egret_py
-  user_dict: user_dicts/egret_py.user.dict
+  user_dict: egret_py.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕

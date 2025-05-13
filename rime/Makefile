@@ -19,12 +19,9 @@ endif
 deploy:
 
 	mkdir -p  $(TARGET)
-	ln -s -f "$(CURDIR)/user_dicts" "$(TARGET)"
 	@if [ ! -f ~/Documents/jianguo/jianguo/rime/  ]; then \
 		unlink "$(TARGET)sync" ;\
 		ln -s -f ~/Documents/jianguo/jianguo/rime/sync "$(TARGET)sync";\
-		unlink "$(TARGET)user_dicts" ;\
-		ln -s -f ~/Documents/jianguo/jianguo/rime/user_dicts "$(TARGET)user_dicts";\
 	fi
 	ln -s -f "$(CURDIR)/dicts" "$(TARGET)"
 	ln -s -f "$(CURDIR)/lua" "$(TARGET)"

@@ -136,7 +136,7 @@ translator:                 # wubi
   enable_encoder: true          #  是否開啓自動造詞
   encode_commit_history: true   # 是否對已上屛詞自動成詞
   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  user_dict: user_dicts/egret_wubi.user.dict
+  user_dict: egret_wubi.user.dict
   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
 #   enable_charset_filter: true
@@ -175,7 +175,7 @@ add_user_dict:
   tag: add_user_dict
   dictionary: egret_wubi
   initial_quality: -1
-  user_dict: user_dicts/egret_wubi.user.dict
+  user_dict: egret_wubi.user.dict
 # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
   db_class: tabledb
   enable_charset_filter: false
