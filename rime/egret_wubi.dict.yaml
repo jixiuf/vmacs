@@ -38,10 +38,11 @@ sort: by_weight
 import_tables:
   # 这里引入别的字库dict
   # - dicts/wubi/wubi.base
+  - dicts/wubi86/wubi.chars.8105
   - dicts/wubi86/wubi86.small
   - dicts/wubi86/wubi86.user
-  # - dicts/wubi/wubi.word4
-  # - dicts/wubi/wubi.suyu
+  # - dicts/wubi86/wubi86.word4
+  # - dicts/wubi86/wubi86.suyu
   # - cn_dicts_common/tencent_core # 精简的腾讯词库
   # - cn_dicts_common/tencent  # 腾讯词向量（大词库，部署时间较长 选择性开启）
   # - cn_dicts_common/user # 用户自定义词典
