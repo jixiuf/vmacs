@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	loadWubiChars()
+	// wubi86CharDict := loadWubiChars()
 }
 func loadWubiChars() (wubi86CharDict *rime.Dict) {
-	wubi86CharDict, err := rime.ParseDict("wubi86.chars.dict.yaml")
+	wubi86CharDict, err := rime.ParseDict("../dicts/wubi86/wubi86.chars.dict.yaml")
 	if err != nil {
 		fmt.Println("Error parsing dictionary:", err)
 		return
@@ -19,7 +19,7 @@ func loadWubiChars() (wubi86CharDict *rime.Dict) {
 
 // 提取wubi 单字
 func saveWubiChar() {
-	wubi86, err := rime.ParseDict("wubi86.dict.yaml")
+	wubi86, err := rime.ParseDict("../dicts/wubi86/wubi86.dict.yaml")
 	if err != nil {
 		fmt.Println("Error parsing dictionary:", err)
 		return
@@ -31,16 +31,16 @@ func saveWubiChar() {
 		}
 		destDict.Entries.Add(e.Clone())
 	}
-	destDict.Write("wubi86.chars.dict.yaml")
+	destDict.Write("../dicts/wubi86/wubi86.chars.dict.yaml")
 
 }
 func loadWubi() {
-	wubi86, err := rime.ParseDict("wubi86.dict.yaml")
+	wubi86, err := rime.ParseDict("../dicts/wubi86/wubi86.dict.yaml")
 	if err != nil {
 		fmt.Println("Error parsing dictionary:", err)
 		return
 	}
-	wubi, err := rime.ParseDict("wubi.dict.yaml")
+	wubi, err := rime.ParseDict("../dicts/wubi86/wubi.dict.yaml")
 	if err != nil {
 		fmt.Println("Error parsing dictionary:", err)
 		return
