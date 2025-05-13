@@ -10,7 +10,8 @@ import (
 // 过滤掉不在 8105字库中的词条(只要词条中出现了不在8105字库里的词条就删除)
 var dicts = map[string]string{
 	// "../dicts/wubi86/wubi86.base.dict.yaml": "../dicts/wubi86/wubi86.small_base.dict.yaml",
-	"../dicts/wubi86/wubi86.dict.yaml": "../dicts/wubi86/wubi.small.dict.yaml",
+	// "../dicts/wubi86/wubi86.dict.yaml":       "../dicts/wubi86/wubi.small.dict.yaml",
+	"../dicts/wubi86/wubi86.chars.dict.yaml": "../dicts/wubi86/wubi.chars.8105.dict.yaml",
 }
 
 const dictFile8105 = "../dicts/frost_cn_dicts/8105.dict.yaml"
