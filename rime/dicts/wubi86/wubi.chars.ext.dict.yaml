@@ -1,6 +1,6 @@
 # 本字库使用 exclude_8105.go 生成
 # 源字库: ../dicts/wubi86/wubi86.chars.dict.yaml
-# 仅保留 非 8105.dict.yaml中汉字组成的词条
+#  1字的 词条(仅保留 非 8105.dict.yaml中)
 # Rime dictionary: wubi86
 # encoding: utf-8
 

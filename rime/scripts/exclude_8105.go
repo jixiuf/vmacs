@@ -7,10 +7,30 @@ import (
 	"strings"
 )
 
-// 过滤掉不在 8105字库中的词条(只要词条中出现了不在8105字库里的词条就删除)
-var dicts = map[string]string{
-	"../dicts/wubi86/wubi86.dict.yaml":       "../dicts/wubi86/wubi86.ext.dict.yaml",
-	"../dicts/wubi86/wubi86.chars.dict.yaml": "../dicts/wubi86/wubi.chars.ext.dict.yaml",
+type Config struct {
+	Src         string
+	Dest        string
+	MinChars    int // 仅包含 >=此值的词条
+	MaxChars    int // 仅包含 <=此值的词条
+	FileComment string
+}
+
+// 仅保留不在 8105字库中的词条
+var dicts = []Config{
+	{
+		Src:         "../dicts/wubi86/wubi86.dict.yaml",
+		Dest:        "../dicts/wubi86/wubi86.ext.dict.yaml",
+		MinChars:    2,
+		MaxChars:    30,
+		FileComment: "  >=2 字的 词条(仅保留 非 8105.dict.yaml中)",
+	},
+	{
+		Src:         "../dicts/wubi86/wubi86.chars.dict.yaml",
+		Dest:        "../dicts/wubi86/wubi.chars.ext.dict.yaml",
+		MinChars:    1,
+		MaxChars:    1,
+		FileComment: " 1字的 词条(仅保留 非 8105.dict.yaml中)",
+	},
 }
 
 const dictFile8105 = "../dicts/frost_cn_dicts/8105.dict.yaml"
@@ -21,32 +41,33 @@ func main() {
 		fmt.Println("Error parsing dictionary:", err)
 		return
 	}
-	for dictSrcFile, dictDestFile := range dicts {
-		handle(dict8105, dictSrcFile, dictDestFile)
+	for _, cfg := range dicts {
+		handle(dict8105, cfg)
 	}
 }
 
-func handle(dict8105 *rime.Dict, dictSrcFile, dictDestFile string) {
-	srcDict, err := rime.ParseDict(dictSrcFile)
+func handle(dict8105 *rime.Dict, cfg Config) {
+	srcDict, err := rime.ParseDict(cfg.Src)
 	if err != nil {
 		fmt.Println("Error parsing dictionary:", err)
 		return
 	}
-	destDict := rime.NewDictFrom(getDictName(dictDestFile), srcDict)
+	destDict := rime.NewDictFrom(getDictName(cfg.Dest), srcDict)
 	destDict.FileComments = fmt.Sprintf(`# 本字库使用 exclude_8105.go 生成
 # 源字库: %s
-# 仅保留 非 8105.dict.yaml中汉字组成的词条
+# %s
 %s
-`, dictSrcFile, srcDict.FileComments)
+`, cfg.Src, cfg.FileComment, srcDict.FileComments)
 	for _, entry := range srcDict.Entries {
-		isAllCharsIn8105 := dict8105.Entries.ContainsAll(entry.Chars()...)
-		if !isAllCharsIn8105 {
+		chars := entry.Chars()
+		isAllCharsIn8105 := dict8105.Entries.ContainsAll(chars...)
+		if !isAllCharsIn8105 && len(chars) >= cfg.MinChars && len(chars) <= cfg.MaxChars {
 			destDict.Entries.Add(entry.Clone())
 		}
 	}
 
 	// 写回文件
-	err = destDict.Write(dictDestFile)
+	err = destDict.Write(cfg.Dest)
 	if err != nil {
 		fmt.Println("Error serializing dictionary:", err)
 		return
