@@ -21,6 +21,7 @@ deploy:
 	mkdir -p  $(TARGET)
 	@if [ ! -f ~/Documents/jianguo/jianguo/rime/  ]; then \
 		unlink "$(TARGET)sync" ;\
+		rm -rf "$(TARGET)sync" ;\
 		ln -s -f ~/Documents/jianguo/jianguo/rime/sync "$(TARGET)sync";\
 	fi
 	ln -s -f "$(CURDIR)/dicts" "$(TARGET)"
