@@ -14,6 +14,8 @@ var dicts = map[string]float64{ // value=min_weight
 	"../dicts/wangxiang_cn_dicts/correlation.dict.yaml": 300,
 	"../dicts/wb86_cn_dicts/base.dict.yaml":             300,
 	"../dicts/wb86_cn_dicts/ext.dict.yaml":              30,
+	// "../dicts/wubi86/wubi86.dict.yaml":      0,
+	// "../dicts/wubi86/wubi86.base.dict.yaml": 0,
 }
 
 func main() {
@@ -36,7 +38,7 @@ func main() {
 %s`, minWeight, baseDict.FileComments)
 		baseDict.Entries.SortByWeight() // 按权重排序
 		for _, e := range baseDict.Entries {
-			if e.Weight > minWeight {
+			if e.Weight >= minWeight {
 				dictOutput.Entries = append(dictOutput.Entries, e)
 			}
 		}
