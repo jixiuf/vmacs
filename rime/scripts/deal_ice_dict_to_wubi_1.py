@@ -15,6 +15,7 @@ output='../dicts/wb86_cn_dicts'
 # output='../dicts/wb86_wangxiang_cn_dicts'
 
 
+wb_86_dict_list = ['../dicts/wubi86/wubi.dict.yaml']
 os.makedirs(output, exist_ok=True)
 # Function to read a file
 def read_file(file_path):
@@ -96,20 +97,19 @@ for line in freq_file:
         word_freq[word] = freq
 
 dict_data = {}
-wb_86_dict_list = ['wubi.dict.yaml']
 for wb_86_dict in wb_86_dict_list:
     with open('./'+wb_86_dict, 'r', encoding='utf-8') as dict_file:
         for line in dict_file:
             if "\t" in line and not line.startswith("#"):
 
                 params = line.strip().split('\t')
-                if wb_86_dict == 'wubi.dict.yaml' and len(params) != 4:
+                if wb_86_dict == '../dicts/wubi86/wubi.dict.yaml' and len(params) != 4:
                     continue
                 character = params[0]
                 if len(character) !=1:
                     continue
 
-                if wb_86_dict == 'wubi.dict.yaml':
+                if wb_86_dict == '../dicts/wubi86/wubi.dict.yaml':
                     encoding = params[3]
 
                 encode_left = encoding[0:2]
@@ -125,7 +125,7 @@ for wb_86_dict in wb_86_dict_list:
                     if encoding not in dict_data[character]:
                         dict_data[character].append(encoding)
 
-with open('./wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
+with open('../dicts/wubi86/wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
     for line in dict_file:
         if "\t" in line and not line.startswith("#"):
 
@@ -152,7 +152,7 @@ with open('./wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
                 if add_flag:
                     dict_data[character].append(encoding)
 
-with open('./wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
+with open('../dicts/wubi86/wubi86.dict.yaml', 'r', encoding='utf-8') as dict_file:
     for line in dict_file:
         if "\t" in line and not line.startswith("#"):
 
