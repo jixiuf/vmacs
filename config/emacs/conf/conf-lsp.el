@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
+(setq flymake-show-diagnostics-at-end-of-line t)
 ;; (setq eglot-confirm-server-edits nil)
 (setq eglot-autoshutdown t)
 (setq eglot-sync-connect 0)
