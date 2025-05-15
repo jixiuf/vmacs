@@ -15,7 +15,7 @@ schema:
     白鹭五笔流·拼音流  可以在一句中即打五笔又打拼音的输入法
   dependencies:
     - egret        # 这里依赖 egret 输入法的字库反查
-    - egret_wubi        # 这里依赖 egret 输入法的字库反查
+    # - egret_wubi        # 这里依赖 egret 输入法的字库反查
     # - egret_wubi_sentence        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
 __include: egret.common.yaml:editor
@@ -57,11 +57,11 @@ engine:
     # 用 fluency_editor 代替了 express_editor 是语句流，可以用空格断词。
     # - fluency_editor
   segmentors:                   # 這批組件識別不同內容類型，將輸入碼分段並加上tag
-    - ascii_segmentor           # 標識西文段落〔譬如在西文模式下〕字母直接上屛
+    # - ascii_segmentor           # 標識西文段落〔譬如在西文模式下〕字母直接上屛
     - matcher                   # 配合recognizer標識符合特定規則的段落，如網址、反查等，加上特定tag
     - abc_segmentor             # 標識常規的文字段落，加上abc這個tag
     - punct_segmentor           #  標識句讀段落〔鍵入標點符號用〕加上punct這個tag
-    - affix_segmentor@add_user_dict # 用戶自定義tag
+    # - affix_segmentor@add_user_dict # 用戶自定義tag
     # - affix_segmentor@emojis
     - fallback_segmentor
   translators:
@@ -74,10 +74,10 @@ engine:
     - lua_translator@*lunar              # 农历
     - lua_translator@*number_translator  # R 输入大写数字
     # - table_translator@custom_phrase # 1、2码置顶
-    # - script_translator@translator
-    - lua_translator@*dynamic_translator
+    - script_translator@translator
+    # - lua_translator@*dynamic_translator #
     - lua_translator@*unicode              # Unicode
-    - script_translator@add_user_dict
+    # - script_translator@add_user_dict
     - script_translator@emojis
     # - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
@@ -96,7 +96,7 @@ engine:
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
  # 见 lua/dynamic_translator.lua 的说明
-dynamic_translator:
+dynamic_translator:             # - lua_translator@*dynamic_translator #
   table_translator: table_translator@custom_phrase
   script_translator: script_translator@translator
 
@@ -137,7 +137,7 @@ translator:
   preedit_format:               # 上屏码显示格式，
     __patch:
       - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
-  
+
   # max_phrase_length: 4          # 〔僅table_translator有效〕
 
 wubi_comment:                   # 显示五笔编码， 这个配置好像不管哪种输入法打的字都显示五笔，我只想当用拼音输入时显示五笔编码 ，目前还不知怎么配
@@ -150,36 +150,36 @@ wubi_comment:                   # 显示五笔编码， 这个配置好像不管
     - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
 # 自定义词典加词(AC引导)
-add_user_dict:
-  prefix: "AC"
-  tips: "〔自造词〕"
-  tag: add_user_dict
-  dictionary: egret_wubi_py
-  user_dict: egret_wubi_py.user.dict
-# ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
-  initial_quality: -1
-  enable_charset_filter: false
-  enable_completion: true
-  enable_encoder: true
-  enable_sentence: true
-  enable_user_dict: true
-  encode_commit_history: true
-  preedit_format:               # 上屏码显示格式，
-    __patch:
-      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
+# add_user_dict:
+#   prefix: "AC"
+#   tips: "〔自造词〕"
+#   tag: add_user_dict
+#   dictionary: egret_wubi_py
+#   user_dict: egret_wubi_py.user.dict
+# # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+#   db_class: tabledb
+#   initial_quality: -1
+#   enable_charset_filter: false
+#   enable_completion: true
+#   enable_encoder: true
+#   enable_sentence: true
+#   enable_user_dict: true
+#   encode_commit_history: true
+#   preedit_format:               # 上屏码显示格式，
+#     __patch:
+#       - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
 
-  spelling_hints: 2
-  comment_format:
-    - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-    # 同時顯示羅馬字拼寫
-    # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+#   spelling_hints: 2
+#   comment_format:
+#     - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
+#     # 同時顯示羅馬字拼寫
+#     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
 
-  # https://github.com/amzxyz/RIME-LMDG
-  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
-  contextual_suggestions: true
-  max_homophones: 7
-  max_homographs: 7
+#   # https://github.com/amzxyz/RIME-LMDG
+#   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+#   contextual_suggestions: true
+#   max_homophones: 7
+#   max_homographs: 7
 
 # rime-wubi-sentence 使用的custom_phrase
 # 而我选择使用下面的 custom_phrase 的dictionary 的形式
@@ -205,40 +205,40 @@ add_user_dict:
 #   contextual_suggestions: true
 #   max_homophones: 7
 #   max_homographs: 7
-custom_phrase:                 # wubi
-  # https://github.com/amzxyz/RIME-LMDG
-  # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
-  contextual_suggestions: true
-  max_homophones: 7
-  max_homographs: 7
+# custom_phrase:                 # wubi
+#   # https://github.com/amzxyz/RIME-LMDG
+#   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
+#   contextual_suggestions: true
+#   max_homophones: 7
+#   max_homographs: 7
 
-  dictionary: egret_wubi
-  enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
-  enable_sentence: false         # 是否開啓自動造句
-  enable_encoder: true          #  是否開啓自動造詞
-  encode_commit_history: true   # 是否對已上屛詞自動成詞
-  enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
-  initial_quality: 10 # 优先级
-  ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
-  ##  改为 1 则是只显示单字的输入码，依此类推。
-  spelling_hints: 2
-  comment_format:
-    # - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
-    # 同時顯示羅馬字拼寫
-    # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
-  disable_user_dict_for_patterns:
-    - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
-    - "^[a-y]$"                   # 对单字母打出的字不进行调频
-    - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
-  user_dict: egret_wubi.user.dict
-  # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
-  max_phrase_length: 4
-  preedit_format: # 上屏码显示格式，
-    __patch:
-      - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
-#   enable_charset_filter: true
-#   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
+#   dictionary: egret_wubi
+#   enable_user_dict: true        # 调词频用的到 是否開啓用戶詞典〔用戶詞典記錄動態字詞頻、用戶詞〕
+#   enable_sentence: false         # 是否開啓自動造句
+#   enable_encoder: true          #  是否開啓自動造詞
+#   encode_commit_history: true   # 是否對已上屛詞自動成詞
+#   enable_completion: true #: 提前顯示尚未輸入完整碼的字〔僅table_translator有效〕
+#   initial_quality: 10 # 优先级
+#   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
+#   ##  改为 1 则是只显示单字的输入码，依此类推。
+#   spelling_hints: 2
+#   comment_format:
+#     # - "xform/(^|[ '])[^[]+[[]/$1/" ## 编码提示只显示辅助码部分
+#     # 同時顯示羅馬字拼寫
+#     # - "xform/[ ].*$//"            # 当一个字有多个五笔编码时，只显示第一个，即把空格后的所有内容变成空
+#   disable_user_dict_for_patterns:
+#     - "^z.*$"                   # 对z开头的词不记录到用户词典中(不进行调频)
+#     - "^[a-y]$"                   # 对单字母打出的字不进行调频
+#     - "^[a-y]{1,2}$"                   # 对两个字母打出白字不进行调频
+#   user_dict: egret_wubi.user.dict
+#   # # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+#   db_class: tabledb
+#   max_phrase_length: 4
+#   preedit_format: # 上屏码显示格式，
+#     __patch:
+#       - egret.common.yaml:preedit_pinyin_add_tone     #全拼（显示音调 7890）
+# #   enable_charset_filter: true
+# #   sentence_over_completion: true # 在無全碼對應字而僅有逐鍵提示時也開啓智能組句〔僅table_translator有效〕
 
 
 abc_segmentor:
