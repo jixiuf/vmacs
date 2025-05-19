@@ -435,7 +435,7 @@ wubi_sentence_speller:
 emojis:
   # tag: emojis
   dictionary: emoji
-  enable_completion: true
+  enable_completion: false
   initial_quality: 1
   # prefix: "AE"
   # suffix: "/"
