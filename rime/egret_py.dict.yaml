@@ -21,9 +21,10 @@ import_tables:
   # # - dicts/frost_cn_dicts/tencent  # 腾讯词向量（大词库，部署时间较长）
   # # - dicts/frost_cn_dicts/others   # 一些杂项
 
-# 
+#
   - dicts/wangxiang_cn_dicts/8105            #字表，包含了常用带拼音的汉字
   - dicts/wangxiang_cn_dicts/base.small      #         #基础词库，2-3字词汇(高权重的)
+  - dicts/common/chengyu        # pinyin 简码
   # - dicts/wangxiang_cn_dicts/small_correlation     #关联词库，4字词汇，多为不同词频的2字语句连接起来起到合理组句的能力
   # - dicts/wangxiang_cn_dicts/chars            #字表，包含了所有带拼音的汉字
   # - dicts/wangxiang_cn_dicts/base            #基础词库，2-3字词汇

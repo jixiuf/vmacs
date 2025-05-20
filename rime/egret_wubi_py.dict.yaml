@@ -35,6 +35,10 @@ version: "2013.04.22"
 sort: by_weight
 use_preset_vocabulary: false
 import_tables:
+  - dicts/wubi86/wubi86.word4
+  - dicts/common/chengyu        # pinyin 简码
+
+
   # 这里引入的五笔字典（可以用于script_translator的）
   # 来自 https://github.com/gaboolic/rime-wubi-sentence
   - dicts/wb86_cn_dicts/8105     # 字表
