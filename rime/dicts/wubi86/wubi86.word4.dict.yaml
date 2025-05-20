@@ -5,7 +5,7 @@
 # Rime dictionary: qq五笔导出
 # 并合并了 qq成语 谚语，及搜狗的成语谚语
 ---
-name: wubi64.word4
+name: wubi86.word4
 version: "0.6"
 sort: by_weight
 columns:

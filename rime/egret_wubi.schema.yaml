@@ -29,9 +29,6 @@ grammar:
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
     __patch:
       - egret.common.yaml:grammar
-emojis:
-    __patch:
-      - egret.common.yaml:emojis
 reverse_lookup:
     __patch:
       - egret.common.yaml:reverse_lookup_pinyin
@@ -77,7 +74,6 @@ engine:
     - lua_translator@*number_translator  # R 输入大写数字
     # - table_translator@custom_phrase # 1、2码置顶
     - table_translator@translator
-    - script_translator@emojis
     - script_translator@add_user_dict
     - lua_translator@*unicode              # Unicode
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码

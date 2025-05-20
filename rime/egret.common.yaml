@@ -26,6 +26,7 @@ switches:
       states: [ 。, ． ]
     - name: emoji
       states: [ 💀, 😄 ]
+      reset: 1
 
 opencc:
   traditionalize:
@@ -34,10 +35,10 @@ opencc:
     tips: none                       # 转换提示: all 都显示 | char 仅单字显示 | none 不显示。
     tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
     # Emoji
-    emoji:
-      option_name: emoji
-      opencc_config: emoji.json
-      inherit_comment: false  # 在 corrector.lua 及反查中，emoji 返回空注释
+  emoji:
+    option_name: emoji
+    opencc_config: emoji.json
+    inherit_comment: false  # 在 corrector.lua 及反查中，emoji 返回空注释
 
 
 
@@ -432,17 +433,17 @@ wubi_sentence_speller:
   # algebra:
   #   __patch:
   #     - algebra_wubi_sentence
-emojis:
-  # tag: emojis
-  dictionary: emoji
-  enable_completion: false
-  initial_quality: 1
-  # prefix: "AE"
-  # suffix: "/"
-  tips: " Emoji"
-  user_dict: emoji.user.dict
-  # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
-  db_class: tabledb
+# emojis:
+#   # tag: emojis
+#   dictionary: emoji
+#   enable_completion: false
+#   initial_quality: 1
+#   # prefix: "AE"
+#   # suffix: "/"
+#   tips: " Emoji"
+#   user_dict: emoji.user.dict
+#   # ↓ 用户词典格式，tabledb（文本） 或 userdb （二进制）。
+#   db_class: tabledb
 grammar:
   language: wanxiang-lts-zh-hans
   collocation_max_length: 8         #命中的最长词组

@@ -26,9 +26,6 @@ speller:
   algebra:
     __patch:
       - egret.common.yaml:algebra_wubi_sentence
-emojis:
-    __patch:
-      - egret.common.yaml:emojis
 grammar:
   # https://github.com/amzxyz/RIME-LMDG
   # 开启万象语言模型、万象原子词库 https://emacs-china.org/t/rime/28508/31
@@ -80,7 +77,6 @@ engine:
     - script_translator@translator
     - script_translator@add_user_dict
     - script_translator@pinyin
-    - script_translator@emojis
     - reverse_lookup_translator@reverse_lookup # `用拼音打出的字，会提示五笔编码
   filters:
   # 长词优先 (即wq 后 第4个词的长度必然大于第1个candidate,即提升部分长词到第4，5个选项)
