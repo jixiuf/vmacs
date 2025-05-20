@@ -7,7 +7,10 @@
   (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo))
 
 (setq verb-auto-kill-response-buffers t)
-(defun uid() (interactive) (completing-read "uid: " '("10064589" "545473" "60682172" "12880661" "492256045")))
+(defun uid() (interactive) (let ((uid (completing-read "uid: " '("10064589" "545473" "60682172" "12880661" "492256045"))))
+                             (when (called-interactively-p)
+                               (insert uid))
+                             uid))
 (with-eval-after-load 'org
   (with-eval-after-load 'verb
     (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
