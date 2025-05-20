@@ -126,6 +126,11 @@ translator:
   enable_user_dict: true
   # encode_commit_history: true #encode_commit_history
   initial_quality: 1
+  # fuzz/<模式>/<替換式>/
+  # 實例：算式 fuzz/^([a-z]).+([a-z])$/$1$2/
+  # 效果：以首、尾碼爲多字母音節碼的構詞碼。
+  # 需配合 script_translator 的選項 `translator/strict_spelling: true` 方可限定該拼寫不用於輸入單字
+  strict_spelling: true
   ##  默认为不超过 2 个字的候选项显示输入码；将 2 改为 0 可关闭编码提示，
   ##  改为 1 则是只显示单字的输入码，依此类推。
   spelling_hints: 0
