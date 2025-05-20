@@ -133,6 +133,7 @@ algebra_remove_pinyin_tone:   # 去声调
     - abbrev/^([qwrtypsdfghjklzxcbnm]).+(\d)$/$1$2/  #不携带元音的声母派生出首字母简码来+数字声调
     - abbrev/^([aoe])([ioun])(\d)$/$1/             #携带两个字符的元音首字母派生出简码来
     - abbrev/^([aoe])([ioun])(\d)$/$1$3/       #携带两个字符的元音首字母派生出简码来+数字声调
+    - erase/^(.+)[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜüńňǹ](.+)$/              # 刪除原始編碼以加速檢索
 preedit_pinyin_add_tone:
   __append:
   # 7890 表示声调
@@ -415,6 +416,7 @@ algebra_wubi_sentence:
       # 简码来 像拼音只输入bpmf
       - fuzz/^(\w)(\w)@(.+)$/$1/ # 纯双码的情况 (单字 只需要输前两个码的情况)
       - fuzz/^(\w)(\w)@(\w)(\w)%(\w)(\w)@(.+)$/$5/ # 一字（词）有两种码的情况(输前两个码的情况)
+      - erase/^(.+)@(.+)$/              # 刪除原始編碼以加速檢索
 # 五笔支持长句，3码或1码时需以“,”结尾
 wubi_sentence_speller:
   # speller:
