@@ -60,8 +60,7 @@ engine:
     - simplifier@traditionalize                     # 简繁切换
     - lua_filter@*reduce_emoji_filter   # 按需启用，作用是降低Emoji在候选项中的位置排序(顺序要求：Emoji > 降低排序)
     - lua_filter@*long_word_filter
-    - lua_filter@*is_in_user_dict # 用户词典的词加上一个*
-    - simplifier@traditionalize                     # 简繁切换
+    # - lua_filter@*is_in_user_dict # 用户词典的词加上一个*
     # - charset_filter@gbk            # (※3) 默认 GBK
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
