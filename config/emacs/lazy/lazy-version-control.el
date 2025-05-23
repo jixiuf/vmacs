@@ -31,6 +31,20 @@
   (interactive)
   (vc-git--pushpull "push" nil '("--tags")))
 
+(defun vcgit-rebase ()
+  "Rebase changes into the current Git branch.
+This prompts for a branch to merge from."
+  (interactive)
+  (let* ((root (vc-git-root default-directory))
+	     (buffer (format "*vc-git : %s*" (expand-file-name root)))
+	     (merge-source
+          (vc-read-revision
+           "Rebase from branch: "
+           nil nil)))
+    (apply #'vc-do-async-command buffer root vc-git-program "rebase"
+	       (list merge-source))
+    (with-current-buffer buffer (vc-run-delayed (vc-compilation-mode 'git)))
+    (vc-set-async-update buffer)))
 
 ;;;###autoload
 (defun vcgit-git-delete ()
@@ -244,25 +258,6 @@
   (vc-git-command nil 0 nil "apply"  "--" files))
 
 
-(defun vcgit-rebase ()
-  "Rebase changes into the current Git branch.
-This prompts for a branch to merge from."
-  (interactive)
-  (let* ((root (vc-git-root default-directory))
-	 (buffer (format "*vc-git : %s*" (expand-file-name root)))
-	 (branches (cdr (vc-git-branches)))
-	 (merge-source
-	  (completing-read "Rebase from branch: "
-			   (if (or (member "FETCH_HEAD" branches)
-				   (not (file-readable-p
-                                         (vc-git--git-path "FETCH_HEAD"))))
-			       branches
-			     (cons "FETCH_HEAD" branches))
-			   nil t)))
-    (apply #'vc-do-async-command buffer root vc-git-program "rebase"
-	   (list merge-source))
-    (with-current-buffer buffer (vc-run-delayed (vc-compilation-mode 'git)))
-    (vc-set-async-update buffer)))
 
 ;;;###autoload
 (defun vc-switch-project()
