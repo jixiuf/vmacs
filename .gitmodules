@@ -1,3 +1,0 @@
-[submodule "config/emacs/submodule/eglot-java"]
-	path = config/emacs/submodule/eglot-java
-	url = https://github.com/jixiuf/eglot-java.git
