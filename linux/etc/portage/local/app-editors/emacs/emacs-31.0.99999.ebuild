@@ -1,9 +1,9 @@
-# Copyright 1999-2024 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit autotools elisp-common flag-o-matic readme.gentoo-r1 toolchain-funcs
+inherit autotools eapi9-pipestatus elisp-common flag-o-matic readme.gentoo-r1 toolchain-funcs
 
 if [[ ${PV##*.} = 99999 ]]; then
 	inherit git-r3
@@ -33,7 +33,7 @@ else
 	fi
 	SLOT="${PV%%.*}"
 	[[ ${PV} == *.*.* ]] && SLOT+="-vcs"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~m68k ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~loong ~m68k ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos"
 fi
 
 DESCRIPTION="The extensible, customizable, self-documenting real-time display editor"
@@ -89,7 +89,7 @@ X_DEPEND="x11-libs/libICE
 		)
 	)"
 
-RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
+RDEPEND=">=app-emacs/emacs-common-1.11[games?,gui?]
 	sys-libs/ncurses:0=
 	acl? ( virtual/acl )
 	alsa? ( media-libs/alsa-lib )
@@ -104,7 +104,7 @@ RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
 	)
 	kerberos? ( virtual/krb5 )
 	lcms? ( media-libs/lcms:2 )
-	libxml2? ( >=dev-libs/libxml2-2.2.0 )
+	libxml2? ( >=dev-libs/libxml2-2.2.0:= )
 	mailutils? ( net-mail/mailutils[clients] )
 	!mailutils? ( acct-group/mail net-libs/liblockfile )
 	selinux? ( sys-libs/libselinux )
@@ -125,7 +125,7 @@ RDEPEND="app-emacs/emacs-common[games?,gui(-)?]
 		imagemagick? ( media-gfx/imagemagick:0=[jpeg?,png?,svg?,tiff?] )
 		!aqua? (
 			gsettings? (
-				app-emacs/emacs-common[gsettings(-)]
+				>=app-emacs/emacs-common-1.11[gsettings]
 				>=dev-libs/glib-2.28.6
 			)
 			gtk? ( !X? (
@@ -162,10 +162,7 @@ EMACS_SUFFIX="emacs-${SLOT}"
 SITEFILE="20${EMACS_SUFFIX}-gentoo.el"
 
 # Suppress false positive QA warnings #898304 #925091
-QA_CONFIG_IMPL_DECL_SKIP=(
-	malloc_set_state malloc_get_state MIN static_assert alignof unreachable
-	statvfs64 re_set_syntax re_compile_pattern re_search re_match
-)
+QA_CONFIG_IMPL_DECL_SKIP=( malloc_{get,set}_state statvfs64 )
 
 src_prepare() {
 	if [[ ${PV##*.} = 99999 ]]; then
@@ -188,15 +185,22 @@ src_prepare() {
 		# for live ebuilds FULL_VERSION doesn't exist in global scope
 		QA_FLAGS_IGNORED="usr/$(get_libdir)/emacs/${FULL_VERSION}/native-lisp/.*"
 
+		# The build system requires gcc for native compilation #874657
+		if ! tc-is-gcc; then
+			ewarn "Emacs must be built with gcc[jit] if USE=jit is enabled."
+			ewarn "Ignoring CC=$(tc-getCC) and forcing ${CHOST}-gcc"
+			export CC=${CHOST}-gcc AR=${CHOST}-gcc-ar NM=${CHOST}-gcc-nm \
+				RANLIB=${CHOST}-gcc-ranlib
+			tc-is-gcc || die "tc-is-gcc failed in spite of CC=${CC}"
+		fi
+
 		# gccjit doesn't play well with ccache or distcc #801580
 		# For now, work around the problem with an explicit LIBRARY_PATH
-		has ccache ${FEATURES} || has distcc ${FEATURES} && tc-is-gcc \
-			&& export LIBRARY_PATH=$("$(tc-getCC)" -print-search-dirs \
+		if has ccache ${FEATURES} || has distcc ${FEATURES} && tc-is-gcc; then
+			export LIBRARY_PATH=$("$(tc-getCC)" -print-search-dirs \
 				| sed -n '/^libraries:/{s:^[^/]*::;p}')
+		fi
 	fi
-
-	# Fix filename reference in redirected man page
-	sed -i -e "/^\\.so/s/etags/&-${EMACS_SUFFIX}/" doc/man/ctags.1 || die
 
 	# libseccomp is detected by configure but doesn't appear to have any
 	# effect on the installed image. Suppress it by supplying pkg-config
@@ -219,27 +223,61 @@ src_configure() {
 	replace-flags -Ofast -O2
 	append-flags -fno-fast-math -ffp-contract=off
 
-	local myconf
-	myconf+=" --with-mps=debug"
-
-
 	# Prevents e.g. tests interfering with running Emacs.
 	unset EMACS_SOCKET_NAME
+
+	local myconf=(
+		--program-suffix="-${EMACS_SUFFIX}"
+		--includedir="${EPREFIX}"/usr/include/${EMACS_SUFFIX}
+		--infodir="${EPREFIX}"/usr/share/info/${EMACS_SUFFIX}
+		--localstatedir="${EPREFIX}"/var
+		--enable-locallisppath="${EPREFIX}/etc/emacs:${EPREFIX}${SITELISP}"
+		--without-compress-install
+		--without-hesiod
+		--without-pop
+		--without-systemduserunitdir
+		--with-file-notification=$(usev inotify || usev gfile || echo no)
+		--with-pdumper
+		$(use_enable acl)
+		$(use_enable xattr)
+		$(use_with dbus)
+		$(use_with dynamic-loading modules)
+		$(use_with games gameuser ":gamestat")
+		$(use_with gmp libgmp)
+		$(use_with gpm)
+		$(use_with jit native-compilation aot)
+		$(use_with kerberos) $(use_with kerberos kerberos5)
+		$(use_with lcms lcms2)
+		$(use_with libxml2 xml2)
+		$(use_with mailutils)
+		$(use_with selinux)
+		$(use_with sqlite sqlite3)
+		$(use_with ssl gnutls)
+		$(use_with systemd libsystemd)
+		$(use_with threads)
+		$(use_with tree-sitter)
+		$(use_with wide-int)
+	)
 
 	if use alsa; then
 		use sound || ewarn \
 			"USE flag \"alsa\" overrides \"-sound\"; enabling sound support."
-		myconf+=" --with-sound=alsa"
+		myconf+=( --with-sound=alsa )
 	else
-		myconf+=" --with-sound=$(usex sound oss)"
+		myconf+=( --with-sound=$(usex sound oss no) )
 	fi
 
+    if [ "${EGIT_BRANCH}" = "feature/igc" ]; then
+        echo "ssss ${EGIT_BRANCH}"
+        myconf+=( --with-mps=yes )
+        myconf+=( --enable-checking=igc_debug)
+    fi 
 	if use jit; then
 		use zlib || ewarn \
 			"USE flag \"jit\" overrides \"-zlib\"; enabling zlib support."
-		myconf+=" --with-zlib"
+		myconf+=( --with-zlib )
 	else
-		myconf+=" $(use_with zlib)"
+		myconf+=( $(use_with zlib) )
 	fi
 
 	# Emacs supports these window systems:
@@ -255,39 +293,51 @@ src_configure() {
 
 	if ! use gui; then
 		einfo "Configuring to build without window system support"
-		myconf+=" --without-x --without-pgtk --without-ns"
+		myconf+=(
+			--without-x --without-pgtk --without-ns
+		)
 	elif use aqua; then
 		einfo "Configuring to build with Nextstep (Macintosh Cocoa) support"
-		myconf+=" --with-ns --disable-ns-self-contained"
-		myconf+=" --without-x --without-pgtk"
+		myconf+=(
+			--with-ns --disable-ns-self-contained
+			--without-x --without-pgtk
+		)
 	elif use gtk && ! use X; then
 		einfo "Configuring to build with pure GTK (without X11) support"
-		myconf+=" --with-pgtk --without-x --without-ns"
-		myconf+=" --with-toolkit-scroll-bars" #836392
-		myconf+=" --without-gconf"
-		myconf+=" --without-xwidgets"
-		myconf+=" $(use_with gsettings)"
-		myconf+=" $(use_with harfbuzz)"
-		myconf+=" $(use_with m17n-lib libotf)"
-		myconf+=" $(use_with m17n-lib m17n-flt)"
+		myconf+=(
+			--with-pgtk --without-x --without-ns
+			--with-toolkit-scroll-bars #836392
+			--without-gconf
+			--without-xwidgets
+			$(use_with gsettings)
+			$(use_with harfbuzz)
+			$(use_with m17n-lib libotf)
+			$(use_with m17n-lib m17n-flt)
+		)
 	else
 		# X11
-		myconf+=" --with-x --without-pgtk --without-ns"
-		myconf+=" --without-gconf"
-		myconf+=" $(use_with gsettings)"
-		myconf+=" $(use_with toolkit-scroll-bars)"
-		myconf+=" $(use_with xpm)"
+		myconf+=(
+			--with-x --without-pgtk --without-ns
+			--without-gconf
+			$(use_with gsettings)
+			$(use_with toolkit-scroll-bars)
+			$(use_with xpm)
+		)
 
 		if use xft; then
-			myconf+=" --with-xft"
-			myconf+=" $(use_with cairo)"
-			myconf+=" $(use_with harfbuzz)"
-			myconf+=" $(use_with m17n-lib libotf)"
-			myconf+=" $(use_with m17n-lib m17n-flt)"
+			myconf+=(
+				--with-xft
+				$(use_with cairo)
+				$(use_with harfbuzz)
+				$(use_with m17n-lib libotf)
+				$(use_with m17n-lib m17n-flt)
+			)
 		else
-			myconf+=" --without-xft"
-			myconf+=" --without-cairo"
-			myconf+=" --without-libotf --without-m17n-flt"
+			myconf+=(
+				--without-xft
+				--without-cairo
+				--without-libotf --without-m17n-flt
+			)
 			use cairo && ewarn \
 				"USE flag \"cairo\" has no effect if \"xft\" is not set."
 			use m17n-lib && ewarn \
@@ -307,36 +357,38 @@ src_configure() {
 				recommended that you compile Emacs with the Athena/Lucid or the
 				Motif toolkit instead.
 			EOF
-			myconf+=" --with-x-toolkit=gtk3 --without-xwidgets"
+			myconf+=( --with-x-toolkit=gtk3 --without-xwidgets )
 			for f in motif Xaw3d athena; do
 				use ${f} && ewarn \
 					"USE flag \"${f}\" has no effect if \"gtk\" is set."
 			done
 		elif use motif; then
 			einfo "Configuring to build with Motif toolkit"
-			myconf+=" --with-x-toolkit=motif"
+			myconf+=( --with-x-toolkit=motif )
 			for f in Xaw3d athena; do
 				use ${f} && ewarn \
 					"USE flag \"${f}\" has no effect if \"motif\" is set."
 			done
 		elif use athena || use Xaw3d; then
 			einfo "Configuring to build with Athena/Lucid toolkit"
-			myconf+=" --with-x-toolkit=lucid $(use_with Xaw3d xaw3d)"
+			myconf+=( --with-x-toolkit=lucid $(use_with Xaw3d xaw3d) )
 		else
 			einfo "Configuring to build with no toolkit"
-			myconf+=" --with-x-toolkit=no"
+			myconf+=( --with-x-toolkit=no )
 		fi
 	fi
 
 	if use gui; then
 		# Common flags recognised for all GUIs
-		myconf+=" $(use_with gif)"
-		myconf+=" $(use_with jpeg)"
-		myconf+=" $(use_with png)"
-		myconf+=" $(use_with svg rsvg)"
-		myconf+=" $(use_with tiff)"
-		myconf+=" $(use_with webp)"
-		myconf+=" $(use_with imagemagick)"
+		myconf+=(
+			$(use_with gif)
+			$(use_with jpeg)
+			$(use_with png)
+			$(use_with svg rsvg)
+			$(use_with tiff)
+			$(use_with webp)
+			$(use_with imagemagick)
+		)
 	fi
 
 	if tc-is-cross-compiler; then
@@ -345,45 +397,15 @@ src_configure() {
 		ECONF_SOURCE="${S}" econf_build --without-all --without-x-toolkit
 		popd >/dev/null || die
 		# Don't try to execute the binary for dumping during the build
-		myconf+=" --with-dumping=none"
+		myconf+=( --with-dumping=none )
 	elif use m68k; then
 		# Workaround for https://debbugs.gnu.org/44531
-		myconf+=" --with-dumping=unexec"
+		myconf+=( --with-dumping=unexec )
 	else
-		myconf+=" --with-dumping=pdumper"
+		myconf+=( --with-dumping=pdumper )
 	fi
 
-	econf \
-		--program-suffix="-${EMACS_SUFFIX}" \
-		--includedir="${EPREFIX}"/usr/include/${EMACS_SUFFIX} \
-		--infodir="${EPREFIX}"/usr/share/info/${EMACS_SUFFIX} \
-		--localstatedir="${EPREFIX}"/var \
-		--enable-locallisppath="${EPREFIX}/etc/emacs:${EPREFIX}${SITELISP}" \
-		--without-compress-install \
-		--without-hesiod \
-		--without-pop \
-		--with-file-notification=$(usev inotify || usev gfile || echo no) \
-		--with-pdumper \
-		$(use_enable acl) \
-		$(use_enable xattr) \
-		$(use_with dbus) \
-		$(use_with dynamic-loading modules) \
-		$(use_with games gameuser ":gamestat") \
-		$(use_with gmp libgmp) \
-		$(use_with gpm) \
-		$(use_with jit native-compilation aot) \
-		$(use_with kerberos) $(use_with kerberos kerberos5) \
-		$(use_with lcms lcms2) \
-		$(use_with libxml2 xml2) \
-		$(use_with mailutils) \
-		$(use_with selinux) \
-		$(use_with sqlite sqlite3) \
-		$(use_with ssl gnutls) \
-		$(use_with systemd libsystemd) \
-		$(use_with threads) \
-		$(use_with tree-sitter) \
-		$(use_with wide-int) \
-		${myconf}
+	econf "${myconf[@]}"
 }
 
 src_compile() {
@@ -429,22 +451,12 @@ src_test() {
 		# Reason: tries to access network
 		# internet-is-working
 		%src/process-tests.el
-
-		# Reason: fails with stable version of tree-sitter-json due to
-		# ast changes. Bug #922525
-		%src/treesit-tests.log
-
-		# Reason: test is not skipped if tree-sitter-tsx is not installed
-		# Bug #922525
-		%lisp/progmodes/typescript-ts-mode-tests.el
 	)
 	use threads || exclude_tests+=(
-			%lisp/server-tests.el
 			%lisp/progmodes/eglot-tests.el
 			%src/emacs-module-tests.el
 			%src/keyboard-tests.el
 		)
-	use xpm || exclude_tests+=( %src/image-tests.el )
 
 	# Redirect GnuPG's sockets, in order not to exceed the 108 char limit
 	# for socket paths on Linux.
@@ -490,7 +502,6 @@ src_install() {
 	rm "${ED}"/usr/share/emacs/site-lisp/subdirs.el || die
 	rm -rf "${ED}"/usr/share/{applications,icons} || die
 	rm -rf "${ED}"/usr/share/glib-2.0 || die #911117
-	rm -rf "${ED}/usr/$(get_libdir)/systemd" || die
 	rm -rf "${ED}"/var || die
 
 	# remove unused <version>/site-lisp dir
@@ -499,20 +510,11 @@ src_install() {
 	# remove COPYING file (except for etc/COPYING used by describe-copying)
 	rm "${ED}"/usr/share/emacs/${FULL_VERSION}/lisp/COPYING || die
 
-	if use systemd; then
-		insinto /usr/lib/systemd/user
-		sed -e "/^##/d" \
-			-e "/^ExecStart/s,emacs,${EPREFIX}/usr/bin/${EMACS_SUFFIX}," \
-			-e "/^ExecStop/s,emacsclient,${EPREFIX}/usr/bin/&-${EMACS_SUFFIX}," \
-			etc/emacs.service | newins - ${EMACS_SUFFIX}.service
-		assert
-	fi
-
 	if use gzip-el; then
 		# compress .el files when a corresponding .elc exists
 		find "${ED}"/usr/share/emacs/${FULL_VERSION}/lisp -type f \
 			-name "*.elc" -print | sed 's/\.elc$/.el/' | xargs gzip -9n
-		assert "gzip .el failed"
+		pipestatus || die "gzip .el pipeline failed"
 	fi
 
 	local cdir
@@ -527,10 +529,9 @@ src_install() {
 	fi
 
 	sed -e "${cdir:+#}/^Y/d" -e "s/^[XY]//" >"${T}/${SITEFILE}" <<-EOF || die
+	;;; ${EMACS_SUFFIX} site-lisp configuration  -*-lexical-binding:t-*-
 	X
-	;;; ${EMACS_SUFFIX} site-lisp configuration
-	X
-	(when (string-match "\\\\\`${FULL_VERSION//./\\\\.}\\\\>" emacs-version)
+	(when (string-equal emacs-version "${FULL_VERSION}")
 	Y  (setq find-function-C-source-directory
 	Y	"${EPREFIX}${cdir}")
 	X  (let ((path (getenv "INFOPATH"))
@@ -542,7 +543,7 @@ src_install() {
 	X	   (while (and (cdr q) (not (string-match re (cadr q))))
 	X	     (setq q (cdr q)))
 	X	   (setcdr q (cons dir (delete dir (cdr q))))
-	X	   (setenv "INFOPATH" (mapconcat 'identity (cdr p) ":"))))))
+	X	   (setenv "INFOPATH" (mapconcat #'identity (cdr p) ":"))))))
 	EOF
 	elisp-site-file-install "${T}/${SITEFILE}" || die
 
@@ -599,16 +600,13 @@ pkg_postinst() {
 	elisp-site-regen
 	readme.gentoo_print_elog
 
-	if use livecd; then
-		# force an update of the emacs symlink for the livecd/dvd,
-		# because some microemacs packages set it with USE=livecd
-		eselect emacs update
-	else
-		eselect emacs update ifunset
-	fi
+	# Force an update of the emacs symlink for the livecd/dvd,
+	# because some microemacs packages set it with USE=livecd.
+	# Otherwise, create it only when it is not yet set.
+	eselect --root="${ROOT}" emacs update $(usev !livecd ifunset)
 }
 
 pkg_postrm() {
 	elisp-site-regen
-	eselect emacs update ifunset
+	eselect --root="${ROOT}" emacs update ifunset
 }

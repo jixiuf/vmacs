@@ -1,2 +1,2 @@
 EGIT_OVERRIDE_REPO_EMACS="file:///home/jixiuf/repos/emacs/.git"
-#EGIT_BRANCH=feature/igc
+EGIT_BRANCH=feature/igc
