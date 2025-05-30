@@ -517,7 +517,7 @@ end tell"))
   (let ((funname (which-function)))
 
     (if (string-prefix-p "Bench" funname)
-        (setq compile-command (format "go test -v -bench=%s -test.run ^%s$"  funname funname))
+        (setq compile-command (format "go test -v -bench=%s  -benchmem  -count=3 -test.run ^%s$"  funname funname))
       (setq compile-command (concat "go test -v -test.run ^"  funname "$"))))
   (call-interactively 'term-compile))
 
