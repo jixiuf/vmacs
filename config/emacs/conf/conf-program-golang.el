@@ -11,6 +11,7 @@
 ;; (when (executable-find "gofmt") (setq-default gofmt-command (executable-find "gofmt")))
 ;; (when (executable-find "goimports") (setq-default gofmt-command (executable-find "goimports")))
 (add-hook 'go-ts-mode-hook 'vmacs-go-mode-hook)
+(add-hook 'go-mod-ts-mode-hook 'vmacs-go-mode-hook)
 (defun vmacs-go-mode-hook()
   (setq go-ts-mode-indent-offset 4)
   ;; (local-set-key (kbd "C-c g") 'golang-setter-getter)
