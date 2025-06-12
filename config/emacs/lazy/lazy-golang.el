@@ -67,9 +67,10 @@
            '((t (display-buffer-no-window ))))
          cmd)
     (when pkg
-      (when current-prefix-arg
-        (setq master "@master")
-        )
+      (if (= (prefix-numeric-value current-prefix-arg) 16)
+          (setq master "@develop")
+        (if (= (prefix-numeric-value current-prefix-arg) 4)
+            (setq master "@master")))
       (setq cmd (format "go get %s%s;go mod tidy"
                         (buffer-substring (car pkg) (cdr pkg))
                         master))
