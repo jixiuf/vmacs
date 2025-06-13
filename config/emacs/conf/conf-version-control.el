@@ -19,6 +19,7 @@
  log-edit-hook nil
  vc-follow-symlinks t
  vc-allow-rewriting-published-history 'ask
+ vc-dir-hide-up-to-date-on-revert t
  diff-font-lock-prettify t
  vc-annotate-background-mode nil
  vc-suppress-confirm t                  ;;;自动保存当前buffer后进行操作 除非进行一个危险的操作,如回滚
