@@ -152,7 +152,7 @@ If the branch is not tracking a remote branch, return nil."
    #'(lambda()
        (when-let* ((branch (vc-git--current-branch))
                    (tranking (vcgit--tracking-branch branch)))
-         (vc-log-outgoing)
+         (vc-log-outgoing )
          t))
    vc-git-log-view-mode-map
    code))
@@ -181,7 +181,7 @@ If the branch is not tracking a remote branch, return nil."
                                                    remote-location))))
   (ignore-errors              ; in order to return nil if no such branch
     (with-output-to-string
-      (vc-git-command standard-output 'async nil
+      (vc-git-command standard-output 0 nil
                       "log" "--max-count=1" "--pretty=format:%H"
                       (if (string-empty-p remote-location)
 			              "@{upstream}"
@@ -301,8 +301,8 @@ If the branch is not tracking a remote branch, return nil."
 
     (outline-minor-mode)
     ;; insert Unpulled/Unpushed to vc-dir
-    ;; (vcgit--dir-unpushed)
-    ;; (vcgit--dir-unpulled)
+    (vcgit--dir-unpushed )
+    (vcgit--dir-unpulled)
     (vcgit--dir-recent     )
     
     (vcgit-dir--todo)))
