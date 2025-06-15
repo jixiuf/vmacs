@@ -129,7 +129,7 @@
 (put 'narrow-to-region 'disabled nil);; 启用 narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
 (put 'upcase-region 'disabled nil)
-(with-eval-after-load 'markdown-mode  (add-hook 'markdown-mode-hook #'auto-fill-mode))
+(with-eval-after-load 'markdown-ts-mode  (add-hook 'markdown-ts-mode-hook #'auto-fill-mode))
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-ts-mode))
 (setq-default auto-mode-alist
@@ -149,7 +149,7 @@
                  ("\\.mxml" . nxml-mode)
                  ("\\.proto\\'" . protobuf-mode)
                  ("\\.thrift" . thrift-mode)
-                 ("\\.md$" . markdown-mode)
+                 ("\\.md$" . markdown-ts-mode)
                  ("\\.\\(frm\\|bas\\|cls\\|vba\\|vbs\\)$" . visual-basic-mode)
 
                  ("\\.rs$" . rust-ts-mode)
