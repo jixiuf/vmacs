@@ -3,7 +3,8 @@
 ;; https://github.com/go-delve/delve/blob/master/Documentation/installation/osx/install.md
 ;; go get github.com/go-delve/delve/cmd/dlv
 (setq dape-key-prefix  "\C-cd")
-(setq dape-request-timeout 30)
+;; (setq dape-debug t)
+(setq dape-request-timeout 60)
 (setq dape-info-variable-table-row-config
       `((name . 20)
         (value . 120)
