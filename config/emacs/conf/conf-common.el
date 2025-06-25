@@ -293,8 +293,8 @@
 (autoload 'gt-do-translate "go-translate" "go-translate" t)
 (with-eval-after-load 'go-translate
   ;; https://github.com/lorniu/go-translate/blob/master/README-zh.org
-  (add-to-list 'plz-curl-default-args "--dns-servers"  t)
-  (add-to-list 'plz-curl-default-args "1.1.1.1"  t)
+  ;; (add-to-list 'plz-curl-default-args "--dns-servers"  t)
+  ;; (add-to-list 'plz-curl-default-args "1.1.1.1"  t)
   (setq gt-default-http-client
         (lambda (host)
           (if (string-match-p "google\\|deepl\\|openai" host)
