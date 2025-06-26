@@ -221,6 +221,9 @@
   (define-key diff-mode-map (kbd "x") #'diff-hunk-kill)
   (define-key diff-mode-map (kbd "X") #'diff-file-kill)
   )
+(with-eval-after-load 'transient
+  (keymap-set transient-base-map "<escape>" #'transient-quit-one))
+
 
 ;;;; `C-xvg' vc-annotate 查看某个特定文件自始至终的变化
 ;;位于info 的Emacs>>Maintaining>>Version Control>>Old Revisions

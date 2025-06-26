@@ -6,6 +6,11 @@
 (keymap-set gptel-mode-map "C-c C-c" #'vmacs-gptel-send)
 (keymap-set gptel-mode-map "C-c C-v" #'gptel-menu)
 (keymap-set gptel-mode-map "C-c C-d" #'vmacs-gptel-prompt)
+(keymap-set gptel-mode-map "C-c C-f" #'gptel-add-file)
+(keymap-set gptel-mode-map "C-c C-b" #'gptel-add)
+(keymap-set gptel-mode-map "C-c C-k" #'gptel-context-remove-all)
+(eval-after-load 'dired
+(keymap-set dired-mode-map "a" #'gptel-add))
 
 (defun vmacs-gptel-send(&optional arg)
   (interactive)
