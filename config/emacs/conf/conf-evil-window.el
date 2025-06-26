@@ -197,7 +197,7 @@
   (or
    (string-match-p (rx (or
                         "*Agenda Commands*"
-                        " *transient*"
+                        ;; " *transient*"
                         "*Org Agenda*"
                         "*vc-change-log*"
                         "*vc-search-log*"
