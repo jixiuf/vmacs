@@ -81,6 +81,7 @@
  recentf-max-saved-items 1000
  ring-bell-function 'ignore
  savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
+ buffer-save-without-query t
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否 wrap 显示
  ;; bidi-display-reordering  nil ; panic when چ
