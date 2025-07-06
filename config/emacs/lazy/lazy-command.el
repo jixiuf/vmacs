@@ -5,6 +5,8 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun save-all () (interactive) (save-some-buffers t))
+;;;###autoload
 (defun vmacs-backward-symbol()
   (interactive)
   (forward-symbol -1))

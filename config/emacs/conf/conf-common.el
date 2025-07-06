@@ -99,6 +99,9 @@
  find-function-C-source-directory "~/repos/emacs/src/"
  Man-notify-method 'bully
  )
+
+(setq save-silently t)
+;; (add-hook 'find-file-hook (lambda () (setq buffer-save-without-query t)))
 ;; (global-visual-line-mode)
 (setq show-paren-when-point-inside-paren t
       show-paren-when-point-in-periphery t
