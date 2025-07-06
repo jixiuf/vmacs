@@ -43,7 +43,7 @@
    ;; SPC j/k will run the original command in MOTION state.
    '("j" . "s-M-j")
    '("k" . "s-M-k")
-   '("s" . "C-x C-s")
+   '("s" . "C-x s")
    ;; Use SPC (0-9) for digit arguments.
    '("1" . meow-digit-argument)
    '("2" . meow-digit-argument)
