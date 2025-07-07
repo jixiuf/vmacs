@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; https://github.com/yveszoundi/eglot-java
 ;; https://emacs-china.org/t/dape/27728
 
