@@ -506,3 +506,4 @@ down(){
     sudo  sh -c '/usr/bin/rsync -avz -CErltm  --delete  root@bj-mjq-dev-apm-1:/data/binpkgs/* /var/cache/binpkgs/; /usr/bin/rsync -avz -CErltm  --delete root@bj-mjq-dev-apm-1:/data/gentoo/* /var/db/repos/gentoo/'
 }
 
+export GOTOOLCHAIN=local
