@@ -121,6 +121,9 @@ function schedgo(){
 alias curljson='curl -H "Content-Type: application/json" '
 if [ -f ~/venv/bin/activate ]; then
     source ~/venv/bin/activate
+else
+    python -m venv venv
+    pip install mitmproxy
 fi
 
 function crc32(){
