@@ -124,6 +124,7 @@ if [ -f ~/venv/bin/activate ]; then
 else
     python -m venv venv
     pip install mitmproxy
+    pip install requests        # for mitmproxy rewrite.py
 fi
 
 function crc32(){
