@@ -1,4 +1,6 @@
 #  -*- coding:utf-8 -*-
+# pip install mitmproxy
+# pip install requests        # for mitmproxy rewrite.py
 from mitmproxy import http, ctx
 import json
 import requests
@@ -103,6 +105,7 @@ def request(flow: http.HTTPFlow) -> None:
                     for key, value in params.items():
                         encoded_value = quote(str(value))
                         url = f"{url}&{key}={encoded_value}"
+
                     url=url.replace("?a=a", "?")
                 else:
                     # 将数据转换为字符串并设置请求内容
@@ -135,7 +138,7 @@ def request(flow: http.HTTPFlow) -> None:
                 {"Content-Type": "text/html"}
             )
     elif flow.request.pretty_host in CMS_OMS_API_PROXY  \
-       and flow.request.path.startswith("/api/proxy"):
+         and flow.request.path.startswith("/api/proxy"):
         try:
             body_data = json.loads(flow.request.get_text())
             url = body_data.get("url")
@@ -163,11 +166,14 @@ def request(flow: http.HTTPFlow) -> None:
                     for key, value in params.items():
                         encoded_value = quote(str(value))
                         url = f"{url}&{key}={encoded_value}"
-                    url=url.replace("?a=a", "?")
+
+                    url = url.replace("?a=a", "?")
                 else:
                     # 将数据转换为字符串并设置请求内容
                     flow.request.headers["Content-Type"] =  "application/json"
                     flow.request.content = json.dumps(data).encode()
+
+
                 # 设置请求的新URL
                 flow.request.url = url
                 flow.request.method = method.upper()
