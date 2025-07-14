@@ -177,7 +177,7 @@ alias ssh='TERM=xterm-256color ssh'
 bindkey -s '^[[116;13u' 'ta\n'
 
 
-alias httpserver="python -m http.server 8888"
+alias httpserver="python -m http.server 8080"
 # tmux_porcess_cnt=`pgrep tmux |wc -l`
 
 alias download="pushd ~/Downloads/"
