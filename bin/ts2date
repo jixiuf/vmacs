@@ -32,18 +32,14 @@ else
           elif [[ ${length} -eq 13 ]];then
               timestampStr=${timestampStr:0:10}
           fi
-          echo "时间戳位：${timestampStr}"
+          echo "时间戳：${timestampStr}"
       if [[ "${os_platform}" = "Darwin" ]];then
               dateStr=`date -r${timestampStr} +"%Y-%m-%d %H:%M:%S"`
           elif [[ "${os_platform}" = "Linux" ]];then
               dateStr=`date -d @${timestampStr} +"%Y-%m-%d %H:%M:%S"`
           fi
-          echo "${1}对应的本地时间为${dateStr}"
+          echo "${1} 对应的本地时间为 ${dateStr}"
       ;;
     esac
 fi
 
-# 作者：BestFei
-# 链接：https://www.jianshu.com/p/063e81713de3
-# 來源：简书
-# 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
