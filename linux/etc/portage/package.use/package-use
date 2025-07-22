@@ -55,6 +55,7 @@ dev-libs/jemalloc stats
 app-i18n/librime-lua   LUA_SINGLE_TARGET:  -lua5-1 luajit  
 net-libs/nodejs npm
 gui-apps/xremap wlroots
+sys-apps/man-pages L10N: -zh-CN 
 # sys-devel/gcc jit
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
