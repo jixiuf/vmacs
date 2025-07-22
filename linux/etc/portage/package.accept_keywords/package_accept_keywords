@@ -75,6 +75,7 @@ net-wireless/iwgtk ~amd64
 dev-util/mongodb-compass-bin ~amd64
 app-laptop/tiny-dfr ~amd64
 app-i18n/librime-octagram **
+ app-i18n/librime-lua ~amd64 
 gui-apps/satty  ~amd64
 app-emulation/fuse  ~amd64
 app-emulation/libspectrum  ~amd64

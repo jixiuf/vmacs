@@ -52,7 +52,7 @@ sys-boot/grub mount
 sys-kernel/installkernel dracut
 dev-java/openjdk-bin source
 dev-libs/jemalloc stats
-app-i18n/librime-lua LUA_SINGLE_TARGET: lua5-4
+app-i18n/librime-lua   LUA_SINGLE_TARGET:  -lua5-1 luajit  
 net-libs/nodejs npm
 gui-apps/xremap wlroots
 # sys-devel/gcc jit
