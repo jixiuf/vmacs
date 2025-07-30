@@ -119,8 +119,8 @@
   (define-key vc-git-stash-shared-map (kbd "C-c Ma") #'vc-git-stash-apply) ;my a for meow-motion
   (define-key vc-git-stash-shared-map (kbd "d") #'vc-git-stash-show-at-point)
   (define-key vc-git-stash-shared-map "z" #'vc-git-stash)
-  (define-key vc-git-stash-shared-map "a" #'vc-git-stash-apply-at-point)
-  (define-key vc-git-stash-map "A" #'vc-git-stash-pop-at-point)
+  (define-key vc-git-stash-shared-map "a" #'vc-git-stash-pop-at-point)
+  (define-key vc-git-stash-map "A" #'vc-git-stash-apply-at-point)
   (define-key vc-git-stash-shared-map "x" #'vc-git-stash-delete-at-point))
 
 (with-eval-after-load 'vc-dir
