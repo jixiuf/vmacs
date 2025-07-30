@@ -993,14 +993,14 @@ Move point to end-of-line ,if point was already at that position,
       (delete-frame))
      ((equal (buffer-name) "*scratch*")
       (save-buffer)
-      (kill-this-buffer))
+      (kill-current-buffer))
      ((and (featurep 'server)
            (boundp 'server-buffer-clients)
            server-buffer-clients)
       (save-buffer)
       (server-edit))
      ((derived-mode-p 'eshell-mode 'term-mode 'shell-mode 'vterm-mode)
-      (kill-this-buffer)
+      (kill-current-buffer)
       ;; (vterm-toggle-hide )
       ;; (vmacs-add-to-killed-file-list)
       ;; (centaur-tabs-forward-group)
@@ -1024,7 +1024,7 @@ Move point to end-of-line ,if point was already at that position,
      ( (derived-mode-p 'org-agenda-mode)
        (dolist (f org-agenda-files)
          (kill-buffer (get-file-buffer f)))
-       (kill-this-buffer)
+       (kill-current-buffer)
        )
      ( (derived-mode-p 'reb-mode)
        (call-interactively 'reb-quit))
@@ -1037,7 +1037,7 @@ Move point to end-of-line ,if point was already at that position,
      ( (derived-mode-p 'Info-mode)
        (call-interactively 'vmacs-kill-buffer-delete-window))
      ( (derived-mode-p 'xwidget-webkit-mode)
-       (call-interactively 'kill-this-buffer))
+       (call-interactively 'kill-current-buffer))
      ( (or (derived-mode-p 'special-mode)
            (string-prefix-p "*vc-git" (buffer-name ))
            (derived-mode-p 'compilation-mode))
@@ -1046,7 +1046,7 @@ Move point to end-of-line ,if point was already at that position,
          (vmacs-kill-buffer-delete-window)))
      (t
       (message "kill buffer %s" (buffer-name ))
-      (kill-this-buffer)))))
+      (kill-current-buffer)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
