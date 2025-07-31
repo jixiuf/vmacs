@@ -46,7 +46,7 @@
   (kbd "a") #'vcgit-fetch-all
   (kbd "t") #'vcgit-fetch-tags)
 (defvar-keymap  vc-push-map
-  "v" #'vc-push
+  "v" #'vc-push-default
   "o" #'vcgit-push-other
   "t" #'vcgit-push-tags)
 (defvar-keymap  vc-tag-map
@@ -150,8 +150,7 @@
   (keymap-unset vc-dir-mode-map "v" t)
   (define-key vc-dir-mode-map (kbd "v") vc-push-map)
   (define-key vc-dir-mode-map (kbd "t") vc-tag-map)
-  (define-key vc-dir-mode-map (kbd "C-c Gr") ;gr for meow-motion
-              #'(lambda()(interactive) (revert-buffer) (vc-dir-hide-state)))
+  (define-key vc-dir-mode-map (kbd "C-c Gr") #'revert-buffer) ;gr for meow-motion
   (require 'vc-git)
   (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)) ;z for meow-motion
 

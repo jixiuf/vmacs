@@ -519,13 +519,13 @@ to the text at point."
 ;;         -1)))
 
 ;;;###autoload
-;; (defun vc-push-default(&optional args  )
-;;   (interactive)
-;;   (if (vcgit-svn-repos-p)
-;;       (vc-git--out-ok  "svn" "dcommit" args)
-;;     (if current-prefix-arg
-;;         (vc-git--pushpull "push" nil '("--force"))
-;;       (vc-git--pushpull "push" nil '("--force-with-lease")))))
+(defun vc-push-default(&optional args  )
+  (interactive)
+  (if (vcgit-svn-repos-p)
+      (vc-git--out-ok  "svn" "dcommit" args)
+    (if current-prefix-arg
+        (vc-git--pushpull "push" nil '("--force"))
+      (vc-git--pushpull "push" nil '()))))
 
 ;; (defun vc-wait-for-processes (&optional proc timeout)
 ;;   "Wait until PROCS have completed execution.
