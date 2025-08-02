@@ -173,6 +173,7 @@ ta(){
 alias tt=ta
 alias tn='tmux new -A -s'
 alias ssh='TERM=xterm-256color ssh'
+alias baolei='TERM=xterm-256color /usr/local/bin/baolei'
 # bindkey -s '^T' 'ta\n'
 bindkey -s '^[[116;13u' 'ta\n'
 
