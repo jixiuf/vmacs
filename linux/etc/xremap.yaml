@@ -329,14 +329,12 @@ keymap:
   #     esc: Enter
   #     C-c: Enter
   #     C-s: Enter
-  - name: weixin
+  - name: wechat
     application:
-      only: [weixin]
+      only: [wechat]
     remap:
-      esc:
-        - { launch: ["close-win"] }
-      Super-C-w: 
-        - { launch: ["close-win"] }
+      Super-C-w: Super-C-q
+      esc: Super-C-q
   - name: org.gnome.Nautilus
     application:
       only: [org.gnome.Nautilus]
