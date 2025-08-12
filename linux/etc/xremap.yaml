@@ -30,34 +30,39 @@ modmap:
       ctrl_l :
         held: ctrl_l
         alone: esc
-        alone_timeout_millis: 1000
+        free_hold: true
+        # alone_timeout_millis: 1000
 
   - name: Global
     remap:
       space:
         held: [ctrl_l,super_l]
         alone: space
-        alone_timeout_millis: 1000 # Optional
+        free_hold: true
+        # alone_timeout_millis: 1000 # Optional
       capslock :
         held: [alt_l,super_l]
+        free_hold: true
         alone: f3 # Required
-        alone_timeout_millis: 1000 # Optional
+#        alone_timeout_millis: 1000 # Optional
   - name: Not Emacs
     application:
       not: emacs
     remap:
       super_r :
+        free_hold: true
         held: shift_r
         alone: [shift_r]
-        alone_timeout_millis: 500 # Optional
+#        alone_timeout_millis: 500 # Optional
   - name: Emacs
     application:
       only: emacs
     remap:
       super_r :
+        free_hold: true
         held: shift_r
         alone: [f11]
-        alone_timeout_millis: 1000 # Optional
+#        alone_timeout_millis: 1000 # Optional
 
 keymap:
   - name: swappy
