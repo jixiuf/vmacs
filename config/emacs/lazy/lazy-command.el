@@ -5,6 +5,12 @@
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
 ;;;###autoload
+(defun uid() (interactive) (let ((uid (completing-read "uid: " '("10064589" "545473" "60682172" "12880661" "492256045"))))
+                             (when (called-interactively-p)
+                               (insert uid))
+                             uid))
+
+;;;###autoload
 (defun save-all () (interactive) (save-some-buffers t))
 ;;;###autoload
 (defun vmacs-backward-symbol()
