@@ -427,7 +427,7 @@ numeric, repeat times.
             (setq p (line-beginning-position)))))))
       (thread-first
         (meow--make-selection '(expand . line) orig p expand)
-        (meow--select))
+        (meow--select t))
       (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))
      (t
       (let ((m (if forward
@@ -445,7 +445,7 @@ numeric, repeat times.
                      (line-beginning-position))))))
         (thread-first
           (meow--make-selection '(expand . line) m p expand)
-          (meow--select))
+          (meow--select t))
         (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))))))
 
 ;; ;;;###autoload
@@ -512,10 +512,10 @@ numeric, repeat times.
   (if (region-active-p)
       (thread-first
         (meow--make-selection '(expand . char) (mark) (point))
-        (meow--select))
+        (meow--select t))
     (thread-first
       (meow--make-selection '(expand . char) (point) (point))
-      (meow--select))))
+      (meow--select t))))
 ;;;###autoload
 (defun vmacs-meow-grab()
   (interactive)
