@@ -1,0 +1,171 @@
+/***** SUGGESTED TO CHANGE CAREFULLY *****/
+
+/* Recommended if panel "height" unset or smaller then your theme default button height */
+button {
+    margin: 2px
+}
+
+/* SwayTaskBar and SwayWorkspaces use custom widgets, that need this and the next name
+   to highlight currently focused task / workspace. */
+#task-box {
+    padding-left: 4px;
+    padding-right: 4px
+}
+
+#task-box-focused {
+    background-color: rgba (255, 255, 255, 0.12);
+    padding-left: 4px;
+    padding-right: 4px
+}
+
+
+/***** MODIFY TO YOUR TASTE *****/
+
+/* Sample button in sample config w/ no background nor border */
+#button-custom {
+    background: rgba (0, 0, 0, 0.0);
+    border: 0
+}
+
+/* Top panel in sample config uses this name */
+#panel-top {
+    background: #101010;
+    color: #eeeeee
+}
+
+/* Bottom panel in sample config uses this name */
+#panel-bottom {
+    background: #101010;
+    color: #eeeeee
+}
+
+/* Controls window in sample config uses this name */
+#controls-window {
+    border-radius: 15px;
+    background: #36364f;
+    color: #eeeeee
+}
+#controls-window scale value {
+    color: #eeeeee
+}
+
+/* Brightness slider popup window in sample config uses this name */
+#brightness-popup {
+    border-radius: 15px;
+    background: #36364f;
+    color: #eeeeee
+}
+#brightness-popup box {
+    padding: 15px;
+}
+
+/* Executors usually behave better in monospace fonts */
+#executor-label {
+    font-family: monospace
+}
+
+/* and so does the Clock */
+#clock {
+    font-family: monospace;
+    font-size: 16px
+}
+
+/* Sample executor-weather uses "css-name": "weather" */
+#weather {
+    font-size: 16px
+}
+
+/* dwl-tags module */
+#dwl-tag-box {
+	padding-top: 4px;
+	padding-bottom: 4px
+}
+
+#dwl-tag-occupied {
+	font-family: monospace;
+	color: #eee;
+    background-color: #006699;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+#dwl-tag-free {
+	font-family: monospace;
+	color: #eee;
+    background-color: rgba (32, 50, 90, 1.0);
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+#dwl-tag-urgent {
+	font-family: monospace;
+	color: #eee;
+    background-color: #ee6600;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+#dwl-tag-selected {
+	border: solid 2px;
+	border-color: #81a1c1
+}
+
+@define-color foreground #bfbfc0;
+@define-color background #020103;
+@define-color foreground-warning white;
+@define-color background-warning #2980b9;
+@define-color foreground-error black;
+@define-color background-error #B0C4DE;
+@define-color foreground-critical black;
+@define-color background-critical #ffff00;
+@define-color cursor #bfbfc0;
+
+@define-color color0 #020103;
+@define-color color1 #FBBA52;
+@define-color color2 #4B3E81;
+@define-color color3 #705E91;
+@define-color color4 #9575A6;
+@define-color color5 #CB7B96;
+@define-color color6 #AB8EAC;
+@define-color color7 #bfbfc0;
+@define-color color8 #414042;
+@define-color color9 #FBBA52;
+@define-color color10 #4B3E81;
+@define-color color11 #705E91;
+@define-color color12 #9575A6;
+@define-color color13 #CB7B96;
+@define-color color14 #AB8EAC;
+@define-color color15 #bfbfc0;
+/* @import 'colors-waybar.css'; */
+
+/* * { */
+/*     border: none; */
+/*     border-radius: 0px; */
+/*     min-height: 0; */
+/*     font-family: Jost; */
+/*     font-size: 16px; */
+/*     font-weight: 500; */
+/* } */
+
+/* #hyprland-workspaces { */
+/*     /\* background: @background-color; *\/ */
+/*     margin: 0px 0px 0px 0px; */
+/*     /\* padding: 4px 1px; *\/ */
+/*     border-radius: 12px; */
+/*     font-weight: normal; */
+/*     font-style: normal; */
+/*     opacity:0.8; */
+/* } */
+
+#hyprland-workspaces-item {
+    padding: 0px 5px;
+    margin: 0px 1px;
+    border-radius: 12px;
+    color: @color7;
+    background-color: @color11;
+    /* background-color: rgba(24, 24, 37, 0); */
+    transition: all 0.3s ease-in-out;
+    opacity:0.5;
+    font-size:14px;
+    
+}

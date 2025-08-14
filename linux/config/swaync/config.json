@@ -78,43 +78,43 @@
         },
         {
           "label": "X",
-          "command": "sh -c 'swaync-client -t & systemctl --user stop xremap;pkill -9 xremap'"
+          "command": "sh -c 'swaync-client -t & systemctl --user stop xremap;pkill -9 xremap'& disown"
         },
         {
           "label": "XR",
-          "command": "sh -c 'swaync-client -t & systemctl --user restart xremap'"
+          "command": "sh -c 'swaync-client -t & systemctl --user restart xremap'& disown"
         },
         {
           "label": " 🖥️",
-          "command": "sh -c '/usr/local/bin/wf-record-start.sh 屏幕 &'"
+          "command": "sh -c '/usr/local/bin/wf-record-start.sh 屏幕 &' & disown"
         },
         {
           "label": " 🪟",
-          "command": "sh -c '/usr/local/bin/wf-record-start.sh 窗口 &'"
+          "command": "sh -c '/usr/local/bin/wf-record-start.sh 窗口 &'& disown"
         },
         {
           "label": " ⿻",
-          "command": "sh -c '/usr/local/bin/wf-record-start.sh 区域&'"
+          "command": "sh -c '/usr/local/bin/wf-record-start.sh 区域&'& disown"
         },
         {
           "label": " ⏸️️",
-          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-stop.sh'"
+          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-stop.sh'& disown"
         },
         {
           "label": " 📁",
-          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 0'"
+          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 0'& disown"
         },
         {
           "label": " ▶️",
-          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 1'"
+          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 1'& disown"
         },
         {
           "label": " →🖼️",
-          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 2'"
+          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 2'& disown"
         },
         {
           "label": " →🖼️✂️",
-          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 3'"
+          "command": "sh -c 'swaync-client -t & /usr/local/bin/wf-record-action.sh 3'& disown"
         }
       ]
     }

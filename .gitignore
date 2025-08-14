@@ -82,3 +82,7 @@ rime/wanxiang-lts-zh-hans.gram
 linux/local/share:fcitx5/rime/wanxiang-lts-zh-hans.gram
 rime/scripts/rime/wubi86_sorted.dict.yaml
 rime/scripts/rime/__debug_bin2153550142
+linux/config/nwg-panel/executors/*
+linux/config/nwg-panel/icons_color/*
+linux/config/nwg-panel/icons_dark/*
+linux/config/nwg-panel/icons_light/*

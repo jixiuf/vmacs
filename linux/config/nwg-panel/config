@@ -1,0 +1,333 @@
+[
+  {
+    "name": "panel-top",
+    "output": "",
+    "layer": "bottom",
+    "position": "top",
+    "controls": "right",
+    "width": "auto",
+    "height": 30,
+    "homogeneous": true,
+    "margin-top": 0,
+    "margin-bottom": 0,
+    "padding-horizontal": 0,
+    "padding-vertical": 0,
+    "spacing": 0,
+    "items-padding": 0,
+    "icons": "light",
+    "css-name": "panel-top",
+    "modules-left": [
+      "hyprland-workspaces"
+    ],
+    "modules-center": [
+      "hyprland-taskbar"
+    ],
+    "modules-right": [
+      "clock",
+      "tray"
+    ],
+    "controls-settings": {
+      "components": [
+        "brightness",
+        "volume",
+        "battery",
+        "per-app-volume"
+      ],
+      "commands": {
+        "battery": ""
+      },
+      "show-values": false,
+      "interval": 1,
+      "icon-size": 16,
+      "hover-opens": false,
+      "leave-closes": true,
+      "click-closes": true,
+      "css-name": "controls-window",
+      "custom-items": [
+        {
+          "name": "Panel settings",
+          "icon": "nwg-panel",
+          "cmd": "nwg-panel-config"
+        },
+        {
+          "name": "X",
+          "icon": "nwg-shell",
+          "cmd": "systemctl --user stop  exremap;pkill -9 xremap"
+        },
+        {
+          "name": "XR",
+          "icon": "",
+          "cmd": "systemctl --user restart xremap"
+        },
+        {
+          "name": "\uf03d \ud83d\udda5\ufe0f",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-start.sh \u5c4f\u5e55"
+        },
+        {
+          "name": "\uf03d \ud83e\ude9f",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-start.sh \u7a97\u53e3"
+        },
+        {
+          "name": "\uf03d \u2ffb",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-start.sh \u533a\u57df"
+        },
+        {
+          "name": "\uf03d \u23f8\ufe0f\ufe0f",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-stop.sh"
+        },
+        {
+          "name": "\uf03d \ud83d\udcc1",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-action.sh 0"
+        },
+        {
+          "name": "\uf03d \u25b6\ufe0f",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-action.sh 1"
+        },
+        {
+          "name": "\uf03d \u2192\ud83d\uddbc\ufe0f",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-action.sh 2"
+        },
+        {
+          "name": "\uf03d \u2192\ud83d\uddbc\ufe0f\u2702\ufe0f",
+          "icon": "",
+          "cmd": "/usr/local/bin/wf-record-action.sh 3"
+        }
+      ],
+      "menu": {
+        "name": "Exit",
+        "icon": "system-shutdown-symbolic",
+        "items": [
+          {
+            "name": "Lock",
+            "cmd": "swaylock -f -c 000000"
+          },
+          {
+            "name": "Logout",
+            "cmd": "swaymsg exit"
+          },
+          {
+            "name": "Reboot",
+            "cmd": "systemctl reboot"
+          },
+          {
+            "name": "Shutdown",
+            "cmd": "systemctl -i poweroff"
+          }
+        ]
+      },
+      "show-brightness": false,
+      "show-volume": false,
+      "show-battery": true,
+      "output-switcher": true,
+      "per-app-volume": false,
+      "backlight-controller": "brightnessctl",
+      "backlight-device": "",
+      "window-width": 0,
+      "window-margin-horizontal": 0,
+      "window-margin-vertical": 0,
+      "root-css-name": "controls-overview",
+      "battery-low-level": 20,
+      "battery-low-interval": 3,
+      "processes-label": "Processes",
+      "readme-label": "README",
+      "angle": 0.0
+    },
+    "tray": {
+      "root-css-name": "tray",
+      "inner-css-name": "inner-tray"
+    },
+    "sway-taskbar": {
+      "workspace-menu": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "name-max-len": 20,
+      "image-size": 16,
+      "workspaces-spacing": 0,
+      "task-padding": 0,
+      "show-app-icon": true,
+      "show-app-name": true,
+      "show-layout": true,
+      "workspace-buttons": false,
+      "all-workspaces": true,
+      "mark-autotiling": true,
+      "mark-xwayland": true,
+      "all-outputs": true
+    },
+    "sway-workspaces": {
+      "numbers": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    "clock": {
+      "format": "%b%d%a%H:%M:%S",
+      "tooltip-text": "",
+      "on-left-click": "",
+      "on-middle-click": "",
+      "on-right-click": "",
+      "on-scroll-up": "",
+      "on-scroll-down": "",
+      "css-name": "clock",
+      "interval": 1,
+      "tooltip-date-format": false,
+      "root-css-name": "root-clock",
+      "angle": 0.0,
+      "calendar-path": "",
+      "calendar-css-name": "calendar-window",
+      "calendar-placement": "top-right",
+      "calendar-margin-horizontal": 0,
+      "calendar-margin-vertical": 0,
+      "calendar-icon-size": 24,
+      "calendar-interval": 60,
+      "calendar-on": true
+    },
+    "playerctl": {
+      "buttons-position": "left",
+      "icon-size": 16,
+      "chars": 30,
+      "scroll": false,
+      "button-css-name": "",
+      "label-css-name": "",
+      "interval": 1
+    },
+    "button-sample": {
+      "command": "notify-send 'sample button'",
+      "icon": "nwg-icon-picker",
+      "label": "",
+      "label-position": "right",
+      "css-name": "button-custom",
+      "icon-size": 16,
+      "tooltip": ""
+    },
+    "menu-start": "off",
+    "exclusive-zone": true,
+    "sigrt": 64,
+    "use-sigrt": false,
+    "scratchpad": {},
+    "sway-mode": {},
+    "openweather": {},
+    "brightness-slider": {
+      "show-brightness": false,
+      "show-volume": false,
+      "show-battery": true,
+      "icon-size": 16,
+      "interval": 10,
+      "hover-opens": false,
+      "leave-closes": false,
+      "root-css-name": "brightness-module",
+      "css-name": "brightness-popup",
+      "angle": 0.0,
+      "icon-placement": "start",
+      "backlight-device": "",
+      "backlight-controller": "brightnessctl",
+      "slider-orientation": "horizontal",
+      "slider-inverted": false,
+      "popup-icon-placement": "start",
+      "popup-horizontal-alignment": "right",
+      "popup-vertical-alignment": "top",
+      "popup-width": 256,
+      "popup-height": 64,
+      "popup-horizontal-margin": 0,
+      "popup-vertical-margin": 0,
+      "step-size": 1
+    },
+    "dwl-tags": {
+      "tag-names": "1 2 3 4 5 6 7 8 9",
+      "title-limit": 55,
+      "angle": 0.0
+    },
+    "hyprland-taskbar": {
+      "name-max-len": 24,
+      "icon-size": 16,
+      "workspaces-spacing": 0,
+      "client-padding": 0,
+      "show-app-icon": true,
+      "show-app-name": true,
+      "show-app-name-special": false,
+      "show-layout": true,
+      "all-outputs": false,
+      "all-workspaces": false,
+      "show-ws-names": false,
+      "mark-xwayland": true,
+      "angle": 0.0,
+      "image-size": 16,
+      "task-padding": 0
+    },
+    "hyprland-workspaces": {
+      "num-ws": 10,
+      "show-icon": false,
+      "show-inactive-workspaces": true,
+      "show-workspaces-from-all-outputs": true,
+      "image-size": 16,
+      "show-workspaces": true,
+      "show-name": false,
+      "name-length": 40,
+      "show-empty": true,
+      "mark-content": true,
+      "show-names": true,
+      "mark-floating": true,
+      "mark-xwayland": true,
+      "angle": 0.0
+    },
+    "run-if-output-exist": [],
+    "run-if-output-absent": [],
+    "monitor": "Apple Computer Inc Color LCD",
+    "width-as-percentage": false,
+    "start-hidden": false,
+    "hyprland-submap": {},
+    "keyboard-layout": {},
+    "niri-taskbar": {},
+    "random-wallpaper": {
+      "source": "wallhaven.cc",
+      "tags": [
+        "nature"
+      ],
+      "ratios": "16x9,16x10",
+      "atleast": "1920x1080",
+      "apikey": "",
+      "save-path": "/home/jixiuf/Desktop",
+      "local-path": "",
+      "icon-size": 16,
+      "interval": 0,
+      "refresh-on-startup": true
+    },
+    "pinned": {},
+    "executor-unnamed_1": {
+      "script": "",
+      "tooltip-text": "",
+      "on-left-click": "",
+      "on-middle-click": "",
+      "on-right-click": "",
+      "on-scroll-up": "",
+      "on-scroll-down": "",
+      "root-css-name": "",
+      "css-name": "",
+      "icon-placement": "left",
+      "icon-size": 16,
+      "interval": 1,
+      "angle": 0.0,
+      "sigrt": 34,
+      "use-sigrt": false
+    }
+  }
+]
