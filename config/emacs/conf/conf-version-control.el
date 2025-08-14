@@ -283,7 +283,7 @@
 
 (with-eval-after-load 'git-link
   (defun git-link-gitlab (hostname dirname filename branch commit start end)
-    (format "https://%s/%s/blob/%s/%s"
+    (format "%s/%s/blob/%s/%s"
             hostname dirname
             (or branch commit)
             (concat filename
