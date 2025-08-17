@@ -22,9 +22,7 @@ gui-apps/wf-recorder ~amd64
 gui-apps/wlogout ~amd64
 gui-apps/wlr-randr ~amd64
 media-fonts/twemoji ~amd64
-media-libs/libdisplay-info ~amd64
 media-sound/t2-better-audio ~amd64
-net-im/weixin-uos ~amd64
 sys-apps/xdg-desktop-portal   ~amd64
 sys-auth/pam-gnupg  ~amd64
 sys-firmware/apple-bcm-firmware ~amd64
@@ -40,8 +38,6 @@ app-admin/keepassxc ~amd64
 media-libs/opensubdiv ~amd64
 media-gfx/openvdb ~amd64
 gui-libs/cursor  ~amd64
-app-misc/zellij  ~amd64
-x11-terms/wezterm  ~amd64
 x11-terms/alacritty  ~amd64
 gui-apps/foot  ~amd64
 app-misc/tmux  ~amd64
@@ -84,6 +80,13 @@ gui-libs/hyprland-qtutils   ~amd64
 gui-apps/xremap   ~amd64
 app-emacs/emacs-common ~amd64
 net-im/wechat ~amd64
+gui-apps/nwg-panel ~amd64
+gui-apps/nwg-icon-picker ~amd64
+dev-python/i3ipc ~amd64
+dev-python/dasbus ~amd64
+gui-wm/niri ~amd64
+sys-devel/gcc ~amd64 
+
 # Local Variables:
 # mode: conf
 # End:

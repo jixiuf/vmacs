@@ -56,7 +56,10 @@ app-i18n/librime-lua   LUA_SINGLE_TARGET:  -lua5-1 luajit
 net-libs/nodejs npm
 gui-apps/xremap wlroots
 sys-apps/man-pages L10N: -zh-CN
- net-im/wechat fcitx
 # sys-devel/gcc jit
+net-im/wechat fcitx
+media-sound/playerctl introspection # for ngw-panel
+gui-wm/niri screencast
+sys-devel/gcc pgo lto           #match gcc 15 binary use
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit

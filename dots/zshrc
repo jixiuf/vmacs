@@ -186,6 +186,7 @@ if [ $(uname -s ) = "Linux" ] ; then
     # [ -z "$(mount | grep '/var/cache/binpkgs')" ] && sudo mount /var/cache/binpkgs
     alias eme='sudo -E emerge -aqv --autounmask-write --autounmask-continue  --keep-going'
     alias emek='sudo -E emerge -aq --autounmask-write --autounmask-continue  --getbinpkg=n --keep-going'
+    alias emeb='sudo -E emerge -aq --autounmask-write --autounmask-continue  --binpkg-respect-use=n --keep-going'
     alias emet='sudo -E emerge -aq --oneshot --keep-going '
     alias emerge='sudo -E emerge '
     alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo -E emerge @preserved-rebuild;sudo -E eclean packages'

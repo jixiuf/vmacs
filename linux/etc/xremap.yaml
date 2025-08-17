@@ -18,8 +18,9 @@ modmap:
     remap:
       super_l :
         held: ctrl_l
+        free_hold: true
         alone: esc
-        alone_timeout_millis: 1000
+        #alone_timeout_millis: 1000
       ctrl_l : super_l
       alt_r : f9
   - name: Global for luojilab
