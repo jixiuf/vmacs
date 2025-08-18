@@ -1,0 +1,67 @@
+    
+keymap:
+  - name: Global
+    remap:
+    # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
+      super-C-e: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$","emacsclient -c -r -n"] }
+      super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","google-chrome|firefox|firefox-esr","firefox-bin"] }
+      # super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
+      
+      super-C-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","apifox"] }
+      # super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
+      super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
+      super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle 'MongoDB Compass'  mongodb-compass -- --ignore-additional-command-line-flags --password-store=\"gnome-libsecret\""] }
+
+      super-C-dot: { launch: ["niri","msg","action","spawn","--","sh","-c","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
+      # super-C-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
+      super-C-d:     { launch: ["niri","msg","action","spawn","--","sh","-c","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
+      # super-C-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
+      super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
+      super-C-comma: { launch: ["niri","msg","action","spawn","--","sh","-c","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
+      super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
+      super-C-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      super-C-8: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--move-to-current-workspace-if-floating","--hide-front-floating-window","org.keepassxc.KeePassXC","keepassxc"] }
+
+      super-M-f: { launch: ["niri","msg","action","toggle-window-floating"] }      
+      # super-M-h: { launch: ["niri","msg","action","movetoworkspacesilent","special"] }
+      # super-C-M-h: { launch: ["niri","msg","action","togglespecialworkspace"] }
+      super-M-m: { launch: ["niri","msg","action","fullscreen-window"] }
+      # super-M-o: { launch: ["niri","setprop active opaque toggle"] }
+
+      # super-C-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
+      super-C-n: { launch: ["other-window"]}
+      super-C-p: { launch: ["other-window","--reverse"]}
+      Super-C-Tab: { launch: ["sh","-c","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
+      C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
+      # 窗口大小调整 space+ 箭头
+      super-C-l: { launch: ["resize-window" ,"right"]}
+      super-C-h: { launch: ["resize-window" ,"left"]}
+      super-C-k: { launch: ["resize-window" ,"up"]}
+      super-C-j: { launch: ["resize-window" ,"down"]}
+      
+      super-M-Backspace: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-left;sleep 0.7s;niri msg action close-overview;"]}
+      super-M-Backslash: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-right;sleep 0.7s;niri msg action close-overview;"]}
+      # super-M-Enter: { launch: ["niri" ,"msg","action","layoutmsg","action","orientationnext"]}
+      # super-C-M-n: { launch: ["niri" ,"msg","action","movetoworkspace","r+1"]}
+      # super-C-M-p: { launch: ["niri" ,"msg","action","movetoworkspace","r-1"]}
+      # 
+      # wsd
+      # x
+      super-M-w: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
+      super-M-x: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
+      super-M-s: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
+      super-M-d: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-right-or-to-monitor-right; sleep 0.5s;niri msg action close-overview;"]}
+      # super-C-M-d: { launch: ["niri" ,"msg","action","move-column-left-or-to-monitor-left"]}
+  - name: Emacs
+    application:
+      only: [emacs,Emacs]
+    remap:
+      super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
+      
+#  Local Variables:
+#  mode: conf
+#  eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart xremap")) t)
+#  End:

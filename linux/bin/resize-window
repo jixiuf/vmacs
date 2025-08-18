@@ -18,6 +18,28 @@ resize_window() {
             ;;
     esac
 }
+niri_resize_window() {
+    case "$1" in
+        left*)
+            # switch-preset-column-width
+            niri msg action switch-preset-column-width
+            # niri msg action set-column-width "-10%"
+            ;;
+        right*)
+            # niri msg action set-column-width "+10%"
+            niri msg action reset-window-height
+            # niri msg action set-column-width "+10%"
+            ;;
+        up*)
+            niri msg action switch-preset-window-height
+            # niri msg action set-window-height "-10%"
+            ;;
+        down*)
+            niri msg action reset-window-height
+            # niri msg action set-window-height "+10%"
+            ;;
+    esac
+}
 
 sway_resize_window() {
     case "$1" in
@@ -102,6 +124,13 @@ if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
     floating=`echo $appinfo|jq -r '.floating'|head -n 1`
     title=`echo $appinfo|jq -r '.title'|head -n 1`
+elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+    appinfo=`niri msg -j focused-window`
+    class=`echo $appinfo|jq -r '.app_id'`
+    title=`echo $appinfo|jq -r '.title'`
+    fullscreen="false"
+    floating=`echo $appinfo|jq -r '.is_floating'|head -n 1`
+    appcnt=`niri msg -j windows|jq -rc '.[]|select(.workspace_id =='$(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id")')|.app_id'|wc -l  `
 elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
     app_cnt=$(swaymsg -t get_workspaces |jq -r '.[] | select(.focused==true)|.focus|length')
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
@@ -120,6 +149,8 @@ elif [[  "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == "TMUX:"* && ( "$app_cn
 else
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
         resize_window $1
+    elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+        niri_resize_window $1
     elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
         sway_resize_window $1
     fi

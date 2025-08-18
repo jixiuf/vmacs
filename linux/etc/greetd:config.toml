@@ -8,7 +8,7 @@ vt = 7
 
 # `agreety` is the bundled agetty/login-lookalike. You can replace `/bin/sh`
 # with whatever you want started, such as `sway`.
-command = "agreety --cmd Hyprland"
+command = "agreety --cmd niri-session"
 
 # The user to run the command as. The privileges this user must have depends
 # on the greeter. A graphical greeter may for example require the user to be
@@ -16,5 +16,5 @@ command = "agreety --cmd Hyprland"
 user = "jixiuf"
 
 [initial_session]
-command = "sh -c 'sleep 3;Hyprland'"
+command = "sh -c 'sleep 3; niri-session'"
 user = "jixiuf"

@@ -1,0 +1,313 @@
+#!/usr/bin/env bash
+# need: jq,hypr-focus-last-win,cd.sh tmux.sh term.sh cwd
+# you can use hypr-trace-focus to auto hide some floating window when lose focus
+# hypr-run-or-raise -h for help
+# arg1: target_class (regexp)
+# other args: command
+
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm}
+PROG=$( basename "$0" )
+float_only=""
+toggle=""
+fullscreen=""
+center_floating_window=""
+# scratchpad_workspace_id=10
+scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
+cd=""
+move_to_current_workspace_if_floating=""
+hide_front_floating_window=""
+exec_before_show=""
+
+TEMP=$( getopt --options h --longoptions exec-before-show:,workspace:,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
+eval set -- "$TEMP"
+
+for i in "$@"; do
+    case "$i" in
+        -h|--help)
+            echo "Usage: $PROG OPTIONS target runstring"
+            echo
+            echo "Give focus to a program based on window class. If we can't give focus to something with that window class, then exec 'runstring'" |fmt
+            echo "it would consistently cycling through all windows matching class regex"
+            echo
+            echo "OPTIONS"
+            echo "--floating true/false"
+            echo "  only match window with .floating=true/false"
+            echo "--workspace workspaceid or 'current'"
+            echo "  only match window of the workspace"
+            echo "--fullscreen fullscreenstate"
+            echo "  fullscreenstate can be 1:maximize 2:fullscreen"
+            echo "--center center the active window(floating only)"
+            echo "--toggle toggle between the current window and target window"
+            echo "--move_to_current_workspace-if-floating"
+            echo "  move the target window to current workspace if it is a floating window"
+            echo "--hide-front-floating-window"
+            echo "  if current window is floating then move it to special workspace before focus target window "|fmt
+            echo "--cd "
+            echo "  when the target window is a termianl(with tmux running in it) and the working-directory from current window title is not empty, then after switch to the terminal it would insert a cd command"|fmt
+            echo "  it support getting the workding-directory from window title, currently it support emacs and termianl"|fmt
+            echo "  the format of working directory support emacs tramp path like /ssh:root@host:/tmp or root@host:/tmp, it would run ssh -t root@host  'cd /tmp/ && exec $SHELL'"|fmt
+            echo "  you tmux.conf need:"
+            echo "    set -g set-titles on"
+            echo "    set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'"
+            echo "  see script 'cwd' and 'cd.sh' for more details"
+            echo "  you need install https://sr.ht/~geb/dotool/ if you do not use tmux"
+            echo "--term-class terminal-class"
+            echo "  terminal-class: the class of terminal, this should work with --cd, if \$TERM_CLASS_REGEX don't match your terminal,you can custom it"|fmt
+            echo " --auto-type 'args for autotype.sh '"
+            echo "   this is for terminal"
+            echo "   auto type some command after terminal window show"
+            echo "     --auto-type '--key ctrl+u --key ctrl+l --type \"make\" --key enter'"
+            echo " some demo:"
+            echo "   $PROG emacs emacs"
+            echo "   $PROG --toggle emacs emacs"
+            echo "   $PROG 'firefox.*' firefox"
+            echo "   $PROG --cd --floating true  Alacritty -- alacritty   --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --floating true  Alacritty -- alacritty  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle  'dterm|Alacritty|kitty|foot'  term.sh --  --class=dterm --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --cd   'dterm|Alacritty|kitty|foot' term.sh -- --class=dterm  --working-directory=\$(cwd||echo \$HOME)"
+            echo "   $PROG --toggle --move-to-current-workspace-if-floating  dterm -- term.sh  --class=dterm --working-directory=\$(cwd||echo \$HOME)  --tmux-session dterm "
+            exit 0
+            ;;
+        --cd*)
+            cd="set"
+            shift
+            ;;
+        --hide-front-floating-window)
+            hide_front_floating_window="--hide-front-floating"
+            shift
+            ;;
+        --move-to-current-workspace-if-floating*)
+            move_to_current_workspace_if_floating="--move-to-current-workspace-if-special"
+            shift
+            ;;
+        --toggle*)
+            toggle="set"
+            shift
+            ;;
+
+        --fullscreen*)
+            fullscreen="$2" #1:maximize 2:fullscreen
+            shift
+            shift
+            ;;
+        --term-class*)
+            TERM_CLASS_REGEX="$2"
+            shift
+            shift
+            ;;
+        --exec-before-show*)
+            exec_before_show="$2"
+            shift
+            shift
+            ;;
+        --auto-type)
+            # this is for terminal
+            # auto type some command after target window show
+            # this is args for autotype.sh
+            # --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter'
+            auto_type="$2"
+            shift
+            shift
+            ;;
+        --center*)
+            center_floating_window="set"
+            shift
+            ;;
+        --floating*)
+            # 只匹配当前是floating 的
+            float_only="(.is_floating == $2)"
+            shift
+            shift
+            ;;
+        --workspace*)
+            # 只匹配当前是floating 的
+            if [ "$2" = "current" ]; then
+                workspace="(.workspace_id == $(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id"))"
+            else
+                workspace="(.workspace_id == $2)"
+            fi
+            shift
+            shift
+            ;;
+    esac
+done
+
+shift # remove --
+
+# $target= app_id for wayland or target_class for x11
+target=$1
+# 转成小写
+# target=`echo $target|tr '[:upper:]' '[:lower:]'`
+# 获取除第 1 个参数外的所有参数
+shift 1
+cmd="$@"
+
+focus_last_win(){
+    echo $@
+    niri-focus-last-win $move_to_current_workspace_if_floating \
+                        --move-to-current-workspace-if-special \
+                        $hide_front_floating_window \
+                        --skip-class $target
+                        # --hide-front-special-window #
+                        # --disable-front-fullscreen \
+    #     hyprctl dispatch "focuscurrentorlast"
+}
+#
+where="((.app_id  | test(\"$target\"; \"i\")) or (.title  | test(\"$target\"; \"i\")))"
+if [ -n "$float_only" ]; then
+    # only match floating app
+    where="$where and $float_only "
+fi
+if [ -n "$workspace" ]; then
+    where="$where and $workspace "
+fi
+
+# 排序暂未按访问顺序排 
+select="niri  msg -j windows | jq -rc 'map(select("$where"))|sort_by( .workspace_id,.id)|.[]'"
+target_appinfo=`eval $select`
+if [ ! "$target_appinfo" ]; then
+    $cmd &
+    count=0
+    max_retries=25
+    # wait target window show
+    while [[ $count -lt $max_retries && -z "$target_appinfo" ]]; do
+        sleep 0.2
+        ((count++))
+        target_appinfo=`eval $select`
+    done
+    if [ ! "$target_appinfo" ]; then
+        exit 1
+    fi
+    target_class=`echo $target_appinfo|jq -r '.app_id'`
+    target_title=`echo $target_appinfo|jq -r '.title'`
+    if [[ "$target" =~ ^($TERM_CLASS_REGEX)$  ]]; then
+        if [[ -n "$cwd" && -n "$cd" ]]; then
+            # 如果 cwd 获取到当前 working directory
+            # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
+             TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+        fi
+        if [ -n "$auto_type" ]; then
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
+        fi
+    fi
+else
+    front_app=`niri msg -j focused-window`
+    front_class=`echo $front_app|jq -r '.app_id'`
+    front_title=`echo $front_app|jq -r '.title'`
+    front_addr=`echo $front_app|jq -r '.id'`
+    front_floating=`echo $front_app|jq -r '.is_floating'`
+    # front_fullscreen=`echo $front_app|jq -r '.fullscreen'`
+    # front_ws_name=`echo $front_app|jq -r '.workspace.name'`
+    front_ws_id=`echo $front_app|jq -r '.workspace_id'`
+    # jq 的(.app_id // "") 表示取 app_id 若无此字段则为空串
+    addrs=`echo $target_appinfo|jq -rc '.id'`
+    last_target_addr=`echo $target_appinfo|jq -rc '.id'|tail -n 1`
+    first_target_addr=`echo $target_appinfo|jq -rc '.id'|head -n 1`
+    if [[ ! (("$front_class" =~ $target) || ("$front_title" =~ $target)) ]]; then
+        target_appinfo=`echo $target_appinfo |  jq -rc 'select(.id  == '"$first_target_addr"')'`
+    elif [[  "$front_addr" == "$last_target_addr"  ]]; then
+        if [  -n "$toggle" ]; then
+            focus_last_win
+            exit
+        else
+            target_appinfo=`echo $target_appinfo |  jq -rc 'select(.id  == '"$first_target_addr"')'`
+        fi
+    else
+        # len($target_appinfo)>1 and $front_app is one of them
+        # and $front_app is not the last one of them
+        # so we need find out the one after $front_app in $target_appinfo
+        found=""
+        while IFS= read -r addr; do
+            if [ -n "$found" ]; then
+                target_appinfo=`echo $target_appinfo |  jq -rc 'select(.id  == '"$addr"')'`
+                break
+            fi
+            if [ "$addr" == "$front_addr" ]; then
+                found="set"
+            fi
+        done <<< "$addrs"
+    fi
+    target_floating=`echo $target_appinfo|jq -r '.is_floating'`
+    last_target_addr=`echo $target_appinfo|jq -r '.id'`
+    cwd=$(cwd)
+    target_addr=`echo $target_appinfo|jq -r '.id'`
+    target_class=`echo $target_appinfo|jq -r '.app_id'`
+    target_title=`echo $target_appinfo|jq -r '.title'`
+    target_ws_id=`echo $target_appinfo|jq -r '.workspace_id'`
+    if [ -n "$exec_before_show" ]; then
+        $exec_before_show
+    fi
+
+    # # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
+    # if [[ "$front_ws_name" == *"special"* ]]; then
+    #     hyprctl dispatch "togglespecialworkspace"
+    # fi
+    # # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
+    # if [[ "$front_floating" == "true" ]]; then
+    #     hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
+    # fi
+
+    if [[ "$target_floating" == "true"  ]]; then
+        # 如果当前窗口是fullscreen，则将其恢复
+        # if [ "$front_fullscreen" != "0" ]; then
+        #     hyprctl dispatch "fullscreen"
+        # fi
+        # move window to current ws
+        # hyprctl keyword animations:enabled 0
+        if [ -n "$move_to_current_workspace_if_floating" ]; then
+            # https://yalter.github.io/niri/niri_ipc/enum.Action.html#variant.FocusWorkspace
+            # echo -n "{\"Action\":{\"MoveWindowToWorkspace\":{\"window_id\":${target_addr},\"focus\":true,\"reference\":{\"Id\":$front_ws_id}}}}"|socat STDIO "$NIRI_SOCKET"
+            # echo -n "{\"Action\":{\"MoveWindowToWorkspace\":{\"window_id\":${target_addr},\"focus\":true,\"reference\":{\"Id\":$front_ws_id}}}}"|socat STDIO "$NIRI_SOCKET"
+            niri msg action move-window-to-workspace  --window-id $target_addr  --focus true $front_ws_id
+            # echo -n "{\"Action\":{\"CenterWindow\":{\"id\":${target_addr}}}}"|socat STDIO "$NIRI_SOCKET"
+            niri msg action center-window  --id $target_addr
+            # niri msg action move-column-to-workspace $front_ws_id
+            # hyprctl dispatch "movetoworkspacesilent e+0,address:${target_addr}"
+        fi
+        # echo -n "{\"Action\":{\"FocusWindow\":{\"id\":${target_addr}}}}"|socat STDIO "$NIRI_SOCKET"
+        niri msg  action focus-window --id ${target_addr}
+        niri msg action focus-floating
+        # hyprctl --batch "dispatch focuswindow address:${target_addr}; dispatch bringactivetotop"
+        if [ -n "$center_floating_window" ]; then
+            niri msg action center-window  --id $target_addr
+            # echo -n "{\"Action\":{\"CenterWindow\":{\"id\":${target_addr}}}}"|socat STDIO "$NIRI_SOCKET"
+        fi
+        # hyprctl keyword animations:enabled 1
+        if [ "$fullscreen" == "fullscreen" ]; then
+            # echo -n "{\"Action\":{\"FullscreenWindow\":{\"id\":${target_addr}}}}"|socat STDIO "$NIRI_SOCKET"
+            niri msg action fullscreen-window --id $target_addr
+        elif [ "$fullscreen" == "maximize" ]; then
+            # echo -n "{\"Action\":{\"MaximizeColumn\":{}}}"|socat STDIO "$NIRI_SOCKET"
+            niri msg action maximize-column # toggle max
+            # hyprctl dispatch "fullscreenstate $fullscreen"
+        fi
+    else             # target not floating case
+        # 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
+        if [[ "$front_floating" == "true" && "$target_ws_id" == "$front_ws_id" && \
+                  -n "$hide_front_floating_window" ]]; then
+            niri msg action move-window-to-workspace  --window-id $front_addr  --focus false $scratchpad_workspace_id
+            # echo -n "{\"Action\":{\"MoveWindowToWorkspace\":{\"window_id\":${front_addr},\"focus\":false,\"reference\":{\"Id\":$scratchpad_workspace_id}}}}"|socat STDIO "$NIRI_SOCKET"
+            # hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
+        fi
+        if [[  "$target_ws_id" == "$scratchpad_workspace_id" ]]; then
+            niri msg action move-window-to-workspace  --window-id $target_addr  --focus false $front_ws_id
+            # echo -n "{\"Action\":{\"MoveWindowToWorkspace\":{\"window_id\":${target_addr},\"focus\":false,\"reference\":{\"Id\":$front_ws_id}}}}"|socat STDIO "$NIRI_SOCKET"
+            # hyprctl dispatch "movetoworkspacesilent special address:${front_addr}"
+        fi
+        # echo -n "{\"Action\":{\"FocusWindow\":{\"id\":${target_addr}}}}"|socat STDIO "$NIRI_SOCKET"
+        niri msg  action focus-window --id ${target_addr}
+        niri msg action focus-tiling
+
+        # hyprctl --batch "dispatch focuswindow address:${target_addr}; dispatch bringactivetotop"
+    fi
+    if [[ "$target" =~ ^($TERM_CLASS_REGEX)$ ]]; then
+        if [[ -n "$cwd" && -n "$cd" ]]; then
+            # 如果 cwd 获取到当前 working directory
+            # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
+              TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+        fi
+        if [ -n "$auto_type" ]; then
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
+        fi
+    fi
+fi

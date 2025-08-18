@@ -1,20 +1,24 @@
+# systemctl --user add-wants niri.service xremap.service
 [Unit]
 Description=Run xremap 
 BindsTo=sway-session.target
 # # After=network.target
 # After=udevmon.service
 # DefaultDependencies=no
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
 
 [Service]
 Environment="LANG=zh_CN.UTF-8"
-Environment="XDG_SESSION_DESKTOP=Hyprland"
+# Environment="XDG_SESSION_DESKTOP=niri"
 Type=simple
 # User=jixiuf
 # Group=users
 Restart=always
 #ExecStart=sh -c 'sudo systemctl stop xremap;/usr/local/bin/xremap /etc/xremap.yaml /etc/xremap-$(hostname).yaml --watch=device --ignore="dotool keyboard" --ignore="ydotoold virtual device"'
 #ExecStart=sh -c '/usr/local/bin/xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Apple Inc. Apple Internal Keyboard / Trackpad"'
-ExecStart=sh -c '/usr/bin/xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
+ExecStart=sh -c 'dbus-update-activation-environment --systemd --all;/usr/bin/xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
 
 
 [Install]

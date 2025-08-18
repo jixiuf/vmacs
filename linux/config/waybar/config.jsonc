@@ -8,9 +8,33 @@
     "passthrough": false,
     "fixed-center": true,
     // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["hyprland/window"], // sway/window
-    "modules-right": ["idle_inhibitor", "wireplumber",  "clock", "tray", "network","battery","custom/notification"],
+  "modules-left": ["hyprland/workspaces","niri/workspaces"],
+  "modules-center": ["hyprland/window","niri/window"], // sway/window
+  "modules-right": ["idle_inhibitor", "wireplumber",  "clock", "tray", "network","battery","custom/notification"],
+	"niri/workspaces": {
+		"disable-scroll": false,
+	  "format": "{icon}",
+        "format-icons": {
+                // Named workspaces
+                // (you need to configure them in niri)
+                // "browser": "",
+                // "discord": "",
+          // "chat": "<b></b>",
+          "keepassxc":"🔑",
+          "main":"🌳",
+          "scratchpad":"📝",
+
+                // Icons by state
+                // "active": "",
+                // "default": ""
+        },      
+		// "format": "",
+//		"format-icons": "󰻀",
+		"persistent-workspaces": {
+			"*": [1,2,3,4,5,6,7,8,9]
+		},
+	},
+  
     "hyprland/workspaces": {
 		"format": "{name}",
         "on-scroll-up": "hyprctl dispatch workspace e+1",
@@ -28,6 +52,14 @@
 			"default": "󰧞"
         }
     },
+    "niri/window": {
+      "format": "[{app_id}] {title}",
+        "rewrite": {
+            "(.*) - Mozilla Firefox": "🌎 $1",
+            "(.*) - zsh": "> [$1]"
+        },
+        "separate-outputs": true
+    }  ,
     "hyprland/window": {
         "format": "{}",
         "rewrite": {

@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# this need niri-trace-focus
+
+PROG=$( basename "$0" )
+TEMP=$( getopt --options h --longoptions skip-class:,hide-front-floating,hide-front-special-window,move-to-current-workspace,move-to-current-workspace-if-special,move-to-current-workspace-if-floating,help -- "$@" ) || exit 1
+eval set -- "$TEMP"
+scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
+# scratchpad_workspace_id=10
+skip_class=""
+hide_front_special_window=""
+hide_front_floating=""
+disable_front_fullscreen=""
+move_to_current_workspace=""
+move_to_current_workspace_if_special=""
+move_to_current_workspace_if_floating=""
+for i in "$@"; do
+    case "$i" in
+        -h|--help)
+            echo "Usage: $PROG OPTIONS"
+            echo
+            echo "Focus last focused window"
+            echo
+            echo "OPTIONS"
+            # echo "--skip-class regexp_of_class_name "
+            # echo "  skip window with class match regexp_of_class_name"
+            # echo "  demo: --skip-class '.*foot.*|.*kitty.*'"
+            echo "--hide-front-special-window"
+            echo "  hide current window if current window is special window"
+            echo "--hide-front-floating"
+            echo "  hide current window if current window is floating window"
+            echo "--disable-front-fullscreen"
+            echo "  disable fullscreen if current window is fullscreen"
+            echo "--move-to-current-workspace"
+            echo "  move the target window to current workspace"
+            echo "--move_to_current_workspace-if-special"
+            echo "  move the target window to current workspace if it is special window"
+            echo "--move_to_current_workspace-if-floating"
+            echo "  move the target window to current workspace if it is a floating window"
+            exit 0
+            ;;
+        --move-to-current-workspace)
+            move_to_current_workspace="set"
+            shift
+            ;;
+        --move-to-current-workspace-if-special*)
+            move_to_current_workspace_if_special="set"
+            shift
+            ;;
+        --move-to-current-workspace-if-floating*)
+            move_to_current_workspace_if_floating="set"
+            shift
+            ;;
+        --hide-front-special-window*)
+            hide_front_special_window="set"
+            shift
+            ;;
+        --hide-front-floating*)
+            hide_front_floating="set"
+            shift
+            ;;
+        --disable-front-fullscreen*)
+            disable_front_fullscreen="set"
+            shift
+            ;;
+        --skip-class*)
+            skip_class="$2"
+            shift
+            shift
+            ;;
+
+    esac
+done
+
+shift # remove --
+
+last_focus_app_addr=$(niri-trace-focus $skip_class)
+# 按.focusHistoryID 排序后 去除第一个（即当前窗口）
+
+echo $last_focus_app_addr
+# 如果没有last_focus_app 则什么也不做
+if [ -z "last_focus_app_addr" ]; then
+    exit;
+fi
+last_focus_app=$(niri msg -j  windows |jq  -cr ".[]|select(.id == $last_focus_app_addr)")
+if [[ -z "$last_focus_app"  ]]; then
+    exit;
+fi
+last_focus_address=`echo $last_focus_app|jq -r '.id'`
+if [[  "$last_focus_address" == "$front_address" ]]; then
+    exit;
+fi
+echo $last_focus_app
+target_ws_name=`echo $last_focus_app|jq -r '.workspace_id'`
+echo $target_ws_name
+last_floating=`echo $last_focus_app|jq -r '.is_floating'`
+
+front_app=`niri msg -j focused-window`
+# # 如果没有last_focus_app 则什么也不做
+if [ -z "$front_app" ]; then
+    exit;
+fi
+front_floating=`echo $front_app|jq -r '.is_floating'`
+front_address=`echo $front_app|jq -r '.id'`
+front_wsid=`echo $front_app|jq -r '.workspace_id'`
+# focus last window
+# echo -n "{\"Action\":{\"FocusWindowPrevious\":{}}}"|socat STDIO "$NIRI_SOCKET"
+# last_focus_app=`niri msg -j focused-window`
+# if [[ -z "$last_focus_app"  ]]; then
+#     exit;
+# fi
+
+
+# jq 的(.app_id // "") 表示取 app_id 若无此字段则为空串
+# 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
+if [[ -n "$hide_front_special_window"  && "$front_wsid" == "$scratchpad_workspace_id" ]]; then
+    niri msg action   focus-workspace-previous
+fi
+# 如果当前窗口是floating，则将其move 到special workspace,以免其遮挡聚焦后的窗口
+if [[ -n "$hide_front_floating" && "$front_floating" == "true"  && "$target_ws_name" == "$front_wsid" ]]; then
+    niri msg action move-window-to-workspace  --window-id $front_address  --focus false $scratchpad_workspace_id
+fi
+
+# 如果当前窗口是fullscreen，则将其恢复
+# if [[ -n "$disable_front_fullscreen" && "$front_fullscreen" == "true" && "$target_ws_name" == "$front_wsid" ]]; then
+#     hyprctl dispatch "fullscreen"
+# fi
+if [[ "$target_floating" == "true" && -n "$move_to_current_workspace_if_floating" ]]; then
+    move_to_current_workspace="set"
+fi
+if [[ "$target_ws_name" == "$scratchpad_workspace_id" && -n "$move_to_current_workspace_if_special" ]]; then
+    move_to_current_workspace="set"
+fi
+
+if [ -n "$move_to_current_workspace" ]; then
+    # 如果窗口是floating 的，则将其move 到当前workspace
+    niri msg action move-window-to-workspace  --window-id $last_focus_address  --focus true $front_wsid
+fi
+niri msg  action focus-window --id ${last_focus_address}
+

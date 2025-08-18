@@ -87,6 +87,8 @@ if [ -z "$auto_type_cmd" ]; then
     if [ -z "$WINDOW_TITLE" ]; then
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
             WINDOW_TITLE=`hyprctl activewindow -j |jq -rc ".title"`
+        elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+            WINDOW_TITLE=`niri msg -j focused-window|jq -rc .title`
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
             WINDOW_TITLE=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|.name'`
         fi
@@ -94,6 +96,8 @@ if [ -z "$auto_type_cmd" ]; then
     if [ -z "$WINDOW_CLASS" ]; then
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
             WINDOW_CLASS=`hyprctl activewindow -j |jq -rc '.class'`
+        elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+            WINDOW_TITLE=`niri msg -j focused-window|jq -rc .app_id`
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
             WINDOW_CLASS=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|(.app_id // .window_properties.class // "")'|head -n 1`
         fi

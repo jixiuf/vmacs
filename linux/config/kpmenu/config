@@ -9,7 +9,12 @@ cacheOneTime = false
 cacheTimeout = 60
 nootp = false
 daemon=true
-customAutotypeWindowID=""" hyprctl activewindow -j| jq -c '"\\(.title) - \\(.class)"' """
+customAutotypeWindowID=""" if pidof Hyprland > /dev/null; then
+    hyprctl activewindow -j| jq -c '"\\(.title) - \\(.class)"'; 
+else
+    niri msg -j focused-window| jq -c '"\\(.title) - \\(.app_id)"';
+fi
+ """
 customAutotypeTyper="dotoolc"
 autotype=false
 

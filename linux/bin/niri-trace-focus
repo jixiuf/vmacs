@@ -1,0 +1,212 @@
+#!/bin/bash
+# 有参数时
+# niri-trace-focus 0 # 取 last focus id
+# niri-trace-focus skip_win_id
+# 无参数时，keep running
+
+# need: niri,socat,jq
+# auto hide some windows when lose focus
+skip_class="$1"
+
+AUTO_HIDE_CLASS_REGEX=${AUTO_HIDE_CLASS_REGEX:-dterm|org.keepassxc.KeePassXC}
+# AUTO_HIDE_CLASS_REGEX=${AUTO_HIDE_CLASS_REGEX:-dterm}
+EXCLUDE_AUTO_HIDE_TITLE_REGEX=${EXCLUDE_AUTO_HIDE_TITLE_REGEX:-解锁数据库 - KeePassXC}
+scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
+# scratchpad_workspace_id=10
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
+
+# trace last focused window address before current active window
+# 数组变量，用于保存窗口地址的历史记录
+window_history=()
+# array of {"workspace_id":1,"active_window_id":4}}
+window_ws_history=()
+# 序列化window_history数组到文件
+serialize_window_history() {
+    printf "%s\n" "${window_history[@]}" > /tmp/niri_focus_hist.txt
+}
+
+# # 从文件中读取序列化的window_history数组
+read_window_history() {
+    if [[ -f "/tmp/niri_focus_hist.txt" ]]; then
+        IFS=$'\n' read -d '' -r -a window_history < /tmp/niri_focus_hist.txt
+    fi
+}
+
+get_last_win() {
+    if [[ ${#window_history[@]} -ge 1 ]]; then
+        echo "${window_history[-1]}"
+    else
+        echo ""
+    fi
+}
+get_last_win_skip_class() {
+    local skip_class="$1"
+    local i
+    local windows="$(niri msg -j windows )"
+    for ((i=${#window_history[@]}-2; i>=0; i--)); do
+        addr="${window_history[i]}"
+        # app_id | test("'"$AUTO_HIDE_CLASS_REGEX"'"; "i")
+        class=$( echo $windows|jq -rc  '.[] | select(.id == '"$addr"')  | .app_id' )
+        if [[ ! "$class" =~ ^($skip_class)$ ]]; then
+            echo "${window_history[i]}"
+            return
+        fi
+    done
+    echo ""
+}
+get_last_ws_skip() {
+    # array of {"workspace_id":1,"active_window_id":4}
+    local skip_value="$1"       # #workspace_id
+    local i
+    for ((i=${#window_ws_history[@]}-1; i>=0; i--)); do
+        wsid=`echo "${window_ws_history[$i]}"|jq -r .workspace_id`
+        if [[ "${wsid}" != "$skip_value" && -n "$wsid" ]]; then
+            echo "${window_ws_history[i]}"
+            return
+        fi
+    done
+    echo ""
+}
+
+
+# 从历史记录中移除关闭的窗口地址
+delete_win() {
+    address="$1"
+    # 检查历史记录中是否存在该地址，如果存在则先删除
+  # - 这里使用了字符串匹配。${window_history[*]} 展开数组所有元素为一个字符串，用空格分隔。
+    if [[ " ${window_history[*]} " == *" $address "* ]]; then
+        # "${!window_history[@]}" 返回数组的所有索引。
+        for i in "${!window_history[@]}"; do
+            if [[ "${window_history[$i]}" == "$address" ]]; then
+                unset 'window_history[$i]'
+            fi
+        done
+    fi
+}
+delete_win_ws() {
+    # delete window workspace history by win_id
+    # array of {"workspace_id":1,"active_window_id":4}}
+
+    address="$1"                # win_id
+    for i in "${!window_ws_history[@]}"; do
+        #  {"workspace_id":1,"active_window_id":4}}
+        addr=`echo "${window_ws_history[$i]}"|jq -r .active_window_id`
+        if [[ "$addr" == "$address" ]]; then
+            unset 'window_ws_history[$i]'
+        fi
+    done
+
+}
+set_tmux_pane_id(){
+    active_addr="$1"
+    appinfo=`niri msg  -j windows  | jq -rc '.[] | select(.id  == '"$active_addr"' )'`
+    class=`echo $appinfo|jq -r '.app_id'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
+    # 当激活一个tmux windows时， 记录下窗口中pane 的，以方便other-window 里进行窗口切换
+    if [[ "$class" =~ ^($TERM_CLASS_REGEX)$  && "$title" == "TMUX:"*    ]]; then
+        title=${title#TMUX:}
+        tmux_session=${title%%:*}
+        mkdir -p /tmp/tmux-$UID
+        touch /tmp/tmux-$UID/session-${tmux_session}-focus-forward
+        touch /tmp/tmux-$UID/session-${tmux_session}-focus-backward
+    fi
+}
+
+handle_active_window() {
+
+    last_win_addr=$(get_last_win )
+    if [ "$last_win_addr" != "$1" ]; then
+        set_tmux_pane_id $1
+        # 从历史记录中移除关闭的窗口地址
+        delete_win $1
+        # 将新的窗口地址添加到历史记录的末尾
+        window_history+=("$address")
+        serialize_window_history
+        auto_hide_windows_after_lose_focus $1
+
+    fi
+    # echo "${#window_history[@]} ${window_history[@]}"
+}
+handle_workspace_active_window_changed(){
+    # {"workspace_id":1,"active_window_id":9}
+    data="$@"
+    addr=$( echo $data|jq -r .active_window_id)
+    # handle_active_window $addr
+    # 从历史记录中移除关闭的窗口地址
+    delete_win_ws $addr
+    # 将新的窗口ws地址添加到历史记录的末尾
+    window_ws_history+=("$data")
+}
+
+# hide my dropdown terminal when lose focus
+auto_hide_windows_after_lose_focus(){
+    active_addr="$1"
+    addrs=$( niri msg -j windows | jq -rc '.[] | select(.app_id | test("'"$AUTO_HIDE_CLASS_REGEX"'"; "i")) | select(.title | test("'"$EXCLUDE_AUTO_HIDE_TITLE_REGEX"'"; "i") | not) | .id' )
+    while IFS= read -r addr; do
+        if [ "$addr" != "$active_addr" ]; then
+            # hyprctl dispatch "movetoworkspacesilent special,address:${addr}"
+            niri msg action move-window-to-workspace  --window-id $addr  --focus false $scratchpad_workspace_id
+        fi
+    done <<< "$addrs"
+
+}
+
+handle_close_window() {
+    address="$1"
+    # 从历史记录中移除关闭的窗口地址
+    delete_win $1
+    serialize_window_history
+}
+handle_window_open_or_changed() {
+    # {"WindowOpenedOrChanged":{"window":{"id":14,"title":"解锁数据库 - KeePassXC","app_id":"org.keepassxc.KeePassXC","pid":1947,"workspace_id":1,"is_focused":true,"is_floating":true,"is_urgent":false}}}
+    evt="$@"
+    addr=`echo $evt|jq -r .WindowOpenedOrChanged.window.id`
+    class=`echo $evt|jq -r .WindowOpenedOrChanged.window.app_id`
+    title=`echo $evt|jq -r .WindowOpenedOrChanged.window.title`
+    wsid=`echo $evt|jq -r .WindowOpenedOrChanged.window.workspace_id`
+    isfocused=`echo $evt|jq -r .WindowOpenedOrChanged.window.is_focused`
+    # "org.keepassxc.KeePassXC" "解锁数据库 - KeePassXC"
+
+    if [[ "$class" == "org.keepassxc.KeePassXC" && "$title" ==  "解锁数据库 - KeePassXC" && "$isfocused" == "true" && "$wsid" == "$scratchpad_workspace_id" ]]; then
+        last_focus_ws=$(get_last_ws_skip  $scratchpad_workspace_id) # {"workspace_id":1,"active_window_id":4}
+        if [ -n "$last_focus_ws" ]; then
+            last_focus_wsid=$( echo $last_focus_ws|jq -r .workspace_id )
+            niri msg action move-window-to-workspace  --window-id $addr  --focus true $last_focus_wsid
+        fi
+    fi
+}
+
+handle() {
+    echo $1
+    # echo "${#window_history[@]} ${window_history[@]}"
+  case $1 in
+      *WindowFocusChanged*)
+      # {"WindowFocusChanged":{"id":7}}
+        address=`echo $1|jq .WindowFocusChanged.id`
+            handle_active_window $address
+        ;;
+      *WindowClosed*)           # 
+      # {"WindowClosed":{"id":9}}
+        address=`echo $1|jq .WindowClosed.id`
+        handle_close_window $address
+        ;;
+      *WindowOpenedOrChanged*)
+          handle_window_open_or_changed $1
+          ;;
+      *WorkspaceActiveWindowChanged*)
+          # {"WorkspaceActiveWindowChanged":{"workspace_id":1,"active_window_id":9}}
+          data=`echo $1|jq -cr .WorkspaceActiveWindowChanged`
+          handle_workspace_active_window_changed $data
+          ;;
+
+
+  esac
+}
+
+if [ -z "$skip_class" ]; then
+    niri msg -j event-stream | while read -r line; do handle "$line"; done
+else
+    read_window_history
+    # niri-trace-focus -1 # 取 last focus id
+    get_last_win_skip_class  $skip_class
+fi

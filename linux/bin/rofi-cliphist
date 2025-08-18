@@ -2,6 +2,9 @@
 if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
     front_app=`hyprctl activewindow -j`
     front_class=`echo $front_app|jq -r '.class'`
+elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+    front_app=`niri msg -j focused-window`
+    front_class=`echo $front_app|jq -r '.app_id'`
 else
     front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`

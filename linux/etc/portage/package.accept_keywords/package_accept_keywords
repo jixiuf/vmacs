@@ -85,7 +85,9 @@ gui-apps/nwg-icon-picker ~amd64
 dev-python/i3ipc ~amd64
 dev-python/dasbus ~amd64
 gui-wm/niri ~amd64
-sys-devel/gcc ~amd64 
+gui-apps/xwayland-satellite ~amd64
+sys-devel/gcc ~amd64
+gui-apps/wev  ~amd64
 
 # Local Variables:
 # mode: conf

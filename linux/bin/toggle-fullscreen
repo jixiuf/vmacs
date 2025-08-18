@@ -7,6 +7,9 @@ toggle_fullscreen(){
         else
             hyprctl dispatch fullscreen 1
         fi
+    elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+        niri msg action maximize-column
+        # niri msg action fullscreen-window
     else
         swaymsg "fullscreen"
     fi
@@ -17,10 +20,17 @@ toggle_fullscreen(){
 # app_cnt=$(hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$ws_id')'|wc -l)
 if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     appinfo=`hyprctl activewindow -j`
-    class=`echo $appinfo|jq -r '.class'|head -n 1`
-    title=`echo $appinfo|jq -r '.title'|head -n 1`
+    class=`echo $appinfo|jq -r '.class'`
+    title=`echo $appinfo|jq -r '.title'`
     fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
     appcnt=`hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc ".id")')|.address'|wc -l`
+elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+    appinfo=`niri msg -j focused-window`
+    class=`echo $appinfo|jq -r '.app_id'`
+    title=`echo $appinfo|jq -r '.title'`
+
+    appcnt=`niri msg -j windows|jq -rc '.[]|select(.workspace_id =='$(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id")')|.app_id'|wc -l  `
+
 else
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`

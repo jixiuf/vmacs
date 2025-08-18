@@ -4,14 +4,74 @@
 # support switching between emacs window and tmux pane
 
 TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm}
+TEMP=$( getopt --options h --longoptions skip-emacs,reverse,help -- "$@" ) || exit 1
+skip_emacs=""
+reverse="false"
+eval set -- "$TEMP"
+for i in "$@"; do
+    case "$i" in
+        -h|--help)
+            echo "Usage: $PROG OPTIONS "
+            echo
+            echo
+            echo "OPTIONS"
+            echo "--skip-emacs"
+            echo "--reverse  only for niri"
+            exit 0
+            ;;
+        --skip-emacs*)
+            skip_emacs="set"
+            shift
+            ;;
+        --reverse*)
+            reverse="true"
+            shift
+            ;;
+    esac
+done
 
-arg="$1"
+shift # remove --
+
+
 
 next-window() {
     if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
         hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+    elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+        # 获取当前聚焦窗口ID
+        old_id=$(niri msg -j focused-window | jq -r '.id')
+        # 尝试向下聚焦
+        niri msg action focus-window-down-or-column-right
+        new_id=$(niri msg -j focused-window | jq -r '.id')
+        # 判断ID是否变化
+        if [ "$old_id" = "$new_id" ]; then
+                # 聚焦首列
+            niri msg action focus-column-first
+            niri msg action focus-window-up
+            new_id=$(niri msg -j focused-window | jq -r '.id')
+            if [ "$old_id" = "$new_id" ]; then
+                niri msg action  switch-focus-between-floating-and-tiling
+            fi
+        fi
     else
         sway-focus-next
+    fi
+}
+prev-window() {
+    # if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+    #     hyprctl --batch "dispatch cyclenext; dispatch bringactivetotop"
+    if [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+        # 获取当前聚焦窗口ID
+        old_id=$(niri msg -j focused-window | jq -r '.id')
+        # 尝试向下聚焦
+        niri msg action focus-window-up-or-column-left
+        new_id=$(niri msg -j focused-window | jq -r '.id')
+        # 判断ID是否变化
+        if [ "$old_id" = "$new_id" ]; then
+                # 聚焦首列
+            niri msg action focus-column-last
+            niri msg action focus-window-down
+        fi
     fi
 }
 
@@ -24,6 +84,13 @@ if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     title=`echo $appinfo|jq -r '.title'|head -n 1`
     fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1` # true/false
     floating=`echo $appinfo|jq -r '.floating'|head -n 1`
+elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+    appcnt=`niri msg -j windows|jq -rc '.[]|select(.workspace_id =='$(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id")')|.app_id'|wc -l  `
+    appinfo=`niri msg -j focused-window`
+    class=`echo $appinfo|jq -r '.app_id'|head -n 1`
+    title=`echo $appinfo|jq -r '.title'|head -n 1`
+    floating=`echo $appinfo|jq -r '.is_floating'|head -n 1`
+    fullscreen="false"          # do not supported
 else
     app_cnt=$(swaymsg -t get_workspaces |jq -r '.[] | select(.focused==true)|.focus|length')
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
@@ -46,7 +113,7 @@ fi
 # if front app exits
 if [ -n "$appinfo" ]; then
     # ( "$app_cnt" = "1" || "$fullscreen" = "true" )
-    if [[ "$class" = "emacs" && -z "$arg" ]]; then
+    if [[ "$class" = "emacs" && -z "$skip_emacs" ]]; then
         # (global-set-key (kbd "C-x o") 'vmacs-other-window)
         # (defun vmacs-other-window()
         #   (interactive)
@@ -56,26 +123,57 @@ if [ -n "$appinfo" ]; then
         #   (unless (and vmacs-window-status
         #                (window-live-p vmacs-window-status))
         #     (setq vmacs-window-status (selected-window))))
-        echo key ctrl+x o|dotoolc
+        if [ "$reverse" == "true" ]; then
+            echo key super+ctrl+p|dotoolc
+        else
+            echo key super+ctrl+o|dotoolc
+        fi
         exit 0
     elif [[  "$class" =~ ^($TERM_CLASS_REGEX)$  && "$title" == *"GNU/Emacs"* &&
                 ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&
-                -z "$arg" ]]; then
-        echo key ctrl+x o|dotoolc
+                -z "$skip_emacs" ]]; then
+        if [ "$reverse" == "true" ]; then
+            echo key super+ctrl+p|dotoolc
+        else
+            echo key super+ctrl+o|dotoolc
+        fi
         exit 0
     elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == "TMUX:"*    ]]; then
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         title=${title#TMUX:}
         tmux_session=${title%%:*}
-        if [ "$(tmux list-panes -t $tmux_session | wc -l)" -gt 1 ]; then
-            last_pane_id=$(tmux list-panes -t $tmux_session -F "#{pane_id}"|tail -n 1)
-            cur_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
-            tmux select-pane  -t $tmux_session:.+
-            if [ "$last_pane_id" = "$cur_pane_id" ]  && [ "$floating" == "false" ]; then
-                next-window
+        # 检查当前 tmux 窗口是否处于缩放状态
+        zoomed=$(tmux list-panes -t $tmux_session -F '#{window_zoomed_flag}' | grep -c 1)
+        # 窗口被缩放，跳过 tmux pane 切换，继续执行窗口切换
+        if [ $zoomed -eq 0 ]; then
+            if [ "$(tmux list-panes -t $tmux_session | wc -l)" -gt 1 ]; then
+                    if [ "$reverse" == "true" ]; then
+                        cursor_file="/tmp/tmux-$UID/session-${tmux_session}-focus-backward"
+                        first_pane_id=$(tmux list-panes -t $tmux_session -F "#{pane_id}"|tail -n 1)
+                        tmux select-pane  -t $tmux_session:.-
+                        cur_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
+                        if [ "$first_pane_id" = "$cur_pane_id" ]  && [ "$floating" == "false" ] && [ ! -f "$cursor_file" ]; then
+                            prev-window
+                        fi
+                        rm -f $cursor_file
+                    else
+                        cursor_file="/tmp/tmux-$UID/session-${tmux_session}-focus-forward"
+                        last_pane_id=$(tmux list-panes -t $tmux_session -F "#{pane_id}"|tail -n 1)
+                        cur_pane_id=$(tmux display-message -t $tmux_session -p '#{pane_id}')
+                        tmux select-pane  -t $tmux_session:.+
+                        if [ "$last_pane_id" = "$cur_pane_id" ]  && [ "$floating" == "false" ] && [ ! -f "$cursor_file" ]; then
+                            next-window
+                        fi
+                        rm -f $cursor_file
+                    fi
+                exit 0
             fi
-            exit 0
         fi
     fi
 fi
-next-window
+
+if [ "$reverse" == "true" ]; then
+    prev-window
+else
+    next-window
+fi

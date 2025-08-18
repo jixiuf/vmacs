@@ -15,6 +15,15 @@ if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
     if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty"* || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
         hyprctl dispatch "movetoworkspacesilent special"
     fi
+elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+    front_app=`niri msg -j focused-window`
+    front_class=`echo $front_app|jq -r '.app_id'`
+    front_id=`echo $front_app|jq -r '.id'`
+    front_floating=`echo $front_app|jq -r '.is_floating'`
+    scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
+    if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty"* || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
+        echo -n "{\"Action\":{\"MoveWindowToWorkspace\":{\"window_id\":${front_id},\"focus\":false,\"reference\":{\"Id\":$scratchpad_workspace_id}}}}"|socat STDIO "$NIRI_SOCKET"
+    fi
 else
     front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`

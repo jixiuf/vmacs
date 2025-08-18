@@ -158,8 +158,6 @@ keymap:
       
       C-g: [super-Space,C-g]
       super-C-Backslash: super-C-Backslash 
-      # C-x: C-x
-      super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
 
   - name: terminal emacs
     application:
@@ -450,7 +448,7 @@ keymap:
       f9: 
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
         - {sleep: 20 }
-        - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then    kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else    kpmenu --autotype ;fi"] }
+        - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
       super-C-Grave: { launch: ["sh" ,"-c","dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases;swaylock"] }
       # super-C-Esc: { launch: ["swaylock"] }
       # super-C-9: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","corplink","/opt/Corplink/corplink"] }

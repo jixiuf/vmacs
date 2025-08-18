@@ -40,45 +40,81 @@
           (progn
             (setq vmacs--fullscreen-window-configuration (current-window-configuration))
             (vmacs-delete-other-frame)
-            (when (and (string-equal "0" (string-trim
-                                          (shell-command-to-string
-                                           "hyprctl activewindow -j| jq -rc '.fullscreen'")))
-                       (not (string-equal "1" (string-trim
-                                               (shell-command-to-string
-                                                "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
-                            (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
-              (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+            (cond
+             ((string-equal (getenv "XDG_SESSION_DESKTOP") "niri")
+              (call-process "niri" nil nil nil "msg" "action" "maximize-column"))
+             ((string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
+               (when (and (string-equal "0" (string-trim
+                                              (shell-command-to-string
+                                               "hyprctl activewindow -j| jq -rc '.fullscreen'")))
+                           (not (string-equal "1" (string-trim
+                                                   (shell-command-to-string
+                                                    "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
+                                (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+                  (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1"))
+              )
+            )
+            )
         (when vmacs--fullscreen-window-configuration
           (set-window-configuration vmacs--fullscreen-window-configuration)
           (setq vmacs--fullscreen-window-configuration nil))
-        (if (string-equal "1" (string-trim
-                               (shell-command-to-string
-                                "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
-            (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "0")
-          (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1")))
+        (cond
+         ((string-equal (getenv "XDG_SESSION_DESKTOP") "niri")
+          (call-process "niri" nil nil nil "msg" "action" "maximize-column"))
+         ((string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
+          (if (string-equal "1" (string-trim
+                                 (shell-command-to-string
+                                  "hyprctl clients -j | jq -cr '.[] | select(.workspace.id == '$(hyprctl activeworkspace -j|jq -rc \".id\")')|.address'|wc -l")))
+              (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "0")
+            (call-process "hyprctl" nil nil nil "dispatch" "fullscreen" "1"))
+          )
+         )
+        )
     (toggle-frame-maximized)))
 
+(global-set-key (kbd "C-s-p") 'vmacs-prev-window)
+(global-set-key (kbd "C-s-n") 'vmacs-other-window)
 (global-set-key (kbd "C-s-o") 'vmacs-other-window)
 (global-set-key (kbd "C-x o") 'vmacs-other-window)
 (defvar vmacs-window-status nil)
+(defvar vmacs-window-cmd nil)
+(defvar vmacs-window-cnt 0)
 (defun vmacs-focus()
   (if (frame-focus-state)
       (unless (and vmacs-window-status
                    (window-live-p vmacs-window-status))
         (setq vmacs-window-status (selected-window)))
     ;; (setq vmacs-window-status (selected-window))
+    (setq vmacs-window-cmd nil)
+    (setq vmacs-window-cnt 0)
     (setq vmacs-window-status nil)))
 (add-function :after after-focus-change-function #'vmacs-focus)
 
-(defun vmacs-other-window()
-  (interactive)
-  (select-window (next-window))
-  (when (eq (selected-window) vmacs-window-status)
-    (call-process "other-window" nil nil nil "skip-emacs"))
+(defun vmacs-other-window(&optional arg)
+  (interactive "P")
+  (when (eq vmacs-window-status (selected-window))
+    (setq vmacs-window-cnt 1))
+  (when (or (not (eq last-command this-command))
+            (not (eq vmacs-window-cmd this-command)))
+    (setq vmacs-window-cmd this-command)
+    (setq vmacs-window-cnt 0)
+    (setq vmacs-window-status (selected-window)))
+  (if arg
+      (select-window (previous-window))
+    (select-window (next-window)))
+  (when (or (> vmacs-window-cnt 0)
+            (= (length (window-list)) 1))
+    (if arg
+        (call-process "other-window" nil nil nil "--skip-emacs"  "--reverse")
+      (call-process "other-window" nil nil nil "--skip-emacs"))
+    )
   (unless (and vmacs-window-status
                (window-live-p vmacs-window-status))
     (setq vmacs-window-status (selected-window))))
 
+(defun vmacs-prev-window()
+  (interactive)
+  (vmacs-other-window '(4)))
 
 (defun vmacs-delete-frame()
   (interactive)

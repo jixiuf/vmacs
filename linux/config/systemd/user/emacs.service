@@ -1,10 +1,14 @@
+# systemctl --user add-wants niri.service emacs.service
 [Unit]
-BindsTo=sway-session.target
+# BindsTo=sway-session.target
 Description=Starts emacs service
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
 
 [Service]
-Environment="XDG_SESSION_DESKTOP=Hyprland"
-Environment="RUN_ENV=development"
+# Environment="XDG_SESSION_DESKTOP=Hyprland"
+# Environment="RUN_ENV=development"
 Type=simple
 Restart=always
 ExecStart=/usr/bin/emacs --fg-daemon
