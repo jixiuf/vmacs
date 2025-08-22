@@ -129,7 +129,7 @@ clipboard {
     // disable-primary
 }
 overview {
-    zoom 0.25
+    zoom 0.35
     backdrop-color "#262626"
 
     workspace-shadow {
@@ -179,7 +179,7 @@ layout {
         proportion 0.382
         proportion 0.5
         proportion 0.618
-        // proportion 1.0
+        proportion 1.0
 }
 
     // You can change the default width of the new windows.
@@ -304,9 +304,15 @@ layout {
     // layer-shell panels and regular gaps.
     struts {
         // left 64
-        // right 64
+        // right 60
         // top 64
         // bottom 64
+    }
+    // 交互式窗口移动期间窗口插入位置提示的设置。
+    insert-hint {
+        // off
+        color "#ffc87f80"
+        gradient from="#ffbb6680" to="#ffc88080" angle=45 relative-to="workspace-view"
     }
     always-center-single-column
     
@@ -388,6 +394,8 @@ layer-rule {
     match namespace="^notifications$"
     // Example: block out two password managers from screen capture.
     block-out-from "screen-capture"
+    opacity 0.95
+    geometry-corner-radius 100
     // Use this instead if you want them visible on third-party screenshot tools.
     // block-out-from "screencast"
     
@@ -397,6 +405,7 @@ layer-rule {
     // match namespace="^desktop$"
     // match namespace="^desktop-icons$"
 
+    // for overview
     place-within-backdrop false
 }
 
@@ -516,6 +525,20 @@ window-rule {
     match title="^预览$"
     open-floating true
 }
+window-rule {
+    match app-id=r#"firefox$"#
+    match app-id="google-chrome"
+    match app-id="emacs"
+    match app-id="apifox-pdv"
+    match app-id="MongoDB Compass"
+    match app-id="DBeaver"
+    match app-id="mitp"
+    match app-id="foot-ws"
+    match app-id="Bytedance-feishu"
+    match app-id="wechat"
+    open-maximized true
+}
+
 environment {
     XCURSOR_SIZE "24"
     // XDG_CONFIG_HOME "~/.config"
@@ -615,10 +638,10 @@ binds {
     Super+Ctrl+Alt+Down  { move-window-down; }
     Super+Ctrl+Alt+Up    { move-window-up; }
     Super+Ctrl+Alt+Right { move-column-right; }
-    Super+Ctrl+Alt+H     { move-column-left; }
+    Super+Ctrl+Alt+H     { focus-window-up-or-column-left; }
     Super+Ctrl+Alt+J     { move-window-down; }
     Super+Ctrl+Alt+K     { move-window-up; }
-    Super+Ctrl+Alt+L     { move-column-right; }
+    Super+Ctrl+Alt+L     { focus-window-down-or-column-right; }
 
     Super+Alt+O hotkey-overlay-title="Set Dynamic Cast Output" { set-dynamic-cast-monitor; }
     Super+Alt+U hotkey-overlay-title="Set Dynamic Cast Window" { set-dynamic-cast-window; }

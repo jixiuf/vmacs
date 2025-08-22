@@ -21,13 +21,12 @@ resize_window() {
 niri_resize_window() {
     case "$1" in
         left*)
-            # switch-preset-column-width
-            niri msg action switch-preset-column-width
-            # niri msg action set-column-width "-10%"
+            # niri msg action switch-preset-column-width
+            niri msg action set-column-width "-10%"
             ;;
         right*)
-            # niri msg action set-column-width "+10%"
-            niri msg action reset-window-height
+            niri msg action set-column-width "+10%"
+            # niri msg action reset-window-height
             # niri msg action set-column-width "+10%"
             ;;
         up*)
@@ -140,7 +139,7 @@ elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
     title=$(echo $appinfo|jq -r '.name')
 fi
 
-if [[ "$class" = "emacs" && ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$fullscreen" = "1"  ||"$floating" == "true" ||"$floating" == "floating_con" ) ]]; then
+if [[ "$class" = "emacs"  && -z "$arg" ]]; then
     resize_emacs_window $1
 elif [[   "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == *"GNU/Emacs"*  && -z "$arg" ]]; then
     resize_tmux_emacs_window $1

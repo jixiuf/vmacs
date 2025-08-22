@@ -58,7 +58,11 @@
         "icon-theme": "candy-icons",
         "on-click": "activate",
         "tooltip": true,
-        "tooltip-format": "{title} | {app_id}"
+        "tooltip-format": "{title} | {app_id}",
+        "app_ids-mapping": {
+          "dterm": "Alacritty",
+          "foot-ws": "Alacritty",
+        },      
     },
   
     "niri/window": {

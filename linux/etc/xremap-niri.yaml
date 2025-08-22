@@ -32,8 +32,8 @@ keymap:
       # super-M-o: { launch: ["niri","setprop active opaque toggle"] }
 
       # super-C-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
-      super-C-n: { launch: ["other-window"]}
-      super-C-p: { launch: ["other-window","--reverse"]}
+      # super-C-n: { launch: ["other-window"]}
+      super-C-i: { launch: ["other-window","--reverse"]}
       Super-C-Tab: { launch: ["sh","-c","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
       C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
@@ -44,6 +44,8 @@ keymap:
       super-C-k: { launch: ["resize-window" ,"up"]}
       super-C-j: { launch: ["resize-window" ,"down"]}
       
+      super-C-u: { launch: ["niri","msg","action" ,"focus-window-or-workspace-up"]}
+      super-C-n: { launch: ["niri","msg","action" ,"focus-window-or-workspace-down"]}
       super-M-n: { launch: ["niri","msg" ,"action","focus-window-or-workspace-down"]}
       super-M-p: { launch: ["niri","msg" ,"action","focus-window-or-workspace-up"]}
       
