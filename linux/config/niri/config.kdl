@@ -168,7 +168,7 @@ layout {
         proportion 0.382
         proportion 0.5
         proportion 0.618
-        proportion 1.0
+        // proportion 1.0
 
         // Fixed sets the width in logical pixels exactly.
         // fixed 1920
@@ -179,11 +179,11 @@ layout {
         proportion 0.382
         proportion 0.5
         proportion 0.618
-        proportion 1.0
+        // proportion 1.0
 }
 
     // You can change the default width of the new windows.
-    default-column-width { proportion 1.0; }
+    default-column-width { proportion 0.5; }
     // If you leave the brackets empty, the windows themselves will decide their initial width.
     // default-column-width {}
 
@@ -201,7 +201,7 @@ layout {
     // You can change how the focus ring looks.
     focus-ring {
         // Uncomment this line to disable the focus ring.
-        // off
+        off
 
         // How many logical pixels the ring extends out from the windows.
         width 2
@@ -240,16 +240,23 @@ layout {
     border {
         // The settings are the same as for the focus ring.
         // If you enable the border, you probably want to disable the focus ring.
-        off
+        // off
 
-        width 4
+        width 2
         active-color "#ffc87f"
-        inactive-color "#505050"
+        inactive-color "#ffc87f"
+        active-gradient from="#33ccffee" to="#00ff99ee" angle=90 //relative-to="workspace-view" 
+        // inactive-gradient from="#f38ba8" to="#f9e2af" angle=45 relative-to="workspace-view"
+        // inactive-gradient from="#f38ba8aa" to="#f9e2afaa" angle=45 relative-to="workspace-view"
+        // inactive-gradient from="#f38ba8aa" to="#f9e2afaa" angle=45 relative-to="workspace-view"
+        // inactive-gradient from="green" to="lightblue" angle=45 relative-to="workspace-view"
+        // inactive-gradient from="#ff0000ff" to="#00ff0011" angle=90 in="srgb-linear"
+        inactive-gradient from="#585b70" to="#7f849c" angle=45 relative-to="workspace-view"
 
         // Color of the border around windows that request your attention.
-        urgent-color "#9b0000"
+        // urgent-color "#9b0000"
 
-        // active-gradient from="#ffbb66" to="#ffc880" angle=45 relative-to="workspace-view"
+        // inactive-gradient from="#ff33ffff" to="#aa33ffee" angle=45 relative-to="workspace-view"
         // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
     }
 
@@ -346,6 +353,26 @@ animations {
     }    
     
 }
+gestures {
+    dnd-edge-view-scroll {
+        // trigger-width 0
+        // trigger-width 1
+        // trigger-width 10000
+        // max-speed 100000
+        // delay-ms 0
+        // delay-ms 100
+        // delay-ms 1000
+    }
+
+    dnd-edge-workspace-switch {
+        // max-speed 500
+    }
+
+    hot-corners {
+        off
+    }
+}
+
 
 // Window rules let you adjust behavior for individual windows.
 // Find more information on the wiki:
@@ -359,8 +386,21 @@ layer-rule {
 }
 layer-rule {
     match namespace="^notifications$"
-    block-out-from "screencast"
+    // Example: block out two password managers from screen capture.
+    block-out-from "screen-capture"
+    // Use this instead if you want them visible on third-party screenshot tools.
+    // block-out-from "screencast"
+    
 }
+layer-rule {
+    match namespace="^wallpaper$"
+    // match namespace="^desktop$"
+    // match namespace="^desktop-icons$"
+
+    place-within-backdrop false
+}
+
+
 // Make fuzzel semitransparent.
 layer-rule {
     match namespace="^rofi$"
@@ -392,6 +432,7 @@ window-rule {
     geometry-corner-radius 8
     clip-to-geometry true
     open-on-workspace "main"
+    // tiled-state true
     opacity 0.95    
 }
 // forces default workspace to workspace 3 to creating a "scratchpad" and "main" on workspace 1,2,3
@@ -401,6 +442,21 @@ window-rule {
     match is-floating=false
     tiled-state true
 }
+window-rule {
+    match is-urgent=true
+
+    // baba-is-float true
+
+    shadow {
+        color "#7d0d2d70"
+    }
+}
+
+window-rule {
+    match app-id="^mpv$"
+    tiled-state false
+}
+
 // Open the Firefox picture-in-picture player as floating by default.
 window-rule {
     // This app-id regular expression will work for both:
@@ -432,7 +488,10 @@ window-rule {
     // If such a workspace does not exist,
     // the window will open on the currently focused workspace as usual.
     open-on-workspace "main"
+    // Example: block out two password managers from screen capture.
     block-out-from "screen-capture"
+    // Use this instead if you want them visible on third-party screenshot tools.
+    // block-out-from "screencast"
 }
 
 
@@ -560,6 +619,11 @@ binds {
     Super+Ctrl+Alt+J     { move-window-down; }
     Super+Ctrl+Alt+K     { move-window-up; }
     Super+Ctrl+Alt+L     { move-column-right; }
+
+    Super+Alt+O hotkey-overlay-title="Set Dynamic Cast Output" { set-dynamic-cast-monitor; }
+    Super+Alt+U hotkey-overlay-title="Set Dynamic Cast Window" { set-dynamic-cast-window; }
+    Super+Alt+I hotkey-overlay-title="Pick Dynamic Cast Window" { spawn "~/source/sh/pick-dynamic-cast-window.sh"; }
+    Super+Alt+7 hotkey-overlay-title="Clear Dynamic Cast Target" { clear-dynamic-cast-target; }
 
     // Alternative commands that move across workspaces when reaching
     // the first or last window in a column.
@@ -703,7 +767,7 @@ binds {
 
     // Expand the focused column to space not taken up by other fully visible columns.
     // Makes the column "fill the rest of the space".
-    // Mod+Ctrl+F { expand-column-to-available-width; }
+    Mod+Alt+A { expand-column-to-available-width; }
 
     Super+Alt+C { center-column; }
 

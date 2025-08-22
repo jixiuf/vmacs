@@ -28,14 +28,14 @@ then
     echo "$filepath" > "${tmp_file}"
     case $chosen in
         $screen)
-            swaync-client -cp
+            # swaync-client -cp
             # pkill -RTMIN+8 waybar
             sleep 1;
             cd /tmp/&&nohup wf-recorder  --audio --file="${filepath}" >/tmp/wf-recorder.log &
             ;;
         $area)
             if command -v slurp >/dev/null 2>&1; then
-                swaync-client -cp
+                # swaync-client -cp
                 # pkill -RTMIN+8 waybar
                 g="$(slurp)"
                 sleep 1
@@ -45,7 +45,7 @@ then
             fi
             ;;
         $window)
-                swaync-client -cp
+                # swaync-client -cp
                 # pkill -RTMIN+8 waybar
                 sleep 1
                 cd /tmp/&&nohup wf-recorder -g "$(hyprctl activewindow | grep at: | cut -d' ' -f2) $(hyprctl activewindow | grep size: | cut -d' ' -f2 | sed 's/,/x/g')"  --audio --file="${filepath}" >/tmp/wf-recorder.log &
@@ -57,6 +57,6 @@ then
         ${notify_cmd_shot} "Screen Record" "没有 录制中的视频!"
     fi
 else
-    swaync-client -cp
+    # swaync-client -cp
     $notify_cmd_shot "Screen Record" "已有正在进行中的录屏!"
 fi
