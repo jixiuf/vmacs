@@ -191,6 +191,9 @@ mods = "Super|Control"
 
 [selection]
 save_to_clipboard = true
+[window]
+# decorations = "none"
+dynamic_title = true
 
 [window.padding]
 x = 10
