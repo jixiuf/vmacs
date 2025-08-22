@@ -99,6 +99,7 @@ alias apmdev='ssh apmdev'
 alias bench='ssh bench'
 alias k8s='ssh k8sdev'
 alias gc='git clone '
+alias gc1='git clone --depth 1 '
 alias gitclean='git clean -fdx'
 man() {
     emacsclient -nw -e " (man \"$1\")"
