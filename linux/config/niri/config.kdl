@@ -62,9 +62,9 @@ input {
         // middle-emulation
     }
 
+    disable-power-key-handling
     // Uncomment this to make the mouse warp to the center of newly focused windows.
     // warp-mouse-to-focus
-
     // Focus windows and outputs automatically when moving the mouse into them.
     // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen.
     // focus-follows-mouse max-scroll-amount="0%"
@@ -225,6 +225,8 @@ layout {
         // Changing the color space is also supported, check the wiki for more info.
         //
         active-gradient from="#33ccffee" to="#00ff99ee" angle=90 //relative-to="workspace-view" 
+        // active-gradient from="#ffffff" to="#1793d1" angle=0
+        // active-gradient from="#303030" to="#333333" angle=0
 
         // You can also color the gradient relative to the entire view
         // of the workspace, rather than relative to just the window itself.
@@ -299,6 +301,8 @@ layout {
         // top 64
         // bottom 64
     }
+    always-center-single-column
+    
 }
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -330,7 +334,8 @@ animations {
    //  }
     // overview-open-close {
     //     spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
-    // }    
+    // }
+    
     window-open {
         duration-ms 150
         curve "ease-out-expo"
@@ -541,9 +546,9 @@ binds {
     Super+Alt+Up    { focus-window-up; }
     Super+Alt+Right { focus-column-right; }
     Super+Alt+H     { focus-column-left; }
-    Super+Alt+J     { focus-window-down; }
-    Super+Alt+K     { focus-window-up; }
     Super+Alt+L     { focus-column-right; }
+    Super+Alt+J     { focus-window-or-workspace-down; }
+    Super+Alt+K     { focus-window-or-workspace-up; }
     // Super+Ctrl+P     { focus-column-left; }
     // Super+Ctrl+N     { focus-column-right; }
 
@@ -596,8 +601,8 @@ binds {
 
     // Mod+Page_Down      { focus-workspace-down; }
     // Mod+Page_Up        { focus-workspace-up; }
-    Super+Alt+N              { focus-workspace-down; }
-    Super+Alt+P              { focus-workspace-up; }
+    // Super+Alt+N              { focus-window-or-workspace-down; }
+    // Super+Alt+P              { focus-window-or-workspace-up; }
     // Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
     // Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
     // Mod+Ctrl+U         { move-column-to-workspace-down; }

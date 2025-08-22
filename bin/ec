@@ -18,6 +18,15 @@ function call_emacsclient(){
         if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
             hyprctl dispatch "movetoworkspacesilent special"
         fi
+    elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+        front_app=`niri msg -j focused-window`
+        front_class=`echo $front_app|jq -r '.app_id'`
+        front_floating=`echo $front_app|jq -r '.is_floating'`
+        if [[ "$front_floating" == "true" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
+            scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
+            niri msg action move-window-to-workspace  --window-id $addr  --focus false $scratchpad_workspace_id
+        fi
+
     else
         front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
         front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
@@ -66,6 +75,9 @@ function call_emacsclient(){
         else
             if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
                 hyprctl  dispatch "focuswindow emacs"
+            elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+                emacs_id=$(niri msg -j  windows |jq  -cr ".[]|select(.app_id == \"emacs\")")
+                niri msg  action focus-window --id ${emacs_id}
             elif  [ "$XDG_SESSION_DESKTOP" == "sway" ]; then
                 swaymsg "[app_id=\"emacs\"] focus"
             fi

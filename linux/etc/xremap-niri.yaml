@@ -36,11 +36,16 @@ keymap:
       super-C-p: { launch: ["other-window","--reverse"]}
       Super-C-Tab: { launch: ["sh","-c","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
+      C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
+      super-M-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
       # 窗口大小调整 space+ 箭头
       super-C-l: { launch: ["resize-window" ,"right"]}
       super-C-h: { launch: ["resize-window" ,"left"]}
       super-C-k: { launch: ["resize-window" ,"up"]}
       super-C-j: { launch: ["resize-window" ,"down"]}
+      
+      super-M-n: { launch: ["niri","msg" ,"action","focus-window-or-workspace-down"]}
+      super-M-p: { launch: ["niri","msg" ,"action","focus-window-or-workspace-up"]}
       
       super-M-Backspace: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-left;sleep 0.7s;niri msg action close-overview;"]}
       super-M-Backslash: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-right;sleep 0.7s;niri msg action close-overview;"]}

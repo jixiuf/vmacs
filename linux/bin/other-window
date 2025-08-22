@@ -71,6 +71,10 @@ prev-window() {
                 # 聚焦首列
             niri msg action focus-column-last
             niri msg action focus-window-down
+            new_id=$(niri msg -j focused-window | jq -r '.id')
+            if [ "$old_id" = "$new_id" ]; then
+                niri msg action  switch-focus-between-floating-and-tiling
+            fi
         fi
     fi
 }
