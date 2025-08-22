@@ -287,7 +287,6 @@ execute emacs native `repeat' default binding to`C-xz'"
 (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "ca") 'org-agenda)
 (vmacs-leader (kbd "cc") 'toggle-case-fold)
-(vmacs-leader (kbd "u") 'backward-up-list)
 (vmacs-leader (kbd "t") 'org-agenda)
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (vmacs-leader (kbd "m") 'execute-extended-command)

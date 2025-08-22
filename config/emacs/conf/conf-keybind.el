@@ -155,13 +155,15 @@
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
 (global-set-key (kbd "s-C-i")  'project-find-file)
 (global-set-key (kbd "s-i")  'project-find-file)
-(global-set-key (kbd "s-C-I")  'project-or-external-find-file)
+(global-set-key (kbd "C-c i")  'project-or-external-find-file)
 (global-set-key (kbd "s-I")  'project-or-external-find-file)
 (global-set-key [S-insert] 'mouse-yank-primary)
 
 ;; (global-set-key  (kbd "s-C-u") 'vmacs-prev-buffer)
 ;; (global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
 (global-set-key  (kbd "s-C-u") 'vmacs-undo-kill-buffer)
+(global-set-key  (kbd "C-c u") 'vmacs-undo-kill-buffer)
+(global-set-key  (kbd "C-c wm") 'gnus)
 
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
@@ -210,7 +212,6 @@
 ;; (vmacs-leader "k" ctl-x-r-map)
 ;; (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 ;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
-(vmacs-leader (kbd "u") 'backward-up-list)
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
 (vmacs-leader (kbd "wc") 'toggle-case-fold)
 (vmacs-leader (kbd "wl") #'git-link)

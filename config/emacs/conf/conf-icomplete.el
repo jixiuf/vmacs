@@ -346,8 +346,6 @@
 (global-set-key (kbd "C-x r x" ) #'consult-register)
 
 
-(vmacs-leader (kbd "i") #'gnus)
-
 (vmacs-leader "<SPC>" 'consult-buffer)
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
