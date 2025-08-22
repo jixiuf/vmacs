@@ -7,7 +7,7 @@ keymap:
       super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' firefox-bin"] }
       # super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
       
-      super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise --toggle apifox-pdv  apifox "] }
+      super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise --toggle apifox-pdv /opt/Apifox/apifox-pdv -- --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
       # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
       super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass|DBeaver' dbeaver"] }
       super-M-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass'  mongodb-compass -- --ignore-additional-command-line-flags --password-store=\"gnome-libsecret\""] }

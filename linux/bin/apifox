@@ -1,5 +1,0 @@
-/opt/Apifox/apifox-pdv&
-sleep 2
-pkill  apifox-pdv
-/opt/Apifox/apifox-pdv  --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
-

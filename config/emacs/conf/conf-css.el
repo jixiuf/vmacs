@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 
 ;;; 为颜色着色
 (defvar hexcolor-keywords
