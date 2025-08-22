@@ -64,8 +64,11 @@ window#waybar.hidden {
     padding: 0px 5px;
     margin: 0px 1px;
     border-radius: 12px;
-    color: @color7;
-    background-color: @color11;
+    /* color: @color7; */
+    /* color: #dcd7ba; */
+    color: #89b4fa;
+    background-color: #16161d;
+    /* background: #16161d; */
     /* background-color: rgba(24, 24, 37, 0); */
     transition: all 0.3s ease-in-out;
     opacity:0.5;
@@ -74,11 +77,14 @@ window#waybar.hidden {
 }
 
 #workspaces button.active {
-    color: #cdd6f4;
-    background-color: @color11;
+    /* color: #cdd6f4; */
+    background-color: @color2;
+    /* color: #7e9cd8; */
     border-radius: 10px;
     min-width: 30px;
     background-size: 400% 400%;
+    /* color: #dcd7ba; */
+    /* color: #7e9cd8; */
     transition: all 0.3s ease-in-out;
     opacity:1.0;
 }
@@ -108,7 +114,6 @@ window#waybar.hidden {
 #clock,
 #pulseaudio,
 #custom-logo,
-#custom-power,
 #cpu,
 #tray,
 #wireplumber,
@@ -116,6 +121,22 @@ window#waybar.hidden {
 #battery,
 #window,
 #idle_inhibitor,
+#custom-lock,
+#custom-quit,
+#custom-suspend,
+#custom-power,
+#custom-poweroff,
+#custom-reboot,
+#custom-xreamp_stop,
+#custom-xreamp_restart,
+#custom-wf_record_screen,
+#custom-wf_record_window,
+#custom-wf_record_area,
+#custom-wf_record_stop,
+#custom-wf_record_dired,
+#custom-wf_record_gif,
+#custom-wf_record_play,
+#custom-wf_record_gif_compress,
 #memory {
     min-height: 0;
     padding: 4px 10px;

@@ -8,9 +8,9 @@
     "passthrough": false,
     "fixed-center": true,
     // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-  "modules-left": ["hyprland/workspaces","niri/workspaces"],
+  "modules-left": ["hyprland/workspaces","niri/workspaces","custom/applauch","wlr/taskbar"],
   "modules-center": ["hyprland/window","niri/window"], // sway/window
-  "modules-right": ["idle_inhibitor", "wireplumber",  "clock", "tray", "network","battery","custom/notification"],
+  "modules-right": [ "mpris", "clock", "tray","idle_inhibitor","privacy","group/power","wireplumber", "network","battery","group/tools"],
 	"niri/workspaces": {
 		"disable-scroll": false,
 	  "format": "{icon}",
@@ -52,6 +52,15 @@
 			"default": "󰧞"
         }
     },
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 20,
+        "icon-theme": "candy-icons",
+        "on-click": "activate",
+        "tooltip": true,
+        "tooltip-format": "{title} | {app_id}"
+    },
+  
     "niri/window": {
       "format": "[{app_id}] {title}",
         "rewrite": {
@@ -97,11 +106,12 @@
         "format-disconnected": "⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}",
         "tooltip-format": "{ifname}: {essid} {ipaddr}/{cidr}",
+        "on-click-middle": "rofi-wifi-menu",
         "on-click-right": "alacritty --class=nmtui -e nmtui",
 
     },
     "tray": {
-        "spacing": 0
+        "spacing": 5
     },
     "clock": {
         // "interval": 1,
@@ -138,18 +148,23 @@
             "error": 30,
             "critical": 15
         },
-        "interval": 5,
-        "format": "{icon}",
+        "interval": 30,
+      "format": "{icon}",
         // "format": "{capacity}{icon}",
-        "format-charging": "{capacity}% ",
+        "format-charging": "{capacity}%",
         "format-plugged": "{capacity}% ",
-        "format-alt": "{time} {icon}",
+      "format-alt": "{icon}{0}",
         // "format-good": "", // An empty format will hide the module
-        // "format-full": "",
+      // "format-full": "",
+        "format-warning": "<span foreground='#98bb6c'>{icon}</span>",
+        "format-critical": "<span foreground='#e46876'>{icon}</span>",
+        "format-charging": "<span foreground='#98bb6c'></span>",
+        "format-plugged": "<span foreground='#98bb6c'></span>",
+        "format-full": "<span foreground='#98bb6c'></span>",
         "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
         // "on-click-right": "gnome-control-center power",
         // "on-click-middle": "toggle-devices",
-        "tooltip-format": "{capacity}%\n{}\n"
+        "tooltip-format": "{capacity}%\n{0}\n"
     },
 
     "wireplumber": {
@@ -160,6 +175,45 @@
         "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "format-icons": ["", "", ""]
     } ,
+"backlight/slider": {
+    "min": 0,
+    "max": 100,
+    "orientation": "horizontal",
+    "device": "intel_backlight"
+},
+  "privacy": {
+	"icon-spacing": 4,
+	"icon-size": 18,
+	"transition-duration": 250,
+	"modules": [
+		{
+			"type": "screenshare",
+			"tooltip": true,
+			"tooltip-icon-size": 24
+		},
+		{
+			"type": "audio-out",
+			"tooltip": true,
+			"tooltip-icon-size": 24
+		},
+		{
+			"type": "audio-in",
+			"tooltip": true,
+			"tooltip-icon-size": 24
+		}
+	],
+	"ignore-monitor": true,
+	"ignore": [
+		{
+			"type": "audio-in",
+			"name": "cava"
+		},
+		{
+			"type": "screenshare",
+			"name": "obs"
+		}
+	]
+},
     "custom/logo": {
 		"format": "",
 		"tooltip": false
@@ -193,11 +247,163 @@
         "on-click": "killall rofi||rofi -show combi -combi-modes 'window,drun,run,ssh' -modes combi",
         "format": "",
     },
+	"mpris": {
+		"interval": 10,
+		"max-length": 24,
+		"format": "{player_icon} {title}",
+		"format-paused": "{status_icon} <i>{dynamic}</i>",
+		"on-click": "playerctl play-pause",
+		"scroll-step": 5.0,
+		"smooth-scrolling-threshold": 1,
+		"player-icons": {
+			"chromium": "",
+			"firefox": "",
+			"youtube": "",
+			"default": "",
+			"kdeconnect": "K",
+			"mpv": "",
+			"spotify": "",
+			"vlc": "󰕼",
+			"tidal": "",
+			"tidal-hifi": ""
+		},
+		"status-icons": {
+			"paused": "⏸️️",
+			"playing": "▶️️️",
+			"stopped": "⏹️",
+		},
+		// "ignored-players": ["firefox"]
+	},
+  
+    "group/tools": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "power",
+            "transition-left-to-right": true,
+        },
+        "modules": [
+          "custom/xreamp_stop",
+          "custom/xreamp_restart",
+          "custom/wf_record_screen",
+          "custom/wf_record_window",
+          "custom/wf_record_area",
+          "custom/wf_record_stop",
+          "custom/wf_record_dired",
+          "custom/wf_record_play",
+          "custom/wf_record_gif",
+          "custom/wf_record_gif_compress",
+        ]
+    },
+  
+    "group/power": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "power",
+            "transition-left-to-right": true,
+        },
+        "modules": [
+          "custom/power",
+          "custom/poweroff",
+          "custom/quit", // First element is the "group leader" and won't ever be hidden
+          "custom/reboot",
+          "custom/suspend",
+        ]
+    },
     "custom/power": {
         "tooltip": false,
-        "on-click": "/home/jixiuf/.config/rofi/scripts/power",
-        "format": " ",
+        "on-click": "wlogout||/home/jixiuf/.config/rofi/scripts/power",
+        "format": "⭘",
     },
+    "custom/quit": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "niri msg action quit",
+        "on-click": "niri msg action quit"
+    },
+    "custom/poweroff": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "systemctl poweroff",
+        "on-click": "systemctl poweroff"
+    },
+    "custom/reboot": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "systemctl reboot",
+        "on-click": "systemctl reboot"
+    },
+    "custom/suspend": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "systemctl suspend",
+        "on-click": "systemctl suspend"
+    },
+    "custom/xreamp_stop": {
+        "format": "X",
+        "tooltip": true,
+        "tooltip-format": "systemctl --user stop xremap;pkill -9 xremap",
+        "on-click": "systemctl --user stop xremap;pkill -9 xremap"
+    },
+    "custom/xreamp_restart": {
+        "format": "XR",
+        "tooltip": true,
+        "tooltip-format": "systemctl --user stop xremap;pkill -9 xremap",
+        "on-click": "systemctl --user restart xremap"
+    },
+    "custom/wf_record_screen": {
+        "format": "🖥️",
+        "tooltip": true,
+        "tooltip-format": "/usr/local/bin/wf-record-start.sh 屏幕",
+        "on-click": "/usr/local/bin/wf-record-start.sh 屏幕"
+    },
+    "custom/wf_record_window": {
+        "format": "🪟️",
+        "tooltip": true,
+        "tooltip-format": "/usr/local/bin/wf-record-start.sh 窗口",
+        "on-click": "/usr/local/bin/wf-record-start.sh 窗口"
+    },
+    "custom/wf_record_area": {
+        "format": "⿻",
+        "tooltip": true,
+        "tooltip-format": "/usr/local/bin/wf-record-start.sh 区域",
+        "on-click": "/usr/local/bin/wf-record-start.sh 区域"
+    },
+    "custom/wf_record_stop": {
+        "format": "⏸️️",
+        "tooltip": true,
+        "tooltip-format": "/usr/local/bin/wf-record-stop.sh",
+        "on-click": "/usr/local/bin/wf-record-stop.sh"
+    },
+    "custom/wf_record_dired": {
+        "format": "📁️️",
+        "tooltip": true,
+        "tooltip-format": "Open video dired",
+        "on-click": "/usr/local/bin/wf-record-action.sh 0"
+    },
+    "custom/wf_record_play": {
+        "format": "▶️️️",
+        "tooltip": true,
+        "tooltip-format": "Play video",
+        "on-click": "/usr/local/bin/wf-record-action.sh 1"
+    },
+    "custom/wf_record_gif": {
+        "format": "→🖼️",
+        "tooltip": true,
+        "tooltip-format": "video->gif",
+        "on-click": "/usr/local/bin/wf-record-action.sh 2"
+    },
+    "custom/wf_record_gif_compress": {
+        "format": "→🖼️✂️",
+        "tooltip": true,
+      "tooltip-format": "video->gif(压缩)",
+        "on-click": "/usr/local/bin/wf-record-action.sh 3"
+    },
+  
+  
+  
+  
 }
 
  // Local Variables:

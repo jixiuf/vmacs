@@ -138,6 +138,10 @@ disable-history: false;
 /*	me-select-entry: "MousePrimary";*/
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
+               /* 鼠标单击  */ 
+     me-select-entry: "MousePrimary";
+     me-accept-entry: "!MousePrimary";
+
   timeout {
       action: "kb-cancel";
       delay:  0;

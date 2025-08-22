@@ -1,5 +1,11 @@
 
+configuration {
+click-to-exit: true;
+               /* 鼠标单击  */ 
+     me-select-entry: "MousePrimary";
+     me-accept-entry: "!MousePrimary";
 
+}
 * {
   /* Default background color */
   background-color: #282738;
