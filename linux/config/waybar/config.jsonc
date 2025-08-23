@@ -10,7 +10,7 @@
     // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
   "modules-left": ["hyprland/workspaces","niri/workspaces","custom/applauch","wlr/taskbar"],
   "modules-center": ["hyprland/window","niri/window"], // sway/window
-  "modules-right": [ "mpris", "clock", "tray","idle_inhibitor","privacy","group/power","wireplumber", "network","battery","group/tools"],
+  "modules-right": [ "mpris", "clock", "tray","privacy","group/power","wireplumber", "network","bluetooth","battery","idle_inhibitor","group/tools"],
 	"niri/workspaces": {
 		"disable-scroll": false,
 	  "format": "{icon}",
@@ -170,7 +170,21 @@
         // "on-click-middle": "toggle-devices",
         "tooltip-format": "{capacity}%\n{0}\n"
     },
-
+  "bluetooth": {
+        "format": " 󰂯 ",
+        "format-disabled": " 󰂲 ",
+        "format-connected": " 󰂱 ",
+    
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        // "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "sudo systemctl start bluetooth;blueman-manager",
+        "on-click-right": "sudo systemctl stop bluetooth",
+        "on-click-middle": "sudo systemctl start bluetooth;rofi-bluetooth",
+    },
     "wireplumber": {
         "format": "{volume}% {icon}",
         "format-muted": "",
@@ -179,12 +193,12 @@
         "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "format-icons": ["", "", ""]
     } ,
-"backlight/slider": {
-    "min": 0,
-    "max": 100,
-    "orientation": "horizontal",
-    "device": "intel_backlight"
-},
+    "backlight/slider": {
+        "min": 0,
+        "max": 100,
+        "orientation": "horizontal",
+        "device": "intel_backlight"
+    },
   "privacy": {
 	"icon-spacing": 4,
 	"icon-size": 18,
