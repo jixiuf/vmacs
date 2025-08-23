@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;; pip install basedpyright
 ;; pip install debugpy
 (setq exec-path (delete-dups  (cons (concat (expand-file-name "~") "/venv/bin") exec-path)))
