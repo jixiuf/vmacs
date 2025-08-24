@@ -9,3 +9,4 @@ paint_mode=arrow
 early_exit=false
 fill_shape=false
 auto_save=true
+ocr_cmd=wechatocr;/opt/wechat/wxocr;/opt/wechat/;%s

@@ -31,6 +31,14 @@ deploy:
 			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
 		fi;\
 	done
+	@-for file in lib/*; do \
+		if [ -h /usr/local/$$file ]; then \
+		rm -rf /usr/local/$$file ;\
+        fi;\
+		if	[ -f $$file ]; then \
+			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
+		fi;\
+	done
 
 
 	@-for file in local/*; do \
@@ -68,7 +76,7 @@ sudo:
 	done
 	cp -f ../dots/ssh/config /etc/ssh/ssh_config.d/1config.conf
 	chmod 644  /etc/ssh/ssh_config.d/1config.conf
-	mkdir -p /usr/local/{bin,}
+	mkdir -p /usr/local/{bin,lib}
 	chown jixiuf:users /usr/local  -R
 	on-keyboard-update >/dev/null 2>/dev/null
 	find /usr/local/bin/ -xtype l -delete
