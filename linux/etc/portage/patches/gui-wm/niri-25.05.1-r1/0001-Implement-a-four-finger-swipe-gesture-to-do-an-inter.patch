@@ -1,0 +1,465 @@
+From 32672598bfa343cca979d6765052c5a2727a8c43 Mon Sep 17 00:00:00 2001
+From: Isaac Mills <rooster0055@protonmail.com>
+Date: Sat, 5 Jul 2025 12:35:50 -0600
+Subject: [PATCH 1/2] Implement a four-finger swipe gesture to do an
+ interactive move of the focused window
+
+---
+ src/handlers/xdg_shell.rs |   2 +-
+ src/input/mod.rs          | 160 +++++++++++++++++++++++++++++++++-----
+ src/input/move_grab.rs    |  77 +++++++++++++-----
+ src/niri.rs               |   9 ++-
+ 4 files changed, 207 insertions(+), 41 deletions(-)
+
+diff --git a/src/handlers/xdg_shell.rs b/src/handlers/xdg_shell.rs
+index b7123e5f..582ac4dd 100644
+--- a/src/handlers/xdg_shell.rs
++++ b/src/handlers/xdg_shell.rs
+@@ -153,7 +153,7 @@ impl XdgShellHandler for State {
+ 
+         match start_data {
+             PointerOrTouchStartData::Pointer(start_data) => {
+-                let grab = MoveGrab::new(start_data, window, false);
++                let grab = MoveGrab::new(start_data, window, false, false);
+                 pointer.set_grab(self, grab, serial, Focus::Clear);
+             }
+             PointerOrTouchStartData::Touch(start_data) => {
+diff --git a/src/input/mod.rs b/src/input/mod.rs
+index 6921eaa1..34b7e5c3 100644
+--- a/src/input/mod.rs
++++ b/src/input/mod.rs
+@@ -83,6 +83,61 @@ impl<D: SeatHandler> PointerOrTouchStartData<D> {
+     }
+ }
+ 
++#[derive(PartialEq, Eq, Clone, Copy)]
++enum SwipeDirection {
++    Horizontal,
++    Vertical,
++    Unknown,
++    Undecided,
++}
++
++pub struct SwipeDirectionDecider {
++    cx: f64,
++    cy: f64,
++    decision: SwipeDirection,
++}
++
++impl SwipeDirectionDecider {
++    pub fn decided() -> Self {
++        Self {
++            cx: 0.,
++            cy: 0.,
++            decision: SwipeDirection::Unknown,
++        }
++    }
++
++    fn undecided() -> Self {
++        Self {
++            cx: 0.,
++            cy: 0.,
++            decision: SwipeDirection::Undecided,
++        }
++    }
++
++    fn update_and_maybe_decide(&mut self, delta_x: f64, delta_y: f64) -> Option<SwipeDirection> {
++        if self.decision != SwipeDirection::Undecided {
++            return None;
++        }
++
++        self.cx += delta_x;
++        self.cy += delta_y;
++
++        // Check if the gesture moved far enough to decide. Threshold copied from GNOME Shell.
++        if self.cx * self.cx + self.cy * self.cy >= 16. * 16. {
++            self.decision = if self.cx.abs() > self.cy.abs() {
++                SwipeDirection::Horizontal
++            } else {
++                SwipeDirection::Vertical
++            };
++
++            Some(self.decision)
++        } else {
++            // Undecided, needs more data (movement)
++            None
++        }
++    }
++}
++
+ impl State {
+     pub fn process_input_event<I: InputBackend + 'static>(&mut self, event: InputEvent<I>)
+     where
+@@ -2554,7 +2609,8 @@ impl State {
+                                 button: button_code,
+                                 location,
+                             };
+-                            let grab = MoveGrab::new(start_data, window.clone(), is_overview_open);
++                            let grab =
++                                MoveGrab::new(start_data, window.clone(), is_overview_open, false);
+                             pointer.set_grab(self, grab, serial, Focus::Clear);
+ 
+                             if !is_overview_open {
+@@ -3351,13 +3407,12 @@ impl State {
+ 
+     fn on_gesture_swipe_begin<I: InputBackend>(&mut self, event: I::GestureSwipeBeginEvent) {
+         if event.fingers() == 3 {
+-            self.niri.gesture_swipe_3f_cumulative = Some((0., 0.));
++            self.niri.gesture_swipe_3f_decider = SwipeDirectionDecider::undecided();
+ 
+             // We handled this event.
+             return;
+         } else if event.fingers() == 4 {
+-            self.niri.layout.overview_gesture_begin();
+-            self.niri.queue_redraw_all();
++            self.niri.gesture_swipe_4f_decider = SwipeDirectionDecider::undecided();
+ 
+             // We handled this event.
+             return;
+@@ -3408,17 +3463,14 @@ impl State {
+ 
+         let is_overview_open = self.niri.layout.is_overview_open();
+ 
+-        if let Some((cx, cy)) = &mut self.niri.gesture_swipe_3f_cumulative {
+-            *cx += delta_x;
+-            *cy += delta_y;
+-
+-            // Check if the gesture moved far enough to decide. Threshold copied from GNOME Shell.
+-            let (cx, cy) = (*cx, *cy);
+-            if cx * cx + cy * cy >= 16. * 16. {
+-                self.niri.gesture_swipe_3f_cumulative = None;
+-
+-                if let Some(output) = self.niri.output_under_cursor() {
+-                    if cx.abs() > cy.abs() {
++        if let Some(descision) = self
++            .niri
++            .gesture_swipe_3f_decider
++            .update_and_maybe_decide(delta_x, delta_y)
++        {
++            if let Some(output) = self.niri.output_under_cursor() {
++                match descision {
++                    SwipeDirection::Horizontal => {
+                         let output_ws = if is_overview_open {
+                             self.niri.workspace_under_cursor(true)
+                         } else {
+@@ -3436,15 +3488,73 @@ impl State {
+                                 .layout
+                                 .view_offset_gesture_begin(&output, Some(ws_idx), true);
+                         }
+-                    } else {
++                    }
++                    SwipeDirection::Vertical => {
+                         self.niri
+                             .layout
+                             .workspace_switch_gesture_begin(&output, true);
+                     }
++                    _ => {}
+                 }
+             }
+         }
+ 
++        if let Some(descision) = self
++            .niri
++            .gesture_swipe_4f_decider
++            .update_and_maybe_decide(delta_x, delta_y)
++        {
++            match descision {
++                SwipeDirection::Horizontal => {
++                    if let Some((active_window, pos_within_output)) =
++                        self.niri.layout.active_workspace().and_then(|w| {
++                            Some((w.active_window()?.id(), w.active_tile_visual_rectangle()?))
++                        })
++                    {
++                        let window = {
++                            let mut windows = self.niri.layout.windows();
++                            windows
++                                .find(|(_, m)| m.id() == active_window)
++                                .and_then(|(m, a)| Some((m?, a)))
++                                .map(|(monitor, active_window)| {
++                                    (monitor.output().clone(), active_window.window.clone())
++                                })
++                        };
++                        if let Some((output, active_window)) = window {
++                            let location = pos_within_output.loc + (pos_within_output.size / 2.0);
++                            if self.niri.layout.interactive_move_begin(
++                                active_window.clone(),
++                                &output,
++                                location,
++                            ) {
++                                let start_data = PointerGrabStartData {
++                                    focus: None,
++                                    button: 1,
++                                    location,
++                                };
++                                let grab = MoveGrab::new(
++                                    start_data,
++                                    active_window,
++                                    is_overview_open,
++                                    true,
++                                );
++                                self.niri.seat.get_pointer().unwrap().set_grab(
++                                    self,
++                                    grab,
++                                    SERIAL_COUNTER.next_serial(),
++                                    Focus::Clear,
++                                );
++                            }
++                        }
++                    }
++                }
++                SwipeDirection::Vertical => {
++                    self.niri.layout.overview_gesture_begin();
++                }
++                _ => {}
++            }
++        }
++
+         let timestamp = Duration::from_micros(event.time());
+ 
+         let mut handled = false;
+@@ -3502,9 +3612,8 @@ impl State {
+     }
+ 
+     fn on_gesture_swipe_end<I: InputBackend>(&mut self, event: I::GestureSwipeEndEvent) {
+-        self.niri.gesture_swipe_3f_cumulative = None;
+-
+         let mut handled = false;
++        let serial = SERIAL_COUNTER.next_serial();
+         let res = self.niri.layout.workspace_switch_gesture_end(Some(true));
+         if let Some(output) = res {
+             self.niri.queue_redraw(&output);
+@@ -3523,12 +3632,25 @@ impl State {
+             handled = true;
+         }
+ 
++        if self.niri.gesture_swipe_3f_decider.decision == SwipeDirection::Horizontal {
++            // Call completed in [`MoveGrab`]
++            //
++            // self.niri
++            //     .seat
++            //     .get_pointer()
++            //     .unwrap()
++            //     .unset_grab(self, serial, event.time_msec());
++            handled = true;
++        }
++
++        self.niri.gesture_swipe_3f_decider = SwipeDirectionDecider::decided();
++        self.niri.gesture_swipe_4f_decider = SwipeDirectionDecider::decided();
++
+         if handled {
+             // We handled this event.
+             return;
+         }
+ 
+-        let serial = SERIAL_COUNTER.next_serial();
+         let pointer = self.niri.seat.get_pointer().unwrap();
+ 
+         if self.update_pointer_contents() {
+diff --git a/src/input/move_grab.rs b/src/input/move_grab.rs
+index e939696b..d62891f2 100644
+--- a/src/input/move_grab.rs
++++ b/src/input/move_grab.rs
+@@ -8,15 +8,17 @@ use smithay::input::pointer::{
+     RelativeMotionEvent,
+ };
+ use smithay::input::SeatHandler;
+-use smithay::utils::{IsAlive, Logical, Point};
++use smithay::utils::{IsAlive, Logical, Point, Serial, Size, SERIAL_COUNTER};
+ 
+ use crate::niri::State;
+ 
+ pub struct MoveGrab {
+     start_data: PointerGrabStartData<State>,
+     last_location: Point<f64, Logical>,
++    swipe_location: Point<f64, Logical>,
+     window: Window,
+     gesture: GestureState,
++    is_swipe_pinch: bool,
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+@@ -30,6 +32,7 @@ impl MoveGrab {
+         start_data: PointerGrabStartData<State>,
+         window: Window,
+         use_threshold: bool,
++        is_swipe_pinch: bool,
+     ) -> Self {
+         let gesture = if use_threshold {
+             GestureState::Recognizing
+@@ -39,9 +42,11 @@ impl MoveGrab {
+ 
+         Self {
+             last_location: start_data.location,
++            swipe_location: start_data.location,
+             start_data,
+             window,
+             gesture,
++            is_swipe_pinch,
+         }
+     }
+ 
+@@ -49,10 +54,12 @@ impl MoveGrab {
+         state.niri.layout.interactive_move_end(&self.window);
+         // FIXME: only redraw the window output.
+         state.niri.queue_redraw_all();
+-        state
+-            .niri
+-            .cursor_manager
+-            .set_cursor_image(CursorImageStatus::default_named());
++        if !self.is_swipe_pinch {
++            state
++                .niri
++                .cursor_manager
++                .set_cursor_image(CursorImageStatus::default_named());
++        }
+     }
+ }
+ 
+@@ -64,8 +71,15 @@ impl PointerGrab<State> for MoveGrab {
+         _focus: Option<(<State as SeatHandler>::PointerFocus, Point<f64, Logical>)>,
+         event: &MotionEvent,
+     ) {
+-        // While the grab is active, no client has pointer focus.
+-        handle.motion(data, None, event);
++        // The pointer should not be moved by swipe and pinch gestures
++        if !self.is_swipe_pinch {
++            // While the grab is active, no client has pointer focus.
++            handle.motion(data, None, event);
++        } else if event.serial != Serial::from(0) {
++            // Ignore normal pointer motion events if we're in a swipe/pinch
++            // gesture
++            return;
++        }
+ 
+         if self.window.alive() {
+             if let Some((output, pos_within_output)) = data.niri.output_under(event.location) {
+@@ -80,9 +94,11 @@ impl PointerGrab<State> for MoveGrab {
+                     if c.x * c.x + c.y * c.y >= 8. * 8. {
+                         self.gesture = GestureState::Move;
+ 
+-                        data.niri
+-                            .cursor_manager
+-                            .set_cursor_image(CursorImageStatus::Named(CursorIcon::Move));
++                        if !self.is_swipe_pinch {
++                            data.niri
++                                .cursor_manager
++                                .set_cursor_image(CursorImageStatus::Named(CursorIcon::Move));
++                        }
+                     }
+                 }
+ 
+@@ -94,7 +110,7 @@ impl PointerGrab<State> for MoveGrab {
+                     &self.window,
+                     event_delta,
+                     output,
+-                    pos_within_output,
++                    dbg!(pos_within_output),
+                 );
+                 if ongoing {
+                     // FIXME: only redraw the previous and the new output.
+@@ -106,8 +122,15 @@ impl PointerGrab<State> for MoveGrab {
+             }
+         }
+ 
++        // We asserted `event.serial == Serial::from(0)` above
++        // if `is_swipe_pinch` is true. This is not a valid serial.
++        let serial = if self.is_swipe_pinch {
++            SERIAL_COUNTER.next_serial()
++        } else {
++            event.serial
++        };
+         // The move is no longer ongoing.
+-        handle.unset_grab(self, data, event.serial, event.time, true);
++        handle.unset_grab(self, data, serial, event.time, true);
+     }
+ 
+     fn relative_motion(
+@@ -160,11 +183,11 @@ impl PointerGrab<State> for MoveGrab {
+ 
+     fn gesture_swipe_begin(
+         &mut self,
+-        data: &mut State,
+-        handle: &mut PointerInnerHandle<'_, State>,
+-        event: &GestureSwipeBeginEvent,
++        _data: &mut State,
++        _handle: &mut PointerInnerHandle<'_, State>,
++        _event: &GestureSwipeBeginEvent,
+     ) {
+-        handle.gesture_swipe_begin(data, event);
++        // handle.gesture_swipe_begin(data, event);
+     }
+ 
+     fn gesture_swipe_update(
+@@ -173,7 +196,24 @@ impl PointerGrab<State> for MoveGrab {
+         handle: &mut PointerInnerHandle<'_, State>,
+         event: &GestureSwipeUpdateEvent,
+     ) {
+-        handle.gesture_swipe_update(data, event);
++        self.swipe_location += event.delta;
++        if let Some(mut global_rect) = data.global_bounding_rectangle() {
++            // Shrink by 1 logical pixel, retaining center
++            global_rect.loc = global_rect.loc + Point::new(1, 1);
++            global_rect.size = global_rect.size - Size::new(2, 2);
++            self.swipe_location = self.swipe_location.constrain(global_rect.to_f64());
++        }
++        self.motion(
++            data,
++            handle,
++            None,
++            &MotionEvent {
++                location: self.swipe_location,
++                serial: Serial::from(0),
++                time: event.time,
++            },
++        );
++        // handle.gesture_swipe_update(data, event);
+     }
+ 
+     fn gesture_swipe_end(
+@@ -182,7 +222,8 @@ impl PointerGrab<State> for MoveGrab {
+         handle: &mut PointerInnerHandle<'_, State>,
+         event: &GestureSwipeEndEvent,
+     ) {
+-        handle.gesture_swipe_end(data, event);
++        // handle.gesture_swipe_end(data, event);
++        handle.unset_grab(self, data, event.serial, event.time, true);
+     }
+ 
+     fn gesture_pinch_begin(
+diff --git a/src/niri.rs b/src/niri.rs
+index c97153f1..191b7222 100644
+--- a/src/niri.rs
++++ b/src/niri.rs
+@@ -129,7 +129,7 @@ use crate::input::scroll_swipe_gesture::ScrollSwipeGesture;
+ use crate::input::scroll_tracker::ScrollTracker;
+ use crate::input::{
+     apply_libinput_settings, mods_with_finger_scroll_binds, mods_with_mouse_binds,
+-    mods_with_wheel_binds, TabletData,
++    mods_with_wheel_binds, SwipeDirectionDecider, TabletData,
+ };
+ use crate::ipc::server::IpcServer;
+ use crate::layer::mapped::LayerSurfaceRenderElement;
+@@ -359,7 +359,8 @@ pub struct Niri {
+     pub notified_activity_this_iteration: bool,
+     pub pointer_inside_hot_corner: bool,
+     pub tablet_cursor_location: Option<Point<f64, Logical>>,
+-    pub gesture_swipe_3f_cumulative: Option<(f64, f64)>,
++    pub gesture_swipe_3f_decider: SwipeDirectionDecider,
++    pub gesture_swipe_4f_decider: SwipeDirectionDecider,
+     pub overview_scroll_swipe_gesture: ScrollSwipeGesture,
+     pub vertical_wheel_tracker: ScrollTracker,
+     pub horizontal_wheel_tracker: ScrollTracker,
+@@ -2630,7 +2631,9 @@ impl Niri {
+             notified_activity_this_iteration: false,
+             pointer_inside_hot_corner: false,
+             tablet_cursor_location: None,
+-            gesture_swipe_3f_cumulative: None,
++            // Will become undecided once a gesture begins
++            gesture_swipe_3f_decider: SwipeDirectionDecider::decided(),
++            gesture_swipe_4f_decider: SwipeDirectionDecider::decided(),
+             overview_scroll_swipe_gesture: ScrollSwipeGesture::new(),
+             vertical_wheel_tracker: ScrollTracker::new(120),
+             horizontal_wheel_tracker: ScrollTracker::new(120),
+-- 
+2.49.1
+

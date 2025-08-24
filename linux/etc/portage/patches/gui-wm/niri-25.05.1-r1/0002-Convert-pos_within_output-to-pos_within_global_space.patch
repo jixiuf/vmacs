@@ -1,0 +1,79 @@
+From 2410ef1060882c5fff0089e30c2fd87cffdb45ec Mon Sep 17 00:00:00 2001
+From: Isaac Mills <rooster0055@protonmail.com>
+Date: Sat, 5 Jul 2025 13:34:03 -0600
+Subject: [PATCH 2/2] Convert pos_within_output to pos_within_global_space
+
+---
+ src/input/mod.rs       | 22 +++++++++++++++++-----
+ src/input/move_grab.rs |  2 +-
+ 2 files changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/src/input/mod.rs b/src/input/mod.rs
+index 34b7e5c3..797411dd 100644
+--- a/src/input/mod.rs
++++ b/src/input/mod.rs
+@@ -3521,7 +3521,19 @@ impl State {
+                                 })
+                         };
+                         if let Some((output, active_window)) = window {
+-                            let location = pos_within_output.loc + (pos_within_output.size / 2.0);
++                            let pos_within_global_space = Rectangle::new(
++                                pos_within_output.loc
++                                    + self
++                                        .niri
++                                        .global_space
++                                        .output_geometry(&output)
++                                        .unwrap()
++                                        .loc
++                                        .to_f64(),
++                                pos_within_output.size,
++                            );
++                            let location =
++                                pos_within_global_space.loc + (pos_within_global_space.size / 2.0);
+                             if self.niri.layout.interactive_move_begin(
+                                 active_window.clone(),
+                                 &output,
+@@ -3612,8 +3624,10 @@ impl State {
+     }
+ 
+     fn on_gesture_swipe_end<I: InputBackend>(&mut self, event: I::GestureSwipeEndEvent) {
++        self.niri.gesture_swipe_3f_decider = SwipeDirectionDecider::decided();
++        self.niri.gesture_swipe_4f_decider = SwipeDirectionDecider::decided();
++
+         let mut handled = false;
+-        let serial = SERIAL_COUNTER.next_serial();
+         let res = self.niri.layout.workspace_switch_gesture_end(Some(true));
+         if let Some(output) = res {
+             self.niri.queue_redraw(&output);
+@@ -3643,14 +3657,12 @@ impl State {
+             handled = true;
+         }
+ 
+-        self.niri.gesture_swipe_3f_decider = SwipeDirectionDecider::decided();
+-        self.niri.gesture_swipe_4f_decider = SwipeDirectionDecider::decided();
+-
+         if handled {
+             // We handled this event.
+             return;
+         }
+ 
++        let serial = SERIAL_COUNTER.next_serial();
+         let pointer = self.niri.seat.get_pointer().unwrap();
+ 
+         if self.update_pointer_contents() {
+diff --git a/src/input/move_grab.rs b/src/input/move_grab.rs
+index d62891f2..cd3df51c 100644
+--- a/src/input/move_grab.rs
++++ b/src/input/move_grab.rs
+@@ -110,7 +110,7 @@ impl PointerGrab<State> for MoveGrab {
+                     &self.window,
+                     event_delta,
+                     output,
+-                    dbg!(pos_within_output),
++                    pos_within_output,
+                 );
+                 if ongoing {
+                     // FIXME: only redraw the previous and the new output.
+-- 
+2.49.1
+
