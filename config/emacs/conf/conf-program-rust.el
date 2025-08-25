@@ -1,4 +1,4 @@
-;; https://kurotych.com/posts/rust_neovim_debugger/
+;; https://kurotych.com/posts/rust_neovim_debugger/  -*- lexical-binding: t; -*-
 ;; https://github.com/vadimcn/codelldb
 (use-package eglot
   :config (add-to-list 'eglot-server-programs
