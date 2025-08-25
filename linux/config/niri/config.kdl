@@ -348,15 +348,73 @@ animations {
     // overview-open-close {
     //     spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
     // }
-    
-    window-open {
-        duration-ms 150
-        curve "ease-out-expo"
+   horizontal-view-movement {
+        duration-ms 180
+        // spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+        // curve "ease-out-expo";
     }
-    window-close {
-        duration-ms 150
-        curve "ease-out-expo"
-    }    
+   // window-movement {
+   //      spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+   //  }    
+    // window-open {
+    //     duration-ms 150
+    //     curve "ease-out-expo"
+    // }
+    // window-close {
+    //     duration-ms 150
+    //     curve "ease-out-expo"
+    // }    
+    slowdown 1.0
+    window-open {
+      duration-ms 150
+      curve "linear"
+      custom-shader r"
+    
+    vec4 expanding_circle(vec3 coords_geo, vec3 size_geo) {
+    vec3 coords_tex = niri_geo_to_tex * coords_geo;
+    vec4 color = texture2D(niri_tex, coords_tex.st);
+    vec2 coords = (coords_geo.xy - vec2(0.5, 0.5)) * size_geo.xy * 2.0;
+    coords = coords / length(size_geo.xy);
+    float p = niri_clamped_progress;
+    if (p * p <= dot(coords, coords))
+    color = vec4(0.0);
+
+    return color;
+  }
+
+    vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+    return expanding_circle(coords_geo, size_geo);
+   }
+  "
+ }
+
+   window-close {
+      duration-ms 250
+      curve "linear"
+      custom-shader r"
+
+    vec4 fall_and_rotate(vec3 coords_geo, vec3 size_geo) {
+    float progress = niri_clamped_progress * niri_clamped_progress;
+    vec2 coords = (coords_geo.xy - vec2(0.5, 1.0)) * size_geo.xy;
+    coords.y -= progress * 1440.0;
+    float random = (niri_random_seed - 0.5) / 2.0;
+    random = sign(random) - random;
+    float max_angle = 0.5 * random;
+    float angle = progress * max_angle;
+    mat2 rotate = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+    coords = rotate * coords;
+    coords_geo = vec3(coords / size_geo.xy + vec2(0.5, 1.0), 1.0);
+    vec3 coords_tex = niri_geo_to_tex * coords_geo;
+    vec4 color = texture2D(niri_tex, coords_tex.st);
+
+    return color;
+  }
+
+    vec4 close_color(vec3 coords_geo, vec3 size_geo) {
+    return fall_and_rotate(coords_geo, size_geo);
+     }
+    "
+   }
     
 }
 gestures {
@@ -516,6 +574,12 @@ window-rule {
     // Use this instead if you want them visible on third-party screenshot tools.
     // block-out-from "screencast"
 }
+window-rule {
+    match app-id="wechat"
+    block-out-from "screen-capture"
+    // Use this instead if you want them visible on third-party screenshot tools.
+    // block-out-from "screencast"
+}
 
 
 //
@@ -540,15 +604,19 @@ window-rule {
     open-floating true
 }
 window-rule {
+    match app-id="emacs"
+    match app-id="foot-ws"
+    default-column-width { proportion 0.618; }
+}
+window-rule {
     match app-id=r#"firefox$"#
     match app-id="google-chrome"
-    match app-id="emacs"
     match app-id="apifox-pdv"
     match app-id="MongoDB Compass"
     match app-id="DBeaver"
     match app-id="mitp"
-    match app-id="foot-ws"
     match app-id="Bytedance-feishu"
+    match app-id="Bytedance-lark"
     match app-id="wechat"
     open-maximized true
 }
@@ -608,7 +676,7 @@ binds {
     Super+Alt+Slash { show-hotkey-overlay; } //help
    // TouchpadScrollLeft { spawn "alacritty";  }
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
+    // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+Ctrl+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }    
     // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
@@ -648,19 +716,19 @@ binds {
     // Super+Ctrl+P     { focus-column-left; }
     // Super+Ctrl+N     { focus-column-right; }
 
-    Super+Ctrl+Alt+Left  { move-column-left; }
-    Super+Ctrl+Alt+Down  { move-window-down; }
-    Super+Ctrl+Alt+Up    { move-window-up; }
-    Super+Ctrl+Alt+Right { move-column-right; }
-    Super+Ctrl+Alt+H     { focus-window-up-or-column-left; }
-    Super+Ctrl+Alt+J     { move-window-down; }
-    Super+Ctrl+Alt+K     { move-window-up; }
-    Super+Ctrl+Alt+L     { focus-window-down-or-column-right; }
+    // Super+Ctrl+Alt+Left  { move-column-left; }
+    // Super+Ctrl+Alt+Down  { move-window-down; }
+    // Super+Ctrl+Alt+Up    { move-window-up; }
+    // Super+Ctrl+Alt+Right { move-column-right; }
+    // Super+Ctrl+Alt+H     { focus-window-up-or-column-left; }
+    // Super+Ctrl+Alt+J     { move-window-down; }
+    // Super+Ctrl+Alt+K     { move-window-up; }
+    // Super+Ctrl+Alt+L     { focus-window-down-or-column-right; }
 
-    Super+Alt+O hotkey-overlay-title="Set Dynamic Cast Output" { set-dynamic-cast-monitor; }
-    Super+Alt+U hotkey-overlay-title="Set Dynamic Cast Window" { set-dynamic-cast-window; }
-    Super+Alt+I hotkey-overlay-title="Pick Dynamic Cast Window" { spawn "~/source/sh/pick-dynamic-cast-window.sh"; }
-    Super+Alt+7 hotkey-overlay-title="Clear Dynamic Cast Target" { clear-dynamic-cast-target; }
+    // Super+Alt+O hotkey-overlay-title="Set Dynamic Cast Output" { set-dynamic-cast-monitor; }
+    // Super+Alt+U hotkey-overlay-title="Set Dynamic Cast Window" { set-dynamic-cast-window; }
+    // Super+Alt+I hotkey-overlay-title="Pick Dynamic Cast Window" { spawn "~/source/sh/pick-dynamic-cast-window.sh"; }
+    // Super+Alt+7 hotkey-overlay-title="Clear Dynamic Cast Target" { clear-dynamic-cast-target; }
 
     // Alternative commands that move across workspaces when reaching
     // the first or last window in a column.

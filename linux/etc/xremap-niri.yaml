@@ -10,14 +10,15 @@ keymap:
       super-C-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime"] }
       # super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
       super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
-      super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle 'MongoDB Compass'  mongodb-compass -- --ignore-additional-command-line-flags --password-store=\"gnome-libsecret\""] }
+      super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
 
-      super-C-dot: { launch: ["niri","msg","action","spawn","--","sh","-c","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
+      super-C-dot: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
       # super-C-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
-      super-C-d:     { launch: ["niri","msg","action","spawn","--","sh","-c","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
+      # super-C-d:     { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
+      super-C-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      super-C-comma: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       # super-C-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
-      super-C-comma: { launch: ["niri","msg","action","spawn","--","sh","-c","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
       super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
       super-C-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }
@@ -30,14 +31,13 @@ keymap:
       # super-C-M-h: { launch: ["niri","msg","action","togglespecialworkspace"] }
       super-M-m: { launch: ["niri","msg","action","fullscreen-window"] }
       # super-M-o: { launch: ["niri","setprop active opaque toggle"] }
-
       # super-C-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
       # super-C-n: { launch: ["other-window"]}
       super-C-i: { launch: ["other-window","--reverse"]}
-      Super-C-Tab: { launch: ["sh","-c","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
+      Super-C-Tab: { launch: ["niri","msg","action","spawn-sh","--","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
-      C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
-      super-M-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
+      # C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
+      # super-M-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
       # 窗口大小调整 space+ 箭头
       super-C-l: { launch: ["resize-window" ,"right"]}
       super-C-h: { launch: ["resize-window" ,"left"]}
@@ -66,7 +66,8 @@ keymap:
     application:
       only: [emacs,Emacs]
     remap:
-      super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
+      super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session foot-ws " ] }
+      # super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
       
 #  Local Variables:
 #  mode: conf

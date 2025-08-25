@@ -11,7 +11,7 @@
     (when (member (system-name) '("jxfhome" "jxfluoji"))
       (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))))
 (add-hook 'after-make-frame-functions #'lazy-load-gpg)
-(add-hook 'after-init-hook #'lazy-load-gpg)
+;; (add-hook 'after-init-hook #'lazy-load-gpg)
 
 (require 'conf-face)
 (require 'conf-meow)

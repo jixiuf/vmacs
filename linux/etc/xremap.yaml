@@ -445,6 +445,14 @@ keymap:
       
       # super-C-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       super-C-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
+      C-F3:
+        - { launch: ["fcitx5-remote","-s","keyboard-us"] }
+        - {sleep: 20 }
+        - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
+      super-M-Esc:
+        - { launch: ["fcitx5-remote","-s","keyboard-us"] }
+        - {sleep: 20 }
+        - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
       f9: 
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
         - {sleep: 20 }
