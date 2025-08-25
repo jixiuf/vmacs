@@ -8,11 +8,13 @@
     "passthrough": false,
     "fixed-center": true,
     // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-  "modules-left": ["hyprland/workspaces","niri/workspaces","custom/applauch","wlr/taskbar"],
+  "modules-left": ["ext/workspaces","custom/applauch","wlr/taskbar"],
   "modules-center": ["hyprland/window","niri/window"], // sway/window
   "modules-right": [ "mpris", "clock", "tray","privacy","group/power","wireplumber", "network","bluetooth","battery","idle_inhibitor","group/tools"],
-	"niri/workspaces": {
-		"disable-scroll": false,
+	"ext/workspaces": {
+        "sort-by-name": false,
+        "sort-by-coordinates": true,      
+ 		  	"disable-scroll": false,
 	  "format": "{icon}",
         "format-icons": {
                 // Named workspaces
@@ -23,15 +25,15 @@
           "keepassxc":"🔑",
           "main":"🌳",
           "scratchpad":"📝",
-
+          "urgent": "",          
                 // Icons by state
                 // "active": "",
-                // "default": ""
+          // "default": ""
         },      
 		// "format": "",
-//		"format-icons": "󰻀",
 		"persistent-workspaces": {
-			"*": [1,2,3,4,5,6,7,8,9]
+		  "main": [],
+		  "scratchpad": [],
 		},
 	},
   
@@ -57,8 +59,6 @@
         "icon-size": 20,
         "icon-theme": "candy-icons",
         "on-click": "activate",
-        "sort-by-name": false,
-        "sort-by-coordinates": true,      
         "tooltip": true,
         "tooltip-format": "{title} | {app_id}",
         "app_ids-mapping": {
