@@ -20,9 +20,8 @@
     follow = mouse
 
     ### Geometry ###
-    width = 500
-
-    height = (100, 200)
+    width = (200, 500)
+    height = (50, 150)
 
     # Position the notification in the top right corner
     origin = top-right

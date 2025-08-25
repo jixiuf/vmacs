@@ -57,6 +57,8 @@
         "icon-size": 20,
         "icon-theme": "candy-icons",
         "on-click": "activate",
+        "sort-by-name": false,
+        "sort-by-coordinates": true,      
         "tooltip": true,
         "tooltip-format": "{title} | {app_id}",
         "app_ids-mapping": {
