@@ -337,8 +337,16 @@ keymap:
     application:
       only: [wechat]
     remap:
-      Super-C-w: Super-C-q
-      esc: Super-C-q
+      Super-C-q: Super-M-h
+      M-n: M-Down
+      M-p: M-Up
+      C-comma: M-Up
+      C-dot: M-Down
+      M-h: M-Backspace
+      C-l: right
+      C-j: C-Enter
+      C-h: left
+      C-a: Home
   - name: org.gnome.Nautilus
     application:
       only: [org.gnome.Nautilus]
@@ -351,10 +359,10 @@ keymap:
     #   only: [Bytedance-lark Bytedance-feishu]
     remap:
       Super-C-w: Super-C-q
-      C-comma: C-leftbrace
-      C-dot: C-rightbrace
-      C-n: down
-      C-p: up
+      C-comma: C-Shift-up
+      C-dot: C-Shift-down
+      C-n: C-down
+      C-p: C-up
       C-v:
         - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;echo click left |dotoolc;echo click left |dotoolc"] }
         - Pagedown
@@ -365,7 +373,7 @@ keymap:
       # C-j: C-RIGHTBRACE
   - name: global_emacs
     application:
-      only: [MongoDB Compass,Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark]
+      only: [MongoDB Compass,Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark,wechat]
     remap:
       super-C-w: C-w
       M-f: C-right

@@ -12,11 +12,13 @@ keymap:
       super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
       super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
 
-      super-C-dot: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
+      super-C-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
       # super-C-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
       # super-C-d:     { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
       super-C-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
-      super-C-comma: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      # { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      super-C-comma: { launch: ["other-window","--reverse"]}
+      super-C-dot: { launch: ["other-window"]}
       # super-C-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
       super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
@@ -33,7 +35,7 @@ keymap:
       # super-M-o: { launch: ["niri","setprop active opaque toggle"] }
       # super-C-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
       # super-C-n: { launch: ["other-window"]}
-      super-C-i: { launch: ["other-window","--reverse"]}
+      # super-C-i: { launch: ["other-window","--reverse"]}
       Super-C-Tab: { launch: ["niri","msg","action","spawn-sh","--","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
       # C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
