@@ -1,0 +1,14 @@
+[Unit]
+Description=Downloads the APOD and saves it as Wallpaper
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=
+ExecStart=/bin/bash /usr/local/bin/bg.sh
+Restart=on-failure
+
+[Install]
+# WantedBy=multi-user.target 
+WantedBy=sway-session.target
+
