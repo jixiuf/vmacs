@@ -9,10 +9,10 @@ DEST='/home/jixiuf/Pictures/bg'
 NAME='img.jpg'
 NAME_COPY='imgcopy.jpg'
 BASE='http://apod.nasa.gov'
-ARCHIVE_DIR='/home/jixiuf/Pictures/bg/old'
+ARCHIVE_DIR=''
 DATE=`date "+%Y%m%d"`
 
-KEEP_ARCHIVE=false
+KEEP_ARCHIVE=true
 MAKE_COPY=false
 
 function ensure_dir() {
@@ -58,3 +58,9 @@ function download_new_pic() {
 # Kick off the process
 move_old_pic
 download_new_pic
+
+
+export NEW_IMG="$(find $DEST/ -type f | shuf -n1)"
+echo "Using new backgruond image $NEW_IMG"
+pidof swww-daemon ||swww-daemon 
+swww img  $NEW_IMG&
