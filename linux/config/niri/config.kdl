@@ -872,9 +872,9 @@ binds {
 
     // Expand the focused column to space not taken up by other fully visible columns.
     // Makes the column "fill the rest of the space".
-    Mod+Alt+A { expand-column-to-available-width; }
+    // Mod+Alt+A { expand-column-to-available-width; }
 
-    Super+Alt+C { center-column; }
+    Super+Alt+E { center-column; }
 
     // Center all fully visible columns on screen.
     // Mod+Ctrl+C { center-visible-columns; }

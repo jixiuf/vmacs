@@ -6,7 +6,7 @@
 systemctl --user import-environment XCURSOR_SIZE GTK_THEME SSH_AUTH_SOCK GPG_TTY DISPLAY  WAYLAND_DISPLAY  XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_RUNTIME_DIR QT_QPA_PLATFORM _JAVA_AWT_WM_NONREPARENTING SDL_VIDEODRIVER
 dbus-update-activation-environment --systemd --all
 sudo /usr/local/bin/on-keyboard-update&
-pidof swaybg||swaybg -i ~/.config/wallpaper/359278da0e9c31df63eeb9cc3334031f.jpeg&
+# pidof swaybg||swaybg -i ~/.config/wallpaper/359278da0e9c31df63eeb9cc3334031f.jpeg&
 XDG_CONFIG_HOME=~/.config kpmenu --daemon 2>/tmp/kpmenu.log&
 pidof swaylock || swaylock&
 pidof hypridle||hypridle&

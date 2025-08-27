@@ -35,6 +35,7 @@
     font-family: Jost;
     font-size: 16px;
     font-weight: 500;
+    background-color: #1e1e2e;
 }
 
 window#waybar {

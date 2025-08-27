@@ -59,9 +59,12 @@ keymap:
       # 
       # wsd
       # x
+      super-M-q: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
       super-M-w: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
       super-M-x: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
+      super-M-c: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
       super-M-s: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
+      super-M-a: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
       super-M-d: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-right-or-to-monitor-right; sleep 0.5s;niri msg action close-overview;"]}
       # super-C-M-d: { launch: ["niri" ,"msg","action","move-column-left-or-to-monitor-left"]}
   - name: Emacs
