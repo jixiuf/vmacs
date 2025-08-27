@@ -1,4 +1,5 @@
-((magit-blame
+((gnus-select-group nil)
+ (magit-blame
   ("-w"))
  (magit-branch nil)
  (magit-cherry-pick

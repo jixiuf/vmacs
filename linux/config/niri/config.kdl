@@ -446,7 +446,7 @@ gestures {
 // Show layer-shell surfaces with 0.5 opacity at niri startup, but not afterwards.
 layer-rule {
     match at-startup=true
-    opacity 0.5
+    opacity 0.9
 }
 layer-rule {
     match namespace="^notifications$"
@@ -471,7 +471,7 @@ layer-rule {
 // Make fuzzel semitransparent.
 layer-rule {
     match namespace="^rofi$"
-    opacity 0.85
+    opacity 0.95
 }
 // Indicate screencasted windows with red colors.
 window-rule {
@@ -500,7 +500,7 @@ window-rule {
     clip-to-geometry true
     open-on-workspace "main"
     // tiled-state true
-    opacity 0.95    
+    opacity 0.90    
 }
 // forces default workspace to workspace 3 to creating a "scratchpad" and "main" on workspace 1,2,3
 
