@@ -41,8 +41,8 @@
 
   (meow-leader-define-key
    ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "s-M-j")
-   '("k" . "s-M-k")
+   '("j" . "s-C-j")
+   '("k" . "s-C-k")
    '("s" . save-all)
 
    ;; Use SPC (0-9) for digit arguments.

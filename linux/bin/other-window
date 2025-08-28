@@ -129,18 +129,18 @@ if [ -n "$appinfo" ]; then
         #                (window-live-p vmacs-window-status))
         #     (setq vmacs-window-status (selected-window))))
         if [ "$reverse" == "true" ]; then
-            echo key super+ctrl+p|dotoolc
+            echo key super+alt+p|dotoolc
         else
-            echo key super+ctrl+o|dotoolc
+            echo key super+alt+o|dotoolc
         fi
         exit 0
     elif [[  "$class" =~ ^($TERM_CLASS_REGEX)$  && "$title" == *"GNU/Emacs"* &&
                 ( "$app_cnt" = "1" || "$fullscreen" = "true" ||"$floating" == "true" ) &&
                 -z "$skip_emacs" ]]; then
         if [ "$reverse" == "true" ]; then
-            echo key super+ctrl+p|dotoolc
+            echo key super+alt+p|dotoolc
         else
-            echo key super+ctrl+o|dotoolc
+            echo key super+alt+o|dotoolc
         fi
         exit 0
     elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ && "$title" == "TMUX:"*    ]]; then

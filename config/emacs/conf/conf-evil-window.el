@@ -19,19 +19,19 @@
 (global-set-key (kbd "C-M-2") 'move-border-down)
 (global-set-key (kbd "C-M-3") 'move-border-left)
 (global-set-key (kbd "C-M-4") 'move-border-right)
-(global-set-key (kbd "s-C-M-1") 'move-border-up)
-(global-set-key (kbd "s-C-M-2") 'move-border-down)
-(global-set-key (kbd "s-C-M-3") 'move-border-left)
-(global-set-key (kbd "s-C-M-4") 'move-border-right)
+(global-set-key (kbd "s-M-C-1") 'move-border-up)
+(global-set-key (kbd "s-M-C-2") 'move-border-down)
+(global-set-key (kbd "s-M-C-3") 'move-border-left)
+(global-set-key (kbd "s-M-C-4") 'move-border-right)
 
-(global-set-key (kbd "C-s-\\") 'toggle-split-window)
+(global-set-key (kbd "s-M-\\") 'toggle-split-window)
 
 (vmacs-leader (kbd "2") 'vmacs-split-window-vertically) ;横着分屏
 (vmacs-leader (kbd "3") 'vmacs-split-window-horizontally) ;竖着分屏
 (vmacs-leader (kbd "1") 'vmacs-delete-other-frame) ;只保留当前窗口
 (vmacs-leader (kbd "0") 'vmacs-delete-frame)        ;删除当前窗口
-(vmacs-leader (kbd "C-s-m") 'vmacs-fullscreen)
-(global-set-key (kbd "C-s-m") 'vmacs-fullscreen)
+(vmacs-leader (kbd "s-M-m") 'vmacs-fullscreen)
+(global-set-key (kbd "s-M-m") 'vmacs-fullscreen)
 (defvar vmacs--fullscreen-window-configuration nil)
 (defun vmacs-fullscreen()
   (interactive)
@@ -72,9 +72,9 @@
         )
     (toggle-frame-maximized)))
 
-(global-set-key (kbd "C-s-p") 'vmacs-prev-window)
-(global-set-key (kbd "C-s-n") 'vmacs-other-window)
-(global-set-key (kbd "C-s-o") 'vmacs-other-window)
+(global-set-key (kbd "s-M-p") 'vmacs-prev-window)
+(global-set-key (kbd "s-M-n") 'vmacs-other-window)
+(global-set-key (kbd "s-M-o") 'vmacs-other-window)
 (global-set-key (kbd "C-x o") 'vmacs-other-window)
 (defvar vmacs-window-status nil)
 (defvar vmacs-window-cmd nil)

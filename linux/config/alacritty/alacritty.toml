@@ -86,12 +86,12 @@ mods = "None"
 [[keyboard.bindings]]
 action = "Paste"
 key = "V"
-mods = "Control|Super"
+mods = "Alt|Super"
 
 [[keyboard.bindings]]
 action = "Copy"
 key = "C"
-mods = "Control|Super"
+mods = "Alt|Super"
 
 # [[keyboard.bindings]]
 # action = "PasteSelection"

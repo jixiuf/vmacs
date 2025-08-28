@@ -147,21 +147,21 @@
 (global-set-key  (kbd "s-r") 'compile-dwim-compile)
 (global-set-key  (kbd "C-\\") 'hippie-expand)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
-(global-set-key  (kbd "s-C-1") 'delete-other-windows) ;hyper-1
-(global-set-key  (kbd "s-C-2") 'vmacs-split-window-vertically) ;hyper-2
+(global-set-key  (kbd "s-M-1") 'delete-other-windows) ;hyper-1
+(global-set-key  (kbd "s-M-2") 'vmacs-split-window-vertically) ;hyper-2
 (global-set-key  (kbd "s-2") 'vmacs-split-window-vertically)
-(global-set-key  (kbd "s-C-3") 'vmacs-split-window-horizontally) ;hyper-2
+(global-set-key  (kbd "s-M-3") 'vmacs-split-window-horizontally) ;hyper-2
 (global-set-key  (kbd "s-3") 'vmacs-split-window-horizontally)
 (with-eval-after-load 'cus-edit (define-key custom-mode-map "n" nil))
-(global-set-key (kbd "s-C-i")  'project-find-file)
+(global-set-key (kbd "s-M-i")  'project-find-file)
 (global-set-key (kbd "s-i")  'project-find-file)
 (global-set-key (kbd "C-c i")  'project-or-external-find-file)
 (global-set-key (kbd "s-I")  'project-or-external-find-file)
 (global-set-key [S-insert] 'mouse-yank-primary)
 
-;; (global-set-key  (kbd "s-C-u") 'vmacs-prev-buffer)
+;; (global-set-key  (kbd "s-M-u") 'vmacs-prev-buffer)
 ;; (global-set-key  (kbd "s-u") 'vmacs-prev-buffer)
-(global-set-key  (kbd "s-C-u") 'vmacs-undo-kill-buffer)
+(global-set-key  (kbd "s-M-u") 'vmacs-undo-kill-buffer)
 (global-set-key  (kbd "C-c u") 'vmacs-undo-kill-buffer)
 (global-set-key  (kbd "C-c wm") 'gnus)
 
@@ -169,7 +169,7 @@
 (global-set-key (kbd "s-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "C-x K") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "C-c C-v") 'save-buffers-kill-emacs)
-(global-set-key (kbd "s-C-w") 'vmacs-kill-buffer-dwim)
+(global-set-key (kbd "s-M-w") 'vmacs-kill-buffer-dwim)
 (global-set-key (kbd "M-o") 'toggle-camelize)
 (setq golden-ratio-scroll-highlight-flag nil)
 (autoload 'golden-ratio-scroll-screen-up "golden-ratio-scroll-screen" "" t)
@@ -182,7 +182,7 @@
 (global-set-key  (kbd "C-4") 'vmacs-meow-grab)
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
-(global-set-key (kbd "C-s-r") 'compile-dwim-run)
+(global-set-key (kbd "s-M-r") 'compile-dwim-run)
 (global-set-key (kbd "C-c C-r") 'compile-dwim-run)
 (global-set-key (kbd "C-c r") 'compile-dwim-run) ;space r
 (global-set-key  (kbd "M-,") 'scroll-other-window-down)
@@ -256,7 +256,7 @@
   (define-key Man-mode-map (kbd "C-c Mq") 'save-buffers-kill-terminal)
   (define-key Man-mode-map (kbd "n") 'meow-search)
   (define-key Man-mode-map (kbd "N") 'meow-search-reverse)
-  (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
+  (define-key Man-mode-map (kbd "s-M-w") 'save-buffers-kill-terminal)
   (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
 
 (defun vmacs-tui(&optional f)

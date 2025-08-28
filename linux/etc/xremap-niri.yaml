@@ -3,70 +3,71 @@ keymap:
   - name: Global
     remap:
     # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      super-C-e: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$","emacsclient -c -r -n"] }
-      super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","google-chrome|firefox|firefox-esr","firefox-bin"] }
-      # super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
+      Super-M-e: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$","emacsclient -c -r -n"] }
+      Super-M-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","google-chrome|firefox|firefox-esr","firefox-bin"] }
+      # Super-M-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
       
-      super-C-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime"] }
-      # super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
-      super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
-      super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
+      Super-M-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime"] }
+      # Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
+      Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
+      Super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
 
-      super-C-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
-      # super-C-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
-      # super-C-d:     { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
-      super-C-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      Super-M-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
+      # Super-M-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
+      # Super-M-d:     { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
+      Super-M-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       # { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
-      super-C-comma: { launch: ["other-window","--reverse"]}
-      super-C-dot: { launch: ["other-window"]}
-      # super-C-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
-      super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
-      super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
-      super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
-      super-C-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }
-      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      super-C-8: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--move-to-current-workspace-if-floating","--hide-front-floating-window","org.keepassxc.KeePassXC","keepassxc"] }
+      Super-M-comma: { launch: ["other-window","--reverse"]}
+      Super-M-dot: { launch: ["other-window"]}
+      # Super-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
+      Super-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
+      Super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
+      Super-M-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
+      Super-M-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
+      Super-M-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }
+      # Super-C-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # Super-C-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      Super-M-8: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--move-to-current-workspace-if-floating","--hide-front-floating-window","org.keepassxc.KeePassXC","keepassxc"] }
 
-      super-M-f: { launch: ["niri","msg","action","toggle-window-floating"] }      
-      # super-M-h: { launch: ["niri","msg","action","movetoworkspacesilent","special"] }
-      # super-C-M-h: { launch: ["niri","msg","action","togglespecialworkspace"] }
-      super-M-m: { launch: ["niri","msg","action","fullscreen-window"] }
-      # super-M-o: { launch: ["niri","setprop active opaque toggle"] }
-      # super-C-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
-      # super-C-n: { launch: ["other-window"]}
-      # super-C-i: { launch: ["other-window","--reverse"]}
-      Super-C-Tab: { launch: ["niri","msg","action","spawn-sh","--","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
+      Super-C-f: { launch: ["niri","msg","action","toggle-window-floating"] }      
+      # Super-C-h: { launch: ["niri","msg","action","movetoworkspacesilent","special"] }
+      # Super-C-M-h: { launch: ["niri","msg","action","togglespecialworkspace"] }
+      Super-C-m: { launch: ["niri","msg","action","fullscreen-window"] }
+      # Super-C-o: { launch: ["niri","setprop active opaque toggle"] }
+      # Super-M-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
+      # Super-M-n: { launch: ["other-window"]}
+      # Super-M-i: { launch: ["other-window","--reverse"]}
+      Super-M-Tab: { launch: ["niri","msg","action","spawn-sh","--","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
       # C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
-      # super-M-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
+      # Super-C-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
       # 窗口大小调整 space+ 箭头
-      super-C-l: { launch: ["resize-window" ,"right"]}
-      super-C-h: { launch: ["resize-window" ,"left"]}
-      super-C-k: { launch: ["resize-window" ,"up"]}
-      super-C-j: { launch: ["resize-window" ,"down"]}
+      Super-M-l: { launch: ["resize-window" ,"right"]}
+      Super-M-h: { launch: ["resize-window" ,"left"]}
+      Super-M-k: { launch: ["resize-window" ,"up"]}
+      Super-M-j: { launch: ["resize-window" ,"down"]}
       
-      super-C-u: { launch: ["niri","msg","action" ,"focus-window-or-workspace-up"]}
-      super-C-n: { launch: ["niri","msg","action" ,"focus-window-or-workspace-down"]}
-      super-M-n: { launch: ["niri","msg" ,"action","focus-window-or-workspace-down"]}
-      super-M-p: { launch: ["niri","msg" ,"action","focus-window-or-workspace-up"]}
+      Super-M-u: { launch: ["niri","msg","action" ,"focus-window-or-workspace-up"]}
+      Super-M-n: { launch: ["niri","msg","action" ,"focus-window-or-workspace-down"]}
+      Super-C-n: { launch: ["niri","msg" ,"action","focus-window-or-workspace-down"]}
+      Super-C-p: { launch: ["niri","msg" ,"action","focus-window-or-workspace-up"]}
       
-      super-M-Backspace: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-left;sleep 0.7s;niri msg action close-overview;"]}
-      super-M-Backslash: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-right;sleep 0.7s;niri msg action close-overview;"]}
-      # super-M-Enter: { launch: ["niri" ,"msg","action","layoutmsg","action","orientationnext"]}
-      # super-C-M-n: { launch: ["niri" ,"msg","action","movetoworkspace","r+1"]}
-      # super-C-M-p: { launch: ["niri" ,"msg","action","movetoworkspace","r-1"]}
+      Super-C-Backspace: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-left;sleep 0.7s;niri msg action close-overview;"]}
+      Super-C-Backslash: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action consume-or-expel-window-right;sleep 0.7s;niri msg action close-overview;"]}
+      # Super-C-Enter: { launch: ["niri" ,"msg","action","layoutmsg","action","orientationnext"]}
+      # Super-C-M-n: { launch: ["niri" ,"msg","action","movetoworkspace","r+1"]}
+      # Super-C-M-p: { launch: ["niri" ,"msg","action","movetoworkspace","r-1"]}
       # 
       # wsd
       # x
-      super-M-q: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
-      super-M-w: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
-      super-M-x: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
-      super-M-c: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
-      super-M-s: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
-      super-M-a: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
-      super-M-d: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-right-or-to-monitor-right; sleep 0.5s;niri msg action close-overview;"]}
-      # super-C-M-d: { launch: ["niri" ,"msg","action","move-column-left-or-to-monitor-left"]}
+      Super-C-q: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
+      Super-C-w: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action   move-window-up-or-to-workspace-up; sleep 0.5s;niri msg action close-overview;"]}
+      Super-C-x: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
+      Super-C-c: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-window-down-or-to-workspace-down; sleep 0.5s;niri msg action close-overview;"]}
+      Super-C-s: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
+      Super-C-a: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-left-or-to-monitor-left; sleep 0.5s;niri msg action close-overview;"]}
+      Super-C-d: { launch: ["sh","-c" ,"niri msg action open-overview;niri msg action move-column-right-or-to-monitor-right; sleep 0.5s;niri msg action close-overview;"]}
+      # Super-C-M-d: { launch: ["niri" ,"msg","action","move-column-left-or-to-monitor-left"]}
   - name: Emacs
     application:
       only: [emacs,Emacs]
