@@ -19,6 +19,7 @@ if [ "$TERMINAL"  = "alacritty" ]; then
     TERMINAL_EXEC="-e"
     WORKING_DIRECTORY_ARG="--working-directory"
     CLASS_ARG="--class"
+    TITLE_ARG="--title"
 elif [ "$TERMINAL"  = "foot" ]; then
     TERMINAL_EXEC=""
     WORKING_DIRECTORY_ARG="--working-directory"
@@ -36,9 +37,10 @@ class=""
 other_args=""
 term_args=""
 tmux_session=""
+title=""
 
 PROG=$( basename "$0" )
-TEMP=$( getopt --options h --longoptions class:,working-directory:,tmux-session:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions title:,class:,working-directory:,tmux-session:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -46,6 +48,11 @@ for i in "$@"; do
         -h|--help)
             echo "Usage: $PROG --class classname --working-directory cwd  other args"
             exit 0
+            ;;
+        --title*)
+            title="$2"
+            shift
+            shift
             ;;
         --class*)
             class="$2"
@@ -70,6 +77,10 @@ other_args=$@
 if [ -n "$class" ]; then
     term_args=" $term_args $CLASS_ARG=$class"
 fi
+if [ -n "$title" ]; then
+    term_args=" $term_args $TITLE_ARG=$title"
+fi
+
 
 # root@host:/path or host:/path
 regex="(\/ssh:)?([a-zA-Z0-9_\-]+@)?([a-zA-Z0-9_\.\-]+):(.+)"
