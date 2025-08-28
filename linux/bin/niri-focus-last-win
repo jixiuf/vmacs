@@ -102,6 +102,8 @@ fi
 front_floating=`echo $front_app|jq -r '.is_floating'`
 front_address=`echo $front_app|jq -r '.id'`
 front_wsid=`echo $front_app|jq -r '.workspace_id'`
+front_fullscreen=$(niri msg -j focused-window | jq -r '(.layout.window_offset_in_tile | all(. == 0.0))')
+
 # focus last window
 # echo -n "{\"Action\":{\"FocusWindowPrevious\":{}}}"|socat STDIO "$NIRI_SOCKET"
 # last_focus_app=`niri msg -j focused-window`
@@ -121,9 +123,9 @@ if [[ -n "$hide_front_floating" && "$front_floating" == "true"  && "$target_ws_n
 fi
 
 # 如果当前窗口是fullscreen，则将其恢复
-# if [[ -n "$disable_front_fullscreen" && "$front_fullscreen" == "true" && "$target_ws_name" == "$front_wsid" ]]; then
-#     hyprctl dispatch "fullscreen"
-# fi
+if [[ -n "$disable_front_fullscreen" && "$front_fullscreen" == "true" && "$target_ws_name" == "$front_wsid" ]]; then
+    niri msg action fullscreen-window
+fi
 if [[ "$target_floating" == "true" && -n "$move_to_current_workspace_if_floating" ]]; then
     move_to_current_workspace="set"
 fi

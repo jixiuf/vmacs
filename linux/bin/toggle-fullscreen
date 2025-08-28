@@ -28,6 +28,8 @@ elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
     appinfo=`niri msg -j focused-window`
     class=`echo $appinfo|jq -r '.app_id'`
     title=`echo $appinfo|jq -r '.title'`
+    # true or false
+    fullscreen=$(niri msg -j focused-window | jq -r '(.layout.window_offset_in_tile | all(. == 0.0))')
 
     appcnt=`niri msg -j windows|jq -rc '.[]|select(.workspace_id =='$(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id")')|.app_id'|wc -l  `
 
@@ -54,11 +56,11 @@ if [ -n "$class" ]; then
             else
                 zoomed=$(tmux display -p '#{window_zoomed_flag}')
                 if [ "$zoomed" == "0"   ]; then
-                    if [ "$fullscreen" == "0" ]; then
+                    if [[ "$fullscreen" == "0" || "$fullscreen" == "false" ]]; then
                         toggle_fullscreen
                     fi
                 else
-                    if [ "$fullscreen" == "1" ]; then
+                    if [[ "$fullscreen" == "1" || "$fullscreen" == "true" ]]; then
                         toggle_fullscreen
                     fi
                 fi
