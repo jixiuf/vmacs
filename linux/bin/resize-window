@@ -127,7 +127,7 @@ elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
     appinfo=`niri msg -j focused-window`
     class=`echo $appinfo|jq -r '.app_id'`
     title=`echo $appinfo|jq -r '.title'`
-    fullscreen="false"
+    fullscreen=$(niri msg -j focused-window | jq -r '(.layout.window_offset_in_tile | all(. == 0.0))')
     floating=`echo $appinfo|jq -r '.is_floating'|head -n 1`
     appcnt=`niri msg -j windows|jq -rc '.[]|select(.workspace_id =='$(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id")')|.app_id'|wc -l  `
 elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then

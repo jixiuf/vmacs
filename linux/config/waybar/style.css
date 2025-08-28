@@ -35,16 +35,17 @@
     font-family: Jost;
     font-size: 16px;
     font-weight: 500;
-    background-color: #1e1e2e;
+    /* background-color: #1e1e2e; */
 }
 
 window#waybar {
     transition-property: background-color;
     transition-duration: 0.5s;
+    background-color: #1e1e2e;
+    /* background-color: rgba(24, 24, 37, 255); */
     /* color: @color7; */
     /* background-color: #1e1e2e; */
     /* background-color: #181825; */
-    background-color: rgba(24, 24, 37, 0);
     /* color: #FBBA52; */
 }
 
@@ -145,7 +146,7 @@ window#waybar.hidden {
     margin: 0px 1px;
     color: #89b4fa;
     /* background-color: #1e1e2e; */
-    background-color: rgba(30,30,46,0);  
+    background-color: rgba(30,30,46,0);
     /* background-color: rgba(24, 24, 37, 0); */
 }
 

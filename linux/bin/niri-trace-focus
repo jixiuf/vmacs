@@ -210,3 +210,9 @@ else
     # niri-trace-focus -1 # 取 last focus id
     get_last_win_skip_class  $skip_class
 fi
+
+# while read event; do
+#    if [[ `jq --argjson e "$event" -nr '$e.title'` == 'Slack' ]]; then
+#       niri msg action move-window-to-workspace --window-id $(jq --argjson e "$event" -nr '$e.id') --focus false slack
+#    fi
+# done < <(niri msg -j event-stream |  jq --unbuffered -c '.WindowOpenedOrChanged | select(. != null) | .window | select(.app_id == "firefox")')

@@ -8,13 +8,13 @@
     "passthrough": false,
     "fixed-center": true,
     // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-  "modules-left": ["ext/workspaces","custom/applauch","wlr/taskbar"],
+  "modules-left": ["ext/workspaces","custom/sep","wlr/taskbar"],
   "modules-center": ["hyprland/window","niri/window"], // sway/window
   "modules-right": [ "mpris", "clock", "tray","privacy","group/power","wireplumber", "network","bluetooth","battery","idle_inhibitor","group/tools"],
 	"ext/workspaces": {
         "sort-by-name": false,
         "sort-by-coordinates": true,      
- 		  	"disable-scroll": false,
+ 	 	"disable-scroll": false,
 	  "format": "{icon}",
         "format-icons": {
                 // Named workspaces
@@ -28,7 +28,7 @@
           "urgent": "",          
                 // Icons by state
                 // "active": "",
-          // "default": ""
+          "default": ""
         },      
 		// "format": "",
 		"persistent-workspaces": {
@@ -258,10 +258,10 @@
         "on-click-right": "swaync-client -d -sw",
         "escape": true
     },
-    // "custom/sep": {
-	//  "format": "|",
-	//  "tooltip": false
-	// },
+    "custom/sep": {
+	 "format": "|",
+	 "tooltip": false
+	},
     "custom/applauch": {
         "tooltip": false,
         "on-click": "killall rofi||rofi -show combi -combi-modes 'window,drun,run,ssh' -modes combi",

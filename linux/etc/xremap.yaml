@@ -205,6 +205,8 @@ keymap:
       # Super-C-comma: [C-c ,p] 
       C-comma: [C-c ,p] 
       C-dot: [C-c ,n] 
+      Super-C-M-comma: [C-c ,p] 
+      Super-C-M-dot: [C-c ,n] 
       M-v: Super-C-M-e
       C-Grave: M-Grave
       C-C: C-c
@@ -364,8 +366,11 @@ keymap:
       Super-M-w: Super-M-q
       C-comma: C-Shift-up
       C-dot: C-Shift-down
-      C-n: C-down
-      C-p: C-up
+      C-n: down
+      C-p: up
+      M-n: C-down
+      M-p: C-up
+      C-j: C-Enter
       C-v:
         - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;echo click left |dotoolc;echo click left |dotoolc"] }
         - Pagedown

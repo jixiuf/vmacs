@@ -162,8 +162,7 @@ if [ -n "$workspace" ]; then
     where="$where and $workspace "
 fi
 
-# 排序暂未按访问顺序排 
-select="niri  msg -j windows | jq -rc 'map(select("$where"))|sort_by( .workspace_id,.id)|.[]'"
+select="niri  msg -j windows | jq -rc 'map(select("$where"))|sort_by( .workspace_id,.layout.pos_in_scrolling_layout[0],.layout.pos_in_scrolling_layout[1])|.[]'"
 target_appinfo=`eval $select`
 if [ ! "$target_appinfo" ]; then
     $cmd &
@@ -297,6 +296,7 @@ else
         # echo -n "{\"Action\":{\"FocusWindow\":{\"id\":${target_addr}}}}"|socat STDIO "$NIRI_SOCKET"
         niri msg  action focus-window --id ${target_addr}
         niri msg action focus-tiling
+        # niri msg  action move-column-to-first
 
         # hyprctl --batch "dispatch focuswindow address:${target_addr}; dispatch bringactivetotop"
     fi
