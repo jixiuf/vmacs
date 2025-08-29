@@ -72,7 +72,7 @@ keymap:
     application:
       only: [emacs,Emacs]
     remap:
-      super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session foot-ws " ] }
+      super-M-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session foot-ws " ] }
       # super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
       
 #  Local Variables:

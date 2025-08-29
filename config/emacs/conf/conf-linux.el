@@ -59,7 +59,7 @@
                 ;; (alpha-background . 75)
                 ;; (alpha . 100)
 
-                (font . "Sarasa Term SC Nerd Light-15")
+                (font . "Sarasa Term SC Nerd Light-16")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000")))

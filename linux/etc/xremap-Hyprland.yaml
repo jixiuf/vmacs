@@ -52,7 +52,7 @@ keymap:
     application:
       only: [emacs,Emacs]
     remap:
-      Super-C-t: { launch: ["sh","-c","hypr-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
+      Super-M-t: { launch: ["sh","-c","hypr-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
 
 #  Local Variables:
 #  mode: conf

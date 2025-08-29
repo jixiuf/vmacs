@@ -613,7 +613,7 @@ window-rule {
     match app-id="mitp"
     match app-id="foot-ws"
     match app-id="emacs"
-    opacity 0.75    
+    opacity 0.75   
 }
 window-rule {
     match app-id=r#"firefox$"#
