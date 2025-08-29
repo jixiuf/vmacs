@@ -4,7 +4,7 @@
 #
 # Steve Challis 2011
 # http://schallis.com/2011/mar/20/nasa-astronomy-picture-of-the-day-background/
-
+skip_download="$1"
 DEST='/home/jixiuf/Documents/jianguo/jianguo/wallpaper'
 NAME='img.jpg'
 NAME_COPY='imgcopy.jpg'
@@ -55,12 +55,14 @@ function download_new_pic() {
     fi
 }
 
-# Kick off the process
-move_old_pic
-download_new_pic
+if [ -n "$skip_download" ]; then
+    # Kick off the process
+    move_old_pic
+    download_new_pic
+fi
 
 
 export NEW_IMG="$(find $DEST/ -type f | shuf -n1)"
 echo "Using new backgruond image $NEW_IMG"
-pidof swww-daemon ||swww-daemon 
+pidof swww-daemon ||swww-daemon
 swww img  $NEW_IMG&

@@ -10,6 +10,7 @@ sudo /usr/local/bin/on-keyboard-update&
 XDG_CONFIG_HOME=~/.config kpmenu --daemon 2>/tmp/kpmenu.log&
 pidof swaylock || swaylock&
 pidof hypridle||hypridle&
+bg.sh --skip_download&
 pidof wl-paste ||wl-paste --watch cliphist-store&
 dex -a -s /etc/xdg/autostart/:~/.config/autostart/&
 systemctl --user restart sway-session.target
