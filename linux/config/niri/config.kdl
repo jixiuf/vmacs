@@ -500,7 +500,7 @@ window-rule {
     clip-to-geometry true
     open-on-workspace "main"
     // tiled-state true
-    opacity 0.90    
+    // opacity 0.90    
 }
 // forces default workspace to workspace 3 to creating a "scratchpad" and "main" on workspace 1,2,3
 
@@ -607,6 +607,13 @@ window-rule {
     match app-id="emacs"
     match app-id="foot-ws"
     default-column-width { proportion 0.618; }
+}
+window-rule {
+    match app-id="Alacritty"
+    match app-id="mitp"
+    match app-id="foot-ws"
+    match app-id="emacs"
+    opacity 0.75    
 }
 window-rule {
     match app-id=r#"firefox$"#
