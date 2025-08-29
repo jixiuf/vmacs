@@ -64,6 +64,7 @@
         "app_ids-mapping": {
           "dterm": "Alacritty",
           "foot-ws": "Alacritty",
+          "mitp": "Alacritty",
         },      
     },
   
@@ -420,12 +421,7 @@
       "tooltip-format": "video->gif(压缩)",
         "on-click": "/usr/local/bin/wf-record-action.sh 3"
     },
-  
-  
-  
-  
 }
-
- // Local Variables:
-//  eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart waybar" nil nil)) t)
-//  End:
+// Local Variables:
+// eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart waybar")) t)
+// End:

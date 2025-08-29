@@ -654,7 +654,6 @@ environment {
     DISPLAY ":0"                //for xwayland-satellite
 }
 spawn-at-startup "xwayland-satellite"
-spawn-at-startup "waybar"
 spawn-at-startup "sh" "-c" "niri-trace-focus >/tmp/niri-evt.log"
 spawn-at-startup "sh" "-c" "grep -q 'org.freedesktop.impl.portal.FileChooser=gtk;' /usr/share/xdg-desktop-portal/niri-portals.conf || echo 'org.freedesktop.impl.portal.FileChooser=gtk;' | sudo tee -a /usr/share/xdg-desktop-portal/niri-portals.conf > /dev/null"
 spawn-at-startup "onlogin"
