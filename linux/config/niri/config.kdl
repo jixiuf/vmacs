@@ -658,11 +658,11 @@ environment {
 // #blender audio     
     SDL_AUDIODRIVER "pipewire"
     ELECTRON_OZONE_PLATFORM_HINT "auto" //Electron > 28
-    DISPLAY ":0"                //for xwayland-satellite
+    // DISPLAY ":0"                //for xwayland-satellite
 }
-spawn-at-startup "xwayland-satellite"
-spawn-at-startup "sh" "-c" "niri-trace-focus >/tmp/niri-evt.log"
-spawn-at-startup "sh" "-c" "grep -q 'org.freedesktop.impl.portal.FileChooser=gtk;' /usr/share/xdg-desktop-portal/niri-portals.conf || echo 'org.freedesktop.impl.portal.FileChooser=gtk;' | sudo tee -a /usr/share/xdg-desktop-portal/niri-portals.conf > /dev/null"
+// spawn-at-startup "xwayland-satellite"
+spawn-sh-at-startup "niri-trace-focus >/tmp/niri-evt.log"
+spawn-sh-at-startup "grep -q 'org.freedesktop.impl.portal.FileChooser=gtk;' /usr/share/xdg-desktop-portal/niri-portals.conf || echo 'org.freedesktop.impl.portal.FileChooser=gtk;' | sudo tee -a /usr/share/xdg-desktop-portal/niri-portals.conf > /dev/null"
 spawn-at-startup "onlogin"
 
 
