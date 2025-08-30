@@ -89,6 +89,12 @@ gui-apps/xwayland-satellite ~amd64
 sys-devel/gcc ~amd64
 gui-apps/wev  ~amd64
 gui-apps/swww  ~amd64
+net-proxy/mitmproxy ~amd64
+dev-util/bpf-linker ~amd64
+net-proxy/mitmproxy-linux ~amd64
+net-proxy/mitmproxy-rs ~amd64
+net-analyzer/http-toolkit-bin ~amd64
+
 # Local Variables:
 # mode: conf
 # End:
