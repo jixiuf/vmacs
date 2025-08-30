@@ -20,15 +20,14 @@ URL_PREFIX_MAP = {
     "http://odobpkg.test.svc.luojilab.dc/":"http://127.0.0.1:17946/",
     "http://label-default.test.svc.luojilab.dc/":"http://127.0.0.1:3890/",
     "http://token-default.test.svc.luojilab.dc/":"http://token-default.test.svc.luojilab.dc/",
-    "https://dbs.luojilab.com/bsai/":"http://127.0.0.1:28767/bsai/",
+    # "https://dbs.luojilab.com/bsai/":"http://127.0.0.1:28767/bsai/",
+    "https://dbs.luojilab.com/bsai/":"http://10.1.0.140:8086/bsai/",
     "http://bschool.dev.didatrip.com/scrm/":"http://127.0.0.1:2654/scrm/",
     "http://bschool.dev.didatrip.com/b-school/bgate/":"http://127.0.0.1:2654/b-school/bgate/",
     "http://bschool.dev.didatrip.com/curriculum/":"http://127.0.0.1:3880/curriculum/",
     "http://quiz-activity.test.svc.luojilab.dc/quiz_activity/":"http://127.0.0.1:58658/quiz_activity/",
     "http://entree.dev.didatrip.com/quiz_activity/":"http://localhost:58658/quiz_activity/",
     "http://entree.dev.didatrip.com/ddpush/":"http://localhost:23587/ddpush/",
-    
-    
     # 填写你的映射字典
 }
 proxy_hosts = {
@@ -210,6 +209,9 @@ def request(flow: http.HTTPFlow) -> None:
                     # flow.request.headers["Xi-av"] = "12.3.1"
                     break  # 匹配到一个前缀后就不需要继续检查其他前缀
 
+# def response(flow):
+#     if "text/event-stream" in flow.response.headers.get("content-type", ""):
+#         flow.response.stream = True
 # def response(flow: http.HTTPFlow) -> None:
 #     # 添加 CORS 响应头
 #     flow.response.headers["Access-Control-Allow-Origin"] = "*"
