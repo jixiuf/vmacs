@@ -33,7 +33,9 @@ keymap:
       # Super-C-h: { launch: ["niri","msg","action","movetoworkspacesilent","special"] }
       # Super-C-M-h: { launch: ["niri","msg","action","togglespecialworkspace"] }
       Super-C-m: { launch: ["niri","msg","action","fullscreen-window"] }
-      # Super-C-o: { launch: ["niri","setprop active opaque toggle"] }
+      Super-C-o: { launch: ["niri","msg","action","toggle-window-rule-opacity"] }
+       
+
       # Super-M-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
       # Super-M-n: { launch: ["other-window"]}
       # Super-M-i: { launch: ["other-window","--reverse"]}
