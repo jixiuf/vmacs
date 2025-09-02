@@ -15,9 +15,9 @@
 (setq meow--kbd-kill-region "C-k")
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
-(setq meow-select-on-append t)
+(setq meow-select-on-append nil)
 (setq meow-select-on-change nil)
-(setq meow-select-on-insert t)
+(setq meow-select-on-insert nil)
 (setq meow-keypad-self-insert-undefined nil)
 ;; (setq meow-use-cursor-position-hack t)  ;a 的行为向后一字符,行尾会到下一行
 ;; (setq meow-keypad-leader-dispatch "C-c")

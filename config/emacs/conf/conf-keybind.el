@@ -96,10 +96,12 @@
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c:case)")
 
+(add-hook 'isearch-mode-end-hook
+          (lambda()
+            (when isearch-success ; 只有在搜索成功时
+              (set-mark isearch-other-end)
+              (activate-mark))))
 (add-hook 'isearch-mode-hook (lambda()(require 'xref)
-                               (when isearch-success ; 只有在搜索成功时
-                                 (set-mark isearch-other-end)
-                                 (activate-mark))
                                (if (equal emacs-major-version 30)
                                    (xref--push-markers (current-buffer) (point) )
                                  (xref--push-markers (current-buffer) (point) (selected-window))
