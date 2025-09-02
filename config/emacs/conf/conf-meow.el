@@ -192,7 +192,7 @@
                      '(regexp "`" "`"))
 (meow-thing-register 'go-package
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
-                     '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
+                     '(regexp "[[:space:]\"{}(),]\\|^" "[[:space:]\"(),{}]\\|$"))
 (meow-thing-register 'arguments
                      '(regexp "[(,]" "[),]")
                      '(regexp "[(,]" "[),]"))
