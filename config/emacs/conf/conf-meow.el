@@ -188,8 +188,8 @@
                      '(regexp "`\\|'\\|\"" "`\\|'\\|\"")
                      '(regexp "`\\|'\\|\"" "`\\|'\\|\""))
 (meow-thing-register 'grave-quoted
-                     '(regexp "`" "`\\|'")
-                     '(regexp "`" "`\\|'"))
+                     '(regexp "`" "`")
+                     '(regexp "`" "`"))
 (meow-thing-register 'go-package
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]")
                      '(regexp "[[:space:]\"{}(),\n]" "[[:space:]\"(),{}\n]"))
@@ -231,6 +231,7 @@
         (?e . symbol)
         (?x . sexp)
         (?f . defun)
+        (?h . defun)
         (?` . grave-quoted)
         (?' . quoted)
         (?q . quoted)

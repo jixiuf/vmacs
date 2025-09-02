@@ -33,6 +33,7 @@
 (defvar-keymap  m-mode-map              ;meow: m
   "4" #'toggle-truncate-lines
   "f" #'narrow-to-defun
+  "h" #'mark-defun
   "v" #'rectangle-mark-mode
   "q" #'fill-paragraph
   "s" #'gt-do-translate
