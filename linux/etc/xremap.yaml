@@ -44,7 +44,7 @@ modmap:
       capslock :
         held: [super_l,ctrl_l]
         free_hold: true
-        alone: f3 # Required
+        alone: f8 # Required
 #        alone_timeout_millis: 1000 # Optional
   - name: Not Emacs
     application:
@@ -461,7 +461,7 @@ keymap:
       
       # Super-M-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       Super-M-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
-      C-F3:
+      C-F8:
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
         - {sleep: 20 }
         - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }

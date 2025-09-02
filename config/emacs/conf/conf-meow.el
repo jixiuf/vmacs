@@ -16,6 +16,7 @@
 (setq meow-expand-hint-remove-delay 3)
 (setq meow-use-clipboard t)
 (setq meow-select-on-append t)
+(setq meow-select-on-change nil)
 (setq meow-select-on-insert t)
 (setq meow-keypad-self-insert-undefined nil)
 ;; (setq meow-use-cursor-position-hack t)  ;a 的行为向后一字符,行尾会到下一行
@@ -160,6 +161,14 @@
 
 (require 'meow)
 (meow-setup)
+
+(setq repeat-fu-preset 'meow)
+(add-hook 'meow-mode-hook
+   (lambda ()
+     (when (and (not (minibufferp)) (not (derived-mode-p 'special-mode)))
+       (repeat-fu-mode)
+       (define-key meow-normal-state-keymap (kbd "<f8>") 'repeat-fu-execute)
+       (define-key meow-insert-state-keymap (kbd "<f8>") 'repeat-fu-execute))))
 
 (when (require 'which-key nil t)
   (setq which-key-max-description-length 36)
@@ -479,7 +488,7 @@ Default is 'meow-normal-state-keymap' when PARENT is nil."
           (setq p p-inner)))
       (thread-first
         (meow--make-selection '(expand . block) m p)
-        (meow--select))
+        (meow--select t))
       (meow--maybe-highlight-num-positions '(meow--backward-block . meow--forward-block)))))
 
 (provide 'conf-meow)
