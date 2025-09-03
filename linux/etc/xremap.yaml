@@ -197,7 +197,8 @@ keymap:
       Super-M-v: Super-M-v
       Super-M-c: Super-M-c
       Super-M-w: [C-c,k] 
-      Super-M-t: [C-c ,C-t] 
+      # Super-M-t: [C-c ,C-t] 
+      C-t: [C-c ,C-t] 
       # Super-M-t: [C-c ,c] 
       # Super-C-n: [C-c ,n] 
       # Super-C-p: [C-c ,p] 
