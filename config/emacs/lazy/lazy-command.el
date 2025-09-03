@@ -555,20 +555,24 @@ numeric, repeat times.
 
 
 ;;;###autoload
-(defun vmacs-meow-repeat()
+(defun vmacs-meow-repeat ()
   (interactive)
-  (let ((changed t)
-        (cnt 0)
-        p)
+  ;; meow--selection
+  (let ((pattern (car regexp-search-ring))
+        (m (save-excursion (beginning-of-line) (point-marker)))
+        (cnt 0))
     (save-excursion
-      (while changed
-        (setq p (point))
-        (meow-search '(4))
-        (setq changed (not (= (point) p)))
-        (when changed
-          (call-interactively #'repeat-fu-execute)
-          (incf cnt 1))))
-    (message "[%s] %d edited" (car regexp-search-ring) cnt)))
+      (forward-symbol 1)
+      (while (re-search-forward pattern nil t)
+        (save-excursion
+          (call-interactively #'repeat-fu-execute)))
+      (incf cnt))
+    (goto-char (point-min))
+    (while (re-search-forward pattern m t)
+      (save-excursion
+        (call-interactively #'repeat-fu-execute))
+      (incf cnt)))
+  (message "[%s] %d changed" pattern cnt))
 
 ;; (defun vmacs-meow-iedit()
 ;;   (interactive)

@@ -136,7 +136,7 @@
    '("t" . meow-till)
    '("u" . meow-undo)
    '("U" . meow-undo-in-selection)
-   '("?" . isearch-backward)
+   '("?" . isearch-backward-regexp)
    '("C-r" . vmacs-meow-reverse)
    '("%" . vmacs-meow-reverse)
    '("s" . meow-mark-line)
