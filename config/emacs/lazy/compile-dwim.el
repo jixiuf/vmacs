@@ -400,11 +400,18 @@ that alist."
     ;; (call-process "ydotool" nil nil nil "key" "28:1" "28:0") ;return
     ;; (call-process "wl-copy" nil nil nil "--primary"  compile-command)
     (if current-prefix-arg
+        (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
+            (call-process "sh" nil nil nil "-c"
+                          (format "hypr-run-or-raise  --cd  'dterm' --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm --tmux-session dterm" compile-command))
+          (call-process "sh" nil nil nil "-c"
+                        (format "niri-run-or-raise  --cd  'dterm' --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm --tmux-session dterm" compile-command))
+          )
+      (if (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
+          (call-process "sh" nil nil nil "-c"
+                        (format "hypr-run-or-raise --workspace current --cd --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' 'foot.*|dterm|bterm|Alacritty|kitty' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=bterm --tmux-session bterm" compile-command))
         (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise --workspace current --cd --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' 'foot.*|dterm|bterm|Alacritty|kitty' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=bterm --tmux-session bterm" compile-command))
-        (call-process "sh" nil nil nil "-c"
-                      (format "hypr-run-or-raise  --cd  'dterm' --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=dterm --tmux-session dterm" compile-command))
-)))
+                      (format "niri-run-or-raise --workspace current --cd --auto-type '--key ctrl+u --key ctrl+l --type \"%s\" --key enter' 'foot.*|dterm|bterm|Alacritty|kitty' -- term.sh  --working-directory=$(cwd||echo $HOME) --class=foot-ws --tmux-session foot-ws" compile-command)))
+      )))
 
 ;; (defun term-compile ()
 ;;   (interactive)
