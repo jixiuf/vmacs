@@ -1,15 +1,15 @@
 ;;; -*- lexical-binding: t; -*-
 (autoload #'viper-ex  "viper" t)
-;https://github.com/meow-edit/meow/discussions/661
+;; https://github.com/meow-edit/meow/discussions/661
 (setq meow-next-thing-include-syntax
       '((word "w" "w")(symbol "w" "w")))
 (setq meow-expand-hint-counts
-  '((word . 4)
-    (line . 30)
-    (block . 30)
-    (find . 30)
-    (till . 30)
-    (symbol . 4)))
+      '((word . 4)
+        (line . 30)
+        (block . 30)
+        (find . 30)
+        (till . 30)
+        (symbol . 4)))
 
 ;; (setq meow--delete-region-function #'kill-region)
 (setq meow--kbd-kill-region "C-k")
@@ -161,14 +161,14 @@
 
 (require 'meow)
 (meow-setup)
-
+(diverted-mode)
 (setq repeat-fu-preset 'meow)
 (add-hook 'meow-mode-hook
-   (lambda ()
-     (when (and (not (minibufferp)) (not (derived-mode-p 'special-mode)))
-       (repeat-fu-mode)
-       (define-key meow-normal-state-keymap (kbd "<f8>") 'repeat-fu-execute)
-       (define-key meow-insert-state-keymap (kbd "<f8>") 'repeat-fu-execute))))
+          (lambda ()
+            (when (and (not (minibufferp)) (not (derived-mode-p 'special-mode)))
+              (repeat-fu-mode)
+              (define-key meow-normal-state-keymap (kbd "<f8>") 'repeat-fu-execute)
+              (define-key meow-insert-state-keymap (kbd "<f8>") 'repeat-fu-execute))))
 
 (when (require 'which-key nil t)
   (setq which-key-max-description-length 36)
@@ -220,7 +220,7 @@
                                    ("[\n\t ]*)" "[\n\t ]*\\]" "[\n\t ]*}" ) )
                      '(pair-regexp ("(" "\\[" "{" )
                                    (")" "\\]" "}" )))
- 
+
 (meow-thing-register 'sexp 'sexp 'sexp)
 (meow-thing-register 'word 'word 'word)
 (setq meow-char-thing-table
@@ -240,12 +240,12 @@
         (?c . code-block)
         (?o . org-block)
         (?\( . round)                    ;()
-          (?8 . round)                    ;()
-          (?9 . round)                    ;()
-          (?0 . round)
-          (?\) . round)                    ;()
+        (?8 . round)                    ;()
+        (?9 . round)                    ;()
+        (?0 . round)
+        (?\) . round)                    ;()
         (?\[ . square)                   ;[]
-          (?\] . square)                   ;[]
+        (?\] . square)                   ;[]
         (?{ . curly)                    ;{}
         (?c . code-block)                    ;{}
         ;; (?c . curly)                    ;{}
