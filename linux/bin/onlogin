@@ -15,4 +15,4 @@ pidof wl-paste ||wl-paste --watch cliphist-store&
 dex -a -s /etc/xdg/autostart/:~/.config/autostart/&
 systemctl --user restart sway-session.target
 systemctl --user restart emacs
-brightnessctl set 100%+
+brightnessctl set 60%+

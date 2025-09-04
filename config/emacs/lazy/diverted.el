@@ -58,6 +58,10 @@
 
 (defcustom diverted-events
   (list
+   (make-diverted-event :from 'vmacs-cancel-selection
+                        :to 'meow-pop-selection
+                        :breadcrumb
+                        #'diverted--pop-to-mark-command)
    (make-diverted-event :from 'meow-bounds-of-thing
                         :to 'indent-for-tab-command
                         :breadcrumb (lambda ()
@@ -100,7 +104,7 @@ For example:
   (dotimes (_ n)
     (pop-to-mark-command)))
 
-(defun diverted--advice-fun (_orig-fun &rest _r)
+(defun diverted--advice-fun (&optional _orig-fun &rest _r)
   "Get back to location prior to diversion.
 
 Use advice around `diverted-events' (ORIG-FUN and R)."
