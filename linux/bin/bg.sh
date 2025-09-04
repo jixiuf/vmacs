@@ -55,6 +55,11 @@ function download_new_pic() {
     fi
 }
 
+export NEW_IMG="$(find $DEST/ -type f | shuf -n1)"
+echo "Using new backgruond image $NEW_IMG"
+pidof swww-daemon ||swww-daemon
+swww img  $NEW_IMG&
+
 if [ -n "$skip_download" ]; then
     # Kick off the process
     move_old_pic
@@ -62,7 +67,3 @@ if [ -n "$skip_download" ]; then
 fi
 
 
-export NEW_IMG="$(find $DEST/ -type f | shuf -n1)"
-echo "Using new backgruond image $NEW_IMG"
-pidof swww-daemon ||swww-daemon
-swww img  $NEW_IMG&
