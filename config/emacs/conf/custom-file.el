@@ -76,6 +76,8 @@
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
    '((eval add-hook (make-local-variable 'after-save-hook)
+           #'(lambda nil (shell-command "systemctl --user restart waybar")) t)
+     (eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "gpg -d notmuch-config.gpg>notmuch-config")) t)
      (buffer-read-only . 1) (vc-default-patch-addressee . "bug-gnu-emacs@gnu.org")
      (eval add-hook (make-local-variable 'after-save-hook)
