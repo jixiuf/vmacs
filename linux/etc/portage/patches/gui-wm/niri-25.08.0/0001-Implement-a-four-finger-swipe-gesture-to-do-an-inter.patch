@@ -1,7 +1,7 @@
-From 32672598bfa343cca979d6765052c5a2727a8c43 Mon Sep 17 00:00:00 2001
+From cba25931d3f1374578fa80ca0e358d2518e494f4 Mon Sep 17 00:00:00 2001
 From: Isaac Mills <rooster0055@protonmail.com>
 Date: Sat, 5 Jul 2025 12:35:50 -0600
-Subject: [PATCH 1/2] Implement a four-finger swipe gesture to do an
+Subject: [PATCH 1/3] Implement a four-finger swipe gesture to do an
  interactive move of the focused window
 
 ---
@@ -25,7 +25,7 @@ index b7123e5f..582ac4dd 100644
              }
              PointerOrTouchStartData::Touch(start_data) => {
 diff --git a/src/input/mod.rs b/src/input/mod.rs
-index 6921eaa1..34b7e5c3 100644
+index 9fc48c09..f98d3395 100644
 --- a/src/input/mod.rs
 +++ b/src/input/mod.rs
 @@ -83,6 +83,61 @@ impl<D: SeatHandler> PointerOrTouchStartData<D> {
@@ -90,7 +90,7 @@ index 6921eaa1..34b7e5c3 100644
  impl State {
      pub fn process_input_event<I: InputBackend + 'static>(&mut self, event: InputEvent<I>)
      where
-@@ -2554,7 +2609,8 @@ impl State {
+@@ -2591,7 +2646,8 @@ impl State {
                                  button: button_code,
                                  location,
                              };
@@ -100,7 +100,7 @@ index 6921eaa1..34b7e5c3 100644
                              pointer.set_grab(self, grab, serial, Focus::Clear);
  
                              if !is_overview_open {
-@@ -3351,13 +3407,12 @@ impl State {
+@@ -3388,13 +3444,12 @@ impl State {
  
      fn on_gesture_swipe_begin<I: InputBackend>(&mut self, event: I::GestureSwipeBeginEvent) {
          if event.fingers() == 3 {
@@ -116,7 +116,7 @@ index 6921eaa1..34b7e5c3 100644
  
              // We handled this event.
              return;
-@@ -3408,17 +3463,14 @@ impl State {
+@@ -3445,17 +3500,14 @@ impl State {
  
          let is_overview_open = self.niri.layout.is_overview_open();
  
@@ -142,7 +142,7 @@ index 6921eaa1..34b7e5c3 100644
                          let output_ws = if is_overview_open {
                              self.niri.workspace_under_cursor(true)
                          } else {
-@@ -3436,15 +3488,73 @@ impl State {
+@@ -3473,15 +3525,73 @@ impl State {
                                  .layout
                                  .view_offset_gesture_begin(&output, Some(ws_idx), true);
                          }
@@ -217,7 +217,7 @@ index 6921eaa1..34b7e5c3 100644
          let timestamp = Duration::from_micros(event.time());
  
          let mut handled = false;
-@@ -3502,9 +3612,8 @@ impl State {
+@@ -3539,9 +3649,8 @@ impl State {
      }
  
      fn on_gesture_swipe_end<I: InputBackend>(&mut self, event: I::GestureSwipeEndEvent) {
@@ -228,7 +228,7 @@ index 6921eaa1..34b7e5c3 100644
          let res = self.niri.layout.workspace_switch_gesture_end(Some(true));
          if let Some(output) = res {
              self.niri.queue_redraw(&output);
-@@ -3523,12 +3632,25 @@ impl State {
+@@ -3560,12 +3669,25 @@ impl State {
              handled = true;
          }
  
@@ -427,10 +427,10 @@ index e939696b..d62891f2 100644
  
      fn gesture_pinch_begin(
 diff --git a/src/niri.rs b/src/niri.rs
-index c97153f1..191b7222 100644
+index 612d5417..5e881e03 100644
 --- a/src/niri.rs
 +++ b/src/niri.rs
-@@ -129,7 +129,7 @@ use crate::input::scroll_swipe_gesture::ScrollSwipeGesture;
+@@ -132,7 +132,7 @@ use crate::input::scroll_swipe_gesture::ScrollSwipeGesture;
  use crate::input::scroll_tracker::ScrollTracker;
  use crate::input::{
      apply_libinput_settings, mods_with_finger_scroll_binds, mods_with_mouse_binds,
@@ -439,7 +439,7 @@ index c97153f1..191b7222 100644
  };
  use crate::ipc::server::IpcServer;
  use crate::layer::mapped::LayerSurfaceRenderElement;
-@@ -359,7 +359,8 @@ pub struct Niri {
+@@ -362,7 +362,8 @@ pub struct Niri {
      pub notified_activity_this_iteration: bool,
      pub pointer_inside_hot_corner: bool,
      pub tablet_cursor_location: Option<Point<f64, Logical>>,
@@ -449,7 +449,7 @@ index c97153f1..191b7222 100644
      pub overview_scroll_swipe_gesture: ScrollSwipeGesture,
      pub vertical_wheel_tracker: ScrollTracker,
      pub horizontal_wheel_tracker: ScrollTracker,
-@@ -2630,7 +2631,9 @@ impl Niri {
+@@ -2655,7 +2656,9 @@ impl Niri {
              notified_activity_this_iteration: false,
              pointer_inside_hot_corner: false,
              tablet_cursor_location: None,

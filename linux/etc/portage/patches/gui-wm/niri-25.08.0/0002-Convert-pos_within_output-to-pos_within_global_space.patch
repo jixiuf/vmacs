@@ -1,7 +1,7 @@
-From 2410ef1060882c5fff0089e30c2fd87cffdb45ec Mon Sep 17 00:00:00 2001
+From eb6a1203de665fa990e6b0f6ce21d4656bb09f58 Mon Sep 17 00:00:00 2001
 From: Isaac Mills <rooster0055@protonmail.com>
 Date: Sat, 5 Jul 2025 13:34:03 -0600
-Subject: [PATCH 2/2] Convert pos_within_output to pos_within_global_space
+Subject: [PATCH 2/3] Convert pos_within_output to pos_within_global_space
 
 ---
  src/input/mod.rs       | 22 +++++++++++++++++-----
@@ -9,10 +9,10 @@ Subject: [PATCH 2/2] Convert pos_within_output to pos_within_global_space
  2 files changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/src/input/mod.rs b/src/input/mod.rs
-index 34b7e5c3..797411dd 100644
+index f98d3395..24db3f82 100644
 --- a/src/input/mod.rs
 +++ b/src/input/mod.rs
-@@ -3521,7 +3521,19 @@ impl State {
+@@ -3558,7 +3558,19 @@ impl State {
                                  })
                          };
                          if let Some((output, active_window)) = window {
@@ -33,7 +33,7 @@ index 34b7e5c3..797411dd 100644
                              if self.niri.layout.interactive_move_begin(
                                  active_window.clone(),
                                  &output,
-@@ -3612,8 +3624,10 @@ impl State {
+@@ -3649,8 +3661,10 @@ impl State {
      }
  
      fn on_gesture_swipe_end<I: InputBackend>(&mut self, event: I::GestureSwipeEndEvent) {
@@ -45,7 +45,7 @@ index 34b7e5c3..797411dd 100644
          let res = self.niri.layout.workspace_switch_gesture_end(Some(true));
          if let Some(output) = res {
              self.niri.queue_redraw(&output);
-@@ -3643,14 +3657,12 @@ impl State {
+@@ -3680,14 +3694,12 @@ impl State {
              handled = true;
          }
  
