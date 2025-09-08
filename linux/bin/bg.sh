@@ -60,7 +60,7 @@ echo "Using new backgruond image $NEW_IMG"
 pidof swww-daemon ||swww-daemon
 swww img  $NEW_IMG&
 
-if [ -n "$skip_download" ]; then
+if [ -z "$skip_download" ]; then
     # Kick off the process
     move_old_pic
     download_new_pic
