@@ -6,14 +6,12 @@
 # http://schallis.com/2011/mar/20/nasa-astronomy-picture-of-the-day-background/
 skip_download="$1"
 DEST='/home/jixiuf/Documents/jianguo/jianguo/wallpaper'
-NAME='img.jpg'
 NAME_COPY='imgcopy.jpg'
 BASE='http://apod.nasa.gov'
-ARCHIVE_DIR=''
 DATE=`date "+%Y%m%d"`
+NAME="$DATE-img.jpg"
 
-KEEP_ARCHIVE=true
-MAKE_COPY=false
+# KEEP_ARCHIVE=true
 
 function ensure_dir() {
     # Check if passed directory exists
@@ -24,46 +22,46 @@ function ensure_dir() {
     fi
 }
 
-function move_old_pic() {
-    # If the user has chosen to archive old pictures then move them to an
-    # archive directory. Otherwise they will be overwritten
-    ensure_dir $ARCHIVE_DIR
-    if [ -f "$DEST/$NAME" ]; then
-        echo "Archiving old picture ..."
-        $KEEP_ARCHIVE && mv "$DEST/$NAME" "$DEST/$ARCHIVE_DIR/$DATE-$NAME"
-    fi
-}
-
 function download_new_pic() {
-    # Get a fresch picture from NASA
-    echo "Downloading new picture ..."
+    local TEMP_FILE=$(mktemp)  # 创建临时文件
+    # 下载新图片到临时文件
+    echo "Downloading new picture to temp file ..."
     wget -qO- http://apod.nasa.gov/apod/ |
         grep "href=\"image" | head -n 1 |
-        sed "s;.*\"\(.*\)\".*; wget -O $DEST/$NAME $BASE/\1;" |
+        sed "s;.*\"\(.*\)\".*; wget -O $TEMP_FILE $BASE/\1;" |
         bash -
 
-    # Copy the image if needed
-    $MAKE_COPY &&
-        echo "Copying picture ..." &&
-        cp "$DEST/$NAME" "$DEST/$NAME_COPY"
-
-    # Remove the copy the user decides they do not want one anymore
-    if [ -f "$DEST/$NAME_COPY" ]; then
-        $MAKE_COPY ||
-            (echo "Removing copy ..." &&
-            rm "$DEST/$NAME_COPY")
+    # 检查下载是否成功
+    if [ ! -s "$TEMP_FILE" ]; then
+        echo "Download failed or empty file."
+        rm "$TEMP_FILE"
+        return 1
     fi
+
+    # 如果目标文件存在，比较MD5哈希
+    if [ -f "$DEST/$NAME" ]; then
+        local old_md5=$(md5sum "$DEST/$NAME" | awk '{print $1}')
+        local new_md5=$(md5sum "$TEMP_FILE" | awk '{print $1}')
+        if [ "$old_md5" = "$new_md5" ]; then
+            echo "Image unchanged, skipping download."
+            rm "$TEMP_FILE"
+            return 0
+        fi
+    fi
+
+    # 图片不同，移动旧图片到归档目录
+    # move_old_pic
+
+    # 移动临时文件到目标位置
+    mv "$TEMP_FILE" "$DEST/$NAME"
 }
 
 export NEW_IMG="$(find $DEST/ -type f | shuf -n1)"
 echo "Using new backgruond image $NEW_IMG"
-pidof swww-daemon ||swww-daemon
-swww img  $NEW_IMG&
+pidof swww-daemon || swww-daemon
+swww img $NEW_IMG&
 
 if [ -z "$skip_download" ]; then
-    # Kick off the process
-    move_old_pic
+    # 触发下载过程
     download_new_pic
 fi
-
-
