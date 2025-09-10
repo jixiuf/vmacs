@@ -64,7 +64,19 @@
   "c" #'vcgit-continue                 ;
   "a" #'vcgit-abort
   "s" #'vcgit-skip)
-
+(defvar-keymap  vc-diff-map
+  "d" #'vc-diff
+  "o" #'vc-diff-outgoing
+  "O" #'vc-root-diff-outgoing
+  "i" #'vc-diff-incoming
+  "I" #'vc-root-diff-incoming
+  "b" #'vc-diff-outgoing-base
+  "B" #'vc-root-diff-outgoing-base
+  "m" #'vc-diff-mergebase
+  )
+(defvar-keymap  log-view-diff-map
+  :parent vc-diff-map
+  "d" #'log-view-diff)
 (defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
 
 (defvar-keymap  vc-cherry-pick-map
@@ -90,6 +102,7 @@
   "m" #'vc-merge)
 ;; ;git machine 的实现，顺序的遍历当前文件的历史
 (global-set-key (kbd "M-p") 'vc-annotate)
+(global-set-key (kbd "C-c vd") vc-diff-map)
 (global-set-key (kbd "C-c vg") #'vc-annotate)
 ;; (global-set-key (kbd "C-c vd") #'magit-status)
 (global-set-key (kbd "C-c vj") #'vc-dir-root) ;like dired-jump
@@ -130,7 +143,7 @@
   (define-key vc-dir-mode-map (kbd "M-n") #'outline-next-visible-heading)
   (define-key vc-dir-mode-map (kbd "M-p") #'outline-previous-visible-heading)
   (define-key vc-dir-mode-map (kbd "C-i") #'vc-diff)
-  (define-key vc-dir-mode-map (kbd "d") #'vc-diff)
+  (define-key vc-dir-mode-map (kbd "d") vc-diff-map)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
   (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map) ;my q for meow-motion
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
@@ -169,22 +182,7 @@
       (let ((gitdir (vc-git--git-path)))
         (setq msg (string-trim-left msg "VC backend : Git\n")) ;
         ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
-        (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))
-        (when (< emacs-major-version 31)
-          (when (file-exists-p
-	             (expand-file-name "rebase-apply/applying" gitdir))
-            (setq msg (concat msg (propertize  "\nApply     : in progress"
-                                               'face 'vc-dir-status-warning))))
-          (when (file-exists-p (expand-file-name "MERGE_HEAD" gitdir))
-            (setq msg (concat msg (propertize  "\nMerge     : in progress"
-                                               'face 'vc-dir-status-warning))))
-          (when (file-exists-p (expand-file-name "REVERT_HEAD" gitdir))
-            (setq msg (concat msg (propertize  "\nRevert     : in progress"
-                                               'face 'vc-dir-status-warning))))
-          (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
-            (setq msg (concat msg (propertize  "\nCherry-Pick     : in progress"
-                                               'face 'vc-dir-status-warning)))))
-        ))
+        (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))))
     msg))
 (with-eval-after-load 'outline
   (keymap-unset outline-overlay-button-map "RET" t))
@@ -198,6 +196,7 @@
   (define-key log-view-mode-map (kbd "M-w") #'log-view-kill-revision)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
   (define-key log-view-mode-map (kbd "b") vc-branch-map)
+  (define-key log-view-mode-map (kbd "d") log-view-diff-map)
   (define-key log-view-mode-map (kbd "v") vc-push-map)
   (define-key log-view-mode-map (kbd "o") #'vc-switch-project)
   (define-key log-view-mode-map (kbd "r") vc-r-map)

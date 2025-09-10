@@ -172,42 +172,14 @@ If the branch is not tracking a remote branch, return nil."
    vc-git-log-view-mode-map
    code))
 
-(defun vcgit-incoming-revision (remote-location)
-  (when (eq this-command 'vc-log-incoming)
-    (vc-git-command nil 0 nil "fetch"
-                    (and (not (string-empty-p remote-location))
-                         ;; Extract remote from "remote/branch".
-                         (replace-regexp-in-string "/.*" ""
-                                                   remote-location))))
-  (ignore-errors              ; in order to return nil if no such branch
-    (with-output-to-string
-      (vc-git-command standard-output 0 nil
-                      "log" "--max-count=1" "--pretty=format:%H"
-                      (if (string-empty-p remote-location)
-			              "@{upstream}"
-		                remote-location)))))
 
- ;; for emacs30
-(defun vc-git-log-incoming (buffer &optional remote-location)
-  "Run git fetch async."
-  (vc-setup-buffer buffer)
-  (when (vcgit--tracking-branch)
-    (when (eq this-command 'vc-log-incoming)
-      (vc-git-command nil 0 nil "fetch"
-                      (unless (string= remote-location "")
-                        ;; `remote-location' is in format "repository/branch",
-                        ;; so remove everything except a repository name.
-                        (replace-regexp-in-string
-                         "/.*" "" remote-location))))
-    (apply #'vc-git-command buffer 'async nil
-           `("log"
-             "--no-color" "--graph" "--decorate" "--date=short"
-             ,(format "--pretty=tformat:%s" (car vc-git-root-log-format))
-             "--abbrev-commit"
-             ,@(ensure-list vc-git-shortlog-switches)
-             ,(concat "HEAD.." (if (string= remote-location "")
-			                       "@{upstream}"
-		                         remote-location))))))
+(defun vc-default-log-incoming (_backend buffer upstream-location)
+  (vc--with-backend-in-rootdir ""
+    (let ((incoming (vc--incoming-revision backend upstream-location
+                                           (if (eq this-command 'vc-log-incoming) 'refresh nil))))
+      (vc-call-backend backend 'print-log (list rootdir) buffer t
+                       incoming
+                       (vc-call-backend backend 'mergebase incoming)))))
 (defun vcgit--outline-level ()
   (if (string-match-p vcgit-outline-level2-regexp
                       (match-string 0))
@@ -321,11 +293,10 @@ If the branch is not tracking a remote branch, return nil."
           (define-key vc-dir-mode-map (kbd "C-i") #'vc-diff))
         (with-eval-after-load 'log-view
           (define-key log-view-mode-map (kbd "C-i") #'log-view-diff))
-        (advice-add 'vc-git-incoming-revision :override 'vcgit-incoming-revision)
+        ;; (advice-add 'vc-git-incoming-revision :override 'vcgit-incoming-revision)
         (add-hook 'vc-dir-refresh-hook #'vcgit--dir-refresh))
-    (advice-remove 'vc-git-incoming-revision  'vcgit--log-incoming)
+    ;; (advice-remove 'vc-git-incoming-revision  'vcgit--log-incoming)
     (remove-hook 'vc-dir-refresh-hook #'vcgit--dir-refresh)))
-
 
 (provide 'vcgit)
 
