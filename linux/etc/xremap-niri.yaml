@@ -10,7 +10,8 @@ keymap:
       Super-M-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime"] }
       # Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
       Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
-      Super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass"," /opt/compass/usr/bin/mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
+      Super-M-9: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
+      Super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
 
       Super-M-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh  --title=mimtproxy --class=mitp  -- mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
       # Super-M-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
