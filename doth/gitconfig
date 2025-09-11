@@ -190,3 +190,5 @@
 # [difftool "ediff"]
 # 	cmd = emacsclient --eval \"(ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" )\"
 
+[commit]
+	gpgsign = true
