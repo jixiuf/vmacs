@@ -2,6 +2,7 @@
 [user]
 	name = jixiuf
 	email = jixiuf@qq.com
+	signingkey = jixiuf
 [sendemail]
 	smtpserver = smtp.qq.com
 	smtpuser = jixiuf@qq.com

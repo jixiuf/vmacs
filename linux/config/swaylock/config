@@ -1,29 +1,31 @@
 # daemonize
-show-failed-attempts
 image=/tmp/screenlock.jpg
-color=1f1d2e80
-indicator-radius=70
-indicator-thickness=15
-line-color=1f1d2e
-ring-color=191724
-inside-color=1f1d2e
-key-hl-color=eb6f92
-separator-color=00000000
-text-color=e0def4
-text-caps-lock-color=""
-line-ver-color=eb6f92
-ring-ver-color=eb6f92
-inside-ver-color=1f1d2e
-text-ver-color=e0def4
-ring-wrong-color=31748f
-text-wrong-color=31748f
-inside-wrong-color=1f1d2e
-inside-clear-color=1f1d2e
-text-clear-color=e0def4
-ring-clear-color=9ccfd8
-line-clear-color=1f1d2e
-line-wrong-color=1f1d2e
-bs-hl-color=31748f
+show-failed-attempts
 ignore-empty-password
+scaling=fill
+# font=Roboto 
+indicator-radius=200
+indicator-thickness=25
+line-uses-ring
 
-#24 HRS clock format and standard Europe Date Format
+bs-hl-color=ff79c6
+key-hl-color=50fa7b
+separator-color=f8f8f2
+color=282a36
+inside-color=282a36cc
+ring-color=bd93f9
+text-color=f8f8f2
+
+inside-clear-color=282a36cc
+ring-clear-color=f1fa8c
+text-clear-color=f8f8f2
+
+inside-wrong-color=282a36cc
+ring-wrong-color=ff5555
+text-wrong-color=f8f8f2
+
+inside-ver-color=282a36cc
+ring-ver-color=50fa7b
+text-ver-color=f8f8f2
+
+
