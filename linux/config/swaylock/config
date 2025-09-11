@@ -1,5 +1,6 @@
 # daemonize
 show-failed-attempts
+image=/tmp/screenlock.jpg
 color=1f1d2e80
 indicator-radius=70
 indicator-thickness=15

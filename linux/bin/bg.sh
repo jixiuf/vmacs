@@ -60,7 +60,7 @@ export NEW_IMG="$(find $DEST/ -type f | shuf -n1)"
 echo "Using new backgruond image $NEW_IMG"
 pidof swww-daemon || swww-daemon
 swww img $NEW_IMG&
-
+ln -sf $NEW_IMG /tmp/screenlock.jpg
 if [ -z "$skip_download" ]; then
     # 触发下载过程
     download_new_pic
