@@ -3,7 +3,7 @@ Description=Runs bg.sh every day
 
 [Timer]
 OnBootSec=0min
-OnUnitActiveSec=1440min
+OnUnitActiveSec=60min
 
 [Install]
 WantedBy=timers.target
