@@ -606,7 +606,7 @@ window-rule {
 window-rule {
     match app-id="emacs"
     match app-id="foot-ws"
-    default-column-width { proportion 0.618; }
+    default-column-width { proportion 0.718; }
 }
 window-rule {
     match app-id="Alacritty"
