@@ -66,15 +66,20 @@
   "s" #'vcgit-skip)
 (defvar-keymap  vc-diff-map
   "d" #'vc-diff
-  "o" #'vc-diff-outgoing
-  "O" #'vc-root-diff-outgoing
-  "i" #'vc-diff-incoming
-  "I" #'vc-root-diff-incoming
-  "b" #'vc-diff-outgoing-base
-  "B" #'vc-root-diff-outgoing-base
-  "m" #'vc-diff-mergebase
-  "v" #'vc-version-diff
-  "V" #'vc-root-version-diff
+  "b" #'vc-diff-mergebase
+
+  ;; unpulled
+  "f" #'vc-diff-incoming
+  "F" #'vc-root-diff-incoming
+
+  ;; unpushed
+  "v" #'vc-diff-outgoing
+  "V" #'vc-root-diff-outgoing
+  "c" #'vc-diff-outgoing-base           ;Uncommitted changes are included
+  "C" #'vc-root-diff-outgoing-base
+
+  "r" #'vc-version-diff
+  "R" #'vc-root-version-diff
   )
 (defvar-keymap  log-view-diff-map
   :parent vc-diff-map

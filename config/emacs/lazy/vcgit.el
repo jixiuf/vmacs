@@ -186,7 +186,7 @@ If the branch is not tracking a remote branch, return nil."
       2 1))
 (defun vcgit--goto-stage ()
   (goto-char (point-min))
-  (when (re-search-forward "^[ ]+./$")
+  (when (re-search-forward "^[ ]+./$" nil t)
     (goto-char (point-at-bol))))
 
 (defun vcgit-todo-open-file-at-line ()
