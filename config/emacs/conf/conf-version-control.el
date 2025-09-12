@@ -73,6 +73,8 @@
   "b" #'vc-diff-outgoing-base
   "B" #'vc-root-diff-outgoing-base
   "m" #'vc-diff-mergebase
+  "v" #'vc-version-diff
+  "V" #'vc-root-version-diff
   )
 (defvar-keymap  log-view-diff-map
   :parent vc-diff-map
