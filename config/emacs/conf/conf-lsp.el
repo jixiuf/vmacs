@@ -18,6 +18,7 @@
 
 (defun vmacs-lsp-hook()
   (copilot-mode)
+  (which-function-mode)
   ;; (eglot-ensure)
   (when (eglot-managed-p)
     (eldoc-mode)
