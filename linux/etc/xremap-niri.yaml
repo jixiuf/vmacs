@@ -13,7 +13,8 @@ keymap:
       Super-M-9: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
       Super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
 
-      Super-M-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh  --title=mimtproxy --class=mitp  -- mitmproxy -p 8888  --mode socks5@8889 --mode regular@8888 -s ~/.mitmproxy/rewrite.py"] }
+      # mitmweb --mode wireguard
+      Super-M-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh  --title=mimtproxy --class=mitp  -- mitmproxy"] }
       # Super-M-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
       # Super-M-d:     { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
       Super-M-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }

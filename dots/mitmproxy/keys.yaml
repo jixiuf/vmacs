@@ -1,4 +1,21 @@
 -
-  key: c
-  cmd: export.file curl @focus /tmp/mitm.curl
   # 导出curl 到 /tmp/mitm.curl
+  key: c
+  # cmd: export.file curl @focus /tmp/mitm.curl
+  cmd: export.clip curl @focus
+  help: "export curl to clipboard"
+- key: y
+  # cmd: export.file curl @focus /tmp/mitm.curl
+  cmd: export.clip raw_request @focus
+  help: "export request to clipboard"
+
+- key: z
+  cmd: view.clear
+  ctx: ["flowlist"]
+  help: "clear all flows without confirm"
+
+
+# C: 列有所有可用命令
+# ？ keybinding
+# K keybinding
+

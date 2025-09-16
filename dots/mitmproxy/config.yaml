@@ -2,11 +2,18 @@
 console_eventlog_verbosity: error
 console_mouse: false
 console_palette: solarized_dark
-listen_port: 8888
+# listen_port: 8888
 # allow_hosts:
 #   - entree.igetget.com
 #   - entree.dev.didatrip.com
 #   - entree-ws.igetget.com
 #   - entree-ali.igetget.com
 # view_filter: "~dst entree"
-view_filter: "!jp.?g !png !ctrl !logs !ddph !traces "
+view_filter: "!~udp !~dns !jp.?g !png !ctrl !logs !ddph !traces !ddns "
+console_flowlist_layout: table
+# console_focus_follow: true
+# --mode socks5@8889 --mode regular@8888  --mode wireguard@8890 --mode dns@53530
+mode: [ "socks5@8889" ,"regular@8888","wireguard@8890", "dns@53530"]
+showhost: true
+view_order_reversed: true
+scripts: [ "~/.mitmproxy/rewrite.py" ]
