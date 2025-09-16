@@ -76,7 +76,7 @@ function call_emacsclient(){
             if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
                 hyprctl  dispatch "focuswindow emacs"
             elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
-                emacs_id=$(niri msg -j  windows |jq  -cr ".[]|select(.app_id == \"emacs\")")
+                emacs_id=$(niri msg -j  windows |jq  -cr ".[]|select(.app_id == \"emacs\")|.id")
                 niri msg  action focus-window --id ${emacs_id}
             elif  [ "$XDG_SESSION_DESKTOP" == "sway" ]; then
                 swaymsg "[app_id=\"emacs\"] focus"
