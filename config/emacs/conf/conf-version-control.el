@@ -67,6 +67,7 @@
 (defvar-keymap  vc-diff-map
   "d" #'vc-diff
   "b" #'vc-diff-mergebase
+  "g" #'vc-root-diff
 
   ;; unpulled
   "f" #'vc-diff-incoming
