@@ -1009,20 +1009,13 @@ Move point to end-of-line ,if point was already at that position,
     (cond
 	 ((string-prefix-p "*pager" (buffer-name ))
       (kill-current-buffer)
-	  (when  window-system
-        (when (string-equal (getenv "XDG_SESSION_DESKTOP") "niri")
-          (call-process "niri-focus-last-win" nil nil nil
-                        "--move-to-current-workspace-if-special"
-                        "--skip-class" "emacs"
-                        "--hide-front-special-window"))
-        (when (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland")
-          (call-process "hypr-focus-last-win" nil nil nil
-                        "--move-to-current-workspace-if-special"
-                        "--disable-front-fullscreen"
-                        "--hide-front-special-window")  )
-        )
-      (unless window-system
-        (delete-frame)))
+	  (when (and window-system
+				 (string-equal (getenv "XDG_SESSION_DESKTOP") "Hyprland"))
+        (call-process "hypr-focus-last-win" nil nil nil
+                      "--move-to-current-workspace-if-special"
+                      "--disable-front-fullscreen"
+                      "--hide-front-special-window"))
+      (delete-frame))
      ((equal (buffer-name) "*scratch*")
       (save-buffer)
       (kill-current-buffer))

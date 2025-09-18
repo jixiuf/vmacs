@@ -109,7 +109,7 @@
 ;; (global-set-key (kbd "M-n") 'magit-blob-next)
 
 (define-key magit-status-mode-map (kbd "s-w") 'vmacs-magit-kill-buffers)
-(define-key magit-status-mode-map (kbd "s-M-w") 'vmacs-magit-kill-buffers)
+(define-key magit-status-mode-map (kbd "s-C-w") 'vmacs-magit-kill-buffers)
 (defun vmacs-magit-kill-buffers ()
   "Restore window configuration and kill all Magit buffers."
   (interactive)

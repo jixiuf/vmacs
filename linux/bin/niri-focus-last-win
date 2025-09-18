@@ -6,7 +6,7 @@ TEMP=$( getopt --options h --longoptions skip-class:,hide-front-floating,hide-fr
 eval set -- "$TEMP"
 scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
 # scratchpad_workspace_id=10
-skip_class="undefined"
+skip_class=""
 hide_front_special_window=""
 hide_front_floating=""
 disable_front_fullscreen=""

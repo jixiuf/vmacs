@@ -44,7 +44,7 @@ if [ -n "$class" ]; then
     # fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
     if [[ "$class" = "emacs"  ]]; then
         sleep 0.1
-        echo key super+alt+m|dotoolc
+        echo key ctrl+super+m|dotoolc
     elif [[ "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = *"term"* ]]; then
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         if [[ "$title" == "TMUX:"* ]]; then

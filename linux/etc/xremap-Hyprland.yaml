@@ -3,51 +3,51 @@ keymap:
   - name: Global
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      Super-M-e: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --  ^emacs$  emacsclient -c -r -n"] }
-      Super-M-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' firefox-bin"] }
-      # Super-M-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
+      super-C-e: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --  ^emacs$  emacsclient -c -r -n"] }
+      super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' firefox-bin"] }
+      # super-C-f: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
       
-      Super-M-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise --toggle apifox-pdv /opt/Apifox/apifox-pdv -- --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
-      # Super-M-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
-      Super-M-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass|DBeaver' dbeaver"] }
-      Super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass'  mongodb-compass -- --ignore-additional-command-line-flags --password-store=\"gnome-libsecret\""] }
+      super-C-5: { launch: ["hyprctl","dispatch","exec", "hypr-run-or-raise --toggle apifox-pdv /opt/Apifox/apifox-pdv -- --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
+      # super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
+      super-C-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass|DBeaver' dbeaver"] }
+      super-M-6: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'MongoDB Compass'  mongodb-compass -- --ignore-additional-command-line-flags --password-store=\"gnome-libsecret\""] }
 
-      Super-M-dot: { launch: ["hyprctl","dispatch","exec","EDITOR=ec hypr-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
-      # Super-M-e:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
-      Super-M-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true  'dterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
-      Super-M-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
-      Super-C-M-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --tmux-session $RANDOM"] }
-      Super-M-comma: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --workspace 4 --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
-      Super-M-g: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle wechat /opt/bin/wechat" ] }
-      Super-M-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'Bytedance-lark|Bytedance-feishu|^飞书$' -- bytedance-feishu-stable  -- --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime 2>&1" ] }
-      Super-M-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle org.gnome.Nautilus nautilus"] }
-      # Super-C-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      # Super-C-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      Super-M-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise  --toggle --move-to-current-workspace-if-floating --hide-front-floating-window org.keepassxc.KeePassXC keepassxc"] }
-      Super-C-f: { launch: ["hyprctl","dispatch","togglefloating"] }
-      Super-C-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
-      Super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
-      Super-M-1: { launch: ["hypr-kill-other-window"] }
-      Super-C-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
-      Super-C-o: { launch: ["hyprctl","setprop active opaque toggle"] }
+      super-C-dot: { launch: ["hyprctl","dispatch","exec","EDITOR=ec hypr-run-or-raise --toggle mitp -- term.sh --class=mitp  -- ~/venv/bin/mitmproxy -p 8888  --mode socks5 -s ~/.mitmproxy/rewrite.py"] }
+      # super-C-e:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
+      super-C-d:     { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true  'dterm' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
+      super-C-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
+      super-C-M-Enter: { launch: ["hyprctl","dispatch","exec", "term.sh   --tmux-session $RANDOM"] }
+      super-C-comma: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --workspace 4 --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      super-C-g: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle wechat /opt/bin/wechat" ] }
+      super-C-3: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle 'Bytedance-lark|Bytedance-feishu|^飞书$' -- bytedance-feishu-stable  -- --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime 2>&1" ] }
+      super-C-0: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise --toggle org.gnome.Nautilus nautilus"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      super-C-8: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise  --toggle --move-to-current-workspace-if-floating --hide-front-floating-window org.keepassxc.KeePassXC keepassxc"] }
+      super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
+      super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
+      super-C-M-h: { launch: ["hyprctl","dispatch","togglespecialworkspace"] }
+      super-C-1: { launch: ["hypr-kill-other-window"] }
+      super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
+      super-M-o: { launch: ["hyprctl","setprop active opaque toggle"] }
 
-      Super-M-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
-      Super-M-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
-      Super-M-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
+      super-C-n: { launch: ["hyprctl","dispatch" ,"workspace","m+1"]}
+      super-C-p: { launch: ["hyprctl","dispatch" ,"workspace","m-1"]}
+      Super-C-Tab: { launch: ["hyprctl","dispatch","exec","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["hypr-focus-last-win","--move-to-current-workspace-if-special","--disable-front-fullscreen","--hide-front-special-window"]}
       # 窗口大小调整 space+ 箭头
-      Super-M-l: { launch: ["resize-window" ,"right"]}
-      Super-M-h: { launch: ["resize-window" ,"left"]}
-      Super-M-k: { launch: ["resize-window" ,"up"]}
-      Super-M-j: { launch: ["resize-window" ,"down"]}
+      super-C-l: { launch: ["resize-window" ,"right"]}
+      super-C-h: { launch: ["resize-window" ,"left"]}
+      super-C-k: { launch: ["resize-window" ,"up"]}
+      super-C-j: { launch: ["resize-window" ,"down"]}
 
-      Super-C-Backspace: { launch: ["hyprctl" ,"dispatch","layoutmsg","rollnext"]}
-      Super-C-Backslash: { launch: ["hyprctl" ,"dispatch","layoutmsg","rollnext"]}
-      Super-C-Enter: { launch: ["hyprctl" ,"dispatch","layoutmsg","orientationnext"]}
-      Super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
-      Super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
-      Super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
-      Super-C-M-d: { launch: ["hyprctl" ,"dispatch","movetoworkspacesilent","empty"]}
+      super-M-Backspace: { launch: ["hyprctl" ,"dispatch","layoutmsg","rollnext"]}
+      super-M-Backslash: { launch: ["hyprctl" ,"dispatch","layoutmsg","rollnext"]}
+      super-M-Enter: { launch: ["hyprctl" ,"dispatch","layoutmsg","orientationnext"]}
+      super-C-M-n: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r+1"]}
+      super-C-M-p: { launch: ["hyprctl" ,"dispatch","movetoworkspace","r-1"]}
+      super-C-M-e: { launch: ["hyprctl" ,"dispatch","movetoworkspace","empty"]}
+      super-C-M-d: { launch: ["hyprctl" ,"dispatch","movetoworkspacesilent","empty"]}
   - name: Emacs
     application:
       only: [emacs,Emacs]

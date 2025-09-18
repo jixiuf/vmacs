@@ -679,11 +679,11 @@ binds {
 
     // Mod-Shift-/, which is usually the same as Mod-?,
     // shows a list of important hotkeys.
-    Super+Ctrl+Slash { show-hotkey-overlay; } //help
+    Super+Alt+Slash { show-hotkey-overlay; } //help
    // TouchpadScrollLeft { spawn "alacritty";  }
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
-    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }    
+    Mod+Ctrl+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }    
     // Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     // Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 
@@ -709,16 +709,16 @@ binds {
     // or do a four-finger swipe up on a touchpad.
     // Mod+O repeat=false { toggle-overview; }
 
-    Super+Alt+Q { close-window; }
+    Super+Ctrl+Q { close-window; }
 
-    Super+Ctrl+Left  { focus-column-left; }
-    Super+Ctrl+Down  { focus-window-down; }
-    Super+Ctrl+Up    { focus-window-up; }
-    Super+Ctrl+Right { focus-column-right; }
-    Super+Ctrl+H     { focus-column-left; }
-    Super+Ctrl+L     { focus-column-right; }
-    Super+Ctrl+J     { focus-window-or-workspace-down; }
-    Super+Ctrl+K     { focus-window-or-workspace-up; }
+    Super+Alt+Left  { focus-column-left; }
+    Super+Alt+Down  { focus-window-down; }
+    Super+Alt+Up    { focus-window-up; }
+    Super+Alt+Right { focus-column-right; }
+    Super+Alt+H     { focus-column-left; }
+    Super+Alt+L     { focus-column-right; }
+    Super+Alt+J     { focus-window-or-workspace-down; }
+    Super+Alt+K     { focus-window-or-workspace-up; }
     // Super+Ctrl+P     { focus-column-left; }
     // Super+Ctrl+N     { focus-column-right; }
 
@@ -865,9 +865,9 @@ binds {
     // Mod+BracketRight { consume-or-expel-window-right; }
 
     // Consume one window from the right to the bottom of the focused column.
-    Super+Ctrl+Comma  { consume-window-into-column; }
+    Super+Alt+Comma  { consume-window-into-column; }
     // Expel the bottom window from the focused column to the right.
-    Super+Ctrl+Period { expel-window-from-column; }
+    Super+Alt+Period { expel-window-from-column; }
 
     // Super+Ctrl+H { switch-preset-column-width; }
     // Super+Ctrl+K { switch-preset-window-height; }
@@ -880,7 +880,7 @@ binds {
     // Makes the column "fill the rest of the space".
     // Mod+Alt+A { expand-column-to-available-width; }
 
-    Super+Ctrl+E { center-column; }
+    Super+Alt+E { center-column; }
 
     // Center all fully visible columns on screen.
     // Mod+Ctrl+C { center-visible-columns; }
@@ -893,12 +893,12 @@ binds {
     // * adjust width as a percentage of screen width: "-10%" or "+10%"
     // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
     // set-column-width "100" will make the column occupy 200 physical screen pixels.
-    Super+Ctrl+Minus { set-column-width "-10%"; }
-    Super+Ctrl+Equal { set-column-width "+10%"; }
+    Super+Alt+Minus { set-column-width "-10%"; }
+    Super+Alt+Equal { set-column-width "+10%"; }
 
     // Finer height adjustments when in column with other windows.
-    Super+Ctrl+Shift+Minus { set-window-height "-10%"; }
-    Super+Ctrl+Shift+Equal { set-window-height "+10%"; }
+    Super+Alt+Shift+Minus { set-window-height "-10%"; }
+    Super+Alt+Shift+Equal { set-window-height "+10%"; }
 
     // Move the focused window between the floating and the tiling layout.
     // Mod+V       { toggle-window-floating; }
@@ -907,7 +907,7 @@ binds {
     // Toggle tabbed column display mode.
     // Windows in this column will appear as vertical tabs,
     // rather than stacked on top of each other.
-    Super+Ctrl+T { toggle-column-tabbed-display; }
+    Super+Alt+T { toggle-column-tabbed-display; }
 
     // Actions to switch layouts.
     // Note: if you uncomment these, make sure you do NOT have

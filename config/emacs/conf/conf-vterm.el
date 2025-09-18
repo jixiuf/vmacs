@@ -87,7 +87,7 @@
   (goto-char (point-max))
   (skip-chars-backward "\n[:space:]"))
 
-(define-key vterm-mode-map (kbd "s-M-u") 'vterm-toggle)
+(define-key vterm-mode-map (kbd "s-C-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "s-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
 (define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)

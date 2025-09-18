@@ -49,9 +49,9 @@
 (with-eval-after-load 'vterm
   (define-key vterm-mode-map (kbd "<f11>")   #'linux-toggle-input-method))
 
-(global-set-key  (kbd "s-M-q") 'save-buffers-kill-emacs)
-(global-set-key  (kbd "s-M-c") 'kill-ring-save)
-(global-set-key  (kbd "s-M-v") 'yank)
+(global-set-key  (kbd "s-C-q") 'save-buffers-kill-emacs)
+(global-set-key  (kbd "s-C-c") 'kill-ring-save)
+(global-set-key  (kbd "s-C-v") 'yank)
 
 (when (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (setq-default initial-frame-alist

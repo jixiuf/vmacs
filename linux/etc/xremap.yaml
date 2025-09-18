@@ -37,12 +37,12 @@ modmap:
   - name: Global
     remap:
       space:
-        held: [super_l,alt_l]
+        held: [ctrl_l,super_l]
         alone: space
         free_hold: true
         # alone_timeout_millis: 1000 # Optional
       capslock :
-        held: [super_l,ctrl_l]
+        held: [alt_l,super_l]
         free_hold: true
         alone: f8 # Required
 #        alone_timeout_millis: 1000 # Optional
@@ -76,7 +76,7 @@ keymap:
       C-g: [C-c, esc]
       esc: [C-c, esc]
       C-slash: C-z
-      Super-M-v: C-v
+      Super-C-v: C-v
       C-x:
         remap:
           C-c: [C-c,C-s, esc]
@@ -94,7 +94,7 @@ keymap:
     remap:
     # http://7is7.com/software/firefox/shortcuts.html
       M-backspace: C-Backspace
-      Super-M-w: C-w
+      Super-C-w: C-w
       C-u: C-Shift-t
       C-i: C-Shift-i
       C-comma: C-Pageup
@@ -121,7 +121,7 @@ keymap:
       only: [Google-chrome,google-chrome]
     remap:
       M-backspace: C-Backspace
-      Super-M-u: C-Shift-t
+      super-C-u: C-Shift-t
       C-comma: C-Pageup
       C-dot: C-Pagedown
       C-r: C-r
@@ -139,12 +139,12 @@ keymap:
       C-u: C-Shift-t
       M-f: C-right
       M-b: C-left
-      Super-C-f: Super-C-right
-      Super-C-b: Super-C-left
-      # Super-M-f: Super-M-f      #否则会变成 Super-right,因上面 C-f->right
-      Super-M-b: Super-M-b
-      Super-M-a: C-a
-      Super-M-w: C-f4           # close tab
+      super-M-f: super-C-right
+      super-M-b: super-C-left
+      # super-C-f: super-C-f      #否则会变成 super-right,因上面 C-f->right
+      super-C-b: super-C-b
+      super-C-a: C-a
+      super-C-w: C-f4           # close tab
 
   - name: Emacs
     application:
@@ -156,8 +156,8 @@ keymap:
       # C-MINUS: Shift_L-MINUS
       C-APOSTROPHE: [Shift_L-APOSTROPHE] #' "
       
-      C-g: [Super-Space,C-g]
-      Super-M-Backslash: Super-M-Backslash 
+      C-g: [super-Space,C-g]
+      super-C-Backslash: super-C-Backslash 
 
   - name: terminal emacs
     application:
@@ -170,7 +170,7 @@ keymap:
       C-0: [Shift_L-0]
       # C-MINUS: Shift_L-MINUS
       C-APOSTROPHE: [Shift_L-APOSTROPHE] #' "
-      Super-M-w: [C-x ,Shift-k] 
+      super-C-w: [C-x ,Shift-k] 
       M-v: M-v
       C-c: [C-c,C-c]
       C-x: C-x
@@ -182,7 +182,7 @@ keymap:
     window:
       only: [/TMUX:/ ]
     remap:
-      Super-M-Enter: [C-c,"4"] 
+      super-C-Enter: [C-c,"4"] 
       
   - name: terminal tmux
     application:
@@ -190,13 +190,13 @@ keymap:
     window:
       only: [/TMUX:/ ]
     remap:
-      # Super-C-v: [C-w,C-y]
-      Super-M-Backslash: [C-c,Space] 
-      Super-M-Backspace: [C-c,M-2] 
+      # super-M-v: [C-w,C-y]
+      super-C-Backslash: [C-c,Space] 
+      super-C-Backspace: [C-c,M-2] 
       C-Backspace: M-Backspace 
-      Super-M-v: Super-M-v
-      Super-M-c: Super-M-c
-      Super-M-w: [C-c,k] 
+      Super-C-v: Super-C-v
+      Super-C-c: Super-C-c
+      Super-C-w: [C-c,k] 
       # Super-M-t: [C-c ,C-t] 
       C-t: [C-c ,C-t] 
       # Super-M-t: [C-c ,c] 
@@ -208,7 +208,7 @@ keymap:
       C-dot: [C-c ,n] 
       Super-C-M-comma: [C-c ,p] 
       Super-C-M-dot: [C-c ,n] 
-      M-v: Super-C-M-e
+      M-v: Super-M-v
       C-Grave: M-Grave
       C-C: C-c
       # # C-x: C-x
@@ -221,10 +221,10 @@ keymap:
     application:
       only: [/Alacritty.*/]
     remap:
-      Super-M-w: Super-M-q
-      # Super-M-Enter:
+      super-C-w: super-C-q
+      # super-C-Enter:
       #   - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-      # Super-M-t: { launch: ["hypr-run-or-raise", "--cd","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --class=dterm --working-directory=$(cwd||echo $HOME) "] }
+      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --class=dterm --working-directory=$(cwd||echo $HOME) "] }
       # C-l: [C-l,C-Shift-l,C-Shift-l]
       # C-Enter: [C-y,Enter]
       # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
@@ -232,7 +232,7 @@ keymap:
         remap:
           C-x: C-x              # C-xC-x send C-x
           C-e: [C-x, C-e]
-          C-c: Super-M-q
+          C-c: super-C-q
       C-c:
         remap:
           C-c: C-c              # C-xC-x send C-x
@@ -244,12 +244,12 @@ keymap:
     application:
       only: [dterm,/foot.*/]
     remap:
-      Super-M-w: Super-M-q
-      # Super-M-Enter: [C-c,"2"] 
-      # Super-M-Backslash: [C-c,M-1] 
-      # Super-M-Backspace: [C-c,M-2] 
+      super-C-w: super-C-q
+      # super-C-Enter: [C-c,"2"] 
+      # super-C-Backslash: [C-c,M-1] 
+      # super-C-Backspace: [C-c,M-2] 
         # - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-      # Super-M-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
+      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
       # C-l: [C-l,C-Shift-l,C-Shift-l]
       # C-Enter: [C-y,Enter]
       # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
@@ -258,7 +258,7 @@ keymap:
         remap:
           C-x: C-x              # C-xC-x send C-x
           C-e: [C-x, C-e]
-          C-c: Super-M-q
+          C-c: super-C-q
       C-c:
         remap:
           C-c: C-c              # C-xC-x send C-x
@@ -271,12 +271,12 @@ keymap:
   #     only: [dterm,kitty]
   #   remap:
   #     C-backspace: M-backspace
-  #     Super-M-T: Super-M-T
-  #     Super-C-v: C-Shift-v
-  #     Super-M-w: Super-M-q
-  #     Super-M-Enter:
+  #     super-C-T: super-C-T
+  #     super-M-v: C-Shift-v
+  #     super-C-w: super-C-q
+  #     super-C-Enter:
   #       - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-  #     # Super-M-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
+  #     # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
   #     # C-l: [C-l,C-Shift-l,C-Shift-l]
   #     # C-Enter: [C-y,Enter]
   #     # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
@@ -284,7 +284,7 @@ keymap:
   #     C-x:
   #       remap:
   #         C-x: C-x              # C-xC-x send C-x
-  #         C-c: Super-M-q
+  #         C-c: super-C-q
   #     C-c:
   #       remap:
   #         C-c: C-c              # C-xC-x send C-x
@@ -300,15 +300,15 @@ keymap:
   #   application:
   #     only: [org.wezfurlong.wezterm]
   #   remap:
-  #     Super-M-Enter:
+  #     super-C-Enter:
   #       - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-  #     # Super-M-t: { launch: ["hypr-run-or-raise", "--cd","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME) "] }
+  #     # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME) "] }
   #     C-Enter: [C-Super-v,Enter]
   #     C-k: [C-2,C-2,C-e,y,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
   #     C-x:
   #       remap:
   #         C-x: C-x              # C-xC-x send C-x
-  #         C-c: Super-M-q
+  #         C-c: super-C-q
   #         C-v: C-Shift-F        # 使用编辑器打开scrollback
   #     C-c:
   #       remap:
@@ -326,9 +326,9 @@ keymap:
       C-s: C-f
       C-i: C-u                  #urI    address 
       C-u: C-b                  #username
-      Super-M-c: C-c                  #copy password 
-      Super-M-w: [Super-C-h]
-      Super-M-q: [Super-C-h]
+      super-C-c: C-c                  #copy password 
+      super-C-w: [super-M-h]
+      super-C-q: [super-M-h]
 # 
   # - name: flameshot
   #   application:
@@ -342,8 +342,7 @@ keymap:
     application:
       only: [wechat]
     remap:
-      Super-M-q: Super-C-h
-      Super-M-w: Super-C-h
+      Super-C-q: Super-M-h
       M-n: M-Down
       M-p: M-Up
       C-comma: M-Up
@@ -357,14 +356,14 @@ keymap:
     application:
       only: [org.gnome.Nautilus]
     remap:
-      Super-M-w: Super-M-q
+      Super-C-w: Super-C-q
   - name: Bytedance-lark
     window:
       only: [/^飞书$/ ]
     # application:
     #   only: [Bytedance-lark Bytedance-feishu]
     remap:
-      Super-M-w: Super-M-q
+      Super-C-w: Super-C-q
       C-comma: C-Shift-up
       C-dot: C-Shift-down
       C-n: down
@@ -384,7 +383,7 @@ keymap:
     application:
       only: [MongoDB Compass,Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark,wechat]
     remap:
-      Super-M-w: C-w
+      super-C-w: C-w
       M-f: C-right
       M-b: C-left
       C-b: left
@@ -399,15 +398,15 @@ keymap:
       not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty   ,org.wezfurlong.wezterm  ]
       # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
     remap:
-      Super-M-a: C-a
-      Super-M-c: C-c
-      Super-M-v: C-v
-      Super-M-z: C-z
-      Super-M-s: C-s
-      # C-x: Super-C-M-x
-      # Super-M-x: [Super-C-M-x,C-x]
+      super-C-a: C-a
+      super-C-c: C-c
+      super-C-v: C-v
+      super-C-z: C-z
+      super-C-s: C-s
+      # C-x: super-C-M-x
+      # super-C-x: [super-C-M-x,C-x]
       # C-M-x: C-M-x
-      # Super-C-x: Super-C-x
+      # super-M-x: super-M-x
       # Cursor
       # Newline
       C-m: enter
@@ -438,35 +437,35 @@ keymap:
           # C-x k (kill tab)
           k: C-f4
           # C-x C-c (exit)
-          C-c: Super-M-q
+          C-c: super-C-q
   - name: Global home
     device:
       only: ["Apple SPI Keyboard"]                  #evtest
     remap:
-      Super-C-k: j
+      super-M-k: j
           
   - name: Global
     remap:
     # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
     
       # eme slurp swappy hyprpicker    
-      # Super-M-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]}
-      Super-M-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "area","-"]} #area
-      Super-C-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "screen","-"]} #
-      # Super-C-i: { launch: ["swaync-client","-t"]}     #screen
-      Super-M-o: { launch: ["other-window"] }
+      # super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]}
+      super-C-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "area","-"]} #area
+      super-M-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "screen","-"]} #
+      super-M-i: { launch: ["swaync-client","-t"]}     #screen
+      super-C-o: { launch: ["other-window"] }
 
-      Super-C-v: Shift-Insert
-      # Super-C-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      # Super-C-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      super-M-v: Shift-Insert
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
       
       # Super-M-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
-      Super-M-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
+      Super-C-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }
       C-F8:
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
         - {sleep: 20 }
         - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
-      Super-C-Esc:
+      super-M-Esc:
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
         - {sleep: 20 }
         - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
@@ -474,19 +473,20 @@ keymap:
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
         - {sleep: 20 }
         - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
-      Super-M-Grave: { launch: ["sh" ,"-c","dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases;swaylock"] }
-      # Super-M-Esc: { launch: ["swaylock"] }
-      # Super-M-9: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","corplink","/opt/Corplink/corplink"] }
-      # Super-M-0: { launch: ["pick-color"] }
-      Super-M-y: { launch: ["rofi-cliphist"] }
-      # Super-M-0: { launch: ["bwmenu"] }
-      # Super-M-Backslash: { launch: ["hyprctl","dispatch","togglesplit"] }
-      # Super-C-f: { launch: ["hyprctl","dispatch","togglefloating"] }
-      # Super-C-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
-      Super-M-m: { launch: ["toggle-fullscreen"] }
-      # Super-C-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
-      # Super-C-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
-      Super-M-w: Super-M-w
+      super-C-Grave: { launch: ["sh" ,"-c","dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases;swaylock"] }
+      # super-C-Esc: { launch: ["swaylock"] }
+      # super-C-9: { launch: ["hyprctl","dispatch","exec","hypr-run-or-raise","corplink","/opt/Corplink/corplink"] }
+      # super-C-0: { launch: ["pick-color"] }
+      super-C-y: { launch: ["rofi-cliphist"] }
+      # super-C-0: { launch: ["bwmenu"] }
+      # super-C-Backslash: { launch: ["hyprctl","dispatch","togglesplit"] }
+      # super-M-f: { launch: ["hyprctl","dispatch","togglefloating"] }
+      # super-M-h: { launch: ["hyprctl","dispatch","movetoworkspacesilent","special"] }
+      super-C-m: { launch: ["toggle-fullscreen"] }
+      # super-M-m: { launch: ["hyprctl","dispatch","fullscreen","0"] }
+      # super-M-o: { launch: ["hyprctl","dispatch","toggleopaque"] }
+      super-C-w: super-C-w
+      
       
 #  Local Variables:
 #  mode: conf
