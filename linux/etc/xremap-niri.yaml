@@ -10,7 +10,7 @@ keymap:
       Super-C-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime"] }
       # Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }
       Super-C-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass|DBeaver","dbeaver"] }
-      Super-C-9: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
+      Super-C-b: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
       Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","MongoDB Compass","mongodb-compass","--","--ignore-additional-command-line-flags","--password-store=gnome-libsecret"] }
 
       # mitmweb --mode wireguard
