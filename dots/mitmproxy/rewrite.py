@@ -22,6 +22,7 @@ URL_PREFIX_MAP = {
     "http://token-default.test.svc.luojilab.dc/":"http://token-default.test.svc.luojilab.dc/",
     # "https://dbs.luojilab.com/bsai/":"http://127.0.0.1:28767/bsai/",
     "https://dbs.luojilab.com/bsai/":"http://10.1.0.140:8086/bsai/",
+    "http://bschool.dev.didatrip.com/bslive/":"http://127.0.0.1:60071/bslive/",
     "http://bschool.dev.didatrip.com/scrm/":"http://127.0.0.1:2654/scrm/",
     "http://bschool.dev.didatrip.com/b-school/bgate/":"http://127.0.0.1:2654/b-school/bgate/",
     "http://bschool.dev.didatrip.com/curriculum/":"http://127.0.0.1:3880/curriculum/",
