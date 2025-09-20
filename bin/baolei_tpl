@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+
+# 支持 ./baolie user@host:port  此种情况下，其实只host有用，但为了emacs tramp 使用支持此种格式
+# 支持 ./baolie host
+# 支持 ./baolie  交互模式
+set env(TERM) xterm-256color
+spawn ssh username@host
+# expect "Are you sure you want to continue connecting "
+# send "yes\r"
+expect "username@host's password:"
+send "pass\r"
+expect "Input:*"
+# user@host:port,这里真正有用的是hosst
+set address [lindex $argv 0]
+if { $address != ""} {
+    set tokens [split $address  "@"]
+    set hostport  [lindex $tokens 1]
+    # 没有user@ 只有hostport的情况
+    if { $hostport == "" } {
+        set hostport  [lindex $tokens 0]
+    }
+
+
+    set host  [lindex [split $hostport  ":"] 0]
+    send "$host\r"
+    expect "1\]$host*Input:*"
+    send "1\r"
+expect "*"
+    interact
+} else {
+    expect "*"
+    interact
+}
