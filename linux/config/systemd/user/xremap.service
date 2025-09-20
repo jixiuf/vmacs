@@ -17,8 +17,8 @@ Type=simple
 # Group=users
 Restart=always
 #ExecStart=sh -c 'sudo systemctl stop xremap;/usr/local/bin/xremap /etc/xremap.yaml /etc/xremap-$(hostname).yaml --watch=device --ignore="dotool keyboard" --ignore="ydotoold virtual device"'
-#ExecStart=sh -c '/usr/local/bin/xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Apple Inc. Apple Internal Keyboard / Trackpad"'
-ExecStart=sh -c 'dbus-update-activation-environment --systemd --all;/usr/bin/xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
+#ExecStart=sh -c 'xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Apple Inc. Apple Internal Keyboard / Trackpad"'
+ExecStart=sh -c 'dbus-update-activation-environment --systemd --all;xremap /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
 
 
 [Install]
