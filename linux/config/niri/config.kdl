@@ -129,7 +129,7 @@ clipboard {
     // disable-primary
 }
 overview {
-    zoom 0.35
+    zoom 0.25
     backdrop-color "#262626"
 
     workspace-shadow {
