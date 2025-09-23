@@ -25,10 +25,11 @@ modmap:
         held: super_l
         # free_hold: true
         alone_timeout_millis: 1000
-        alone: 
-            - { launch: ["fcitx5-remote","-s","keyboard-us"] }
-            - {sleep: 20 }
-            - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
+        alone: f9
+        # alone: 
+        #     - { launch: ["fcitx5-remote","-s","keyboard-us"] }
+        #     - {sleep: 20 }
+        #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
       alt_r : f9
   - name: Global for luojilab
     device:
@@ -39,10 +40,11 @@ modmap:
         held: super_l
         # free_hold: true
         alone_timeout_millis: 1000
-        alone: 
-            - { launch: ["fcitx5-remote","-s","keyboard-us"] }
-            - {sleep: 20 }
-            - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
+        alone: f9
+        # alone: 
+        #     - { launch: ["fcitx5-remote","-s","keyboard-us"] }
+        #     - {sleep: 20 }
+        #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
       ctrl_l :
         held: ctrl_l
         alone: esc
