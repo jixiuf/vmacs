@@ -7,7 +7,7 @@ OnCalendar=22:00
 Persistent=true
 #  延迟执行 避免开机阻塞
 #RandomizedDelaySec=15min
-OnBootSec=2min
+# OnBootSec=2min
 
 [Install]
 WantedBy=timers.target
