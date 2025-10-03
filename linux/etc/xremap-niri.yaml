@@ -21,7 +21,7 @@ keymap:
       # { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       super-C-comma: { launch: ["other-window","--reverse"]}
       super-C-dot: { launch: ["other-window"]}
-      super-C-Enter:    { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
+      super-C-Enter:    { launch: ["niri","msg","action","spawn-sh","--", "term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
       super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
       super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
