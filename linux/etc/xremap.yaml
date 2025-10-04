@@ -115,7 +115,7 @@ keymap:
       C-i: C-Shift-i
       C-comma: C-Pageup
       C-dot: C-Pagedown
-      # C-r: C-r
+      C-r: C-r
       # C-s: C-f
       # C-7: C-Shift-l
       C-h: M-left
@@ -386,10 +386,29 @@ keymap:
         - Pageup
 
       # C-j: C-RIGHTBRACE
-  - name: global_emacs
+  # - name: global_emacs
+  #   application:
+  #     only: [firefox,firefox-esr,MongoDB Compass,Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark,wechat]
+  #   remap:
+       
+      # M-f: C-right
+      # M-b: C-left
+      # C-b: left
+      # C-n: down
+      # C-p: up
+      # C-a: home
+      # C-e: end
+      # C-f: right
+  - name: Default -- some of these are overridden by the above definitions
     application:
-      only: [firefox,firefox-esr,MongoDB Compass,Bytedance-lark ,DBeaver,apifox-pdv,org.keepassxc.KeePassXC ,org.wireshark.Wireshark,wechat]
+      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty   ,org.wezfurlong.wezterm  ]
+      # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
     remap:
+      super-C-a: C-a
+      super-C-c: C-c
+      super-C-v: C-v
+      super-C-z: C-z
+      super-C-s: C-s
       super-C-w: C-w
       C-d: delete
       C-b: { with_mark: left }
@@ -434,25 +453,7 @@ keymap:
       C-g: [esc, { set_mark: false }]
       C-2: { set_mark: true }
       esc: [esc, { set_mark: false }]
-       
-      # M-f: C-right
-      # M-b: C-left
-      # C-b: left
-      # C-n: down
-      # C-p: up
-      # C-a: home
-      # C-e: end
-      # C-f: right
-  - name: Default -- some of these are overridden by the above definitions
-    application:
-      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty   ,org.wezfurlong.wezterm  ]
-      # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
-    remap:
-      super-C-a: C-a
-      super-C-c: C-c
-      super-C-v: C-v
-      super-C-z: C-z
-      super-C-s: C-s
+      
       # C-x: super-C-M-x
       # super-C-x: [super-C-M-x,C-x]
       # C-M-x: C-M-x
@@ -463,16 +464,16 @@ keymap:
       C-o: [enter, left]
       # Copy
       # C-w: [C-x, { set_mark: false }]
-      M-w: [C-c, { set_mark: false }]
+      # M-w: [C-c, { set_mark: false }]
       # C-y: [C-v, { set_mark: false }]
       # Delete
-      M-d: [C-delete, { set_mark: false }]
+      # M-d: [C-delete, { set_mark: false }]
       # Kill line
-      C-k: [Shift-end, C-x, { set_mark: false }]
+      # C-k: [Shift-end, C-x, { set_mark: false }]
       # Undo
-      C-slash: [C-z, { set_mark: false }]
+      # C-slash: [C-z, { set_mark: false }]
       # Mark
-      C-g: [esc, { set_mark: false }]
+      # C-g: [esc, { set_mark: false }]
       # C-x YYY
       C-x:
         remap:
