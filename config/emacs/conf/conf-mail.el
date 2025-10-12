@@ -219,7 +219,7 @@
 ;; (org-msg-mode)
 
 (fset 'vmacs-read-all
-   (kmacro-lambda-form [?% ?! ?s ?. ?* return ?x ?y] 0 "%d"))
+   (kmacro [?% ?! ?s ?. ?* return ?x ?y] 0 "%d"))
 
 (provide 'conf-mail)
 
