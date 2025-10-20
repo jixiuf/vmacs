@@ -50,7 +50,7 @@
 ;; (setq select-enable-primary  nil) ;每一次往kill-ring 里加入东西时,是否也往primary 中放入
 (setq
  kill-do-not-save-duplicates t       ;不向kill-ring中加入重复内容
- save-interprogram-paste-before-kill t  ;将系统剪切板的内容放一份到kill-ring中，
+ ;; save-interprogram-paste-before-kill t  ;将系统剪切板的内容放一份到kill-ring中，
  mouse-yank-at-point t
  kill-whole-line t                     ;在行首 C-k 时，同时删除末尾换行符
  kill-read-only-ok t                  ;kill read-only buffer内容时,copy之而不用警告

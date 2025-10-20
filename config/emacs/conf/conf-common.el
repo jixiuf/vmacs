@@ -2,6 +2,7 @@
 (defvar dropbox-dir (expand-file-name "~/Documents/jianguo/jianguo"))
 
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
+(diverted-mode)
 
 (when (boundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
 ;; (add-hook 'after-save-hook #'scratch-write-contents)

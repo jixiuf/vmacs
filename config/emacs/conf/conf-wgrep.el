@@ -11,7 +11,9 @@
   ;; (define-key occur-mode-map "l" (kbd "C-f"))
   (define-key occur-edit-mode-map (kbd "C-n") 'next-error-no-select)
   (define-key occur-edit-mode-map (kbd "C-p") 'previous-error-no-select)
-  (set-keymap-parent occur-mode-map meow-normal-state-keymap)
+  (when (boundp 'meow-normal-state-keymap)
+    (set-keymap-parent occur-mode-map meow-normal-state-keymap)
+    )
   (add-hook 'occur-hook #'occur-edit-mode))
 
 (with-eval-after-load 'grep
