@@ -30,6 +30,7 @@
   )
 (global-set-key (kbd "C-c G") g-mode-map)
 (global-set-key (kbd "C-c g") g-mode-map)
+(global-set-key (kbd "C-c s") #'save-all)
 (defvar-keymap  m-mode-map              ;meow: m
   "4" #'toggle-truncate-lines
   "f" #'narrow-to-defun
@@ -54,28 +55,27 @@
   (define-key g-mode-map "v" smerge-basic-map))
 
 (defvar-keymap  vmacs-normal-mode-map
-  "="  #'meow-indent
-  "i" #'meow-insert
+  "i" #'meep-insert
   "G"  #'vmacs-goto-line
   "g" g-mode-map
+  "n"  #'meep-isearch-repeat-next
+  "N"  #'meep-isearch-repeat-prev
   "m" m-mode-map
-  "n"  #'meow-search
-  "N"  #'meow-search-reverse
-  "/"  #'isearch-forward-regexp
+  "/"  #'meep-isearch-regexp-next
   "z"   #'meow-pop-selection)
 
 (global-set-key (kbd "C-c N") vmacs-normal-mode-map)
 (defvar-keymap  vmacs-motion-mode-map
-  "j"  #'meow-next
-  "k"  #'meow-prev
-  "h"  #'meow-left
-  "l"  #'meow-right
+  "j"  #'meep-move-line-next
+  "k"  #'meep-move-line-prev
+  "h"  #'meep-move-char-prev
+  "l"  #'meep-move-char-next
   "G"  #'vmacs-goto-line
   "g"  g-mode-map
   "m"  m-mode-map
-  "/"  #'isearch-forward-regexp
-  "n"  #'meow-search
-  "N"  #'meow-search-reverse
+  "/"  #'meep-isearch-regexp-next
+  "n"  #'meep-isearch-repeat-next
+  "N"  #'meep-isearch-repeat-prev
   ":" #'viper-ex
   "z"   #'meow-pop-selection)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
@@ -92,7 +92,7 @@
 (define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
 (define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
-(define-key isearch-mode-map  (kbd "C-t")   'isearch-toggle-regexp)
+(define-key isearch-mode-map  (kbd "M-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c:case)")
 
@@ -258,14 +258,14 @@
         (buffer-substring-no-properties (region-beginning) (region-end))
       (thing-at-point 'symbol))))
 
-(with-eval-after-load 'man
-  (set-keymap-parent Man-mode-map meow-normal-state-keymap)
-  (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
-  (define-key Man-mode-map (kbd "C-c Mq") 'save-buffers-kill-terminal)
-  (define-key Man-mode-map (kbd "n") 'meow-search)
-  (define-key Man-mode-map (kbd "N") 'meow-search-reverse)
-  (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
-  (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
+;; (with-eval-after-load 'man
+;;   (set-keymap-parent Man-mode-map meow-normal-state-keymap)
+;;   (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
+;;   (define-key Man-mode-map (kbd "C-c Mq") 'save-buffers-kill-terminal)
+;;   (define-key Man-mode-map (kbd "n") 'meow-search)
+;;   (define-key Man-mode-map (kbd "N") 'meow-search-reverse)
+;;   (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
+;;   (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
 
 (defun vmacs-tui(&optional f)
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol

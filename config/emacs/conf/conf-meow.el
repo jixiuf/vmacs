@@ -161,7 +161,6 @@
 
 (require 'meow)
 (meow-setup)
-(diverted-mode)
 (setq repeat-fu-preset 'meow)
 (add-hook 'meow-mode-hook
           (lambda ()

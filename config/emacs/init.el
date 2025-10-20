@@ -14,9 +14,10 @@
 ;; (add-hook 'after-init-hook #'lazy-load-gpg)
 
 (require 'conf-face)
-(require 'conf-meow)
-(require 'conf-icomplete)
+;; (require 'conf-meow)
+(require 'conf-meep)
 (require 'conf-keybind)
+(require 'conf-icomplete)
 
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
