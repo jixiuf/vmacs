@@ -304,6 +304,9 @@ based on the current context and previous history."
    ((member last-command '(meow-replace meow-replace-pop))
     (call-interactively #'meow-replace-pop)
     (setq this-command #'meow-replace-pop))
+   ((member last-command '(meep-clipboard-killring-yank meep-clipboard-killring-yank-pop-stack))
+    (call-interactively #'meep-clipboard-killring-yank-pop-stack)
+    (setq this-command #'meep-clipboard-killring-yank-pop-stack))
    (t (call-interactively #'yank-pop))))
 
 ;;;###autoload

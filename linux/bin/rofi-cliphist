@@ -15,6 +15,7 @@ if [ $? = 0 ]; then
     if [[ ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty"* || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
         echo key super+ctrl+v | dotoolc
     elif [[ "$front_class" == "emacs" ]]; then
-        echo key ctrl+y | dotoolc
+        echo key super+ctrl+v | dotoolc
+        # echo key ctrl+y | dotoolc
     fi
 fi

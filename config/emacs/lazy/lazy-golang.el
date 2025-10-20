@@ -61,7 +61,8 @@
 ;;;###autoload
 (defun go-get()
   (interactive)
-  (let* ((pkg (meow--parse-range-of-thing 'go-package t))
+  ;; (define-thing-chars gopkg "-/[:alnum:]_.")
+  (let* ((pkg (thing-at-point 'gopkg))
          (master "")
          ( display-buffer-alist
            '((t (display-buffer-no-window ))))
@@ -72,7 +73,7 @@
         (if (= (prefix-numeric-value current-prefix-arg) 4)
             (setq master "@master")))
       (setq cmd (format "go get %s%s;go mod tidy"
-                        (buffer-substring (car pkg) (cdr pkg))
+                        pkg
                         master))
       (message "%s" cmd)
       (async-shell-command cmd (messages-buffer)(messages-buffer)))))
