@@ -26,6 +26,9 @@ URL_PREFIX_MAP = {
     "https://dbs.luojilab.com/bsai/":"http://10.1.0.140:8086/bsai/",
     "http://bschool.dev.didatrip.com/bslive/":"http://127.0.0.1:60071/bslive/",
     "http://bschool.dev.didatrip.com/scrm/":"http://127.0.0.1:2654/scrm/",
+    "http://bschool.dev.didatrip.com/mogo/v1/order/create":"http://127.0.0.1:56522/b-school/feed/v1/trade/mogo/create",
+    # "http://bschool.dev.didatrip.com/mogo/":"http://127.0.0.1:9117/mogo/",
+    "http://bschool.dev.didatrip.com/b-school/feed/":"http://127.0.0.1:2654/b-school/feed/",
     "http://bschool.dev.didatrip.com/b-school/bgate/":"http://127.0.0.1:2654/b-school/bgate/",
     "http://bschool.dev.didatrip.com/curriculum/":"http://127.0.0.1:3880/curriculum/",
     "http://quiz-activity.test.svc.luojilab.dc/quiz_activity/":"http://127.0.0.1:58658/quiz_activity/",
@@ -37,6 +40,7 @@ proxy_hosts = {
     "iget-business-manage.test.svc.luojilab.dc":{
         # "bs_scrm":"http://bs-scrm.test.svc.luojilab.dc",
         "bs_scrm":"http://localhost:2654",
+        "bslive":"http://localhost:60071",
     },
 }
 # cms oms 调内部服务的时候 会走proxy,如 https://oms.luojilab.com/api/proxy
