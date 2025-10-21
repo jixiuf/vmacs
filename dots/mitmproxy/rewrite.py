@@ -37,6 +37,7 @@ proxy_hosts = {
     "iget-business-manage.test.svc.luojilab.dc":{
         # "bs_scrm":"http://bs-scrm.test.svc.luojilab.dc",
         "bs_scrm":"http://localhost:2654",
+        "bslive":"http://localhost:60071",
     },
 }
 # cms oms 调内部服务的时候 会走proxy,如 https://oms.luojilab.com/api/proxy
