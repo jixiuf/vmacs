@@ -17,6 +17,7 @@
  '(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
  '(show-paren-match ((t (:foreground "SpringGreen3" :weight bold))))
  '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
+ '(visible-mark-face1 ((t (:background "gold" :foreground "black"))))
  '(whitespace-missing-newline-at-eof ((t (:foreground "yellow")))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

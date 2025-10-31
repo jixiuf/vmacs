@@ -107,7 +107,14 @@
 (setq show-paren-when-point-inside-paren t
       show-paren-when-point-in-periphery t
       show-paren-context-when-offscreen t
-      show-paren-delay 0.2)
+      show-paren-delay 0.2
+;; I like not highlighting the region with visible-mark and allowing marks to override paren highlights. – IanKelling
+      show-paren-priority 999)
+(require 'visible-mark)
+(global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
+(setq visible-mark-max 1)
+(setq visible-mark-faces `(visible-mark-face1))
+
 ;; Increase undo limits. Why?
 ;; .. ability to go far back in history can be useful, modern systems have sufficient memory.
 ;; Limit of 64mb.
