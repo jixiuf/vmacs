@@ -62,7 +62,7 @@
   (declare (indent 1))
   (pcase-dolist (`(,key . ,def) keybinds)
     (if (stringp def)
-        ;; TODO: fix this
+        ;; FIXME: key-binding can't find cmd in minor mode (neither can which-key-mode)
         (let ((cmd (key-binding def)))
           (keymap-set map key
                       `(lambda()
@@ -76,7 +76,7 @@
 (defun my-meep-basis-keys ()
   (my-meep-keymap-set-many meep-state-keymap-motion
     '("<SPC>" . "C-c")
-    '("j" . "C-c Mj")
+    '("j" . "C-c Mj")                   ;you can bind different keybinding on C-c Mj on different major-mode
     '("h" . "C-c Mh")
     '("l" . "C-c Ml")
     '("k" . "C-c Mk")
