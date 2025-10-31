@@ -223,11 +223,10 @@
     '("I" . meep-insert-overwrite)
     '("a" . meep-append)
 
-    '("x" . meep-transpose)
-    '("X" . meep-delete-char-ring-prev)
-
-    '("z" . meep-delete-char-ring-yank)
-    '("Z" . meep-clipboard-killring-cut-line) ; Odd-one out, locate for convenience.
+    '("z" . meep-transpose)
+    '("x" . meep-delete-char-ring-prev)
+    '("X" . meep-delete-char-ring-next)
+    ;; '("Z" . meep-clipboard-killring-cut-line) ; Odd-one out, locate for convenience.
 
     '("c" . meep-insert-change)
     '("C" . meep-insert-change-lines)
@@ -497,32 +496,46 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
                                   (goto-char  (match-beginning 1)))))
 
 ;;;###autoload
-(defun meep-move-to-bounds-of-thing (arg &optional thing)
+(defun meep-move-to-bounds-of-thing (arg &optional thing mark)
   "Move to the thing start/end (start when ARG is negative)."
   (let ((bounds (bounds-of-thing-at-point thing)))
     (cond
      (bounds
       (meep--move-to-bounds-endpoint bounds arg)
+      (when mark
+        (meep-mark-thing-at-point))
       (message "go to %s of %s" (or (and (< arg 0) "beginning") "end") thing)
       t)
      (t
       (message "Not found: bounds of %s" thing)
       nil))))
+(defun meep-mark-thing-at-point (&optional arg _)
+  (when (member last-command '(meep-move-to-bounds-of-thing-beginning
+                               meep-move-to-bounds-of-thing-end))
+    (run-with-timer 0.001 nil (lambda()
+                                ;; (setq this-command last-command)
+                                (meep-exchange-point-and-mark-motion)
+                                (exchange-point-and-mark)))))
+
+(advice-add 'meep-move-to-bounds-of-thing-beginning :before #'(lambda(&optional arg) (push-mark (point-marker))))
+
 (defun meep-move-to-bounds-of-gopkg (arg)
   (interactive "^p")
-  (meep-move-to-bounds-of-thing  arg 'gopkg))
+  (meep-move-to-bounds-of-thing  arg 'gopkg t))
+
 (defun meep-move-to-bounds-of-word (arg)
   (interactive "^p")
-  (meep-move-to-bounds-of-thing  arg 'word))
+  (meep-move-to-bounds-of-thing  arg 'word t)
+  )
 (defun meep-move-to-bounds-of-symbol (arg)
   (interactive "^p")
-  (meep-move-to-bounds-of-thing  arg 'symbol))
+  (meep-move-to-bounds-of-thing  arg 'symbol t))
 (defun meep-move-to-bounds-of-grave-quoted (arg )
   (interactive "^p")
-  (meep-move-to-bounds-of-thing  arg 'grave-quoted))
-(defun meep-move-to-bounds-of-org-block (arg )
+  (meep-move-to-bounds-of-thing  arg 'grave-quoted t))
+(defun meep-move-to-bounds-of-org-block (arg)
   (interactive "^p")
-  (meep-move-to-bounds-of-thing  arg 'org-block))
+  (meep-move-to-bounds-of-thing  arg 'org-block t))
 
 (dolist (cmd
          (list
@@ -532,14 +545,19 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
           'meep-move-to-bounds-of-grave-quoted
           'meep-move-to-bounds-of-org-block))
          (meep-command-prop-set cmd :mark-on-motion t))
+(advice-add 'meep-move-matching-bracket-inner :after #'meep-mark-thing-at-point)
+(advice-add 'meep-move-matching-bracket-outer :after #'meep-mark-thing-at-point)
+(advice-add 'meep-move-to-bounds-of-defun :after #'meep-mark-thing-at-point)
+(advice-add 'meep-move-to-bounds-of-string :after #'meep-mark-thing-at-point)
+(advice-add 'meep-move-to-bounds-of-string-inner :after #'meep-mark-thing-at-point)
 
 (add-to-list 'meep-bounds-commands '(?r meep-move-to-bounds-of-gopkg "gopkg"))
-(add-to-list 'meep-bounds-commands '(?, meep-move-to-bounds-of-word "word"))
-(add-to-list 'meep-bounds-commands '(?. meep-move-to-bounds-of-symbol "symbol"))
+(add-to-list 'meep-bounds-commands '(?. meep-move-to-bounds-of-word "word"))
+(add-to-list 'meep-bounds-commands '(?, meep-move-to-bounds-of-symbol "symbol"))
 (add-to-list 'meep-bounds-commands '(?` meep-move-to-bounds-of-grave-quoted "`"))
 (add-to-list 'meep-bounds-commands '(?o meep-move-to-bounds-of-org-block "org-block"))
 (add-to-list 'meep-bounds-commands '(?c meep-move-matching-bracket-inner "src-block inner"))
-(add-to-list 'meep-bounds-commands '(?C meep-move-matching-bracket-outer "src-block"))
+(add-to-list 'meep-bounds-commands '(?x meep-move-matching-bracket-outer "src-block"))
 (add-to-list 'meep-bounds-commands '(?f meep-move-to-bounds-of-defun "defun"))
 (add-to-list 'meep-bounds-commands '(?g meep-move-to-bounds-of-string "str"))
 (add-to-list 'meep-bounds-commands '(?/ meep-move-to-bounds-of-comment-inner "comment inner"))
