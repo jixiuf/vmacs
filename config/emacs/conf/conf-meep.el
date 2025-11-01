@@ -42,271 +42,187 @@
 
 (define-advice meep-isearch-repeat-next (:around (orig-fun &rest args) search-region)
   (if (and (region-active-p)
-           (< (- (region-end) (region-beginning)) 100))
+           (= (line-number-at-pos (region-end))
+              (line-number-at-pos (region-beginning))))
       (call-interactively #'meep-isearch-at-point-next)
     (apply orig-fun args)))
 (define-advice meep-isearch-repeat-prev (:around (orig-fun &rest args) search-region)
   (if (and (region-active-p)
-           (< (- (region-end) (region-beginning)) 100))
+           (= (line-number-at-pos (region-end))
+              (line-number-at-pos (region-beginning))))
       (call-interactively #'meep-isearch-at-point-next)
     (apply orig-fun args)))
 
 
-(defun my-key-free ()
-  (interactive)
-  (let ((keys (this-command-keys-vector)))
-    (message "Key Free: %s" (format-kbd-macro keys))))
+;; (defun my-key-free ()
+;;   (interactive)
+;;   (let ((keys (this-command-keys-vector)))
+;;     (message "Key Free: %s" (format-kbd-macro keys))))
 
 ;; (key-binding (kbd "C-c")  nil)
-(defun my-meep-keymap-set-many (map &rest keybinds)
-  (declare (indent 1))
-  (pcase-dolist (`(,key . ,def) keybinds)
-    (if (stringp def)
-        ;; FIXME: key-binding can't find cmd in minor mode (neither can which-key-mode)
-        (let ((cmd (key-binding def)))
-          (keymap-set map key
-                      `(lambda()
-                         ,(format "Execute the command `%s' which is bound to %s."
-                                  cmd (buttonize def 'describe-key (kbd def)))
-                         (interactive)
-                         (setq unread-command-events (listify-key-sequence (kbd ,def)))
-                         )))
-      (keymap-set map key def))))
+
+(defun meep-kbd (def)
+  "Command that converts current key."
+  `(lambda (&rest args)
+     ;; Keys that apply only to a major mode aren't currently functioning, as =describe-key= is
+     ;; executed when =meep-kbd= is called.
+     ,(format "Execute the command which is bound to %s."
+              (buttonize def 'describe-key (kbd def)))
+     (interactive)
+     (setq prefix-arg current-prefix-arg)
+     (cond
+      ( (string-suffix-p "-" ,def)
+        (let ((ch (char-to-string(read-event ,def))))
+          (setq unread-command-events (listify-key-sequence (kbd (concat ,def ch))))))
+      (t
+       (setq unread-command-events (listify-key-sequence (kbd ,def)))))))
 
 (defun my-meep-basis-keys ()
-  (my-meep-keymap-set-many meep-state-keymap-motion
-    '("<SPC>" . "C-c")
-    '("j" . "C-c Mj")                   ;you can bind different keybinding on C-c Mj on different major-mode
-    '("h" . "C-c Mh")
-    '("l" . "C-c Ml")
-    '("k" . "C-c Mk")
-    '("g" . "C-c G")
-    '("G" . "C-c MG")
-    '("/" . "C-c M/")
-    '("n" . "C-c Mn")
-    '("N" . "C-c MN")
-    '("z" . "C-c Mz")
-    '("q" . "C-c Mq")
-    '(":" . "C-c M:")
-    '("<escape>" . keyboard-quit)
-    )
+ (global-set-key (kbd "C-c x") (meep-kbd "C-x")) ;this space+x = C-c x
+ (global-set-key (kbd "C-c ,") (meep-kbd "M-"))	;this space+, = M-
+  (defvar-keymap meep-state-keymap-motion
+    "<SPC>"     (meep-kbd "C-c" )
+    "j"         (meep-kbd "C-c Mj")
+    "h"         (meep-kbd "C-c Mh")
+    "l"         (meep-kbd "C-c Ml")
+    "k"         (meep-kbd "C-c Mk")
+    "g"         (meep-kbd "C-c G")
+    "G"         (meep-kbd "C-c MG")
+    "/"         (meep-kbd  "C-c M/")
+    "n"         (meep-kbd "C-c Mn")
+    "N"         (meep-kbd "C-c MN")
+    "z"         (meep-kbd "C-c Mz")
+    "q"         (meep-kbd "C-c Mq")
+    ":"         (meep-kbd "C-c M:")
+    "i"         (meep-kbd "C-c Mi")
+    "="         (meep-kbd "C-M-\\")
+    "<escape>"  #'keyboard-quit)
 
-  (my-meep-keymap-set-many meep-state-keymap-normal
-    '("i" . "C-c Ni")
-    '("G" . "C-c NG")
-    '("n" . "C-c Nn")
-    '("N" . "C-c NN")
-    '("/" . "C-c N/")
-    '("z" . "C-c Nz")
-    '("=" . "C-M-\\")
+  (defvar-keymap meep-state-keymap-normal
+    "1"           #'meep-digit-argument-repeat
+    "2"           #'meep-digit-argument-repeat
+    "3"           #'meep-digit-argument-repeat
+    "4"           #'meep-digit-argument-repeat
+    "5"           #'meep-digit-argument-repeat
+    "6"           #'meep-digit-argument-repeat
+    "7"           #'meep-digit-argument-repeat
+    "8"           #'meep-digit-argument-repeat
+    "9"           #'meep-digit-argument-repeat
+    "0"           #'meep-digit-argument-repeat
+    "-"           #'meep-digit-argument-repeat
+    "t"           #'meep-region-to-secondary-selection
+    "T"           #'meep-region-swap
+    "<f8>"        #'repeat-fu-execute
+    "Q"           #'meep-clipboard-register-actions
+    "d"           #'meep-clipboard-killring-cut
+    "D"           #'meep-clipboard-only-cut
+    "r"           #'meep-clipboard-killring-yank
+    "M-r"         #'meep-clipboard-killring-yank-pop-stack
+    "R"           #'meep-clipboard-only-yank
+    "y"           #'meep-clipboard-killring-copy
+    "Y"           #'meep-clipboard-only-copy
+    "S"           #'meep-char-surround-insert
+    "f s"         #'meep-char-surround-insert-lines
+    "o"           #'meep-insert-open-below
+    "O"           #'meep-insert-open-above
+    "m i"         #'meep-insert-at-last
+    "m v"         #'rectangle-mark-mode
+    "m $"         #'toggle-truncate-lines
+    "m f"         #'narrow-to-defun
+    "m n"         #'narrow-to-region
+    "m w"         #'widen
+    "m h"         #'mark-defun
+    "m q"         #'fill-paragraph
+    "m s"         #'gt-do-translate
+    "m ,"         #'pop-to-mark-command
+    "m t"         #'org-capture
+    "m z"         #'hs-toggle-hiding
+    "m e"         #'meep-insert-line-end
+    "m a"         #'meep-insert-line-beginning
+    "m d"         #'downcase-region
+    "m u"         #'upcase-region
+    "m <return>"  #'fill-region
+    "m <end>"     #'end-of-buffer
+    "m <home>"    #'beginning-of-buffer
+    "m 1"         #'digit-argument
+    "m 2"         #'digit-argument
+    "m 3"         #'digit-argument
+    "m 4"         #'digit-argument
+    "m 5"         #'digit-argument
+    "m 6"         #'digit-argument
+    "m 7"         #'digit-argument
+    "m 8"         #'digit-argument
+    "m 9"         #'digit-argument
+    "m 0"         #'digit-argument
+    "m -"         #'negative-argument
+    "C-2"         #'meep-region-toggle
+    "m m"         #'meep-region-toggle
+    "s"           #'meep-region-expand-to-line-bounds
+    "f h"         #'meep-move-find-char-on-line-at-prev
+    "f b"         #'meep-move-find-char-on-line-till-prev
+    "?"           #'meep-isearch-regexp-prev
+    "f l"         #'meep-move-find-char-on-line-at-next
+    "f f"         #'meep-move-find-char-on-line-till-next
+    "f ."         #'meep-move-find-char-on-line-repeat-at-next
+    "f ,"         #'meep-move-find-char-on-line-repeat-at-prev
+    "f o"         #'meep-move-find-char-on-line-repeat-till-next
+    "f i"         #'meep-move-find-char-on-line-repeat-till-prev
+    "C-3"         #'meep-isearch-at-point-prev
+    "C-8"         #'meep-isearch-at-point-next
+    "f ;"         #'goto-line
+    "f :"         #'goto-char
+    "u"           #'undo
+    "U"           #'undo-redo
+    "I"          #'meep-insert-overwrite
+    "a"          #'meep-append
+    ;; "         z" #'meep-transpose
+    "x"          #'meep-delete-char-ring-next
+    "X"          #'meep-delete-char-ring-prev
+    "c"          #'meep-insert-change
+    "C"          #'meep-insert-change-lines
+    "f a"        #'meep-move-line-non-space-beginning
+    "f e"        #'meep-move-line-non-space-end
+    "f v"        #'meep-move-by-sexp-any-prev
+    "C-r"        #'meep-exchange-point-and-mark
+    "f x"        #'meep-move-by-sexp-over-next
+    "f X"        #'meep-move-by-sexp-over-prev
+    ";"          #'meep-exchange-point-and-mark-motion
+    "f u"        #'meep-move-by-sexp-any-next
+    "H"          #'meep-move-same-syntax-or-symbol-prev
+    "J"          #'meep-join-line-next
+    "K"          #'meep-join-line-prev
+    "C-o"        #'meep-move-by-sexp-out-prev
+    "L"          #'meep-move-same-syntax-or-symbol-next
+    "q"          #'meep-move-matching-bracket-inner
+    "p"          #'meep-move-matching-bracket-outer
+    "["          #'meep-move-matching-bracket-inner
+    "]"          #'meep-move-matching-bracket-outer
+    "'"          #'meep-move-matching-syntax-inner
+    "\""         #'meep-move-matching-syntax-outer
+    "v"          #'meep-move-symbol-prev
+    "V"          #'meep-move-same-syntax-and-space-prev
+    "<"          #'indent-rigidly-left-to-tab-stop
+    ">"          #'indent-rigidly-right-to-tab-stop
+    "e"          #'meep-move-symbol-next-end
+    "E"          #'meep-move-same-syntax-and-space-next
+    "w"          #'meep-move-word-next-end
+    "b"          #'meep-move-word-prev
+    "W"          #'meep-move-same-syntax-and-space-next-end
+    "\\"         #'meep-register-jump-to
+    "`"          #'meep-register-kmacro-start-or-end
+    ","          #'meep-move-to-bounds-of-thing-beginning
+    "."          #'meep-move-to-bounds-of-thing-end
+    "^"          #'meep-move-line-beginning
+    "$"          #'meep-move-line-end)
 
-    '("m $" . toggle-truncate-lines)
-    '("m f" . narrow-to-defun)
-    '("m n" . narrow-to-region)
-    '("m w" . widen)
-    '("m h" . mark-defun)
-    '("m q" . fill-paragraph)
-    '("m s" . gt-do-translate)
-    '("m ," . pop-to-mark-command)
-    '("m t" .  org-capture)
-    '("m z" .  hs-toggle-hiding)
-    ;; '("m" . "C-c Nm")
-    '("P" . my-key-free)
-    '("1" . meep-digit-argument-repeat)
-    '("2" . meep-digit-argument-repeat)
-    '("3" . meep-digit-argument-repeat)
-    '("4" . meep-digit-argument-repeat)
-    '("5" . meep-digit-argument-repeat)
-    '("6" . meep-digit-argument-repeat)
-    '("7" . meep-digit-argument-repeat)
-    '("8" . meep-digit-argument-repeat)
-    '("9" . meep-digit-argument-repeat)
-    '("0" . meep-digit-argument-repeat)
-    '("-" . meep-digit-argument-repeat)
+  (defvar-keymap meep-state-keymap-visual "x" #'exchange-point-and-mark)
 
-    '("t" . meep-region-to-secondary-selection)
-    '("T" . meep-region-swap)
+  (defvar-keymap meep-state-keymap-insert "<escape>"  #'bray-state-stack-pop)
 
-    ;; ----
-    ;; Left Hand: Row 1.
-    ;; ----
-
-    '("<f8>" . repeat-fu-execute)
-
-    '("Q" . meep-clipboard-register-actions)
-    ;; '("W" . my-key-free)
-
-    '("d" . meep-clipboard-killring-cut)
-    '("D" . meep-clipboard-only-cut)
-
-    '("r" . meep-clipboard-killring-yank)
-    '("M-r" . meep-clipboard-killring-yank-pop-stack)
-    '("R" . meep-clipboard-only-yank)
-
-    '("y" . meep-clipboard-killring-copy)
-    '("Y" . meep-clipboard-only-copy)
-
-    ;; Left Hand: Row 2.
-
-    ;; NOTE: a more comprehensive surround map is really needed.
-    ;; This is only character level surround insertion.
-    '("S" . meep-char-surround-insert)
-    '("f s" . meep-char-surround-insert-lines)
-
-    '("m i" . meep-insert-at-last)
-    '("m v" . rectangle-mark-mode)
-
-    '("o" . meep-insert-open-below)
-    '("O" . meep-insert-open-above)
-    '("m e" . meep-insert-line-end)
-    '("m a" . meep-insert-line-beginning)
-
-    '("m d" . downcase-region)
-    '("m u" . upcase-region)
-
-    '("m <return>" . fill-region)
-    '("m <end>" . end-of-buffer)
-    '("m <home>" . beginning-of-buffer)
-
-    ;; Run commands "after" numeric has been set.
-    ;; Unlike the default to re-running N times.
-    '("m 1" . digit-argument)
-    '("m 2" . digit-argument)
-    '("m 3" . digit-argument)
-    '("m 4" . digit-argument)
-    '("m 5" . digit-argument)
-    '("m 6" . digit-argument)
-    '("m 7" . digit-argument)
-    '("m 8" . digit-argument)
-    '("m 9" . digit-argument)
-    '("m 0" . digit-argument)
-    '("m -" . negative-argument)
-
-    '("C-2" . meep-region-toggle)
-    '("m m" . meep-region-toggle)
-    '("s" . meep-region-expand-to-line-bounds)
-
-    '("f h" . meep-move-find-char-on-line-at-prev)
-    '("f b" . meep-move-find-char-on-line-till-prev)
-    ;; '("f j" . meep-isearch-regexp-next)
-    ;; '("f k" . meep-isearch-regexp-prev)
-    '("?" . meep-isearch-regexp-prev)
-    '("f l" . meep-move-find-char-on-line-at-next)
-    '("f f" . meep-move-find-char-on-line-till-next)
-
-    ;; Find "repeat" are below the keys for find.
-    '("f ." . meep-move-find-char-on-line-repeat-at-next)
-    '("f ," . meep-move-find-char-on-line-repeat-at-prev)
-    '("f o" . meep-move-find-char-on-line-repeat-till-next)
-    '("f i" . meep-move-find-char-on-line-repeat-till-prev)
-
-    '("C-3" . meep-isearch-at-point-prev)
-    '("C-8" . meep-isearch-at-point-next)
-
-    ;; '("f u" . avy-goto-symbol-1-below)
-    ;; '("f i" . avy-goto-symbol-1-above)
-
-    ;; Alternative to VIM's ":" to go to line numbers (frees up a key).
-    '("f ;" . goto-line)
-    '("f :" . goto-char)
-
-    '("F" . my-key-free)
-
-    ;; '("s r" . meep-char-replace)
-    ;; '("s i" . meep-char-insert)
-
-    ;; Left Hand: Row 3.
-    '("u" . undo)
-    '("U" . undo-redo)
-
-    '("i" . meep-insert)
-    '("I" . meep-insert-overwrite)
-    '("a" . meep-append)
-
-    '("z" . meep-transpose)
-    '("x" . meep-delete-char-ring-prev)
-    '("X" . meep-delete-char-ring-next)
-    ;; '("Z" . meep-clipboard-killring-cut-line) ; Odd-one out, locate for convenience.
-
-    '("c" . meep-insert-change)
-    '("C" . meep-insert-change-lines)
-
-    ;; Right Hand: Row 1.
-    '("f a" . meep-move-line-non-space-beginning)
-    '("f e" . meep-move-line-non-space-end)
-    '("f v" . meep-move-by-sexp-any-prev)
-
-    '("C-r" . meep-exchange-point-and-mark)
-    '("f x" . meep-move-by-sexp-over-next)
-    '("f X" . meep-move-by-sexp-over-prev)
-
-    '(";" . meep-exchange-point-and-mark-motion)
-    '("f u" . meep-move-by-sexp-any-next)
-
-
-    ;; Right Hand: Row 2.
-    '("H" . meep-move-same-syntax-or-symbol-prev)
-
-    '("J" . meep-join-line-next)
-    '("K" . meep-join-line-prev)
-    ;; '("S-<delete>" . meep-join-line-prev)
-    ;; '("S-<backspace>" . meep-join-line-next)
-
-    ;; '("M-o" . meep-move-by-sexp-out-next)
-    '("C-o" . meep-move-by-sexp-out-prev)
-
-    '("L" . meep-move-same-syntax-or-symbol-next)
-
-    '("q" . meep-move-matching-bracket-inner)
-    '("p" . meep-move-matching-bracket-outer)
-    '("[" . meep-move-matching-bracket-inner)
-    '("]" . meep-move-matching-bracket-outer)
-
-    '("'" . meep-move-matching-syntax-inner)
-    '("\"" . meep-move-matching-syntax-outer)
-
-    ;; Right Hand: Row 3.
-    '("v" . meep-move-symbol-prev)
-    '("V" . meep-move-same-syntax-and-space-prev)
-
-    ;; '(">" . meep-move-paragraph-next)
-
-    ;; '("<" . meep-move-paragraph-prev)
-    '("<" . indent-rigidly-left-to-tab-stop)
-    '(">" . indent-rigidly-right-to-tab-stop)
-
-    '("e" . meep-move-symbol-next-end)
-    '("E" . meep-move-same-syntax-and-space-next)
-
-    '("w" . meep-move-word-next-end)
-    '("b" . meep-move-word-prev)
-    '("W" . meep-move-same-syntax-and-space-next-end)
-
-    ;; Other keys.
-    '("\\" . meep-register-jump-to)
-    '("`" . meep-register-kmacro-start-or-end)
-
-    '("," . meep-move-to-bounds-of-thing-beginning)
-    '("." . meep-move-to-bounds-of-thing-end)
-
-    ;; '("-" . meep-region-syntax-contract)
-    ;; '("=" . meep-region-syntax-expand)
-
-    ;; '("<tab>" . meep-indent-rigidly)
-
-
-    '("^" . meep-move-line-beginning)
-    '("$" . meep-move-line-end)
-    )
-
-  (my-meep-keymap-set-many meep-state-keymap-visual)
-
-  (my-meep-keymap-set-many meep-state-keymap-insert '("<escape>" . bray-state-stack-pop))
-
-  (my-meep-keymap-set-many meep-clipboard-register-map
-    '("d" . meep-clipboard-register-cut)
-    '("r" . meep-clipboard-register-yank)
-    '("y" . meep-clipboard-register-copy)))
+  (defvar-keymap meep-clipboard-register-map
+    "d"  #'meep-clipboard-register-cut
+    "r"  #'meep-clipboard-register-yank
+    "y"  #'meep-clipboard-register-copy))
 
 (when (require 'which-key nil t)
   (setq which-key-max-description-length 36)
@@ -373,14 +289,11 @@
           (t
            (set-register reg (point-marker))))))))
 
+  (my-meep-basis-keys)
 
-  (defvar meep-state-keymap-motion (make-keymap))
-  (defvar meep-state-keymap-normal (make-keymap))
-  (defvar meep-state-keymap-visual (make-keymap))
-  (defvar meep-state-keymap-insert (make-keymap))
 
   ;; Optional, a quick way to mask insertion.
-  (define-key meep-state-keymap-motion [remap self-insert-command] 'my-key-free)
+  ;; (define-key meep-state-keymap-motion [remap self-insert-command] 'my-key-free)
 
   (setq bray-state-definitions
         (list
@@ -390,7 +303,6 @@
           :cursor-type 'box
           :lighter "<N>"
           :keymaps (list (cons t 'meep-state-keymap-motion) (cons t 'meep-state-keymap-normal))
-
           :enter-hook 'meep-state-hook-normal-enter
           :exit-hook 'meep-state-hook-normal-exit)
          (list
@@ -399,7 +311,6 @@
           :cursor-type 'hollow
           :lighter "<M>"
           :keymaps (list (cons t 'meep-state-keymap-motion))
-
           :enter-hook 'meep-state-hook-motion-enter
           :exit-hook 'meep-state-hook-motion-exit)
 
@@ -409,7 +320,6 @@
           :cursor-type 'bar
           :lighter "<V>"
           :keymaps (list (cons t 'meep-state-keymap-motion) (cons t 'meep-state-keymap-normal) (cons t 'meep-state-keymap-visual))
-
           :enter-hook 'meep-state-hook-visual-enter
           :exit-hook 'meep-state-hook-visual-exit)
 
@@ -419,31 +329,31 @@
           :cursor-type 'bar
           :lighter "<I>"
           :keymaps (list (cons t 'meep-state-keymap-insert))
-
           :enter-hook 'meep-state-hook-insert-enter
           :exit-hook 'meep-state-hook-insert-exit
-
           ;; Optional.
           :is-input t)))
 
-  (my-meep-basis-keys))
+  )
 
 (my-meep-setup-once)
 
 
 ;; Enable MEEP for most buffers.
-(add-hook
- 'after-change-major-mode-hook
- (lambda ()
-   ;; Enable these modes for all non-special buffers (files).
-   (unless (minibufferp)
-     (bray-mode 1)
-     (when (derived-mode-p
-            (list 'special-mode 'gud-mode 'term-mode
-                  'org-agenda-mode
-                  'inferior-emacs-lisp-mode 'dired-mode))
-       (bray-state-stack-push 'motion)
-       ))))
+(defun meep-mode-hook()
+  (unless (minibufferp)
+    (bray-mode 1)
+    (cond
+     ((derived-mode-p '(reb-mode calc-mode))
+      (bray-state-stack-push 'insert))
+     ((derived-mode-p
+       '(special-mode gud-mode term-mode
+                      org-agenda-mode
+                      inferior-emacs-lisp-mode dired-mode))
+      (bray-state-stack-push 'motion)))))
+
+(add-hook 'after-change-major-mode-hook #'meep-mode-hook)
+
 
 (with-current-buffer "*Messages*"  (bray-mode))
 
