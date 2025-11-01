@@ -15,7 +15,7 @@
   "/" #'consult-focus-lines
   "z" #'consult-hide-lines
   "r" #'revert-buffer
-  "i" #'meow-insert
+  ;; "i" #'meow-insert
   "n" #'next-error
   "p" #'previous-error
   "b" #'pop-global-mark
@@ -31,53 +31,23 @@
 (global-set-key (kbd "C-c G") g-mode-map)
 (global-set-key (kbd "C-c g") g-mode-map)
 (global-set-key (kbd "C-c s") #'save-all)
-(defvar-keymap  m-mode-map              ;meow: m
-  "4" #'toggle-truncate-lines
-  "f" #'narrow-to-defun
-  "h" #'mark-defun
-  "v" #'rectangle-mark-mode
-  "q" #'fill-paragraph
-  "s" #'gt-do-translate
-  "," #'pop-to-mark-command
-  "t" #'org-capture
-  "z" #'hs-toggle-hiding		;
-  "m" #'vmacs-meow-grab-set-mark                ;C-@
-  "r" #'meow-swap-grab
-  "y" #'meow-sync-grab
-  "g" #'vmacs-meow-grab
-  "b" #'meow-grab
-  "n" #'narrow-to-region
-  "w" #'vmacs-widen)
-(global-set-key (kbd "C-c m") m-mode-map)
-
 
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
 
-(defvar-keymap  vmacs-normal-mode-map
-  "i" #'meep-insert
-  "G"  #'vmacs-goto-line
-  "g" g-mode-map
-  "n"  #'meep-isearch-repeat-next
-  "N"  #'meep-isearch-repeat-prev
-  "m" m-mode-map
-  "/"  #'meep-isearch-regexp-next
-  "z"   #'meow-pop-selection)
-
-(global-set-key (kbd "C-c N") vmacs-normal-mode-map)
 (defvar-keymap  vmacs-motion-mode-map
+  "i" #'meep-insert
   "j"  #'meep-move-line-next
   "k"  #'meep-move-line-prev
   "h"  #'meep-move-char-prev
   "l"  #'meep-move-char-next
   "G"  #'vmacs-goto-line
   "g"  g-mode-map
-  "m"  m-mode-map
   "/"  #'meep-isearch-regexp-next
   "n"  #'meep-isearch-repeat-next
   "N"  #'meep-isearch-repeat-prev
   ":" #'viper-ex
-  "z"   #'meow-pop-selection)
+  "z"   #'meep-transpose)
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
 
