@@ -58,19 +58,24 @@
 
 (defcustom diverted-events
   (list
+   (make-diverted-event :from 'meep-move-to-bounds-of-defun
+                        :to 'indent-for-tab-command
+                        :breadcrumb 'xref-go-back)
+   (make-diverted-event :from 'meep-region-expand-to-line-bounds
+                        :to 'meep-clipboard-killring-copy
+                        :breadcrumb 'xref-go-back)
+   (make-diverted-event :from 'meep-move-matching-bracket-inner
+                        :to 'indent-for-tab-command
+                        :breadcrumb 'xref-go-back)
+
+   (make-diverted-event :from 'meep-move-to-bounds-of-thing-beginning
+                        :to 'indent-for-tab-command
+                        :breadcrumb 'xref-go-back)
+
    (make-diverted-event :from 'vmacs-cancel-selection
                         :to 'meow-pop-selection
                         :breadcrumb
                         #'diverted--pop-to-mark-command)
-   (make-diverted-event :from 'meep-move-to-bounds-of-defun
-                        :to 'indent-for-tab-command
-                        :breadcrumb (lambda ()
-                                      (diverted--pop-to-mark-command 2)))
-
-   (make-diverted-event :from 'meep-move-to-bounds-of-thing-beginning
-                        :to 'indent-for-tab-command
-                        :breadcrumb (lambda ()
-                                      (diverted--pop-to-mark-command 1)))
    (make-diverted-event :from 'meow-bounds-of-thing
                         :to 'indent-for-tab-command
                         :breadcrumb (lambda ()
