@@ -17,7 +17,11 @@
 ;;               "Wrap `current-kill', only ever use the kill ring. Forward N & DO-NOT-MOVE."
 ;;               (current-kill n do-not-move)))
 
-
+(defun meep-push-markers(&optional arg)
+  (require 'xref)
+  (xref--push-markers (current-buffer)
+                      (point-marker)
+                      (selected-window)))
 
 
 (defun meep-append ()
@@ -427,7 +431,11 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
                                 (meep-exchange-point-and-mark-motion)
                                 (exchange-point-and-mark)))))
 
-(advice-add 'meep-move-to-bounds-of-thing-beginning :before #'(lambda(&optional arg) (push-mark (point-marker))))
+(advice-add 'meep-move-to-bounds-of-thing-beginning :before #'meep-push-markers)
+(advice-add 'meep-region-expand-to-line-bounds :before #'(lambda(&optional arg)
+                                                           (unless (region-active-p)
+                                                             (meep-push-markers)
+                                                             )))
 
 (defun meep-move-to-bounds-of-gopkg (arg)
   (interactive "^p")
