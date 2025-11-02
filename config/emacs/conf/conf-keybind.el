@@ -35,6 +35,7 @@
 (with-eval-after-load 'smerge-mode
   (define-key g-mode-map "v" smerge-basic-map))
 
+(autoload #'viper-ex  "viper" t)
 (defvar-keymap  vmacs-motion-mode-map
   "i" #'meep-insert
   "j"  #'meep-move-line-next

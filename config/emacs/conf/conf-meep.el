@@ -4,6 +4,17 @@
 (global-set-key (kbd "C-y") #'meep-clipboard-killring-yank) ;paste from kill ring
 (global-set-key (kbd "C-c ,") #'meep-move-to-bounds-of-thing-beginning)
 (global-set-key (kbd "C-c .") #'meep-move-to-bounds-of-thing-end)
+(defun meep-clipboard-killring-yank-1(&optional arg)
+  "forward 1 line for line-wise paste"
+  (let* ((text (meep--wrap-current-kill 0 t))
+         (yank-handler (get-text-property 0 'yank-handler text))
+         ;; A NOP if yank-handler is nil (harmless).
+         (region-type (meep--yank-handler-to-region-type (car yank-handler))))
+    (when (eq region-type 'line-wise)
+      (when (= (point) (point-max))
+        (insert "\n"))
+      (forward-line 1))))
+(advice-add 'meep-clipboard-killring-yank :before #'meep-clipboard-killring-yank-1)
 
 (defun meep-clipboard-killring-yank-ad(&optional arg)
   (activate-mark))
@@ -12,7 +23,7 @@
 (defun meep-clipboard-killring-copy-ad(&optional arg)
   (meep-clipboard-only-copy)
   (activate-mark))
-(advice-add 'meep-clipboard-killring-copy :before #'meep-clipboard-killring-copy-ad)
+;; (advice-add 'meep-clipboard-killring-copy :before #'meep-clipboard-killring-copy-ad)
 
 ;; (advice-add 'meep--wrap-current-kill :override
 ;;             (defun meep--wrap-current-kill-ad (n &optional do-not-move)
@@ -347,7 +358,7 @@
          (list
           :id 'motion
           ;; Define.
-          :cursor-type 'hollow
+          :cursor-type 'box
           :lighter "<M>"
           :keymaps (list (cons t 'meep-state-keymap-motion))
           :enter-hook 'meep-state-hook-motion-enter
@@ -482,7 +493,7 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
   )
 (defun meep-move-to-bounds-of-symbol (arg)
   (interactive "^p")
-  (meep-move-to-bounds-of-thing  arg 'symbol t))
+  (meep-bounds-of-thing  arg 'symbol t))
 (defun meep-move-to-bounds-of-grave-quoted (arg )
   (interactive "^p")
   (meep-move-to-bounds-of-thing  arg 'grave-quoted t))
