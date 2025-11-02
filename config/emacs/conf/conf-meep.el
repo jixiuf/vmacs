@@ -19,6 +19,13 @@
 ;;               "Wrap `current-kill', only ever use the kill ring. Forward N & DO-NOT-MOVE."
 ;;               (current-kill n do-not-move)))
 
+(defun meep-next-line-dwim(&optional arg)
+  (interactive)
+  (if (and (region-active-p)
+           (> (point) (mark)))
+      (meep-move-line-next (or arg 1))
+    (meep-move-line-prev (or arg 1))))
+
 (defun meep-push-markers(&optional arg)
   (require 'xref)
   (xref--push-markers (current-buffer)
@@ -45,18 +52,42 @@
       (goto-char (mark)))))
 
 (advice-add 'meep-insert :before #'meep-insert-before)
+(defun meep--search-match (match)
+  "Check if MATCH can be matched by the current `isearch-string'."
+  (when (and match
+             (not (string-empty-p match))
+             (not (string-empty-p isearch-string)))
+    (save-match-data
+      (save-mark-and-excursion
+        (let ((case-fold-search isearch-case-fold-search)
+              (search-invisible isearch-invisible))
+          (with-temp-buffer
+            (insert match)
+            (when isearch-forward
+              (goto-char (point-min)))
+            (and (isearch-search-string isearch-string nil t)
+                 (string-equal (match-string 0) match))))))))
 
 (define-advice meep-isearch-repeat-next (:around (orig-fun &rest args) search-region)
   (if (and (region-active-p)
            (= (line-number-at-pos (region-end))
               (line-number-at-pos (region-beginning))))
-      (call-interactively #'meep-isearch-at-point-next)
+      (if (< (point) (mark))
+          (if (meep--search-match (buffer-substring (region-beginning)(region-end)))
+              (call-interactively #'meep-isearch-repeat-prev)
+            (call-interactively #'meep-isearch-at-point-prev))
+        (if (meep--search-match (buffer-substring (region-beginning)(region-end)))
+            (apply orig-fun args)
+          (call-interactively #'meep-isearch-at-point-next)))
     (apply orig-fun args)))
+
 (define-advice meep-isearch-repeat-prev (:around (orig-fun &rest args) search-region)
   (if (and (region-active-p)
            (= (line-number-at-pos (region-end))
               (line-number-at-pos (region-beginning))))
-      (call-interactively #'meep-isearch-at-point-next)
+      (if (meep--search-match (buffer-substring (region-beginning)(region-end)))
+          (apply orig-fun args)
+        (call-interactively #'meep-isearch-at-point-prev))
     (apply orig-fun args)))
 
 
@@ -189,7 +220,6 @@
     "f a"        #'meep-move-line-non-space-beginning
     "f e"        #'meep-move-line-non-space-end
     "f v"        #'meep-move-by-sexp-any-prev
-    "C-r"        #'meep-exchange-point-and-mark
     "f x"        #'meep-move-by-sexp-over-next
     "f X"        #'meep-move-by-sexp-over-prev
     ";"          #'meep-exchange-point-and-mark-motion
@@ -200,7 +230,7 @@
     "C-o"        #'meep-move-by-sexp-out-prev
     "L"          #'meep-move-same-syntax-or-symbol-next
     "q"          #'meep-move-matching-bracket-inner
-    "p"          #'meep-move-matching-bracket-outer
+    "C-r"        #'meep-move-matching-bracket-outer
     "["          #'meep-move-matching-bracket-inner
     "]"          #'meep-move-matching-bracket-outer
     "'"          #'meep-move-matching-syntax-inner
@@ -221,7 +251,10 @@
     "^"          #'meep-move-line-beginning
     "$"          #'meep-move-line-end)
 
-  (defvar-keymap meep-state-keymap-visual "x" #'exchange-point-and-mark)
+  (defvar-keymap meep-state-keymap-visual
+    "s" #'meep-next-line-dwim
+    "<SPC>" #'meep-region-expand-to-line-bounds
+    "x" #'meep-exchange-point-and-mark)
 
   (defvar-keymap meep-state-keymap-insert "<escape>"  #'bray-state-stack-pop)
 

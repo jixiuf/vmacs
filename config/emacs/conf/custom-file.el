@@ -7,6 +7,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cursor ((t (:background "chartreuse"))))
  '(font-lock-comment-face ((t (:inherit modus-themes-slant :slant italic))))
  '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
  '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
@@ -17,6 +18,7 @@
  '(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
  '(show-paren-match ((t (:foreground "SpringGreen3" :weight bold))))
  '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
+ '(visible-mark-active ((t (:background "gold" :foreground "black"))))
  '(visible-mark-face1 ((t (:background "gold" :foreground "black"))))
  '(whitespace-missing-newline-at-eof ((t (:foreground "yellow")))))
 (custom-set-variables
