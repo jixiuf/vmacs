@@ -27,7 +27,7 @@
 
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
- frame-title-format '((:eval (meow-indicator)) which-func-format  "「" mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   " GNU/Emacs<" (:eval (expand-file-name default-directory)) ">")
+ frame-title-format '(which-func-format  "「" mode-line-buffer-identification "」("  (:propertize ("" mode-name) ) ") "   mode-line-misc-info   " GNU/Emacs<" (:eval (expand-file-name default-directory)) ">")
  xterm-set-window-title t
  xterm-extra-capabilities '( modifyOtherKeys reportBackground  )
  xterm-tmux-extra-capabilities xterm-extra-capabilities
@@ -195,14 +195,13 @@
 
 (defun scratch-auto-set-major-mode (&optional arg)
   (when (and (string= (buffer-name) "*scratch*")
-             (or (eq this-command 'yank)
-                 (eq this-command 'meow-replace)))
+             (member this-command '(meep-clipboard-killring-yank yank )))
     (set-auto-mode)
     (setq-local write-contents-functions #'scratch-write-contents)
     ))
 
 (advice-add 'yank :after #'scratch-auto-set-major-mode)
-(advice-add 'meow-replace :after #'scratch-auto-set-major-mode)
+(advice-add 'meep-clipboard-killring-yank :after #'scratch-auto-set-major-mode)
 
 
 (add-to-list 'magic-mode-alist
@@ -281,7 +280,7 @@
       (delete-file file)
       (tab-line-mode -1)
       (forward-char 1)
-      (meow-normal-mode))
+      (bray-state-stack-pop))
     (switch-to-buffer buf)))
 
 (defun vmacs-calc-hook()

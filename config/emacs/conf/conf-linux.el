@@ -33,16 +33,19 @@
     (string-trim (shell-command-to-string "ibus engine")))))
 
 (defun vmacs-input-method-hook()
-  (when (member this-command '(vmacs-cancel-selection meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
-    (switch-to-english-input-method)))
-(add-hook 'meow-normal-mode-hook #'vmacs-input-method-hook)
+  (when (member this-command '(vmacs-cancel-selection
+                               bray-state-stack-pop
+                               meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
+    (switch-to-english-input-method)));
+(add-hook 'meep-state-hook-normal-enter #'vmacs-input-method-hook)
+
 
 (defun linux-toggle-input-method()
   (interactive)
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
     (switch-to-rime-input-method)
-    (meow-insert)))
+    (meep-insert)))
 
 (global-set-key (kbd "<f11>") #'linux-toggle-input-method)
 (define-key isearch-mode-map (kbd  "<f11>") #'linux-toggle-input-method)

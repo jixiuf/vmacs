@@ -19,8 +19,8 @@
 (with-eval-after-load 'grep
   ;; (define-key grep-mode-map (kbd "e") nil)
   ;; (set-keymap-parent grep-mode-map meow-normal-state-keymap)
-  (define-key grep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
-  (define-key grep-mode-map (kbd "C-c N/") #'consult-focus-lines)
+  (define-key grep-mode-map (kbd "C-c Mz") #'consult-hide-lines)
+  (define-key grep-mode-map (kbd "C-c M/") #'consult-focus-lines)
   ;; (when (boundp 'grep-edit-mode-map)
   ;;   (define-key grep-mode-map (kbd "C-c Ni") #'grep-change-to-grep-edit-mode) ;i
   ;;   (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
@@ -40,12 +40,12 @@
 (with-eval-after-load 'wgrep
   (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
               wgrep-too-many-file-length 1
-              wgrep-enable-key "C-c Ni"
+              wgrep-enable-key "C-c Mi"
               wgrep-change-readonly-file t)
-  (define-key grep-mode-map (kbd "C-c Ni") #'wgrep-change-to-wgrep-mode)
+  (define-key grep-mode-map (kbd "C-c Mi") #'wgrep-change-to-wgrep-mode)
   (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
-  (define-key wgrep-mode-map (kbd "C-c N/") #'consult-focus-lines)
-  (define-key wgrep-mode-map (kbd "C-c Nz") #'consult-hide-lines)
+  (define-key wgrep-mode-map (kbd "C-c M/") #'consult-focus-lines)
+  (define-key wgrep-mode-map (kbd "C-c Mz") #'consult-hide-lines)
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit)
   (define-key wgrep-mode-map (kbd "C-x C-s") 'vmacs-wgrep-finish-edit)

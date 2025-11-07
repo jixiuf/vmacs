@@ -257,6 +257,7 @@
              (when dir (setq default-directory dir)))
            ) lines)
 	    (embark-consult-export-grep lines)
+        (wgrep-change-to-wgrep-mode)
         ;; (run-with-timer
         ;;  0.03 nil (lambda()
         ;;             (with-current-buffer (get-buffer "*grep*")
@@ -351,7 +352,7 @@
 (vmacs-leader "fo" 'consult-buffer-other-window)
 (vmacs-leader "fl" 'consult-find)
 (global-set-key [remap goto-line] 'consult-goto-line)
-(global-set-key (kbd "C-c C-s") 'consult-line)
+;; (global-set-key (kbd "C-c C-s") 'consult-line)
 (vmacs-leader (kbd "wi") 'consult-imenu)
 
 

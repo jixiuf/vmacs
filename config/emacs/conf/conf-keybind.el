@@ -16,6 +16,8 @@
   "z" #'consult-hide-lines
   "r" #'revert-buffer
   ;; "i" #'meow-insert
+  ";" #'goto-line
+  ":" #'goto-char
   "n" #'next-error
   "p" #'previous-error
   "b" #'pop-global-mark
@@ -65,7 +67,9 @@
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
 (define-key isearch-mode-map  (kbd "M-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
-(setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c:case)")
+(vmacs-leader (kbd "wc") 'toggle-case-fold-search)
+(global-set-key (kbd "C-c C-s") 'toggle-case-fold-search)
+(setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c/C-cC-s:case)")
 
 (add-hook 'isearch-mode-end-hook
           (lambda()
@@ -81,9 +85,9 @@
 (setq lazy-highlight-cleanup nil)
 (setq isearch-wrap-pause 'no)
 (vmacs-leader "n" #'xref-go-back)
-(with-eval-after-load 'xref
-  ;; for clean up second-selection set by vmacs-meow-grab-set-mark
-  (add-hook 'xref-after-jump-hook #'meow--cancel-second-selection))
+;; (with-eval-after-load 'xref
+;;   ;; for clean up second-selection set by vmacs-meow-grab-set-mark
+;;   (add-hook 'xref-after-jump-hook #'meow--cancel-second-selection))
 ;; (vmacs-leader "," #'pop-global-mark)
 ;; (advice-add 'pop-global-mark :before #'deactivate-mark)
 
@@ -154,9 +158,10 @@
 (global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up) ;C-v
 ;; (global-set-key "\C-u" 'gold-ratio-scroll-screen-up)
 (global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down) ;M-v
-(global-set-key  (kbd "C-2") 'meow-set-mark)
+;; (global-set-key  (kbd "C-2") 'meow-set-mark)
+(global-set-key  (kbd "C-2") 'set-mark-command)
 ;; (global-set-key  (kbd "C-3") 'rectangle-mark-mode)
-(global-set-key  (kbd "C-4") 'vmacs-meow-grab)
+;; (global-set-key  (kbd "C-4") 'vmacs-meow-grab)
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
 (global-set-key (kbd "C-s-r") 'compile-dwim-run)
@@ -169,7 +174,7 @@
 
 
 (vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
-(vmacs-leader "b" 'meow-last-buffer)
+(vmacs-leader "b" 'mode-line-other-buffer)
 (vmacs-leader  "fg" #'vmacs-ai)
 
 
@@ -190,7 +195,6 @@
 ;; (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
 ;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
 (vmacs-leader (kbd "$") 'toggle-truncate-lines)
-(vmacs-leader (kbd "wc") 'toggle-case-fold)
 (vmacs-leader (kbd "wl") #'git-link)
 ;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
 (vmacs-leader "p" 'list-packages)
@@ -205,7 +209,7 @@
 
 ;; (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
 ;; (global-set-key (kbd "C-;") #'query-replace-iedit-mode)
-(global-set-key (kbd "C-;") #'vmacs-meow-repeat)
+(global-set-key (kbd "C-;") #'vmacs-repeat)
 
 
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace

@@ -1,5 +1,5 @@
 ;;   -*- lexical-binding: t; -*-
-(with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
+;; (with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "m") m-mode-map)
   (define-key org-agenda-mode-map (kbd "C-c Nmt") 'org-capture)

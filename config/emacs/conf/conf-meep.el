@@ -63,6 +63,46 @@
       (goto-char (mark)))))
 
 (advice-add 'meep-insert :before #'meep-insert-before)
+;; (defun meep--search (reverse &optional match not-regexp
+;;                              inhibit-lazy-highlight-and-count not-repeat)
+;;   "Search for the next occurrence of MATCH using isearch.
+;; If found, move point to the end of the occurrence,and return point.
+
+;; REVERSE - If non-nil, the search direction is backward. Otherwise, it is forward.
+;; MATCH - The string to search for, if nil `isearch-repeat' is called.
+;; NOT-REGEXP - If non-nil, do a regular string search instead.
+;; INHIBIT-LAZY-HIGHLIGHT-AND-COUNT - If non-nil disable lazy highlighting and
+;; lazy counting features.
+;; NOT-REPEAT - do not use `isearch-repeat' even MATCH equals to last `isearch-string'."
+;;   (interactive "P")
+;;   (when (and (string-equal match isearch-string)
+;;              (equal isearch-regexp (not not-regexp))
+;;              (not not-repeat))
+;;     (setq match nil))
+;;   (let ((inhibit-redisplay t)
+;;         ;; we call `isearch-lazy-highlight-new-loop' at the end
+;;         ;; of function,so set `isearch-lazy-count' and `isearch-lazy-highlight'
+;;         ;; to nil is costless.
+;;         (isearch-lazy-count nil)
+;;         (isearch-lazy-highlight nil))
+;;     (if (not match)
+;;         ;; if MATCH is nil, just call `isearch-repeat'
+;;         (isearch-repeat (if reverse 'backward 'forward))
+;;       (if reverse
+;;           (isearch-backward-regexp not-regexp t)
+;;         (isearch-forward-regexp not-regexp t))
+;;       (isearch-process-search-string
+;;        match
+;;        (mapconcat 'isearch-text-char-description match "")))
+;;     (isearch-update)
+;;     (isearch-done))
+;;   ;; highlight after isearch-done
+;;   ;; M-x:lazy-highlight-cleanup to cleanup highlight
+;;   (when (and isearch-success
+;;              (not inhibit-lazy-highlight-and-count))
+;;     (isearch-lazy-highlight-new-loop))
+;;   isearch-success)
+
 (defun meep--search-match (match)
   "Check if MATCH can be matched by the current `isearch-string'."
   (when (and match
@@ -101,6 +141,16 @@
         (call-interactively #'meep-isearch-at-point-prev))
     (apply orig-fun args)))
 
+(defun meep-exchange-point-and-mark-motion-ad ()
+  "auto push isearch history."
+  (let ((search (buffer-substring (region-beginning)(region-end))))
+    (unless (string-equal search (car regexp-search-ring))
+      (save-mark-and-excursion
+        (meep-isearch-repeat-next 1)))))
+  
+
+(advice-add 'meep-exchange-point-and-mark-motion :after #'meep-exchange-point-and-mark-motion-ad)
+;; 
 
 ;; (defun my-key-free ()
 ;;   (interactive)
@@ -126,8 +176,8 @@
        (setq unread-command-events (listify-key-sequence (kbd ,def)))))))
 
 (defun my-meep-basis-keys ()
- (global-set-key (kbd "C-c x") (meep-kbd "C-x")) ;this space+x = C-c x
- ;; (global-set-key (kbd "C-c ,") (meep-kbd "M-"))	;this space+, = M-
+  (global-set-key (kbd "C-c x") (meep-kbd "C-x")) ;this space+x = C-c x
+  ;; (global-set-key (kbd "C-c ,") (meep-kbd "M-"))	;this space+, = M-
   (defvar-keymap meep-state-keymap-motion
     "<SPC>"     (meep-kbd "C-c" )
     "j"         (meep-kbd "C-c Mj")
@@ -162,6 +212,7 @@
     "T"           #'meep-region-swap
     "<f8>"        #'repeat-fu-execute
     "Q"           #'meep-clipboard-register-actions
+    "p"           #'meep-region-syntax-expand
     "d"           #'meep-clipboard-killring-cut
     "D"           #'meep-clipboard-only-cut
     "r"           #'meep-clipboard-killring-yank
@@ -217,6 +268,7 @@
     "f i"         #'meep-move-find-char-on-line-repeat-till-prev
     "C-3"         #'meep-isearch-at-point-prev
     "C-8"         #'meep-isearch-at-point-next
+    "f t"         #'toggle-case-fold-search
     "f ;"         #'goto-line
     "f :"         #'goto-char
     "u"           #'undo
@@ -493,7 +545,7 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
   )
 (defun meep-move-to-bounds-of-symbol (arg)
   (interactive "^p")
-  (meep-bounds-of-thing  arg 'symbol t))
+  (meep-move-to-bounds-of-thing  arg 'symbol t))
 (defun meep-move-to-bounds-of-grave-quoted (arg )
   (interactive "^p")
   (meep-move-to-bounds-of-thing  arg 'grave-quoted t))
