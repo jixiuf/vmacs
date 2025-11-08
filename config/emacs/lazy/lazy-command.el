@@ -562,12 +562,19 @@ numeric, repeat times.
   (interactive)
   ;; meow--selection
   (let ((pattern (car regexp-search-ring))
+        (pt (mark))
         (cnt 0))
     (save-mark-and-excursion
-      (goto-char (point-min))
       (while (re-search-forward pattern nil t)
+        (set-mark (match-beginning 0))
         (call-interactively #'repeat-fu-execute)
-      (incf cnt)))
+        (incf cnt))
+      (goto-char (point-min))
+      (while (re-search-forward pattern pt t)
+        (set-mark (match-beginning 0))
+        (call-interactively #'repeat-fu-execute)
+        (incf cnt))
+      )
     (message "[%s] %d changed" pattern cnt)))
 
 ;; (defun vmacs-meow-iedit()
