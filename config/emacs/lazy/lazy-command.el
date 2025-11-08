@@ -254,7 +254,7 @@ based on the current context and previous history."
                                 "~/Documents/jianguo/jianguo/ai/")))
       (set-buffer-modified-p nil)
       (gptel-mode)
-      (meow-insert)
+      (meep-insert)
       (display-buffer (current-buffer) '(pop-to-buffer)))))
 
 ;;;###autoload
@@ -560,21 +560,28 @@ numeric, repeat times.
 ;;;###autoload
 (defun vmacs-repeat ()
   (interactive)
-  ;; meow--selection
   (let ((pattern (car regexp-search-ring))
-        (pt (mark))
+        (marker (set-marker (make-marker) (mark)))
+        (isearch-lazy-highlight nil)
+        (isearch-wrap-pause nil)
+        (inhibit-redisplay t)
         (cnt 0))
     (save-mark-and-excursion
-      (while (re-search-forward pattern nil t)
-        (set-mark (match-beginning 0))
+      (while (progn
+               (isearch-repeat-forward nil)
+               (and isearch-success isearch-other-end))
+        (meep--isearch-handle-done t)
         (call-interactively #'repeat-fu-execute)
         (incf cnt))
       (goto-char (point-min))
-      (while (re-search-forward pattern pt t)
-        (set-mark (match-beginning 0))
+      (while (progn
+               (isearch-repeat-forward nil)
+               (and isearch-success isearch-other-end
+                    (< (point) (marker-position marker))))
+        (meep--isearch-handle-done t)
         (call-interactively #'repeat-fu-execute)
-        (incf cnt))
-      )
+        (incf cnt)))
+    (isearch-dehighlight)
     (message "[%s] %d changed" pattern cnt)))
 
 ;; (defun vmacs-meow-iedit()
@@ -1345,14 +1352,23 @@ end tell" (expand-file-name default-directory))))
     (ns-do-applescript cmd)))
 
 ;; ;;;###autoload
-;; (defun toggle-case-fold)
-;;   (interactive)
-;;   (if case-fold-search
-;;       (progn
-;;         (setq case-fold-search nil) ;nil=case sensitive
-;;         (message "case sensitive"))
-;;     (setq case-fold-search t) ;nil=case sensitive
-;;     (message "case insensitive")))
+(defun toggle-case-fold()
+  (interactive)
+  (save-mark-and-excursion
+    (isearch-mode t isearch-regexp)
+    (isearch-repeat 'forward)
+    (if case-fold-search
+        (progn
+          (setq case-fold-search nil) ;nil=case sensitive
+          (setq isearch-case-fold-search nil))
+      (setq case-fold-search t) ;nil=case sensitive
+      (setq isearch-case-fold-search t))
+    ;; (isearch-toggle-case-fold)
+    (isearch-update)
+    (isearch-done))
+  (if case-fold-search
+      (message "case insensitive")
+    (message "case sensitive")))
 
 ;;;###autoload
 (defun consult-hide-lines ()

@@ -14,6 +14,7 @@
       (when (= (point) (point-max))
         (insert "\n"))
       (forward-line 1))))
+
 (advice-add 'meep-clipboard-killring-yank :before #'meep-clipboard-killring-yank-1)
 
 (defun meep-clipboard-killring-yank-ad(&optional arg)
@@ -21,9 +22,10 @@
 (advice-add 'meep-clipboard-killring-yank-pop-stack :before #'meep-clipboard-killring-yank-ad)
 
 (defun meep-clipboard-killring-copy-ad(&optional arg)
-  (meep-clipboard-only-copy)
+  (isearch-dehighlight)
+  (lazy-highlight-cleanup t)
   (activate-mark))
-;; (advice-add 'meep-clipboard-killring-copy :before #'meep-clipboard-killring-copy-ad)
+(advice-add 'meep-clipboard-killring-copy :before #'meep-clipboard-killring-copy-ad)
 
 ;; (advice-add 'meep--wrap-current-kill :override
 ;;             (defun meep--wrap-current-kill-ad (n &optional do-not-move)
@@ -120,6 +122,10 @@
                  (string-equal (match-string 0) match))))))))
 
 (define-advice meep-isearch-repeat-next (:around (orig-fun &rest args) search-region)
+  "This advice customizes `meep-isearch-repeat-next' for single-line active regions. If the region
+content doesn't match `isearch-string', it is used to search the region content using
+`meep-isearch-at-point-next' or `meep-isearch-at-point-prev'. Otherwise, it delegates to the
+original function."
   (if (and (region-active-p)
            (= (line-number-at-pos (region-end))
               (line-number-at-pos (region-beginning))))
@@ -141,15 +147,22 @@
         (call-interactively #'meep-isearch-at-point-prev))
     (apply orig-fun args)))
 
-(defun meep-exchange-point-and-mark-motion-ad ()
-  "auto push isearch history."
-  (let ((search (buffer-substring (region-beginning)(region-end))))
-    (unless (string-equal search (car regexp-search-ring))
-      (save-mark-and-excursion
-        (meep-isearch-repeat-next 1)))))
+(defun meep-exchange-point-and-mark-motion-ad (&optional arg ex-pt-mark)
+  "auto push single-line active region string to isearch history."
+  (when (= (line-number-at-pos (region-end))
+           (line-number-at-pos (region-beginning)))
+    (let ((search (buffer-substring (region-beginning)(region-end))))
+      (unless (string-equal search (car regexp-search-ring))
+        (save-mark-and-excursion
+          (meep-isearch-repeat-next 1)
+          (meep-isearch-repeat-prev -1)
+          )
+        (when ex-pt-mark
+          (exchange-point-and-mark))))))
   
 
 (advice-add 'meep-exchange-point-and-mark-motion :after #'meep-exchange-point-and-mark-motion-ad)
+(advice-add 'meep-region-syntax-expand :after #'(lambda(arg) (meep-exchange-point-and-mark-motion-ad nil t)))
 ;; 
 
 ;; (defun my-key-free ()
@@ -177,7 +190,7 @@
 
 (defun my-meep-basis-keys ()
   (global-set-key (kbd "C-c x") (meep-kbd "C-x")) ;this space+x = C-c x
-  ;; (global-set-key (kbd "C-c ,") (meep-kbd "M-"))	;this space+, = M-
+  (global-set-key (kbd "C-c m") (meep-kbd "M-"))	;this space+, = M-
   (defvar-keymap meep-state-keymap-motion
     "<SPC>"     (meep-kbd "C-c" )
     "j"         (meep-kbd "C-c Mj")
@@ -321,10 +334,9 @@
 
   (defvar-keymap meep-state-keymap-insert "<escape>"  #'bray-state-stack-pop)
 
-  (defvar-keymap meep-clipboard-register-map
-    "d"  #'meep-clipboard-register-cut
-    "r"  #'meep-clipboard-register-yank
-    "y"  #'meep-clipboard-register-copy))
+  (keymap-set meep-clipboard-register-map "d"  #'meep-clipboard-register-cut)
+  (keymap-set meep-clipboard-register-map "r"  #'meep-clipboard-register-yank)
+  (keymap-set meep-clipboard-register-map "y"  #'meep-clipboard-register-copy))
 
 (when (require 'which-key nil t)
   (setq which-key-max-description-length 36)
@@ -446,7 +458,7 @@
   (unless (minibufferp)
     (bray-mode 1)
     (cond
-     ((derived-mode-p '(reb-mode calc-mode))
+     ((derived-mode-p '(reb-mode calc-mode tabulated-list-mode))
       (bray-state-stack-push 'insert))
      ((derived-mode-p
        '(special-mode gud-mode term-mode
@@ -508,26 +520,30 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
                                   (goto-char  (match-beginning 1)))))
 
 ;;;###autoload
-(defun meep-move-to-bounds-of-thing (arg &optional thing mark)
+(defun meep-move-to-bounds-of-thing (arg &optional thing mark ex-pt-mark)
   "Move to the thing start/end (start when ARG is negative)."
   (let ((bounds (bounds-of-thing-at-point thing)))
     (cond
      (bounds
       (meep--move-to-bounds-endpoint bounds arg)
       (when mark
-        (meep-mark-thing-at-point))
+        (meep-mark-thing-at-point arg nil ex-pt-mark))
       (message "go to %s of %s" (or (and (< arg 0) "beginning") "end") thing)
       t)
      (t
       (message "Not found: bounds of %s" thing)
       nil))))
-(defun meep-mark-thing-at-point (&optional arg _)
+(defun meep-mark-thing-at-point (&optional arg _ ex-pt-mark)
   (when (member last-command '(meep-move-to-bounds-of-thing-beginning
                                meep-move-to-bounds-of-thing-end))
     (run-with-timer 0.001 nil (lambda()
                                 ;; (setq this-command last-command)
                                 (meep-exchange-point-and-mark-motion)
-                                (exchange-point-and-mark)))))
+                                (when ex-pt-mark
+                                  (exchange-point-and-mark))))))
+
+(defun meep-mark-thing-at-point-reverse (&optional arg arg2 )
+  (meep-mark-thing-at-point arg arg2 t))
 
 (advice-add 'meep-move-to-bounds-of-thing-beginning :before #'meep-push-markers)
 (advice-add 'meep-region-expand-to-line-bounds :before #'(lambda(&optional arg)
@@ -549,6 +565,35 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 (defun meep-move-to-bounds-of-grave-quoted (arg )
   (interactive "^p")
   (meep-move-to-bounds-of-thing  arg 'grave-quoted t))
+;; 
+(defun meep-move-to-bounds-of-parameter (arg )
+  "from evil-textobj-tree-sitter"
+  (interactive "^p")
+  (require 'evil-textobj-tree-sitter-thing-at-point)
+  (meep-move-to-bounds-of-thing  arg 'parameter t t))
+(defun meep-move-to-bounds-of-loop (arg )
+  "from evil-textobj-tree-sitter"
+  (interactive "^p")
+  (require 'evil-textobj-tree-sitter-thing-at-point)
+  (meep-move-to-bounds-of-thing  arg 'loop t t))
+
+(defun meep-move-to-bounds-of-class (arg )
+  "from evil-textobj-tree-sitter"
+  (interactive "^p")
+  (require 'evil-textobj-tree-sitter-thing-at-point)
+  (meep-move-to-bounds-of-thing  arg 'class t t))
+(defun meep-move-to-bounds-of-conditional (arg )
+  "from evil-textobj-tree-sitter"
+  (interactive "^p")
+  (require 'evil-textobj-tree-sitter-thing-at-point)
+  (meep-move-to-bounds-of-thing  arg 'conditional t t))
+
+(defun meep-move-to-bounds-of-comment (&optional arg _)
+  "from evil-textobj-tree-sitter"
+  (interactive "^p")
+  (require 'evil-textobj-tree-sitter-thing-at-point)
+  (meep-move-to-bounds-of-thing  arg 'comment t t))
+
 (defun meep-move-to-bounds-of-org-block (arg)
   (interactive "^p")
   (meep-move-to-bounds-of-thing  arg 'org-block t))
@@ -556,27 +601,43 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 (dolist (cmd
          (list
           'meep-move-to-bounds-of-gopkg
+          'meep-move-to-bounds-of-conditional
+          'meep-move-to-bounds-of-comment
+          'meep-move-to-bounds-of-parameter
+          'meep-move-to-bounds-of-loop
+          'meep-move-to-bounds-of-class
           'meep-move-to-bounds-of-word
           'meep-move-to-bounds-of-symbol
           'meep-move-to-bounds-of-grave-quoted
           'meep-move-to-bounds-of-org-block))
          (meep-command-prop-set cmd :mark-on-motion t))
-(advice-add 'meep-move-matching-bracket-inner :after #'meep-mark-thing-at-point)
-(advice-add 'meep-move-matching-bracket-outer :after #'meep-mark-thing-at-point)
-(advice-add 'meep-move-to-bounds-of-defun :after #'meep-mark-thing-at-point)
+(advice-add 'meep-move-matching-bracket-inner :after #'meep-mark-thing-at-point-reverse)
+(advice-add 'meep-move-matching-bracket-outer :after #'meep-mark-thing-at-point-reverse)
+(advice-add 'meep-move-to-bounds-of-defun :after #'meep-mark-thing-at-point-reverse)
 (advice-add 'meep-move-to-bounds-of-string :after #'meep-mark-thing-at-point)
-(advice-add 'meep-move-to-bounds-of-string-inner :after #'meep-mark-thing-at-point)
 
 (add-to-list 'meep-bounds-commands '(?r meep-move-to-bounds-of-gopkg "gopkg"))
-(add-to-list 'meep-bounds-commands '(?. meep-move-to-bounds-of-word "word"))
-(add-to-list 'meep-bounds-commands '(?, meep-move-to-bounds-of-symbol "symbol"))
+(add-to-list 'meep-bounds-commands '(?, meep-move-to-bounds-of-word "word"))
+(add-to-list 'meep-bounds-commands '(?. meep-move-to-bounds-of-symbol "symbol"))
 (add-to-list 'meep-bounds-commands '(?` meep-move-to-bounds-of-grave-quoted "`"))
-(add-to-list 'meep-bounds-commands '(?o meep-move-to-bounds-of-org-block "org-block"))
+(add-to-list 'meep-bounds-commands '(?b meep-move-to-bounds-of-org-block "org-block"))
 (add-to-list 'meep-bounds-commands '(?c meep-move-matching-bracket-inner "src-block inner"))
 (add-to-list 'meep-bounds-commands '(?x meep-move-matching-bracket-outer "src-block"))
 (add-to-list 'meep-bounds-commands '(?f meep-move-to-bounds-of-defun "defun"))
 (add-to-list 'meep-bounds-commands '(?g meep-move-to-bounds-of-string "str"))
 (add-to-list 'meep-bounds-commands '(?/ meep-move-to-bounds-of-comment-inner "comment inner"))
+(add-to-list 'meep-bounds-commands '(?i meep-region-mark-bounds-of-char-inner "pair inner"))
+(add-to-list 'meep-bounds-commands '(?o meep-region-mark-bounds-of-char-outer "pair"))
+
+(add-to-list 'meep-bounds-commands '(?a meep-move-to-bounds-of-parameter "param"))
+(add-to-list 'meep-bounds-commands '(?d meep-move-to-bounds-of-loop "loop"))
+(add-to-list 'meep-bounds-commands '(?t meep-move-to-bounds-of-class "type"))
+(add-to-list 'meep-bounds-commands '(?w meep-move-to-bounds-of-conditional "conditional"))
+;; (add-to-list 'meep-bounds-commands '(?h meep-move-to-bounds-of-comment "comment"))
+
+
+;; for repeat
+(meep-command-prop-set #'meep-isearch-regexp-next :mark-on-motion t)
 
 (provide 'conf-meep)
 
