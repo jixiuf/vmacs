@@ -54,37 +54,7 @@
 (global-set-key (kbd "C-c M") vmacs-motion-mode-map)
 
 
-(global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))
-(defun vmacs-isearch-insert_()
-  (interactive)
-  (isearch-printing-char ?_))
-(define-key isearch-mode-map  (kbd "C--")   'vmacs-isearch-insert_)
 
-(define-key isearch-mode-map  (kbd "M-n")   'isearch-forward-thing-at-point)
-(define-key isearch-mode-map  (kbd "M-p")   'consult-isearch-history)
-(define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
-(define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
-(define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
-(define-key isearch-mode-map  (kbd "M-t")   'isearch-toggle-regexp)
-(define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
-(vmacs-leader (kbd "wc") 'toggle-case-fold-search)
-(global-set-key (kbd "C-c C-s") 'toggle-case-fold)
-(setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c/C-cC-s:case)")
-
-;; (add-hook 'isearch-mode-end-hook
-;;           (lambda()
-;;             (when isearch-success ; 只有在搜索成功时
-;;               (set-mark isearch-other-end)
-;;               (activate-mark))))
-
-(add-hook 'isearch-mode-hook (lambda()(require 'xref)
-                               (if (equal emacs-major-version 30)
-                                   (xref--push-markers (current-buffer) (point) )
-                                 (xref--push-markers (current-buffer) (point) (selected-window))
-                                 )))
-(setq isearch-lazy-count t)
-(setq lazy-highlight-cleanup nil)
-(setq isearch-wrap-pause 'no)
 (vmacs-leader "n" #'xref-go-back)
 ;; (with-eval-after-load 'xref
 ;;   ;; for clean up second-selection set by vmacs-meow-grab-set-mark
@@ -95,9 +65,6 @@
 (setq shell-command-buffer-name "*Messages*")
 (setq shell-command-default-error-buffer "*Messages*")
 (setq shell-command-dont-erase-buffer nil)
-(defun vmacs-isearch-insert-shift1()
-  (interactive)
-  (isearch-printing-char ?\!))
 (global-set-key (kbd "C-1")   (lambda()
                                 (interactive)
                                 (let ((shell-file-name "zsh")
@@ -117,17 +84,13 @@
                                                                    t t)
                                         (call-interactively 'shell-command))))))))
 
-(define-key isearch-mode-map  (kbd "C-1")   'vmacs-isearch-insert-shift1)
 
-(with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 
 (defun vmacs-bury-boring-windows ()
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))
     (minibuffer-keyboard-quit))
-  (bury-boring-windows)
-  (isearch-dehighlight)
-  (lazy-highlight-cleanup t))
+  (bury-boring-windows))
 
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
@@ -136,26 +99,6 @@
 (global-set-key (kbd "C-;") #'vmacs-repeat)
 
 
-(global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
-
-;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
-(defvar vmacs-do-nothing-map
-  (let ((map (make-keymap)))
-    (set-char-table-range (nth 1 map) t 'ignore)
-    map))
-(set-keymap-parent query-replace-map vmacs-do-nothing-map)
-(define-key query-replace-map "g" 'automatic) ;old ! replace all automatic
-(define-key query-replace-map "p" 'backup)
-(define-key query-replace-map "c" 'act)     ;old y
-(define-key query-replace-map "\C-e" 'edit) ;临时退出
-(setq query-replace-read-from-default #'vmacs-query-replace-read-from-default)
-(defvar vmacs-query-replace-read-from-def nil)
-(defun vmacs-query-replace-read-from-default()
-  (if (eq this-command 'vmacs-replace-all)
-      vmacs-query-replace-read-from-def
-    (if (use-region-p)
-        (buffer-substring-no-properties (region-beginning) (region-end))
-      (thing-at-point 'symbol))))
 
 
 ;; (global-set-key  (kbd "s-a") 'evil-mark-whole-buffer) ;mac Cmd+a

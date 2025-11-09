@@ -22,8 +22,8 @@
 (advice-add 'meep-clipboard-killring-yank-pop-stack :before #'meep-clipboard-killring-yank-ad)
 
 (defun meep-clipboard-killring-copy-ad(&optional arg)
-  (isearch-dehighlight)
-  (lazy-highlight-cleanup t)
+  (vmacs-isearch-unhighlight)
+  (meep-clipboard-only-copy)
   (activate-mark))
 (advice-add 'meep-clipboard-killring-copy :before #'meep-clipboard-killring-copy-ad)
 
