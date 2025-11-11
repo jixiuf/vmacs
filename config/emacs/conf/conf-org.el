@@ -1,10 +1,11 @@
 ;;   -*- lexical-binding: t; -*-
 ;; (with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
 (with-eval-after-load 'org-agenda
-  (define-key org-agenda-mode-map (kbd "m") m-mode-map)
-  (define-key org-agenda-mode-map (kbd "C-c Nmt") 'org-capture)
-  (define-key org-agenda-mode-map (kbd "C-c Mmt") 'org-capture)
-  (define-key org-agenda-mode-map (kbd "C-c Gr") 'org-agenda-redo))
+  (defun vmacs-org-agenda()
+    (meep-local-set-key "m t" #'org-capture)
+    (meep-local-set-key "g r" #'org-agenda-redo)
+    )
+  (add-hook 'org-agenda-mode-hook #'vmacs-org-agenda))
 
 (setq verb-auto-kill-response-buffers t)
 (with-eval-after-load 'org

@@ -161,7 +161,7 @@ original function."
           (exchange-point-and-mark))))))
   
 
-(advice-add 'meep-exchange-point-and-mark-motion :after #'meep-exchange-point-and-mark-motion-ad)
+(advice-add 'meep-region-activate-and-reverse-motion :after #'meep-exchange-point-and-mark-motion-ad)
 (advice-add 'meep-region-syntax-expand :after #'(lambda(arg) (meep-exchange-point-and-mark-motion-ad nil t)))
 ;; 
 
@@ -193,21 +193,47 @@ original function."
   (global-set-key (kbd "C-c m") (meep-kbd "M-"))	;this space+, = M-
   (defvar-keymap meep-state-keymap-motion
     "<SPC>"     (meep-kbd "C-c" )
-    "j"         (meep-kbd "C-c Mj")
-    "h"         (meep-kbd "C-c Mh")
-    "l"         (meep-kbd "C-c Ml")
-    "k"         (meep-kbd "C-c Mk")
-    "g"         (meep-kbd "C-c G")
-    "G"         (meep-kbd "C-c MG")
-    "/"         (meep-kbd  "C-c M/")
-    "n"         (meep-kbd "C-c Mn")
-    "N"         (meep-kbd "C-c MN")
-    "z"         (meep-kbd "C-c Mz")
-    "q"         (meep-kbd "C-c Mq")
-    ":"         (meep-kbd "C-c M:")
-    "i"         (meep-kbd "C-c Mi")
-    "="         (meep-kbd "C-M-\\")
-    "<escape>"  #'keyboard-quit)
+    "j"         #'meep-move-line-next
+    "k"         #'meep-move-line-prev
+    "h"         #'meep-move-char-prev
+    "l"         #'meep-move-char-next
+    "G"         #'vmacs-goto-line
+    "/"         #'meep-isearch-regexp-next
+    "n"         #'meep-isearch-repeat-next
+    "N"         #'meep-isearch-repeat-prev
+    ":"	        #'viper-ex
+    "z"         #'meep-transpose
+    "q"         #'meep-move-matching-bracket-inner
+    "i"         #'meep-insert
+    "<escape>"  #'keyboard-quit
+  "g 4" #'query-replace ;space g4
+  "g 5" #'re-builder                                 ;;query-replace-regexp
+  "g g" #'vmacs-goto-line
+  "g T" #'consult-grep
+  "g t" #'consult-ripgrep
+  "g e" #'grep
+  "g w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
+  "g x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "g X" #'consult-ripgrep-root-symbol
+  "g s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "g /" #'consult-focus-lines
+  "g z" #'consult-hide-lines
+  "g r" #'revert-buffer
+  ;g ; "i" #'meow-insert
+  "g ;" #'goto-line
+  "g :" #'goto-char
+  "g n" #'next-error
+  "g p" #'previous-error
+  "g b" #'pop-global-mark
+  "g u" #'upcase-dwim
+  "g U" #'downcase-dwim
+  "g m" #'push-mark-command
+  "g P" #'project-or-external-find-file
+  "g d" #'xref-find-definitions
+  "g ," #'goto-last-change
+  "g ." #'goto-last-change-reverse
+  "g f" #'gptel-rewrite
+    )
 
   (defvar-keymap meep-state-keymap-normal
     "1"           #'meep-digit-argument-repeat
@@ -298,14 +324,13 @@ original function."
     "f v"        #'meep-move-by-sexp-any-prev
     "f x"        #'meep-move-by-sexp-over-next
     "f X"        #'meep-move-by-sexp-over-prev
-    ";"          #'meep-exchange-point-and-mark-motion
+    ";"          #'meep-region-activate-and-reverse-motion
     "f u"        #'meep-move-by-sexp-any-next
     "H"          #'meep-move-same-syntax-or-symbol-prev
     "J"          #'meep-join-line-next
     "K"          #'meep-join-line-prev
     "C-o"        #'meep-move-by-sexp-out-prev
     "L"          #'meep-move-same-syntax-or-symbol-next
-    "q"          #'meep-move-matching-bracket-inner
     "C-r"        #'meep-move-matching-bracket-outer
     "["          #'meep-move-matching-bracket-inner
     "]"          #'meep-move-matching-bracket-outer
@@ -330,7 +355,7 @@ original function."
   (defvar-keymap meep-state-keymap-visual
     "s" #'meep-next-line-dwim
     "<SPC>" #'meep-region-expand-to-line-bounds
-    "x" #'meep-exchange-point-and-mark)
+    "x" #'meep-region-activate-and-reverse)
 
   (defvar-keymap meep-state-keymap-insert "<escape>"  #'bray-state-stack-pop)
 
@@ -538,7 +563,7 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
                                meep-move-to-bounds-of-thing-end))
     (run-with-timer 0.001 nil (lambda()
                                 ;; (setq this-command last-command)
-                                (meep-exchange-point-and-mark-motion)
+                                (meep-region-activate-and-reverse-motion)
                                 (when ex-pt-mark
                                   (exchange-point-and-mark))))))
 
@@ -661,11 +686,16 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 (add-hook 'meep-state-hook-normal-enter #'meep-register-local-map)
 (add-hook 'meep-state-hook-normal-exit #'meep-unregister-local-map)
 
-(defun meep-local-set-key (key def)
+(defun meep-local-set-key (&rest keybinds)
   "Set KEY to DEF in the local keymap."
+  (declare (indent 1))
   (unless meep-local-keymap
-    (setq meep-local-keymap (make-sparse-keymap)))
-  (define-key meep-local-keymap key def))
+    (setq meep-local-keymap (make-sparse-keymap))
+    (meep-register-local-map))
+  (while keybinds
+    (let ((key (pop keybinds))
+          (def (pop keybinds)))
+      (keymap-set meep-local-keymap key def))))
 
 (provide 'conf-meep)
 

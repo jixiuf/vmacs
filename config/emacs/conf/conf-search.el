@@ -15,15 +15,16 @@
     (set-keymap-parent occur-mode-map meow-normal-state-keymap)
     )
   (add-hook 'occur-hook #'occur-edit-mode))
+(defun vmacs-grep-mode-hook()
+  (meep-local-set-key "/" #'consult-focus-lines)
+  (meep-local-set-key "z" #'consult-hide-lines))
 
 (with-eval-after-load 'grep
   ;; (define-key grep-mode-map (kbd "e") nil)
   ;; (set-keymap-parent grep-mode-map meow-normal-state-keymap)
-  ;; (define-key grep-mode-map (kbd "C-c Mz") #'consult-hide-lines)
-  ;; (define-key grep-mode-map (kbd "C-c M/") #'consult-focus-lines)
-  (defun vmacs-grep-mode-hook()
-    (meep-local-set-key "/" #'consult-focus-lines)
-    (meep-local-set-key "/" #'consult-hide-lines))
+  
+  (define-key grep-mode-map (kbd "C-c Mi") #'wgrep-change-to-wgrep-mode)
+  (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
   
   (add-hook 'grep-mode-hook 'vmacs-grep-mode-hook)
   ;; (when (boundp 'grep-edit-mode-map)
@@ -43,14 +44,11 @@
 
 
 (with-eval-after-load 'wgrep
+  (add-hook 'wgrep-mode-hook 'vmacs-grep-mode-hook)
   (setq-default wgrep-auto-save-buffer nil ;真正的打开文件，会处理各种find-file save-file的hook,慢，如gofmt引入package
               wgrep-too-many-file-length 1
               wgrep-enable-key "C-c Mi"
               wgrep-change-readonly-file t)
-  (define-key grep-mode-map (kbd "C-c Mi") #'wgrep-change-to-wgrep-mode)
-  (advice-add 'grep-exit-message :after #'wgrep-change-to-wgrep-mode)
-  (define-key wgrep-mode-map (kbd "C-c M/") #'consult-focus-lines)
-  (define-key wgrep-mode-map (kbd "C-c Mz") #'consult-hide-lines)
   (define-key wgrep-mode-map (kbd "C-g") 'wgrep-abort-changes)
   (define-key wgrep-mode-map (kbd "C-c C-c") 'vmacs-wgrep-finish-edit)
   (define-key wgrep-mode-map (kbd "C-x C-s") 'vmacs-wgrep-finish-edit)

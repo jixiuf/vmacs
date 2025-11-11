@@ -2,33 +2,6 @@
 (setq widen-automatically nil)         ;for goto-line
 
 (defvar-keymap  g-mode-map             ;meow: g
-  "4" #'query-replace ;space g4
-  "5" #'re-builder                                 ;;query-replace-regexp
-  "g" #'vmacs-goto-line
-  "T" #'consult-grep
-  "t" #'consult-ripgrep
-  "e" #'grep
-  "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
-  "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "X" #'consult-ripgrep-root-symbol
-  "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "/" #'consult-focus-lines
-  "z" #'consult-hide-lines
-  "r" #'revert-buffer
-  ;; "i" #'meow-insert
-  ";" #'goto-line
-  ":" #'goto-char
-  "n" #'next-error
-  "p" #'previous-error
-  "b" #'pop-global-mark
-  "u" #'upcase-dwim
-  "U" #'downcase-dwim
-  "m" #'push-mark-command
-  "P" #'project-or-external-find-file
-  "d" #'xref-find-definitions
-  "," #'goto-last-change
-  "." #'goto-last-change-reverse
-  "f" #'gptel-rewrite
   )
 (global-set-key (kbd "C-c G") g-mode-map)
 (global-set-key (kbd "C-c g") g-mode-map)
@@ -38,22 +11,6 @@
   (define-key g-mode-map "v" smerge-basic-map))
 
 (autoload #'viper-ex  "viper" t)
-(defvar-keymap  vmacs-motion-mode-map
-  "i" #'meep-insert
-  "j"  #'meep-move-line-next
-  "k"  #'meep-move-line-prev
-  "h"  #'meep-move-char-prev
-  "l"  #'meep-move-char-next
-  "G"  #'vmacs-goto-line
-  "g"  g-mode-map
-  "/"  #'meep-isearch-regexp-next
-  "n"  #'meep-isearch-repeat-next
-  "N"  #'meep-isearch-repeat-prev
-  ":" #'viper-ex
-  "z"   #'meep-transpose)
-(global-set-key (kbd "C-c M") vmacs-motion-mode-map)
-
-
 
 (vmacs-leader "n" #'xref-go-back)
 ;; (with-eval-after-load 'xref

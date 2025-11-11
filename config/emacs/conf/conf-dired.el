@@ -107,11 +107,13 @@
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 ;; (define-key dired-mode-map  "C" 'dired-rsync)
-
-(define-key dired-mode-map  (kbd "C-c M G") #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) )
-(define-key dired-mode-map  (kbd "C-c M /") 'consult-focus-lines)
-(define-key dired-mode-map  (kbd "C-c M z") 'consult-hide-lines)
-(define-key dired-mode-map  (kbd "C-c M j") 'dired-next-line)
+(defun vmacs-dired-hook()
+  (meep-local-set-key
+      "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) 
+      "/" 'consult-focus-lines
+      "z" 'consult-hide-lines
+      "j" 'dired-next-line))
+(add-hook 'dired-mode-hook #'vmacs-dired-hook)
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
 ;; C-gC-g 退出编辑或C-cC-c保存修改
 ;; "i" 'wdired-change-to-wdired-mode
@@ -126,7 +128,9 @@
 (with-eval-after-load 'image-mode
   (define-key image-mode-map  (kbd "C-f") #'image-scroll-up)
   (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
-(define-key image-mode-map  (kbd "C-c Mn") #'image-next-file))
+  (defun vmacs-image-hook()
+    (meep-local-set-key "n" 'image-next-file))
+  (add-hook 'image-mode-hook #'vmacs-image-hook))
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state

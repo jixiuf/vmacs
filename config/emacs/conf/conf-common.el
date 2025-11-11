@@ -285,7 +285,7 @@
 
 (defun vmacs-calc-hook()
   (require 'calc-bin)
-  (define-key calc-mode-map (kbd "C-c M/") 'calc-divide)
+  ;; (meep-local-set-key "/" #'calc-divide)
   ;; 默认 calc 的移位移位操作是接 32 位的， 可以 bw(calc-word-size) 来改成 64 位
   (calc-word-size 128))
 

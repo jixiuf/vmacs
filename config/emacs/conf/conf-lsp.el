@@ -1,5 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
+  ;; brew install llvm
+  ;;clangd https://clangd.llvm.org/installation.html
+  ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
+  ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd"))
 ;; (setq flymake-show-diagnostics-at-end-of-line t)
 ;; (setq eglot-confirm-server-edits nil)
 (setq eglot-autoshutdown t)
@@ -27,6 +31,20 @@
     ;; so that that notification reports the actual contents that will be saved.
     (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
     (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
+    (meep-local-set-key
+        "=" #'eglot-format
+        "g =" #'eglot-format
+        "g R" #'eglot-rename
+        "g x" #'xref-find-references
+        "g a" #'xref-find-apropos
+        "g c" #'eglot-find-declaration
+        "g i" #'eglot-find-implementation
+        "g D" #'eglot-find-typeDefinition
+        "g n" #'flymake-goto-next-error
+        "g p" #'flymake-goto-prev-error
+        "g l" #'flymake-show-project-diagnostics
+        "g S" #'eglot-reconnect
+        "g h" #'eglot-code-actions)
     (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
     (local-set-key (kbd "C-c C-e") 'dape-eval)
     (local-set-key (kbd "C-c C-f") 'dape-continue)
@@ -41,27 +59,6 @@
 (dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))
   (add-hook mod #'eglot-ensure))
 
-(with-eval-after-load 'eglot
-  (defvar-keymap  lsp-g-map :parent g-mode-map
-                  "=" #'eglot-format
-                  "R" #'eglot-rename
-                  "x" #'xref-find-references
-                  "a" #'xref-find-apropos
-                  "c" #'eglot-find-declaration
-                  "i" #'eglot-find-implementation
-                  "D" #'eglot-find-typeDefinition
-                  "n" #'flymake-goto-next-error
-                  "p" #'flymake-goto-prev-error
-                  "l" #'flymake-show-project-diagnostics
-                  "S" #'eglot-reconnect
-                  "h" #'eglot-code-actions)
-  ;; brew install llvm
-  ;;clangd https://clangd.llvm.org/installation.html
-  (define-key eglot-mode-map (kbd "C-c G") lsp-g-map)
-  (define-key eglot-mode-map (kbd "C-M-\\") #'eglot-format)
-  ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
-  ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd"))
-  )
 
 (with-eval-after-load 'xref
   (setq xref-search-program 'ripgrep)     ;project-find-regexp

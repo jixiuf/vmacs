@@ -153,7 +153,6 @@
   (define-key vc-dir-mode-map (kbd "C-i") #'vc-diff)
   (define-key vc-dir-mode-map (kbd "d") vc-diff-map)
   (define-key vc-dir-mode-map (kbd "a") vc-cherry-pick-map)
-  (define-key vc-dir-mode-map (kbd "C-c Mq") vc-action-map) ;my q for meow-motion
   (define-key vc-dir-mode-map (kbd ".") vc-log-map)
   (define-key vc-dir-mode-map (kbd "f") vc-fetch-map)
   (define-key vc-dir-mode-map (kbd "s") #'vcgit-stage) ;for --continue
@@ -164,16 +163,20 @@
   (define-key vc-dir-mode-map (kbd "x") #'vc-revert)            ;丢弃当前未提交的修改
   (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
-  (define-key vc-dir-mode-map (kbd "C-c Gd") #'vc-root-diff) ;gd for meow-motion
   (define-key vc-dir-mode-map (kbd "o") #'vc-switch-project)
   (define-key vc-dir-mode-map (kbd "i") #'vc-dir-ignore)
   (define-key vc-dir-mode-map (kbd "c") #'vc-next-action)
   (keymap-unset vc-dir-mode-map "v" t)
   (define-key vc-dir-mode-map (kbd "v") vc-push-map)
   (define-key vc-dir-mode-map (kbd "t") vc-tag-map)
-  (define-key vc-dir-mode-map (kbd "C-c Gr") #'revert-buffer) ;gr for meow-motion
   (require 'vc-git)
-  (define-key vc-dir-mode-map (kbd "C-c Mz") vc-git-stash-shared-map)) ;z for meow-motion
+  (defun vmacs-vc-dir-hook()
+    (meep-local-set-key
+       "g d" #'vc-root-diff
+        "z" vc-git-stash-shared-map
+        "q" vc-action-map
+        "r" #'revert-buffer))
+  (add-hook 'vc-dir-mode-hook #'vmacs-vc-dir-hook))
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)
   "Default mark all in *vc-dir*"
@@ -199,7 +202,6 @@
 (with-eval-after-load 'log-view
   (require 'vc-dir)
   (define-key log-view-mode-map (kbd "a") vc-cherry-pick-map)
-  (define-key log-view-mode-map (kbd "C-c Ga") #'log-view-annotate-version) ;ga
   (define-key log-view-mode-map (kbd "f") vc-fetch-map)
   (define-key log-view-mode-map (kbd "M-w") #'log-view-kill-revision)
   (define-key log-view-mode-map (kbd ".") vc-log-map)
@@ -216,6 +218,10 @@
   (define-key log-view-mode-map (kbd "i") #'log-view-toggle-entry-display)
 
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
+  (defun vmacs-log-view-hook()
+    (meep-local-set-key "g a" #'log-view-annotate-version))
+  (add-hook 'log-view-mode-hook #'vmacs-log-view-hook)
+  
   )
 (with-eval-after-load 'diff-mode
   ;; (define-key diff-mode-shared-map (kbd "s") #'vcgit-stage)
