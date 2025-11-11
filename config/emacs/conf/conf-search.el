@@ -19,8 +19,13 @@
 (with-eval-after-load 'grep
   ;; (define-key grep-mode-map (kbd "e") nil)
   ;; (set-keymap-parent grep-mode-map meow-normal-state-keymap)
-  (define-key grep-mode-map (kbd "C-c Mz") #'consult-hide-lines)
-  (define-key grep-mode-map (kbd "C-c M/") #'consult-focus-lines)
+  ;; (define-key grep-mode-map (kbd "C-c Mz") #'consult-hide-lines)
+  ;; (define-key grep-mode-map (kbd "C-c M/") #'consult-focus-lines)
+  (defun vmacs-grep-mode-hook()
+    (meep-local-set-key "/" #'consult-focus-lines)
+    (meep-local-set-key "/" #'consult-hide-lines))
+  
+  (add-hook 'grep-mode-hook 'vmacs-grep-mode-hook)
   ;; (when (boundp 'grep-edit-mode-map)
   ;;   (define-key grep-mode-map (kbd "C-c Ni") #'grep-change-to-grep-edit-mode) ;i
   ;;   (advice-add 'grep-change-to-grep-edit-mode :after #'meow--switch-to-normal)
