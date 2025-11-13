@@ -129,12 +129,16 @@
       ]])
   ;; L or l (meow:caplock+l) 显示所有group
   ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
-  (define-key gnus-group-mode-map (kbd "C-c Mn") #'gnus-group-next-unread-group)     ;old  n
-  (define-key gnus-group-mode-map (kbd "C-c MG") gnus-group-group-map)     ;old  G
-  (define-key gnus-group-mode-map (kbd "C-c M/") #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
-  (define-key gnus-group-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
   (define-key gnus-group-mode-map (kbd "b") #'gnus-select-group)
-  (define-key gnus-group-mode-map (kbd "C-c Gr") #'notmuch))     ;old  g, now gr
+  (defun vmacs-gnus-group-mode-hook()
+    (message "ssss")
+    (meep-local-set-key "n"   #'gnus-group-next-unread-group)     ;old  n
+    (meep-local-set-key "G"   gnus-group-group-map)     ;old  G
+    (meep-local-set-key "/"   #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
+    (meep-local-set-key "g u" #'mbsync)                 ;gu
+    (meep-local-set-key  "g r" #'notmuch)     ;old  g, now gr
+    )
+  (add-hook 'gnus-group-mode-hook #'vmacs-gnus-group-mode-hook))
 
 (with-eval-after-load 'gnus-sum
   ;; d:标记为已读  C-k:整个subject 已读
@@ -143,9 +147,15 @@
   (define-key gnus-summary-mode-map  "t" #'gnus-summary-thread-map)     ;old T
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
-  (define-key gnus-summary-mode-map (kbd "C-c Gu") #'mbsync)                 ;gu
-  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'notmuch);gr old M-g
-  (define-key gnus-summary-mode-map (kbd "C-c M/") #'gnus-summary-limit-map);/
+  
+  (defun vmacs-gnus-sum-mode-hook()
+    (meep-local-set-key  "g u" #'mbsync)                 ;gu
+    (meep-local-set-key  "g r" #'notmuch);gr old M-g
+    (meep-local-set-key  "/"  #'gnus-summary-limit-map);/
+    (meep-local-set-key  "G"  gnus-summary-goto-map)     ;old gnus G
+    (meep-local-set-key  "g r" #'gnus-summary-reselect-current-group) ;gr
+    )
+  (add-hook 'gnus-summary-mode-hook #'vmacs-gnus-sum-mode-hook)
   (define-key gnus-summary-mode-map "b" #'gnus-select-group)
   ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
   (define-key gnus-summary-mode-map  (kbd "C-m") #'(lambda()(interactive)
@@ -159,8 +169,6 @@
   (define-key gnus-summary-mode-map  "v" #'gnus-summary-next-page)     ;old space
   (define-key gnus-summary-mode-map  "u" #'gnus-summary-exit)
   (define-key gnus-summary-mode-map  "D" #'gnus-summary-delete-article)   ;B DEL 直接删
-  (define-key gnus-summary-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
-  (define-key gnus-summary-mode-map (kbd "C-c Gr") #'gnus-summary-reselect-current-group) ;gr
   (keymap-unset gnus-summary-mode-map ";" t)
   (keymap-unset gnus-summary-mode-map "," t)
   (keymap-unset gnus-summary-mode-map "." t)
@@ -169,7 +177,11 @@
 (with-eval-after-load 'gnus-art
   (keymap-unset gnus-article-mode-map ";" t)
   (keymap-unset gnus-article-mode-map "m" t)
-  (define-key gnus-article-mode-map (kbd "C-c MG") gnus-summary-goto-map)     ;old gnus G
+  
+  (defun vmacs-gnus-art-mode-hook()
+  (meep-local-set-key "G" gnus-summary-goto-map)     ;old gnus G
+    )
+  (add-hook 'gnus-article-mode-hook #'vmacs-gnus-art-mode-hook)
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
   (define-key gnus-article-mode-map "b" #'gnus-select-group)

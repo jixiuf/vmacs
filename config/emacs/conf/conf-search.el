@@ -125,7 +125,7 @@
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
 (define-key isearch-mode-map  (kbd "M-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
-(vmacs-leader (kbd "wc") 'toggle-case-fold-search)
+(global-set-key (kbd "C-c w c") 'toggle-case-fold-search)
 (global-set-key (kbd "C-c C-s") 'toggle-case-fold)
 (setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c/C-cC-s:case)")
 (global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))

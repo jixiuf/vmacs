@@ -1,18 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
 (setq widen-automatically nil)         ;for goto-line
 
-(defvar-keymap  g-mode-map             ;meow: g
-  )
-(global-set-key (kbd "C-c G") g-mode-map)
-(global-set-key (kbd "C-c g") g-mode-map)
 (global-set-key (kbd "C-c s") #'save-all)
 
-(with-eval-after-load 'smerge-mode
-  (define-key g-mode-map "v" smerge-basic-map))
+(with-eval-after-load 'smerge-mode  (define-key g-map "v" smerge-basic-map))
 
 (autoload #'viper-ex  "viper" t)
 
-(vmacs-leader "n" #'xref-go-back)
+(global-set-key (kbd "C-c n") #'xref-go-back)
 ;; (with-eval-after-load 'xref
 ;;   ;; for clean up second-selection set by vmacs-meow-grab-set-mark
 ;;   (add-hook 'xref-after-jump-hook #'meow--cancel-second-selection))
@@ -110,12 +105,11 @@
 (global-set-key  (kbd "C-d") 'vmacs-delete-char)
 
 
-(vmacs-leader (kbd "t") 'org-agenda)   ;列出 todo list 等
-(vmacs-leader "b" 'mode-line-other-buffer)
-(vmacs-leader  "fg" #'vmacs-ai)
+(global-set-key (kbd "C-c t") 'org-agenda)   ;列出 todo list 等
+(global-set-key (kbd "C-c b") 'mode-line-other-buffer)
+(global-set-key  (kbd "C-c f g") #'vmacs-ai)
 
-
-(vmacs-leader  "fm" (vmacs-defun switch-to-message
+(keymap-global-set  "C-c f m" (vmacs-defun switch-to-message
                       (if (equal (buffer-name) "*Messages*")
                           (switch-to-buffer (other-buffer))
                         (switch-to-buffer "*Messages*")
@@ -125,25 +119,13 @@
 
 
 (global-set-key (kbd "C-x C-u") #'vundo)
-(vmacs-leader (kbd "l") 'ibuffer)
-(vmacs-leader (kbd "j") 'dired-jump)
-(vmacs-leader (kbd "k") 'dired-jump)
-;; (vmacs-leader "k" ctl-x-r-map)
-;; (vmacs-leader (kbd "(") 'kmacro-start-macro) ;C-x(
-;; (vmacs-leader (kbd ")") 'kmacro-end-macro) ;C-x
-(vmacs-leader (kbd "$") 'toggle-truncate-lines)
-(vmacs-leader (kbd "wl") #'git-link)
-;; (global-set-key  (kbd "s-h") 'vmacs-undo-kill-buffer)
-(vmacs-leader "p" 'list-packages)
+(keymap-global-set  "C-c l" 'ibuffer)
+(keymap-global-set "C-c j" 'dired-jump)
+(keymap-global-set  "C-c k" 'dired-jump)
+(keymap-global-set  "C-c $" 'toggle-truncate-lines)
+(keymap-global-set  "C-c w l" #'git-link)
+(keymap-global-set "C-c p" 'list-packages)
 
-;; (with-eval-after-load 'man
-;;   (set-keymap-parent Man-mode-map meow-normal-state-keymap)
-;;   (define-key Man-mode-map "q" #'save-buffers-kill-terminal)
-;;   (define-key Man-mode-map (kbd "C-c Mq") 'save-buffers-kill-terminal)
-;;   (define-key Man-mode-map (kbd "n") 'meow-search)
-;;   (define-key Man-mode-map (kbd "N") 'meow-search-reverse)
-;;   (define-key Man-mode-map (kbd "s-C-w") 'save-buffers-kill-terminal)
-;;   (define-key Man-mode-map (kbd "C-x K") 'save-buffers-kill-terminal))
 
 (defun vmacs-tui(&optional f)
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol

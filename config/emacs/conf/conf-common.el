@@ -140,6 +140,8 @@
 (put 'narrow-to-region 'disabled nil);; 启用 narrow-to-region ,不再警告
 (put 'erase-buffer 'disabled nil)
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
 (with-eval-after-load 'markdown-ts-mode  (add-hook 'markdown-ts-mode-hook #'auto-fill-mode))
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-ts-mode))
@@ -311,7 +313,10 @@
               (gt-plz-http-client :args '("--proxy" "socks5://192.168.124.24:8088"))
             (gt-plz-http-client))))
   
-(add-hook 'gt-buffer-render-init-hook #'(lambda()(setq truncate-lines nil)))
+  (add-hook 'gt-buffer-render-init-hook
+            #'(lambda()
+                (bray-mode)
+                (setq truncate-lines nil)))
   (setq gt-langs '(en zh))
   (setq gt-buffer-render-window-config
         '((display-buffer-same-window)))
