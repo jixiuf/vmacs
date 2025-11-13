@@ -189,10 +189,10 @@ original function."
        (setq unread-command-events (listify-key-sequence (kbd ,def)))))))
 
 (defun my-meep-basis-keys ()
-  (global-set-key (kbd "C-c x") (meep-kbd "C-x")) ;this space+x = C-c x
-  (global-set-key (kbd "C-c m") (meep-kbd "M-"))	;this space+, = M-
+  ;; (global-set-key (kbd "C-c x") (kbd "C-x")) ;this space+x = C-c x
+  ;; (global-set-key (kbd "C-c m") (kbd "M-"))	;this space+, = M-
   (defvar-keymap meep-state-keymap-motion
-    "<SPC>"     (meep-kbd "C-c" )
+    ;; "<SPC>"     (meep-kbd "C-c" )
     "j"         #'meep-move-line-next
     "k"         #'meep-move-line-prev
     "h"         #'meep-move-char-prev
@@ -696,6 +696,21 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
     (let ((key (pop keybinds))
           (def (pop keybinds)))
       (keymap-set meep-local-keymap key def))))
+
+(defun space-to-C-c (prompt)
+  "Map the spacebar to the Ctrl-C prefix key,
+with its behavior determined by the current meep-state
+and context."
+  (cond
+   ((or (eq (meep-state) 'insert)
+        (minibufferp))
+    [?\s])
+   ;; see current-key-remap-sequence also
+   ((equal (this-command-keys-vector) [?\s])
+    [ ?\C-c ]);; (vector ?\C-c)
+   (t [?\s])))
+(keymap-set key-translation-map "<SPC>" 'space-to-C-c)
+
 
 (provide 'conf-meep)
 
