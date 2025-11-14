@@ -130,15 +130,7 @@
   ;; L or l (meow:caplock+l) 显示所有group
   ;; 这些配置是因我是meow 用户，我对"g" "G" 做了一些定制
   (define-key gnus-group-mode-map (kbd "b") #'gnus-select-group)
-  (defun vmacs-gnus-group-mode-hook()
-    (message "ssss")
-    (meep-local-set-key "n"   #'gnus-group-next-unread-group)     ;old  n
-    (meep-local-set-key "G"   gnus-group-group-map)     ;old  G
-    (meep-local-set-key "/"   #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
-    (meep-local-set-key "g u" #'mbsync)                 ;gu
-    (meep-local-set-key  "g r" #'notmuch)     ;old  g, now gr
-    )
-  (add-hook 'gnus-group-mode-hook #'vmacs-gnus-group-mode-hook))
+  )
 
 (with-eval-after-load 'gnus-sum
   ;; d:标记为已读  C-k:整个subject 已读
@@ -468,6 +460,12 @@
 
 (add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
 (defun init-my-gnus-group()
+  
+  (meep-local-set-key "n"   #'gnus-group-next-unread-group)     ;old  n
+  (meep-local-set-key "G"   gnus-group-group-map)     ;old  G
+  (meep-local-set-key "/"   #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
+  (meep-local-set-key "g u" #'mbsync)                 ;gu
+  (meep-local-set-key  "g r" #'notmuch)     ;old  g, now gr
   ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
   ;; 不用再需要重新创建，而是通过代码自动化了
   ;;  下面用到的 user-mail-address-3 是我的gamil邮箱地址，没在此文件中定义

@@ -1,10 +1,14 @@
-;;; init.el --- Testing -*- lexical-binding: t -*-
+;;; -*- lexical-binding: t -*-
 (global-set-key (kbd "M-y") #'vmacs-yank-pop)
 (global-set-key (kbd "C-s-v") #'meep-clipboard-only-yank)             ;paste from clipboard
 (global-set-key (kbd "C-y") #'meep-clipboard-killring-yank) ;paste from kill ring
 (global-set-key (kbd "C-c ,") #'meep-move-to-bounds-of-thing-beginning)
 (global-set-key (kbd "C-c .") #'meep-move-to-bounds-of-thing-end)
 
+(defun my-key-free ()
+  (interactive)
+  (let ((keys (this-command-keys-vector)))
+    (message "Key Free: %s" (format-kbd-macro keys))))
 (defun my-meep-basis-keys ()
   (defvar-keymap m-map
     "i"         #'meep-insert-at-last
@@ -22,17 +26,17 @@
     "a"         #'meep-insert-line-beginning
     "q"         #'fill-paragraph
     "<return>"  #'fill-region
-    "1"         #'digit-argument
-    "2"         #'digit-argument
-    "3"         #'digit-argument
-    "4"         #'digit-argument
-    "5"         #'digit-argument
-    "6"         #'digit-argument
-    "7"         #'digit-argument
-    "8"         #'digit-argument
-    "9"         #'digit-argument
-    "0"         #'digit-argument
-    "-"         #'negative-argument
+    "1"         #'meep-digit-argument-repeat
+    "2"         #'meep-digit-argument-repeat
+    "3"         #'meep-digit-argument-repeat
+    "4"         #'meep-digit-argument-repeat
+    "5"         #'meep-digit-argument-repeat
+    "6"         #'meep-digit-argument-repeat
+    "7"         #'meep-digit-argument-repeat
+    "8"         #'meep-digit-argument-repeat
+    "9"         #'meep-digit-argument-repeat
+    "0"         #'meep-digit-argument-repeat
+    "-"         #'meep-digit-argument-repeat
     "m"         #'meep-region-toggle)
 
   (global-set-key (kbd "C-c m") m-map)
@@ -80,19 +84,22 @@
     "q"         #'meep-move-matching-bracket-inner
     "i"         #'meep-insert
     "<escape>"  #'keyboard-quit)
+  
+  
+  (define-key meep-state-keymap-motion [remap self-insert-command] #'my-key-free)
   (defvar-keymap meep-state-keymap-normal
     "m" m-map
-    "1"           #'meep-digit-argument-repeat
-    "2"           #'meep-digit-argument-repeat
-    "3"           #'meep-digit-argument-repeat
-    "4"           #'meep-digit-argument-repeat
-    "5"           #'meep-digit-argument-repeat
-    "6"           #'meep-digit-argument-repeat
-    "7"           #'meep-digit-argument-repeat
-    "8"           #'meep-digit-argument-repeat
-    "9"           #'meep-digit-argument-repeat
-    "0"           #'meep-digit-argument-repeat
-    "-"           #'meep-digit-argument-repeat
+    "1"           #'digit-argument
+    "2"           #'digit-argument
+    "3"           #'digit-argument
+    "4"           #'digit-argument
+    "5"           #'digit-argument
+    "6"           #'digit-argument
+    "7"           #'digit-argument
+    "8"           #'digit-argument
+    "9"           #'digit-argument
+    "0"           #'digit-argument
+    "-"           #'negative-argument
     "C-2"         #'meep-region-toggle
     "t"           #'meep-region-to-secondary-selection
     "T"           #'meep-region-swap
@@ -107,24 +114,28 @@
     "y"           #'meep-clipboard-killring-copy
     "Y"           #'meep-clipboard-only-copy
     "S"           #'meep-char-surround-insert
-    "f s"         #'meep-char-surround-insert-lines
     "o"           #'meep-insert-open-below
     "O"           #'meep-insert-open-above
     "s"           #'meep-region-expand-to-line-bounds
-    "f h"         #'meep-move-find-char-on-line-at-prev
-    "f b"         #'meep-move-find-char-on-line-till-prev
     "?"           #'meep-isearch-regexp-prev
-    "f l"         #'meep-move-find-char-on-line-at-next
-    "f f"         #'meep-move-find-char-on-line-till-next
-    "f ."         #'meep-move-find-char-on-line-repeat-at-next
-    "f ,"         #'meep-move-find-char-on-line-repeat-at-prev
-    "f o"         #'meep-move-find-char-on-line-repeat-till-next
-    "f i"         #'meep-move-find-char-on-line-repeat-till-prev
+    ;; "f s"         #'meep-char-surround-insert-lines
+    ;; "f h"         #'meep-move-find-char-on-line-at-prev
+    ;; "f b"         #'meep-move-find-char-on-line-till-prev
+    ;; "f l"         #'meep-move-find-char-on-line-at-next
+    ;; "f f"         #'meep-move-find-char-on-line-till-next
+    ;; "f ."         #'meep-move-find-char-on-line-repeat-at-next
+    ;; "f ,"         #'meep-move-find-char-on-line-repeat-at-prev
+    ;; "f o"         #'meep-move-find-char-on-line-repeat-till-next
+    ;; "f i"         #'meep-move-find-char-on-line-repeat-till-prev
+    ;; "f t"         #'toggle-case-fold-search
+    ;; "f a"        #'meep-move-line-non-space-beginning
+    ;; "f e"        #'meep-move-line-non-space-end
+    ;; "f v"        #'meep-move-by-sexp-any-prev
+    ;; "f x"        #'meep-move-by-sexp-over-next
+    ;; "f X"        #'meep-move-by-sexp-over-prev
+    ;; "f u"        #'meep-move-by-sexp-any-next
     "C-3"         #'meep-isearch-at-point-prev
     "C-8"         #'meep-isearch-at-point-next
-    "f t"         #'toggle-case-fold-search
-    "f ;"         #'goto-line
-    "f :"         #'goto-char
     "u"           #'undo
     "U"           #'undo-redo
     "I"          #'meep-insert-overwrite
@@ -134,13 +145,7 @@
     "X"          #'meep-delete-char-ring-prev
     "c"          #'meep-insert-change
     "C"          #'meep-insert-change-lines
-    "f a"        #'meep-move-line-non-space-beginning
-    "f e"        #'meep-move-line-non-space-end
-    "f v"        #'meep-move-by-sexp-any-prev
-    "f x"        #'meep-move-by-sexp-over-next
-    "f X"        #'meep-move-by-sexp-over-prev
     ";"          #'meep-region-activate-and-reverse-motion
-    "f u"        #'meep-move-by-sexp-any-next
     "H"          #'meep-move-same-syntax-or-symbol-prev
     "J"          #'meep-join-line-next
     "K"          #'meep-join-line-prev
@@ -245,8 +250,6 @@
 (my-meep-basis-keys)
 
 
-;; Optional, a quick way to mask insertion.
-;; (define-key meep-state-keymap-motion [remap self-insert-command] 'my-key-free)
 
 (setq bray-state-definitions
       (list
@@ -687,12 +690,6 @@ Behavior depends on current state:
      ;; Other cases: return leader key
      (t (vector leader)))))
 
-;; (defun my-key-free ()
-;;   (interactive)
-;;   (let ((keys (this-command-keys-vector)))
-;;     (message "Key Free: %s" (format-kbd-macro keys))))
-
-;; (key-binding (kbd "C-c")  nil)
 
 ;; (defun meep-kbd (def)
 ;;   "Command that converts current key."

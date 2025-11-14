@@ -9,7 +9,7 @@
 (defun vmacs-js-mode-hook()
   (modify-syntax-entry ?_ "_" (syntax-table))  ;还是让 _ 作为symbol，
   (hs-minor-mode 1)
-  (meep-local-set-key (kbd "<tab>") 'hs-toggle-hiding)
+  (meep-local-set-key  "<tab>" 'hs-toggle-hiding)
   (local-set-key (kbd "C-=") 'json-unescape)
   (meep-local-set-key  "=" (lambda()
                              (interactive)
