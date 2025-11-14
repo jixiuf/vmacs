@@ -159,7 +159,6 @@
   (define-key vc-dir-mode-map (kbd "S") #'vcgit-unstage)
   (define-key vc-dir-mode-map (kbd "b") vc-branch-map)
   (keymap-unset vc-dir-mode-map "e" t)
-  (define-key vc-dir-mode-map (kbd "r") vc-r-map)
   (define-key vc-dir-mode-map (kbd "x") #'vc-revert)            ;丢弃当前未提交的修改
   (define-key vc-dir-mode-map (kbd "C-d") #'vc-dir-clean-files) ;delete un added file
   (define-key vc-dir-mode-map (kbd "X") #'vc-dir-delete-file)   ;git rm
@@ -171,11 +170,15 @@
   (define-key vc-dir-mode-map (kbd "t") vc-tag-map)
   (require 'vc-git)
   (defun vmacs-vc-dir-hook()
+    (defvar-keymap vc-g-map
+        "d" #'vc-root-diff
+        )
     (meep-local-set-key
-       "g d" #'vc-root-diff
+       "g" vc-g-map
         "z" vc-git-stash-shared-map
         "q" vc-action-map
-        "r" #'revert-buffer))
+        "r" vc-r-map
+        ))
   (add-hook 'vc-dir-mode-hook #'vmacs-vc-dir-hook))
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)

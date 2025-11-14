@@ -9,14 +9,13 @@
 (defun vmacs-js-mode-hook()
   (modify-syntax-entry ?_ "_" (syntax-table))  ;还是让 _ 作为symbol，
   (hs-minor-mode 1)
-  (local-set-key (kbd "<tab>") 'hs-toggle-hiding)
+  (meep-local-set-key (kbd "<tab>") 'hs-toggle-hiding)
   (local-set-key (kbd "C-=") 'json-unescape)
-  (local-set-key (kbd "C-M-\\") (lambda()
-                                  (interactive)
-                                  (if (region-active-p)
-                                      (call-interactively #'json-pretty-print)
-                                    (call-interactively #'json-pretty-print-buffer) ) ))
-  )
+  (meep-local-set-key  "=" (lambda()
+                             (interactive)
+                             (if (region-active-p)
+                                 (call-interactively #'json-pretty-print)
+                               (call-interactively #'json-pretty-print-buffer) ))))
 ;; (add-to-list 'hs-special-modes-alist
 ;;              '(js-mode
 ;;                "\\[\\|{" "\\]\\|}" "/[*/]" nil nil))

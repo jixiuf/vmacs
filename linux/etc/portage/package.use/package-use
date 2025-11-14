@@ -37,7 +37,7 @@ net-mail/mu emacs
 app-crypt/pinentry  -keyring qt6 
 dev-lang/php gd
 media-libs/gd fontconfig
-gui-apps/rofi-wayland  drun windowmode
+gui-apps/rofi  drun windowmode
 gui-libs/gtk-layer-shell introspection vala
 gui-apps/wlogout layershell
 net-wireless/wpa_supplicant p2p

@@ -294,7 +294,7 @@
   (unless (minibufferp)
     (bray-mode 1)
     (cond
-     ((derived-mode-p '(reb-mode calc-mode tabulated-list-mode))
+     ((derived-mode-p '(reb-mode calc-mode))
       (bray-state-stack-push 'insert))
      ((derived-mode-p
        '(special-mode gud-mode term-mode

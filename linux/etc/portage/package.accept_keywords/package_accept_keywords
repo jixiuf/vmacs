@@ -1,3 +1,4 @@
+*/*::t2
 app-editors/emacs ~amd64 **
 app-editors/vscode ~amd64
 app-office/bytedance-feishu ~amd64
