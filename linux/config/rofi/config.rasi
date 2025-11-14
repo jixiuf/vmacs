@@ -157,7 +157,7 @@ disable-history: false;
   /* Default background color */
   background-color: #282738;
   text-color:       #E5B9C6;
-  font: "Sarasa Term SC Nerd 24";
+  font: "Sarasa Term SC Nerd 16";
 }
 
 
@@ -193,7 +193,7 @@ textbox {
     blink:                       true;
     markup:                      true;
     size:                        400em;
-    font: "Sarasa Term SC Nerd 24";
+    font: "Sarasa Term SC Nerd 16";
 
 }
 error-message {
@@ -300,19 +300,19 @@ element-text.selected.normal {
     background-color: #E5B9C6;
     border-color: #E5B9C6;
     text-color:       #282738;
-    font: "Sarasa Term SC Nerd 24";
+    font: "Sarasa Term SC Nerd 16";
 }
 element-text.selected.urgent {
     background-color: #E5B9C6;
     border-color: #E5B9C6;
     text-color:       #282738;
-    font: "Sarasa Term SC Nerd 24";
+    font: "Sarasa Term SC Nerd 16";
 }
 element-text.selected.active {
     background-color: #E5B9C6;
     border-color: #E5B9C6;
     text-color:       #282738;
-    font: "Sarasa Term SC Nerd 24";
+    font: "Sarasa Term SC Nerd 16";
 }
 scrollbar {
     width:        4px ;

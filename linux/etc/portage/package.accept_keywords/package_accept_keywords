@@ -16,7 +16,7 @@ dev-python/notofonttools ~amd64
 # dev-qt/qttools  ~amd64
 # dev-qt/qtsvg  ~amd64
 dev-util/mongodb-compass-bin  ~amd64
-gui-apps/rofi-wayland  ~amd64
+x11-misc/rofi   ~amd64
 gui-apps/swaync   ~amd64
 gui-apps/waybar ~amd64 **  
 gui-apps/wf-recorder ~amd64
