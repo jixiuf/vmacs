@@ -303,24 +303,31 @@ based on the current context and previous history."
         (isearch-lazy-highlight nil)
         (isearch-wrap-pause nil)
         (inhibit-redisplay t)
-        (cnt 0))
-    (save-mark-and-excursion
-      (while (progn
-               (isearch-repeat-forward nil)
-               (and isearch-success isearch-other-end))
-        (meep--isearch-handle-done t)
-        (call-interactively #'repeat-fu-execute)
-        (incf cnt))
-      (goto-char (point-min))
-      (while (progn
-               (isearch-repeat-forward nil)
-               (and isearch-success isearch-other-end
-                    (< (point) (marker-position marker))))
-        (meep--isearch-handle-done t)
-        (call-interactively #'repeat-fu-execute)
-        (incf cnt)))
-    (isearch-dehighlight)
-    (message "[%s] %d changed" pattern cnt)))
+        (cnt 0)
+        pt)
+    (when isearch-success
+      (save-mark-and-excursion
+        (goto-char isearch-success)
+        (while (progn
+                 (isearch-repeat-forward nil)
+                 (and isearch-success isearch-other-end))
+          (setq pt (set-marker (make-marker ) (point)))
+          (meep--isearch-handle-done t)
+          (call-interactively #'repeat-fu-execute)
+          (goto-char pt)
+          (incf cnt))
+        (goto-char (point-min))
+        (while (progn
+                 (isearch-repeat-forward nil)
+                 (and isearch-success isearch-other-end
+                      (< (point) (marker-position marker))))
+          (setq pt (set-marker (make-marker ) (point)))
+          (meep--isearch-handle-done t)
+          (call-interactively #'repeat-fu-execute)
+          (goto-char pt)
+          (incf cnt)))
+      (isearch-dehighlight)
+      (message "[%s] %d changed" pattern cnt))))
 
 
 

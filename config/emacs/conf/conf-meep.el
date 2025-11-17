@@ -101,8 +101,8 @@
     "0"           #'digit-argument
     "-"           #'negative-argument
     "C-2"         #'meep-region-toggle
-    "t"           #'meep-region-to-secondary-selection
-    "T"           #'meep-region-swap
+    ;; "t"           #'meep-region-to-secondary-selection
+    "t"           #'meep-region-swap
     "<f8>"        #'repeat-fu-execute
     "Q"           #'meep-clipboard-register-actions
     "p"           #'meep-region-syntax-expand
@@ -146,6 +146,7 @@
     "c"          #'meep-insert-change
     "C"          #'meep-insert-change-lines
     ";"          #'meep-region-activate-and-reverse-motion
+    "f"          #'meep-region-activate-and-reverse-motion
     "H"          #'meep-move-same-syntax-or-symbol-prev
     "J"          #'meep-join-line-next
     "K"          #'meep-join-line-prev
@@ -329,6 +330,8 @@
 (defun meep-clipboard-killring-copy-ad(&optional arg)
   (vmacs-isearch-unhighlight)
   (meep-clipboard-only-copy)
+  (activate-mark)
+  (meep-region-to-secondary-selection)
   (activate-mark))
 (advice-add 'meep-clipboard-killring-copy :before #'meep-clipboard-killring-copy-ad)
 
