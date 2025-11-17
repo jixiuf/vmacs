@@ -264,35 +264,7 @@ based on the current context and previous history."
    (concat "mp4togif " (dired-file-name-at-point))
    "*Messages*" "*Messages*"))
 
-;;;###autoload
-(defun vmacs-cancel-selection()
-  (interactive)
-  (if current-prefix-arg
-      (meow-pop-all-selection)
-    (cond
-     ((and meow--beacon-defining-kbd-macro
-           (not (region-active-p)))
-      (meow-end-or-call-kmacro))
-     ((and defining-kbd-macro
-           (not (region-active-p)))
-      (meow-end-or-call-kmacro))
-     (t
-      (let ((last-select meow--selection))
-        (unless last-select
-          (when (region-active-p)
-            (setq last-select `((expand . char) ,(mark) ,(point)))))
-        (meow-cancel-selection)
-        (when last-select
-          (setq meow--selection-history (list last-select)))))))
-  (vmacs-bury-boring-windows))
 
-;;;###autoload
-(defun meow-selection()
-  (interactive)
-  (let ((last-select (car meow--selection-history)))
-    (if last-select
-        (meow--select last-select)
-      (meow-pop-grab))))
 
 ;;;###autoload
 (defun vmacs-yank-pop()
@@ -301,9 +273,6 @@ based on the current context and previous history."
    ((eq last-command 'yank)
     (call-interactively #'yank-pop)
     (setq this-command 'yank))
-   ((member last-command '(meow-replace meow-replace-pop))
-    (call-interactively #'meow-replace-pop)
-    (setq this-command #'meow-replace-pop))
    ((member last-command '(meep-clipboard-killring-yank meep-clipboard-killring-yank-pop-stack))
     (call-interactively #'meep-clipboard-killring-yank-pop-stack)
     (setq this-command #'meep-clipboard-killring-yank-pop-stack))
@@ -325,237 +294,6 @@ based on the current context and previous history."
       (if (and (= char ?G) (= n 1))
           (goto-char (point-max))
         (goto-line n)))))
-;;;###autoload
-(defun meow-expand-or-digit-argument (&optional n)
-  (interactive "P")
-  (let* ((char (if (integerp last-command-event)
-                   last-command-event
-                 (get last-command-event 'ascii-character)))
-         (digit (- (logand char ?\177) ?0)))
-    (if (and meow--expand-nav-function
-             (region-active-p)
-             (meow--selection-type))
-        (meow-expand digit)
-      (call-interactively #'digit-argument))))
-
-;;;###autoload
-(defun vmacs-meow-prev (arg)
-  "Move to the prev line.
-
-Will cancel all other selection, except char selection.
-
-Use with universal argument to move to the last line of buffer.
-Use with numeric argument to move multiple lines at once."
-  (interactive "P")
-  (let ((seltype (meow--selection-type)))
-    (cond
-     ((equal seltype '(expand . char)))
-     ((equal seltype '(expand . line)))
-     (t
-      (meow--cancel-selection)))
-    (cond
-     ((meow--with-universal-argument-p arg)
-      (goto-char (point-min)))
-     ((equal seltype '(expand . line))
-      (if (meow--direction-backward-p)
-          (meow-mark-line 1 t)
-          (meow-mark-line -1 t)))
-     (t
-      (setq this-command #'previous-line)
-      (meow--execute-kbd-macro meow--kbd-backward-line)
-      ))))
-;;;###autoload
-(defun vmacs-meow-next (arg)
-  "Move to the next line.
-
-Will cancel all other selection, except char selection.
-
-Use with universal argument to move to the last line of buffer.
-Use with numeric argument to move multiple lines at once."
-  (interactive "P")
-  (let ((seltype (meow--selection-type)))
-    (cond
-     ((equal seltype '(expand . char)))
-     ((equal seltype '(expand . line)))
-     (t
-      (meow--cancel-selection)))
-    (cond
-     ((meow--with-universal-argument-p arg)
-      (goto-char (point-max)))
-     ((equal seltype '(expand . line))
-      (if (meow--direction-backward-p)
-          (meow-mark-line -1 t)
-          (meow-mark-line 1 t)))
-     (t
-      (setq this-command #'next-line)
-      (meow--execute-kbd-macro meow--kbd-forward-line)
-      ))))
-
-;;;###autoload
-(defun meow-mark-line (n &optional expand)
-  "Select the current line, eol is not included.
-
-Create selection with type (expand . line).
-For the selection with type (expand . line), expand it by line.
-For the selection with other types, cancel it.
-
-Prefix:
-numeric, repeat times.
-"
-  (interactive "p")
-  (unless (or expand (equal '(expand . line) (meow--selection-type)))
-    (meow--cancel-selection))
-  (let* ((orig (mark t))
-         (backward (meow--direction-backward-p))
-         (forward (> n 0))
-         cnt p)
-    (cond
-     ((region-active-p)
-      (setq cnt (count-lines (region-beginning) (region-end)))
-      (save-mark-and-excursion
-        (cond
-         (backward
-          (cond
-           ((> (+ cnt n) 0)
-            (forward-line (- n))
-            (setq p (line-beginning-position)))
-           (t
-            (goto-char orig)
-            (setq orig (line-beginning-position))
-            (forward-line (- (+ cnt n)))
-            (setq p (line-end-position)))))
-         (t ;; forward
-          (cond
-           ((> (+ cnt n) 0)
-            (forward-line n)
-            (setq p (line-end-position)))
-           (t
-            (goto-char orig)
-            (setq orig (line-end-position))
-            (forward-line (- (+ cnt n)))
-            (setq p (line-beginning-position)))))))
-      (thread-first
-        (meow--make-selection '(expand . line) orig p expand)
-        (meow--select t))
-      (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))
-     (t
-      (let ((m (if forward
-                   (line-beginning-position)
-                 (line-end-position)))
-            (p (save-mark-and-excursion
-                 (if forward
-                     (progn
-                       (forward-line (1- n))
-                       (line-end-position))
-                   (progn
-                     (forward-line (1+ n))
-                     (when (meow--empty-line-p)
-                       (backward-char 1))
-                     (line-beginning-position))))))
-        (thread-first
-          (meow--make-selection '(expand . line) m p expand)
-          (meow--select t))
-        (meow--maybe-highlight-num-positions '(meow--backward-line-1 . meow--forward-line-1)))))))
-
-;; ;;;###autoload
-;; (defun vmacs-meow-append ()
-;;   "Move to the end of selection, switch to INSERT state."
-;;   (interactive)
-;;   (if meow--temp-normal
-;;       (progn
-;;         (message "Quit temporary normal mode")
-;;         (meow--switch-state 'motion))
-;;     (if (not (region-active-p))
-;;         (when (and meow-use-cursor-position-hack
-;;                    (< (point) (line-end-position)))
-;;           (forward-char 1))
-;;       (meow--direction-forward)
-;;       (meow--cancel-selection))
-;;     (meow--switch-state 'insert))
-;;   (when meow-select-on-append
-;;       (setq-local meow--insert-pos (point))))
-
-;;;###autoload
-(defun meow-search-reverse ()
-  (interactive)
-  (meow-search -1)
-  (meow-search nil))
-
-;;;###autoload
-(defun vmacs-insert-pair(prefix suffix)
-  (if (use-region-p)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (goto-char end)
-        (insert suffix)
-        (goto-char beg)
-        (insert prefix))
-    (insert prefix)
-    (insert suffix)
-    (backward-char 1)))
-
-;;;###autoload
-(defun vmacs-meow-reverse()
-  (interactive)
-  (cond
-   ((region-active-p)
-    (call-interactively 'meow-reverse))
-   (t
-    (cond
-     ((looking-at "\\s(\\|\\[\\|{")
-      (forward-sexp))
-     ((looking-back "\\s)\\|\\]\\|}" 1)
-      (backward-list))
-     (t
-      (call-interactively 'negative-argument))))))
-
-;;;###autoload
-(defun vmacs-meow-join()
-  (interactive)
-  (meow-join -1))
-
-;;;###autoload
-(defun meow-set-mark ()
-  "Activate char selection, then move left."
-  (interactive)
-  (if (region-active-p)
-      (thread-first
-        (meow--make-selection '(expand . char) (mark) (point))
-        (meow--select t))
-    (thread-first
-      (meow--make-selection '(expand . char) (point) (point))
-      (meow--select t))))
-;;;###autoload
-(defun vmacs-meow-grab()
-  (interactive)
-  (save-excursion
-    (unless (region-active-p)
-      (set-mark (point-max))
-      (goto-char (point-min)))
-    (when (= (region-end) (point))
-      (meow-reverse))
-    (meow-grab)))
-
-;;;###autoload
-(defun vmacs-meow-grab-set-mark()
-  (interactive)
-  (save-excursion
-    (if (region-active-p)
-        (meow-grab)
-      (require 'xref)
-      (if (equal emacs-major-version 30)
-          (xref--push-markers (current-buffer)(point))
-        (xref--push-markers (current-buffer) (point)(selected-window)))
-      (call-interactively #'set-mark-command)
-      (meow-grab))))
-
-;;;###autoload
-(defun vmacs-widen()
-  (interactive)
-  (meow--cancel-second-selection)
-  (meow--cancel-selection)
-  (widen))
-
 
 ;;;###autoload
 (defun vmacs-repeat ()
@@ -584,85 +322,10 @@ numeric, repeat times.
     (isearch-dehighlight)
     (message "[%s] %d changed" pattern cnt)))
 
-;; (defun vmacs-meow-iedit()
-;;   (interactive)
-;;   (if (secondary-selection-exist-p)
-;;       (progn
-;;         (when (and (meow-insert-mode-p)
-;;                    (eq meow--beacon-defining-kbd-macro 'quick))
-;;           (setq meow--beacon-defining-kbd-macro nil)
-;;           (meow-beacon-insert-exit))
-;;         (meow--cancel-second-selection)
-;;         (meow--cancel-selection))
-;;     (let (region)
-;;       (when  (meow-insert-mode-p)
-;;         (meow-insert-exit))
-;;       (when (region-active-p)
-;;         (setq region (buffer-substring-no-properties
-;;                       (region-beginning)(region-end))))
-;;       (save-mark-and-excursion
-;;         (set-mark (point-max))
-;;         (goto-char (point-min))
-;;         (meow-grab))
-;;       (if (region-active-p)
-;;           (progn
-;;             (goto-char (region-beginning))
-;;             (meow--search nil region t nil t))
-;;         (call-interactively #'meow-mark-symbol)))))
-
-;;;###autoload
-(defun vmacs-meow-search-symbol()
-  (interactive)
-  (let ((symbol (thing-at-point 'symbol))
-        (mark t)
-        region)
-    (when (region-active-p)
-      (setq region (buffer-substring-no-properties
-                    (region-beginning)
-                    (region-end)))
-      (when (string-equal symbol region)
-        (when (> (mark) (point))
-          (exchange-point-and-mark))
-        (setq mark nil)))
-    (when mark
-      (meow-mark-symbol 1)))
-  (meow-search 1))
-;;;###autoload
-(defun vmacs-meow-search-symbol-prev()
-  (interactive)
-  (let ((symbol (thing-at-point 'symbol))
-        (mark t)
-        region)
-    (when (region-active-p)
-      (setq region (buffer-substring-no-properties
-                    (region-beginning)
-                    (region-end)))
-      (when (string-equal symbol region)
-        (when (< (mark) (point))
-          (exchange-point-and-mark))
-        (setq mark nil)))
-    (when mark
-      (meow-mark-symbol -1)))
-  (meow-search 1))
-
-;;;; ###autoload
-;; (defun vmacs-find-def()
-;;   (interactive)
-;;   (require 'eglot)
-;;   (when (and eglot--managed-mode
-;;              eglot--change-idle-timer)
-;;     (cancel-timer eglot--change-idle-timer)
-;;     (eglot--signal-textDocument/didChange)
-;;     (setq eglot--change-idle-timer nil))
-;;   (push-mark)
-;;   (call-interactively #'xref-find-definitions))
 
 
-;;;###autoload
-(defun meow-negative-find ()
-  (interactive)
-  (let ((current-prefix-arg -1))
-    (call-interactively 'meow-find)))
+
+
 
 ;;;###autoload
 (defun json-unescape ()
@@ -720,7 +383,7 @@ open-line if point is at end of line , new-line-and-indent"
                                    smart-end-of-line))
         (end-of-line))
       (newline-and-indent)))
-  (meow-insert))
+  (meep-insert))
 
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
