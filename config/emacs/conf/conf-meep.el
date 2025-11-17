@@ -82,13 +82,13 @@
     ":"	        #'viper-ex
     "z"         #'meep-transpose
     "q"         #'meep-move-matching-bracket-inner
-    "i"         #'meep-insert
     "<escape>"  #'keyboard-quit)
   
   
   (define-key meep-state-keymap-motion [remap self-insert-command] #'my-key-free)
   (defvar-keymap meep-state-keymap-normal
     "m" m-map
+    "i"         #'meep-insert
     "1"           #'digit-argument
     "2"           #'digit-argument
     "3"           #'digit-argument

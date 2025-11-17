@@ -110,8 +110,8 @@
 (defun vmacs-dired-hook()
   (meep-local-set-key
       "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) 
-      "/" 'consult-focus-lines
-      "z" 'consult-hide-lines
+      ;; "/" 'consult-focus-lines
+      ;; "z" 'consult-hide-lines
       "j" 'dired-next-line))
 (add-hook 'dired-mode-hook #'vmacs-dired-hook)
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
