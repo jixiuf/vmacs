@@ -13,7 +13,7 @@
   (meep-local-set-key "/" #'consult-focus-lines)
   (meep-local-set-key "z" #'consult-hide-lines))
 
-(add-hook 'package-menu-mode-hook #'vmacs-package-hook)
+;; (add-hook 'package-menu-mode-hook #'vmacs-package-hook)
 (setq treesit-language-source-alist
       '((go . ("https://github.com/tree-sitter/tree-sitter-go.git" "v0.23.4"))
 	    (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git" "v1.1.0"))
