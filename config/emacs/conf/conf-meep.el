@@ -629,15 +629,15 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
           (def (pop keybinds)))
       (keymap-set meep-local-keymap key def))))
 
-(defcustom meep-keypad-leader-key "<SPC>"
-  "The leader key for keypad mapping. Defaults to space key.
-When set, automatically updates the key translation map
-to bind this key to `meep-keypad' function."
-  :type 'string
-  :set (lambda (var val)
-         (set-default var val)
-         (keymap-set key-translation-map val 'meep-keypad))
-  :initialize 'custom-initialize-set)
+;; (defcustom meep-keypad-leader-key "<SPC>"
+;;   "The leader key for keypad mapping. Defaults to space key.
+;; When set, automatically updates the key translation map
+;; to bind this key to `meep-keypad' function."
+;;   :type 'string
+;;   :set (lambda (var val)
+;;          (set-default var val)
+;;          (keymap-set key-translation-map val 'meep-keypad))
+;;   :initialize 'custom-initialize-set)
 
 (defcustom meep-keypad-dispatch
   '((?r . "M-")
@@ -653,12 +653,15 @@ Example: pressing 'c' dispatches 'C-c', pressing 'm' dispatches 'M-' prefix."
 
 (defun meep-keypad (prompt)
   "Core function for handling keypad mapping.
-Maps the leader key defined in `meep-keypad-leader-key' to `C-c' prefix key.
+Maps the leader key to `C-c' prefix key by binding the leader key in `key-translation-map'.
+(keymap-set key-translation-map \"<SPC>\" 'meep-keypad)
 Behavior depends on current state:
 - In insert mode or minibuffer: returns the leader key directly.
 - In other modes: reads user input and dispatches key sequences based on `meep-keypad-dispatch'.
   Supports sequences ending with '-' (like 'M-') to combine with subsequent keys."
-  (let* ((leader (aref (kbd meep-keypad-leader-key) 0))
+  (let* ((keys (this-command-keys-vector))
+         (len (length keys))
+         (leader (aref keys  (1- len))) ;latest one
          (default-prefix [?\C-c])
          (default-prefix-desc (key-description default-prefix)))
     (cond
@@ -668,8 +671,7 @@ Behavior depends on current state:
       ;; Return leader key directly in insert state or minibuffer
       (vector leader))
      ;; If leader key is pressed
-     ((equal (this-command-keys-vector)
-             (vector leader))
+     ((= len 1)
       (let* ((keys default-prefix)
              (which-key-this-command-keys-function
               (lambda () keys))
@@ -693,6 +695,7 @@ Behavior depends on current state:
      ;; Other cases: return leader key
      (t (vector leader)))))
 
+(keymap-set key-translation-map "<SPC>" 'meep-keypad)
 
 ;; (defun meep-kbd (def)
 ;;   "Command that converts current key."
