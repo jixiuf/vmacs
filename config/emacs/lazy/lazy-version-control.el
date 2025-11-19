@@ -5,6 +5,68 @@
   (require 'project)
   (require  'vc-git)
   (require  'vc-dir))
+(defun diff-kill-all-files ()
+  "遍历所有 diff 文件并杀死它们。"
+  (interactive)
+  (goto-char (point-min))
+  (let ((start-pos (point)))
+    (while (progn
+             (diff-file-next)
+             (not (eq (point) start-pos)))
+      (diff-file-kill)
+      (goto-char (point-min))
+      (setq start-pos (point))
+      )))
+
+;;;###autoload
+(defun toggle-diff-whitespace()
+  (interactive)
+  (cond
+   ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--textconv"))
+    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space" "--textconv")))
+   ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space" "--textconv"))
+    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines"  "--textconv")))
+   (t
+    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines"  "--textconv"))))
+  (if  (and (boundp 'vc-svn-diff-switches)(equal vc-svn-diff-switches t))
+      (setq-default vc-svn-diff-switches '("-x --ignore-eol-style"  ))
+    (setq-default vc-svn-diff-switches t))
+  (cond
+   ((equal major-mode 'diff-mode)
+    (let ((line (line-number-at-pos)))
+      (ignore-error t
+        ;; 删除所有，以便更快的重新生成
+        (diff-kill-all-files))
+      (revert-buffer)
+      (goto-line line)))
+   ((equal major-mode 'magit-revision-mode)
+    (call-interactively #'magit-show-commit)
+    )
+   ((equal major-mode 'magit-status-mode)
+    (magit-refresh))
+   )
+  (message "%s" vc-git-diff-switches)
+
+
+  ;; (cond
+  ;;  ((equal magit-buffer-diff-args (append (get major-mode 'magit-diff-default-arguments)
+  ;;                                         '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")))
+  ;;   (message "diff  --ignore-blank-lines --ignore-space-change --ignore-all-space")
+  ;;   (setq magit-buffer-diff-args
+  ;;         (append (get major-mode 'magit-diff-default-arguments)
+  ;;                 '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space"))))
+  ;;  ((equal magit-buffer-diff-args
+  ;;          (append (get major-mode 'magit-diff-default-arguments)
+  ;;                  '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
+  ;;   (message "diff show whitespace change")
+  ;;   (setq magit-buffer-diff-args (get major-mode 'magit-diff-default-arguments)))
+  ;;  (t
+  ;;   (message "diff --ignore-space-at-eol --ignore-space-change --ignore-blank-lines")
+  ;;   (setq magit-buffer-diff-args (append (get major-mode 'magit-diff-default-arguments)
+  ;;                                        '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")))))
+
+
+  )
 
 ;;;###autoload
 (defun vcgit-push-other()

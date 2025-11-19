@@ -29,6 +29,7 @@
  ;; --textconv 以支持 gpg 文件的diff
  ;; 去除 "--ignore-space-change" 否则会导致在 diff-mode 中提交部分hunk的时候失败
  vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines"  "--textconv")
+ diff-ignore-whitespace-switches "-w"
  ;; vc-git-revision-complete-only-branches
  ;; svn diff --help
  ;; -b (--ignore-space-change): 忽略空白数量的修改。
@@ -235,6 +236,7 @@
   (define-key diff-mode-map (kbd "v") vc-push-map)
   (define-key diff-mode-map (kbd "x") #'diff-hunk-kill)
   (define-key diff-mode-map (kbd "X") #'diff-file-kill)
+  (define-key diff-mode-map (kbd "C-c C-e") #'toggle-diff-whitespace)
   )
 (with-eval-after-load 'transient
   (keymap-set transient-base-map "<escape>" #'transient-quit-one))

@@ -1,48 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'magit)
+;; (require 'magit)
 
-;;;###autoload
-(defun toggle-diff-whitespace()
-  (interactive)
-  (cond
-   ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))
-    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
-   ((equal vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space"))
-    (setq vc-git-diff-switches t))
-   (t
-    (setq vc-git-diff-switches '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change"))))
-
-
-  (cond
-   ((equal magit-buffer-diff-args (append (get major-mode 'magit-diff-default-arguments)
-                                          '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")))
-    (message "diff  --ignore-blank-lines --ignore-space-change --ignore-all-space")
-    (setq magit-buffer-diff-args
-          (append (get major-mode 'magit-diff-default-arguments)
-                  '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space"))))
-   ((equal magit-buffer-diff-args
-           (append (get major-mode 'magit-diff-default-arguments)
-                   '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change" "--ignore-all-space")))
-    (message "diff show whitespace change")
-    (setq magit-buffer-diff-args (get major-mode 'magit-diff-default-arguments)))
-   (t
-    (message "diff --ignore-space-at-eol --ignore-space-change --ignore-blank-lines")
-    (setq magit-buffer-diff-args (append (get major-mode 'magit-diff-default-arguments)
-                                         '("--ignore-space-at-eol" "--ignore-blank-lines" "--ignore-space-change")))))
-
-
-  (if  (and (boundp 'vc-svn-diff-switches)(equal vc-svn-diff-switches t))
-      (setq-default vc-svn-diff-switches '("-x --ignore-eol-style"  ))
-    (setq-default vc-svn-diff-switches t))
-  (cond
-   ((equal major-mode 'diff-mode)
-    (revert-buffer))
-   ((equal major-mode 'magit-revision-mode)
-    (call-interactively #'magit-show-commit)
-    )
-   ((equal major-mode 'magit-status-mode)
-    (magit-refresh)))
-  )
 
 
 ;; (setq-default magit-log-format-graph-function 'magit-log-format-unicode-graph)
