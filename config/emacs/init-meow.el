@@ -91,7 +91,13 @@
 (require 'meow)
 (meow-setup)
 (meow-global-mode 1)
-(keymap-global-set "C-c <SPC>" 'ibuffer)
+(defun hello()
+  (interactive)
+  (message "%s" (key-description (this-command-keys))))
+
+(keymap-global-set "C-c <SPC>" 'hello)
+(keymap-global-set "C-c e" 'hello)
+(keymap-global-set "C-c C-e" 'hello)
 
 (provide 'init-meow)
 

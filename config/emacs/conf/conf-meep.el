@@ -80,7 +80,7 @@
     "n"         #'meep-isearch-repeat-next
     "N"         #'meep-isearch-repeat-prev
     ":"	        #'viper-ex
-    "z"         #'meep-transpose
+    "z"         #'meep-keypad
     "q"         #'meep-move-matching-bracket-inner
     "<escape>"  #'keyboard-quit)
   
@@ -640,10 +640,10 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 ;;   :initialize 'custom-initialize-set)
 
 (defcustom meep-keypad-dispatch
-  '((?r . "M-")
-    (?h . "C-h")
-    (?e . "C-M-")
-    ;; (?x . "C-x")
+  '((?h . "C-h")
+    ;; (?r . "M-")
+    ;; (?e . "C-M-")
+    (?c . "C-c")
     (?x . "C-x"))
   "Association list for key dispatch mapping.
 When a character key is pressed, its corresponding key sequence is dispatched.
@@ -651,51 +651,78 @@ Example: pressing 'c' dispatches 'C-c', pressing 'm' dispatches 'M-' prefix."
   :type '(alist :key-type (character :tag "From key")
                 :value-type (string :tag "To sequence")))
 
-(defun meep-keypad (prompt)
+(defun my-meep-keypad (_)
   "Core function for handling keypad mapping.
 Maps the leader key to `C-c' prefix key by binding the leader key in `key-translation-map'.
-(keymap-set key-translation-map \"<SPC>\" 'meep-keypad)
+(keymap-set key-translation-map \"<SPC>\" #\='meep-keypad)
 Behavior depends on current state:
 - In insert mode or minibuffer: returns the leader key directly.
 - In other modes: reads user input and dispatches key sequences based on `meep-keypad-dispatch'.
-  Supports sequences ending with '-' (like 'M-') to combine with subsequent keys."
-  (let* ((keys (this-command-keys-vector))
-         (len (length keys))
-         (leader (aref keys  (1- len))) ;latest one
-         (default-prefix [?\C-c])
-         (default-prefix-desc (key-description default-prefix)))
+  Supports sequences ending with `-' (like `M-') to combine with subsequent keys."
+  (let* ((vkeys (this-command-keys-vector))
+         (len (length vkeys))
+         (leader (aref vkeys (1- len))) ;latest one
+         (default-prefix "C-c"))
     (cond
-     ((or (eq (meep-state) meep-state-insert)
-          (bound-and-true-p isearch-mode)
-          (minibufferp))
+     ((or (eq (meep-state) meep-state-insert) (bound-and-true-p isearch-mode) (minibufferp))
       ;; Return leader key directly in insert state or minibuffer
       (vector leader))
      ;; If leader key is pressed
      ((= len 1)
       (let* ((keys default-prefix)
-             (which-key-this-command-keys-function
-              (lambda () keys))
-             (char (read-event default-prefix-desc))
+             (which-key-this-command-keys-function (lambda () (kbd keys)))
+             (char (read-event keys))
              (val (alist-get char meep-keypad-dispatch))
+             binding
              char2)
         (cond
          ;; Handle sequences ending with "-" (like "M-"), read second key and combine
          ((and val (string-suffix-p "-" val))
           (let* ((parts (split-string val " "))
-                 (prefix-for-keys
+                 (prefix
                   (when (cdr parts)
                     (string-join (butlast parts) " "))))
-            (setq keys (kbd prefix-for-keys)))
-          (setq char2 (read-event (concat "keypad: " val)))
-          (kbd (concat val (single-key-description char2))))
+            (setq keys prefix))
+          (setq char2 (read-event val))
+          (setq keys (concat val (single-key-description char2))))
          ;; Direct match for sequences like "C-x"
-         (val (kbd val))
-         ;; Default: return Ctrl-C plus pressed key
-         (t (vconcat default-prefix (vector char))))))
-     ;; Other cases: return leader key
-     (t (vector leader)))))
+         (val
+          (setq keys (concat val)))
+         ;; Default: return C-c plus pressed key
+         (t
+          (setq keys (concat default-prefix " " (single-key-description char)))))
+        (setq binding (key-binding (kbd keys)))
 
-(keymap-set key-translation-map "<SPC>" 'meep-keypad)
+        (while (not (or (commandp binding t) (null binding)))
+          (setq char (read-event keys))
+          (setq val (alist-get char meep-keypad-dispatch))
+          (cond
+           ;; Handle sequences ending with "-" (like "M-"), read second key and combine
+           ((and val (string-suffix-p "-" val))
+            (let* ((parts (split-string val " "))
+                   (prefix
+                    (when (cdr parts)
+                      (string-join (butlast parts) " "))))
+              (setq keys (concat keys " " prefix))
+              (setq char2 (read-event (concat keys (car (last parts))))))
+            (setq keys (concat keys " " val (single-key-description char2))))
+           ;; Direct match for sequences like "C-x" in meep-keypad-dispatch
+           (val
+            (setq keys (concat keys " " val)))
+           ((eq leader char) ;leader+x+leader+f = C-x f
+            (setq keys (concat keys " " (single-key-description (read-event keys)))))
+           ;; try C-char first (leader+x+f = C-x C-f)
+           ((key-binding (kbd (concat keys " C-" (single-key-description char))))
+            (setq keys (concat keys " C-" (single-key-description char))))
+           (t
+            (setq keys (concat keys " " (single-key-description char)))))
+          (setq binding (key-binding (kbd keys))))
+        (kbd keys)))
+     ;; Other cases: return leader key
+     (t
+      (vector leader)))))
+
+(keymap-set key-translation-map "<SPC>" 'my-meep-keypad)
 
 ;; (defun meep-kbd (def)
 ;;   "Command that converts current key."

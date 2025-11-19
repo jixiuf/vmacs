@@ -38,6 +38,7 @@
 
 
 
+  (autoload 'minibuffer-keyboard-quit "delsel" "" t nil)
 (defun vmacs-bury-boring-windows ()
   (when (active-minibuffer-window)
     (select-window (active-minibuffer-window))

@@ -1021,7 +1021,7 @@ end tell
 end tell" (expand-file-name default-directory))))
     (ns-do-applescript cmd)))
 
-;; ;;;###autoload
+;;;###autoload
 (defun toggle-case-fold()
   (interactive)
   (save-mark-and-excursion
