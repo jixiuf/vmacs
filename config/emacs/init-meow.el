@@ -1,3 +1,6 @@
+;; -*- lexical-binding: t; -*-
+
+;; (or (file-exists-p package-user-dir) (package-refresh-contents))
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key
@@ -83,9 +86,12 @@
    '("z" . meow-pop-selection)
    '("'" . repeat)
    '("<escape>" . ignore)))
+
+(require 'package)
 (require 'meow)
 (meow-setup)
 (meow-global-mode 1)
+(keymap-global-set "C-c <SPC>" 'ibuffer)
 
 (provide 'init-meow)
 
