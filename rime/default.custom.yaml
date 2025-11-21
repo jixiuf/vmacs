@@ -25,10 +25,10 @@ patch:
       - emoji
 
   schema_list:
-    - schema: egret_wubi_py
-    - schema: egret_wubi_sentence
+    # - schema: egret_wubi_py
+    # - schema: egret_wubi_sentence
     - schema: egret_wubi
-    - schema: egret_py
+    # - schema: egret_py
     # - schema: rime_ice
     # - schema: double_pinyin_flypy #bash rime-install double-pinyin
     # # - schema: pinyin_simp
