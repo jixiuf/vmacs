@@ -11,6 +11,7 @@
  '(font-lock-comment-face ((t (:inherit modus-themes-slant :slant italic))))
  '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
  '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
+ '(log-view-file ((t (:inherit modus-themes-bold :extend t :background "gray"))))
  '(meow-position-highlight-number-1 ((t :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
  '(meow-position-highlight-number-2 ((t :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
  '(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) :background "#625a00")))
