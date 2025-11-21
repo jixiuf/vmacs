@@ -59,7 +59,7 @@
   "i" #'vcgit-rebase-i                 ;in log view mode
   "r" #'vcgit-rebase                   ;  ;in log view mode
   "d" #'vc-revert                       ;丢弃当前未提交的修改
-  "v" #'vcgit-revert-commit)           ;  ;in log view mode revert 某个commit
+  "v" #'log-view-revert-or-delete-revisions)           ;  ;in log view mode revert 某个commit
 ;; for rebase/cherry-pick/am/revert/merge --continue/--skip/--abort
 (defvar-keymap  vc-action-map
   "c" #'vcgit-continue                 ;
@@ -89,7 +89,7 @@
 (defalias 'vc-create-plain-mail-patch 'vc-prepare-patch)
 
 (defvar-keymap  vc-cherry-pick-map
-  "a" #'vcgit-cherry-pick-commit       ;将其他分支的commit拿到当前分支
+  "a" #'log-view-cherry-pick       ;将其他分支的commit拿到当前分支
   "A" #'vcgit-am-apply-patches         ;apply git format-patch 产生的git 专有patch
   "y" #'vcgit-apply-plain-patches      ;apply 普通的diff patch
   "p" #'vc-create-plain-mail-patch                ;create plain patch by mail

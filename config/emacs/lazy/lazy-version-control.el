@@ -218,15 +218,6 @@ This prompts for a branch to merge from."
         (vc-git-command nil 0 nil "reset" commit ))
       (revert-buffer))))
 
-;;;###autoload
-(defun vcgit-revert-commit ()
-  (interactive )
-  (let* ((commit (log-view-current-tag (point))))
-    (when (and commit
-               (y-or-n-p (format
-                          "Do you really want to revert commit %s"
-                          commit)))
-      (vc-git-command nil 0 nil "revert" commit))))
 
 ;;;###autoload
 (defun vcgit-rebase-i ()
