@@ -69,6 +69,14 @@
   )
 
 ;;;###autoload
+(defun vc-push-default(&optional args  )
+  (interactive)
+  (if (vcgit-svn-repos-p)
+      (vc-git--out-ok  "svn" "dcommit" args)
+    (if current-prefix-arg
+        (vc-git--pushpull "push" nil '("--force"))
+      (vc-git--pushpull "push" nil '()))))
+;;;###autoload
 (defun vcgit-push-other()
   (interactive)
   (let* ((br (vc-git--current-branch))
@@ -385,25 +393,6 @@ This prompts for a branch to merge from."
 		  (message "Current line %d is not within any hunk range." current-line)
 		  (goto-char (point-min)))))))
 ;;;###autoload
-(defun log-view-kill-revision ()
-  "Append to `kill-ring' log-view revision at or around point.
-
-When the log-view is in the short format (one compact line per
-revision), the revision is the one on the current line.  If the
-revision is expanded with `log-view-expanded-log-entry-function'
-and point is somewhere inside the expanded text, the revision is
-still the same.
-
-When the log-view is in the long format (detailed view where each
-revision spans several lines), the revision is the one pertinent
-to the text at point."
-  (interactive)
-  (if (region-active-p)
-      (call-interactively #'copy-region-as-kill)
-    (when-let* ((revision (cadr (log-view-current-entry (point) t))))
-      (kill-new (format "%s" revision))
-      (message "Copied: %s" revision))))
-;;;###autoload
 (defun vc-annotate-goto-revision-line (&optional args)
   (interactive)
   (let* ((line (line-number-at-pos))
@@ -571,14 +560,6 @@ to the text at point."
 ;;         (car (vc-rev-diff-count (car branch) remote))
 ;;         -1)))
 
-;;;###autoload
-(defun vc-push-default(&optional args  )
-  (interactive)
-  (if (vcgit-svn-repos-p)
-      (vc-git--out-ok  "svn" "dcommit" args)
-    (if current-prefix-arg
-        (vc-git--pushpull "push" nil '("--force"))
-      (vc-git--pushpull "push" nil '()))))
 
 ;; (defun vc-wait-for-processes (&optional proc timeout)
 ;;   "Wait until PROCS have completed execution.
