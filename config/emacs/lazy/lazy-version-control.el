@@ -213,19 +213,6 @@ This prompts for a branch to merge from."
    "Unstaged"
    (lambda (files) (vc-git-command nil 0 files "reset" "-q" "--"))))
 
-;;;###autoload
-(defun vcgit-reset (&optional args)
-  (interactive "P")
-  (let ((commit (log-view-current-tag (point))))
-    (when (and commit
-               (y-or-n-p (format
-                          "Do you really want to reset commit %s"
-                          commit)))
-      (if args
-          (vc-git-command nil 0 nil "reset" commit "--hard")
-        (vc-git-command nil 0 nil "reset" commit ))
-      (revert-buffer))))
-
 
 ;;;###autoload
 (defun vcgit-rebase-i ()
@@ -296,13 +283,6 @@ This prompts for a branch to merge from."
     (when (file-exists-p (expand-file-name "CHERRY_PICK_HEAD" gitdir))
       (vc-git-command nil 'async nil "cherry-pick" "--abort"))))
 
-;;;###autoload
-(defun vcgit-cherry-pick-commit ()
-  (interactive )
-  (let* ((commit (log-view-current-tag (point))))
-    (if commit
-        (vc-git-command nil 0 nil "cherry-pick" commit)
-      (message "should run in log-view-mode"))))
 
 ;;;###autoload
 (defun vcgit-am-apply-patches (&optional files )

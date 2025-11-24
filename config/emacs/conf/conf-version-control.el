@@ -213,7 +213,7 @@
   (define-key log-view-mode-map (kbd "v") vc-push-map)
   (define-key log-view-mode-map (kbd "o") #'vc-switch-project)
   (define-key log-view-mode-map (kbd "r") vc-r-map)
-  (define-key log-view-mode-map (kbd "x") #'vcgit-reset)
+  ;; (define-key log-view-mode-map (kbd "x") #'vcgit-reset)
   (define-key log-view-mode-map (kbd "t") vc-tag-map)
   (define-key log-view-mode-map (kbd "SPC") nil)
   (define-key log-view-mode-map (kbd "g") nil)
