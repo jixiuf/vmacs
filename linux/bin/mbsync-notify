@@ -7,7 +7,6 @@
 
 # do not duplicate
 killall mbsync &>/dev/null
-notmuch new
 #run mbsync once for all accs with named configs file, with quiet interface
 # or specify account name as argument and define separate cron tasks for each acc
 if [ -n $1 ]
@@ -17,6 +16,10 @@ else
   acc=
 fi
 /usr/bin/mbsync  -a $acc -q 2>/dev/null
+
+notmuch new
+notmuch-post-new
+emacs -batch  -l ~/.gnus.el -f gnus
 
 #count new mail for every maildir, only in INBOX
 # since there are maildirs/accounts in a format `~/Mail/account1/subacc1`,

@@ -6,14 +6,15 @@ IMAPAccount qq
 Host imap.qq.com
 Port 993
 User jixiuf@qq.com
+Timeout 3000  # Set timeout to 300 seconds (5 minutes)
 # 从 keychain 获取密码 https://www.jianshu.com/p/191978f84853
 # security add-internet-password -a "所属用户" -s "密码项名称" -w "密码"
 # security add-internet-password -a "jixiufeng@luojilab.com" -s "smtp.exmail.qq.com" -w "mypass"
 # MODE=ask mbsync -aV # ask password
 PassCmd "gpg -q --pinentry-mode ${MODE:-loopback} --for-your-eyes-only --no-tty -d ~/.authinfo.gpg 2>/dev/null |grep imap.qq.com|grep jixiuf@qq.com| awk '/password/ {print $NF}'"
 # PassCmd "security find-internet-password -g -a jixiuf@qq.com -s smtp.qq.com -w"
-SSLType IMAPS
-SSLVersions TLSv1.2
+TLSType IMAPS
+TLSVersions -1.2
 
 IMAPStore qq-remote
 Account qq

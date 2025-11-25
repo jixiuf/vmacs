@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# notmuch-post-new --- Notmuch rules that run after notmuch-new(1)
+#
+PROG=$( basename "$0" )
+TEMP=$( getopt --options h,n --longoptions not-only-news,help -- "$@" ) || exit 1
+eval set -- "$TEMP"
+only_news="tags:new and "
+
+for i in "$@"; do
+    case "$i" in
+        -h|--help)
+            echo "Usage: $PROG --not-only-news"
+            exit 0
+            ;;
+        -n|--not-only-news*)
+            only_news=""
+            shift
+            ;;
+    esac
+done
+
+shift # remove --
+
+# https://notmuchmail.org/searching/
+# https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html
+# notmuch count tag:emacs
+# 为tag:new 且List为emacs的邮件打上 emacs 的tag
+notmuch tag  +emacs -- " $only_news (List:info-gnu-emacs.gnu.org or List:bug-gnu-emacs@gnu.org or List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) "
+
+# 为tag:new 且List为info-gnu-emacs的邮件打上 emacs-info 的tag
+notmuch tag  +emacs-info -- " $only_news (to:emacs-tangents@gnu.org or to:info-gnu-emacs@gnu.org) "
+
+notmuch tag  +feed -- " $only_news (from:quoramail.com or from:quora.com) "
+
+# 为tag:new 且... 的打上 private
+notmuch tag  +private  " $only_news  ((to:jixiuf@qq* or to:374346117@qq*)  not from:.*@quoramail.com  not from:.*@quora.com not to:.*@debbugs.gnu.org not from:.*@debbugs.gnu.org  not from:emacs-devel@gnu.org not to:emacs-devel@gnu.org not  from:bug-gnu-emacs@gnu.org)"
+notmuch tag  +gmail  " $only_news  (to:*@gmail.com)"
+#
+# 所有针对new 的tag 都打完后，就可以移除new这个tag了
+notmuch tag -new -- tag:new
+# tag all "new" messages "inbox" and "unread"
+# notmuch tag +inbox +unread -new -- tag:new
+
+# notmuch tag +archived -- date:2023-01-20..now
+# https://notmuchmail.org/doc/latest/man7/notmuch-search-terms.html#relative-date-and-time
+# notmuch-post-new --all
+notmuch tag +emacs-archived -emacs -- '(date: 3 months)  and tag:emacs'

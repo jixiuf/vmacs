@@ -1,4 +1,5 @@
 ;;; -*- lexical-binding: t -*-
+;; emacs -batch  -l ~/.gnus.el -f gnus
 ;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
 
 ;; 目前我采用的方案是 mbsync 同步邮件到本地
@@ -13,8 +14,18 @@
 
 ;; 另外我在 conf/conf-private.el.gpg 中定义了自己的邮箱地址等信息，未在此文件中列出
 (require 'gnus)
-(unless (featurep 'conf-private)
+;; this for batch mode
+(setq user-mail-address "")
+(setq user-mail-address-2 "")
+(setq user-mail-address-3 "")
+(setq user-work-mail-address "")
+(setq user-full-name "jixiuf")
+
+(when (and 
+       (not (featurep 'conf-private))
+       (not noninteractive))
   (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))
+
 ;; 你可以定义以下几个变量后，直接用我的这个配置 就能用行，
 ;; 要做的就是，
 ;; 1. 邮箱个数不匹配的话调整下这几个变量相关的地方即可
@@ -141,12 +152,13 @@
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
   
   (defun vmacs-gnus-sum-mode-hook()
-    (meep-local-set-key  "g u" #'mbsync)                 ;gu
-    (meep-local-set-key  "g r" #'notmuch);gr old M-g
-    (meep-local-set-key  "/"  #'gnus-summary-limit-map);/
-    (meep-local-set-key  "G"  gnus-summary-goto-map)     ;old gnus G
-    (meep-local-set-key  "g r" #'gnus-summary-reselect-current-group) ;gr
-    )
+    (unless noninteractive
+      (meep-local-set-key  "g u" #'mbsync)                 ;gu
+      (meep-local-set-key  "g r" #'notmuch);gr old M-g
+      (meep-local-set-key  "/"  #'gnus-summary-limit-map);/
+      (meep-local-set-key  "G"  gnus-summary-goto-map)     ;old gnus G
+      (meep-local-set-key  "g r" #'gnus-summary-reselect-current-group) ;gr
+      ))
   (add-hook 'gnus-summary-mode-hook #'vmacs-gnus-sum-mode-hook)
   (define-key gnus-summary-mode-map "b" #'gnus-select-group)
   ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
@@ -171,7 +183,9 @@
   (keymap-unset gnus-article-mode-map "m" t)
   
   (defun vmacs-gnus-art-mode-hook()
-  (meep-local-set-key "G" gnus-summary-goto-map)     ;old gnus G
+    (unless noninteractive
+      (meep-local-set-key "G" gnus-summary-goto-map)     ;old gnus G
+      )
     )
   (add-hook 'gnus-article-mode-hook #'vmacs-gnus-art-mode-hook)
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
@@ -187,7 +201,6 @@
   (define-key gnus-article-mode-map  (kbd "M-n") (kbd "s M-n C-m"))     ;next unread article
   (define-key gnus-article-mode-map  (kbd "M-p") (kbd "s M-p C-m"))     ;prev unread article
   )
-
 (setq gnus-select-method '(nnnil ""))
 (setq gnus-secondary-select-methods
       `((nnmaildir ,user-full-name
@@ -212,6 +225,8 @@
         ;;         (nnimap-server-port 993)
         ;;         (nnimap-stream ssl))
         ))
+
+(setq mail-sources gnus-secondary-select-methods)
 ;; https://www.gnu.org/software/emacs/manual/html_node/gnus/Group-Parameters.html
 (setq gnus-parameters
       `(("nnvirtual:.*"
@@ -233,10 +248,11 @@
          ;; 排序越靠后 优先级越高
          (gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date
                                        (not gnus-thread-sort-by-date)
-                                     ))
+                                       ))
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
          (gnus-use-scoring nil)
-         (display . all))
+         (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
+         (display . 500))
         (,(format "nnmaildir.*%s:.*" user-full-name)
          (gnus-show-threads nil)
          (gnus-article-sort-functions '((not gnus-article-sort-by-date))) ;not 是倒序的意思
@@ -257,6 +273,7 @@
          (expiry-wait . immediate)              ;E的邮件，多久后真正删除 see nnmail-expiry-wait
          ;;  ;;; 删除后移动哪个组 nnmail-expiry-target
          (expire-group .  ,(format "nnmaildir+%s:Deleted Messages" user-full-name))
+         (display . 500)  ;C-u ret 可指定别的数量big enouch without confirm
          )
         ("Sent Messages\\|Drafts"
          (gnus-show-threads nil)
@@ -397,9 +414,9 @@
          )))
 
 (setq gnus-visible-headers
-       '("^From:" "^To:" "^Cc:" "^Subject:" "^Newsgroups:" "^Date:"
-         "Followup-To:" "Reply-To:" "^Organization:" "^X-Newsreader:" "^List-Id"
-         "^Sender" "^X-Mailer:"))        ;T 查看article所有header
+      '("^From:" "^To:" "^Cc:" "^Subject:" "^Newsgroups:" "^Date:"
+        "Followup-To:" "Reply-To:" "^Organization:" "^X-Newsreader:" "^List-Id"
+        "^Sender" "^X-Mailer:"))        ;T 查看article所有header
 
 ;; (setq gnus-summary-line-format "%U%R%([%-30,30f]:%) %-50,40s(%&user-date;)\n")
 ;; (setq gnus-summary-display-arrow t)
@@ -407,7 +424,7 @@
 (setq gnus-after-exiting-gnus-hook #'mbsync)
 (defun notmuch()
   (interactive)
-  (let ((process (start-process "notmuch" "*Messages*" "notmuch" "new")))
+  (let ((process (start-process "notmuch" "*Messages*" "sh" "-c" "notmuch new;notmuch-post-new")))
     (set-process-query-on-exit-flag process nil)
     (set-process-sentinel
      process
@@ -420,7 +437,7 @@
 
 (defun mbsync()
   (interactive)
-  (let ((process (start-process "mbsync" "*Messages*" "sh" "-c" "MODE=ask mbsync -aq;notmuch new")))
+  (let ((process (start-process "mbsync" "*Messages*" "sh" "-c" "MODE=ask mbsync -aq;notmuch new;notmuch-post-new")))
     (set-process-query-on-exit-flag process nil)
     (set-process-sentinel
      process
@@ -461,11 +478,13 @@
 (add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
 (defun init-my-gnus-group()
   
-  (meep-local-set-key "n"   #'gnus-group-next-unread-group)     ;old  n
-  (meep-local-set-key "G"   gnus-group-group-map)     ;old  G
-  (meep-local-set-key "/"   #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
-  (meep-local-set-key "g u" #'mbsync)                 ;gu
-  (meep-local-set-key  "g r" #'notmuch)     ;old  g, now gr
+  (unless noninteractive
+    (meep-local-set-key "n"   #'gnus-group-next-unread-group)     ;old  n
+    (meep-local-set-key "G"   gnus-group-group-map)     ;old  G
+    (meep-local-set-key "/"   #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
+    (meep-local-set-key "g u" #'mbsync)                 ;gu
+    (meep-local-set-key  "g r" #'notmuch)     ;old  g, now gr
+    )
   ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
   ;; 不用再需要重新创建，而是通过代码自动化了
   ;;  下面用到的 user-mail-address-3 是我的gamil邮箱地址，没在此文件中定义
@@ -488,7 +507,8 @@
   ;; [new]
   ;; tags=unread;inbox;
   (gnus-make-query-group "unread" nil "thread:* tag:unread")
-  (gnus-make-query-group "gmail" t (format "to:%s" user-mail-address-3))
+  (gnus-make-query-group "gmail" nil "tag:gmail")
+  ;; (gnus-make-query-group "gmail" t (format "to:%s" user-mail-address-3))
   ;; 下面是创建 nnselect:emacs 这个emacs相关邮件定阅分组
   ;; notmuch 的配置文件中配置如下以支持的搜索自定义header
   ;; [index]
@@ -503,10 +523,11 @@
   ;; 如 raw:* (List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org)
   ;; 用于支持搜索自定义header:此处为List
   ;; 可在article中 按t 查看所有header
-  (gnus-make-query-group "emacs" t "(List:info-gnu-emacs.gnu.org or List:bug-gnu-emacs@gnu.org or List:bug-gnu-emacs.gnu.org or List:emacs-devel.gnu.org or List:emacs-tangents@gnu.org or List:info-gnu-emacs@gnu.org) ")
-  (gnus-make-query-group "emacs-news" t "to:emacs-tangents@gnu.org or to:info-gnu-emacs@gnu.org")
-  (gnus-make-query-group "feed" t "from:quoramail.com or from:quora.com")
-  (gnus-make-query-group "qq" nil qq-mail-query)
+  (gnus-make-query-group "emacs" t "tag:emacs")
+  (gnus-make-query-group "archived" t "tag:emacs-archived")
+  (gnus-make-query-group "emacs-news" t "tag:emacs-info")
+  (gnus-make-query-group "feed" t "tag:feed")
+  (gnus-make-query-group "qq" nil "tag:private")
   )
 
 
