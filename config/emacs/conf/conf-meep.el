@@ -298,10 +298,14 @@
   (unless (minibufferp)
     (bray-mode 1)
     (cond
-     ((derived-mode-p '(reb-mode calc-mode))
+     ((derived-mode-p '(reb-mode
+                        calc-mode))
       (bray-state-stack-push 'insert))
      ((derived-mode-p
        '(special-mode gud-mode term-mode
+                      gnus-summary-mode
+                      gnus-article-mode
+                      gnus-group-mode
                       org-agenda-mode
                       inferior-emacs-lisp-mode dired-mode))
       (bray-state-stack-push 'motion)))))
