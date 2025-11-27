@@ -35,7 +35,7 @@ notmuch tag  +feed -- " $only_news (from:quoramail.com or from:quora.com) "
 
 # 为tag:new 且... 的打上 private
 notmuch tag  +private  " $only_news  ((to:jixiuf@qq* or to:374346117@qq*)  not from:.*@quoramail.com  not from:.*@quora.com not to:.*@debbugs.gnu.org not from:.*@debbugs.gnu.org  not from:emacs-devel@gnu.org not to:emacs-devel@gnu.org not  from:bug-gnu-emacs@gnu.org)"
-notmuch tag  +gmail  " $only_news  (to:*@gmail.com)"
+notmuch tag  +gmail  " $only_news  (to:jixiuf@gmail.*)"
 #
 # 所有针对new 的tag 都打完后，就可以移除new这个tag了
 notmuch tag -new -- tag:new

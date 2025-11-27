@@ -411,6 +411,7 @@
          "nnselect:qq"
          "nnselect:feed"
          "nnselect:gmail"
+         "nnselect:emacs-archived"
          )))
 
 (setq gnus-visible-headers
@@ -506,8 +507,8 @@
   ;; 我有配unread 这个tag ,即新邮件会打上unread的tag
   ;; [new]
   ;; tags=unread;inbox;
-  (gnus-make-query-group "unread" nil "thread:* tag:unread")
-  (gnus-make-query-group "gmail" nil "tag:gmail")
+  (gnus-make-query-group "unread" t "tag:unread")
+  (gnus-make-query-group "gmail" t "tag:gmail")
   ;; (gnus-make-query-group "gmail" t (format "to:%s" user-mail-address-3))
   ;; 下面是创建 nnselect:emacs 这个emacs相关邮件定阅分组
   ;; notmuch 的配置文件中配置如下以支持的搜索自定义header
@@ -524,10 +525,10 @@
   ;; 用于支持搜索自定义header:此处为List
   ;; 可在article中 按t 查看所有header
   (gnus-make-query-group "emacs" t "tag:emacs")
-  (gnus-make-query-group "archived" t "tag:emacs-archived")
+  (gnus-make-query-group "emacs-archived" t "tag:emacs-archived")
   (gnus-make-query-group "emacs-news" t "tag:emacs-info")
   (gnus-make-query-group "feed" t "tag:feed")
-  (gnus-make-query-group "qq" nil "tag:private")
+  (gnus-make-query-group "qq" t "tag:private")
   )
 
 
