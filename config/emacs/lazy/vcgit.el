@@ -17,7 +17,7 @@
   "VC Git extension"
   :group 'vc)
 
-(defcustom vcgit-log-commit-count 6
+(defcustom vcgit-log-commit-count 12
   "How many recent commits to show in Unpulled/Unpushed header."
   :group 'vcgit
   :type 'number)
