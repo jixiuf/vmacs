@@ -10,20 +10,19 @@ sys-auth/seatd server
 >=app-text/ghostscript-gpl-10.01.1 cups
 >=sys-apps/systemd-253.3-r1 policykit
 >=app-crypt/gcr-3.41.1-r2:0 gtk
-gui-wm/hyprland X
->=gui-libs/wlroots-0.16.2 x11-backend
 # >=dev-qt/qtgui-5.15.9 egl
 # dev-qt/qtbase egl
 media-libs/mesa llvm 
 sys-fs/lvm2 lvm 
 >=dev-libs/libdbusmenu-16.04.0-r2 gtk3
 gui-apps/waybar wifi  network pipewire upower tray experimental mpd mpris niri 
->=media-video/pipewire-0.3.65-r1 ffmpeg  extra bluetooth dbus  sound-server 
+media-video/pipewire ffmpeg  extra bluetooth dbus  sound-server 
 media-sound/pulseaudio -daemon
 media-video/ffmpeg  pulseaudio libsoxr opus theora vpx openh264 lame
 dev-vcs/subversion plaintext-password-storage 
 # net-misc/networkmanager 
->=net-wireless/wpa_supplicant-2.10-r1 dbus -p2p
+net-wireless/wpa_supplicant dbus 
+sys-apps/xdg-desktop-portal screencast
 >=net-dns/dnsmasq-2.89 dbus
 >=x11-libs/libdrm-2.4.115 video_cards_radeon
 www-client/firefox dbus clang pulseaudio
@@ -40,9 +39,6 @@ media-libs/gd fontconfig
 gui-apps/rofi  drun windowmode
 gui-libs/gtk-layer-shell introspection vala
 gui-apps/wlogout layershell
-net-wireless/wpa_supplicant p2p
-sys-apps/xdg-desktop-portal screencast
-gui-apps/nwg hyprland
 
 app-admin/keepassxc browser yubikey autotype
 media-libs/freetype brotli
