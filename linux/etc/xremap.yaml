@@ -216,7 +216,7 @@ keymap:
       Super-C-M-comma: [C-c ,p] 
       Super-C-M-dot: [C-c ,n] 
       M-v: Super-M-v
-      C-Grave: M-Grave
+      C-Grave: M-C-Grave
       C-C: C-c
       # # C-x: C-x
       # C-c:
