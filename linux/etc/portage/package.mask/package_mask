@@ -7,4 +7,4 @@
 <=media-gfx/blender-4.0.0
 >dev-db/mongodb-compass-bin-1.45.4
 
->=media-libs/libdisplay-info-0.3.0 
+# >=media-libs/libdisplay-info-0.3.0 

@@ -143,7 +143,6 @@ shift 1
 cmd="$@"
 
 focus_last_win(){
-    echo $@
     niri-focus-last-win $move_to_current_workspace_if_floating \
                         --move-to-current-workspace-if-special \
                         $hide_front_floating_window \

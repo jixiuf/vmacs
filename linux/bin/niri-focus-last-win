@@ -78,7 +78,7 @@ last_focus_app_addr=$(niri-trace-focus $skip_class)
 
 echo $last_focus_app_addr
 # 如果没有last_focus_app 则什么也不做
-if [ -z "last_focus_app_addr" ]; then
+if [ -z "$last_focus_app_addr" ]; then
     exit;
 fi
 last_focus_app=$(niri msg -j  windows |jq  -cr ".[]|select(.id == $last_focus_app_addr)")
