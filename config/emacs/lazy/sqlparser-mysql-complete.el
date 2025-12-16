@@ -1,4 +1,4 @@
-;;; sqlparser-mysql-complete.el --- completing tablename,column name for mysql. -*- coding:utf-8 -*-
+;;; sqlparser-mysql-complete.el --- completing tablename,column name for mysql. -*- coding:utf-8; lexical-binding: t; -*-
 
 ;; Copyright (C) 2011~2012 纪秀峰(Joseph) all rights reserved.
 

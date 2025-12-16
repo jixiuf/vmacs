@@ -1,4 +1,4 @@
-;;; mysql-query.el --- execute sql select using mysql. -*- coding:utf-8 -*-
+;;; mysql-query.el --- execute sql select using mysql. -*- coding:utf-8; lexical-binding: t; -*-
 
 ;; Copyright (C) 2011~2012 纪秀峰(Joseph)
 
