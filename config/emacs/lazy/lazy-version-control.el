@@ -75,7 +75,9 @@
       (vc-git--out-ok  "svn" "dcommit" args)
     (if current-prefix-arg
         (vc-git--pushpull "push" nil '("--force"))
-      (vc-git--pushpull "push" nil '()))))
+      (vc-git--pushpull "push" nil '())))
+  (vc-run-delayed
+    (vc--repo-setprop 'Git 'vc-incoming-revision nil)))
 ;;;###autoload
 (defun vcgit-push-other()
   (interactive)
@@ -96,7 +98,9 @@
                             `("--force"
                               ,remote ,(format "%s:%s" branch remote-br)))
         (vc-git--pushpull "push" nil
-                          `(,remote ,(format "%s:%s" branch remote-br)))))))
+                          `(,remote ,(format "%s:%s" branch remote-br))))
+      (vc-run-delayed
+          (vc--repo-setprop 'Git 'vc-incoming-revision nil)))))
 (defun vcgit-push-tags ()
   (interactive)
   (vc-git--pushpull "push" nil '("--tags")))
@@ -177,7 +181,9 @@ This prompts for a branch to merge from."
       (vc-git--out-ok  "svn" "rebase" args)
     (if current-prefix-arg
         (vc-git--pushpull "fetch" nil '("--all" "--tags"))
-      (vc-git--pushpull "pull" nil '("--rebase" "--stat")))))
+      (vc-git--pushpull "pull" nil '("--rebase" "--stat"))))
+  (vc-run-delayed
+    (vc--repo-setprop 'Git 'vc-incoming-revision nil)))
 (defun vcgit-svn-repos-p()
   (let ((topdir (vc-root-dir)))
     (when topdir (file-exists-p (expand-file-name ".git/refs/remotes/git-svn" topdir)))))
