@@ -140,7 +140,10 @@ This prompts for a branch to merge from."
                              "" ref))
                           filtered-refs))
          (selected (completing-read "Delete(branch or tag): " choices)))
-    (when (and selected (not (string-empty-p selected)))
+    
+    (when (and selected
+               (y-or-n-p (format "Are you sure to Delete this branch or tag: (%s)" selected))
+               (not (string-empty-p selected)))
       (let* ((full-ref (car (seq-filter (lambda (ref)
                                           (string-suffix-p selected ref))
                                         filtered-refs)))
