@@ -867,9 +867,9 @@ binds {
     // Mod+BracketRight { consume-or-expel-window-right; }
 
     // Consume one window from the right to the bottom of the focused column.
-    Super+Alt+Comma  { consume-window-into-column; }
-    // Expel the bottom window from the focused column to the right.
-    Super+Alt+Period { expel-window-from-column; }
+    // Super+Alt+Comma  { consume-window-into-column; }
+    // // Expel the bottom window from the focused column to the right.
+    // Super+Alt+Period { expel-window-from-column; }
 
     // Super+Ctrl+H { switch-preset-column-width; }
     // Super+Ctrl+K { switch-preset-window-height; }

@@ -213,8 +213,11 @@ keymap:
       # Super-C-comma: [C-c ,p] 
       C-comma: [C-c ,p] 
       C-dot: [C-c ,n] 
-      Super-C-M-comma: [C-c ,p] 
-      Super-C-M-dot: [C-c ,n] 
+      # Super-C-M-grave 关闭第1 层tmux 
+      Super-C-M-comma: [Super-C-M-grave,C-c ,p] 
+      Super-C-M-dot: [Super-C-M-grave,C-c ,n] 
+      Super-M-comma: [Super-C-M-1,C-c ,p] 
+      Super-M-dot: [Super-C-M-1,C-c ,n] 
       M-v: Super-M-v
       C-Grave: M-C-Grave
       C-C: C-c
@@ -502,8 +505,8 @@ keymap:
       # super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]}
       super-C-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "area","-"]} #area
       super-M-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "screen","-"]} #
-      super-M-i: { launch: ["swaync-client","-t"]}     #screen
-      super-C-o: { launch: ["other-window"] }
+      # super-M-i: { launch: ["swaync-client","-t"]}     #screen
+      # super-C-o: { launch: ["other-window"] }
 
       super-M-v: Shift-Insert
       # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }

@@ -39,6 +39,8 @@ keymap:
       Super-M-m: { launch: ["niri","msg","action","fullscreen-window"] }
       Super-M-o: { launch: ["niri","msg","action","toggle-window-rule-opacity"] }
        
+      super-M-i: { launch: ["niri","msg","action","consume-window-into-column"]}     
+      super-M-o: { launch: ["niri","msg","action","expel-window-from-column"]}     
 
       # Super-M-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
       # Super-M-n: { launch: ["other-window"]}
