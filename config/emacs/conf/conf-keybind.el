@@ -132,6 +132,8 @@
   ;; https://github.com/benjaminor/kkp for kitty keyboard protocol
   ;; 支持terminal下使用ctrl-;的协议， alacritty/kitty等支持
   (xterm-mouse-mode 1)
+  ;; tmux 下用esc 有延迟，xremap 将esc 映射为f12 
+  (define-key key-translation-map (kbd "<f12>") (kbd "<escape>"))
   (setq mouse-wheel-scroll-amount
         '(10 ((shift) . hscroll)
              ((meta) . nil)

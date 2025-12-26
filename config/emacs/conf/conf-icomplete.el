@@ -42,6 +42,7 @@
   ;; (buffer-face-mode t)
   (local-set-key (kbd "C-.") 'completion-at-point)
   (local-set-key (kbd "<C-m>") 'exit-minibuffer)
+  (local-set-key (kbd "<return>") 'exit-minibuffer)
   (local-set-key (kbd "<C-h>") 'backward-delete-char-untabify)
   (local-set-key (kbd "C-l") 'backward-kill-word)
   (local-set-key [escape] 'abort-recursive-edit)
@@ -190,7 +191,7 @@
 ;; (add-hook 'minibuffer-exit-hook '(lambda() (icomplete-vertical-mode -1)))
 
 ;; (setq icomplete-scroll t)
-(define-key icomplete-minibuffer-map (kbd "RET") 'icomplete-fido-ret)
+(define-key icomplete-minibuffer-map (kbd "<return>") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-m") 'icomplete-fido-ret)
 (define-key icomplete-minibuffer-map (kbd "C-n") #'icomplete-forward-completions)
 (define-key icomplete-minibuffer-map (kbd "C-p") #'icomplete-backward-completions)

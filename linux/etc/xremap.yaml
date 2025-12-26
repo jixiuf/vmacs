@@ -181,6 +181,7 @@ keymap:
       M-v: M-v
       C-c: [C-c,C-c]
       C-x: C-x
+      Esc: f12
       C-comma: C-comma
       C-dot: C-dot
   - name: terminal tmux dterm
