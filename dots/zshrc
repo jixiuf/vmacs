@@ -96,7 +96,7 @@ alias m=less.sh
 alias curl2='curl --http2-prior-knowledge'
 alias top4='ssh admin@bj-ali-zt-topology-04'
 alias apmdev='ssh apmdev'
-alias apmprod="niri-run-or-raise --toggle apm -- term.sh --class=apm --working-directory '/admin@bj-mjq-client-apm-05:~' tmux  attach "
+alias apmprod="niri-run-or-raise --toggle apm -- term.sh --class=apm --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach "
 alias bench='ssh bench'
 alias k8s='ssh k8sdev'
 alias gc='git clone '
