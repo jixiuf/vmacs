@@ -507,7 +507,17 @@ json2csv() {
 # rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/
 # rsync -avz -CErltm  --delete src dst
 # 同步两个目录
-alias rcp='rsync -avz -CErltm  --delete '
+# - -a: 归档模式
+# - -v: 详细输出
+# - -z: 压缩传输
+# - -C: 排除CVS文件
+# - -E: 保留可执行权限
+# - -r: 递归
+# - -l: 保留符号链接
+# - -t: 保留修改时间
+# - -m: 修剪空目录
+# - --delete: 删除目标多余文件
+alias rcp='rsync -avz -Erltm  --delete '
 up(){
     sudo -u jixiuf sh -c '/usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ root@bj-mjq-dev-apm-1:/data/binpkgs; /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/'
 }
