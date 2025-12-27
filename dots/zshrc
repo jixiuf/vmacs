@@ -124,9 +124,11 @@ alias curljson='curl -H "Content-Type: application/json" '
 if [ -f ~/venv/bin/activate ]; then
     source ~/venv/bin/activate
 else
+  if command -v "python" >/dev/null 2>&1; then
     python -m venv venv
     pip install mitmproxy
     pip install requests        # for mitmproxy rewrite.py
+  fi
 fi
 
 function crc32(){
