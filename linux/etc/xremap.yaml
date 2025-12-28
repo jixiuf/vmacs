@@ -222,50 +222,18 @@ keymap:
       M-v: Super-M-v
       C-Grave: M-C-Grave
       C-C: C-c
+      Super-C-M-o: C-Shift-o        # hints
+      Super-C-M-k: { launch: ["open-with"]}
       # # C-x: C-x
       # C-c:
       #   remap:
-      #     C-c: C-c              # C-xC-x send C-x
       #     C-f: [C-Shift-m]         # open file:linenum
       #     C-j: { launch: ["open-with"]}
-  - name: Terminal
-    application:
-      only: [/Alacritty.*/ , APMSSH]
-    remap:
-      super-C-w: super-C-q
-      # super-C-Enter:
-      #   - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --class=dterm --working-directory=$(cwd||echo $HOME) "] }
-      # C-l: [C-l,C-Shift-l,C-Shift-l]
-      # C-Enter: [C-y,Enter]
-      # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
-      C-x:
-        remap:
-          C-x: C-x              # C-xC-x send C-x
-          C-e: [C-x, C-e]
-          C-c: super-C-q
-      C-c:
-        remap:
-          C-c: C-c              # C-xC-x send C-x
-          C-d: [C-x, C-e]
-          C-f: C-Shift-M        # hints
-          C-j: { launch: ["open-with"]}
-          C-k: { launch: ["open-with"]}
-      
   - name: foot
     application:
       only: [dterm,/foot.*/]
     remap:
       super-C-w: super-C-q
-      # super-C-Enter: [C-c,"2"] 
-      # super-C-Backslash: [C-c,M-1] 
-      # super-C-Backspace: [C-c,M-2] 
-        # - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-      # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
-      # C-l: [C-l,C-Shift-l,C-Shift-l]
-      # C-Enter: [C-y,Enter]
-      # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
-      # M-v: [C-Shift-h]
       C-x:
         remap:
           C-x: C-x              # C-xC-x send C-x
@@ -275,61 +243,27 @@ keymap:
         remap:
           C-c: C-c              # C-xC-x send C-x
           C-d: [C-x, C-e]
-          C-f: [C-Shift-m]         # open file:linenum
+          C-f: [C-Shift-o]         # open file:linenum
           C-j: { launch: ["open-with"]}
-
-  # - name: kitty
-  #   application:
-  #     only: [dterm,kitty]
-  #   remap:
-  #     C-backspace: M-backspace
-  #     super-C-T: super-C-T
-  #     super-M-v: C-Shift-v
-  #     super-C-w: super-C-q
-  #     super-C-Enter:
-  #       - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-  #     # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--floating","true","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME)  "] }
-  #     # C-l: [C-l,C-Shift-l,C-Shift-l]
-  #     # C-Enter: [C-y,Enter]
-  #     # C-k: [C-2,C-2,C-e,y,q,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
-  #     M-v: [C-Shift-h]
-  #     C-x:
-  #       remap:
-  #         C-x: C-x              # C-xC-x send C-x
-  #         C-c: super-C-q
-  #     C-c:
-  #       remap:
-  #         C-c: C-c              # C-xC-x send C-x
-  #         C-o: C-Shift-o              # open last command output with editor
-  #         C-f: [C-Shift-P,Y]         # hints: open hyperlink
-  #         # f: [C-Shift-P,P]         # hints: open file
-  #         C-e: [C-Shift-P,C]         # open file:linenum
-  #         C-y: [C-Shift-Y]         # copy last cmd ouput to clipboard
-  #         # C-e: [C-Shift-P,N]         # open file:linenum
-  #         C-j: { launch: ["open-with"]}
-
-  # - name: wezterm
-  #   application:
-  #     only: [org.wezfurlong.wezterm]
-  #   remap:
-  #     super-C-Enter:
-  #       - { launch: ["hyprctl","dispatch","exec hypr-dterm"] }
-  #     # super-C-t: { launch: ["hypr-run-or-raise", "--cd","--","foot|dterm|Alacritty|kitty|org.wezfurlong.wezterm","term.sh   --working-directory=$(cwd||echo $HOME) "] }
-  #     C-Enter: [C-Super-v,Enter]
-  #     C-k: [C-2,C-2,C-e,y,C-k] # 选中光标至行尾的内容并复制，退出vi mode，再C-k 类似emacs kill-line
-  #     C-x:
-  #       remap:
-  #         C-x: C-x              # C-xC-x send C-x
-  #         C-c: super-C-q
-  #         C-v: C-Shift-F        # 使用编辑器打开scrollback
-  #     C-c:
-  #       remap:
-  #         C-c: C-c              # C-xC-x send C-x
-  #         C-e: C-Shift-M        # hints
-  #         C-v: C-Shift-F        # 使用编辑器打开scrollback
-  #         C-n: C-M-n            #next prompt
-  #         C-p: C-M-p  #prev prompt
-  #         C-j: { launch: ["open-with"]}
+      
+  - name: Terminal
+    application:
+      only: [/Alacritty.*/ , APMSSH]
+    remap:
+      super-C-w: super-C-q
+      C-x:
+        remap:
+          C-x: C-x              # C-xC-x send C-x
+          C-e: [C-x, C-e]
+          C-c: super-C-q
+      C-c:
+        remap:
+          C-c: C-c              # C-xC-x send C-x
+          C-d: [C-x, C-e]
+          C-f: C-Shift-o        # hints
+          C-j: { launch: ["open-with"]}
+          C-k: { launch: ["open-with"]}
+      
   - name: org.keepassxc.KeePassXC
     application:
       only: [org.keepassxc.KeePassXC]
@@ -341,15 +275,6 @@ keymap:
       super-C-c: C-c                  #copy password 
       super-C-w: [super-M-h]
       super-C-q: [super-M-h]
-# 
-  # - name: flameshot
-  #   application:
-  #     only: [flameshot]
-  #   remap:
-  #   # 使用 hyprctl exec 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-  #     esc: Enter
-  #     C-c: Enter
-  #     C-s: Enter
   - name: wechat
     application:
       only: [wechat]

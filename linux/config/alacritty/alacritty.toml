@@ -65,7 +65,7 @@ post_processing = true
 regex = "((ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+)|(([\\w\\.\\-_/]+/)*[\\w\\-_\\.]+\\.[\\w]+(:\\d+)?)"
 
 [hints.enabled.binding]
-key = "M"
+key = "O"
 mods = "Control|Shift"
 
 [hints.enabled.mouse]
