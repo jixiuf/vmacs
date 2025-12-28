@@ -59,6 +59,7 @@
   "i" #'vcgit-rebase-i                 ;in log view mode
   "r" #'vcgit-rebase                   ;  ;in log view mode
   "d" #'vc-revert                       ;丢弃当前未提交的修改
+  "c" #'vc-revert-revision 
   "v" #'log-view-revert-or-delete-revisions)           ;  ;in log view mode revert 某个commit
 ;; for rebase/cherry-pick/am/revert/merge --continue/--skip/--abort
 (defvar-keymap  vc-action-map
