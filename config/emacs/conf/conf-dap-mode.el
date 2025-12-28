@@ -62,11 +62,11 @@ Non interactive global minor mode."
                ensure dape-ensure-command
                fn (dape-config-autoport dape-config-tramp)
                command "dlv"
-               command-args ("dap" "--listen" "127.0.0.1::autoport")
+               command-args ("dap" "--listen" "0.0.0.0:8081")
                command-insert-stderr t
                command-cwd (lambda()(if (string-suffix-p "_test.go" (buffer-name))
-                                     default-directory (dape-cwd)))
-               port :autoport
+                                     default-directory (dape-command-cwd)))
+               port 8081
                :type "debug"
                :request "launch"
                :mode (lambda() (if (string-suffix-p "_test.go" (buffer-name)) "test" "debug"))

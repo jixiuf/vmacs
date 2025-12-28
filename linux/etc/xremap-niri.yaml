@@ -18,7 +18,7 @@ keymap:
       Super-C-slash: { launch: ["niri","msg","action","spawn-sh","--","EDITOR=ec niri-run-or-raise --toggle mitp -- term.sh  --title=mimtproxy --class=mitp  -- mitmproxy"] }
       # Super-M-e:     { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window   'temacs' -- term.sh  --class=temacs --working-directory=$(cwd||echo $HOME) --tmux-session temacs " ] }
       # Super-M-d:     { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle --move-to-current-workspace-if-floating --hide-front-floating-window --floating true dterm -- term.sh --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm" ] }
-      Super-C-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty|APMSSH' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
+      Super-C-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       # { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       super-C-comma: { launch: ["other-window","--reverse"]}
       super-C-dot: { launch: ["other-window"]}
