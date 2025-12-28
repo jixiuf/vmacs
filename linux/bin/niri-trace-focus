@@ -13,7 +13,7 @@ AUTO_HIDE_CLASS_REGEX=${AUTO_HIDE_CLASS_REGEX:-dterm|org.keepassxc.KeePassXC}
 EXCLUDE_AUTO_HIDE_TITLE_REGEX=${EXCLUDE_AUTO_HIDE_TITLE_REGEX:-解锁数据库 - KeePassXC}
 scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
 # scratchpad_workspace_id=10
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm}
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|APMSSH}
 
 # trace last focused window address before current active window
 # 数组变量，用于保存窗口地址的历史记录

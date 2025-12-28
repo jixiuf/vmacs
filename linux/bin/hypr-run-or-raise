@@ -5,7 +5,7 @@
 # arg1: target_class (regexp)
 # other args: command
 
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm}
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH}
 PROG=$( basename "$0" )
 float_only=""
 toggle=""

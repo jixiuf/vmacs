@@ -6,7 +6,7 @@
 # support auto type text,keys with tmux,dotool
 # support dotool key like : super+alt+ctrl+enter
 
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-.*wezterm.*|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm}
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-.*wezterm.*|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH}
 WINDOW_TITLE=${WINDOW_TITLE:-}  # current window title
 WINDOW_CLASS=${WINDOW_CLASS:-}  # current window class
 # tmux,dotoolc,dotool

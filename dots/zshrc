@@ -376,6 +376,8 @@ case $TERM in
 
         update_cwd(){
             print -Pn "\e]2;$(pwd)\a" #s
+            # for server
+            # print -Pn "\e]2;/ssh:$(whoami)@$(hostname):$(pwd)\a" #s
         }
         add-zsh-hook precmd update_cwd
         ;;
@@ -385,6 +387,7 @@ case $TERM in
         update_cwd(){
             # https://h8.to/terminal-titles-for-tmux/
             echo -ne "\033_${PWD/#$HOME/~}"; echo -ne "\033\\"
+            # echo -ne "\033_/ssh:$(whoami)@$(hostname):${PWD/#$HOME/~}"; echo -ne "\033\\"
             # print "\ePtmux;\e\e]2;TMUX:$(pwd)\007\e\\"
         }
         add-zsh-hook precmd update_cwd

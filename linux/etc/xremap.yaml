@@ -230,7 +230,7 @@ keymap:
       #     C-j: { launch: ["open-with"]}
   - name: Terminal
     application:
-      only: [/Alacritty.*/]
+      only: [/Alacritty.*/ , APMSSH]
     remap:
       super-C-w: super-C-q
       # super-C-Enter:
@@ -250,6 +250,7 @@ keymap:
           C-d: [C-x, C-e]
           C-f: C-Shift-M        # hints
           C-j: { launch: ["open-with"]}
+          C-k: { launch: ["open-with"]}
       
   - name: foot
     application:
