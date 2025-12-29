@@ -101,6 +101,7 @@
   "b" #'vc-print-branch-log
   "s" #'vc-log-search
   "e" #'vcgit-reflog
+  "l" #'vc-print-fileset-branch-log
   "m" #'vc-log-mergebase
   "i" #'vc-log-incoming ;unpulled, 很少用的，已经将其插入到vc-dir中的
   "o" #'vc-log-outgoing ;unpushed, 很少用的，已经将其插入到vc-dir中的
