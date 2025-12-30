@@ -95,10 +95,10 @@ export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT%{$fg[blue]%}$ %{$reset_
 alias m=less.sh
 alias curl2='curl --http2-prior-knowledge'
 alias top4='ssh admin@bj-ali-zt-topology-04'
-alias apmdev='ssh apmdev'
-alias apmprod="niri-run-or-raise --toggle APMSSH -- term.sh --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach "
-alias bench='ssh bench'
-alias k8s='ssh k8sdev'
+alias apmdev='TERM=xterm-256color  ssh apmdev'
+alias apmprod="niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach "
+alias bench='TERM=xterm-256color ssh bench'
+alias k8s='TERM=xterm-256color  ssh k8sdev'
 alias gc='git clone '
 alias gc1='git clone --depth 1 '
 alias gitclean='git clean -fdx'
@@ -176,7 +176,8 @@ ta(){
  }
 alias tt=ta
 alias tn='tmux new -A -s'
-alias ssh='TERM=xterm-256color ssh'
+# rcp /usr/share/terminfo/t/tmux-direct root@bj-mjq-dev-apm-1:
+# alias ssh='TERM=xterm-256color ssh'
 # bindkey -s '^T' 'ta\n'
 bindkey -s '^[[116;13u' 'ta\n'
 

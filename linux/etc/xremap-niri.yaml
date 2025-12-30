@@ -25,7 +25,7 @@ keymap:
       super-C-Enter:    { launch: ["niri","msg","action","spawn-sh","--", "term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
       # term.sh --working-directory "/admin@bj-mjq-client-apm-05:~" tmux  attach 
-      super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach " ] }
+      super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach " ] }
       super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
       super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
       # super-C-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }
