@@ -64,6 +64,7 @@
         "app_ids-mapping": {
           "dterm": "Alacritty",
           "foot-ws": "Alacritty",
+          "APMSSH": "Alacritty",
           "mitp": "Alacritty",
         },      
     },
