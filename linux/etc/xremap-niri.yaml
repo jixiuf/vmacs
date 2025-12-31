@@ -37,7 +37,7 @@ keymap:
       # Super-C-h: { launch: ["niri","msg","action","movetoworkspacesilent","special"] }
       # Super-C-M-h: { launch: ["niri","msg","action","togglespecialworkspace"] }
       Super-M-m: { launch: ["niri","msg","action","fullscreen-window"] }
-      Super-M-o: { launch: ["niri","msg","action","toggle-window-rule-opacity"] }
+      Super-M-p: { launch: ["niri","msg","action","toggle-window-rule-opacity"] }
        
       super-M-i: { launch: ["niri","msg","action","consume-window-into-column"]}     
       super-M-o: { launch: ["niri","msg","action","expel-window-from-column"]}     
