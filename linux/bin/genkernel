@@ -9,7 +9,7 @@
 # `make localmodconfig` 是一个用于生成适用于当前系统的内核配置文件的命令。
 # 它会根据当前系统中已加载的内核模块来生成一个最小化的内核配置文件。
 
-sudo make oldconfig
+# sudo make oldconfig
 sudo make olddefconfig
 sudo make menuconfig
 # sudo make localmodconfig
