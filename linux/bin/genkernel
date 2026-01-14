@@ -24,5 +24,6 @@ fi
 sudo mv -f /boot/vmlinuz /boot/vmlinuz-$ver
 sudo mv -f /boot/System.map /boot/System.map-$ver
 sudo dracut -a lvm --force  --compress gzip  --kver=$ver
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+sudo mkrlconf --force # refind
+# sudo grub-mkconfig -o /boot/grub/grub.cfg
 sudo emerge @module-rebuild
