@@ -204,7 +204,7 @@ else
     if [[ ! (("$front_class" =~ $target) || ("$front_title" =~ $target)) ]]; then
         target_appinfo=`echo $target_appinfo |  jq -rc 'select(.id  == '"$first_target_addr"')'`
     elif [[  "$front_addr" == "$last_target_addr"  ]]; then
-        if [  -n "$toggle" ]; then
+        if [[  -n "$toggle" && "$last_target_addr" == "$first_target_addr" ]]; then
             focus_last_win
             exit
         else
