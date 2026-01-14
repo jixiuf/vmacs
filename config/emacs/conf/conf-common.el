@@ -4,6 +4,9 @@
 ;; (when (not (file-exists-p dropbox-dir)) (make-directory dropbox-dir t))
 (diverted-mode)
 
+
+(defvar hostname "") ;; user@host:
+;; (defvar hostname (format "%s@%s:" (getenv "USER") (shell-command-to-string "hostname -s|tr -d '\n'"))) ;; user@host:
 (when (boundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
 ;; (add-hook 'after-save-hook #'scratch-write-contents)
 (setq-default
@@ -27,7 +30,7 @@
 
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
- frame-title-format '( "「" mode-line-buffer-identification "」["  (:propertize ("" mode-name) ) "] "   mode-line-misc-info   " GNU/Emacs<" (:eval (expand-file-name default-directory)) ">")
+ frame-title-format '( "「" mode-line-buffer-identification "」["  (:propertize ("" mode-name) ) "] "   mode-line-misc-info   " GNU/Emacs<" (:eval (concat hostname (expand-file-name default-directory))) ">")
  xterm-set-window-title t
  xterm-extra-capabilities '( modifyOtherKeys reportBackground  )
  xterm-tmux-extra-capabilities xterm-extra-capabilities
