@@ -27,7 +27,7 @@
 # 比如说 在 emacs 中 当前在/etc 目录下，我想打开 alacritty 终端并进入 /etc 目录，则可以使用以下命令
 #  alacritty  --working-directory=$(cwd||echo $HOME)
 
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH}
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH|sshemacs}
 
 if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
     appinfo=`hyprctl activewindow -j`

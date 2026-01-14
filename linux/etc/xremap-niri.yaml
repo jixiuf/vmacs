@@ -3,7 +3,7 @@ keymap:
   - name: Global
     remap:
     # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      super-C-e: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$","emacsclient -c -r -n"] }
+      super-C-e: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$|^sshemacs$","emacsclient -c -r -n"] }
       super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","google-chrome|firefox|firefox-esr","firefox-bin"] }
       # super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
       
@@ -25,8 +25,8 @@ keymap:
       super-C-Enter:    { launch: ["niri","msg","action","spawn-sh","--", "term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: ["niri","msg","action","spawn","--", "term.sh","--tmux-session","$RANDOM"] }
       # term.sh --working-directory "/admin@bj-mjq-client-apm-05:~" tmux  attach 
-      super-C-Shift-t: { launch: ["niri","msg","action","spawn-sh","--","term.sh --termenv=tmux-direct --class=emacs --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach " ] }
-      super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach " ] }
+      super-C-Shift-e: { launch: ["niri","msg","action","spawn-sh","--","term.sh --termenv=tmux-direct --class=sshemacs --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux  new-session -A  -s emacs" ] }
+      super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc" ] }
       super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/opt/bin/wechat" ] }
       super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
       # super-C-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }

@@ -168,7 +168,7 @@ keymap:
 
   - name: terminal emacs
     application:
-      only: [temacs,bterm,dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws,APMSSH]
+      only: [temacs,bterm,dterm,kitty,Alacritty,foot,foot-ws,Alacritty-ws,APMSSH,sshemacs]
     window:
       only: [/GNU\/Emacs/ , /History/, /Last command output/, /EDITING SCROLLBACK/ ]
     remap:
@@ -194,7 +194,7 @@ keymap:
       
   - name: terminal tmux
     application:
-      only: [dterm,bterm,kitty,/Alacritty.*/,/foot.*/,APMSSH]
+      only: [dterm,bterm,kitty,/Alacritty.*/,/foot.*/,APMSSH,sshemacs]
     window:
       only: [/TMUX:/ ]
     remap:
@@ -248,7 +248,7 @@ keymap:
       
   - name: Terminal
     application:
-      only: [/Alacritty.*/ , APMSSH]
+      only: [/Alacritty.*/ , APMSSH,sshemacs]
     remap:
       super-C-w: super-C-q
       C-x:
@@ -331,7 +331,7 @@ keymap:
       # C-f: right
   - name: Default -- some of these are overridden by the above definitions
     application:
-      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty,mitp   ,org.wezfurlong.wezterm ,APMSSH ]
+      not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty,mitp   ,org.wezfurlong.wezterm ,APMSSH,sshemacs ]
       # not: [Google-chrome, Slack, Gnome-terminal, jetbrains-idea,emacs]
     remap:
       super-C-a: C-a

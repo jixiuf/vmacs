@@ -65,6 +65,7 @@
           "dterm": "Alacritty",
           "foot-ws": "Alacritty",
           "APMSSH": "Alacritty",
+          "sshemacs": "Alacritty",
           "mitp": "Alacritty",
         },      
     },
