@@ -268,8 +268,8 @@
   ;; (setq consult-ripgrep-args (format "%s %s"consult-ripgrep-args " -z"))
   ;; (add-to-list 'consult-buffer-sources 'vmacs-consult--source-dired t)
   (setq consult-buffer-sources
-        '(consult--source-buffer
-          consult--source-recent-file
+        '(consult-source-buffer
+;          consult-source-recent-file
           vmacs-consult--source-git))
   (defun vmacs-consult--source-recentf-items ()
     (let ((ht (consult--buffer-file-hash))
@@ -303,8 +303,9 @@
                       )))
       (propertize short-name 'multi-category `(file . ,file))))
 
-  (plist-put consult--source-recent-file
+  (plist-put consult-source-recent-file
              :items #'vmacs-consult--source-recentf-items)
+  
 (define-key consult-isearch-history-map (kbd "M-p") #'icomplete-backward-completions)
 (define-key consult-isearch-history-map (kbd "M-n") #'icomplete-forward-completions)
 (define-key consult-isearch-history-map (kbd "C-m") (lambda()(interactive)
