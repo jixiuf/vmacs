@@ -13,7 +13,7 @@
 sudo make olddefconfig
 sudo make menuconfig
 # sudo make localmodconfig
-sudo make  && sudo make modules_install  && sudo make install
+sudo make   -j$(nproc) && sudo make modules_install  && sudo make install
 
 ver=$(basename "$(pwd)")
 if [ "$ver" = "linux" ]; then
@@ -23,6 +23,6 @@ else
 fi
 sudo mv -f /boot/vmlinuz /boot/vmlinuz-$ver
 sudo mv -f /boot/System.map /boot/System.map-$ver
-sudo dracut -a lvm --force  --kver=$ver
+sudo dracut -a lvm --force  --compress gzip  --kver=$ver
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 sudo emerge @module-rebuild
