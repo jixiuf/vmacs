@@ -201,7 +201,7 @@
 (define-key icomplete-minibuffer-map (kbd "C-l") #'icomplete-fido-backward-updir)
 (define-key icomplete-minibuffer-map (kbd "C-e") #'(lambda(&optional argv)(interactive)(if (eolp) (call-interactively #'icomplete-fido-exit) (end-of-line))) )
 ;; for consult-rg 忽略 gitignore
-(define-key icomplete-minibuffer-map (kbd "C-h") #'(lambda()(interactive) (insert " -- -uuu")))
+(define-key icomplete-minibuffer-map (kbd "C-h") #'(lambda()(interactive) (insert " -uuu")))
 
 
 (when (require 'embark nil t)
