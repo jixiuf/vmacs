@@ -97,7 +97,7 @@ net-proxy/mitmproxy-rs ~amd64
 net-analyzer/http-toolkit-bin ~amd64
 dev-db/mongodb-compass-bin  ~amd64
 dev-libs/libinput ~amd64
-
+app-misc/qwen-code  ~amd64
 # Local Variables:
 # mode: conf
 # End:
