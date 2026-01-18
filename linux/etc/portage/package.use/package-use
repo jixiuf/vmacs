@@ -18,14 +18,13 @@ sys-fs/lvm2 lvm
 gui-apps/waybar wifi  network pipewire upower tray experimental mpd mpris niri 
 media-video/pipewire ffmpeg  extra bluetooth dbus  sound-server 
 media-sound/pulseaudio -daemon
-media-video/ffmpeg  pulseaudio libsoxr opus theora vpx openh264 lame
+media-video/ffmpeg   libsoxr opus theora vpx openh264 lame
 dev-vcs/subversion plaintext-password-storage 
 # net-misc/networkmanager 
 net-wireless/wpa_supplicant dbus 
 sys-apps/xdg-desktop-portal screencast
 >=net-dns/dnsmasq-2.89 dbus
 >=x11-libs/libdrm-2.4.115 video_cards_radeon
-www-client/firefox dbus clang pulseaudio
 >=media-libs/libvpx-1.12.0-r1 postproc
 
 media-libs/libsdl2 gles2
@@ -43,8 +42,6 @@ gui-apps/wlogout layershell
 app-admin/keepassxc browser yubikey autotype
 media-libs/freetype brotli
 media-libs/opencolorio -opengl
-gui-apps/wf-recorder pulseaudio
-sys-boot/grub mount
 sys-kernel/installkernel dracut
 dev-java/openjdk-bin source
 dev-libs/jemalloc stats
@@ -58,5 +55,7 @@ net-im/wechat fcitx
 media-sound/playerctl introspection # for ngw-panel
 gui-wm/niri screencast
 sys-devel/gcc pgo lto           #match gcc 15 binary use
+app-emulation/fuse -pulseaudio
+
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
