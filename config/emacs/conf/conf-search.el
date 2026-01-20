@@ -143,66 +143,31 @@
 
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
 ;; isearch lazy counter
-(defvar vmacs--search-indicator-overlay nil
-  "Overlays used to display search indicator in current line.")
-
-(defvar-local vmacs--search-indicator-state nil
-  "The state for search indicator.
-
-Value is a list of (last-regexp last-pos idx cnt).")
-(defface vmacs-search-indicator
-  '((((class color) (background dark))
-     ( :foreground "yellow"))
-    (((class color) (background light))
-     :background "blue" :foreground "green yellow"))
-  "Face for search indicator."
-  :group 'vmacs)
 
 (defun vmacs--lazy-count-hook ()
-    (save-mark-and-excursion
-      (vmacs--remove-search-indicator)
-      (when isearch-lazy-count-current
-        (vmacs--show-indicator (point) (isearch-lazy-count-format)))
-      ;; If the current search hits one, then there is no need to highlight it.
-      (when (number-or-marker-p isearch-success)
-        (dolist (ov isearch-lazy-highlight-overlays)
-          (let ((ov-start (overlay-start ov))
-                (ov-end (overlay-end ov)))
-            ;; Check if point `isearch-success' is within the overlay region.
-            (when (and (<= ov-start isearch-success) (>= ov-end isearch-success))
-              (overlay-put ov 'priority 0)))))))
+  (save-mark-and-excursion
+    (when isearch-lazy-count-current
+      (let ((search-term (if isearch-regexp
+                             (format "/%s/"
+                                     (propertize isearch-string 'face 'font-lock-variable-name-face))
+                           (propertize isearch-string 'face 'font-lock-variable-name-face)))
+            (count-info (isearch-lazy-count-format)))
+        (vmacs--show-indicator 
+         (format "%s %s"
+                 search-term
+                 (propertize count-info 'face 'font-lock-function-name-face)))))))
 
-  (add-hook 'lazy-count-update-hook #'vmacs--lazy-count-hook)
+(add-hook 'lazy-count-update-hook #'vmacs--lazy-count-hook)
 
-(defun vmacs--remove-search-indicator ()
-  (vmacs--remove-search-highlight)
-  (vmacs--clean-search-indicator-state))
 
-(defun vmacs--clean-search-indicator-state ()
-  (setq vmacs--search-indicator-overlay nil
-        vmacs--search-indicator-state nil))
-
-(defun vmacs--remove-search-highlight ()
-  (when vmacs--search-indicator-overlay
-    (delete-overlay vmacs--search-indicator-overlay)))
-
-(defun vmacs--show-indicator (pos msg)
-  (goto-char pos)
-  (goto-char (line-end-position))
+(defun vmacs--show-indicator (msg)
   (setq msg (string-trim-right msg))
-  (if (= (point) (point-max))
-      (let ((ov (make-overlay (point) (point))))
-        (overlay-put ov 'after-string (propertize (format " %s " msg) 'face 'vmacs-search-indicator))
-        (setq vmacs--search-indicator-overlay ov))
-    (let ((ov (make-overlay (point)  (1+ (point)))))
-      (overlay-put ov 'display (propertize (format " %s\n" msg) 'face 'vmacs-search-indicator))
-      (setq vmacs--search-indicator-overlay ov))))
+  (message "%s" msg))
 ;; end of isearch (from meow)
 
 (defun vmacs-isearch-unhighlight ()
   (isearch-dehighlight)
-  (lazy-highlight-cleanup t)
-  (vmacs--remove-search-indicator))
+  (lazy-highlight-cleanup t))
 
 (advice-add 'keyboard-quit :before #'vmacs-isearch-unhighlight)
 
