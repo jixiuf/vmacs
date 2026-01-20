@@ -1,5 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
+(with-eval-after-load 'json-ts-mode
+  (bray-state-map-set 'normal json-ts-mode-map "C-=" #'json-unescape)
+  (bray-state-map-set 'normal json-ts-mode-map "z" #'hs-toggle-hiding)
+  (bray-state-map-set 'normal json-ts-mode-map "<tab>" #'(lambda()
+                                                           (interactive)
+                                                           (if (region-active-p)
+                                                               (call-interactively #'json-pretty-print)
+                                                             (call-interactively #'json-pretty-print-buffer) ))))
 ;; (add-hook 'js-mode-hook 'vmacs-js-mode-hook)
 (add-hook 'json-ts-mode-hook 'vmacs-js-mode-hook)
 ;; (add-hook 'js-json-mode-hook 'vmacs-js-mode-hook)
@@ -8,14 +16,7 @@
 ;; evil 的za用来toggle hiddle
 (defun vmacs-js-mode-hook()
   (modify-syntax-entry ?_ "_" (syntax-table))  ;还是让 _ 作为symbol，
-  (hs-minor-mode 1)
-  (meep-local-set-key  "<tab>" 'hs-toggle-hiding)
-  (local-set-key (kbd "C-=") 'json-unescape)
-  (meep-local-set-key  "=" (lambda()
-                             (interactive)
-                             (if (region-active-p)
-                                 (call-interactively #'json-pretty-print)
-                               (call-interactively #'json-pretty-print-buffer) ))))
+  (hs-minor-mode 1))
 ;; (add-to-list 'hs-special-modes-alist
 ;;              '(js-mode
 ;;                "\\[\\|{" "\\]\\|}" "/[*/]" nil nil))

@@ -9,9 +9,9 @@
 ;; (package-initialize)
 (add-hook 'after-init-hook (lambda()
                              (package-install-selected-packages t)))
-(defun vmacs-package-hook()
-  (meep-local-set-key "/" #'consult-focus-lines)
-  (meep-local-set-key "z" #'consult-hide-lines))
+;; (defun vmacs-package-hook()
+;;   (meep-local-set-key "/" #'consult-focus-lines)
+;;   (meep-local-set-key "z" #'consult-hide-lines))
 
 ;; (add-hook 'package-menu-mode-hook #'vmacs-package-hook)
 (setq treesit-language-source-alist

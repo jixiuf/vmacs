@@ -15,9 +15,9 @@
     (set-keymap-parent occur-mode-map meow-normal-state-keymap)
     )
   (add-hook 'occur-hook #'occur-edit-mode))
-(defun vmacs-grep-mode-hook()
-  (meep-local-set-key "/" #'consult-focus-lines)
-  (meep-local-set-key "z" #'consult-hide-lines))
+;; (defun vmacs-grep-mode-hook()
+;;   (meep-local-set-key "/" #'consult-focus-lines)
+;;   (meep-local-set-key "z" #'consult-hide-lines))
 
 (with-eval-after-load 'grep
   ;; (define-key grep-mode-map (kbd "e") nil)

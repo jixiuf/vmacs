@@ -150,16 +150,12 @@
   (define-key gnus-summary-mode-map  "t" #'gnus-summary-thread-map)     ;old T
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
-  
-  (defun vmacs-gnus-sum-mode-hook()
-    (unless noninteractive
-      (meep-local-set-key  "g u" #'mbsync)                 ;gu
-      (meep-local-set-key  "g r" #'notmuch);gr old M-g
-      (meep-local-set-key  "/"  #'gnus-summary-limit-map);/
-      (meep-local-set-key  "G"  gnus-summary-goto-map)     ;old gnus G
-      (meep-local-set-key  "g r" #'gnus-summary-reselect-current-group) ;gr
-      ))
-  (add-hook 'gnus-summary-mode-hook #'vmacs-gnus-sum-mode-hook)
+  (unless noninteractive
+    (bray-state-map-set 'motion gnus-summary-mode-map "g u" #'mbsync)
+    (bray-state-map-set 'motion gnus-summary-mode-map "g r" #'notmuch)
+    (bray-state-map-set 'motion gnus-summary-mode-map "g r" #'gnus-summary-reselect-current-group)
+    (bray-state-map-set 'motion gnus-summary-mode-map "/" #'gnus-summary-limit-map)
+    (bray-state-map-set 'motion gnus-summary-mode-map "G" gnus-summary-goto-map))
   (define-key gnus-summary-mode-map "b" #'gnus-select-group)
   ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
   (define-key gnus-summary-mode-map  (kbd "C-m") #'(lambda()(interactive)
@@ -181,13 +177,9 @@
 (with-eval-after-load 'gnus-art
   (keymap-unset gnus-article-mode-map ";" t)
   (keymap-unset gnus-article-mode-map "m" t)
-  
-  (defun vmacs-gnus-art-mode-hook()
-    (unless noninteractive
-      (meep-local-set-key "G" gnus-summary-goto-map)     ;old gnus G
-      )
-    )
-  (add-hook 'gnus-article-mode-hook #'vmacs-gnus-art-mode-hook)
+
+  (unless noninteractive
+    (bray-state-map-set 'motion gnus-article-mode-map "G" gnus-summary-goto-map))
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
   (define-key gnus-article-mode-map "b" #'gnus-select-group)
@@ -475,17 +467,15 @@
                             '(nnselect-rescan t)
                             '(nnselect-always-regenerate t)
                             (cons 'nnselect-artlist nil)))))
-
 (add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
 (defun init-my-gnus-group()
-  
   (unless noninteractive
-    (meep-local-set-key "n"   #'gnus-group-next-unread-group)     ;old  n
-    (meep-local-set-key "G"   gnus-group-group-map)     ;old  G
-    (meep-local-set-key "/"   #'gnus-group-read-ephemeral-search-group)     ;old  GG now /
-    (meep-local-set-key "g u" #'mbsync)                 ;gu
-    (meep-local-set-key  "g r" #'notmuch)     ;old  g, now gr
-    )
+    (bray-state-map-set 'motion gnus-group-mode-map "G" gnus-group-group-map)
+    (bray-state-map-set 'motion gnus-group-mode-map "n" #'gnus-group-next-unread-group)
+    (bray-state-map-set 'motion gnus-group-mode-map "/" #'gnus-group-read-ephemeral-search-group)
+    (bray-state-map-set 'motion gnus-group-mode-map "g u" #'mbsync)
+    (bray-state-map-set 'motion gnus-group-mode-map "g r" #'notmuch))
+
   ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
   ;; 不用再需要重新创建，而是通过代码自动化了
   ;;  下面用到的 user-mail-address-3 是我的gamil邮箱地址，没在此文件中定义

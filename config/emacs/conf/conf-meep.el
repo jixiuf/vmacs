@@ -4,7 +4,7 @@
 (global-set-key (kbd "C-y") #'meep-clipboard-killring-yank) ;paste from kill ring
 (global-set-key (kbd "C-c ,") #'meep-move-to-bounds-of-thing-beginning)
 (global-set-key (kbd "C-c .") #'meep-move-to-bounds-of-thing-end)
-
+(setq bray-state-map-enabled t)
 (defun my-key-free ()
   (interactive)
   (let ((keys (this-command-keys-vector)))
@@ -599,39 +599,6 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 
 ;; for repeat
 (meep-command-prop-set #'meep-isearch-regexp-next :mark-on-motion t)
-
-(defvar-local meep-local-keymap nil
-  "Local keymap for meep minor mode in the current buffer.")
-
-(defvar-local meep-minor-mode-map-alist nil
-  "Alist to keep track of minor mode keymaps.")
-
-;; (add-to-list 'emulation-mode-map-alists 'meep-minor-mode-map-alist)
-(add-to-list 'emulation-mode-map-alists 'meep-minor-mode-map-alist)
-
-(defun meep-register-local-map ()
-  "Register the local keymap in `emulation-mode-map-alists`."
-  (setq-local meep-minor-mode-map-alist
-              (cons (cons t meep-local-keymap) meep-minor-mode-map-alist)))
-
-(defun meep-unregister-local-map ()
-  "Unregister the local keymap from `emulation-mode-map-alists`."
-  (setq-local meep-minor-mode-map-alist nil))
-(add-hook 'meep-state-hook-motion-enter #'meep-register-local-map)
-(add-hook 'meep-state-hook-motion-exit #'meep-unregister-local-map)
-(add-hook 'meep-state-hook-normal-enter #'meep-register-local-map)
-(add-hook 'meep-state-hook-normal-exit #'meep-unregister-local-map)
-
-(defun meep-local-set-key (&rest keybinds)
-  "Set KEY to DEF in the local keymap."
-  (declare (indent 1))
-  (unless meep-local-keymap
-    (setq meep-local-keymap (make-sparse-keymap))
-    (meep-register-local-map))
-  (while keybinds
-    (let ((key (pop keybinds))
-          (def (pop keybinds)))
-      (keymap-set meep-local-keymap key def))))
 
 ;; (defcustom meep-keypad-leader-key "<SPC>"
 ;;   "The leader key for keypad mapping. Defaults to space key.

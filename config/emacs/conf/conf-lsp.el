@@ -1,9 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
-  ;; brew install llvm
-  ;;clangd https://clangd.llvm.org/installation.html
-  ;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
-  ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd"))
+;; brew install llvm
+;;clangd https://clangd.llvm.org/installation.html
+;; ln -s ~/myproject/compile_commands.json ~/myproject-build/
+;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/local/opt/llvm/bin/clangd"))
 ;; (setq flymake-show-diagnostics-at-end-of-line t)
 ;; (setq eglot-confirm-server-edits nil)
 (setq eglot-autoshutdown t)
@@ -23,7 +23,6 @@
 (defun vmacs-lsp-hook()
   (copilot-mode)
   (which-function-mode)
-  ;; (eglot-ensure)
   (when (eglot-managed-p)
     (eldoc-mode)
     (hs-minor-mode 1)
@@ -31,29 +30,31 @@
     ;; so that that notification reports the actual contents that will be saved.
     (add-hook 'before-save-hook #'vmacs-eglot-organize-imports -9 t)
     (add-hook 'before-save-hook #'eglot-format-buffer -10 t)
-    (meep-local-set-key
-        "=" #'eglot-format
-        "g =" #'eglot-format
-        "g R" #'eglot-rename
-        "g x" #'xref-find-references
-        "g a" #'xref-find-apropos
-        "g c" #'eglot-find-declaration
-        "g i" #'eglot-find-implementation
-        "g D" #'eglot-find-typeDefinition
-        "g n" #'flymake-goto-next-error
-        "g p" #'flymake-goto-prev-error
-        "g l" #'flymake-show-project-diagnostics
-        "g S" #'eglot-reconnect
-        "g h" #'eglot-code-actions)
     (local-set-key (kbd "C-c C-c") 'dape-breakpoint-toggle)
     (local-set-key (kbd "C-c C-e") 'dape-eval)
     (local-set-key (kbd "C-c C-f") 'dape-continue)
-    (local-set-key (kbd "C-<return>") (cape-capf-interactive #'copilot-complete))
+    ;; (local-set-key (kbd "C-<return>") (cape-capf-interactive #'copilot-complete))
+    (defvar-keymap eglot-g-map
+      "=" #'eglot-format
+      "R" #'eglot-rename
+      "x" #'xref-find-references
+      "a" #'xref-find-apropos
+      "c" #'eglot-find-declaration
+      "i" #'eglot-find-implementation
+      "D" #'eglot-find-typeDefinition
+      "n" #'flymake-goto-next-error
+      "p" #'flymake-goto-prev-error
+      "l" #'flymake-show-project-diagnostics
+      "S" #'eglot-reconnect
+      "h" #'eglot-code-actions)
+    (bray-state-map-set 'normal (current-local-map) "=" #'eglot-format)
+    (bray-state-map-set 'normal (current-local-map) "g" eglot-g-map)
+    )
 
-    ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
-    ;; (add-hook 'completion-at-point-functions
-    ;;            (cape-capf-super #'eglot-completion-at-point #'codeium-completion-at-point   ) -100 t )
-    ))
+  ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
+  ;; (add-hook 'completion-at-point-functions
+  ;;            (cape-capf-super #'eglot-completion-at-point #'codeium-completion-at-point   ) -100 t )
+  )
 (add-hook 'eglot-managed-mode-hook #'vmacs-lsp-hook)
 
 (dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))

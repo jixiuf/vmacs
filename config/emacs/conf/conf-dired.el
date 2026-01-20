@@ -107,13 +107,8 @@
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 ;; (define-key dired-mode-map  "C" 'dired-rsync)
-(defun vmacs-dired-hook()
-  (meep-local-set-key
-      "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) 
-      ;; "/" 'consult-focus-lines
-      ;; "z" 'consult-hide-lines
-      "j" 'dired-next-line))
-(add-hook 'dired-mode-hook #'vmacs-dired-hook)
+(bray-state-map-set 'motion dired-mode-map "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)))
+(bray-state-map-set 'motion dired-mode-map "j" #'dired-next-line)
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
 ;; C-gC-g 退出编辑或C-cC-c保存修改
 ;; "i" 'wdired-change-to-wdired-mode

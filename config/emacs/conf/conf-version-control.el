@@ -172,17 +172,13 @@
   (define-key vc-dir-mode-map (kbd "v") vc-push-map)
   (define-key vc-dir-mode-map (kbd "t") vc-tag-map)
   (require 'vc-git)
-  (defun vmacs-vc-dir-hook()
-    (defvar-keymap vc-g-map
-        "d" #'vc-root-diff
-        )
-    (meep-local-set-key
-       "g" vc-g-map
-        "z" vc-git-stash-shared-map
-        "q" vc-action-map
-        "r" vc-r-map
-        ))
-  (add-hook 'vc-dir-mode-hook #'vmacs-vc-dir-hook))
+  
+  (defvar-keymap vc-g-map    "d" #'vc-root-diff)
+  (bray-state-map-set 'motion vc-dir-mode-map "g" vc-g-map)
+  (bray-state-map-set 'motion vc-dir-mode-map "z" vc-git-stash-shared-map)
+  (bray-state-map-set 'motion vc-dir-mode-map "q" vc-action-map)
+  (bray-state-map-set 'motion vc-dir-mode-map "r" vc-r-map)
+)
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)
   "Default mark all in *vc-dir*"
@@ -221,12 +217,10 @@
   (define-key log-view-mode-map (kbd "g") nil)
   (define-key log-view-mode-map (kbd "C-i") #'log-view-diff)
   (define-key log-view-mode-map (kbd "i") #'log-view-toggle-entry-display)
-
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
-  (defun vmacs-log-view-hook()
-    (meep-local-set-key "g a" #'log-view-annotate-version))
-  (add-hook 'log-view-mode-hook #'vmacs-log-view-hook)
   
+  (defvar-keymap log-view-mode--g-map    "a" #'log-view-annotate-version) ;ga
+  (define-key log-view-mode-map (kbd "g") log-view-mode--g-map)
   )
 (with-eval-after-load 'diff-mode
   ;; (define-key diff-mode-shared-map (kbd "s") #'vcgit-stage)
