@@ -5,8 +5,9 @@
 (diverted-mode)
 
 
-(defvar hostname "") ;; user@host:
-;; (defvar hostname (format "%s@%s:" (getenv "USER") (shell-command-to-string "hostname -s|tr -d '\n'"))) ;; user@host:
+(defvar hostname (if (getenv "SSH_TTY")
+                     (format "%s@%s:" (getenv "USER") (shell-command-to-string "hostname -s|tr -d '\n'")))
+  "")
 (when (boundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
 ;; (add-hook 'after-save-hook #'scratch-write-contents)
 (setq-default
