@@ -64,7 +64,8 @@ Non interactive global minor mode."
                command "dlv"
                command-args ("dap" "--listen" "0.0.0.0:8081")
                command-insert-stderr t
-               command-cwd (lambda()(if (string-suffix-p "_test.go" (buffer-name))
+               command-cwd (lambda()(if (or (string-suffix-p "_test.go" (buffer-name))
+                                         (save-excursion (goto-char (point-min)) (re-search-forward "^package main" nil t)))
                                      default-directory (dape-command-cwd)))
                port 8081
                :type "debug"
