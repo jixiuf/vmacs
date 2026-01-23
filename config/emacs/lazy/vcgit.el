@@ -38,14 +38,14 @@
 
 
 ;; functions from emacs31
-(unless (fboundp 'vc-git--current-branch)
+(unless (fboundp 'vc-git-working-branch)
   (defun vc-git--out-match (args regexp group)
     "Run `git ARGS...' and return match for group number GROUP of REGEXP.
 Return nil if the output does not match.  The exit status is ignored."
     (let ((out (apply #'vc-git--out-str args)))
       (when (string-match regexp out)
         (match-string group out))))
-  (defun vc-git--current-branch ()
+  (defun vc-git-working-branch ()
     (vc-git--out-match '("symbolic-ref" "HEAD")
                        "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
 
@@ -53,7 +53,7 @@ Return nil if the output does not match.  The exit status is ignored."
   "Return the remote name that the given BRANCH is tracking.
 If BRANCH is not provided, use the current branch.
 If the branch is tracking a local branch, return `.'."
-  (let ((br (or branch (vc-git--current-branch))))
+  (let ((br (or branch (vc-git-working-branch))))
     (vc-git--out-match
      `("config" ,(concat "branch." br ".remote"))
      "\\([^\n]+\\)" 1)))
@@ -61,7 +61,7 @@ If the branch is tracking a local branch, return `.'."
 (defun vcgit--branch-merge (&optional branch)
   "Return the remote branch name that the given BRANCH is merging into.
 If BRANCH is not provided, use the current branch."
-  (let ((br (or branch (vc-git--current-branch))))
+  (let ((br (or branch (vc-git-working-branch))))
     (vc-git--out-match
      `("config" ,(concat "branch." br ".merge"))
      "^\\(refs/heads/\\)?\\(.+\\)$" 2)))
@@ -71,7 +71,7 @@ If BRANCH is not provided, use the current branch."
 If BRANCH is not provided, use the current branch.
 If REMOTE-NAME is provided, use it instead of fetching the remote name.
 If the branch is not tracking a remote branch, return nil."
-  (when-let* ((br (or branch (vc-git--current-branch)))
+  (when-let* ((br (or branch (vc-git-working-branch)))
               (branch-merge (vcgit--branch-merge br))
               (branch-remote (or remote-name (vcgit--branch-remote br))))
     (unless (string= branch-remote ".")
@@ -138,7 +138,7 @@ If the branch is not tracking a remote branch, return nil."
    "Unpulled" t
    vcgit-log-commit-count
    #'(lambda()
-       (when-let* ((branch (vc-git--current-branch))
+       (when-let* ((branch (vc-git-working-branch))
                    (tranking (vcgit--tracking-branch branch)))
          (vc-log-incoming)
          t))
@@ -150,7 +150,7 @@ If the branch is not tracking a remote branch, return nil."
    "Unpushed" t
    vcgit-log-commit-count
    #'(lambda()
-       (when-let* ((branch (vc-git--current-branch))
+       (when-let* ((branch (vc-git-working-branch))
                    (tranking (vcgit--tracking-branch branch)))
          (vc-log-outgoing )
          t))
@@ -163,7 +163,7 @@ If the branch is not tracking a remote branch, return nil."
    vcgit-log-commit-count
    #'(lambda()
        (let ((vc-log-show-limit vcgit-log-commit-count)
-             (branch (vc-git--current-branch)))
+             (branch (vc-git-working-branch)))
          (when branch
            (vc-print-branch-log branch)
            t)

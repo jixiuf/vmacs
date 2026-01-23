@@ -81,7 +81,7 @@
 ;;;###autoload
 (defun vcgit-push-other()
   (interactive)
-  (let* ((br (vc-git--current-branch))
+  (let* ((br (vc-git-working-branch))
          (branch (vc-read-revision
                   (if current-prefix-arg "Push(--force) : "
                     "Push : ")
