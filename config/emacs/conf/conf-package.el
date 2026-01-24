@@ -15,7 +15,7 @@
 
 ;; (add-hook 'package-menu-mode-hook #'vmacs-package-hook)
 (setq treesit-language-source-alist
-      '((go . ("https://github.com/tree-sitter/tree-sitter-go.git" "v0.23.4"))
+      '((go . ("https://github.com/tree-sitter/tree-sitter-go.git" "v0.25.0"))
 	    (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git" "v1.1.0"))
         (java . ("https://github.com/tree-sitter/tree-sitter-java.git" "v0.23.5"))
 	    (rust . ("https://github.com/tree-sitter/tree-sitter-rust.git" "v0.23.2"))
