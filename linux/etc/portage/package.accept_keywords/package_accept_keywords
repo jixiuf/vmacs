@@ -18,6 +18,7 @@ dev-python/notofonttools ~amd64
 dev-util/mongodb-compass-bin  ~amd64
 x11-misc/rofi   ~amd64
 gui-apps/swaync   ~amd64
+gui-libs/gtk4-layer-shell  ~amd64
 gui-apps/waybar ~amd64 **  
 gui-apps/wf-recorder ~amd64
 gui-apps/wlogout ~amd64

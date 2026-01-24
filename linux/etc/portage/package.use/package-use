@@ -56,6 +56,7 @@ media-sound/playerctl introspection # for ngw-panel
 gui-wm/niri screencast
 sys-devel/gcc pgo lto           #match gcc 15 binary use
 app-emulation/fuse -pulseaudio
+gui-libs/gtk4-layer-shell introspection vala
 
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
