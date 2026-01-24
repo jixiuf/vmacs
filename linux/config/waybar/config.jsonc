@@ -10,7 +10,7 @@
     // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
   "modules-left": ["ext/workspaces","custom/sep","wlr/taskbar"],
   "modules-center": ["hyprland/window","niri/window"], // sway/window
-  "modules-right": [ "mpris",  "tray","privacy","group/power","wireplumber", "network","bluetooth","battery","idle_inhibitor","group/tools","clock"],
+  "modules-right": [ "mpris",  "tray","privacy","group/power","wireplumber", "network","bluetooth","battery","idle_inhibitor","group/tools","clock","custom/notification"],
 	"ext/workspaces": {
         "sort-by-name": false,
         "sort-by-coordinates": true,      

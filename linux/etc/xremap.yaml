@@ -432,7 +432,7 @@ keymap:
       # super-C-4: { launch: ["sh","-c","flameshot gui -p ~/Pictures/Screenshots/ --raw |wl-copy"]}
       super-C-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "area","-"]} #area
       super-M-4: { launch: ["screenshot","--freeze","--cursor","copyedit", "screen","-"]} #
-      # super-M-i: { launch: ["swaync-client","-t"]}     #screen
+      super-M-u: { launch: ["swaync-client","-t"]}     #screen
       # super-C-o: { launch: ["other-window"] }
 
       super-M-v: Shift-Insert
