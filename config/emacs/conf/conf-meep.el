@@ -460,7 +460,15 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 
 ;; gopkg
 (require 'thingatpt)
-(define-thing-chars gopkg "-/[:alnum:]_.@:")
+(define-thing-chars gopkg "-/[:alnum:]_.@:*")
+(put 'nowhitespace 'bounds-of-thing-at-point
+     (lambda ()
+       (let ((thing (thing-at-point-looking-at
+		             "[^\n \t]+" 500)))
+         (if thing
+             (let ((beginning (match-beginning 0))
+                   (end (match-end 0)))
+               (cons beginning end))))))
 (put 'grave-quoted 'bounds-of-thing-at-point
      (lambda ()
        (let ((thing (thing-at-point-looking-at
@@ -516,6 +524,9 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
   (interactive "^p")
   (meep-move-to-bounds-of-thing  arg 'gopkg t))
 
+(defun meep-move-to-bounds-of-nowhitespace (arg)
+  (interactive "^p")
+  (meep-move-to-bounds-of-thing  arg 'nowhitespace t))
 (defun meep-move-to-bounds-of-word (arg)
   (interactive "^p")
   (meep-move-to-bounds-of-thing  arg 'word t)
@@ -562,6 +573,7 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 (dolist (cmd
          (list
           'meep-move-to-bounds-of-gopkg
+          'meep-move-to-bounds-of-nowhitespace
           'meep-move-to-bounds-of-conditional
           'meep-move-to-bounds-of-comment
           'meep-move-to-bounds-of-parameter
@@ -578,6 +590,7 @@ Default is 'meep-state-keymap-normal' when PARENT is nil."
 (advice-add 'meep-move-to-bounds-of-string :after #'meep-mark-thing-at-point)
 
 (add-to-list 'meep-bounds-commands '(?r meep-move-to-bounds-of-gopkg "gopkg"))
+(add-to-list 'meep-bounds-commands '(?e meep-move-to-bounds-of-nowhitespace "nowhitespace"))
 (add-to-list 'meep-bounds-commands '(?, meep-move-to-bounds-of-word "word"))
 (add-to-list 'meep-bounds-commands '(?. meep-move-to-bounds-of-symbol "symbol"))
 (add-to-list 'meep-bounds-commands '(?` meep-move-to-bounds-of-grave-quoted "`"))
