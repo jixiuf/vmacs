@@ -337,10 +337,10 @@
   )
 
 
-(vmacs-leader (kbd "fh") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
-(vmacs-leader (kbd "ft") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
-(vmacs-leader (kbd "fu") (vmacs-defun find-file-http (find-file (expand-file-name "http/" dropbox-dir))))
-(vmacs-leader (kbd "fn") (vmacs-defun find-file-note (require 'conf-org) (find-file org-default-notes-file)))
+(global-set-key (kbd "C-c f C-h") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
+(global-set-key (kbd "C-c f C-t") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
+(global-set-key (kbd "C-c f C-u")(vmacs-defun find-file-http (find-file (expand-file-name "http/" dropbox-dir))))
+(global-set-key (kbd "C-c f C-n")(vmacs-defun find-file-note (require 'conf-org) (find-file org-default-notes-file)))
 
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
