@@ -658,7 +658,8 @@ environment {
     XDG_SESSION_DESKTOP "niri"
 // #blender audio     
     SDL_AUDIODRIVER "pipewire"
-    ELECTRON_OZONE_PLATFORM_HINT "auto" //Electron > 28
+    // auto 时mongodb-compass 有问题 暂注掉 
+    // ELECTRON_OZONE_PLATFORM_HINT "auto" //Electron > 28 bug 
     // DISPLAY ":0"                //for xwayland-satellite
 }
 // spawn-at-startup "xwayland-satellite"
