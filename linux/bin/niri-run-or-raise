@@ -152,7 +152,8 @@ focus_last_win(){
     #     hyprctl dispatch "focuscurrentorlast"
 }
 #
-where="((.app_id  | test(\"$target\"; \"i\")) or (.title  | test(\"$target\"; \"i\")))"
+# .app_id 有null 的情况
+where="((.app_id // \"\"  | test(\"$target\"; \"i\")) or (.title  | test(\"$target\"; \"i\")))"
 if [ -n "$float_only" ]; then
     # only match floating app
     where="$where and $float_only "
@@ -171,6 +172,7 @@ if [ ! "$target_appinfo" ]; then
     while [[ $count -lt $max_retries && -z "$target_appinfo" ]]; do
         sleep 0.2
         ((count++))
+        echo $select
         target_appinfo=`eval $select`
     done
     if [ ! "$target_appinfo" ]; then

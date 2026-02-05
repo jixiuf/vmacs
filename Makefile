@@ -19,6 +19,9 @@ deploy:
 			$(LINK_CMD) $$file ~/.gnupg/$$name; \
 		fi; \
 	done
+	@if [ `uname -s` = "Linux" ] ; then \
+		cd linux && $(MAKE) ; \
+	fi
 	make -C ~/Documents/jianguo/jianguo/keepass/gpg-backup restore
 	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
 	@-for file in dots/*; do \
@@ -55,9 +58,6 @@ deploy:
 
 	@if [ ! -d ~/.cache/.vimbackup ]; then\
 		mkdir -p ~/.cache/.vimbackup;\
-	fi
-	@if [ `uname -s` = "Linux" ] ; then \
-		cd linux && $(MAKE) ; \
 	fi
 
 	@if [ `uname -s` = "Darwin" ] ; then \

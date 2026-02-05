@@ -2,6 +2,11 @@
 
 # 
 if [ `uname -s` = "Linux" ] ; then
+    # Check if kpmenu daemon is running, if not, start it
+    if ! pgrep -f "kpmenu --daemon" > /dev/null; then
+        XDG_CONFIG_HOME=~/.config kpmenu --daemon &
+        sleep 1  # Give daemon time to start
+    fi
     pass=$(XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeTyper=echo  --autotypeSequence '{PASSWORD}' --customAutotypeWindowID="echo bitwarden.com")
     # pass=$(gpg  --pinentry-mode ask -d $HOME/.password-store/bitwarden.com.gpg|head -n 1)
     echo -n $pass
