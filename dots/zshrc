@@ -176,7 +176,7 @@ ta(){
  }
 alias tt=ta
 alias tn='tmux new -A -s'
-# rcp /usr/share/terminfo/t/tmux-direct root@bj-mjq-dev-apm-1:
+# rcp /usr/share/terminfo/t/tmux-direct root@bj-vc-client-apm-01:
 # alias ssh='TERM=xterm-256color ssh'
 # bindkey -s '^T' 'ta\n'
 bindkey -s '^[[116;13u' 'ta\n'
@@ -196,7 +196,7 @@ if [ $(uname -s ) = "Linux" ] ; then
     alias emerge='sudo -E emerge '
     alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo -E emerge @preserved-rebuild;sudo -E eclean packages'
     alias emeU='sudo -E emerge --ask -q --keep-going  --emptytree @world'
-    alias esync="sudo -E rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/;sudo -E emerge --sync;sudo -E rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/"
+    alias esync="sudo -E rsync -avz -CErltm  --delete 'root@bj-vc-client-apm-01:/data/gentoo/*'  /var/db/repos/gentoo/;sudo -E emerge --sync;sudo -E rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-vc-client-apm-01:/data/gentoo/"
     emec() {        if [ -z "$1" ]; then sudo -E emerge -ac;else sudo -E emerge -aqvC "$@";fi ;sudo -E emaint binhost -f   }
     alias emes='sudo -E emerge -aSqv'
     alias env-update="sudo env-update"
@@ -508,7 +508,7 @@ json2csv() {
     else . end) as $headers
     | [$headers[]], (.[] | [.[$headers[]]]) | @csv'
 }
-# rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/
+# rsync -avz -CErltm  --delete 'root@bj-vc-client-apm-01:/data/gentoo/*'  /var/db/repos/gentoo/
 # rsync -avz -CErltm  --delete src dst
 # 同步两个目录
 # - -a: 归档模式
@@ -523,10 +523,10 @@ json2csv() {
 # - --delete: 删除目标多余文件
 alias rcp='rsync -avz -Erltm  --delete '
 up(){
-    sudo -u jixiuf sh -c '/usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ root@bj-mjq-dev-apm-1:/data/binpkgs; /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/'
+    sudo -u jixiuf sh -c '/usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ root@bj-vc-client-apm-01:/data/binpkgs; /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-vc-client-apm-01:/data/gentoo/'
 }
 down(){
-    sudo  sh -c '/usr/bin/rsync -avz -CErltm  --delete  root@bj-mjq-dev-apm-1:/data/binpkgs/* /var/cache/binpkgs/; /usr/bin/rsync -avz -CErltm  --delete root@bj-mjq-dev-apm-1:/data/gentoo/* /var/db/repos/gentoo/'
+    sudo  sh -c '/usr/bin/rsync -avz -CErltm  --delete  root@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/; /usr/bin/rsync -avz -CErltm  --delete root@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/'
 }
 
 export GOTOOLCHAIN=local

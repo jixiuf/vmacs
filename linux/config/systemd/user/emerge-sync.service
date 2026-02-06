@@ -3,7 +3,7 @@ Description=Sync Portage Tree
 
 [Service]
 Type=oneshot
-ExecStart=sh -c "sudo -E rsync -avz -CErltm  --delete 'root@bj-mjq-dev-apm-1:/data/gentoo/*'  /var/db/repos/gentoo/;sudo -E emerge --sync;sudo -E rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-mjq-dev-apm-1:/data/gentoo/"
+ExecStart=sh -c "sudo -E rsync -avz -CErltm  --delete 'root@bj-vc-client-apm-01:/data/gentoo/*'  /var/db/repos/gentoo/;sudo -E emerge --sync;sudo -E rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-vc-client-apm-01:/data/gentoo/"
 ExecStartPost=sh -c "sudo -E emerge -uqDN --with-bdeps=y --keep-going @world;sudo -E emerge @preserved-rebuild;sudo -E eclean packages"
 [Install]
 WantedBy=multi-user.target
