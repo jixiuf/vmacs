@@ -782,7 +782,6 @@
                         "description": "Toggle App H-d:iterm2 H-f:Chrome H-e:Emacs H-5:apifox H-b:微信 H-3:飞书",
                         "manipulators": [
                             {
-                                "description": "spacebar-return    Emacs vterm ",
                                 "conditions": [
                                     {
                                         "name": "C-w",
@@ -803,7 +802,7 @@
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
-
+                                "description": "spacebar-return    Emacs vterm ",
                                 "from": {
                                     "key_code": "return_or_enter",
                                     "modifiers": {
@@ -824,7 +823,6 @@
                                 "type": "basic"
                             },
                             {
-                                "description": "spacebar-return    Emacs vterm ",
                                 "conditions": [
                                     {
                                         "name": "C-w",
@@ -845,6 +843,7 @@
                                         "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "spacebar-return    Emacs vterm ",
                                 "from": {
                                     "key_code": "return_or_enter",
                                     "modifiers": {
@@ -867,8 +866,15 @@
                                 ],
                                 "type": "basic"
                             },
-
                             {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
                                 "description": "spacebar-e  toggle Emacs",
                                 "from": {
                                     "key_code": "e",
@@ -884,7 +890,39 @@
                                 },
                                 "to": [
                                     {
-                                        "shell_command": "/Users/jixiuf/bin/yabai-toggle-emacs"
+                                        "shell_command": "open -b org.gnu.Emacs"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "spacebar-e  toggle Emacs",
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_command",
+                                            "left_control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "h",
+                                        "modifiers": [
+                                            "command"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1178,7 +1216,6 @@
                                     {
                                         "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
-
                                 ],
                                 "type": "basic"
                             },
@@ -6395,6 +6432,48 @@
                     "manipulate_caps_lock_led": false,
                     "simple_modifications": [],
                     "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 598,
+                        "vendor_id": 1452
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 46,
+                        "vendor_id": 9610
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": false,
+                        "is_pointing_device": true,
+                        "product_id": 46,
+                        "vendor_id": 9610
+                    },
+                    "ignore": true,
+                    "manipulate_caps_lock_led": false,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
                 }
             ],
             "fn_function_keys": [
@@ -6654,6 +6733,48 @@
                         "is_pointing_device": true,
                         "product_id": 630,
                         "vendor_id": 1452
+                    },
+                    "ignore": true,
+                    "manipulate_caps_lock_led": false,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 598,
+                        "vendor_id": 1452
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 46,
+                        "vendor_id": 9610
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": false,
+                        "is_pointing_device": true,
+                        "product_id": 46,
+                        "vendor_id": 9610
                     },
                     "ignore": true,
                     "manipulate_caps_lock_led": false,
