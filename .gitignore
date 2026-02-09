@@ -86,3 +86,4 @@ linux/config/wallpaper/img.jpg
 dots/mitmproxy/wireguard.conf
 config/emacs/elisp-autofmt-cache/%2Fusr%2Fbin%2Femacs.json
 .agent-shell/transcripts/
+config/emacs/eln-cache/
