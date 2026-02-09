@@ -146,8 +146,8 @@
 	version = HTTP/1.1
     #这里是因为 Git 使用 libcurl 提供 http 支持
     # proxy = socks5://192.168.124.24:8088
-[http "https://github.com"]
-	proxy = socks5://192.168.124.24:8088
+# [http "https://github.com"]
+# 	proxy = socks5://192.168.124.24:8088
     
 [log]
 	date=iso
