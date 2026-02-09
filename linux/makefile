@@ -12,6 +12,7 @@ deploy:
 # gpg -d config/rbw/config.json.gpg > config/rbw/config.json 2>/dev/null
 	@-make -C local/share:fcitx5/rime/
 	@-mkdir -p ~/bin ~/.cargo/ ~/go/ /usr/local/bin/ ~/.config
+	@-ln -sf  /usr/bin/pinentry /usr/local/bin/pinentry
 	@-rm -rf ~/.cargo/bin ~/go/bin
 	ln -fs /usr/local/bin/ ~/.cargo/bin
 	ln -fs /usr/local/bin/  ~/go/bin

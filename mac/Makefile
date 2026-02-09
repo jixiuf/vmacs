@@ -3,15 +3,17 @@
 PWD := `pwd`
 LINK_CMD := ln -s -f
 default:
+	make port
 	make deploy
 	sudo make sudo
+
+port:
+	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 
 
 deploy:
 	@-mkdir -p  ~/Library/LaunchAgents/
 	@-mkdir -p /usr/local/etc/
 
-	@-$(LINK_CMD) $(PWD)/../proxychains.conf /usr/local/etc/
-	@-$(LINK_CMD) $(PWD)/../tsocks.conf /usr/local/etc/
 	@-$(LINK_CMD) $(PWD)/LaunchAgents/git_pull_master.sh ~/Library/LaunchAgents/git_pull_master.sh
 	@-$(LINK_CMD) $(PWD)/LaunchAgents/git_pull_master.plist ~/Library/LaunchAgents/
 	@-$(LINK_CMD) $(PWD)/LaunchAgents/midnight.sh ~/Library/LaunchAgents/midnight.sh
