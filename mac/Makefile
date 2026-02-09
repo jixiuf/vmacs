@@ -8,7 +8,7 @@ default:
 	sudo make sudo
 
 port:
-	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 
+	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 wget 
 
 deploy:
 	@-mkdir -p  ~/Library/LaunchAgents/

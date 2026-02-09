@@ -1,4 +1,6 @@
 .PHONY: all emacs-compile elisp-compile deploy
+# build-mac:
+# 	 ./configure --disable-ns-self-contained  --with-ns  --with-modules;make -j 4;sudo make install
 
 PWD := `pwd`
 LINK_CMD := ln -s -f
@@ -21,6 +23,9 @@ deploy:
 	done
 	@if [ `uname -s` = "Linux" ] ; then \
 		cd linux && $(MAKE) ; \
+	fi
+	@if [ `uname -s` = "Darwin" ] ; then \
+		cd mac && $(MAKE) ; \
 	fi
 	make -C ~/Documents/jianguo/jianguo/keepass/gpg-backup restore
 	gpg -d dots/notmuch-config.gpg > dots/notmuch-config 2>/dev/null
@@ -60,9 +65,6 @@ deploy:
 		mkdir -p ~/.cache/.vimbackup;\
 	fi
 
-	@if [ `uname -s` = "Darwin" ] ; then \
-	  cd mac && $(MAKE) ; \
-	fi
 	make -C rime
 
 sudo:
