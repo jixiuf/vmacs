@@ -22,9 +22,11 @@ deploy:
 		fi; \
 	done
 	@if [ `uname -s` = "Linux" ] ; then \
+		ln -sf ~/Documents/jianguo/jianguo/keepass/gnupg/gpg-agent.conf  ~/.gnupg/gpg.conf ; \
 		cd linux && $(MAKE) ; \
 	fi
 	@if [ `uname -s` = "Darwin" ] ; then \
+		ln -sf ~/Documents/jianguo/jianguo/keepass/gnupg/gpg-agent-mac.conf  ~/.gnupg/gpg-agent.conf ; \
 		cd mac && $(MAKE) ; \
 	fi
 	make -C ~/Documents/jianguo/jianguo/keepass/gpg-backup restore
