@@ -3,10 +3,6 @@
 
 # appendPath(newPath)
 # 如果 newPath 已经在 PATH 下了， 则不添加
-export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
-# gpgconf --launch gpg-agent
-export GPG_TTY="${TTY:-"$(tty)"}"
-# gpg-connect-agent updatestartuptty /bye >/dev/null
 
 export APM_OUTPUT_PATH=/tmp/trace/
 export ARTEMIS_SHUTDOWN_SLEEP_SECONDS=0
@@ -44,13 +40,12 @@ prependPath() {
 }
 
 
+export PATH="/usr/local/bin:$PATH"
 prependPath "$HOME/bin"
 appendPath "$HOME/.emacs.d/bin"
 appendPath "/usr/local/mysql/bin"
 appendPath "/usr/local/sbin"
-prependPath "/usr/local/bin"
 prependPath "/usr/local/emacs/bin"
-prependPath "/usr/local/opt/emacs-plus@29/bin"
 appendPath "/Library/TeX/texbin"
 appendPath "/usr/local/share/dotnet"
 appendPath "/Library/Input Methods/Squirrel.app/Contents/MacOS"
@@ -182,6 +177,10 @@ if [ -d ~/Android/Sdk ]; then
 fi
 # export NDK_ROOT=~/Documents/android/NDK
 
+# gpgconf --launch gpg-agent
+export GPG_TTY="${TTY:-"$(tty)"}"
+# gpg-connect-agent updatestartuptty /bye >/dev/null
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 
 # appendPath "$ANDROID_NDK_ROOT"
 # appendPath "$PNGQUANT_ROOT"

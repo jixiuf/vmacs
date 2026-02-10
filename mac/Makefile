@@ -8,7 +8,11 @@ default:
 	sudo make sudo
 
 port:
-	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath fzf ripgrep 
+	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath fzf ripgrep openssh
+
+# for install depends
+# sudo port install tmux emacs ;sudo port uninstall tmux emacs
+
 
 deploy:
 	@-mkdir -p  ~/Library/LaunchAgents/
