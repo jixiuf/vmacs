@@ -8,7 +8,7 @@ default:
 	sudo make sudo
 
 port:
-	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath 
+	sudo port install autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath fzf ripgrep 
 
 deploy:
 	@-mkdir -p  ~/Library/LaunchAgents/

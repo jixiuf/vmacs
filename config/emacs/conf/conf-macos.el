@@ -11,6 +11,7 @@
                 (height . 30)
                 (width . 100)
  ;               (font . "Sarasa Mono SC Nerd-22")
+                (font . "Sarasa Term SC Nerd Light-18")
                 (ns-appearance . dark)
                 (foreground-color . "#ffffff")
                 (background-color . "#000000") ;;
@@ -24,13 +25,14 @@
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
   (with-selected-frame (or f (selected-frame))
-    (when (>= emacs-major-version 29)
-      (set-fontset-font t 'emoji "Apple Color Emoji-17"))
-    (set-fontset-font t 'symbol "Apple Symbols")
+    (when (display-graphic-p)
+      (when (>= emacs-major-version 29)
+        (set-fontset-font t 'emoji "Apple Color Emoji-17"))
+      (set-fontset-font t 'symbol "Apple Symbols"))
     ;; https://github.com/laishulu/Sarasa-Term-SC-Nerd
     ;; https://github.com/lxgw/LxgwWenKai
-;    (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
- ;   (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
+    ;;    (set-face-attribute 'default nil :font "LXGW WenKai Mono" :height 170)
+    ;;   (set-face-attribute 'fixed-pitch nil :font "LXGW WenKai Mono" :height 1.0)
     ))
 
 (add-hook 'after-init-hook #'vmacs-set-font)
