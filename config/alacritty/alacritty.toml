@@ -1,7 +1,7 @@
 # /usr/share/doc/alacritty-0.13.2/
-# [shell]
-# args = ["-l", "-c", "tmux attach || tmux"]
-# program = "/bin/zsh"
+[terminal.shell]
+args = ["-l", "-c", "tmux attach || tmux"]
+program = "/bin/zsh"
 [env]
 TERM= "alacritty-direct"
 
@@ -198,3 +198,4 @@ dynamic_title = true
 [window.padding]
 x = 10
 y = 10
+
