@@ -192,7 +192,7 @@ mods = "Super|Control"
 [selection]
 save_to_clipboard = true
 [window]
-decorations = "none"
+# decorations = "none"
 dynamic_title = true
 # "OnlyLeft" | "OnlyRight" | "Both" | "None" # (macos only)
 option_as_alt="OnlyLeft"
