@@ -784,91 +784,6 @@
                             {
                                 "conditions": [
                                     {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "file_paths": [
-                                            "/usr/local/emacs/bin/emacs",
-                                            "/usr/local/bin/emacs"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "spacebar-return    Emacs vterm ",
-                                "from": {
-                                    "key_code": "return_or_enter",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_command",
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/Users/jixiuf/bin/yabai-vterm"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "file_paths": [
-                                            "/usr/local/emacs/bin/emacs",
-                                            "/usr/local/bin/emacs"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "spacebar-return    Emacs vterm ",
-                                "from": {
-                                    "key_code": "return_or_enter",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_command",
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "f12",
-                                        "modifiers": [
-                                            "command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs"
                                         ],
@@ -984,9 +899,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1048,9 +960,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1112,9 +1021,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1147,9 +1053,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1212,9 +1115,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1359,9 +1259,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1423,9 +1320,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1487,9 +1381,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1551,9 +1442,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -1615,9 +1503,6 @@
                                         "modifiers": [
                                             "command"
                                         ]
-                                    },
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus $(cat /tmp/yabai_prev_focus)"
                                     }
                                 ],
                                 "type": "basic"
@@ -3244,230 +3129,6 @@
                                     },
                                     {
                                         "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "file_paths": [
-                                            "/usr/local/emacs/bin/emacs",
-                                            "/usr/local/bin/emacs"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "M-k= up_arrow",
-                                "from": {
-                                    "key_code": "k",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_option"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "up_arrow"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "file_paths": [
-                                            "/usr/local/emacs/bin/emacs",
-                                            "/usr/local/bin/emacs"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "M-j= down_arrow",
-                                "from": {
-                                    "key_code": "j",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_option"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "down_arrow"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.finder$",
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "file_paths": [
-                                            "/usr/local/emacs/bin/emacs",
-                                            "/usr/local/bin/emacs"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "Ctrl-,= HOME",
-                                "from": {
-                                    "key_code": "comma",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "home"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.finder$",
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "file_paths": [
-                                            "/usr/local/emacs/bin/emacs",
-                                            "/usr/local/bin/emacs"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "Ctrl-.= End",
-                                "from": {
-                                    "key_code": "period",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "end"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.finder$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "Finder ctrl-h ==left",
-                                "from": {
-                                    "key_code": "h",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow",
-                                        "modifiers": []
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
                                             "^com\\.apple\\.finder$"
                                         ],
                                         "type": "frontmost_application_if"
@@ -4308,7 +3969,7 @@
                         ]
                     },
                     {
-                        "description": "iterm2 spacebar-{n,p},next/prev tab,spacebar-i open profiles",
+                        "description": "alacritty C-{,.},next/prev tab",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -4319,7 +3980,126 @@
                                     },
                                     {
                                         "bundle_identifiers": [
-                                            "^org\\.alacritty$",
+                                            "^org\\.alacritty$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "alacritty prev tab",
+                                "from": {
+                                    "key_code": "comma",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "c",
+                                        "modifiers": [
+                                            "left_control"
+                                        ]
+                                    },
+                                    {
+                                        "key_code": "p"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-w",
+                                        "type": "variable_if",
+                                        "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.alacritty$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "alacritty next tab",
+                                "from": {
+                                    "key_code": "period",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "c",
+                                        "modifiers": [
+                                            "left_control"
+                                        ]
+                                    },
+                                    {
+                                        "key_code": "p"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-w",
+                                        "type": "variable_if",
+                                        "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.alacritty$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "alacritty C-`",
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "grave_accent_and_tilde",
+                                        "modifiers": [
+                                            "left_control",
+                                            "left_option"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "iterm2 C-{,.},next/prev tab,spacebar-i open profiles",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-w",
+                                        "type": "variable_if",
+                                        "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
                                         "type": "frontmost_application_if"
@@ -4357,7 +4137,6 @@
                                     },
                                     {
                                         "bundle_identifiers": [
-                                            "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
                                         "type": "frontmost_application_if"
@@ -4381,45 +4160,6 @@
                                         "modifiers": [
                                             "left_command",
                                             "left_shift"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "iterm2 open profile",
-                                "from": {
-                                    "key_code": "i",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_command",
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "o",
-                                        "modifiers": [
-                                            "left_command",
-                                            ""
                                         ]
                                     }
                                 ],
@@ -4516,8 +4256,8 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
+                                            "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
                                         "file_paths": [
@@ -4556,8 +4296,8 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
+                                            "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
                                         "file_paths": [
@@ -4980,444 +4720,6 @@
                                         {
                                             "set_variable": {
                                                 "name": "left_shift pressed",
-                                                "value": 0
-                                            }
-                                        }
-                                    ]
-                                },
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "[C-w:np:workspace,o:winnext ]",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "f",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "option",
-                                            "command"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --toggle float"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "backslash",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control",
-                                            "left_command"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --rotate 270"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "o",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control",
-                                            "left_command"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m window --focus next || /usr/local/bin/yabai -m window --focus first"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "1",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus 1"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "2",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus 2"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "3",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus 3||/usr/local/bin/yabai -m space --create"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "4",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus 4||/usr/local/bin/yabai -m space --create"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "5",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus 5||/usr/local/bin/yabai -m space --create"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "b",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "(/usr/local/bin/yabai -m window --space prev&&/usr/local/bin/yabai -m space --focus prev)"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "f",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "(/usr/local/bin/yabai -m window --space next&&/usr/local/bin/yabai -m space --focus next)||(/usr/local/bin/yabai -m space --create &&/usr/local/bin/yabai -m window --space next&&/usr/local/bin/yabai -m space --focus next)"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "d",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --destroy"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "o",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus 6||/usr/local/bin/yabai -m space --create"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "n",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus next || /usr/local/bin/yabai -m space --focus first"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "p",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "shell_command": "/usr/local/bin/yabai -m space --focus prev || /usr/local/bin/yabai -m space --focus last"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "w",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "x",
-                                        "modifiers": [
-                                            "right_command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "any": "key_code",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "w",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "set_variable": {
-                                            "name": "C-w",
-                                            "value": 1
-                                        }
-                                    }
-                                ],
-                                "to_delayed_action": {
-                                    "to_if_canceled": [
-                                        {
-                                            "set_variable": {
-                                                "name": "C-w",
-                                                "value": 0
-                                            }
-                                        }
-                                    ],
-                                    "to_if_invoked": [
-                                        {
-                                            "set_variable": {
-                                                "name": "C-w",
                                                 "value": 0
                                             }
                                         }
@@ -6631,6 +5933,16 @@
                     "to": [
                         {
                             "key_code": "right_shift"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "escape"
+                    },
+                    "to": [
+                        {
+                            "key_code": "grave_accent_and_tilde"
                         }
                     ]
                 }
