@@ -22,7 +22,7 @@ deploy:
 		fi; \
 	done
 	@if [ `uname -s` = "Linux" ] ; then \
-		ln -sf ~/Documents/jianguo/jianguo/keepass/gnupg/gpg-agent.conf  ~/.gnupg/gpg.conf ; \
+		ln -sf ~/Documents/jianguo/jianguo/keepass/gnupg/gpg-agent.conf  ~/.gnupg/gpg-agent.conf ; \
 		cd linux && $(MAKE) ; \
 	fi
 	@if [ `uname -s` = "Darwin" ] ; then \
