@@ -1,429 +1,509 @@
 {
-    "layer": "top",
-    "position": "top",
-    "height": 37,
-    "spacing": 0,
-    "exclusive": true,
-    "gtk-layer-shell": true,
-    "passthrough": false,
-    "fixed-center": true,
-    // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-  "modules-left": ["ext/workspaces","custom/sep","wlr/taskbar"],
+  "layer": "top",
+  "position": "top",
+  "height": 37,
+  "spacing": 0,
+  "exclusive": true,
+  "gtk-layer-shell": true,
+  "passthrough": false,
+  "fixed-center": true,
+  // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
+  "modules-left": ["ext/workspaces","custom/sep","wlr/taskbar","cffi/niri-windows"],
   "modules-center": ["hyprland/window","niri/window"], // sway/window
   // group/power "group/tools"
   "modules-right": [ "mpris",  "tray","privacy","wireplumber", "network","bluetooth","battery","idle_inhibitor","clock","custom/notification"],
-	"ext/workspaces": {
-        "sort-by-name": false,
-        "sort-by-coordinates": true,      
- 	 	"disable-scroll": false,
-	  "format": "{icon}",
-        "format-icons": {
-                // Named workspaces
-                // (you need to configure them in niri)
-                // "browser": "",
-                // "discord": "",
-          // "chat": "<b></b>",
-          "keepassxc":"🔑",
-          "main":"🌳",
-          "scratchpad":"📝",
-          "urgent": "",          
-                // Icons by state
-                // "active": "",
-          "default": ""
-        },      
-		// "format": "",
-		"persistent-workspaces": {
-		  "main": [],
-		  "scratchpad": [],
-		},
+  "ext/workspaces": {
+    "sort-by-name": false,
+    "sort-by-coordinates": true,      
+ 	"disable-scroll": false,
+	"format": "{icon}",
+    "format-icons": {
+      // Named workspaces
+      // (you need to configure them in niri)
+      // "browser": "",
+      // "discord": "",
+      // "chat": "<b></b>",
+      "keepassxc":"🔑",
+      "main":"🌳",
+      "scratchpad":"📝",
+      "urgent": "",          
+      // Icons by state
+      // "active": "",
+      "default": ""
+    },      
+	// "format": "",
+	"persistent-workspaces": {
+	  "main": [],
+	  "scratchpad": [],
 	},
+  },
   
-    "hyprland/workspaces": {
-		"format": "{name}",
-        "on-scroll-up": "hyprctl dispatch workspace e+1",
-        "on-scroll-down": "hyprctl dispatch workspace e-1",
-        "sort-by":"number",
-        // "show-special":true,
-		"format-icons": {
-                        // "1": "一",
-            //			"2": "二",
-            //			"3": "三",
-            //			"4": "四",
-            //			"5": "五",
-			"urgent": "",
-			"active": "",
-			"default": "󰧞"
-        }
-    },
-    "wlr/taskbar": {
-        "format": "{icon}",
-        "icon-size": 20,
-        "icon-theme": "candy-icons",
-        "on-click": "activate",
-        "tooltip": true,
-        "tooltip-format": "{title} | {app_id}",
-        "app_ids-mapping": {
-          "dterm": "Alacritty",
-          "foot-ws": "Alacritty",
-          "APMSSH": "Alacritty",
-          "sshemacs": "Alacritty",
-          "mitp": "Alacritty",
-        },      
-    },
+  "hyprland/workspaces": {
+	"format": "{name}",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+    "sort-by":"number",
+    // "show-special":true,
+	"format-icons": {
+      // "1": "一",
+      //			"2": "二",
+      //			"3": "三",
+      //			"4": "四",
+      //			"5": "五",
+	  "urgent": "",
+	  "active": "",
+	  "default": "󰧞"
+    }
+  },
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "icon-size": 20,
+    "icon-theme": "candy-icons",
+    "on-click": "activate",
+    "tooltip": true,
+    "tooltip-format": "{title} | {app_id}",
+    "app_ids-mapping": {
+      "dterm": "Alacritty",
+      "foot-ws": "Alacritty",
+      "APMSSH": "Alacritty",
+      "sshemacs": "Alacritty",
+      "mitp": "Alacritty",
+    },      
+  },
   
-    "niri/window": {
-      "format": "[{app_id}] {title}",
-        "rewrite": {
-            "(.*) - Mozilla Firefox": "🌎 $1",
-            "(.*) - zsh": "> [$1]"
-        },
-        "separate-outputs": true
-    }  ,
-    "hyprland/window": {
-        "format": "{}",
-        "rewrite": {
-            "(.*) — Mozilla Firefox": "🌎 $1",
-            "(.*) - fish": "> [$1]"
-        },
-        "separate-outputs": true
-    } ,
-    // "hyprland/language": {
-    //     "format": "Lang: {}",
-    //     "format-en": "AMERICA, HELL YEAH!",
-    //     "format-tr": "As bayrakları",
-    //     "keyboard-name": "at-translated-set-2-keyboard"
-    // } ,
-    "sway/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": false,
-        "format": "{value}" // includes {num}
-        // "persistent_workspaces": { // puts blanks ws's for all other outputs
-        //     // "1": [],
-        //     "2": [],
-        //     "3": [],
-        //     "4": []
-        // }
+  "niri/window": {
+    "format": "[{app_id}] {title}",
+    "rewrite": {
+      "(.*) - Mozilla Firefox": "🌎 $1",
+      "(.*) - zsh": "> [$1]"
     },
-    // "sway/mode": {
-    //     "format": "<span style=\"italic\">{}</span>"
-    // },
-    "network": {
-        "interface": "wl*", // (Optional) To force the use of this interface
-        // "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-wifi": "",     // {signalStrength}%
-        "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}",
-        "tooltip-format": "{ifname}: {essid} {ipaddr}/{cidr}",
-        "on-click-middle": "rofi-wifi-menu",
-        "on-click-right": "alacritty --class=nmtui -e nmtui",
+    "separate-outputs": true
+  }  ,
+  // https://github.com/calico32/waybar-niri-windows/releases/download/v2.3.0/waybar-niri-windows.so  
+  "cffi/niri-windows": {
+    // path where you placed the .so file
+    "module_path": "/home/jixiuf/.config/waybar/waybar-niri-windows.so",
+    // configure the module's behavior
+    "options": {
+      // set the module mode
+      // "graphical" (default): draw a minimap of windows in the current workspace
+      // "text": draws symbols and a focus indicator for each column (mirrors v1 behavior)
+      "mode": "graphical",
 
-    },
-    "tray": {
-        "spacing": 5
-    },
-    "clock": {
-        // "interval": 1,
-        "tooltip": true,
-        "format": "{:L%m-%d%a%H:%M}",
-        "timezone":"Asia/Shanghai",
-        "locale":"zh_CN.UTF-8",
-        "format-alt": "{:%Y-%m-%d}",
-        "on-click-right": "gnome-clocks",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>\n\nR:Clocks"
-        // "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
-        // "format": "  {:%H:%M}"
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        }
-    },
+      // ======= graphical mode options =======
+      //  when to show floating windows
+      //   - "always": always show floating window view, even if there are no floating windows
+      //   - "auto" (default): show floating window view if there are floating windows on the current workspace
+      //   - "never": never show floating windows
+      "show-floating": "auto",
+      // pick where the floating windows be shown relative to tiled windows
+      //   - "left": show floating windows on the left
+      //   - "right" (default): show floating windows on the right
+      "floating-position": "right",
+      // set minimum size of windows, in pixels (default: 1, minimum: 1)
+      // if this value is too large to fit all windows (e.g. in a column with many windows),
+      // it will be reduced
+      "minimum-size": 1,
+      // set spacing between windows/columns, in pixels (default: 1, minimum: 0)
+      // if this value is too large, it will be reduced
+      "spacing": 1,
+      // set minimum size of windows, in pixels, to draw icons for (default: 0, minimum: 0)
+      // if unset or 0, icons will only be drawn for tiled windows that are the only one in their column
+      // if 1+, icons will be drawn for all windows where w >= icon-minimum-size and h >= icon-minimum-size
+      // icons must be set in the "rules" section below for this to have any effect
+      "icon-minimum-size": 0,
+      // account for borders when calculating window sizes; see note below (default: 0, minimum: 0)
+      "column-borders": 0, // border on .column
+      "floating-borders": 0, // border on .floating
+      // trigger actions on tile click (see https://yalter.github.io/niri/niri_ipc/enum.Action.html for available actions)
+      // only actions that take a single window ID are supported
+      // set to an empty string to disable
+      "on-tile-click": "FocusWindow", // (default: FocusWindow)
+      "on-tile-middle-click": "CloseWindow", // (default: CloseWindow)
+      "on-tile-right-click": "", // (default: none)
+      // add CSS classes/icons to windows based on their App ID/Title (see `niri msg windows`)
+      // Go regular expression syntax is supported for app-id and title (see https://pkg.go.dev/regexp/syntax)
+      // rules are checked in the order they are defined - first match wins and checking stops
+      // set "continue" to true to also check and apply subsequent rules even if this rule matches
+      // if multiple rules with icons are applied, the first one will be used
+      // *icons are not drawn for floating windows by default*; set "icon-minimum-size" to enable (see above)
+      "rules": [
+        // .alacritty will be added to all windows with the App ID "Alacritty"
+        //  will be drawn in windows that match
+        { "app-id": "Alacritty", "class": "alacritty", "icon": "" },
+        // .firefox will be added to all windows with the App ID "firefox"
+        // subsequent rules are also checked and applied for firefox windows
+        { "app-id": "firefox", "class": "firefox", "continue": true },
+        // .youtube-music will be added to all windows that have "YouTube Music" at the end of their title
+        //  will be drawn in windows that match
+        { "title": "YouTube Music$", "class": "youtube-music", "icon": "" }
+      ],
 
-    // "cpu": {
-    //     "format": "  {usage}%",
-    //     "tooltip": true,
-    //     "interval": 1
-    // },
-    // "memory": {
-    //     "format": "  {used:0.2f}G"
-    // },
-    "battery": {
-        "states": {
-            // "good": 95,
-            "warning": 60,
-            "error": 30,
-            "critical": 15
-        },
-        "interval": 30,
-      "format": "{icon}",
-        // "format": "{capacity}{icon}",
-        "format-charging": "{capacity}%",
-        "format-plugged": "{capacity}% ",
-      "format-alt": "{icon}{0}",
-        // "format-good": "", // An empty format will hide the module
-      // "format-full": "",
-        "format-warning": "<span foreground='#98bb6c'>{icon}</span>",
-        "format-critical": "<span foreground='#e46876'>{icon}</span>",
-        "format-charging": "<span foreground='#98bb6c'></span>",
-        "format-plugged": "<span foreground='#98bb6c'></span>",
-        "format-full": "<span foreground='#98bb6c'></span>",
-        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-        // "on-click-right": "gnome-control-center power",
-        // "on-click-middle": "toggle-devices",
-        "tooltip-format": "{capacity}%\n{0}\n"
+      // ======= text mode options =======
+      // customize the symbols used to draw the columns/windows
+      "symbols": {
+        "unfocused": "⋅",
+        "focused": "⊙",
+        "unfocused-floating": "∗",
+        "focused-floating": "⊛",
+        // text to display when there are no windows on the current workspace
+        // if this is an empty string (default), the module will be hidden when there are no windows
+        "empty": ""
+      }
     },
+    "actions": {
+      // use niri IPC action names to trigger them (see https://yalter.github.io/niri/niri_ipc/enum.Action.html for available actions)
+      // any action that has no fields is supported
+      "on-scroll-up": "FocusColumnLeft",
+      "on-scroll-down": "FocusColumnRight"
+      // in graphical mode, don't configure click actions here—they're handled by the module above
+    }
+  },
+  "hyprland/window": {
+    "format": "{}",
+    "rewrite": {
+      "(.*) — Mozilla Firefox": "🌎 $1",
+      "(.*) - fish": "> [$1]"
+    },
+    "separate-outputs": true
+  } ,
+  // "hyprland/language": {
+  //     "format": "Lang: {}",
+  //     "format-en": "AMERICA, HELL YEAH!",
+  //     "format-tr": "As bayrakları",
+  //     "keyboard-name": "at-translated-set-2-keyboard"
+  // } ,
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": false,
+    "format": "{value}" // includes {num}
+    // "persistent_workspaces": { // puts blanks ws's for all other outputs
+    //     // "1": [],
+    //     "2": [],
+    //     "3": [],
+    //     "4": []
+    // }
+  },
+  // "sway/mode": {
+  //     "format": "<span style=\"italic\">{}</span>"
+  // },
+  "network": {
+    "interface": "wl*", // (Optional) To force the use of this interface
+    // "format-wifi": "{essid} ({signalStrength}%) ",
+    "format-wifi": "",     // {signalStrength}%
+    "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
+    "format-linked": "{ifname} (No IP) ",
+    "format-disconnected": "⚠",
+    "format-alt": "{ifname}: {ipaddr}/{cidr}",
+    "tooltip-format": "{ifname}: {essid} {ipaddr}/{cidr}",
+    "on-click-middle": "rofi-wifi-menu",
+    "on-click-right": "alacritty --class=nmtui -e nmtui",
+
+  },
+  "tray": {
+    "spacing": 5
+  },
+  "clock": {
+    // "interval": 1,
+    "tooltip": true,
+    "format": "{:L%m-%d%a%H:%M}",
+    "timezone":"Asia/Shanghai",
+    "locale":"zh_CN.UTF-8",
+    "format-alt": "{:%Y-%m-%d}",
+    "on-click-right": "gnome-clocks",
+    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>\n\nR:Clocks"
+    // "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    // "format": "  {:%H:%M}"
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "",
+      "deactivated": ""
+    }
+  },
+
+  // "cpu": {
+  //     "format": "  {usage}%",
+  //     "tooltip": true,
+  //     "interval": 1
+  // },
+  // "memory": {
+  //     "format": "  {used:0.2f}G"
+  // },
+  "battery": {
+    "states": {
+      // "good": 95,
+      "warning": 60,
+      "error": 30,
+      "critical": 15
+    },
+    "interval": 30,
+    "format": "{icon}",
+    // "format": "{capacity}{icon}",
+    "format-charging": "{capacity}%",
+    "format-plugged": "{capacity}% ",
+    "format-alt": "{icon}{0}",
+    // "format-good": "", // An empty format will hide the module
+    // "format-full": "",
+    "format-warning": "<span foreground='#98bb6c'>{icon}</span>",
+    "format-critical": "<span foreground='#e46876'>{icon}</span>",
+    "format-charging": "<span foreground='#98bb6c'></span>",
+    "format-plugged": "<span foreground='#98bb6c'></span>",
+    "format-full": "<span foreground='#98bb6c'></span>",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    // "on-click-right": "gnome-control-center power",
+    // "on-click-middle": "toggle-devices",
+    "tooltip-format": "{capacity}%\n{0}\n"
+  },
   "bluetooth": {
-        "format": " 󰂯 ",
-        "format-disabled": " 󰂲 ",
-        "format-connected": " 󰂱 ",
+    "format": " 󰂯 ",
+    "format-disabled": " 󰂲 ",
+    "format-connected": " 󰂱 ",
     
-        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-        // "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
-        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
-        "on-click": "sudo systemctl start bluetooth;blueman-manager",
-        "on-click-right": "sudo systemctl stop bluetooth",
-        "on-click-middle": "sudo systemctl start bluetooth;rofi-bluetooth",
-    },
-    "wireplumber": {
-        "format": "{volume}% {icon}",
-        "format-muted": "",
-        "on-click": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
-        "on-click-right": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
-        "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
-        "format-icons": ["", "", ""]
-    } ,
-    "backlight/slider": {
-        "min": 0,
-        "max": 100,
-        "orientation": "horizontal",
-        "device": "intel_backlight"
-    },
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+    // "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+    "on-click": "sudo systemctl start bluetooth;blueman-manager",
+    "on-click-right": "sudo systemctl stop bluetooth",
+    "on-click-middle": "sudo systemctl start bluetooth;rofi-bluetooth",
+  },
+  "wireplumber": {
+    "format": "{volume}% {icon}",
+    "format-muted": "",
+    "on-click": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+",
+    "on-click-right": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-",
+    "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "format-icons": ["", "", ""]
+  } ,
+  "backlight/slider": {
+    "min": 0,
+    "max": 100,
+    "orientation": "horizontal",
+    "device": "intel_backlight"
+  },
   "privacy": {
 	"icon-spacing": 4,
 	"icon-size": 18,
 	"transition-duration": 250,
 	"modules": [
-		{
-			"type": "screenshare",
-			"tooltip": true,
-			"tooltip-icon-size": 24
-		},
-		{
-			"type": "audio-out",
-			"tooltip": true,
-			"tooltip-icon-size": 24
-		},
-		{
-			"type": "audio-in",
-			"tooltip": true,
-			"tooltip-icon-size": 24
-		}
+	  {
+		"type": "screenshare",
+		"tooltip": true,
+		"tooltip-icon-size": 24
+	  },
+	  {
+		"type": "audio-out",
+		"tooltip": true,
+		"tooltip-icon-size": 24
+	  },
+	  {
+		"type": "audio-in",
+		"tooltip": true,
+		"tooltip-icon-size": 24
+	  }
 	],
 	"ignore-monitor": true,
 	"ignore": [
-		{
-			"type": "audio-in",
-			"name": "cava"
-		},
-		{
-			"type": "screenshare",
-			"name": "obs"
-		}
+	  {
+		"type": "audio-in",
+		"name": "cava"
+	  },
+	  {
+		"type": "screenshare",
+		"name": "obs"
+	  }
 	]
-},
-    "custom/logo": {
-		"format": "",
-		"tooltip": false
-	},
-    "custom/notification": {
-        "tooltip": false,
-        "format": "{icon}",
-        "format-icons": {
-            "notification": "<span foreground='red'><sup></sup></span>",
-            "none": "",
-            "dnd-notification": "<span foreground='red'><sup></sup></span>",
-            "dnd-none": "",
-            "inhibited-notification": "<span foreground='red'><sup></sup></span>",
-            "inhibited-none": "",
-            "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
-            "dnd-inhibited-none": ""
-        },
-        "return-type": "json",
-        "exec-if": "which swaync-client",
-        "exec": "swaync-client -swb",
-        "on-click": "if [  -z $(pgrep ^swaync$) ]; then  swaync&disown;fi;swaync-client -t -sw",
-        "on-click-right": "swaync-client -d -sw",
-        "escape": true
+  },
+  "custom/logo": {
+	"format": "",
+	"tooltip": false
+  },
+  "custom/notification": {
+    "tooltip": false,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "<span foreground='red'><sup></sup></span>",
+      "none": "",
+      "dnd-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-none": "",
+      "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "inhibited-none": "",
+      "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+      "dnd-inhibited-none": ""
     },
-    "custom/sep": {
-	 "format": "|",
-	 "tooltip": false
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "if [  -z $(pgrep ^swaync$) ]; then  swaync&disown;fi;swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+  "custom/sep": {
+	"format": "|",
+	"tooltip": false
+  },
+  "custom/applauch": {
+    "tooltip": false,
+    "on-click": "killall rofi||rofi -show combi -combi-modes 'window,drun,run,ssh' -modes combi",
+    "format": "",
+  },
+  "mpris": {
+	"interval": 10,
+	"max-length": 24,
+	"format": "{player_icon} {title}",
+	"format-paused": "{status_icon} <i>{dynamic}</i>",
+	"on-click": "playerctl play-pause",
+	"scroll-step": 5.0,
+	"smooth-scrolling-threshold": 1,
+	"player-icons": {
+	  "chromium": "",
+	  "firefox": "",
+	  "youtube": "",
+	  "default": "",
+	  "kdeconnect": "K",
+	  "mpv": "",
+	  "spotify": "",
+	  "vlc": "󰕼",
+	  "tidal": "",
+	  "tidal-hifi": ""
 	},
-    "custom/applauch": {
-        "tooltip": false,
-        "on-click": "killall rofi||rofi -show combi -combi-modes 'window,drun,run,ssh' -modes combi",
-        "format": "",
-    },
-	"mpris": {
-		"interval": 10,
-		"max-length": 24,
-		"format": "{player_icon} {title}",
-		"format-paused": "{status_icon} <i>{dynamic}</i>",
-		"on-click": "playerctl play-pause",
-		"scroll-step": 5.0,
-		"smooth-scrolling-threshold": 1,
-		"player-icons": {
-			"chromium": "",
-			"firefox": "",
-			"youtube": "",
-			"default": "",
-			"kdeconnect": "K",
-			"mpv": "",
-			"spotify": "",
-			"vlc": "󰕼",
-			"tidal": "",
-			"tidal-hifi": ""
-		},
-		"status-icons": {
-			"paused": "⏸️️",
-			"playing": "▶️️️",
-			"stopped": "⏹️",
-		},
-		// "ignored-players": ["firefox"]
+	"status-icons": {
+	  "paused": "⏸️️",
+	  "playing": "▶️️️",
+	  "stopped": "⏹️",
 	},
+	// "ignored-players": ["firefox"]
+  },
   
-    "group/tools": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "power",
-            "transition-left-to-right": true,
-        },
-        "modules": [
-          "custom/xreamp_stop",
-          "custom/xreamp_restart",
-          "custom/wf_record_screen",
-          "custom/wf_record_window",
-          "custom/wf_record_area",
-          "custom/wf_record_stop",
-          "custom/wf_record_dired",
-          "custom/wf_record_play",
-          "custom/wf_record_gif",
-          "custom/wf_record_gif_compress",
-        ]
+  "group/tools": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "power",
+      "transition-left-to-right": true,
     },
+    "modules": [
+      "custom/xreamp_stop",
+      "custom/xreamp_restart",
+      "custom/wf_record_screen",
+      "custom/wf_record_window",
+      "custom/wf_record_area",
+      "custom/wf_record_stop",
+      "custom/wf_record_dired",
+      "custom/wf_record_play",
+      "custom/wf_record_gif",
+      "custom/wf_record_gif_compress",
+    ]
+  },
   
-    "group/power": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "power",
-            "transition-left-to-right": true,
-        },
-        "modules": [
-          "custom/power",
-          "custom/poweroff",
-          "custom/quit", // First element is the "group leader" and won't ever be hidden
-          "custom/reboot",
-          "custom/suspend",
-        ]
+  "group/power": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "power",
+      "transition-left-to-right": true,
     },
-    "custom/power": {
-        "tooltip": false,
-        "on-click": "wlogout||/home/jixiuf/.config/rofi/scripts/power",
-        "format": "⭘",
-    },
-    "custom/quit": {
-        "format": "",
-        "tooltip": true,
-        "tooltip-format": "niri msg action quit",
-        "on-click": "niri msg action quit"
-    },
-    "custom/poweroff": {
-        "format": "",
-        "tooltip": true,
-        "tooltip-format": "systemctl poweroff",
-        "on-click": "systemctl poweroff"
-    },
-    "custom/reboot": {
-        "format": "",
-        "tooltip": true,
-        "tooltip-format": "systemctl reboot",
-        "on-click": "systemctl reboot"
-    },
-    "custom/suspend": {
-        "format": "",
-        "tooltip": true,
-        "tooltip-format": "systemctl suspend",
-        "on-click": "systemctl suspend"
-    },
-    "custom/xreamp_stop": {
-        "format": "X",
-        "tooltip": true,
-        "tooltip-format": "systemctl --user stop xremap;pkill -9 xremap",
-        "on-click": "systemctl --user stop xremap;pkill -9 xremap"
-    },
-    "custom/xreamp_restart": {
-        "format": "XR",
-        "tooltip": true,
-        "tooltip-format": "systemctl --user stop xremap;pkill -9 xremap",
-        "on-click": "systemctl --user restart xremap"
-    },
-    "custom/wf_record_screen": {
-        "format": "🖥️",
-        "tooltip": true,
-        "tooltip-format": "/usr/local/bin/wf-record-start.sh 屏幕",
-        "on-click": "/usr/local/bin/wf-record-start.sh 屏幕"
-    },
-    "custom/wf_record_window": {
-        "format": "🪟️",
-        "tooltip": true,
-        "tooltip-format": "/usr/local/bin/wf-record-start.sh 窗口",
-        "on-click": "/usr/local/bin/wf-record-start.sh 窗口"
-    },
-    "custom/wf_record_area": {
-        "format": "⿻",
-        "tooltip": true,
-        "tooltip-format": "/usr/local/bin/wf-record-start.sh 区域",
-        "on-click": "/usr/local/bin/wf-record-start.sh 区域"
-    },
-    "custom/wf_record_stop": {
-        "format": "⏸️️",
-        "tooltip": true,
-        "tooltip-format": "/usr/local/bin/wf-record-stop.sh",
-        "on-click": "/usr/local/bin/wf-record-stop.sh"
-    },
-    "custom/wf_record_dired": {
-        "format": "📁️️",
-        "tooltip": true,
-        "tooltip-format": "Open video dired",
-        "on-click": "/usr/local/bin/wf-record-action.sh 0"
-    },
-    "custom/wf_record_play": {
-        "format": "▶️️️",
-        "tooltip": true,
-        "tooltip-format": "Play video",
-        "on-click": "/usr/local/bin/wf-record-action.sh 1"
-    },
-    "custom/wf_record_gif": {
-        "format": "→🖼️",
-        "tooltip": true,
-        "tooltip-format": "video->gif",
-        "on-click": "/usr/local/bin/wf-record-action.sh 2"
-    },
-    "custom/wf_record_gif_compress": {
-        "format": "→🖼️✂️",
-        "tooltip": true,
-      "tooltip-format": "video->gif(压缩)",
-        "on-click": "/usr/local/bin/wf-record-action.sh 3"
-    },
+    "modules": [
+      "custom/power",
+      "custom/poweroff",
+      "custom/quit", // First element is the "group leader" and won't ever be hidden
+      "custom/reboot",
+      "custom/suspend",
+    ]
+  },
+  "custom/power": {
+    "tooltip": false,
+    "on-click": "wlogout||/home/jixiuf/.config/rofi/scripts/power",
+    "format": "⭘",
+  },
+  "custom/quit": {
+    "format": "",
+    "tooltip": true,
+    "tooltip-format": "niri msg action quit",
+    "on-click": "niri msg action quit"
+  },
+  "custom/poweroff": {
+    "format": "",
+    "tooltip": true,
+    "tooltip-format": "systemctl poweroff",
+    "on-click": "systemctl poweroff"
+  },
+  "custom/reboot": {
+    "format": "",
+    "tooltip": true,
+    "tooltip-format": "systemctl reboot",
+    "on-click": "systemctl reboot"
+  },
+  "custom/suspend": {
+    "format": "",
+    "tooltip": true,
+    "tooltip-format": "systemctl suspend",
+    "on-click": "systemctl suspend"
+  },
+  "custom/xreamp_stop": {
+    "format": "X",
+    "tooltip": true,
+    "tooltip-format": "systemctl --user stop xremap;pkill -9 xremap",
+    "on-click": "systemctl --user stop xremap;pkill -9 xremap"
+  },
+  "custom/xreamp_restart": {
+    "format": "XR",
+    "tooltip": true,
+    "tooltip-format": "systemctl --user stop xremap;pkill -9 xremap",
+    "on-click": "systemctl --user restart xremap"
+  },
+  "custom/wf_record_screen": {
+    "format": "🖥️",
+    "tooltip": true,
+    "tooltip-format": "/usr/local/bin/wf-record-start.sh 屏幕",
+    "on-click": "/usr/local/bin/wf-record-start.sh 屏幕"
+  },
+  "custom/wf_record_window": {
+    "format": "🪟️",
+    "tooltip": true,
+    "tooltip-format": "/usr/local/bin/wf-record-start.sh 窗口",
+    "on-click": "/usr/local/bin/wf-record-start.sh 窗口"
+  },
+  "custom/wf_record_area": {
+    "format": "⿻",
+    "tooltip": true,
+    "tooltip-format": "/usr/local/bin/wf-record-start.sh 区域",
+    "on-click": "/usr/local/bin/wf-record-start.sh 区域"
+  },
+  "custom/wf_record_stop": {
+    "format": "⏸️️",
+    "tooltip": true,
+    "tooltip-format": "/usr/local/bin/wf-record-stop.sh",
+    "on-click": "/usr/local/bin/wf-record-stop.sh"
+  },
+  "custom/wf_record_dired": {
+    "format": "📁️️",
+    "tooltip": true,
+    "tooltip-format": "Open video dired",
+    "on-click": "/usr/local/bin/wf-record-action.sh 0"
+  },
+  "custom/wf_record_play": {
+    "format": "▶️️️",
+    "tooltip": true,
+    "tooltip-format": "Play video",
+    "on-click": "/usr/local/bin/wf-record-action.sh 1"
+  },
+  "custom/wf_record_gif": {
+    "format": "→🖼️",
+    "tooltip": true,
+    "tooltip-format": "video->gif",
+    "on-click": "/usr/local/bin/wf-record-action.sh 2"
+  },
+  "custom/wf_record_gif_compress": {
+    "format": "→🖼️✂️",
+    "tooltip": true,
+    "tooltip-format": "video->gif(压缩)",
+    "on-click": "/usr/local/bin/wf-record-action.sh 3"
+  },
 }
 // Local Variables:
 // eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart waybar")) t)
