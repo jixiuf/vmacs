@@ -8,7 +8,7 @@
   "passthrough": false,
   "fixed-center": true,
   // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-  "modules-left": ["ext/workspaces","custom/sep","wlr/taskbar","cffi/niri-windows"],
+  "modules-left": ["cffi/niri-windows"], // "ext/workspaces","custom/sep","wlr/taskbar"
   "modules-center": ["hyprland/window","niri/window"], // sway/window
   // group/power "group/tools"
   "modules-right": [ "mpris",  "tray","privacy","wireplumber", "network","bluetooth","battery","idle_inhibitor","clock","custom/notification"],
@@ -130,13 +130,23 @@
       "rules": [
         // .alacritty will be added to all windows with the App ID "Alacritty"
         //  will be drawn in windows that match
-        { "app-id": "Alacritty", "class": "alacritty", "icon": "" },
+        { "app-id": "Alacritty", "class": "alacritty", "icon": "⬛" },
+        { "app-id": "foot-ws", "class": "foot-ws", "icon": "⬛" },
+        { "app-id": "foot", "class": "foot", "icon": "⬛" },
+        { "app-id": "APMSSH", "class": "APMSSH", "icon": "📡" },
+        { "app-id": "emacs", "class": "emacs", "icon": "📄" },
+        { "app-id": "wechat", "class": "wechat", "icon": "💬" },
+        { "app-id": "Bytedance-feishu", "class": "Bytedance-feishu", "icon": "🐦️" },
+        { "app-id": "org.keepassxc.KeePassXC", "class": "keepass-feishu", "icon": "🔒️" },
+        { "app-id": "apifox.*", "class": "apifox", "icon": "🚀 " },
         // .firefox will be added to all windows with the App ID "firefox"
         // subsequent rules are also checked and applied for firefox windows
-        { "app-id": "firefox", "class": "firefox", "continue": true },
+        { "app-id": "firefox", "class": "firefox", "continue": true,"icon":"🦊" },
         // .youtube-music will be added to all windows that have "YouTube Music" at the end of their title
         //  will be drawn in windows that match
+        
         { "title": "YouTube Music$", "class": "youtube-music", "icon": "" }
+        
       ],
 
       // ======= text mode options =======

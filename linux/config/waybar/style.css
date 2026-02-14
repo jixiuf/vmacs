@@ -247,24 +247,35 @@ tooltip label {
     font-size: 14px;
 }
 .cffi-niri-windows .tile {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 .cffi-niri-windows .tile:hover {
   background-color: rgba(255, 255, 255, 0.7);
 }
 .cffi-niri-windows .tile:active {
-  background-color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255,0.9);
+}
+.cffi-niri-windows .tile.urgent {
+	background-color: rgba(251, 44, 54, 0.5);
+	border: 1px solid rgba(251, 44, 54, 0.8);
 }
 
+.cffi-niri-windows .tile.urgent:hover {
+	background-color: rgba(251, 44, 54, 0.625);
+}
 .cffi-niri-windows .column {
   border: 1px solid rgba(255, 255, 255, 0.85);
 }
 
-.cffi-niri-windows .floating {
-  border: 2px solid rgba(255, 255, 255, 0.85);
-}
+/* .cffi-niri-windows .floating { */
+/*   border: 2px solid rgba(255, 255, 255, 0.85); */
+/* } */
 .cffi-niri-windows label {
   /* font-family: Uiua386; */
   /* font-size: 18px; */
-  margin-top: -2px;
+    margin-top: -4px;
 }
+
+/* Local Variables: */
+/* eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart waybar")) t) */
+/* End: */
