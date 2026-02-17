@@ -247,13 +247,14 @@ tooltip label {
     font-size: 14px;
 }
 .cffi-niri-windows .tile {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 .cffi-niri-windows .tile:hover {
   background-color: rgba(255, 255, 255, 0.7);
 }
 .cffi-niri-windows .tile:active {
-    background-color: rgba(255, 255, 255,0.9);
+    background-color: rgba(255, 255, 255,0.5);
+    color:  #a6e3a1;
 }
 .cffi-niri-windows .tile.urgent {
 	background-color: rgba(251, 44, 54, 0.5);

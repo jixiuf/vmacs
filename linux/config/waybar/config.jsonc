@@ -134,7 +134,7 @@
         { "app-id": "foot-ws", "class": "foot-ws", "icon": "⬛" },
         { "app-id": "foot", "class": "foot", "icon": "⬛" },
         { "app-id": "APMSSH", "class": "APMSSH", "icon": "📡" },
-        { "app-id": "emacs", "class": "emacs", "icon": "📄" },
+        { "app-id": "emacs", "class": "emacs", "icon": "𝓔" },
         { "app-id": "wechat", "class": "wechat", "icon": "💬" },
         { "app-id": "Bytedance-feishu", "class": "Bytedance-feishu", "icon": "🐦️" },
         { "app-id": "org.keepassxc.KeePassXC", "class": "keepass-feishu", "icon": "🔒️" },
