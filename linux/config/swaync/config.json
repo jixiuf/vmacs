@@ -70,7 +70,7 @@
         },
         {
           "label": "󰂯",
-          "command": "sh -c 'swaync-client -t & blueman-manager &disown' "
+          "command": "sh -c 'swaync-client -t & sudo systemctl start bluetooth; blueman-manager &disown' "
         },
         {
           "label": "投屏",
