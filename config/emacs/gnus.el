@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t -*-
-;; emacs -batch  -l ~/.gnus.el -f gnus
+;; mbsync 之后 执行 emacs -batch  -l ~/.gnus.el -f gnus 以刷新gnus 的cache等 (见 mbsync-notify脚本)
 ;; https://forums.freebsd.org/threads/do-you-use-emacs-gnus.41969/
 
 ;; 目前我采用的方案是 mbsync 同步邮件到本地
