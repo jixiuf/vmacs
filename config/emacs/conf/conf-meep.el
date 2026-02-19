@@ -146,7 +146,7 @@
     "c"          #'meep-insert-change
     "C"          #'meep-insert-change-lines
     ";"          #'meep-region-activate-and-reverse-motion
-    "f"          #'meep-region-activate-and-reverse-motion
+    "f"          #'flash-jump
     "H"          #'meep-move-same-syntax-or-symbol-prev
     "J"          #'meep-join-line-next
     "K"          #'meep-join-line-prev
