@@ -100,7 +100,7 @@ dev-db/mongodb-compass-bin  ~amd64
 dev-libs/libinput ~amd64
 app-misc/qwen-code  ~amd64
 sys-libs/glibc   ~amd64
-
+sys-apps/pnpm   ~amd64
 # Local Variables:
 # mode: conf
 # End:
