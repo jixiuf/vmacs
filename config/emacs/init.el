@@ -11,6 +11,7 @@
     (when (member (system-name) '("jxfhome" "jxfluoji"))
       (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))))
 (add-hook 'after-make-frame-functions #'lazy-load-gpg)
+;;(add-hook 'after-make-frame-functions '(lambda(&optional f) (run-with-timer 1 nil #'lazy-load-gpg)))
 ;; (add-hook 'after-init-hook #'lazy-load-gpg)
 
 (require 'conf-face)
@@ -99,6 +100,9 @@
 ;; (when (eq system-type 'darwin) (require 'conf-vterm))
 (require 'server)
 (unless (server-running-p) (server-start))
+
+(with-eval-after-load 'ewm
+  (require 'conf-ewm))
 
 
 ;; Local Variables:
