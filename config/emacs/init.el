@@ -101,9 +101,9 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
-(with-eval-after-load 'ewm
-  (require 'conf-ewm))
-
+;; (with-eval-after-load 'ewm
+;;   (require 'conf-ewm))
+(require 'conf-ewm)
 
 ;; Local Variables:
 ;; coding: utf-8
