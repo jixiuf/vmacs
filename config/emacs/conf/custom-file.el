@@ -80,7 +80,9 @@
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
-   '((elisp-autofmt-load-packages-local "use-package" "use-package-core")
+   '((eval add-hook (make-local-variable 'after-save-hook)
+           #'(lambda nil (shell-command "systemctl --user restart tmux")) t)
+     (elisp-autofmt-load-packages-local "use-package" "use-package-core")
      (eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil (shell-command "systemctl --user restart waybar")) t)
      (eval add-hook (make-local-variable 'after-save-hook)

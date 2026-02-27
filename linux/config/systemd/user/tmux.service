@@ -7,19 +7,22 @@ Type=forking
 ExecStart=tmux new-session -s jixiuf -d -c /home/jixiuf
 ExecStop=tmux kill-session -t jixiuf
 Restart=always
-Environment="GTK_THEME=Adwaita-dark"
-Environment="HYPRLAND_CMD=Hyprland"
-Environment="XDG_CONFIG_DIRS=/etc/xdg"
-Environment="XDG_BACKEND=wayland"
-Environment="QT_WAYLAND_DISABLE_WINDOWDECORATION=1"
-Environment="XDG_SESSION_DESKTOP=Hyprland"
-Environment="XDG_SESSION_TYPE=wayland"
-Environment="XDG_CURRENT_DESKTOP=Hyprland"
-Environment="WAYLAND_DISPLAY=wayland-1"
-Environment="DISPLAY=:0"
-Environment="XDG_RUNTIME_DIR=/run/user/1000"
-Environment="LC_ALL=zh_CN.UTF-8"
+# Environment="GTK_THEME=Adwaita-dark"
+# Environment="HYPRLAND_CMD=Hyprland"
+# Environment="XDG_CONFIG_DIRS=/etc/xdg"
+# Environment="XDG_BACKEND=wayland"
+# Environment="QT_WAYLAND_DISABLE_WINDOWDECORATION=1"
+# Environment="XDG_SESSION_DESKTOP=Hyprland"
+# Environment="XDG_SESSION_TYPE=wayland"
+# Environment="XDG_CURRENT_DESKTOP=Hyprland"
+# Environment="WAYLAND_DISPLAY=wayland-1"
+# Environment="DISPLAY=:0"
+# Environment="XDG_RUNTIME_DIR=/run/user/1000"
+# Environment="LC_ALL=zh_CN.UTF-8"
 
 [Install]
 WantedBy=sway-session.target
 
+# Local Variables:
+# eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart tmux")) t)
+# End:
