@@ -16,7 +16,12 @@ Type=simple
 # User=jixiuf
 # Group=users
 Restart=always
-ExecStart=sh -c 'dbus-update-activation-environment --systemd --all;xremap-$XDG_SESSION_DESKTOP /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
+# KillMode=process prevents systemd from killing child processes (e.g., emacsclient)
+# This avoids "No child processes (ECHILD)" errors when xremap spawns subprocesses
+KillMode=process
+# Separate dbus environment setup to reduce process nesting and improve subprocess handling
+ExecStartPre=/usr/bin/dbus-update-activation-environment --systemd --all
+ExecStart=sh -c 'xremap-$XDG_SESSION_DESKTOP /etc/xremap.yaml /etc/xremap-$XDG_SESSION_DESKTOP.yaml --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
 
 
 [Install]

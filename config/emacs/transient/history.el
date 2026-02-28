@@ -1,4 +1,5 @@
-((gnus-select-group nil)
+((ewm-transient nil)
+ (gnus-select-group nil)
  (magit-blame
   ("-w"))
  (magit-branch nil)

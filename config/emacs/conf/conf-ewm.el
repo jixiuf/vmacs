@@ -3,8 +3,10 @@
 ;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm -f ewm-start-module
 (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
 (setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
-(unless (string-equal (getenv "XDG_SESSION_DESKTOP") "niri")
+(when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
   (require 'ewm)
+  ;; EWM compositor must start immediately in daemon mode (runs on TTY)
+  ;; It doesn't need a graphical frame - the compositor creates the display
   (add-hook 'after-init-hook #'ewm-start-module)
 
   ;; (ewm-start-module)
@@ -28,7 +30,9 @@
             :items ,(lambda ()
                       (mapcar #'car (ewm-list-xdg-apps)))
             :action ,#'ewm-launch-xdg-command))
-  (add-to-list 'consult-buffer-sources 'consult-source-xdg-apps)
+  (with-eval-after-load 'conf-icomplete
+    (add-to-list 'consult-buffer-sources 'consult-source-xdg-apps)
+  )
   )
 
 (provide 'conf-ewm)

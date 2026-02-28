@@ -145,7 +145,10 @@
 (epa-file-enable)
 (setopt epa-file-name-regexp (purecopy "\\.gpg\\(~\\|\\.~[0-9abcdef]+~\\)?\\'"))
 
-(setf epg-pinentry-mode 'ask)
+(if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
+    (setopt epg-pinentry-mode 'loopback)
+  (setopt epg-pinentry-mode 'ask))
+
 ;; ;; 总是使用对称加密
 ;; ;; 设置成不是 t 与 nil 的期他值 以使用对称加密（即提示用户输入密码以解密 而非使用公钥私钥的形式）
 (setq-default epa-file-select-keys nil)

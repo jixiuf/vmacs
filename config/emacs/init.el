@@ -6,12 +6,15 @@
 
 (load-theme 'modus-vivendi)
 (require 'conf-gpg)
+(require 'conf-ewm)                     ;should before use gpg
 (defun lazy-load-gpg(&optional f)
-  (unless (featurep 'conf-private)
-    (when (member (system-name) '("jxfhome" "jxfluoji"))
-      (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t))))
-(add-hook 'after-make-frame-functions #'lazy-load-gpg)
-;;(add-hook 'after-make-frame-functions '(lambda(&optional f) (run-with-timer 1 nil #'lazy-load-gpg)))
+  (when (member (frame-live-p f) '(pgtk x ns))
+    (unless (featurep 'conf-private)
+      (when (member (system-name) '("jxfhome" "jxfluoji"))
+        (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t)))))
+;; (add-hook 'after-make-frame-functions #'lazy-load-gpg)
+;; (run-with-idle-timer 1 nil 'lazy-load-gpg)
+(add-hook 'after-make-frame-functions '(lambda(&optional f) (run-with-timer 1 nil #'lazy-load-gpg)))
 ;; (add-hook 'after-init-hook #'lazy-load-gpg)
 
 (require 'conf-face)
@@ -103,7 +106,6 @@
 
 ;; (with-eval-after-load 'ewm
 ;;   (require 'conf-ewm))
-(require 'conf-ewm)
 
 ;; Local Variables:
 ;; coding: utf-8
