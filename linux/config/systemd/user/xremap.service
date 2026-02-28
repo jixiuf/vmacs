@@ -23,5 +23,5 @@ ExecStart=sh -c 'dbus-update-activation-environment --systemd --all;xremap-$XDG_
 WantedBy=sway-session.target
 
 # Local Variables:
-# eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart xremap")) t)
+# eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user daemon-reload;systemctl --user restart xremap")) t)
 # End:

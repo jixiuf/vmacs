@@ -92,7 +92,7 @@ export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT%{$fg[blue]%}$ %{$reset_
 
 #解决这个问题用 Ignore insecure directories and continue [y]
 # compaudit | xargs chmod g-w
-alias m=less.sh
+alias le=less.sh
 alias curl2='curl --http2-prior-knowledge'
 alias top4='ssh admin@bj-ali-zt-topology-04'
 alias apmdev='TERM=xterm-256color  ssh apmdev'
@@ -102,7 +102,7 @@ alias k8s='TERM=xterm-256color  ssh k8sdev'
 alias gc='git clone '
 alias gc1='git clone --depth 1 '
 alias gitclean='git clean -fdx'
-man() {
+m() {
     emacsclient -nw -e " (man \"$1\")"
 }
 

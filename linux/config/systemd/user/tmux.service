@@ -24,5 +24,5 @@ Restart=always
 WantedBy=sway-session.target
 
 # Local Variables:
-# eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart tmux")) t)
+# eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user daemon-reload;systemctl --user restart tmux")) t)
 # End:
