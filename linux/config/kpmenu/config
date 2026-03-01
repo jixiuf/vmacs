@@ -11,8 +11,10 @@ nootp = false
 daemon=true
 customAutotypeWindowID=""" if pidof Hyprland > /dev/null; then
     hyprctl activewindow -j| jq -c '"\\(.title) - \\(.class)"'; 
-else
+elif pidof niri > /dev/null; then
     niri msg -j focused-window| jq -c '"\\(.title) - \\(.app_id)"';
+else
+    emacsclient --eval "(ewm-get-window-info-json)"|jq -r |jq -c   '"\\(.title) - \\(.app)"';  
 fi
  """
 customAutotypeTyper="dotoolc"
