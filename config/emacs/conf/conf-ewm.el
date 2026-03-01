@@ -5,6 +5,10 @@
 (setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
 (when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
   (require 'ewm)
+  (setenv "XDG_SESSION_DESKTOP" "ewm")
+  (shell-command "/usr/bin/dbus-update-activation-environment --systemd --all")
+  
+  ;; /usr/bin/dbus-update-activation-environment --systemd --all
   ;; EWM compositor must start immediately in daemon mode (runs on TTY)
   ;; It doesn't need a graphical frame - the compositor creates the display
   (add-hook 'after-init-hook #'ewm-start-module)

@@ -106,7 +106,7 @@ keymap:
 
   - name: firefox
     application:
-      only: [firefox,firefox-esr]
+      only: [firefox,firefox-esr,firefox-bin]
     remap:
     # http://7is7.com/software/firefox/shortcuts.html
       M-backspace: C-Backspace

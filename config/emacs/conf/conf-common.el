@@ -152,6 +152,9 @@
 (setq-default auto-mode-alist
               (append
                '(("\\.pyx" . python-mode)
+                 ("\\.service" . conf-mode)
+                 ("\\.target" . conf-mode)
+                 ("\\.timer" . conf-mode)
                  ("zsh" . sh-mode)
                  ("SConstruct" . python-mode)
                  ("\\.yml$" . yaml-ts-mode)
