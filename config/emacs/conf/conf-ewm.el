@@ -33,9 +33,16 @@
 
   (add-hook 'after-init-hook #'vmacs-ewm-init)
 
+;; niri msg outputs
+;; Output "Apple Computer Inc Color LCD Unknown" (eDP-1)
+;;   Current mode: 2880x1800 @ 60.001 Hz (preferred)
+;;   Variable refresh rate: not supported
+;;   Physical size: 330x210 mm
+;;   Logical position: 0, 0
+;;   Logical size: 1645x1028
+;;   Scale: 1.75
   (setq ewm-output-config
-        '(("DP-1" :width 2560 :height 1440 :scale 1.0)
-          ("eDP-1" :width 1920 :height 1200 :scale 1.55 :x 0 :y 0)))
+        '(("eDP-1" :width 2880 :height 1800 :scale 1.75 :x 0 :y 0)))
 
   (setq ewm-input-config
         '((touchpad :natural-scroll t :tap t :dwt t)

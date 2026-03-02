@@ -88,3 +88,5 @@ config/emacs/elisp-autofmt-cache/%2Fusr%2Fbin%2Femacs.json
 .agent-shell/transcripts/
 config/emacs/eln-cache/
 linux/config/waybar/waybar-niri-windows.so
+config/tmux/plugins/tpm/
+config/emacs/agent/history
