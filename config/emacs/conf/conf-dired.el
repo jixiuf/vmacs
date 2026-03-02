@@ -123,9 +123,8 @@
 (with-eval-after-load 'image-mode
   (define-key image-mode-map  (kbd "C-f") #'image-scroll-up)
   (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
-  (defun vmacs-image-hook()
-    (meep-local-set-key "n" 'image-next-file))
-  (add-hook 'image-mode-hook #'vmacs-image-hook))
+  (bray-state-map-set 'motion image-mode-map "n" #'image-next-file)
+  )
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state

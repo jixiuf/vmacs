@@ -1,11 +1,12 @@
-;; brew install libvterm
+;;  -*- lexical-binding: t; -*-
+;; brew install libvterm 
 ;; https://github.com/akermu/emacs-libvterm
 ;; mkdir -p build
 ;; cd build
 ;; cmake -DEMACS_SOURCE=~/repos/emacs ..
 ;; make
 ;; (setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-v" "M-v"))
-(setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y"))
+(setq-default vterm-keymap-exceptions '("C-c" "C-x" "C-u" "C-g" "C-h" "M-x" "M-o" "C-y"  "M-y" "M-:"))
 (setq-default vterm-max-scrollback (- 20000 42))
 (setq-default vterm-min-window-width 70)
 (setq-default vterm-copy-mode-remove-fake-newlines t)
@@ -19,8 +20,8 @@
 (require 'vterm)
 (require 'vterm-toggle)
 
-(add-hook 'vterm-toggle-show-hook #'evil-insert-state)
-(add-hook 'vterm-toggle-hide-hook #'evil-normal-state)
+(add-hook 'vterm-toggle-show-hook (lambda() (bray-state-stack-push meep-state-insert)))
+(add-hook 'vterm-toggle-hide-hook (lambda() (bray-state-stack-push 'normal)))
 (setq vterm-toggle-fullscreen-p t)
 (setq vterm-toggle-reset-window-configration-after-exit 'kill-window-only)
 ;; (setq vterm-toggle-hide-method 'bury-all-vterm-buffer)
@@ -35,17 +36,18 @@
   (interactive)
   (if (save-excursion (goto-char (point-at-bol))(search-forward-regexp "filter>" nil t))
       (if (equal last-command 'vterm-ctrl-g)
-          (evil-normal-state)
+          (bray-state-stack-push 'normal)
+          ;; (evil-normal-state)
         (call-interactively 'vmacs-vterm-self-insert))
     (if (equal last-command 'vterm-copy-mode)
         (call-interactively 'vmacs-vterm-self-insert)
-      (if (equal last-command 'evil-normal-state)
+      (if (member last-command '(evil-normal-state bray-state-stack-pop))
           (progn
             (vterm-copy-mode 1)
             (setq this-command 'vterm-copy-mode)
             )
-        (setq this-command 'evil-normal-state)
-        (evil-normal-state)))))
+        (setq this-command 'bray-state-stack-pop)
+        (bray-state-stack-pop)))))
 
 
 (defun vmacs-vterm-kill-line()
@@ -62,8 +64,11 @@
 
 (defun vmacs-vterm-self-insert()
   (interactive)
-  (unless (evil-insert-state-p)
-    (evil-insert-state))
+  ;; (unless (evil-insert-state-p)
+  ;;   (evil-insert-state))
+  (unless (bray-state-derived-p 'insert)
+    (bray-state-stack-push meep-state-insert))
+  
   (call-interactively 'vterm--self-insert))
 
 (defun vmacs-vterm-enable-output()
@@ -74,13 +79,14 @@
   (if vterm-copy-mode
       (progn
         (message "vterm-copy-mode enabled")
-        (unless (evil-normal-state-p)
-          (evil-normal-state)))
-    (unless (evil-insert-state-p)
-      (evil-insert-state))))
+        (unless (bray-state-derived-p 'normal)
+          (bray-state-stack-push 'normal)))
+    (unless (bray-state-derived-p 'insert)
+      (bray-state-stack-push meep-state-insert))
+    ))
 
 (add-hook 'vterm-copy-mode-hook #'vmacs-vterm-copy-mode-hook)
-(add-hook 'evil-insert-state-entry-hook 'vmacs-vterm-enable-output)
+(add-hook 'meep-state-hook-insert-enter 'vmacs-vterm-enable-output)
 
 (defun vterm-eob()
   (interactive)
@@ -103,35 +109,30 @@
 ;; (define-key vterm-mode-map (kbd "C-l")   #'vterm-clear)
 (define-key vterm-mode-map (kbd "C-c C-e")   #'compilation-shell-minor-mode)
 (define-key vterm-copy-mode-map [remap self-insert-command] #'vterm--self-insert)
-(evil-define-operator evil-vterm-delete-char (beg end type register)
-  "Delete previous character."
-  :motion evil-forward-char
-  (interactive "<R><x>")
-  (evil-collection-vterm-delete beg end type register))
+;; (evil-define-operator evil-vterm-delete-char (beg end type register)
+;;   "Delete previous character."
+;;   :motion evil-forward-char
+;;   (interactive "<R><x>")
+;;   (evil-collection-vterm-delete beg end type register))
 
 
-(evil-collection-define-key 'insert 'vterm-mode-map
-  (kbd "C-r") 'vmacs-vterm-self-insert
-  (kbd "C-u") 'universal-argument
-  (kbd "C-\\") 'toggle-input-method
-  (kbd "C-l") #'vterm-clear
-  (kbd "C-g") 'vterm-ctrl-g)
-
-(evil-collection-define-key 'normal 'vterm-mode-map
-  "s" nil                               ;unbind s
-  (kbd "C-g") 'vterm-ctrl-g
-  (kbd "C-p") 'vmacs-vterm-self-insert
-  (kbd "C-n") 'vmacs-vterm-self-insert
-  (kbd "C-k")   #'vmacs-vterm-kill-line
-  (kbd "C-r") 'vmacs-vterm-self-insert
-  (kbd "C-y") 'vterm-yank
-  (kbd "C-/") 'vterm-undo
-  "x" 'evil-vterm-delete-char
-  "G" 'vterm-eob)
-(evil-collection-define-key 'visual 'vterm-mode-map "x" 'evil-vterm-delete-char)
+(bray-state-map-set 'insert vterm-mode-map "C-r" #'vmacs-vterm-self-insert)
+(bray-state-map-set 'insert vterm-mode-map "C-r" #'vmacs-vterm-self-insert)
+(bray-state-map-set 'insert vterm-mode-map "C-l" #'vterm-clear)
+(bray-state-map-set 'insert vterm-mode-map "C-g" #'vterm-ctrl-g)
+(bray-state-map-set 'insert vterm-mode-map "<escape>" #'vterm--self-insert)
+(bray-state-map-set 'normal vterm-mode-map "C-g" #'vterm-ctrl-g)
+(bray-state-map-set 'normal vterm-mode-map "C-p" #'vmacs-vterm-self-insertvterm-ctrl-g)
+(bray-state-map-set 'normal vterm-mode-map "C-n" #'vmacs-vterm-self-insert)
+(bray-state-map-set 'normal vterm-mode-map "C-k" #'vmacs-vterm-kill-line)
+(bray-state-map-set 'normal vterm-mode-map "C-k" #'vmacs-vterm-kill-line)
+(bray-state-map-set 'normal vterm-mode-map "C-r" #'vmacs-vterm-self-insert)
+(bray-state-map-set 'normal vterm-mode-map "C-y" #'vterm-yank)
+(bray-state-map-set 'normal vterm-mode-map "G" #'vterm-eob)
+;; (bray-state-map-set 'visual vterm-mode-map "x" #'evil-vterm-delete-char)
+;; (bray-state-map-set 'normal vterm-mode-map "x" #'evil-vterm-delete-char)
 
 (defun vmacs-vterm-hook()
-  (evil-define-key 'insert 'local   (kbd "<escape>") 'vterm--self-insert)
   (let ((p (get-buffer-process (current-buffer))))
     (when p (set-process-query-on-exit-flag p nil))))
 
@@ -176,7 +177,7 @@
         (delete-region (point) (point-max)))
       (sh-mode)
       (vterm-edit-command-mode)
-      (evil-insert-state)
+      (bray-state-stack-push meep-state-insert)
       (setq-local header-line-format
                   (substitute-command-keys
                    (concat "Edit, then "
