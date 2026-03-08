@@ -76,8 +76,8 @@ if [ ! -f $ZSH/oh-my-zsh.sh ]; then
 fi
 DISABLE_AUTO_TITLE=true
 source $ZSH/oh-my-zsh.sh
-export iterm2_hostname=$(hostname) # hostname -f is slow (fix it)
-source $ZSH/plugins/iterm2/iterm2_shell_integration.zsh
+# export iterm2_hostname=$(hostname) # hostname -f is slow (fix it)
+# source $ZSH/plugins/iterm2/iterm2_shell_integration.zsh
 # 加machine 及 提示符: "$ " 以方便emacs regexp 匹配prompt
 export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT%{$fg[blue]%}$ %{$reset_color%}"
 # export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT"
