@@ -18,7 +18,7 @@
 (setq vterm-buffer-name-string "*vterm* %s")
 
 (require 'vterm)
-(require 'vterm-toggle)
+(require 'vterm-toggle nil t)
 
 (add-hook 'vterm-toggle-show-hook (lambda() (bray-state-stack-push meep-state-insert)))
 (add-hook 'vterm-toggle-hide-hook (lambda() (bray-state-stack-push 'normal)))
