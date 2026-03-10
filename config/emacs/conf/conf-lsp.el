@@ -57,7 +57,7 @@
   )
 (add-hook 'eglot-managed-mode-hook #'vmacs-lsp-hook)
 
-(dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook ))
+(dolist (mod '(python-mode-hook c++-mode-hook go-ts-mode-hook rust-ts-mode-hook c-mode-hook vue-mode-hook typescript-ts-mode-hook ))
   (add-hook mod #'eglot-ensure))
 
 

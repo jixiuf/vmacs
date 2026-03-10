@@ -149,9 +149,13 @@
 (with-eval-after-load 'markdown-ts-mode  (add-hook 'markdown-ts-mode-hook #'auto-fill-mode))
 ;; after-init-hook 所有配置文件都加载完之后才会运行此 hook
 (add-to-list 'interpreter-mode-alist '("lua" . lua-ts-mode))
+
+(define-derived-mode vue-mode web-mode "Vue")
 (setq-default auto-mode-alist
               (append
                '(("\\.pyx" . python-mode)
+                 ("\\.vue" . vue-mode)
+                 ("\\.ts$" . typescript-ts-mode)
                  ("\\.service" . conf-mode)
                  ("\\.target" . conf-mode)
                  ("\\.timer" . conf-mode)

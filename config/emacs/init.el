@@ -33,6 +33,8 @@
 (with-eval-after-load 'rust-ts-mode (require 'conf-program-rust))
 ;; (with-eval-after-load 'cc-mode (require 'conf-program-java))
 (with-eval-after-load 'java-ts-mode (require 'conf-program-java))
+(with-eval-after-load 'web-mode (require 'conf-program-js))
+(with-eval-after-load 'typescript-ts-mode (require 'conf-program-js))
 (with-eval-after-load 'org-ai (require 'conf-ai))
 (with-eval-after-load 'aider (require 'conf-ai))
 (with-eval-after-load 'sql (require 'conf-sql))
@@ -100,7 +102,7 @@
 (beacon-mode 1)
 (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
 (require 'conf-tmp nil t)
-;; (when (eq system-type 'darwin) (require 'conf-vterm))
+(require 'conf-vterm)
 (require 'server)
 (unless (server-running-p) (server-start))
 

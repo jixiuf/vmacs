@@ -24,6 +24,45 @@
              '(json-ts-mode
                "\\[\\|{" "\\]\\|}" "/[*/]" nil nil))
 
+
+;; web-mode setup
+;; https://github.com/joaotavora/eglot/discussions/1184
+
+;; (defun vue-eglot-init-options ()
+;;   (let ((tsdk-path (expand-file-name
+;;                     "lib"
+;;                     ;; (string-trim-right (shell-command-to-string "npm list --global --parseable typescript | head -n1"))
+;;                     (shell-command-to-string "npm list --global --parseable typescript | head -n1 | tr -d \"\n\""))))
+;;     `(:typescript (:tsdk ,tsdk-path
+;;                          :languageFeatures (:completion
+;;                                             (:defaultTagNameCase "both"
+;;                                                                  :defaultAttrNameCase "kebabCase"
+;;                                                                  :getDocumentNameCasesRequest nil
+;;                                                                  :getDocumentSelectionRequest nil)
+;;                                             :diagnostics
+;;                                             (:getDocumentVersionRequest nil))
+;;                          :documentFeatures (:documentFormatting
+;;                                             (:defaultPrintWidth 100
+;;                                                                 :getDocumentPrintWidthRequest nil)
+;;                                             :documentSymbol t
+;;                                             :documentColor t)))))
+
+;; ;; Volar
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs
+;;                `(vue-mode . ("vue-language-server" "--stdio" :initializationOptions ,(vue-eglot-init-options))))
+;; (add-to-list 'eglot-server-programs
+;;                `(typescript-ts-mode . ("typescript-language-server" "--stdio")))  
+;; )
+
+;; eglot-workspace-configuration 
+;; ;;; Directory Local Variables
+;; ;;; For more information see (info "(emacs) Directory Variables")
+;; ((typescript-ts-mode . ((eglot-server-programs . ((typescript-ts-mode . ("/home/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"))))))
+;;  (vue-mode . ((eglot-server-programs . ((vue-mode . ("/home/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))))
+;;               (eglot-workspace-configuration . (:vetur (:useWorkspaceDependencies t
+;;                                                                                   :validation (:script t)))))))
+
 (provide 'conf-program-js)
 
 ;; Local Variables:

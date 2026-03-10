@@ -72,15 +72,22 @@
    '(agent-shell async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face
                  eglot-java elisp-autofmt embark embark-consult evil-textobj-tree-sitter
                  exec-path-from-shell flash git-link go-translate golden-ratio-scroll-screen
-                 goto-chg gptel kdl-mode kkp marginalia meep orderless pinyinlib repeat-fu verb
-                 visible-mark vundo wgrep with-editor yasnippet))
+                 goto-chg gptel kdl-mode kkp marginalia meep nvm orderless pinyinlib repeat-fu verb
+                 visible-mark vterm-toggle vundo web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
-   '((eval add-hook (make-local-variable 'after-save-hook)
+   '((eglot-server-programs
+      (typescript-ts-mode "/home/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
+                          "--stdio"))
+     (eglot-server-programs (typescript-ts-mode "typescript-language-server" "--stdio"))
+     (eglot-server-programs (vue-mode "/home/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))
+     (projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
+     (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
+     (eval add-hook (make-local-variable 'after-save-hook)
            #'(lambda nil
                (shell-command "systemctl --user daemon-reload;systemctl --user restart tmux"))
            t)
