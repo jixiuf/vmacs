@@ -83,6 +83,34 @@ export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT%{$fg[blue]%}$ %{$reset_
 # export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT"
 
 
+
+function vterm_printf(){
+    if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ] ); then
+        # Tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
+
+if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+    alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
+fi
+# Sync directory and host in the shell with Emacs's current directory.
+# You may need to manually specify the hostname instead of $(hostname) in case
+# $(hostname) does not return the correct string to connect to the server.
+#
+# The escape sequence "51;A" has also the role of identifying the end of the
+# prompt
+vterm_prompt_end() {
+    vterm_printf "51;A$(whoami)@$(hostname):$(pwd)"
+}
+setopt PROMPT_SUBST
+PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
+
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
@@ -355,7 +383,6 @@ else
     git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions  >/dev/null 2>&1 &
     source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh >/dev/null 2>&1 &
 fi
-
 # for emacs term.el
 HOSTNAME=$(uname -n)
 USER=$(whoami)
@@ -530,3 +557,7 @@ down(){
 }
 
 export GOTOOLCHAIN=local
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
