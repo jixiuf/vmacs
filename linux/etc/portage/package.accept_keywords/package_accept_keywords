@@ -102,6 +102,7 @@ app-misc/qwen-code  ~amd64
 sys-libs/glibc   ~amd64
 sys-apps/pnpm   ~amd64
 dev-build/node-gyp ~amd64
+app-misc/copilot ~amd64
 # Local Variables:
 # mode: conf
 # End:
