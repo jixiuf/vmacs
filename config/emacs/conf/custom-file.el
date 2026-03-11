@@ -81,6 +81,11 @@
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
    '((eglot-server-programs
+      (typescript-ts-mode "~/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"))
+     (eglot-server-programs (vue-mode "~/.nvm/versions/node/v16.20.2/bin/vls"))
+     (web-mode-indent-style . 2) (web-mode-block-padding . 2) (web-mode-script-padding . 2)
+     (web-mode-style-padding . 2)
+     (eglot-server-programs
       (typescript-ts-mode "/home/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
                           "--stdio"))
      (eglot-server-programs (typescript-ts-mode "typescript-language-server" "--stdio"))

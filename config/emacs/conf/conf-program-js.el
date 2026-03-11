@@ -62,6 +62,8 @@
 ;;  (vue-mode . ((eglot-server-programs . ((vue-mode . ("/home/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))))
 ;;               (eglot-workspace-configuration . (:vetur (:useWorkspaceDependencies t
 ;;                                                                                   :validation (:script t)))))))
+(dolist (mod '(vue-mode-hook typescript-ts-mode-hook ))
+  (add-hook mod #'editorconfig-mode))
 
 (provide 'conf-program-js)
 
