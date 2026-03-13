@@ -137,6 +137,9 @@
         { "app-id": "emacs", "class": "emacs", "icon": "𝓔" },
         { "app-id": "wechat", "class": "wechat", "icon": "💬" },
         { "app-id": "Bytedance-feishu", "class": "Bytedance-feishu", "icon": "🐦️" },
+        { "app-id": "MongoDB Compass", "class": "MongoDB Compass", "icon": "📊️" },
+        { "app-id": "DBeaver", "class": "DBeaver", "icon": "🗄️" },
+        
         { "app-id": "org.keepassxc.KeePassXC", "class": "keepass-feishu", "icon": "🔒️" },
         { "app-id": "apifox.*", "class": "apifox", "icon": "🚀 " },
         // .firefox will be added to all windows with the App ID "firefox"
