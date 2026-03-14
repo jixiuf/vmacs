@@ -159,6 +159,23 @@ else
   fi
 fi
 
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+     source "$NVM_DIR/nvm.sh"  # This loads nvm
+     source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+else
+    # https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/refs/heads/master/install.sh
+    \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    nvm install lts/krypton  # v24.x.x
+    nvm alias default  lts/krypton
+    npm install  @qwen-code/qwen-code@latest -g
+    npm install  @github/copilot -g
+    npm install  opencode-ai -g
+    npm install -g node-gyp; npm install -g openclaw@latest;openclaw onboard --install-daemon
+fi
+
+
 function crc32(){
     result=$(python -c "import binascii; print(binascii.crc32('$@'.encode()))")
     echo $result
@@ -557,7 +574,3 @@ down(){
 }
 
 export GOTOOLCHAIN=local
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
