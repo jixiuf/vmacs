@@ -6,7 +6,7 @@
 
 (load-theme 'modus-vivendi)
 (require 'conf-gpg)
-(require 'conf-ewm)                     ;should before use gpg
+(require 'conf-wayland)                     ;should before use gpg
 (defun lazy-load-gpg(&optional f)
   (when (member (frame-live-p f) '(pgtk x ns))
     (unless (featurep 'conf-private)
