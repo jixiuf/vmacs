@@ -1,0 +1,25 @@
+[Unit]
+Description=OpenClaw Gateway (v2026.3.11)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/home/jixiuf/.nvm/versions/node/v24.14.0/bin/node /home/jixiuf/.nvm/versions/node/v24.14.0/lib/node_modules/openclaw/dist/index.js gateway --port 18789
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+KillMode=control-group
+Environment=HOME=/home/jixiuf
+Environment=TMPDIR=/tmp
+Environment=PATH=/home/jixiuf/.nvm/current/bin:/home/jixiuf/.local/bin:/home/jixiuf/.npm-global/bin:/home/jixiuf/bin:/home/jixiuf/.volta/bin:/home/jixiuf/.asdf/shims:/home/jixiuf/.bun/bin:/home/jixiuf/.fnm/current/bin:/home/jixiuf/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
+Environment=OPENCLAW_GATEWAY_PORT=18789
+Environment=OPENCLAW_SYSTEMD_UNIT=openclaw-gateway.service
+Environment="OPENCLAW_WINDOWS_TASK_NAME=OpenClaw Gateway"
+Environment=OPENCLAW_SERVICE_MARKER=openclaw
+Environment=OPENCLAW_SERVICE_KIND=gateway
+Environment=OPENCLAW_SERVICE_VERSION=2026.3.11
+
+[Install]
+WantedBy=default.target
