@@ -1,2 +1,2 @@
 #!/bin/sh
-emacs -L ~/repos/reka/target/release -l ~/repos/reka/lisp/reka.el
+emacs -L ~/repos/reka/target/release -l ~/repos/reka/lisp/reka.el --eval '(reka-enable)'

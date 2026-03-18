@@ -1,7 +1,36 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
- 
-(when (featurep 'reka)  (reka-enable))
 
+ 
+(setq reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:"))
+(reka-push-intercept-prefixes)
+
+
+(defun reka-get-window-info (&optional id)
+  "Return window info alist (id app title pid) for surface ID.
+When ID is nil, use the current buffer's surface or compositor focus.
+Returns nil when no surface is found."
+  (when-let* ((surface-id (or id  (when (reka--is-reka-buffer (or id (current-buffer)))(buffer-name) )))
+              (buf (get-buffer surface-id)))
+    (list (cons 'id surface-id)
+          (cons 'app (buffer-local-value 'reka-app-id buf))
+          (cons 'title (buffer-name buf))
+          (cons 'pid nil))))
+
+(defun reka-get-window-info-json (&optional id)
+  "Return window info as a JSON string.
+Calls `ewm-get-window-info' and serializes the result.
+When ID is nil, use the current buffer's surface or compositor focus.
+Returns fallback Emacs frame info when no surface is found.
+
+For use with `emacsclient -e \\='(ewm-get-window-info-json)'."
+  (json-encode (or (reka-get-window-info id)
+                   `((id . 0)
+                     (app . "emacs")
+                     (title . ,(frame-parameter nil 'name))
+                     (pid . ,(emacs-pid))))))
+
+
+(defalias 'ewm-get-window-info-json 'reka-get-window-info-json)
 ;; (when (require 'reka nil t)  (reka-enable))
 ;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm -f ewm-start-module
 ;; (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
