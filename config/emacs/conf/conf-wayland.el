@@ -42,7 +42,7 @@ For use with `emacsclient -e \\='(ewm-get-window-info-json)'."
          ,name nil ,cmd)
        )))
 
-(global-set-key (kbd "s-C-<tab>") (ewm-exec rofi "killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"))
+;; (global-set-key (kbd "s-C-<tab>") (ewm-exec rofi "killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"))
 ;; (when (require 'reka nil t)  (reka-enable))
 ;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm -f ewm-start-module
 ;; (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))

@@ -46,7 +46,7 @@ keymap:
       # Super-M-n: { launch: ["niri","msg","action" ,"focus-column-right"]}
       # Super-M-n: { launch: ["other-window"]}
       # Super-M-i: { launch: ["other-window","--reverse"]}
-      Super-C-Tab: { launch: ["niri","msg","action","spawn-sh","--","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
+      Super-C-Tab: { launch: ["sh","-c","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
       C-Tab: { launch: ["niri","msg","action","toggle-overview"]}
       # C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
       # super-M-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
