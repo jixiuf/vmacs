@@ -1,6 +1,8 @@
-;;; conf-ewm.el --- Description -*- lexical-binding: t; -*-
+;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
+ 
+(when (featurep 'reka)  (reka-enable))
 
-(when (require 'reka nil t)  (reka-enable))
+;; (when (require 'reka nil t)  (reka-enable))
 ;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm -f ewm-start-module
 ;; (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
 ;; (setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
@@ -73,4 +75,4 @@
 ;; coding: utf-8
 ;; End:
 
-;;; conf-ewm.el ends here.
+;;; conf-wayland.el ends here.

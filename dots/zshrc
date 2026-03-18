@@ -165,7 +165,7 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
      source "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 else
     # https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/refs/heads/master/install.sh
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/refs/heads/master/install.sh|bash
     \. "$NVM_DIR/nvm.sh"  # This loads nvm
     nvm install lts/krypton  # v24.x.x
     nvm alias default  lts/krypton
