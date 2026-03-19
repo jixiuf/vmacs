@@ -1,9 +1,7 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
 
- 
 (setq reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:"))
 (reka-push-intercept-prefixes)
-
 
 (defun reka-get-window-info (&optional id)
   "Return window info alist (id app title pid) for surface ID.
@@ -39,7 +37,7 @@ For use with `emacsclient -e \\='(ewm-get-window-info-json)'."
     `(defun ,fun()
        (interactive)
        (start-process-shell-command
-         ,name nil ,cmd)
+        ,name nil ,cmd)
        )))
 
 ;; (global-set-key (kbd "s-C-<tab>") (ewm-exec rofi "killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"))
