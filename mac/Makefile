@@ -8,7 +8,8 @@ default:
 	sudo make sudo
 
 port:
-	sudo port install  -y autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath fzf ripgrep openssh notmuch isync 
+	sudo port install  -y pinentry-mac gnupg2 wget realpath fzf ripgrep openssh notmuch isync 
+# sudo port install  -y autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath fzf ripgrep openssh notmuch isync 
 
 # for install depends
 # sudo port install tmux emacs ;sudo port uninstall tmux emacs
