@@ -1,6 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
  ;; (when (file-directory-p "~/repos/eglot-java/")
  ;;   (add-to-list 'load-path "~/repos/eglot-java/"))
+ (when (file-directory-p "~/repos/emacs-libvterm/")
+   (add-to-list 'load-path "~/repos/emacs-libvterm/"))
 
 ;; (add-to-list 'load-path "~/repos/emacs-application-framework")
 ;; (require 'eaf)
