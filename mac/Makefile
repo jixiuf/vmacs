@@ -3,7 +3,7 @@
 PWD := `pwd`
 LINK_CMD := ln -s -f
 default:
-	# make port
+# make port
 	make deploy
 	sudo make sudo
 
