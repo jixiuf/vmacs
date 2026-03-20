@@ -527,7 +527,7 @@
                         ]
                     },
                     {
-                        "description": "Toggle App H-d:iterm2 H-f:Chrome H-e:Emacs H-5:apifox H-b:微信 H-3:飞书",
+                        "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -628,9 +628,9 @@
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
-                                "description": "spacebar-b  toggle 微信",
+                                "description": "spacebar-g  toggle 微信",
                                 "from": {
-                                    "key_code": "b",
+                                    "key_code": "g",
                                     "modifiers": {
                                         "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
@@ -648,9 +648,9 @@
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "spacebar-b  toggle 微信",
+                                "description": "spacebar-g  toggle 微信",
                                 "from": {
-                                    "key_code": "b",
+                                    "key_code": "g",
                                     "modifiers": {
                                         "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
@@ -713,12 +713,12 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "^com\\.google\\.Chrome"
+                                            "^org\\.mozilla\\.firefox"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "spacebar-f  toggle Chrome",
+                                "description": "spacebar-f  toggle firefox",
                                 "from": {
                                     "key_code": "f",
                                     "modifiers": {
@@ -738,7 +738,7 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "^com\\.google\\.Chrome"
+                                            "^org\\.mozilla\\.firefox"
                                         ],
                                         "type": "frontmost_application_unless"
                                     }
@@ -751,7 +751,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open /Applications/Google\\ Chrome.app" }],
+                                "to": [{ "shell_command": "open /Applications/Firefox.app" }],
                                 "type": "basic"
                             },
                             {
@@ -798,7 +798,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open  -a /Applications/Alacritty.app" }],
+                                "to": [{ "shell_command": "open  -a /Applications/MacPorts/Alacritty.app" }],
                                 "type": "basic"
                             }
                         ]
@@ -4367,10 +4367,6 @@
             "name": "Default profile",
             "selected": true,
             "simple_modifications": [
-                {
-                    "from": { "key_code": "escape" },
-                    "to": [{ "key_code": "grave_accent_and_tilde" }]
-                },
                 {
                     "from": { "key_code": "left_command" },
                     "to": [{ "key_code": "left_control" }]
