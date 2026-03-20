@@ -11,6 +11,7 @@ export UPGRADE_ARTEMIS_CMD=false
 export INSTANCE_ID=4
 
 export LC_ALL=zh_CN.UTF-8
+export LANG=zh_CN.UTF-8
 appendPath(){
     if [[ -z "${1}" ]]; then
         echo "Usage: appendPath <path>"
