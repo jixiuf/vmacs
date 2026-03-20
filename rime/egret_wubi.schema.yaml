@@ -15,7 +15,7 @@ schema:
     五筆字型86版
     部分碼表源自 qq五笔,使用深蓝词库工具.exe转换而成
   dependencies:
-    - egret        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库
+    - egret_py        # 这里依赖pinyin_simp_jixiuf输入法,以方便扩展拼音字库
     - stroke # builtin: hspnz(一丨丿丶乙)
     # - melt_eng  # 英文输入，作为次翻译器挂载到拼音方案
     # - liangfen  # 两分拼字，作为反查挂载到拼音方案

@@ -12,7 +12,7 @@ schema:
   description: |
     白鹭五笔流 可输入拼音反查,不可以在一句中同时使用拼音与五笔
   dependencies:
-    - egret        # 这里依赖 egret 输入法的字库反查
+    - egret_py        # 这里依赖 egret 输入法的字库反查
     - egret_wubi        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
 

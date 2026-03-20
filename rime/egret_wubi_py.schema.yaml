@@ -14,7 +14,7 @@ schema:
   description: |
     白鹭五笔流·拼音流  可以在一句中即打五笔又打拼音的输入法
   dependencies:
-    - egret        # 这里依赖 egret 输入法的字库反查
+    - egret_py        # 这里依赖 egret 输入法的字库反查
     # - egret_wubi        # 这里依赖 egret 输入法的字库反查
     # - egret_wubi_sentence        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
