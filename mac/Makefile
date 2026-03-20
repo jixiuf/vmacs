@@ -10,6 +10,9 @@ default:
 port:
 	sudo port install  -N autoconf automake pkgconfig pinentry-mac gnupg2 wget realpath fzf ripgrep openssh notmuch isync
 	sudo port install  -N libutf8proc libevent # for build tmux
+	sudo port install  -N tree-sitter tree-sitter-go tree-sitter-c tree-sitter-markdown tree-sitter-cpp tree-sitter-json
+
+
 
 # for install depends
 # sudo port install tmux emacs ;sudo port uninstall tmux emacs
