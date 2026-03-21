@@ -1,10 +1,4 @@
-# >=sys-kernel/gentoo-kernel-6.0.0
-# >sys-kernel/gentoo-sources-6.6.67
-#>=sys-devel/gcc-12.3.1_p20230526
-# >=sys-devel/clang-16.0.6
-#>=net-libs/webkit-gtk-2.40.4-r410
+>=sys-kernel/gentoo-kernel-6.18.18
 <=app-i18n/fcitx-5.0.0
 <=media-gfx/blender-4.0.0
 >dev-db/mongodb-compass-bin-1.45.4
-
-# >=media-libs/libdisplay-info-0.3.0 
