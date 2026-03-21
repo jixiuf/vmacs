@@ -1,7 +1,6 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
-
-(setq reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:"))
-(reka-push-intercept-prefixes)
+(require 'reka)
+(setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:"))
 
 (defun reka-get-window-info (&optional id)
   "Return window info alist (id app title pid) for surface ID.
