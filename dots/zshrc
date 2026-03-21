@@ -567,10 +567,14 @@ json2csv() {
 # - --delete: 删除目标多余文件
 alias rcp='rsync -avz -Erltm  --delete '
 up(){
-    sudo -u jixiuf sh -c '/usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ root@bj-vc-client-apm-01:/data/binpkgs; /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* root@bj-vc-client-apm-01:/data/gentoo/'
+    /usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ admin@bj-vc-client-apm-01:/data/binpkgs;
+    /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/
 }
 down(){
-    sudo  sh -c '/usr/bin/rsync -avz -CErltm  --delete  root@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/; /usr/bin/rsync -avz -CErltm  --delete root@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/'
+    sudo chown jixiuf:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/;
+    /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/;
+    /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/;
+    sudo chown root:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/
 }
 
 export GOTOOLCHAIN=local
