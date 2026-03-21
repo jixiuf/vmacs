@@ -1,0 +1,4 @@
+timeout 30   'dbus-send --print-reply --dest=org.keepassxc.KeePassXC.MainWindow /keepassxc org.keepassxc.KeePassXC.MainWindow.lockAllDatabases'
+timeout 180  'pidof swaylock || swaylock -f'
+timeout 300  'niri msg action   power-off-monitors;hyprctl dispatch dpms on;swaymsg "output * power off";' resume 'niri msg action   power-on-monitors;hyprctl dispatch dpms on;swaymsg "output * power on"'
+before-sleep 'pidof swaylock || swaylock -f'

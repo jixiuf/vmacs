@@ -1,0 +1,15 @@
+[Unit]
+Description=SwayIdle Service
+# Start the agent after the graphical session is ready (optional, good practice)
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/swayidle
+# Ensure the process is restarted if it fails
+Restart=on-failure
+# Give the agent time to register with the D-Bus session
+TimeoutSec=30
+
+[Install]
+WantedBy=graphical-session.target
