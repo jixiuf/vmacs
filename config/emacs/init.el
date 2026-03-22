@@ -15,7 +15,7 @@
         (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t)))))
 ;; (add-hook 'after-make-frame-functions #'lazy-load-gpg)
 ;; (run-with-idle-timer 1 nil 'lazy-load-gpg)
-(add-hook 'after-make-frame-functions '(lambda(&optional f) (run-with-timer 1 nil #'lazy-load-gpg)))
+(add-hook 'after-make-frame-functions '(lambda(&optional f) (run-with-timer 1 nil #'lazy-load-gpg f)))
 ;; (add-hook 'after-init-hook #'lazy-load-gpg)
 
 (require 'conf-face)
