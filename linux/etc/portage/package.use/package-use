@@ -28,7 +28,7 @@ sys-apps/xdg-desktop-portal screencast
 >=media-libs/libvpx-1.12.0-r1 postproc
 
 media-libs/libsdl2 gles2
-dev-lang/rust-bin rust-src rust-analyzer rustfmt
+dev-lang/rust-bin rust-src rust-analyzer rustfmt clippy 
 net-mail/mu emacs
 >=app-arch/brotli-1.0.9-r6 python
 >=app-misc/mime-types-2.1.53 nginx
