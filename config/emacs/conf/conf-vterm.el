@@ -96,7 +96,7 @@
 (define-key vterm-mode-map (kbd "s-C-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "s-u") 'vterm-toggle)
 (define-key vterm-mode-map (kbd "C-c C-g")   #'vterm--self-insert)
-(define-key vterm-mode-map (kbd "s-v")   #'vterm-yank)
+(define-key vterm-mode-map (kbd "s-C-v")   #'vterm-yank)
 (define-key vterm-mode-map (kbd "C-k")   #'vmacs-vterm-kill-line)
 (define-key vterm-mode-map (kbd "C-q")   #'vterm-send-next-key)
 (define-key vterm-mode-map (kbd "M-:")   #'eval-expression)

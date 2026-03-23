@@ -14,8 +14,16 @@
   ;; EWM compositor must start immediately in daemon mode (runs on TTY)
   ;; It doesn't need a graphical frame - the compositor creates the display
   (defun vmacs-ewm-init()
-    (ewm-start-module)
+    ;(ewm-start-module)
+    (defun ewm-key (key)
+      (add-to-list 'ewm-intercept-prefixes `(,(kbd key) :fullscreen))
+      (kbd key))
 
+    (require 'lazy-wayland)
+    (setq wayland-compositor 'ewm)
+    (global-set-key (ewm-key "s-C-f") (wayland-run-or-raise :name firefox :app-id (rx (or "firefox" "firefox-bin" "firefox-esr")) :command "firefox-bin"))
+    (global-set-key (ewm-key "s-C-d") (wayland-run-or-raise :name term :app-id (rx (or "foot" "alacritty" "foot-ws")) :command "alacritty"))
+    
     (start-process-shell-command
      "import-environment" nil
      "systemctl --user import-environment XCURSOR_SIZE GTK_THEME SSH_AUTH_SOCK GPG_TTY DISPLAY  WAYLAND_DISPLAY  XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_RUNTIME_DIR QT_QPA_PLATFORM _JAVA_AWT_WM_NONREPARENTING SDL_VIDEODRIVER")
@@ -31,6 +39,7 @@
     (start-process-shell-command     "sway-session" nil     "systemctl --user restart sway-session.target")
     (start-process-shell-command     "xremap" " *xremap*"     "systemctl --user restart xremap")
     )
+  (vmacs-ewm-init)
 
   (add-hook 'after-init-hook #'vmacs-ewm-init)
 
