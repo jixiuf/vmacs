@@ -13,7 +13,7 @@
 (setq-default
  ;; 只让vc支持git svn , 可以加快vc的一些处理
  vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
- vc-command-messages 'log
+ vc-command-messages nil
  vc-find-revision-no-save t
  vc-use-short-revision t
  log-edit-hook nil
