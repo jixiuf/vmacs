@@ -2,42 +2,17 @@
 (require 'reka)
 (setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:"))
 
-(defun reka-get-window-info (&optional id)
-  "Return window info alist (id app title pid) for surface ID.
-When ID is nil, use the current buffer's surface or compositor focus.
-Returns nil when no surface is found."
-  (when-let* ((surface-id (or id  (when (reka--is-reka-buffer (or id (current-buffer)))(buffer-name) )))
-              (buf (get-buffer surface-id)))
-    (list (cons 'id surface-id)
-          (cons 'app (buffer-local-value 'reka-app-id buf))
-          (cons 'title (buffer-name buf))
-          (cons 'pid nil))))
+(defun reka-key (key)
+  (add-to-list 'reka-intercept-prefixes key)
+  (when reka-handle (reka-push-intercept-prefixes))
+  (kbd key))
 
-(defun reka-get-window-info-json (&optional id)
-  "Return window info as a JSON string.
-Calls `ewm-get-window-info' and serializes the result.
-When ID is nil, use the current buffer's surface or compositor focus.
-Returns fallback Emacs frame info when no surface is found.
-
-For use with `emacsclient -e \\='(ewm-get-window-info-json)'."
-  (json-encode (or (reka-get-window-info id)
-                   `((id . 0)
-                     (app . "emacs")
-                     (title . ,(frame-parameter nil 'name))
-                     (pid . ,(emacs-pid))))))
+(require 'lazy-wayland)
+(setq wayland-compositor 'reka)
+(global-set-key (reka-key "s-C-f") (wayland-run-or-raise :name firefox :app-id (rx (or "firefox" "firefox-bin" "firefox-esr")) :command "firefox-bin"))
+(global-set-key (reka-key "s-C-d") (wayland-run-or-raise :name term :app-id (rx (or "foot" "alacritty" "foot-ws")) :command "alacritty"))
 
 
-(defalias 'ewm-get-window-info-json 'reka-get-window-info-json)
-(defmacro ewm-exec (fun-name   cmd)
-  (declare (indent defun)
-           (doc-string 3))
-  (let ((fun (intern (format "%s" fun-name)))
-        (name (format "%s" fun-name)) )
-    `(defun ,fun()
-       (interactive)
-       (start-process-shell-command
-        ,name nil ,cmd)
-       )))
 
 ;; (global-set-key (kbd "s-C-<tab>") (ewm-exec rofi "killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"))
 ;; (when (require 'reka nil t)  (reka-enable))

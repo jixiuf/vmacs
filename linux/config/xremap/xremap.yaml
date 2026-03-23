@@ -52,6 +52,7 @@ modmap:
 
   - name: Global
     remap:
+      BTN_TRIGGER_HAPPY1: space
       space:
         held: [ctrl_l,super_l]
         alone: space
@@ -81,6 +82,12 @@ modmap:
         alone: [f11]
 #        alone_timeout_millis: 1000 # Optional
 
+experimental_map:
+  - remap:
+      tab:
+        # Needed to side-step the remapping below.
+        timeout: 200 # Optional. Default is 200ms.
+        double: space
 keymap:
   - name: swappy
     application:
@@ -224,41 +231,15 @@ keymap:
       C-C: C-c
       Super-C-M-o: C-Shift-o        # hints
       Super-C-M-k: { launch: ["open-with"]}
-      # # C-x: C-x
-      # C-c:
-      #   remap:
-      #     C-f: [C-Shift-m]         # open file:linenum
-      #     C-j: { launch: ["open-with"]}
-  - name: foot
-    application:
-      only: [dterm,/foot.*/]
-    remap:
-      super-C-w: super-C-q
-      C-x:
-        remap:
-          C-x: C-x              # C-xC-x send C-x
-          C-e: [C-x, C-e]
-          C-c: super-C-q
-      C-c:
-        remap:
-          C-c: C-c              # C-xC-x send C-x
-          C-d: [C-x, C-e]
-          C-f: [C-Shift-o]         # open file:linenum
-          C-j: { launch: ["open-with"]}
       
   - name: Terminal
     application:
-      only: [/Alacritty.*/ , APMSSH,sshemacs]
+      only: [dterm,/foot.*/, /Alacritty.*/ , APMSSH,sshemacs]
     remap:
       super-C-w: super-C-q
-      C-x:
+      C-w:
         remap:
-          C-x: C-x              # C-xC-x send C-x
-          C-e: [C-x, C-e]
-          C-c: super-C-q
-      C-c:
-        remap:
-          C-c: C-c              # C-xC-x send C-x
+          C-w: C-w              # C-xC-x send C-x
           C-d: [C-x, C-e]
           C-f: C-Shift-o        # hints
           C-j: { launch: ["open-with"]}
@@ -405,19 +386,19 @@ keymap:
       # Mark
       # C-g: [esc, { set_mark: false }]
       # C-x YYY
-      C-x:
-        remap:
-          C-x: C-x              # C-xC-x send C-x
-          # C-x h (select all)
-          h: [C-home, C-a, { set_mark: true }]
-          # C-x C-f (open)
-          C-f: C-o
-          # C-x C-s (save)
-          C-s: C-s
-          # C-x k (kill tab)
-          k: C-f4
-          # C-x C-c (exit)
-          C-c: super-C-q
+      # C-x:
+      #   remap:
+      #     C-x: C-x              # C-xC-x send C-x
+      #     # C-x h (select all)
+      #     h: [C-home, C-a, { set_mark: true }]
+      #     # C-x C-f (open)
+      #     C-f: C-o
+      #     # C-x C-s (save)
+      #     C-s: C-s
+      #     # C-x k (kill tab)
+      #     k: C-f4
+      #     # C-x C-c (exit)
+      #     C-c: super-C-q
   - name: Global home
     device:
       only: ["Apple SPI Keyboard"]                  #evtest
