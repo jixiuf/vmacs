@@ -5,6 +5,15 @@
 (setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator " ")
+
+(setq tab-line-tabs-window-buffers-filter-function #'tab-line-tabs-non-excluded)
+(setq tab-line-exclude-buffers
+      '(or "\*eshell\*"
+           (derived-mode completion-list-mode
+                         eshell-mode
+                         term-mode)
+           ))
+
 (setq tab-line-tabs-function #'tab-line-tabs-window-buffers)
 ;; (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
 ;;   "Return a list of tabs that should be displayed in the tab line

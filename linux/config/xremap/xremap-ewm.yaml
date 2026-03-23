@@ -93,6 +93,18 @@ keymap:
       C-dot: [C-x ,left]
       super-M-comma: C-Pageup
       super-M-dot: C-Pagedown
+      
+  - name: terminal tmux
+    application:
+      only: [dterm,bterm,kitty,/Alacritty.*/,/foot.*/,APMSSH,sshemacs]
+    window:
+      only: [/TMUX:/ ]
+    remap:
+      C-comma: [C-x ,right]
+      C-dot: [C-x ,left]
+      
+      super-M-comma: [C-c ,p] 
+      super-M-dot: [C-c ,n] 
 #  Local Variables:
 #  mode: conf
 #  eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart xremap")) t)

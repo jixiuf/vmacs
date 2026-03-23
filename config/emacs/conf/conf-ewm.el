@@ -1,30 +1,22 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
-;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm -f ewm-start-module
+;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm
 
 (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
 (setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
 (setenv "XDG_CONFIG_HOME" (expand-file-name "~/.config"))
 (when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
-  
-;; Output "Apple Computer Inc Color LCD Unknown" (eDP-1)
-;;   Current mode: 2880x1800 @ 60.001 Hz (preferred)
-;;   Variable refresh rate: not supported
-;;   Physical size: 330x210 mm
-;;   Logical position: 0, 0
-;;   Logical size: 1645x1028
-;;   Scale: 1.75
-  (setq ewm-output-config
+  (require 'ewm)
+  (setq ewm-output-config ;; wlr-randr
         '(("eDP-1" :width 2880 :height 1800 :scale 1.75 :x 0 :y 0)))
 
-  (setq ewm-input-config
-        '((touchpad :natural-scroll t :tap t :dwt t)
-          (mouse :accel-profile "flat")
-          (trackpoint :accel-speed 0.5)
-          ;; libinput list-devices                         # system-wide
-          ;; Per-device override (exact name from libinput)
-          ("ELAN0676:00 04F3:3195 Touchpad" :tap nil :accel-speed -0.2)))
+  (setopt ewm-input-config
+          '((touchpad :natural-scroll t :tap t :dwt t)
+            (mouse :accel-profile "flat")
+            (trackpoint :accel-speed 0.5)
+            ;; libinput list-devices                         # system-wide
+            ;; Per-device override (exact name from libinput)
+            ("ELAN0676:00 04F3:3195 Touchpad" :tap nil :accel-speed -0.2)))
 
-  (require 'ewm)
   (setenv "XDG_SESSION_DESKTOP" "ewm")
   (shell-command "/usr/bin/dbus-update-activation-environment --systemd --all;")
   ;; /usr/local/bin/xremap-ewm /home/jixiuf/.config/xremap/xremap.yaml /home/jixiuf/.config/xremap/xremap-ewm.yaml --watch=device --ignore=dotool keyboard --ignore=Yubico YubiKey OTP+CCID
@@ -32,17 +24,17 @@
   ;; /usr/bin/dbus-update-activation-environment --systemd --all
   ;; EWM compositor must start immediately in daemon mode (runs on TTY)
   ;; It doesn't need a graphical frame - the compositor creates the display
-  (defun vmacs-ewm-init()
-    (ewm-start-module)
-    (defun ewm-key (key)
-      (add-to-list 'ewm-intercept-prefixes `(,(kbd key) :fullscreen))
-      (kbd key))
+  (defun ewm-key (key)
+    (add-to-list 'ewm-intercept-prefixes `(,(kbd key) :fullscreen))
+    (kbd key))
 
+  (defun vmacs-ewm-init()
     (require 'lazy-wayland)
     (setq wayland-compositor 'ewm)
     (global-set-key (ewm-key "s-C-f") (wayland-run-or-raise :name firefox :app-id (rx (or "firefox" "firefox-bin" "firefox-esr")) :command "firefox-bin"))
     (global-set-key (ewm-key "s-C-d") (wayland-run-or-raise :name term :app-id (rx (or "foot" "alacritty" "foot-ws")) :command "alacritty"))
     (ewm--send-intercept-keys)
+    (ewm-start-module)
     
     (start-process-shell-command
      "import-environment" nil
@@ -61,10 +53,10 @@
     )
   (when after-init-time
     (vmacs-ewm-init)
-  (add-hook 'after-init-hook #'vmacs-ewm-init))
+    (add-hook 'after-init-hook #'vmacs-ewm-init))
 
 
-;; niri msg outputs
+  ;; niri msg outputs
 
   (defvar consult-source-xdg-apps
     `(:name "Apps"
@@ -75,7 +67,7 @@
             :action ,#'ewm-launch-xdg-command))
   (with-eval-after-load 'conf-icomplete
     (add-to-list 'consult-buffer-sources 'consult-source-xdg-apps)
-  )
+    )
   )
 
 (provide 'conf-ewm)
