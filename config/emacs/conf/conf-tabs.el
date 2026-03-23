@@ -1,23 +1,23 @@
 ;;; -*- lexical-binding: t; -*-
 (global-tab-line-mode t)
-(global-set-key  (kbd "C-,") 'tab-line-switch-to-next-tab)
-(global-set-key  (kbd "C-.") 'tab-line-switch-to-prev-tab)
+(global-set-key  (kbd "C-,") 'tab-line-switch-to-prev-tab)
+(global-set-key  (kbd "C-.") 'tab-line-switch-to-next-tab)
 (setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator " ")
 (setq tab-line-tabs-function #'tab-line-tabs-window-buffers)
-(define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
-  "Return a list of tabs that should be displayed in the tab line
-but skip uninterested buffers."
-  (let ((buffers (reverse (apply orig-fun args))))
-    buffers))
+;; (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
+;;   "Return a list of tabs that should be displayed in the tab line
+;; but skip uninterested buffers."
+;;   (let ((buffers (reverse (apply orig-fun args))))
+;;     buffers))
 
 ;; 最多打开 10 个文件
 (defun vmacs-prevent-open-too-much-files()
   (when (string-match-p "/tmp/pager/" (buffer-file-name))
     (setq truncate-lines nil)
     )
-  (let* ((buffers (reverse (tab-line-tabs-window-buffers)))
+  (let* ((buffers (tab-line-tabs-window-buffers))
          (buffer-save-without-query t)
          (len (length buffers))
          (max 9) (i 0))
