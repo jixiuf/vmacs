@@ -1,6 +1,6 @@
 .PHONY: all emacs-compile elisp-compile deploy
 # build-mac:
-# 	 ./configure --disable-ns-self-contained  --with-ns  --with-modules;make -j 4;sudo make install
+# 	 ./configure --disable-ns-self-contained  --with-ns  --with-modules --with-tree-sitter;make -j 4;sudo make install
 
 PWD := `pwd`
 LINK_CMD := ln -s -f
