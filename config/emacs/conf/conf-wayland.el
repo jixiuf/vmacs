@@ -3,9 +3,10 @@
 (setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:" "C-<tab>"))
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 
+(shell-command "wlr-randr --output eDP-1 --scale 1.75")
+
 (setq wayland-compositor 'reka)
 (require 'lazy-wayland)
-(message "ssssssssss")
 
 (defun reka-get-window-info (&optional id)
   "Return window info alist (id app title pid) for surface ID.
