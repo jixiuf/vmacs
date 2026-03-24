@@ -139,11 +139,24 @@ Example:
       `(progn
          (defun ,func-sym ()
            (interactive)
+           (message "sssssssssssssss")
            (when (string-equal (buffer-name) " *server*")
              (select-window (car (window-list)) t))
            (wayland-run-or-raise--exec ,title ,app-id ,command-val ',args-val))
          #',func-sym))))
 
+
+(wayland-run-or-raise :name "emacs" :app-id "emacs")
+(wayland-run-or-raise :name "firefox" :app-id (rx (or "firefox" "firefox-bin" "firefox-esr" "google-chrome")) :command "firefox-bin")
+(wayland-run-or-raise :name "term" :app-id (rx (or "foot" "alacritty" "foot-ws")) :command "alacritty")
+(wayland-run-or-raise :app-id "apifox-pdv" :command "/opt/Apifox/apifox-pdv")
+(wayland-run-or-raise :app-id "DBeaver" :command "dbeaver")
+(wayland-run-or-raise :name "mongodb" :app-id "MongoDB Compass" :command "mongodb-compass" "--ignore-additional-command-line-flags" "--password-store=gnome-libsecret")
+(wayland-run-or-raise :name "mitp" :app-id "mitp" :command "sh" "-c" "EDITOR=ec term.sh  --title=mimtproxy --class=mitp  -- mitmproxy")
+(wayland-run-or-raise :name "apmssh" :app-id "APMSSH" :command "sh" "-c" "term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc")
+(wayland-run-or-raise :app-id "wechat" :command "/opt/bin/wechat")
+(wayland-run-or-raise :name "Bytedance-feishu"  :title "飞书" :command "bytedance-feishu-stable" "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--enable-wayland-ime" )
+(wayland-run-or-raise :name "keepassxc" :app-id "org.keepassxc.KeePassXC" :command "keepassxc")
 
 (provide 'lazy-wayland)
 ;; Local Variables:

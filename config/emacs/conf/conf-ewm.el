@@ -6,8 +6,9 @@
 (setenv "XDG_CONFIG_HOME" (expand-file-name "~/.config"))
 (when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
   (require 'ewm)
+  (global-set-key (kbd "C-<tab>") #'consult-buffer)
+  (add-to-list 'ewm-intercept-prefixes "C-<tab>") 
   (add-to-list 'ewm-intercept-prefixes ?\M-:)
-  ;; (add-to-list 'ewm-intercept-prefixes ?\s) ;
   (ewm--send-intercept-keys)
   (setq ewm-output-config ;; wlr-randr
         '(("eDP-1" :width 2880 :height 1800 :scale 1.75 :x 0 :y 0)))
@@ -38,17 +39,6 @@
   (defun vmacs-ewm-init()
     (require 'lazy-wayland)
     (setq wayland-compositor 'ewm)
-    (wayland-run-or-raise :name "emacs" :app-id "emacs")
-    (wayland-run-or-raise :name "firefox" :app-id (rx (or "firefox" "firefox-bin" "firefox-esr" "google-chrome")) :command "firefox-bin")
-    (wayland-run-or-raise :name "term" :app-id (rx (or "foot" "alacritty" "foot-ws")) :command "alacritty")
-    (wayland-run-or-raise :app-id "apifox-pdv" :command "/opt/Apifox/apifox-pdv")
-    (wayland-run-or-raise :app-id "DBeaver" :command "dbeaver")
-    (wayland-run-or-raise :name "mongodb" :app-id "MongoDB Compass" :command "mongodb-compass" "--ignore-additional-command-line-flags" "--password-store=gnome-libsecret")
-    (wayland-run-or-raise :name "mitp" :app-id "mitp" :command "sh" "-c" "EDITOR=ec term.sh  --title=mimtproxy --class=mitp  -- mitmproxy")
-    (wayland-run-or-raise :name "apmssh" :app-id "APMSSH" :command "sh" "-c" "term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc")
-    (wayland-run-or-raise :app-id "wechat" :command "/opt/bin/wechat")
-    (wayland-run-or-raise :name "Bytedance-feishu"  :title "飞书" :command "bytedance-feishu-stable" "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--enable-wayland-ime" )
-    (wayland-run-or-raise :name "keepassxc" :app-id "org.keepassxc.KeePassXC" :command "keepassxc")
 
     (ewm--send-intercept-keys)
     (ewm-start-module)
@@ -75,7 +65,6 @@
     (add-hook 'after-init-hook #'vmacs-ewm-init))
 
 
-  ;; niri msg outputs
 
   (defvar consult-source-xdg-apps
     `(:name "Apps"

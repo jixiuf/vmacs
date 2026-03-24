@@ -6,7 +6,7 @@
 
 (load-theme 'modus-vivendi)
 (require 'conf-gpg)
-(when (featurep 'reka)  (require 'conf-wayland))
+(with-eval-after-load 'reka (require 'conf-wayland))
 (with-eval-after-load 'ewm (require 'conf-ewm))
 (defun lazy-load-gpg(&optional f)
   (when (member (frame-live-p f) '(pgtk x ns))

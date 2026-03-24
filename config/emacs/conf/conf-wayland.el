@@ -1,16 +1,11 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
 (require 'reka)
-(setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:"))
+(setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:" "C-<tab>"))
+(global-set-key (kbd "C-<tab>") #'consult-buffer)
 
-(defun reka-key (key)
-  (add-to-list 'reka-intercept-prefixes key)
-  (when reka-handle (reka-push-intercept-prefixes))
-  (kbd key))
-
-(require 'lazy-wayland)
 (setq wayland-compositor 'reka)
-(global-set-key (reka-key "s-C-f") (wayland-run-or-raise :name firefox :app-id (rx (or "firefox" "firefox-bin" "firefox-esr")) :command "firefox-bin"))
-(global-set-key (reka-key "s-C-d") (wayland-run-or-raise :name term :app-id (rx (or "foot" "alacritty" "foot-ws")) :command "alacritty"))
+(require 'lazy-wayland)
+
 
 
 
