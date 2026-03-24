@@ -5,7 +5,37 @@
 
 (setq wayland-compositor 'reka)
 (require 'lazy-wayland)
+(message "ssssssssss")
 
+(defun reka-get-window-info (&optional id)
+  "Return window info alist (id app title pid) for surface ID.
+ When ID is nil, use the current buffer's surface or compositor focus.
+ Returns nil when no surface is found."
+  (when-let* ((surface-id (or id  (when (reka--is-reka-buffer (or id (current-buffer)))(buffer-name) )))
+              (buf (get-buffer surface-id)))
+    (list (cons 'id surface-id)
+          (cons 'app (buffer-local-value 'reka-app-id buf))
+          (cons 'title (buffer-name buf))
+          (cons 'pid nil))))
+
+(defun reka-get-window-info-json (&optional id)
+  "Return window info as a JSON string.
+ Calls `ewm-get-window-info' and serializes the result.
+ When ID is nil, use the current buffer's surface or compositor focus.
+ Returns fallback Emacs frame info when no surface is found.
+ 
+ For use with `emacsclient -e \\='(ewm-get-window-info-json)'."
+   
+ (when (string-equal (buffer-name) " *server*") 
+    (select-window (car (window-list)) t))
+  (json-encode (or (reka-get-window-info id)
+                   `((id . 0)
+                     (app . "emacs")
+                     (title . ,(frame-parameter nil 'name))
+                     (pid . ,(emacs-pid))))))
+
+
+(defalias 'ewm-get-window-info-json 'reka-get-window-info-json)
 
 
 

@@ -45,6 +45,10 @@ elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
     appinfo=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r`
     class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
     title=$(echo $appinfo|jq -r '.title')
+elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+    appinfo=`emacsclient --eval "(reka-get-window-info-json)"|jq -r`
+    class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
+    title=$(echo $appinfo|jq -r '.title')
 fi
 if [ -n "$appinfo" ]; then
     # if front app exits

@@ -139,7 +139,6 @@ Example:
       `(progn
          (defun ,func-sym ()
            (interactive)
-           (message "sssssssssssssss")
            (when (string-equal (buffer-name) " *server*")
              (select-window (car (window-list)) t))
            (wayland-run-or-raise--exec ,title ,app-id ,command-val ',args-val))
