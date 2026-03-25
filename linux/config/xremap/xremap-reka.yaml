@@ -1,0 +1,99 @@
+# modmap:
+#   - name: space
+#     remap:
+#       super_l :
+#         held: ctrl_l
+#         free_hold: true
+#         alone: esc
+#         #alone_timeout_millis: 1000
+#       ctrl_l : 
+#         held: super_l
+#         # free_hold: true
+#         alone_timeout_millis: 1000
+#         alone: f9
+#         # alone: 
+#         #     - { launch: ["fcitx5-remote","-s","keyboard-us"] }
+#         #     - {sleep: 20 }
+#         #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
+#       alt_r : f9
+keymap:
+  - name: Global
+    remap:
+      C-c: C-c
+      C-C: C-c
+    # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
+      super-C-e: { launch: ["emacsclient","--eval","(wayland-run-or-raise-emacs)"] }
+      super-C-f: { launch: ["emacsclient","--eval","(wayland-run-or-raise-firefox)"] }
+      super-C-d: { launch: ["emacsclient","--eval","(wayland-run-or-raise-term)"] }
+      super-C-5: { launch: ["emacsclient","--eval","(wayland-run-or-raise-apifox-pdx)"] }
+      super-C-6: { launch: ["emacsclient","--eval","(wayland-run-or-raise-DBeaver)"] }
+      super-C-b: { launch: ["emacsclient","--eval","(wayland-run-or-raise-mongodb)"] }
+      super-C-t: { launch: ["emacsclient","--eval","(wayland-run-or-raise-apmssh)"] }
+      super-C-g: { launch: ["emacsclient","--eval","(wayland-run-or-raise-wechat)"] }
+      super-C-3: { launch: ["emacsclient","--eval","(wayland-run-or-raise-Bytedance-feishu)"] }
+      super-C-8: { launch: ["emacsclient","--eval","(wayland-run-or-raise-keepassxc)"] }
+      
+      
+      # mitmweb --mode wireguard
+      Super-C-slash: { launch: ["emacsclient","--eval","(wayland-run-or-raise-mitp)"] }
+      super-C-comma: [C-x, o]
+      super-C-o: [C-x, o]
+      super-C-dot: [C-x, O ]
+      super-C-Enter:    { launch: ["sh","-c","term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
+      super-C-M-Enter: { launch: [ "term.sh","--tmux-session","$RANDOM"] }
+      # term.sh --working-directory "/admin@bj-mjq-client-apm-05:~" tmux  attach 
+      super-C-Shift-e: { launch: ["sh","-c","term.sh --termenv=tmux-direct --class=sshemacs --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux  new-session -A  -s emacs" ] }
+
+      Super-M-m: [s-f]
+      Super-C-Tab: { launch: ["sh","-c","killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"] }
+      # C-F3: { launch: ["niri","msg","action","toggle-overview"]} #ctrl+caps
+      # super-M-Esc: { launch: ["niri","msg","action","toggle-overview"]} #caps+ctrl
+      # 窗口大小调整 space+ 箭头
+      super-C-l: { launch: ["resize-window" ,"right"]}
+      super-C-h: { launch: ["resize-window" ,"left"]}
+      super-C-k: { launch: ["resize-window" ,"up"]}
+      super-C-j: { launch: ["resize-window" ,"down"]}
+      
+  - name: Emacs
+    application:
+      only: [emacs,Emacs]
+    remap:
+      C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session foot-ws " ] }
+      # super-C-t: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=dterm --working-directory=$(cwd||echo $HOME) --tmux-session dterm " ] }
+      
+  - name: firefox
+    application:
+      only: [firefox,firefox-esr,firefox-bin]
+    remap:
+    # http://7is7.com/software/firefox/shortcuts.html
+      C-comma: [C-x ,right]
+      C-dot: [C-x ,left]
+      super-M-comma: C-Pageup
+      super-M-dot: C-Pagedown
+      
+  - name: terminal tmux
+    application:
+      only: [dterm,bterm,kitty,/Alacritty.*/,/foot.*/,APMSSH,sshemacs]
+    window:
+      only: [/TMUX:/ ]
+    remap:
+      C-comma: [C-x ,right]
+      C-dot: [C-x ,left]
+      super-M-comma: [C-c ,p] 
+      super-M-dot: [C-c ,n] 
+
+
+  - name: Bytedance-lark
+    window:
+      only: [/^飞书$/ ]
+    # application:
+    #   only: [Bytedance-lark Bytedance-feishu]
+    remap:
+      Super-C-w: [C-x ,k]
+      C-comma: [C-x ,right]
+      C-dot: [C-x ,left]
+
+#  Local Variables:
+#  mode: conf
+#  eval: (add-hook (make-local-variable 'after-save-hook) #'(lambda()(shell-command "systemctl --user restart xremap")) t)
+#  End:

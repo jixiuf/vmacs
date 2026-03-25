@@ -24,7 +24,8 @@ KillMode=process
 ExecStartPre=/usr/bin/dbus-update-activation-environment --systemd --all
 # sh -c is needed to expand ${XDG_SESSION_DESKTOP};
 # exec replaces shell with xremap so systemd tracks the correct PID
-ExecStart=/bin/sh -c 'exec /usr/local/bin/xremap-${XDG_SESSION_DESKTOP} %h/.config/xremap/xremap-${XDG_SESSION_DESKTOP}.yaml %h/.config/xremap/xremap.yaml  --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
+ExecStart=/bin/sh -c 'exec /usr/local/bin/xremap %h/.config/xremap/xremap-${XDG_SESSION_DESKTOP}.yaml %h/.config/xremap/xremap.yaml  --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
+# ExecStart=/bin/sh -c 'exec /usr/local/bin/xremap-${XDG_SESSION_DESKTOP} %h/.config/xremap/xremap-${XDG_SESSION_DESKTOP}.yaml %h/.config/xremap/xremap.yaml  --watch=device --ignore="dotool keyboard" --ignore="Yubico YubiKey OTP+CCID"'
 
 [Install]
 # WantedBy=sway-session.target
