@@ -86,6 +86,9 @@
 (run-with-timer 0.01 nil #'jka-compr-update)
 
 
+(global-set-key (kbd "<f18>") 'meep-insert) ;mac karabiner 用来控制输入法
+(define-key isearch-mode-map (kbd "<f18>") 'ignore) ;详见 isearch-pre-command-hook
+(global-set-key (kbd "<f19>") #'ignore) ;mac karabiner 用来控制输入法 ,rime f19 send escape
 ;; f11 (toggle-frame-fullscreen) default
 (setq ns-pop-up-frames nil)
 (setq frame-resize-pixelwise t)         ;;设置缩放的模式,避免 Mac 平台最大化窗口以后右边和下边有空隙
