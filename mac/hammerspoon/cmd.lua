@@ -135,7 +135,7 @@ tell application "Finder"
         repeat with itemRef in theItems
         --set myitem to POSIX path of (itemRef as string)
         set myitem to quoted form of  POSIX path of (itemRef as string)
-        do shell script "~/.emacs.d/bin/ec --no-wait "  & myitem
+        do shell script "/usr/local/bin/ec --no-wait "  & myitem
 
         end repeat -- it will store the last filename in selection
     on error error_message

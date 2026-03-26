@@ -108,117 +108,18 @@
                         ]
                     },
                     {
-                        "description": "Change left_option to left_option. (Post _ if pressed alone)",
+                        "description": "right command + Esc, Tilde to `",
                         "manipulators": [
                             {
-                                "from": {
-                                    "key_code": "left_option",
-                                    "modifiers": { "optional": ["caps_lock"] }
-                                },
-                                "to": [{ "key_code": "left_option" }],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "hyphen",
-                                        "modifiers": ["left_shift"]
-                                    }
-                                ],
+                                "from": { "key_code": "escape" },
+                                "to": [{ "key_code": "grave_accent_and_tilde" }],
                                 "type": "basic"
                             }
                         ]
                     },
                     {
-                        "description": "单按 right_command 切换系统英文和 RIME 输入法相关(组合按则当 shift 用)",
+                        "description": "Emacs ctrl-g swith to en",
                         "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^org\\.gnu\\.AquamacsEmacs$",
-                                            "^org\\.gnu\\.Aquamacs$"
-                                        ],
-                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "按 right_command 切换系统英文和 RIME 输入法",
-                                "from": {
-                                    "key_code": "right_shift",
-                                    "modifiers": { "optional": ["caps_lock"] }
-                                },
-                                "to": [{ "key_code": "right_shift" }],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "spacebar",
-                                        "modifiers": ["left_control"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "input_sources": [{ "language": "en" }],
-                                        "type": "input_source_if"
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^org\\.gnu\\.AquamacsEmacs$",
-                                            "^org\\.gnu\\.Aquamacs$"
-                                        ],
-                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "emacs 按 right_command 切换到 RIME 输入法",
-                                "from": {
-                                    "key_code": "right_shift",
-                                    "modifiers": { "optional": ["caps_lock"] }
-                                },
-                                "to": [{ "key_code": "right_shift" }],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "spacebar",
-                                        "modifiers": ["left_control"]
-                                    },
-                                    { "key_code": "f18" }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "input_sources": [{ "language": "en" }],
-                                        "type": "input_source_unless"
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^org\\.gnu\\.AquamacsEmacs$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^org\\.gnu\\.Aquamacs$"
-                                        ],
-                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "emacs 按 right_command 切换到英文输入法",
-                                "from": {
-                                    "key_code": "right_shift",
-                                    "modifiers": { "optional": ["caps_lock"] }
-                                },
-                                "to": [{ "key_code": "right_shift" }],
-                                "to_if_alone": [
-                                    { "key_code": "f19" },
-                                    {
-                                        "key_code": "spacebar",
-                                        "modifiers": ["left_control"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
                             {
                                 "conditions": [
                                     {
@@ -257,25 +158,6 @@
                                         "modifiers": ["left_control"]
                                     }
                                 ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Change , to spacebar+shift(cmd+ctrl+option+shift). (Post , if pressed alone)",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "comma",
-                                    "modifiers": { "optional": ["caps_lock"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control",
-                                        "modifiers": ["left_command", "left_shift", "left_option"]
-                                    }
-                                ],
-                                "to_if_alone": [{ "key_code": "comma" }],
                                 "type": "basic"
                             }
                         ]
@@ -527,7 +409,7 @@
                         ]
                     },
                     {
-                        "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书",
+                        "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书 H-esc:sleep H-b:mongo H-6:db",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -800,89 +682,6 @@
                                 },
                                 "to": [{ "shell_command": "open  -a /Applications/MacPorts/Alacritty.app" }],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
-                            {
-                                "description": "Change caps_lock to cmd+shift+alt(hyper3).(Post caps_lock if pressed alone)",
-                                "from": { "key_code": "caps_lock" },
-                                "to": [
-                                    {
-                                        "key_code": "right_command",
-                                        "modifiers": ["right_option"]
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "hold_down_milliseconds": 100,
-                                        "key_code": "caps_lock"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "description": " caps_lock+8 :sleep",
-                                "from": {
-                                    "key_code": "8",
-                                    "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [{ "software_function": { "iokit_power_management_sleep_system": {} } }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Toggle App(capslock=Hyper3=cmd+alt) H3-n:Notes H3-d:股，H3-s:SequelPro H3-c:mongo H3-m:mail",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "com.emmac.mac"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "capslock-d  toggle com.emmac.mac",
-                                "from": {
-                                    "key_code": "d",
-                                    "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [{ "shell_command": "open -b com.emmac.mac" }],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "com.emmac.mac"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "capslock-d com.emmac.mac",
-                                "from": {
-                                    "key_code": "d",
-                                    "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
                             },
                             {
                                 "conditions": [
@@ -893,11 +692,11 @@
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
-                                "description": "capslock-c  toggle com.mongodb.compass",
+                                "description": "H-b  toggle com.mongodb.compass",
                                 "from": {
-                                    "key_code": "c",
+                                    "key_code": "b",
                                     "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
@@ -913,11 +712,11 @@
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "capslock-c  com.mongodb.compass",
+                                "description": "H-b com.mongodb.compass",
                                 "from": {
-                                    "key_code": "c",
+                                    "key_code": "b",
                                     "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
@@ -938,11 +737,11 @@
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
-                                "description": "capslock(s-m)-s  toggle com.sequelpro.SequelPro",
+                                "description": "H-6  toggle com.sequelpro.SequelPro",
                                 "from": {
-                                    "key_code": "s",
+                                    "key_code": "6",
                                     "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
@@ -958,11 +757,11 @@
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "capslock-s  com.sequelpro.SequelPro",
+                                "description": "H-6  com.sequelpro.SequelPro",
                                 "from": {
                                     "key_code": "s",
                                     "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
@@ -975,91 +774,51 @@
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com.apple.mail"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "capslock-m  toggle Mail",
+                                "description": "spacebar-4 使用飞书截图=cmd+shift+a",
                                 "from": {
-                                    "key_code": "m",
+                                    "key_code": "4",
                                     "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [{ "shell_command": "open -b com.apple.mail" }],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com.apple.mail"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "capslock-m  toggle Mail",
-                                "from": {
-                                    "key_code": "m",
-                                    "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["left_control", "left_command"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
+                                        "key_code": "a",
+                                        "modifiers": ["command", "shift"]
                                     }
                                 ],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Notes"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "capslock-n  toggle notes",
+                                "description": " space+esc :sleep",
                                 "from": {
-                                    "key_code": "n",
+                                    "key_code": "escape",
                                     "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b com.apple.Notes" }],
+                                "to": [{ "software_function": { "iokit_power_management_sleep_system": {} } }],
                                 "type": "basic"
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        "manipulators": [
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.apple\\.Notes"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "capslock-n  toggle Notes",
-                                "from": {
-                                    "key_code": "n",
-                                    "modifiers": {
-                                        "mandatory": ["right_command", "right_option"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
+                                "description": "Change caps_lock to cmd+alt(hyper3).(Post caps_lock if pressed alone)",
+                                "from": { "key_code": "caps_lock" },
                                 "to": [
                                     {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
+                                        "key_code": "right_command",
+                                        "modifiers": ["right_option"]
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "hold_down_milliseconds": 100,
+                                        "key_code": "caps_lock"
                                     }
                                 ],
                                 "type": "basic"
@@ -1138,7 +897,7 @@
                         ]
                     },
                     {
-                        "description": "ctrl+[134567890-=]=[!#$%^&*()_+]",
+                        "description": "firefox C-u reopen tab ctrl-s=cmd-f,C-,. =next/prev tab C-h/l=f/b",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -1146,19 +905,23 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox C-r =reload",
                                 "from": {
-                                    "key_code": "equal_sign",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
+                                    "key_code": "r",
+                                    "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "equal_sign",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "r",
+                                        "modifiers": ["left_command"]
                                     }
                                 ],
                                 "type": "basic"
@@ -1169,19 +932,23 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox C-t =reopen tab",
                                 "from": {
-                                    "key_code": "hyphen",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
+                                    "key_code": "t",
+                                    "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "hyphen",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "t",
+                                        "modifiers": ["left_command"]
                                     }
                                 ],
                                 "type": "basic"
@@ -1192,19 +959,23 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox C-u =reopen tab",
                                 "from": {
-                                    "key_code": "9",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
+                                    "key_code": "u",
+                                    "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "9",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "t",
+                                        "modifiers": ["left_command", "left_shift"]
                                     }
                                 ],
                                 "type": "basic"
@@ -1215,19 +986,23 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox M-t =无痕模式",
                                 "from": {
-                                    "key_code": "0",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
+                                    "key_code": "t",
+                                    "modifiers": { "mandatory": ["option"] }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "0",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "n",
+                                        "modifiers": ["left_command", "left_shift"]
                                     }
                                 ],
                                 "type": "basic"
@@ -1238,19 +1013,45 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox Ctrl-g =escape",
                                 "from": {
-                                    "key_code": "1",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
+                                    "key_code": "g",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [{ "key_code": "escape" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-w",
+                                        "type": "variable_if",
+                                        "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
+                                ],
+                                "description": "firefox C-. prev tab",
+                                "from": {
+                                    "key_code": "period",
+                                    "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "1",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "right_arrow",
+                                        "modifiers": ["left_command", "left_option"]
                                     }
                                 ],
                                 "type": "basic"
@@ -1261,19 +1062,23 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox C-, next tab",
                                 "from": {
-                                    "key_code": "3",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
+                                    "key_code": "comma",
+                                    "modifiers": { "mandatory": ["control"] }
                                 },
                                 "to": [
                                     {
-                                        "key_code": "3",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "left_arrow",
+                                        "modifiers": ["left_command", "left_option"]
                                     }
                                 ],
                                 "type": "basic"
@@ -1284,10 +1089,44 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox C-s search =cmd-f",
                                 "from": {
-                                    "key_code": "4",
+                                    "key_code": "s",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "f",
+                                        "modifiers": ["left_command"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    },
+                                    {
+                                        "name": "C-w",
+                                        "type": "variable_if",
+                                        "value": 0
+                                    }
+                                ],
+                                "description": "firefox C-o focus addressbar cmd-l",
+                                "from": {
+                                    "key_code": "o",
                                     "modifiers": {
                                         "mandatory": ["left_control"],
                                         "optional": ["caps_lock"]
@@ -1295,8 +1134,14 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "4",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "l",
+                                        "modifiers": ["command"]
+                                    },
+                                    {
+                                        "select_input_source": {
+                                            "input_source_id": "^com\\.apple\\.keylayout\\.US$",
+                                            "language": "en"
+                                        }
                                     }
                                 ],
                                 "type": "basic"
@@ -1307,10 +1152,17 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox C-i develop tools",
                                 "from": {
-                                    "key_code": "5",
+                                    "key_code": "i",
                                     "modifiers": {
                                         "mandatory": ["left_control"],
                                         "optional": ["caps_lock"]
@@ -1318,8 +1170,14 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "5",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "i",
+                                        "modifiers": ["right_command", "right_option"]
+                                    },
+                                    {
+                                        "select_input_source": {
+                                            "input_source_id": "^com\\.apple\\.keylayout\\.US$",
+                                            "language": "en"
+                                        }
                                     }
                                 ],
                                 "type": "basic"
@@ -1330,10 +1188,17 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firefox H-h backward",
                                 "from": {
-                                    "key_code": "6",
+                                    "key_code": "h",
                                     "modifiers": {
                                         "mandatory": ["left_control"],
                                         "optional": ["caps_lock"]
@@ -1341,8 +1206,14 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "6",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "open_bracket",
+                                        "modifiers": ["right_command"]
+                                    },
+                                    {
+                                        "select_input_source": {
+                                            "input_source_id": "^com\\.apple\\.keylayout\\.US$",
+                                            "language": "en"
+                                        }
                                     }
                                 ],
                                 "type": "basic"
@@ -1353,10 +1224,17 @@
                                         "name": "C-w",
                                         "type": "variable_if",
                                         "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.mozilla\\.firefox"
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
                                 ],
+                                "description": "firfox C-l backward",
                                 "from": {
-                                    "key_code": "8",
+                                    "key_code": "l",
                                     "modifiers": {
                                         "mandatory": ["left_control"],
                                         "optional": ["caps_lock"]
@@ -1364,8 +1242,14 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "8",
-                                        "modifiers": ["left_shift"]
+                                        "key_code": "close_bracket",
+                                        "modifiers": ["right_command"]
+                                    },
+                                    {
+                                        "select_input_source": {
+                                            "input_source_id": "^com\\.apple\\.keylayout\\.US$",
+                                            "language": "en"
+                                        }
                                     }
                                 ],
                                 "type": "basic"
@@ -2192,28 +2076,6 @@
                         ]
                     },
                     {
-                        "description": "spacebar-4 使用飞书截图=cmd+shift+a",
-                        "manipulators": [
-                            {
-                                "description": "spacebar-4 使用飞书截图=cmd+shift+a",
-                                "from": {
-                                    "key_code": "4",
-                                    "modifiers": {
-                                        "mandatory": ["left_control", "left_command"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "a",
-                                        "modifiers": ["command", "shift"]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
                         "description": "Xnip C-g =escape, Return 截图",
                         "manipulators": [
                             {
@@ -2297,6 +2159,7 @@
                         ]
                     },
                     {
+                        "description": "Finder C=d:del,C-o:goto,C-h/l:left/right,C-,.:first/last tab/ret:open C=u:uplevel,C-y:paste,capslock-v:moveto C-t:itermhere,C-ret:openwithEmacsclient,Fn=v:passwd",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -2327,11 +2190,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2346,9 +2205,9 @@
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "Finder Ctrl-; goto first location",
+                                "description": "Finder Ctrl-o goto first location",
                                 "from": {
-                                    "key_code": "semicolon",
+                                    "key_code": "o",
                                     "modifiers": {
                                         "mandatory": ["left_control"],
                                         "optional": ["caps_lock", "shift", "option"]
@@ -2361,11 +2220,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2395,11 +2250,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2429,11 +2280,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2463,11 +2310,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2497,11 +2340,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2528,11 +2367,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2562,11 +2397,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2596,11 +2427,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2630,11 +2457,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2659,11 +2482,7 @@
                                 },
                                 "to": [{ "shell_command": "open -g \"hammerspoon://openItermHereInFinder\"" }],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2688,11 +2507,7 @@
                                 },
                                 "to": [{ "shell_command": "open -g hammerspoon://openWithEmacsclientInFinder" }],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -2722,11 +2537,7 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "manipulators": [
+                            },
                             {
                                 "conditions": [
                                     {
@@ -3470,16 +3281,6 @@
                                     }
                                 },
                                 "to": [{ "key_code": "page_down" }],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "right command + Esc, Tilde to `",
-                        "manipulators": [
-                            {
-                                "from": { "key_code": "escape" },
-                                "to": [{ "key_code": "grave_accent_and_tilde" }],
                                 "type": "basic"
                             }
                         ]
