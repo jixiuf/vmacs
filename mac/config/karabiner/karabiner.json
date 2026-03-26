@@ -1819,42 +1819,6 @@
                         ]
                     },
                     {
-                        "description": "chrome H-7",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-w",
-                                        "type": "variable_if",
-                                        "value": 0
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.mozilla\\.firefox",
-                                            "^com\\.google\\.Chrome"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "Chrome/Firefox H-7 auto fill passwd with bitwarden support",
-                                "from": {
-                                    "key_code": "7",
-                                    "modifiers": {
-                                        "mandatory": ["left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "l",
-                                        "modifiers": ["right_command", "right_shift"]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
                         "description": "微信/企业微信 ctrl-s=cmd-f ctrl-n/p ctrl-jk next/prev session spacebar-j next active session",
                         "manipulators": [
                             {
