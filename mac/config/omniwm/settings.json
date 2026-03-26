@@ -1,0 +1,32 @@
+{
+  "hiddenBarIsCollapsed" : false,
+  "hotkeyBindings" : [
+    {
+      "binding" : "Command+,",
+      "id" : "focus.left"
+    },
+    {
+      "binding" : "Control+Command+.",
+      "id" : "focus.right"
+    },
+    {
+      "binding" : "Control+Command+M",
+      "id" : "toggleFullscreen"
+    },
+    {
+      "binding" : "Option+Command+Delete",
+      "id" : "toggleWorkspaceBarVisibility"
+    },
+    {
+      "binding" : "Control+Command+Return",
+      "id" : "toggleQuakeTerminal"
+    }
+  ],
+  "version" : 4,
+  "workspaceBarEnabled" : false,
+  "workspaceBarPosition" : "belowMenuBar",
+  "workspaceBarShowLabels" : false,
+  "workspaceBarWindowLevel" : "status",
+  "workspaceBarXOffset" : 110,
+  "workspaceBarYOffset" : -1000
+}
