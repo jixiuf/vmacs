@@ -90,3 +90,5 @@ config/emacs/eln-cache/
 linux/config/waybar/waybar-niri-windows.so
 config/tmux/plugins/tpm/
 config/emacs/agent/history
+config/emacs/pyim/dcache/
+config/emacs/cache/rime/build/

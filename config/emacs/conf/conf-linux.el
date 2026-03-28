@@ -4,8 +4,20 @@
 ;; xkb:us::eng  or rime
 ;; ibus engine rime  # 将输入法更改为
 (defvar ime (cond
+             ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
              ((executable-find "fcitx5")    'fcitx5)
              ((executable-find "ibus")    'ibus)))
+(when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
+  (setq rime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
+  (setq default-input-method "rime")
+  (setq rime-show-candidate 'posframe)
+  (require 'rime)
+  (add-to-list 'rime-translate-keybindings "C-v")
+  (add-to-list 'rime-translate-keybindings  "M-v")
+  ;; (global-set-key (kbd "<f11>") 'toggle-input-method)
+  (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
+  (with-eval-after-load 'meep
+    (add-hook 'input-method-activate-hook 'meep-insert t)))
 
 (defun switch-to-english-input-method ()
   "Switch to English input method."
@@ -13,6 +25,8 @@
   (cond
    ((eq ime 'fcitx5)
     (call-process "fcitx5-remote" nil nil nil "-s" "keyboard-us"))
+   ((eq ime 'rime)
+    (deactivate-input-method))
    ((eq ime 'ibus)
     (call-process "ibus" nil nil nil "engine" "xkb:us::eng"))))
 
@@ -22,11 +36,15 @@
   (cond
    ((eq ime 'fcitx5)
     (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
+   ((eq ime 'rime)
+    (activate-input-method "rime"))
    ((eq ime 'ibus)
     (call-process "ibus" nil nil nil "engine" "rime"))))
 
 (defun get-input-method-state()
   (cond
+   ((eq ime 'rime)
+    (or current-input-method ""))
    ((eq ime 'fcitx5)
     (string-trim (shell-command-to-string "fcitx5-remote -n")))
    ((eq ime 'ibus)

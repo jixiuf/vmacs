@@ -1,11 +1,23 @@
-;;; Code:
+;;; Code:  -*- lexical-binding: t; -*-
 ;; https://github.com/DogLooksGood/emacs-rime/blob/master/README_CN.org
 ;; https://gitlab.com/liberime/liberime
 ;; RIME_PATH=~/repos/squirrel/librime/ make liberime
 ;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
-;; (setq rime-user-data-dir "~/.emacs.d/cache/rime")
-;; (setq default-input-method "rime")
-;; (setq rime-show-candidate 'posframe)
+;;
+(when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
+  (when (eq system-type 'gnu/linux)
+    (setq rime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/")))
+  (setq default-input-method "rime")
+  (setq rime-show-candidate 'posframe)
+  (require 'rime)
+  (add-to-list 'rime-translate-keybindings "C-v")
+  (add-to-list 'rime-translate-keybindings  "M-v")
+  (global-set-key (kbd "<f11>") 'toggle-input-method)
+  (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
+  (with-eval-after-load 'meep
+    (add-hook 'input-method-activate-hook 'meep-insert t)))
+
+;;
 ;; (setq rime-disable-predicates           ;临时英文模式
 ;;       '(rime-predicate-evil-mode-p
 ;;         rime-predicate-prog-in-code-p   ;在 prog-mode 和 conf-mode 中除了注释和引号内字符串之外的区域
@@ -19,9 +31,6 @@
 ;;         ;; rime-predicate-punctuation-after-space-cc-p
 ;;         ))
 ;; (setq rime-inline-predicates '(rime-predicate-space-after-cc-p))
-;; (require 'rime)
-;; (add-to-list 'rime-translate-keybindings "C-v")
-;; (add-to-list 'rime-translate-keybindings  "M-v")
 
 ;; (add-hook 'input-method-activate-hook 'vmacs-evil-input-method-activate t)
 ;; (add-hook 'input-method-deactivate-hook 'vmacs-evil-input-method-deactive t)
@@ -46,7 +55,7 @@
 
 ;; "Non-nil means random control characters terminate incremental search."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(provide 'conf-evil-input-method)
+(provide 'conf-input-method)
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
