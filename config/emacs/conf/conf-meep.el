@@ -323,7 +323,8 @@
     (when (eq region-type 'line-wise)
       (when (= (point) (point-max))
         (insert "\n"))
-      (forward-line 1))))
+      (unless (region-active-p)
+        (forward-line 1)))))
 
 (advice-add 'meep-clipboard-killring-yank :before #'meep-clipboard-killring-yank-1)
 
