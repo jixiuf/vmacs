@@ -194,4 +194,4 @@
 # 	cmd = emacsclient --eval \"(ediff \\\"$LOCAL\\\" \\\"$REMOTE\\\" )\"
 
 [commit]
-	gpgsign = true
+	# gpgsign = true
