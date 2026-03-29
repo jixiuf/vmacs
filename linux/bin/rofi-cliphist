@@ -5,6 +5,12 @@ if [ "$XDG_SESSION_DESKTOP" == "Hyprland" ]; then
 elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
     front_app=`niri msg -j focused-window`
     front_class=`echo $front_app|jq -r '.app_id'`
+elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
+    front_app=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r`
+    front_class=`echo $front_app|jq -r '(.app // "")'|head -n 1`
+elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+    front_app=`emacsclient --eval "(reka-get-window-info-json)"|jq -r`
+    front_class=`echo $front_app|jq -r '(.app // "")'|head -n 1`
 else
     front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`

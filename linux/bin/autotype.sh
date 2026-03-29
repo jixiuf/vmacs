@@ -91,8 +91,14 @@ if [ -z "$auto_type_cmd" ]; then
             WINDOW_TITLE=`niri msg -j focused-window|jq -rc .title`
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
             WINDOW_TITLE=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|.name'`
+        elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
+            WINDOW_TITLE=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.title`
+        elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+            WINDOW_TITLE=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.title'`
+            
         fi
     fi
+    
     if [ -z "$WINDOW_CLASS" ]; then
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
             WINDOW_CLASS=`hyprctl activewindow -j |jq -rc '.class'`
@@ -100,6 +106,10 @@ if [ -z "$auto_type_cmd" ]; then
             WINDOW_TITLE=`niri msg -j focused-window|jq -rc .app_id`
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
             WINDOW_CLASS=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|(.app_id // .window_properties.class // "")'|head -n 1`
+        elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
+            WINDOW_TITLE=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.title`
+        elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+            WINDOW_TITLE=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.title'`
         fi
     fi
     if [[ $WINDOW_TITLE == TMUX:* ]]; then
