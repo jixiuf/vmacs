@@ -1,7 +1,6 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
 ;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm
 
-(setq default-input-method "chinese-py")
 (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
 (setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
 (setenv "XDG_CONFIG_HOME" (expand-file-name "~/.config"))

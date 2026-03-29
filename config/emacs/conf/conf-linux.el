@@ -10,12 +10,19 @@
 (when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
   (setq rime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
   (setq default-input-method "rime")
-  (setq rime-show-candidate 'posframe)
-  (require 'rime)
-  (add-to-list 'rime-translate-keybindings "C-v")
-  (add-to-list 'rime-translate-keybindings  "M-v")
-  ;; (global-set-key (kbd "<f11>") 'toggle-input-method)
-  (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
+  (setq rime-show-candidate 'message)
+  (with-eval-after-load 'rime
+    (require 'rime)
+    (add-to-list 'rime-translate-keybindings "C-v")
+    (add-to-list 'rime-translate-keybindings  "M-v")
+    ;; (global-set-key (kbd "<f11>") 'toggle-input-method)
+    (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
+    (with-eval-after-load 'ewm
+      (require 'ewm-rime)
+      (ewm-rime-setup))
+    )
+  
+  
   (with-eval-after-load 'meep
     (add-hook 'input-method-activate-hook 'meep-insert t)))
 
