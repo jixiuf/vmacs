@@ -1,6 +1,6 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
 (require 'reka)
-(setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:" "C-<tab>"))
+(setopt reka-intercept-prefixes '("C-x" "C-u" "C-h" "M-x" "M-:" "C-<tab>" "C-s-m"))
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 
 

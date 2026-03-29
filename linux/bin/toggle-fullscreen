@@ -10,6 +10,12 @@ toggle_fullscreen(){
     elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
         niri msg action maximize-column
         # niri msg action fullscreen-window
+    elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
+        sleep 0.1
+        echo key ctrl+super+m|dotoolc
+    elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+        sleep 0.1
+        echo key ctrl+super+m|dotoolc
     else
         swaymsg "fullscreen"
     fi
@@ -32,7 +38,14 @@ elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
     fullscreen=$(niri msg -j focused-window | jq -r '(.layout.window_offset_in_tile | all(. == 0.0))')
 
     appcnt=`niri msg -j windows|jq -rc '.[]|select(.workspace_id =='$(niri msg -j  workspaces |jq  -cr ".[]|select(.is_focused ==true)|.id")')|.app_id'|wc -l  `
-
+elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
+    appinfo=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r`
+    class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
+    title=$(echo $appinfo|jq -r '.title')
+elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+    appinfo=`emacsclient --eval "(reka-get-window-info-json)"|jq -r`
+    class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
+    title=$(echo $appinfo|jq -r '.title')
 else
     appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
     class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
