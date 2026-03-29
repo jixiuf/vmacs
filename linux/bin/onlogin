@@ -12,7 +12,10 @@ pidof swaylock || swaylock&
 pidof wl-paste ||wl-paste --watch cliphist-store&
 dex -a -s /etc/xdg/autostart/:~/.config/autostart/&
 systemctl --user restart sway-session.target
-systemctl --user restart emacs
+
+if [[ "$XDG_SESSION_DESKTOP"  != "ewm" && "$XDG_SESSION_DESKTOP"  != "reka" ]]; then
+    systemctl --user restart emacs
+fi
 systemctl --user restart xremap
 bg.sh --skip_download&
 brightnessctl set 40%+

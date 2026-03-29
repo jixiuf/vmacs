@@ -1,2 +1,6 @@
 #!/bin/sh
-emacs -L ~/repos/reka/target/release -l ~/repos/reka/lisp/reka.el --eval '(reka-enable)'
+export XDG_SESSION_DESKTOP=reka
+wlr-randr --output eDP-1 --scale 1.75
+pidof channel||channel&
+emacs -L ~/repos/reka/target/release -l ~/repos/reka/lisp/reka.el --eval '(reka-enable)'& 
+onlogin
