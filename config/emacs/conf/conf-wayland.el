@@ -4,6 +4,7 @@
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 
 (shell-command "wlr-randr --output eDP-1 --scale 1.75")
+(shell-command "channel&")              ; 
 
 (setq wayland-compositor 'reka)
 (require 'lazy-wayland)

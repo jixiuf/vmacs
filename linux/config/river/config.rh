@@ -1,0 +1,33 @@
+# this is a comment
+# https://codeberg.org/Sivecano/channel.git
+keyboard {
+    layout us, us
+    # variant ,dvorak
+    # options grp:ctrl_space_toggle
+    # layout
+    # rules
+    repeat {
+        rate 25
+        delay 400
+    }
+}
+
+touchpad {
+    # the order of arguments does not matter
+    # and additional newlines are allowed
+
+    natural_scroll true
+    # this could be two_finger, edge, no_scroll or on_button_down
+    scroll_method two_finger
+
+    tap_to_click true
+
+    # are clicks governed by number of fingers (clickfinger)
+    # or location on the touchpad (button_areas)
+    click_method clickfinger
+
+    disable_while_typing true
+
+    # this can be adaptive or flat
+    accel_profile flat
+}
