@@ -14,7 +14,7 @@
                          term-mode)
            ))
 
-(setq tab-line-tabs-function #'tab-line-tabs-window-buffers)
+(setq tab-line-tabs-function #'tab-line-tabs-fixed-window-buffers)
 ;; (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
 ;;   "Return a list of tabs that should be displayed in the tab line
 ;; but skip uninterested buffers."
