@@ -105,6 +105,7 @@ dev-build/node-gyp ~amd64
 app-misc/copilot ~amd64
 dev-lang/zig-bin ~amd64 
 gui-wm/river ** 
+gui-libs/wlroots ** 
 gui-apps/wayfreeze ** 
 # Local Variables:
 # mode: conf
