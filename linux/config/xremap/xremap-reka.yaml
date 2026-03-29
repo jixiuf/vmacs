@@ -66,8 +66,8 @@ keymap:
       only: [firefox,firefox-esr,firefox-bin]
     remap:
     # http://7is7.com/software/firefox/shortcuts.html
-      C-comma: [C-x ,right]
-      C-dot: [C-x ,left]
+      C-comma: [C-x ,left]
+      C-dot: [C-x ,right]
       super-M-comma: C-Pageup
       super-M-dot: C-Pagedown
       
@@ -77,8 +77,8 @@ keymap:
     window:
       only: [/TMUX:/ ]
     remap:
-      C-comma: [C-x ,right]
-      C-dot: [C-x ,left]
+      C-comma: [C-x ,left]
+      C-dot: [C-x ,right]
       super-M-comma: [C-c ,p] 
       super-M-dot: [C-c ,n] 
 

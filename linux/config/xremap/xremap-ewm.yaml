@@ -78,8 +78,8 @@ keymap:
     window:
       only: [/TMUX:/ ]
     remap:
-      C-comma: [C-x ,right]
-      C-dot: [C-x ,left]
+      C-comma: [C-x ,left]
+      C-dot: [C-x ,right]
       super-M-comma: [C-c ,p] 
       super-M-dot: [C-c ,n] 
 
@@ -91,8 +91,8 @@ keymap:
     #   only: [Bytedance-lark Bytedance-feishu]
     remap:
       Super-C-w: [C-x ,k]
-      C-comma: [C-x ,right]
-      C-dot: [C-x ,left]
+      C-comma: [C-x ,left]
+      C-dot: [C-x ,right]
 
 #  Local Variables:
 #  mode: conf
