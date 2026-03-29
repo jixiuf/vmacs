@@ -241,7 +241,7 @@ if [ $(uname -s ) = "Linux" ] ; then
     alias emerge='sudo -E emerge '
     alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo -E emerge @preserved-rebuild;sudo -E eclean packages'
     alias emeU='sudo -E emerge --ask -q --keep-going  --emptytree @world'
-    alias esync="sudo chown jixiuf:portage -R /var/db/repos/gentoo/ ;rsync -avz -CErltm  --delete 'admin@bj-vc-client-apm-01:/data/gentoo/*'  /var/db/repos/gentoo/;sudo chown root:portage -R /var/db/repos/gentoo/;sudo -E emerge --sync;rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/"
+    alias esync="sudo -E emerge --sync"
     emec() {        if [ -z "$1" ]; then sudo -E emerge -ac;else sudo -E emerge -aqvC "$@";fi ;sudo -E emaint binhost -f   }
     alias emes='sudo -E emerge -aSqv'
     alias env-update="sudo env-update"
@@ -568,13 +568,13 @@ json2csv() {
 alias rcp='rsync -avz -Erltm  --delete '
 up(){
     /usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ admin@bj-vc-client-apm-01:/data/binpkgs;
-    /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/
+    # /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/
 }
 down(){
-    sudo chown jixiuf:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/;
+    # sudo chown jixiuf:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/;
     /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/;
-    /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/;
-    sudo chown root:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/
+    # /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/;
+    # sudo chown root:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/
 }
 
 export GOTOOLCHAIN=local
