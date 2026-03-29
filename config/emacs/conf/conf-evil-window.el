@@ -231,6 +231,9 @@
     (setq  bufname (buffer-name bufname))
     )
   (or
+   (memq (buffer-local-value 'major-mode (get-buffer bufname))
+         '(reka-mode))
+
    (string-match-p (rx (or
                         "*Agenda Commands*"
                         ;; " *transient*"
