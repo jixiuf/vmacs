@@ -8,13 +8,13 @@ dbus-update-activation-environment --systemd --all
 sudo /usr/local/bin/on-keyboard-update&
 # pidof swaybg||swaybg -i ~/.config/wallpaper/359278da0e9c31df63eeb9cc3334031f.jpeg&
 XDG_CONFIG_HOME=~/.config kpmenu --daemon 2>/tmp/kpmenu.log&
-pidof swaylock || swaylock&
 pidof wl-paste ||wl-paste --watch cliphist-store&
 dex -a -s /etc/xdg/autostart/:~/.config/autostart/&
 systemctl --user restart sway-session.target
 
 if [[ "$XDG_SESSION_DESKTOP"  != "ewm" && "$XDG_SESSION_DESKTOP"  != "reka" ]]; then
     systemctl --user restart emacs
+    pidof swaylock || swaylock&
 fi
 systemctl --user restart xremap
 bg.sh --skip_download&

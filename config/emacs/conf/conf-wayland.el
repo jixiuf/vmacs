@@ -41,7 +41,6 @@
 
 (defalias 'ewm-get-window-info-json 'reka-get-window-info-json)
 
-
 (provide 'conf-wayland)
 
 ;; Local Variables:
