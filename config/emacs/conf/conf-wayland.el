@@ -14,10 +14,14 @@
  When ID is nil, use the current buffer's surface or compositor focus.
  Returns nil when no surface is found."
   (when-let* ((surface-id (or id  (when (reka--is-reka-buffer (or id (current-buffer)))(buffer-name) )))
-              (buf (get-buffer surface-id)))
+              (buf (get-buffer surface-id))
+              (bufname (buffer-name buf))
+              (app (buffer-local-value 'reka-app-id buf))
+              (title (substring bufname 0 (- (length bufname) (length app) 3)))
+              )
     (list (cons 'id surface-id)
-          (cons 'app (buffer-local-value 'reka-app-id buf))
-          (cons 'title (buffer-name buf))
+          (cons 'app app)
+          (cons 'title title)
           (cons 'pid nil))))
 
 (defun reka-get-window-info-json (&optional id)
