@@ -37,7 +37,7 @@
   (json-encode (or (reka-get-window-info id)
                    `((id . 0)
                      (app . "emacs")
-                     (title . ,(frame-parameter nil 'name))
+                     (title . ,(format "GNU/Emacs<%s>" default-directory))
                      (pid . ,(emacs-pid))))))
 
 

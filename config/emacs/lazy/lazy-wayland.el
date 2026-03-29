@@ -24,7 +24,7 @@
                                    (not (string-match-p "^ .*" (buffer-name buf)))
                                    (not (memq buf buffers))))
                                 (tab-line-tabs-window-buffers)))
-      (setq buffers (list (car buffers))))
+      (setq buffers (last  buffers 1)))
     buffers))
 
 (defun wayland-run-or-raise--get-app-id (&optional buf)
