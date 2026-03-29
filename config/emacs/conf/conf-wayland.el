@@ -39,6 +39,21 @@
 
 (defalias 'ewm-get-window-info-json 'reka-get-window-info-json)
 
+(start-process-shell-command
+ "import-environment" nil
+ "systemctl --user import-environment XCURSOR_SIZE GTK_THEME SSH_AUTH_SOCK GPG_TTY DISPLAY  WAYLAND_DISPLAY  XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_RUNTIME_DIR QT_QPA_PLATFORM _JAVA_AWT_WM_NONREPARENTING SDL_VIDEODRIVER")
+(start-process-shell-command
+ "dbus-update-activation-environment" nil
+ "dbus-update-activation-environment --systemd --all")
+;; (start-process-shell-command     "xremap" " *xremap*"     "/usr/local/bin/xremap-ewm ~/.config/xremap/xremap.yaml ~/.config/xremap/xremap-ewm.yaml --watch=device --ignore='dotool keyboard' ")
+(start-process-shell-command     "kpmenu" nil     "kpmenu --daemon")
+;; (start-process-shell-command     "swaylock" nil     "pidof swaylock || swaylock")
+(start-process-shell-command     "hypridle" nil     "pidof hypridle||hypridle")
+(start-process-shell-command     "wl-paste" nil     "pidof wl-paste ||wl-paste --watch cliphist-store&")
+(start-process-shell-command     "dex" nil     "dex -a -s /etc/xdg/autostart/:~/.config/autostart/")
+(start-process-shell-command     "sway-session" nil     "systemctl --user restart sway-session.target")
+(start-process-shell-command     "xremap" " *xremap*"     "systemctl --user restart xremap")
+
 
 
 ;; (global-set-key (kbd "s-C-<tab>") (ewm-exec rofi "killall rofi ||rofi -normal-window -show combi -combi-modes 'drun,run,ssh' -modes combi"))
