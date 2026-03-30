@@ -204,6 +204,15 @@ hs.timer.doAfter(1, function()
     end
 end)
 
+local task = hs.task.new("/usr/local/bin/kpmenu --daemon", function(exitCode, stdOut, stdErr)
+    if exitCode == 0 then
+        print("Command executed successfully:\n" .. stdOut)
+    else
+        print("Command failed with error code: " .. exitCode .. "\n" .. stdErr)
+    end
+end)
+
+task:start()
 -- 有些密码框不许粘贴，用此
 -- Type the current clipboard, to get around web forms that don't let you paste
 -- (Note: I have Fn-v mapped to F17 in Karabiner)

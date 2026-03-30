@@ -1,0 +1,68 @@
+# You can store it into $HOME/.config/kpmenu/config
+# Supported: dmenu, rofi, wofi, custom
+menu = "custom"
+# Supported: xsel, wl-clipboard,mac, custom
+clipboardTool = "mac"
+clipboardTimeout = "15s"
+nocache = false
+cacheOneTime = false
+cacheTimeout = 60
+nootp = false
+daemon=true
+customAutotypeWindowID="""
+osascript <<'EOF'
+tell application "System Events"
+    set frontApp to first application process whose frontmost is true
+    set bundleID to bundle identifier of frontApp
+    set frontAppName to name of frontApp
+    tell process frontAppName
+        try
+            set windowTitle to name of front window
+        on error
+            set windowTitle to ""
+        end try
+    end tell
+end tell
+return windowTitle & " - " & bundleID
+EOF
+ """
+customAutotypeTyper="/usr/local/bin/cliclick"
+autotype=false
+
+# Always prompt user to select the entry to autotype
+# autotypeNoAuto=true
+# Always confirm autotype, even when there's only 1 selection
+# autotypeConfirm=true
+# Executable of menus used to prompt actions
+# customPromptPassword =""" sh -c "gpg -d ~/.password-store/bitwarden.com.gpg|head -n 1" """
+customPromptPassword =""" echo -n '' """
+
+customPromptMenu =  """/usr/local/bin/choose """
+customPromptEntries = """/usr/local/bin/choose  -w 80 -p "C-7:user,C-8:passwd C-9:TOTP C-RET:passwd+RET C-0:URL" -K 1:Control+7 -K 2:Control+8 -K 3:Control+9 -K 4:Control+Return -K 5:Control+0 """
+customPromptFields  = """/usr/local/bin/choose  -w 80 -p "C-7:user,C-8:passwd C-9:TOTP C-RET:passwd+RET C-0:URL" -K 1:Control+7 -K 2:Control+8 -K 3:Control+9 -K 4:Control+Return -K 5:Control+0 """
+# Executable of clipboard commands
+#customClipboardCopy = 
+#customClipboardPaste = 
+#customClipboardClean = 
+
+passwordBackground = "black"
+textPassword = "密码"
+textMenu = "选择"
+textEntry = "条目"
+textField = "字段"
+formatEntry = "{Title} - {UserName}"
+#argsPassword =
+#argsMenu =
+#argsEntry =
+#argsField =
+
+#database =
+keyFile ="/Users/jixiuf/Documents/jianguo/jianguo/keepass/pass.key"
+# password =""
+# this need command "ykchalresp" from Yubikey Personalization
+keyFileData="/Users/jixiuf/Documents/jianguo/jianguo/keepass/pass.key"
+# keyFileData=""" ykchalresp -x -2 -H %salt || echo -n "%salt"|xxd -r -p | openssl dgst -sha1 -hmac "$(gpg --pinentry-mode ask -d ~/Documents/jianguo/jianguo/keepass/keepassxc-cr-recovery/yubikey-otp-challenge-response-secret.gpg|xxd -r -p)"|awk '{print $2}' """
+fieldOrder = "Password UserName URL"
+fillOtherFields = true
+#FillBlacklist =
+database ="/Users/jixiuf/Documents/jianguo/jianguo/keepass/pass.kdbx"

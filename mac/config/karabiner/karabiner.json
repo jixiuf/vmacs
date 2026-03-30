@@ -241,6 +241,22 @@
                         ]
                     },
                     {
+                        "description": "Change left_ctr->left_cmd and kpmenu autotype. ",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "left_command",
+                                    "modifiers": { "optional": ["caps_lock"] }
+                                },
+                                "to": [{ "key_code": "left_command" }],
+                              "to_if_alone": [
+                                {"shell_command": "/usr/local/bin/kpmenu  --autotype --autotypeConfirm" }
+                              ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "right command + Esc, Tilde to `",
                         "manipulators": [
                             {
