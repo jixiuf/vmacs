@@ -27,7 +27,10 @@ touchpad {
     click_method clickfinger
 
     disable_while_typing true
+    accel_speed 0.48
 
     # this can be adaptive or flat
-    accel_profile flat
+    # //can be adaptive (the default) or
+    # // flat (disables pointer acceleration).
+    accel_profile adaptive
 }
