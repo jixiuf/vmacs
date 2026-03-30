@@ -226,7 +226,7 @@
                                 "type": "basic"
                             }
                         ]
-                    },                  
+                    },
                     {
                         "description": "Change right_option to command. ",
                         "manipulators": [
@@ -932,34 +932,32 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [
+                                "to": [
                                     {
                                         "key_code": "q",
                                         "modifiers": ["command", "control"]
                                     },
-                                
-                                { "software_function": { "iokit_power_management_sleep_system": {} } }
-                              ],
+                                    { "software_function": { "iokit_power_management_sleep_system": {} } }
+                                ],
                                 "type": "basic"
                             },
                             {
-                              "description": " space-q:space-w ",
+                                "description": " space-q:space-w ",
                                 "from": {
                                     "key_code": "q",
                                     "modifiers": {
-                                      "mandatory": ["left_command","left_control"],
+                                        "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [
+                                "to": [
                                     {
                                         "key_code": "w",
                                         "modifiers": ["command"]
                                     }
-                              ],
+                                ],
                                 "type": "basic"
-                            }                          
-                          
+                            }
                         ]
                     },
                     {
@@ -4235,6 +4233,19 @@
                         "vendor_id": 1452
                     },
                     "ignore": true
+                },
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 598,
+                        "vendor_id": 1452
+                    },
+                    "simple_modifications": [
+                        {
+                            "from": { "key_code": "escape" },
+                            "to": [{ "key_code": "grave_accent_and_tilde" }]
+                        }
+                    ]
                 }
             ],
             "fn_function_keys": [
