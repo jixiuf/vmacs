@@ -213,6 +213,11 @@ local task = hs.task.new("/usr/local/bin/kpmenu --daemon", function(exitCode, st
 end)
 
 task:start()
+-- 启动 IPC 端口，让命令行工具可以与其通信
+-- /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c  "hs.eventtap.keyStrokes('Hello from Terminal')"
+-- /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.eventtap.keyStroke({'cmd'}, 'v')"
+require("hs.ipc")
+
 -- 有些密码框不许粘贴，用此
 -- Type the current clipboard, to get around web forms that don't let you paste
 -- (Note: I have Fn-v mapped to F17 in Karabiner)
