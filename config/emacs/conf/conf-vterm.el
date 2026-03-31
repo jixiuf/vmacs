@@ -11,7 +11,7 @@
 (setq-default vterm-min-window-width 70)
 (setq-default vterm-copy-mode-remove-fake-newlines t)
 (setq-default vterm-enable-manipulate-selection-data-by-osc52 t)
-(setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=yes ")
+(setq-default vterm-module-cmake-args " -DUSE_SYSTEM_LIBVTERM=no ")
 (setq vterm-toggle-cd-auto-create-buffer t)
 (setq-default vterm-clear-scrollback-when-clearing t)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
