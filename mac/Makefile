@@ -28,7 +28,7 @@ deploy:
 	@-$(LINK_CMD) $(PWD)/LaunchAgents/midnight.plist ~/Library/LaunchAgents/
 	@-$(LINK_CMD) $(PWD)/LaunchAgents/autosshD_ssh_port.plist ~/Library/LaunchAgents/autosshD_ssh_port.plist
 	@-$(LINK_CMD) $(PWD)/LaunchAgents/mbsync.plist ~/Library/LaunchAgents/mbsync.plist
-	@-$(LINK_CMD) $(PWD)/LaunchAgents/emacs-daemon.plist ~/Library/LaunchAgents/emacs-daemon.plist
+# @-$(LINK_CMD) $(PWD)/LaunchAgents/emacs-daemon.plist ~/Library/LaunchAgents/emacs-daemon.plist
 	defaults write -g InitialKeyRepeat -int 15 # normal minimum is 15 (225 ms)
 	defaults write -g KeyRepeat -int 2 # normal minimum is 2 (30 ms)
 

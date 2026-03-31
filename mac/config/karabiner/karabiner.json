@@ -558,7 +558,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b org.gnu.Emacs" }],
+                                "to": [{ "shell_command": "/usr/local/bin/ec" }],
                                 "type": "basic"
                             },
                             {

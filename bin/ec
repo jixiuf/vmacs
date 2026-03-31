@@ -26,19 +26,10 @@ function call_emacsclient(){
             scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"scratchpad\")|.id"`
             niri msg action move-window-to-workspace  --window-id $addr  --focus false $scratchpad_workspace_id
         fi
-
-    else
-        front_app=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
-        front_class=`echo $front_app|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
-        # title=$(echo $front_app|jq -r '.name')
-        front_floating=`echo $front_app|jq -r '.type'|head -n 1` # con or floating_con
-        if [[ "$front_floating" == "floating_con" && ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty" || "$front_class" == "kitty"|| "$front_class" == "foot"* || "$front_class" == *"term") ]]; then
-            swaymsg  "move window to scratchpad"
-            # swaymsg  "[con_id=$id] move window to scratchpad"
-        fi
     fi
     # echo $EMACSCLIENT
     framecnt=`$EMACSCLIENT $socket_file_switch --eval "(gui-frame-cnt)"`
+    echo $framecnt
     # echo $framecnt
     if [ "$framecnt" = "0" ]; then
         if [ 0 -eq "$#" ]; then        # 无文件名参数则不是在编辑文件，只打开一个窗口就可以了
@@ -92,7 +83,7 @@ function call_emacsclient(){
 }
 
 
-if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ] && [ `/usr/local/bin/emacsclient --version 2>&1| awk -F ' ' '/emacsclient/ {print $2}'|awk -F '.' '{print $1}'` != "22" ]; then
+if [  -z $EMACSCLIENT ] && [ -x "/usr/local/bin/emacsclient"  ]; then
     EMACSCLIENT="/usr/local/bin/emacsclient"
     # sh ~/.emacs.d/bin/emd
     call_emacsclient "$@"
