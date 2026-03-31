@@ -192,7 +192,7 @@ mods = "Super|Control"
 [selection]
 save_to_clipboard = true
 [window]
-decorations = "none"            #full/none
+decorations = "full"            #full/none
 opacity = 1.0
 # decorations_theme_variant="Dark"
 # blur=true
