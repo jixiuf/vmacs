@@ -204,15 +204,7 @@ hs.timer.doAfter(1, function()
     end
 end)
 
-local task = hs.task.new("/usr/local/bin/kpmenu --daemon", function(exitCode, stdOut, stdErr)
-    if exitCode == 0 then
-        print("Command executed successfully:\n" .. stdOut)
-    else
-        print("Command failed with error code: " .. exitCode .. "\n" .. stdErr)
-    end
-end)
-
-task:start()
+hs.task.new("/usr/local/bin/kpmenu",nil):start()
 -- 启动 IPC 端口，让命令行工具可以与其通信
 -- /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c  "hs.eventtap.keyStrokes('Hello from Terminal')"
 -- /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.eventtap.keyStroke({'cmd'}, 'v')"

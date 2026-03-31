@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 (global-set-key (kbd "M-y") #'vmacs-yank-pop)
 (global-set-key (kbd "C-s-v") #'meep-clipboard-only-yank)             ;paste from clipboard
+(global-set-key (kbd "s-v") #'meep-clipboard-only-yank)             ;paste from clipboard
 (global-set-key (kbd "C-y") #'meep-clipboard-killring-yank) ;paste from kill ring
 (global-set-key (kbd "C-c ,") #'meep-move-to-bounds-of-thing-beginning)
 (global-set-key (kbd "C-c .") #'meep-move-to-bounds-of-thing-end)
