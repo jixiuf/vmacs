@@ -186,7 +186,7 @@ keymap:
       C-APOSTROPHE: [Shift_L-APOSTROPHE] #' "
       super-C-w: [C-x ,Shift-k] 
       M-v: M-v
-      C-c: [C-c,C-c]
+      C-c: [C-c]
       C-x: C-x
       Esc: f12
       C-comma: C-comma
