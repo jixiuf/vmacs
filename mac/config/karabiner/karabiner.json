@@ -520,9 +520,9 @@
                                 "type": "basic"
                             },
                             {
-                                "description": "spacebar-8 = command-g (飞连 toggle 连断)",
+                                "description": "spacebar-9 = command-g (飞连 toggle 连断)",
                                 "from": {
-                                    "key_code": "8",
+                                    "key_code": "9",
                                     "modifiers": {
                                         "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
@@ -539,7 +539,7 @@
                         ]
                     },
                     {
-                        "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书 H-esc:sleep H-b:mongo H-6:db",
+                      "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书,H-9:飞连 H-esc:sleep H-b:mongo H-6:db H-8:keepassxc",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -837,7 +837,7 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "com.sequelpro.SequelPro"
+                                            "com.mongodb.compass"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
@@ -876,6 +876,76 @@
                                     }
                                 },
                                 "to": [{ "shell_command": "open -b com.sequelpro.SequelPro" }],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "com.sequelpro.SequelPro"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "H-6 com.sequelpro.SequelPro",
+                                "from": {
+                                    "key_code": "6",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "h",
+                                        "modifiers": ["command"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },                          
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "org.keepassxc.keepassxc"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "H-8  org.keepassxc.keepassxc",
+                                "from": {
+                                    "key_code": "8",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "h",
+                                        "modifiers": ["command"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "org.keepassxc.keepassxc"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "description": "H-8  toggle org.keepassxc.keepassxc",
+                                "from": {
+                                    "key_code": "8",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [{ "shell_command": "open -b org.keepassxc.keepassxc" }],
                                 "type": "basic"
                             },
                             {
