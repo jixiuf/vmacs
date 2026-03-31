@@ -4,6 +4,6 @@ wlr-randr --output eDP-1 --scale 1.75
 pidof channel||channel&
 onlogin&
 systemctl --user stop emacs
-emacs -L ~/repos/reka/target/release -l ~/repos/reka/lisp/reka.el --eval '(reka-enable)'& 
+emacs -L ~/repos/reka/target/debug -l ~/repos/reka/lisp/reka.el --eval '(reka-enable)'& 
 # lazy-load-gpg after unlock
 pidof swaylock || swaylock ; emacsclient --eval '(lazy-load-gpg)'
