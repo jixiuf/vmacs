@@ -862,12 +862,12 @@
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "com.sequelpro.SequelPro"
+                                            "org.jkiss.dbeaver.core.product"
                                         ],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
-                                "description": "H-6  toggle com.sequelpro.SequelPro",
+                                "description": "H-6  toggle org.jkiss.dbeaver.core.product",
                                 "from": {
                                     "key_code": "6",
                                     "modifiers": {
@@ -875,19 +875,19 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b com.sequelpro.SequelPro" }],
+                                "to": [{ "shell_command": "open -b org.jkiss.dbeaver.core.product" }],
                                 "type": "basic"
                             },
                             {
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
-                                            "com.sequelpro.SequelPro"
+                                            "org.jkiss.dbeaver.core.product"
                                         ],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "H-6 com.sequelpro.SequelPro",
+                                "description": "H-6 org.jkiss.dbeaver.core.product",
                                 "from": {
                                     "key_code": "6",
                                     "modifiers": {
@@ -946,31 +946,6 @@
                                     }
                                 },
                                 "to": [{ "shell_command": "open -b org.keepassxc.keepassxc" }],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "com.sequelpro.SequelPro"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "H-6  com.sequelpro.SequelPro",
-                                "from": {
-                                    "key_code": "s",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
                                 "type": "basic"
                             },
                             {
