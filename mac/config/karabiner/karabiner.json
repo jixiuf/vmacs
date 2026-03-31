@@ -442,23 +442,6 @@
                                 "type": "basic"
                             },
                             {
-                                "description": "spacebar-t = command-t",
-                                "from": {
-                                    "key_code": "t",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "t",
-                                        "modifiers": ["right_command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
                                 "conditions": [
                                     {
                                         "bundle_identifiers": [
@@ -982,6 +965,19 @@
                                     }
                                 },
                                 "to": [{ "shell_command": "/usr/local/bin/kpmenu  --autotype --autotypeConfirm" }],
+                                "type": "basic"
+                            },
+                          
+                            {
+                                "description": " space-t:apmssh",
+                                "from": {
+                                    "key_code": "t",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH;/usr/local/bin/term.sh  --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc" }],
                                 "type": "basic"
                             }
                         ]
