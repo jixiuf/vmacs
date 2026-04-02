@@ -474,6 +474,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.electron\\.lark$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -2721,6 +2722,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2752,6 +2754,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2783,6 +2786,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2813,6 +2817,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2976,7 +2981,7 @@
                                             "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs","/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
