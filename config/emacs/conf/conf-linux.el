@@ -17,9 +17,6 @@
     (add-to-list 'rime-translate-keybindings  "M-v")
     ;; (global-set-key (kbd "<f11>") 'toggle-input-method)
     (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
-    (with-eval-after-load 'ewm
-      (require 'ewm-rime)
-      (ewm-rime-setup))
     )
   
   
