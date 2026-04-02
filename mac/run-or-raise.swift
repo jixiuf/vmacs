@@ -6,8 +6,10 @@ struct Options {
     var titlePattern: String?
     var bundleId: String?
     var appName: String?
+    var execPath: String?
     var isToggle: Bool = false
-    var fallbackCmd: String?
+    var envVars: [String] = []
+    var fallbackCmd: [String] = []  // Command and its arguments
 }
 
 func parseArgs() -> Options? {
@@ -30,13 +32,22 @@ func parseArgs() -> Options? {
             guard i + 1 < args.count else { return nil }
             options.appName = args[i + 1]
             i += 2
+        case "--exec":
+            guard i + 1 < args.count else { return nil }
+            options.execPath = args[i + 1]
+            i += 2
+        case "--env":
+            guard i + 1 < args.count else { return nil }
+            options.envVars.append(args[i + 1])
+            i += 2
         case "--toggle":
             options.isToggle = true
             i += 1
         case "--cmd":
+            // Take all remaining arguments as the command
             guard i + 1 < args.count else { return nil }
-            options.fallbackCmd = args[i + 1]
-            i += 2
+            options.fallbackCmd = Array(args[(i + 1)...])
+            i = args.count  // Exit loop
         default:
             return nil
         }
@@ -73,7 +84,6 @@ func getWindowsInZOrder() -> [WindowInfo] {
     // Build a map of pid -> app
     var appMap: [pid_t: NSRunningApplication] = [:]
     for app in workspace.runningApplications {
-        guard app.activationPolicy == .regular else { continue }
         appMap[app.processIdentifier] = app
     }
     
@@ -138,11 +148,83 @@ func regexMatch(_ string: String, _ pattern: String) -> Bool {
     return regex.firstMatch(in: string, options: [], range: range) != nil
 }
 
+func getExecInfo(_ path: String) -> (bundleId: String?, appName: String?, execPath: String)? {
+    let fm = FileManager.default
+    var execPath = path
+    
+    if !path.hasPrefix("/") {
+        if let foundPath = which(path) {
+            execPath = foundPath
+        } else {
+            return nil
+        }
+    }
+    
+    guard fm.fileExists(atPath: execPath) else { return nil }
+    
+    var resolvedPath = execPath
+    if let target = try? fm.destinationOfSymbolicLink(atPath: execPath) {
+        resolvedPath = target
+    }
+    
+    if execPath.hasSuffix(".app") {
+        let appUrl = URL(fileURLWithPath: execPath)
+        if let bundle = Bundle(url: appUrl), let bundleId = bundle.bundleIdentifier {
+            return (bundleId, appUrl.deletingPathExtension().lastPathComponent, execPath)
+        }
+        return nil
+    }
+    
+    let workspace = NSWorkspace.shared
+    for app in workspace.runningApplications {
+        guard let exec = app.executableURL?.path else { continue }
+        var appExec = exec
+        if let target = try? fm.destinationOfSymbolicLink(atPath: exec) {
+            appExec = target
+        }
+        if appExec == resolvedPath || execPath == appExec {
+            return (app.bundleIdentifier, app.localizedName, resolvedPath)
+        }
+    }
+    
+    return (nil, nil, resolvedPath)
+}
+
+func which(_ command: String) -> String? {
+    let paths = ProcessInfo.processInfo.environment["PATH"]?.split(separator: ":") ?? []
+    for dir in paths {
+        let fullPath = "\(dir)/\(command)"
+        if FileManager.default.fileExists(atPath: fullPath) {
+            return fullPath
+        }
+    }
+    return nil
+}
+
 func matchesOptions(_ info: WindowInfo, _ options: Options) -> Bool {
     let titleMatch = options.titlePattern.map { regexMatch(info.title, $0) } ?? true
     let bundleMatch = options.bundleId.map { info.app.bundleIdentifier == $0 } ?? true
     let appMatch = options.appName.map { regexMatch(info.app.localizedName ?? "", $0) } ?? true
-    return titleMatch && bundleMatch && appMatch
+    
+    var execMatch = true
+    if let execPath = options.execPath {
+        if let execInfo = getExecInfo(execPath) {
+            let matchesBundle = execInfo.bundleId.map { $0 == info.app.bundleIdentifier } ?? false
+            let matchesApp = execInfo.appName.map { regexMatch(info.app.localizedName ?? "", $0) } ?? false
+            let matchesExec = info.app.executableURL.map { appExec in
+                var appPath = appExec.path
+                if let target = try? FileManager.default.destinationOfSymbolicLink(atPath: appPath) {
+                    appPath = target
+                }
+                return appPath == execInfo.execPath || execPath == appExec.path
+            } ?? false
+            execMatch = matchesBundle || matchesApp || matchesExec
+        } else {
+            execMatch = false
+        }
+    }
+    
+    return titleMatch && bundleMatch && appMatch && execMatch
 }
 
 func focusWindow(_ info: WindowInfo) {
@@ -154,7 +236,20 @@ func focusWindow(_ info: WindowInfo) {
         usleep(100000)  // 100ms
     }
     
-    _ = info.app.activate()
+    if let execPath = info.app.executableURL?.path {
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = ["-a", execPath]
+        try? task.run()
+        task.waitUntilExit()
+    } else if let appName = info.app.localizedName {
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = ["-a", appName]
+        try? task.run()
+        task.waitUntilExit()
+    }
+    usleep(100000)
     
     let raiseResult = AXUIElementPerformAction(info.element, kAXRaiseAction as CFString)
     if raiseResult != .success {
@@ -198,20 +293,27 @@ guard checkAccessibilityPermission() else {
 }
 
 guard let options = parseArgs() else {
-    print("Usage: window_tool [--title \"regex\"] [--id bundle_id] [--app \"app_name\"] [--toggle] [--cmd \"command\"]")
+    print("Usage: run-or-raise [--title \"regex\"] [--id bundle_id] [--app \"app_name\"] [--exec \"command\"] [--env KEY=VALUE] [--toggle] [--cmd command args...]")
     print("  --title:  Window title regex pattern")
     print("  --id:     App bundle identifier (e.g., com.apple.Safari)")
     print("  --app:    App name regex pattern (e.g., Emacs, Firefox)")
+    print("  --exec:   Executable path or command name (e.g., /usr/bin/emacs, emacs)")
+    print("  --env:    Environment variable to set (can be used multiple times  --env key=value)")
     print("  --toggle: Hide if at last matched window, else cycle through matched windows")
-    print("  --cmd:    Command to run if window not found")
+    print("  --cmd:    Command to run if window not found (must be last option)")
+    print("")
+    print("Examples:")
+    print("  run-or-raise --app Emacs --cmd /usr/local/bin/emacsclient -c")
+    print("  run-or-raise --id org.mozilla.firefox --toggle")
+    print("  run-or-raise --exec emacs --env VISUAL=emacs")
     print("")
     print("When multiple windows match, repeated calls cycle through them.")
     print("With --toggle: if current window is the last match, switch to most recent non-matching window.")
     exit(1)
 }
 
-guard options.titlePattern != nil || options.bundleId != nil || options.appName != nil else {
-    print("ERROR: Must specify --title, --id, or --app")
+guard options.titlePattern != nil || options.bundleId != nil || options.appName != nil || options.execPath != nil else {
+    print("ERROR: Must specify --title, --id, --app, or --exec")
     exit(1)
 }
 
@@ -220,14 +322,42 @@ let matchedWindows = allWindows.filter { matchesOptions($0, options) }
 let unmatchedWindows = allWindows.filter { !matchesOptions($0, options) }
 
 if matchedWindows.isEmpty {
-    if let cmd = options.fallbackCmd {
-        print("NOT_FOUND: Running command: \(cmd)")
+    if !options.fallbackCmd.isEmpty {
+        print("NOT_FOUND: Running command: \(options.fallbackCmd.joined(separator: " "))")
+        var env = ProcessInfo.processInfo.environment
+        for varItem in options.envVars {
+            let parts = varItem.split(separator: "=", maxSplits: 1)
+            if parts.count == 2 {
+                env[String(parts[0])] = String(parts[1])
+            }
+        }
         let task = Process()
-        task.executableURL = URL(fileURLWithPath: "/bin/bash")
-        task.arguments = ["-c", cmd]
+        task.executableURL = URL(fileURLWithPath: options.fallbackCmd[0])
+        task.environment = env
+        if options.fallbackCmd.count > 1 {
+            task.arguments = Array(options.fallbackCmd[1...])
+        }
         try? task.run()
-        task.waitUntilExit()
         exit(0)
+    } else if let bundleId = options.bundleId {
+        print("NOT_FOUND: Opening bundle: \(bundleId)")
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = ["-b", bundleId]
+        try? task.run()
+        exit(0)
+    } else if let execPath = options.execPath {
+        if let execInfo = getExecInfo(execPath), execInfo.bundleId != nil {
+            print("NOT_FOUND: Opening: \(execInfo.appName ?? execPath)")
+            let task = Process()
+            task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            task.arguments = ["-a", execInfo.execPath]
+            try? task.run()
+            exit(0)
+        } else {
+            print("NOT_FOUND: No matching window")
+            exit(1)
+        }
     } else {
         print("NOT_FOUND: No matching window")
         exit(1)
@@ -256,7 +386,7 @@ func writeCycleState(pattern: String, index: Int) {
 }
 
 // Build a pattern key for state tracking
-let patternKey = "\(options.appName ?? "")-\(options.bundleId ?? "")-\(options.titlePattern ?? "")"
+let patternKey = "\(options.appName ?? "")-\(options.bundleId ?? "")-\(options.titlePattern ?? "")-\(options.execPath ?? "")"
 
 if matchedWindows.count == 1 {
     // Only one matched window

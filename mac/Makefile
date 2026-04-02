@@ -21,7 +21,6 @@ port:
 deploy:
 	@-mkdir -p  ~/Library/LaunchAgents/
 	@-mkdir -p /usr/local/etc/
-	@-swiftc  ./run-or-raise.swift -o ./bin/run-or-raise
 
 # @-$(LINK_CMD) $(PWD)/LaunchAgents/git_pull_master.sh ~/Library/LaunchAgents/git_pull_master.sh
 # @-$(LINK_CMD) $(PWD)/LaunchAgents/git_pull_master.plist ~/Library/LaunchAgents/
@@ -42,15 +41,6 @@ deploy:
 			rm -rf ~/.$$link_name ;\
         fi;\
 		$(LINK_CMD) $(PWD)/$$file ~/.$$link_name ;\
-	done
-	@mkdir -p ~/bin
-	@-for file in bin/*; do \
-		if [ -h /$$file ]; then \
-		rm -rf /$$file ;\
-        fi;\
-		if	[ -f $$file ]; then \
-			$(LINK_CMD) $(PWD)/$$file ~/$$file ;\
-		fi;\
 	done
 
 	@-rm -rf $$HOME/.hammerspoon
@@ -87,3 +77,14 @@ sudo:
 	launchctl limit maxfiles 100000 100000
 	launchctl limit maxproc 20000 20000
 	sudo rm -f  /etc/zprofile
+	@-swiftc  ./run-or-raise.swift -o ./bin/run-or-raise
+	@mkdir -p /usr/local/bin
+	@chown -R jixiuf /usr/local/bin
+	@-for file in bin/*; do \
+		if [ -h /$$file ]; then \
+		rm -rf /$$file ;\
+        fi;\
+		if	[ -f $$file ]; then \
+			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
+		fi;\
+	done
