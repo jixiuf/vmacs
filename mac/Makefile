@@ -79,6 +79,7 @@ sudo:
 	sudo rm -f  /etc/zprofile
 	@-swiftc  ./run-or-raise.swift -o ./bin/run-or-raise
 	@mkdir -p /usr/local/bin
+	@chown -R jixiuf ./bin
 	@chown -R jixiuf /usr/local/bin
 	@-for file in bin/*; do \
 		if [ -h /$$file ]; then \

@@ -542,14 +542,6 @@
                       "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书,H-9:飞连 H-esc:sleep H-b:mongo H-6:db H-8:keepassxc",
                         "manipulators": [
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
                                 "description": "spacebar-e  toggle Emacs",
                                 "from": {
                                     "key_code": "e",
@@ -558,43 +550,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/usr/local/bin/ec" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --exec emacs --cmd emacs" }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "spacebar-e  toggle Emacs",
-                                "from": {
-                                    "key_code": "e",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "cn.apifox.app-pdv"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
                                 "description": "spacebar-5  toggle apifox",
                                 "from": {
                                     "key_code": "5",
@@ -603,43 +562,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b cn.apifox.app-pdv" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id cn.apifox.app-pdv" }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^cn.apifox.app-pdv"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "spacebar-5  toggle apifox",
-                                "from": {
-                                    "key_code": "5",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.tencent\\.xinWeChat"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
                                 "description": "spacebar-g  toggle 微信",
                                 "from": {
                                     "key_code": "g",
@@ -648,43 +574,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b com.tencent.xinWeChat" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id com.tencent.xinWeChat " }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.tencent\\.xinWeChat"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "spacebar-g  toggle 微信",
-                                "from": {
-                                    "key_code": "g",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.electron\\.lark"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
                                 "description": "spacebar-3  toggle 飞书",
                                 "from": {
                                     "key_code": "3",
@@ -693,43 +586,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b com.electron.lark" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id com.electron.lark --skip-title 'WatermarkWidget'" }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.electron\\.lark"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "spacebar-3  toggle 飞书",
-                                "from": {
-                                    "key_code": "3",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.mozilla\\.firefox"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
                                 "description": "spacebar-f  toggle firefox",
                                 "from": {
                                     "key_code": "f",
@@ -738,35 +598,9 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id org.mozilla.firefox " }],
                                 "type": "basic"
                             },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.mozilla\\.firefox"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "spacebar-f  toggle chrome",
-                                "from": {
-                                    "key_code": "f",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [{ "shell_command": "open /Applications/Firefox.app" }],
-                                "type": "basic"
-                            },
-                          
                             {
                                 "description": " space-t:apmssh",
                                 "from": {
@@ -776,20 +610,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH;/usr/local/bin/term.sh  --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc" }],
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title ssh --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
                                 "description": "spacebar-d  toggle iterm",
                                 "from": {
                                     "key_code": "d",
@@ -798,45 +622,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --exec alacritty  --skip-title 'ssh' --cmd alacritty" }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$"
-                                        ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "spacebar-d  toggle iterm",
-                                "from": {
-                                    "key_code": "d",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [{ "shell_command": "open  -a /Applications/MacPorts/Alacritty.app" }],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "com.mongodb.compass"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
                                 "description": "H-b  toggle com.mongodb.compass",
                                 "from": {
                                     "key_code": "b",
@@ -845,43 +634,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b com.mongodb.compass" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id com.mongodb.compass" }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "com.mongodb.compass"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "H-b com.mongodb.compass",
-                                "from": {
-                                    "key_code": "b",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "org.jkiss.dbeaver.core.product"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
                                 "description": "H-6  toggle org.jkiss.dbeaver.core.product",
                                 "from": {
                                     "key_code": "6",
@@ -890,43 +646,10 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "open -b org.jkiss.dbeaver.core.product" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id org.jkiss.dbeaver.core.product" }],
                                 "type": "basic"
                             },
                             {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "org.jkiss.dbeaver.core.product"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "H-6 org.jkiss.dbeaver.core.product",
-                                "from": {
-                                    "key_code": "6",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },                          
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "org.keepassxc.keepassxc"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
                                 "description": "H-8  org.keepassxc.keepassxc",
                                 "from": {
                                     "key_code": "8",
@@ -935,32 +658,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [
-                                    {
-                                        "key_code": "h",
-                                        "modifiers": ["command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "org.keepassxc.keepassxc"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "description": "H-8  toggle org.keepassxc.keepassxc",
-                                "from": {
-                                    "key_code": "8",
-                                    "modifiers": {
-                                        "mandatory": ["left_command", "left_control"],
-                                        "optional": ["caps_lock"]
-                                    }
-                                },
-                                "to": [{ "shell_command": "open -b org.keepassxc.keepassxc" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id org.keepassxc.keepassxc" }],
                                 "type": "basic"
                             },
                             {
@@ -3911,6 +3609,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3939,6 +3638,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3967,6 +3667,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4006,6 +3707,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4034,6 +3736,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4062,6 +3765,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4090,6 +3794,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4118,6 +3823,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4151,6 +3857,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4184,6 +3891,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4212,6 +3920,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4245,6 +3954,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4278,6 +3988,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
