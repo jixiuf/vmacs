@@ -99,7 +99,7 @@ if [ -z "$auto_type_cmd" ]; then
             WINDOW_TITLE=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
         fi
     fi
-    
+
     if [ -z "$WINDOW_CLASS" ]; then
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
             WINDOW_CLASS=`hyprctl activewindow -j |jq -rc '.class'`
@@ -164,8 +164,59 @@ send_key(){
     elif [[ "$auto_type_cmd" = "dotool"* ]]; then
          echo key $1 |$auto_type_cmd
     elif [ "$(uname)" = "Darwin" ]; then
-        # should transform to hs
-        /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.eventtap.keyStroke({'cmd'}, 'v')"
+        # Parse modifiers and key for Hammerspoon
+        local input="$1"
+        local modifiers=""
+        local key=""
+
+        # Extract key (last part after the last +)
+        key="${input##*+}"
+        # Extract modifiers (everything before the last +)
+        if [[ "$input" == *"+"* ]]; then
+            modifiers="${input%+*}"
+        fi
+
+        # Convert modifier names to Hammerspoon format
+        local hs_modifiers=""
+        local mod_array=()
+        IFS='+' read -ra MODS <<< "$modifiers"
+        for mod in "${MODS[@]}"; do
+            case "$mod" in
+                ctrl)  mod_array+=('"cmd"') ;;
+                shift) mod_array+=('"shift"') ;;
+                alt)   mod_array+=('"alt"') ;;
+                super) mod_array+=('"cmd"') ;;
+            esac
+        done
+
+        # Join modifiers with commas
+        if [ ${#mod_array[@]} -gt 0 ]; then
+            hs_modifiers=$(IFS=,; echo "${mod_array[*]}")
+        fi
+
+        # Convert key names to Hammerspoon format
+        case "$key" in
+            enter|return) key="return" ;;
+            escape|esc) key="escape" ;;
+            tab) key="tab" ;;
+            space) key="space" ;;
+            backspace|bs) key="delete" ;;
+            delete|del) key="forwarddelete" ;;
+            insert) key="help" ;;
+            home) key="home" ;;
+            end) key="end" ;;
+            pageup|pgup) key="pageup" ;;
+            pagedown|pgdn) key="pagedown" ;;
+            up) key="up" ;;
+            down) key="down" ;;
+            left) key="left" ;;
+            right) key="right" ;;
+            f1|f2|f3|f4|f5|f6|f7|f8|f9|f10|f11|f12) ;; # F-keys stay the same
+            *) key="$key" ;; # For regular keys, use as-is
+        esac
+
+        local lua_cmd="hs.eventtap.keyStroke({${hs_modifiers}}, '${key}')"
+        /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "$lua_cmd"
     fi
 }
 send_enter(){
