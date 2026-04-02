@@ -6,7 +6,7 @@
 # support auto type text,keys with tmux,dotool
 # support dotool key like : super+alt+ctrl+enter
 
-TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-.*wezterm.*|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH|sshemacs}
+TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-.*wezterm.*|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH|sshemacs|alacritty}
 WINDOW_TITLE=${WINDOW_TITLE:-}  # current window title
 WINDOW_CLASS=${WINDOW_CLASS:-}  # current window class
 # tmux,dotoolc,dotool
@@ -95,7 +95,8 @@ if [ -z "$auto_type_cmd" ]; then
             WINDOW_TITLE=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.title`
         elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
             WINDOW_TITLE=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.title'`
-            
+        elif [ "$(uname)" = "Darwin" ]; then
+            WINDOW_TITLE=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
         fi
     fi
     
@@ -107,9 +108,11 @@ if [ -z "$auto_type_cmd" ]; then
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
             WINDOW_CLASS=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|(.app_id // .window_properties.class // "")'|head -n 1`
         elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
-            WINDOW_TITLE=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.title`
+            WINDOW_CLASS=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.app`
         elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
-            WINDOW_TITLE=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.title'`
+            WINDOW_CLASS=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.app'`
+        elif [ "$(uname)" = "Darwin" ]; then
+            WINDOW_CLASS=$(osascript -e 'tell application "System Events" to get name of (first application process whose frontmost is true)' 2>/dev/null)
         fi
     fi
     if [[ $WINDOW_TITLE == TMUX:* ]]; then
@@ -124,6 +127,8 @@ if [ -z "$auto_type_cmd" ]; then
         auto_type_cmd="dotoolc"
     elif [ hash dotool 2>/dev/null ]; then
         auto_type_cmd="dotool"
+    elif [ "$(uname)" = "Darwin" ]; then
+        auto_type_cmd="/Applications/Hammerspoon.app/Contents/Frameworks/hs/hs"
     fi
 fi
 
@@ -148,6 +153,8 @@ send_text(){
         send_key shift+insert
     elif [[ "$auto_type_cmd" = "dotool"* ]] ; then
          echo type $1 |$auto_type_cmd
+    elif [ "$(uname)" = "Darwin" ]; then
+        /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c  "hs.eventtap.keyStrokes(\"$1\")"
     fi
 }
 send_key(){
@@ -156,6 +163,9 @@ send_key(){
         $auto_type_cmd $key
     elif [[ "$auto_type_cmd" = "dotool"* ]]; then
          echo key $1 |$auto_type_cmd
+    elif [ "$(uname)" = "Darwin" ]; then
+        # should transform to hs
+        /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.eventtap.keyStroke({'cmd'}, 'v')"
     fi
 }
 send_enter(){
@@ -163,6 +173,8 @@ send_enter(){
         $auto_type_cmd enter
     elif [[ "$auto_type_cmd" = "dotool"* ]]; then
          echo key enter |$auto_type_cmd
+    elif [ "$(uname)" = "Darwin" ]; then
+        /Applications/Hammerspoon.app/Contents/Frameworks/hs/hs -c "hs.eventtap.keyStroke({}, 'return')"
     fi
 }
 
