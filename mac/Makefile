@@ -21,6 +21,7 @@ port:
 deploy:
 	@-mkdir -p  ~/Library/LaunchAgents/
 	@-mkdir -p /usr/local/etc/
+	@-swiftc  ./run-or-raise.swift -o ./bin/run-or-raise
 
 # @-$(LINK_CMD) $(PWD)/LaunchAgents/git_pull_master.sh ~/Library/LaunchAgents/git_pull_master.sh
 # @-$(LINK_CMD) $(PWD)/LaunchAgents/git_pull_master.plist ~/Library/LaunchAgents/
