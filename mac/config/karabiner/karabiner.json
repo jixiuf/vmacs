@@ -306,7 +306,32 @@
                                     }
                                 ],
                                 "type": "basic"
-                            }
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^org\\.gnu\\.AquamacsEmacs$",
+                                            "^org\\.alacritty$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^org\\.gnu\\.Aquamacs$"
+                                        ],
+                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "emacs 按 ctrl-g 切换 english 输入法",
+                                "from": {
+                                    "key_code": "t",
+                                    "modifiers": {
+                                        "mandatory": ["control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd" }],
+                                "type": "basic"
+                            }                          
                         ]
                     },
                     {
