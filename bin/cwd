@@ -29,68 +29,74 @@
 
 TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-org\.wezfurlong\.wezterm|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH|sshemacs|alacritty}
 
-if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-    appinfo=`hyprctl activewindow -j`
-    class=`echo $appinfo|jq -r '.class'|head -n 1`
-    title=$(echo $appinfo|jq -r '.title')
-elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
-    appinfo=`niri msg -j focused-window`
-    class=`echo $appinfo|jq -r '.app_id'`
-    title=`echo $appinfo|jq -r '.title'`
-elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
-    appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
-    class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
-    title=$(echo $appinfo|jq -r '.name')
-elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
-    appinfo=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r`
-    class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
-    title=$(echo $appinfo|jq -r '.title')
-elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
-    appinfo=`emacsclient --eval "(reka-get-window-info-json)"|jq -r`
-    class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
-    title=$(echo $appinfo|jq -r '.title')
-elif [ "$(uname)" = "Darwin" ]; then
-    # macOS: get frontmost application name and window title via osascript
-    class=$(osascript -e 'tell application "System Events" to get name of (first application process whose frontmost is true)' 2>/dev/null)
-    title=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
-    appinfo="macos"
-fi
-if [ -n "$appinfo" ]; then
-    # if front app exits
-    if [[ "$class" = "emacs" ]]; then
-        temp=${title#*GNU/Emacs<}
-        cwd=${temp%>*}
-        # eval "cwd=$cwd"         # replace ~ -> $HOME
-        cwd="${cwd/#\~/$HOME}"
-        echo $cwd
-        exit 0
-    elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ ]]; then
-        # for zsh
-        # autoload -U add-zsh-hook
-        # update_cwd(){
-        #     print -Pn "\e]2;$(pwd)\a" #s
-        # }
-        # add-zsh-hook precmd update_cwd
-        # if you use  'oh my zsh' ,set DISABLE_AUTO_TITLE=true before source $ZSH/oh-my-zsh.sh
-        # DISABLE_AUTO_TITLE=true
-        # source $ZSH/oh-my-zsh.sh
-        cwd=$title
-        while [[ $cwd == TMUX:* ]]; do
-            # Remove the prefix "TMUX:" and then split the remaining string by ":"
-            # format of tmux window title： "TMUX:session:path"
-            # set -g set-titles on
-            # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
-            # see https://github.com/jixiuf/vmacs/blob/master/linux/config/tmux/tmux.conf#L158
-            cwd=${cwd#TMUX:}
-            tmux_session=${cwd%%:*}
-            cwd=${cwd#*:}
+# Prefer environment variables set by run-or-raise --pre-cmd
+class=${SOURCE_APP:-}
+title=${SOURCE_TITLE:-}
 
-            cwd=${cwd#*GNU/Emacs<}
-            cwd=${cwd%>*}
-        done
-        cwd="${cwd/#\~/$HOME}"  # replace ~ -> $HOME
-        echo $cwd
-        exit 0
+# Fallback to desktop environment API if env vars are not set
+if [ -z "$class" ] || [ -z "$title" ]; then
+    if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
+        appinfo=`hyprctl activewindow -j`
+        class=`echo $appinfo|jq -r '.class'|head -n 1`
+        title=$(echo $appinfo|jq -r '.title')
+    elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
+        appinfo=`niri msg -j focused-window`
+        class=`echo $appinfo|jq -r '.app_id'`
+        title=`echo $appinfo|jq -r '.title'`
+    elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
+        appinfo=`swaymsg -t get_tree | jq -r 'recurse(.nodes[], .floating_nodes[]) |select(.focused)'`
+        class=`echo $appinfo|jq -r '(.app_id // .window_properties.class // "")'|head -n 1`
+        title=$(echo $appinfo|jq -r '.name')
+    elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
+        appinfo=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r`
+        class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
+        title=$(echo $appinfo|jq -r '.title')
+    elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
+        appinfo=`emacsclient --eval "(reka-get-window-info-json)"|jq -r`
+        class=`echo $appinfo|jq -r '(.app // "")'|head -n 1`
+        title=$(echo $appinfo|jq -r '.title')
+    elif [ "$(uname)" = "Darwin" ]; then
+        class=$(osascript -e 'tell application "System Events" to get name of (first application process whose frontmost is true)' 2>/dev/null)
+        title=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
     fi
+    # Merge with env vars (env vars take precedence)
+    class=${class:-${SOURCE_APP:-}}
+    title=${title:-${SOURCE_TITLE:-}}
+fi
+# if front app exits
+if [[ "$class" = "emacs" ]]; then
+    temp=${title#*GNU/Emacs<}
+    cwd=${temp%>*}
+    # eval "cwd=$cwd"         # replace ~ -> $HOME
+    cwd="${cwd/#\~/$HOME}"
+    echo $cwd
+    exit 0
+elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ ]]; then
+    # for zsh
+    # autoload -U add-zsh-hook
+    # update_cwd(){
+    #     print -Pn "\e]2;$(pwd)\a" #s
+    # }
+    # add-zsh-hook precmd update_cwd
+    # if you use  'oh my zsh' ,set DISABLE_AUTO_TITLE=true before source $ZSH/oh-my-zsh.sh
+    # DISABLE_AUTO_TITLE=true
+    # source $ZSH/oh-my-zsh.sh
+    cwd=$title
+    while [[ $cwd == TMUX:* ]]; do
+        # Remove the prefix "TMUX:" and then split the remaining string by ":"
+        # format of tmux window title： "TMUX:session:path"
+        # set -g set-titles on
+        # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
+        # see https://github.com/jixiuf/vmacs/blob/master/linux/config/tmux/tmux.conf#L158
+        cwd=${cwd#TMUX:}
+        tmux_session=${cwd%%:*}
+        cwd=${cwd#*:}
+
+        cwd=${cwd#*GNU/Emacs<}
+        cwd=${cwd%>*}
+    done
+    cwd="${cwd/#\~/$HOME}"  # replace ~ -> $HOME
+    echo $cwd
+    exit 0
 fi
 exit 1

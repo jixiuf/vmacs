@@ -329,7 +329,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd" }],
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title emacscwd --post-cmd /usr/local/bin/cd.sh --cmd /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd" }],
                                 "type": "basic"
                             }                          
                         ]
@@ -648,7 +648,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --exec alacritty  --skip-title 'ssh' --cmd alacritty" }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --skip-title 'ssh' --post-cmd /usr/local/bin/cd.sh --cmd  /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM " }],
                                 "type": "basic"
                             },
                             {

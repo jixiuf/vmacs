@@ -3,7 +3,17 @@
 WINDOW_TITLE=${WINDOW_TITLE:-}
 WINDOW_CLASS=${WINDOW_CLASS:-}
 
+# Get cwd: prefer $1, fallback to cwd script (which uses SOURCE_APP/SOURCE_TITLE)
+# demo export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title emacscwd --post-cmd /usr/local/bin/cd.sh --cmd /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd
 cwd="$1"
+if [ -z "$cwd" ]; then
+    cwd=$(cwd 2>/dev/null)
+fi
+
+# If cwd is still empty, exit early
+if [ -z "$cwd" ]; then
+    exit 0
+fi
 
 send_txt(){
     autotype.sh --type "$1"  --key enter

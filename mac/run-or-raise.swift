@@ -460,56 +460,42 @@ func focusWindow(_ info: WindowInfo) {
            && Date() < deadline
 }
 
-func executePreCmd(_ cmd: [String], sourceWindow: WindowInfo?) -> String? {
-    guard !cmd.isEmpty else { return nil }
-    
+func executePreCmd(_ cmd: [String], sourceWindow: WindowInfo?) {
+    guard !cmd.isEmpty else { return }
+
     var env = ProcessInfo.processInfo.environment
     if env["PATH"] == nil {
         env["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/local/bin"
     }
-    
+
     // Inject source window info as environment variables
     if let src = sourceWindow {
         env["SOURCE_TITLE"] = src.title
         env["SOURCE_APP"] = src.app.localizedName ?? ""
         env["SOURCE_PID"] = String(src.pid)
     }
-    
+
     let task = Process()
     var cmdPath = cmd[0]
-    
+
     // Resolve command path
     if !cmdPath.hasPrefix("/") {
         if let found = which(cmdPath) {
             cmdPath = found
         }
     }
-    
+
     task.executableURL = URL(fileURLWithPath: cmdPath)
     task.environment = env
     if cmd.count > 1 {
         task.arguments = Array(cmd[1...])
     }
-    
-    // Capture stdout to a temp file
-    let outputFile = "/tmp/run_or_raise_pre_output"
-    let pipe = Pipe()
-    task.standardOutput = pipe
-    
+
     do {
         try task.run()
-        task.waitUntilExit()
-        
-        // Read stdout and write to file
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        try output.write(toFile: outputFile, atomically: true, encoding: .utf8)
-        
-        return output
     } catch {
         print("ERROR: Failed to execute pre command: \(cmd.joined(separator: " "))")
         print("       \(error)")
-        return nil
     }
 }
 
@@ -534,10 +520,7 @@ func executePostCmd(_ cmd: [String], sourceWindow: WindowInfo?, targetWindow: Wi
         env["TARGET_APP"] = tgt.app.localizedName ?? ""
         env["TARGET_PID"] = String(tgt.pid)
     }
-    
-    // Add pre-cmd output file path
-    env["PRE_OUTPUT_FILE"] = "/tmp/run_or_raise_pre_output"
-    
+
     let task = Process()
     var cmdPath = cmd[0]
     
@@ -638,11 +621,10 @@ guard let options = parseArgs() else {
     print("  --env KEY=VALUE    Set environment variable when launching (--cmd). Repeatable.")
     print("  --pre-cmd <cmd> [args]")
     print("                     Command to run BEFORE focusing a window.")
-    print("                     Captures stdout to /tmp/run_or_raise_pre_output.")
     print("                     Receives env vars: SOURCE_TITLE, SOURCE_APP, SOURCE_PID")
     print("  --post-cmd <cmd> [args]")
     print("                     Command to run AFTER focusing a window.")
-    print("                     Receives env vars: SOURCE_*, TARGET_*, PRE_OUTPUT_FILE")
+    print("                     Receives env vars: SOURCE_*, TARGET_*")
     print("  --cmd <cmd> [args] Command to run when no matching window is found.")
     print("                     Both --pre-cmd, --post-cmd and --cmd can be used together:")
     print("                     --pre-cmd cwd --post-cmd cd.sh --cmd emacs")
@@ -660,7 +642,6 @@ guard let options = parseArgs() else {
     print("  TARGET_TITLE       Title of the window being focused")
     print("  TARGET_APP         App name of the target window")
     print("  TARGET_PID         PID of the target window")
-    print("  PRE_OUTPUT_FILE    Path to pre-cmd stdout (/tmp/run_or_raise_pre_output)")
     print("")
     print("How to find a bundle ID:")
     print("  # From a running app (replace 'Safari' with the app name):")
@@ -948,7 +929,7 @@ if matchedWindows.count == 1 {
         
         // Execute pre command if specified
         if !options.preCmd.isEmpty {
-            _ = executePreCmd(options.preCmd, sourceWindow: sourceWindow)
+            executePreCmd(options.preCmd, sourceWindow: sourceWindow)
         }
         
         focusWindow(theMatch)
@@ -1005,7 +986,7 @@ let sourceWindow = getFrontmostWindowInfo()
 
 // Execute pre command if specified (before focus)
 if !options.preCmd.isEmpty {
-    _ = executePreCmd(options.preCmd, sourceWindow: sourceWindow)
+    executePreCmd(options.preCmd, sourceWindow: sourceWindow)
 }
 
 focusWindow(matchedWindows[nextIndex])
