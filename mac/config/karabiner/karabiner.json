@@ -312,16 +312,13 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
-                                            "^org\\.gnu\\.AquamacsEmacs$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^org\\.gnu\\.Aquamacs$"
+                                            "^org\\.gnu\\.AquamacsEmacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
-                                "description": "emacs 按 ctrl-g 切换 english 输入法",
+                                "description": "emacs C-t",
                                 "from": {
                                     "key_code": "t",
                                     "modifiers": {
