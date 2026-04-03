@@ -12,6 +12,8 @@ struct Options {
     var matchAll: Bool = true  // true=AND, false=OR
     var envVars: [String] = []
     var fallbackCmd: [String] = []  // Command and its arguments
+    var postCmd: [String] = []  // Command to run after focusing a window
+    var preCmd: [String] = []   // Command to run before focusing a window
 }
 
 func parseArgs() -> Options? {
@@ -57,27 +59,36 @@ func parseArgs() -> Options? {
         case "--toggle":
             options.isToggle = true
             i += 1
+        case "--post-cmd":
+            // Take arguments until next known option or end
+            var j = i + 1
+            let nextOptions = Set(["--title", "--id", "--app", "--exec", "--env", "--skip-title", "--match", "--toggle", "--cmd", "--post-cmd", "--pre-cmd"])
+            while j < args.count && !nextOptions.contains(args[j]) {
+                j += 1
+            }
+            guard j > i + 1 else { return nil }
+            options.postCmd = Array(args[(i + 1)..<j])
+            i = j
+        case "--pre-cmd":
+            // Take arguments until next known option or end
+            var j = i + 1
+            let nextOptions = Set(["--title", "--id", "--app", "--exec", "--env", "--skip-title", "--match", "--toggle", "--cmd", "--post-cmd", "--pre-cmd"])
+            while j < args.count && !nextOptions.contains(args[j]) {
+                j += 1
+            }
+            guard j > i + 1 else { return nil }
+            options.preCmd = Array(args[(i + 1)..<j])
+            i = j
         case "--cmd":
-            // Take all remaining arguments as the command
-            guard i + 1 < args.count else { return nil }
-            options.fallbackCmd = Array(args[(i + 1)...])
-            
-            // Check if any known options appear after --cmd and warn
-            let knownOptions = Set(["--title", "--id", "--app", "--exec", "--env", "--skip-title", "--match", "--toggle", "--cmd"])
-            var misplacedArgs: [String] = []
-            for arg in options.fallbackCmd {
-                if knownOptions.contains(arg) {
-                    misplacedArgs.append(arg)
-                }
+            // Take arguments until next known option or end
+            var j = i + 1
+            let nextOptions = Set(["--title", "--id", "--app", "--exec", "--env", "--skip-title", "--match", "--toggle", "--cmd", "--post-cmd", "--pre-cmd"])
+            while j < args.count && !nextOptions.contains(args[j]) {
+                j += 1
             }
-            if !misplacedArgs.isEmpty {
-                print("WARNING: The following options appear after --cmd and will be ignored:")
-                print("         \(misplacedArgs.joined(separator: ", "))")
-                print("         --cmd must be the last option. Place other options before --cmd.")
-                print("")
-            }
-            
-            i = args.count  // Exit loop
+            guard j > i + 1 else { return nil }
+            options.fallbackCmd = Array(args[(i + 1)..<j])
+            i = j
         default:
             return nil
         }
@@ -449,6 +460,108 @@ func focusWindow(_ info: WindowInfo) {
            && Date() < deadline
 }
 
+func executePreCmd(_ cmd: [String], sourceWindow: WindowInfo?) -> String? {
+    guard !cmd.isEmpty else { return nil }
+    
+    var env = ProcessInfo.processInfo.environment
+    if env["PATH"] == nil {
+        env["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/local/bin"
+    }
+    
+    // Inject source window info as environment variables
+    if let src = sourceWindow {
+        env["SOURCE_TITLE"] = src.title
+        env["SOURCE_APP"] = src.app.localizedName ?? ""
+        env["SOURCE_PID"] = String(src.pid)
+    }
+    
+    let task = Process()
+    var cmdPath = cmd[0]
+    
+    // Resolve command path
+    if !cmdPath.hasPrefix("/") {
+        if let found = which(cmdPath) {
+            cmdPath = found
+        }
+    }
+    
+    task.executableURL = URL(fileURLWithPath: cmdPath)
+    task.environment = env
+    if cmd.count > 1 {
+        task.arguments = Array(cmd[1...])
+    }
+    
+    // Capture stdout to a temp file
+    let outputFile = "/tmp/run_or_raise_pre_output"
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    
+    do {
+        try task.run()
+        task.waitUntilExit()
+        
+        // Read stdout and write to file
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        try output.write(toFile: outputFile, atomically: true, encoding: .utf8)
+        
+        return output
+    } catch {
+        print("ERROR: Failed to execute pre command: \(cmd.joined(separator: " "))")
+        print("       \(error)")
+        return nil
+    }
+}
+
+func executePostCmd(_ cmd: [String], sourceWindow: WindowInfo?, targetWindow: WindowInfo?) {
+    guard !cmd.isEmpty else { return }
+    
+    var env = ProcessInfo.processInfo.environment
+    if env["PATH"] == nil {
+        env["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/local/bin"
+    }
+    
+    // Inject source window info
+    if let src = sourceWindow {
+        env["SOURCE_TITLE"] = src.title
+        env["SOURCE_APP"] = src.app.localizedName ?? ""
+        env["SOURCE_PID"] = String(src.pid)
+    }
+    
+    // Inject target window info
+    if let tgt = targetWindow {
+        env["TARGET_TITLE"] = tgt.title
+        env["TARGET_APP"] = tgt.app.localizedName ?? ""
+        env["TARGET_PID"] = String(tgt.pid)
+    }
+    
+    // Add pre-cmd output file path
+    env["PRE_OUTPUT_FILE"] = "/tmp/run_or_raise_pre_output"
+    
+    let task = Process()
+    var cmdPath = cmd[0]
+    
+    // Resolve command path
+    if !cmdPath.hasPrefix("/") {
+        if let found = which(cmdPath) {
+            cmdPath = found
+        }
+    }
+    
+    task.executableURL = URL(fileURLWithPath: cmdPath)
+    task.environment = env
+    if cmd.count > 1 {
+        task.arguments = Array(cmd[1...])
+    }
+    
+    do {
+        try task.run()
+    } catch {
+        print("ERROR: Failed to execute post command: \(cmd.joined(separator: " "))")
+        print("       \(error)")
+    }
+}
+
 func hideWindow(_ info: WindowInfo) {
     AXUIElementSetAttributeValue(
         info.element,
@@ -523,8 +636,31 @@ guard let options = parseArgs() else {
     print("                     (macOS auto-restores the previous app).")
     print("                     Repeated presses cycle through all matched windows.")
     print("  --env KEY=VALUE    Set environment variable when launching (--cmd). Repeatable.")
+    print("  --pre-cmd <cmd> [args]")
+    print("                     Command to run BEFORE focusing a window.")
+    print("                     Captures stdout to /tmp/run_or_raise_pre_output.")
+    print("                     Receives env vars: SOURCE_TITLE, SOURCE_APP, SOURCE_PID")
+    print("  --post-cmd <cmd> [args]")
+    print("                     Command to run AFTER focusing a window.")
+    print("                     Receives env vars: SOURCE_*, TARGET_*, PRE_OUTPUT_FILE")
     print("  --cmd <cmd> [args] Command to run when no matching window is found.")
-    print("                     MUST be the last option — all remaining args are the command.")
+    print("                     Both --pre-cmd, --post-cmd and --cmd can be used together:")
+    print("                     --pre-cmd cwd --post-cmd cd.sh --cmd emacs")
+    print("                     Order is flexible: --cmd emacs --pre-cmd cwd also works.")
+    print("")
+    print("Environment variables for --pre-cmd:")
+    print("  SOURCE_TITLE       Title of the window being switched away from")
+    print("  SOURCE_APP         App name of the source window")
+    print("  SOURCE_PID         PID of the source window")
+    print("")
+    print("Environment variables for --post-cmd:")
+    print("  SOURCE_TITLE       Title of the window being switched away from")
+    print("  SOURCE_APP         App name of the source window")
+    print("  SOURCE_PID         PID of the source window")
+    print("  TARGET_TITLE       Title of the window being focused")
+    print("  TARGET_APP         App name of the target window")
+    print("  TARGET_PID         PID of the target window")
+    print("  PRE_OUTPUT_FILE    Path to pre-cmd stdout (/tmp/run_or_raise_pre_output)")
     print("")
     print("How to find a bundle ID:")
     print("  # From a running app (replace 'Safari' with the app name):")
@@ -784,6 +920,15 @@ func writeCycleState(pattern: String, index: Int) {
 let patternKey =
     "\(options.appName ?? "")-\(options.bundleId ?? "")-\(options.titlePattern ?? "")-\(options.execPath ?? "")"
 
+// Get the current frontmost window info before any focus changes (source window)
+func getFrontmostWindowInfo() -> WindowInfo? {
+    guard let frontApp = NSWorkspace.shared.frontmostApplication else { return nil }
+    let pid = frontApp.processIdentifier
+    let windows = getWindowsForPid(pid, frontApp)
+    // Return the first non-minimized window (usually the focused one)
+    return windows.first { !$0.isMinimized }
+}
+
 if matchedWindows.count == 1 {
     // Only one matched window
     let theMatch = matchedWindows[0]
@@ -798,9 +943,23 @@ if matchedWindows.count == 1 {
         print("HIDDEN: '\(theMatch.title)'")
         exit(0)
     } else {
+        // Get source window before focus change
+        let sourceWindow = getFrontmostWindowInfo()
+        
+        // Execute pre command if specified
+        if !options.preCmd.isEmpty {
+            _ = executePreCmd(options.preCmd, sourceWindow: sourceWindow)
+        }
+        
         focusWindow(theMatch)
         writeCycleState(pattern: patternKey, index: 0)
         print("FOCUS: '\(theMatch.title)'")
+
+        // Execute post command if specified
+        if !options.postCmd.isEmpty {
+            executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: theMatch)
+        }
+
         exit(0)
     }
 }
@@ -841,9 +1000,23 @@ if options.isToggle && nextIndex == 0 {
     }
 }
 
+// Get source window before any focus change
+let sourceWindow = getFrontmostWindowInfo()
+
+// Execute pre command if specified (before focus)
+if !options.preCmd.isEmpty {
+    _ = executePreCmd(options.preCmd, sourceWindow: sourceWindow)
+}
+
 focusWindow(matchedWindows[nextIndex])
 writeCycleState(pattern: patternKey, index: nextIndex)
 print(
     "CYCLE: \(nextIndex + 1)/\(matchedWindows.count) '\(matchedWindows[nextIndex].title)'"
 )
+
+// Execute post command if specified (after focus)
+if !options.postCmd.isEmpty {
+    executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: matchedWindows[nextIndex])
+}
+
 exit(0)
