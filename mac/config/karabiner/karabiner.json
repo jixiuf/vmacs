@@ -859,6 +859,37 @@
                         ]
                     },
                     {
+                        "description": "dbeaver C-r=refresh",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-w",
+                                        "type": "variable_if",
+                                        "value": 0
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "org\\.jkiss\\.dbeaver\\.core\\.product"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "db C-r =reload",
+                                "from": {
+                                    "key_code": "r",
+                                    "modifiers": { "mandatory": ["control"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "f5"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },                  
+                    {
                         "description": "firefox C-u reopen tab ctrl-s=cmd-f,C-,. =next/prev tab C-h/l=f/b",
                         "manipulators": [
                             {
