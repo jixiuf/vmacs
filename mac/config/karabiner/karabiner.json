@@ -640,9 +640,21 @@
                                 "type": "basic"
                             },
                             {
-                                "description": "spacebar-d  toggle iterm",
+                                "description": "spacebar-d  toggle term",
                                 "from": {
                                     "key_code": "d",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM " }],
+                                "type": "basic"
+                            },
+                            {
+                                "description": "spacebar-return  toggle term and cd ",
+                                "from": {
+                                    "key_code": "return_or_enter",
                                     "modifiers": {
                                         "mandatory": ["left_command", "left_control"],
                                         "optional": ["caps_lock"]
