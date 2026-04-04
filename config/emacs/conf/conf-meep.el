@@ -371,6 +371,10 @@
   (when (region-active-p)
     (when (> (point) (mark))
       (goto-char (mark)))))
+;; meep-insert
+(define-advice meep-insert (:around (orig-fun &rest args) check-state)
+  (unless (eq (meep-state) meep-state-insert)
+    (apply orig-fun args)))
 
 (advice-add 'meep-insert :before #'meep-insert-before)
 (defun meep--search-match (match)

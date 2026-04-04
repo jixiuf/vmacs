@@ -8,6 +8,7 @@
   (require 'ewm)
   (global-set-key (kbd "C-<tab>") #'consult-buffer)
   (add-to-list 'ewm-intercept-prefixes "C-<tab>")
+  (add-to-list 'ewm-intercept-prefixes "<f11>")
   (add-to-list 'ewm-intercept-prefixes ?\M-:)
   (ewm--send-intercept-keys)
   (setq ewm-output-config ;; wlr-randr
@@ -53,7 +54,7 @@
      "dbus-update-activation-environment --systemd --all")
     ;; (start-process-shell-command     "xremap" " *xremap*"     "/usr/local/bin/xremap-ewm ~/.config/xremap/xremap.yaml ~/.config/xremap/xremap-ewm.yaml --watch=device --ignore='dotool keyboard' ")
     (start-process-shell-command     "kpmenu" nil     "kpmenu --daemon")
-    ;; (start-process-shell-command     "swaylock" nil     "pidof swaylock || swaylock")
+    (start-process-shell-command     "swaylock" nil     "pidof swaylock || swaylock")
     (start-process-shell-command     "hypridle" nil     "pidof hypridle||hypridle")
     (start-process-shell-command     "wl-paste" nil     "pidof wl-paste ||wl-paste --watch cliphist-store&")
     (start-process-shell-command     "dex" nil     "dex -a -s /etc/xdg/autostart/:~/.config/autostart/")

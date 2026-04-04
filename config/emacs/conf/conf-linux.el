@@ -14,12 +14,9 @@
   (with-eval-after-load 'rime
     (require 'rime)
     (add-to-list 'rime-translate-keybindings "C-v")
-    (add-to-list 'rime-translate-keybindings  "M-v")
-    ;; (global-set-key (kbd "<f11>") 'toggle-input-method)
+    (add-to-list 'rime-translate-keybindings  "C-o")
     (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
     )
-  
-  
   (with-eval-after-load 'meep
     (add-hook 'input-method-activate-hook 'meep-insert t)))
 
@@ -32,7 +29,8 @@
    ((eq ime 'rime)
     (deactivate-input-method))
    ((eq ime 'ibus)
-    (call-process "ibus" nil nil nil "engine" "xkb:us::eng"))))
+    (call-process "ibus" nil nil nil "engine" "xkb:us::eng")))
+  (message "en"))
 
 (defun switch-to-rime-input-method ()
   "Switch to English input method."
@@ -43,7 +41,8 @@
    ((eq ime 'rime)
     (activate-input-method "rime"))
    ((eq ime 'ibus)
-    (call-process "ibus" nil nil nil "engine" "rime"))))
+    (call-process "ibus" nil nil nil "engine" "rime")))
+  (message "rime"))
 
 (defun get-input-method-state()
   (cond
@@ -60,6 +59,7 @@
                                meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
     (switch-to-english-input-method)));
 (add-hook 'meep-state-hook-normal-enter #'vmacs-input-method-hook)
+
 
 
 (defun linux-toggle-input-method()

@@ -1,4 +1,11 @@
-    
+modmap:
+  - name: input method
+    remap:
+      super_r :
+        free_hold: true
+        held: shift_r
+        alone: [f11]
+#        alone_timeout_millis: 1000 # Optional
 # modmap:
 #   - name: space
 #     remap:
