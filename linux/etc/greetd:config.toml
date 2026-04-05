@@ -16,5 +16,5 @@ command = "agreety --cmd zsh"
 user = "jixiuf"
 
 [initial_session]
-command = "sh -c 'sleep 3; niri-session'"
+command = "sh -c 'while :; do printf \"\\033[2J\\033[H\"; SESSION=$(echo -e \"niri-session\\newm.sh\\nriver\" | fzf --prompt=\"Select session: \" --height=10) && exec $SESSION; done'"
 user = "jixiuf"
