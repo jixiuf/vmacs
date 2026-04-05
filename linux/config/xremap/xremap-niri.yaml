@@ -1,4 +1,3 @@
-    
 keymap:
 
   - name: terminal tmux
@@ -12,7 +11,8 @@ keymap:
     application:
       only: [emacs,Emacs]
     remap:
-      super-C-Enter: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session foot-ws " ] }
+      # super-C-Enter: { launch: ["sh","-c","niri-run-or-raise --cd --toggle --move-to-current-workspace-if-floating --hide-front-floating-window 'foot|foot-ws|bterm|dterm|Alacritty|kitty|org.wezfurlong.wezterm|Alacritty-ws' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session foot-ws " ] }
+      super-C-Enter: super-C-Enter
   - name: Global
     remap:
     # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
