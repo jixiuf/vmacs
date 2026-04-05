@@ -213,7 +213,7 @@ keymap:
       Super-C-c: Super-C-c
       Super-C-w: [C-c,k] 
       # Super-M-t: [C-c ,C-t] 
-      C-t: [C-c ,C-t] 
+      Super-C-enter: [C-c ,C-t] 
       # Super-M-t: [C-c ,c] 
       # Super-C-n: [C-c ,n] 
       # Super-C-p: [C-c ,p] 

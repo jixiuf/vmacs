@@ -1,5 +1,13 @@
     
 keymap:
+
+  - name: terminal tmux
+    application:
+      only: [dterm,bterm,kitty,/Alacritty.*/,/foot.*/,APMSSH,sshemacs]
+    window:
+      only: [/TMUX:/ ]
+    remap:
+      Super-C-enter: [C-c ,C-t] 
   - name: Emacs
     application:
       only: [emacs,Emacs]
