@@ -300,6 +300,7 @@
     (bray-mode 1)
     (cond
      ((derived-mode-p '(reb-mode
+                        ghostel-mode
                         calc-mode))
       (bray-state-stack-push 'insert))
      ((derived-mode-p
