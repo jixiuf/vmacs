@@ -8,7 +8,7 @@ vt = 7
 
 # `agreety` is the bundled agetty/login-lookalike. You can replace `/bin/sh`
 # with whatever you want started, such as `sway`.
-command = "agreety --cmd zsh"
+command = "sh -c 'while :; do printf \"\\033[2J\\033[H\"; SESSION=$(echo -e \"niri-session\\newm.sh\\nriver\\nzsh\" | fzf --prompt=\"Select session: \" --height=10) && exec $SESSION; done'"
 
 # The user to run the command as. The privileges this user must have depends
 # on the greeter. A graphical greeter may for example require the user to be
@@ -16,5 +16,8 @@ command = "agreety --cmd zsh"
 user = "jixiuf"
 
 [initial_session]
-command = "sh -c 'while :; do printf \"\\033[2J\\033[H\"; SESSION=$(echo -e \"niri-session\\newm.sh\\nriver\" | fzf --prompt=\"Select session: \" --height=10) && exec $SESSION; done'"
+command = "sh -c 'while :; do printf \"\\033[2J\\033[H\"; SESSION=$(echo -e \"niri-session\\newm.sh\\nriver\\nzsh\" | fzf --prompt=\"Select session: \" --height=10) && exec $SESSION; done'"
 user = "jixiuf"
+
+# add console=tty1 quiet to grub or refind config to redirect log to tty1 
+# "Boot with standard options"  "root=/dev/mapper/lvmroot-lvmroot ro dolvm ipv6.disable=1 console=tty1 quiet"
