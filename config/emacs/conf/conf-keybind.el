@@ -1,6 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 (setq widen-automatically nil)         ;for goto-line
 
+ (when (file-directory-p "~/repos/ghostel/")
+   (add-to-list 'load-path "~/repos/ghostel/"))
+(autoload 'ghostel "ghostel" "" t)
+(global-set-key (kbd "C-s-<return>") #'ghostel)
+
 (global-set-key (kbd "C-c s") #'save-all)
 
 (with-eval-after-load 'smerge-mode  (define-key g-map "v" smerge-basic-map))
