@@ -7,8 +7,9 @@
 # support dotool key like : super+alt+ctrl+enter
 
 TERM_CLASS_REGEX=${TERM_CLASS_REGEX:-.*wezterm.*|.*foot.*|.*kitty.*|.*Alacritty.*|dterm|bterm|APMSSH|sshemacs|alacritty}
-WINDOW_TITLE=${WINDOW_TITLE:-}  # current window title
-WINDOW_CLASS=${WINDOW_CLASS:-}  # current window class
+# 用于判断 当前窗口是还是是terminal 或 tmux,用于从title取 tmux session name 等信息
+TARGET_TITLE=${TARGET_TITLE:-}  # current window title
+TARGET_APP=${TARGET_APP:-}  # current window class
 # tmux,dotoolc,dotool
 auto_type_cmd=${auto_type_cmd:-}
 PROG=$( basename "$0" )
@@ -84,44 +85,44 @@ shift # remove --
 
 # guess auto type cmd if empty
 if [ -z "$auto_type_cmd" ]; then
-    if [ -z "$WINDOW_TITLE" ]; then
+    if [ -z "$TARGET_TITLE" ]; then
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-            WINDOW_TITLE=`hyprctl activewindow -j |jq -rc ".title"`
+            TARGET_TITLE=`hyprctl activewindow -j |jq -rc ".title"`
         elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
-            WINDOW_TITLE=`niri msg -j focused-window|jq -rc .title`
+            TARGET_TITLE=`niri msg -j focused-window|jq -rc .title`
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
-            WINDOW_TITLE=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|.name'`
+            TARGET_TITLE=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|.name'`
         elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
-            WINDOW_TITLE=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.title`
+            TARGET_TITLE=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.title`
         elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
-            WINDOW_TITLE=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.title'`
+            TARGET_TITLE=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.title'`
         elif [ "$(uname)" = "Darwin" ]; then
-            WINDOW_TITLE=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
+            TARGET_TITLE=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
         fi
     fi
 
-    if [ -z "$WINDOW_CLASS" ]; then
+    if [ -z "$TARGET_APP" ]; then
         if [ "$XDG_SESSION_DESKTOP"  = "Hyprland" ]; then
-            WINDOW_CLASS=`hyprctl activewindow -j |jq -rc '.class'`
+            TARGET_APP=`hyprctl activewindow -j |jq -rc '.class'`
         elif [ "$XDG_SESSION_DESKTOP"  = "niri" ]; then
-            WINDOW_TITLE=`niri msg -j focused-window|jq -rc .app_id`
+            TARGET_TITLE=`niri msg -j focused-window|jq -rc .app_id`
         elif [ "$XDG_SESSION_DESKTOP"  = "sway" ]; then
-            WINDOW_CLASS=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|(.app_id // .window_properties.class // "")'|head -n 1`
+            TARGET_APP=`swaymsg -t get_tree | jq -rc 'recurse(.nodes[], .floating_nodes[]) |select(.focused)|(.app_id // .window_properties.class // "")'|head -n 1`
         elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
-            WINDOW_CLASS=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.app`
+            TARGET_APP=`emacsclient --eval "(ewm-get-window-info-json)"|jq -r|jq -r '.app`
         elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
-            WINDOW_CLASS=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.app'`
+            TARGET_APP=`emacsclient --eval "(reka-get-window-info-json)"|jq -r|jq -r '.app'`
         elif [ "$(uname)" = "Darwin" ]; then
-            WINDOW_CLASS=$(osascript -e 'tell application "System Events" to get name of (first application process whose frontmost is true)' 2>/dev/null)
+            TARGET_APP=$(osascript -e 'tell application "System Events" to get name of (first application process whose frontmost is true)' 2>/dev/null)
         fi
     fi
-    if [[ $WINDOW_TITLE == TMUX:* ]]; then
+    if [[ $TARGET_TITLE == TMUX:* ]]; then
         # Remove the prefix "TMUX:" and then split the remaining string by ":"
         # 格式： "TMUX:session:path"
         # set -g set-titles on
         # set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
-        WINDOW_TITLE=${WINDOW_TITLE#TMUX:}
-        tmux_session=${WINDOW_TITLE%%:*}
+        TARGET_TITLE=${TARGET_TITLE#TMUX:}
+        tmux_session=${TARGET_TITLE%%:*}
         auto_type_cmd="tmux send-keys -t $tmux_session"
     elif  pgrep -x "dotoold" > /dev/null ; then
         auto_type_cmd="dotoolc"
@@ -148,7 +149,7 @@ copy_primary(){
 send_text(){
     if [[ "$auto_type_cmd" = "tmux"* ]]; then # use tmux
         $auto_type_cmd "$1"
-    elif [[ "$WINDOW_CLASS" =~ ^($TERM_CLASS_REGEX)$ ]]; then
+    elif [[ "$TARGET_APP" =~ ^($TERM_CLASS_REGEX)$ ]]; then
         copy_primary "$1"
         send_key shift+insert
     elif [[ "$auto_type_cmd" = "dotool"* ]] ; then

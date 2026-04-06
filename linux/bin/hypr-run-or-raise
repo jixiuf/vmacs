@@ -181,10 +181,10 @@ if [ ! "$target_appinfo" ]; then
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-             TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+             TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
         if [ -n "$auto_type" ]; then
-            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
         fi
     fi
 else
@@ -274,10 +274,10 @@ else
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-              TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+              TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
         if [ -n "$auto_type" ]; then
-            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
         fi
     fi
 fi

@@ -16,9 +16,10 @@ scratchpad_workspace_id=`niri msg -j  workspaces |jq  -cr ".[]|select(.name ==\"
 cd=""
 move_to_current_workspace_if_floating=""
 hide_front_floating_window=""
-exec_before_show=""
+pre_focus=""
+post_focus=""
 
-TEMP=$( getopt --options h --longoptions exec-before-show:,workspace:,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
+TEMP=$( getopt --options h --longoptions pre-focus:,post-focus:,workspace:,fullscreen:,cd,floating:,toggle,move-to-current-workspace-if-floating,center,hide-front-floating-window,term-class:,auto-type:,help -- "$@" ) || exit 1
 eval set -- "$TEMP"
 
 for i in "$@"; do
@@ -57,6 +58,10 @@ for i in "$@"; do
             echo "   this is for terminal"
             echo "   auto type some command after terminal window show"
             echo "     --auto-type '--key ctrl+u --key ctrl+l --type \"make\" --key enter'"
+            echo "--pre-focus 'command'"
+            echo "   run command before focusing the target window"
+            echo "--post-focus 'command'"
+            echo "   run command after focusing the target window"
             echo " some demo:"
             echo "   $PROG emacs emacs"
             echo "   $PROG --toggle emacs emacs"
@@ -95,8 +100,13 @@ for i in "$@"; do
             shift
             shift
             ;;
-        --exec-before-show*)
-            exec_before_show="$2"
+        --pre-focus*)
+            pre_focus="$2"
+            shift
+            shift
+            ;;
+        --post-focus*)
+            post_focus="$2"
             shift
             shift
             ;;
@@ -184,10 +194,10 @@ if [ ! "$target_appinfo" ]; then
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-             TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+             TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
         if [ -n "$auto_type" ]; then
-            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
         fi
     fi
 else
@@ -234,8 +244,9 @@ else
     target_class=`echo $target_appinfo|jq -r '.app_id'`
     target_title=`echo $target_appinfo|jq -r '.title'`
     target_ws_id=`echo $target_appinfo|jq -r '.workspace_id'`
-    if [ -n "$exec_before_show" ]; then
-        $exec_before_show
+    if [ -n "$pre_focus" ]; then
+        # exec $pre_focus with env
+        TARGET_TITLE=$target_title TARGET_APP=$target_class SOURCE_APP=$front_class SOURCE_TITLE=$front_title SOURCE_ADDR=$front_addr $pre_focus
     fi
 
     # # 如果当前窗口是special 的window，则先隐藏之,以免其遮挡聚焦后的窗口
@@ -305,10 +316,13 @@ else
         if [[ -n "$cwd" && -n "$cd" ]]; then
             # 如果 cwd 获取到当前 working directory
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
-              TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title cd.sh "$cwd"
+              TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
         if [ -n "$auto_type" ]; then
-            TERM_CLASS_REGEX=$TERM_CLASS_REGEX WINDOW_CLASS=$target_class WINDOW_TITLE=$target_title eval "autotype.sh $auto_type"
+            TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
         fi
+    fi
+    if [ -n "$post_focus" ]; then
+        TARGET_TITLE=$target_title TARGET_APP=$target_class SOURCE_APP=$front_class SOURCE_TITLE=$front_title SOURCE_ADDR=$front_addr $post_focus
     fi
 fi

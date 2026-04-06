@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-WINDOW_TITLE=${WINDOW_TITLE:-}
-WINDOW_CLASS=${WINDOW_CLASS:-}
+TARGET_TITLE=${TARGET_TITLE:-}
+TARGET_APP=${TARGET_APP:-}
 
+SOURCE_TITLE=${SOURCE_TITLE=:-}
+SOURCE_APP=${SOURCE_APP:-}
 # Get cwd: prefer $1, fallback to cwd script (which uses SOURCE_APP/SOURCE_TITLE)
 # demo export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title emacscwd --post-cmd /usr/local/bin/cd.sh --cmd /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd
 cwd="$1"
 if [ -z "$cwd" ]; then
-    cwd=$(cwd 2>/dev/null)
+    cwd=$(SOURCE_APP=${SOURCE_APP} SOURCE_TITLE=${SOURCE_TITLE} cwd 2>/dev/null)
 fi
 
 # If cwd is still empty, exit early
@@ -16,7 +18,7 @@ if [ -z "$cwd" ]; then
 fi
 
 send_txt(){
-    autotype.sh --type "$1"  --key enter
+    TARGET_APP=${TARGET_APP} TARGET_TITLE=${TARGET_TITLE} autotype.sh --type "$1"  --key enter
 }
 regex="(\/ssh:)?([a-zA-Z0-9_\-]+@)?([a-zA-Z0-9_\.\-]+):(.+)"
 # root@host#2222:/path # host#2222:/path
