@@ -3,7 +3,8 @@
 ;;; Code:
 
 (define-key ghostel-mode-map (kbd "C-,") #'ghostel-other)
-(define-key ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
+(bray-state-map-set 'insert ghostel-mode-map "C-s-v" #'ghostel-yank)
+(bray-state-map-set 'normal ghostel-mode-map "C-s-v" #'ghostel-yank)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
 
