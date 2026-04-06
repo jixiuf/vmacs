@@ -196,9 +196,9 @@ if [ ! "$target_appinfo" ]; then
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
              TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
-        if [ -n "$auto_type" ]; then
-            TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
-        fi
+    fi
+    if [ -n "$auto_type" ]; then
+        TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
     fi
 else
     front_app=`niri msg -j focused-window`
@@ -318,9 +318,9 @@ else
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
               TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
-        if [ -n "$auto_type" ]; then
-            TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
-        fi
+    fi
+    if [ -n "$auto_type" ]; then
+        TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
     fi
     if [ -n "$post_focus" ]; then
         TARGET_TITLE=$target_title TARGET_APP=$target_class SOURCE_APP=$front_class SOURCE_TITLE=$front_title SOURCE_ADDR=$front_addr $post_focus
