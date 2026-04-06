@@ -71,6 +71,8 @@
 
 (global-set-key (kbd "<f11>") #'linux-toggle-input-method)
 (define-key isearch-mode-map (kbd  "<f11>") #'linux-toggle-input-method)
+(with-eval-after-load 'ghostel
+  (define-key ghostel-mode-map (kbd "<f11>")   #'linux-toggle-input-method))
 (with-eval-after-load 'vterm
   (define-key vterm-mode-map (kbd "<f11>")   #'linux-toggle-input-method))
 
