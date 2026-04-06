@@ -4,6 +4,7 @@
 
 (define-key ghostel-mode-map (kbd "C-,") #'ghostel-other)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
+(setq ghostel-enable-osc52 t)
 
 (defun vmacs-ghostel-self-insert()
   (interactive)
