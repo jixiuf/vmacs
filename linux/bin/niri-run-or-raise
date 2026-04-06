@@ -185,6 +185,9 @@ if [ ! "$target_appinfo" ]; then
         echo $select
         target_appinfo=`eval $select`
     done
+    if [ -n "$auto_type" ]; then
+        TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
+    fi
     if [ ! "$target_appinfo" ]; then
         exit 1
     fi
@@ -196,9 +199,6 @@ if [ ! "$target_appinfo" ]; then
             # 且目标 app 是 alacritty 则在 alacritty 中 执行 cd 目标目录
              TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title cd.sh "$cwd"
         fi
-    fi
-    if [ -n "$auto_type" ]; then
-        TERM_CLASS_REGEX=$TERM_CLASS_REGEX TARGET_APP=$target_class TARGET_TITLE=$target_title eval "autotype.sh $auto_type"
     fi
 else
     front_app=`niri msg -j focused-window`
