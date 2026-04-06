@@ -4,7 +4,9 @@
  (when (file-directory-p "~/repos/ghostel/")
    (add-to-list 'load-path "~/repos/ghostel/"))
 (autoload 'ghostel "ghostel" "" t)
+(autoload 'ghostel-other "ghostel" "" t)
 (global-set-key (kbd "C-s-<return>") #'ghostel)
+(global-set-key (kbd "C-s-M-<return>") #'ghostel-other)
 
 (global-set-key (kbd "C-c s") #'save-all)
 
