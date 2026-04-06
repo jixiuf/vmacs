@@ -16,13 +16,14 @@
 
 (defun vmacs-ghostel-disable-copy()
   (when (member major-mode '(ghostel-mode))
-    (ghostel-copy-mode-exit))
-  (message "copy mode exited"))
+    (ghostel-copy-mode-exit)
+    (ghostel--set-cursor-style 0 t)))
 
 (defun vmacs-ghostel-enable-copy()
   (when (member major-mode '(ghostel-mode))
-    (ghostel-copy-mode))
-  (message "copy mode enabled"))
+    (ghostel-copy-mode)
+    (ghostel--set-cursor-style 1 t)
+    ))
 
 (add-hook 'meep-state-hook-insert-enter 'vmacs-ghostel-disable-copy)
 (add-hook 'meep-state-hook-normal-enter 'vmacs-ghostel-enable-copy)
