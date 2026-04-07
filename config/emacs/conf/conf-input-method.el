@@ -10,6 +10,7 @@
 (defvar ime (cond
              ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
              ((eq system-type 'darwin) 'rime)
+             ((eq system-type 'gnu/linux) 'rime)
              ((executable-find "fcitx5")    'fcitx5)
              ((executable-find "ibus")    'ibus)))
 
@@ -32,37 +33,37 @@
 (with-eval-after-load 'meep
   (add-hook 'input-method-activate-hook 'meep-insert t))
 
-(defun switch-to-english-input-method ()
+(defun switch-to-english-input-method (&optional im)
   "Switch to English input method."
   (interactive)
   (cond
-   ((eq ime 'fcitx5)
+   ((eq (or im ime) 'fcitx5)
     (call-process "fcitx5-remote" nil nil nil "-s" "keyboard-us"))
-   ((eq ime 'rime)
+   ((eq (or im ime) 'rime)
     (deactivate-input-method))
-   ((eq ime 'ibus)
+   ((eq (or im ime) 'ibus)
     (call-process "ibus" nil nil nil "engine" "xkb:us::eng")))
   (message "en"))
 
-(defun switch-to-rime-input-method ()
+(defun switch-to-rime-input-method (&optional im)
   "Switch to English input method."
   (interactive)
   (cond
-   ((eq ime 'fcitx5)
+   ((eq (or im ime) 'fcitx5)
     (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
-   ((eq ime 'rime)
+   ((eq (or im ime) 'rime)
     (activate-input-method default-input-method))
-   ((eq ime 'ibus)
+   ((eq (or im ime) 'ibus)
     (call-process "ibus" nil nil nil "engine" "rime")))
   (message "zh"))
 
-(defun get-input-method-state()
+(defun get-input-method-state(&optional im)
   (cond
-   ((eq ime 'rime)
+   ((eq (or im ime) 'rime)
     (if current-input-method  "rime" ""))
-   ((eq ime 'fcitx5)
+   ((eq (or im ime) 'fcitx5)
     (string-trim (shell-command-to-string "fcitx5-remote -n")))
-   ((eq ime 'ibus)
+   ((eq (or im ime) 'ibus)
     (string-trim (shell-command-to-string "ibus engine")))))
 
 (defun vmacs-input-method-hook()
@@ -76,6 +77,8 @@
 
 (defun vmacs-toggle-input-method()
   (interactive)
+  (when (eq ime 'rime)
+    (switch-to-english-input-method 'fcitx5))
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
     (switch-to-rime-input-method)

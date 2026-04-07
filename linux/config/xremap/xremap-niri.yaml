@@ -26,7 +26,9 @@ keymap:
   - name: Global
     remap:
     # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
-      super-C-e: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$|^sshemacs$","emacsclient -c -r -n"] }
+      super-C-e:
+        - { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","^emacs$|^sshemacs$","emacsclient -c -r -n"] }
+        - { launch: ["fcitx5-remote","-s","keyboard-us"] }
       super-C-Shift-e: { launch: ["niri","msg","action","spawn-sh","--","term.sh --termenv=tmux-direct --class=sshemacs --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux  new-session -A  -s emacs" ] }
       super-C-Shift-f: { launch: ["niri","msg","action","spawn-sh","--","term.sh  --working-directory '/jixiuf@ljmacjxf:~' --class=sshemacs -- zsh -l" ] }
       super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc" ] }
