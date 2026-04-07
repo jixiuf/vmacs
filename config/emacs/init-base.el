@@ -27,6 +27,7 @@
 
 (require 'conf-package)
 (require 'conf-lazy-load)               ;autoload 相关，加快 emacs 启动速度
+(require 'conf-input-method)
 ;; custom-set-variables custom-set-faces 相关配置存放在 custom-file 指定的文件内
 ;; (require 'vmacs-theme)
 

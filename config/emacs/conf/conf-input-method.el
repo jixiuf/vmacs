@@ -4,18 +4,89 @@
 ;; RIME_PATH=~/repos/squirrel/librime/ make liberime
 ;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
 ;;
-(when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
-  (when (eq system-type 'gnu/linux)
-    (setq rime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/")))
-  (setq default-input-method "rime")
-  (setq rime-show-candidate 'posframe)
-  (require 'rime)
-  (add-to-list 'rime-translate-keybindings "C-v")
-  (add-to-list 'rime-translate-keybindings  "M-v")
-  (global-set-key (kbd "<f11>") 'toggle-input-method)
-  (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
-  (with-eval-after-load 'meep
-    (add-hook 'input-method-activate-hook 'meep-insert t)))
+
+(defvar ime (cond
+             ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
+             ((eq system-type 'darwin) 'rime)
+             ((executable-find "fcitx5")    'fcitx5)
+             ((executable-find "ibus")    'ibus)))
+
+(if (eq system-type 'gnu/linux)
+    (setq liberime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
+  (setq liberime-user-data-dir (expand-file-name "~/Library/Rime/")))
+
+(setq liberime-auto-build t)
+(setq default-input-method "rimel")
+(setq rimel-show-candidate 'posframe)
+(with-eval-after-load 'rimel
+  (require 'rimel)
+  ;; 使用 C-v / M-v 翻页
+  (setq rimel-page-down-keys '(next ?\C-v ?\] ?.))
+  (setq rimel-page-up-keys '(prior ?\C-o ?\[ ?,)))
+
+(with-eval-after-load 'meep
+  (add-hook 'input-method-activate-hook 'meep-insert t))
+
+(defun switch-to-english-input-method ()
+  "Switch to English input method."
+  (interactive)
+  (cond
+   ((eq ime 'fcitx5)
+    (call-process "fcitx5-remote" nil nil nil "-s" "keyboard-us"))
+   ((eq ime 'rime)
+    (deactivate-input-method))
+   ((eq ime 'ibus)
+    (call-process "ibus" nil nil nil "engine" "xkb:us::eng")))
+  (message "en"))
+
+(defun switch-to-rime-input-method ()
+  "Switch to English input method."
+  (interactive)
+  (cond
+   ((eq ime 'fcitx5)
+    (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
+   ((eq ime 'rime)
+    (activate-input-method "rime"))
+   ((eq ime 'ibus)
+    (call-process "ibus" nil nil nil "engine" "rime")))
+  (message "rime"))
+
+(defun get-input-method-state()
+  (cond
+   ((eq ime 'rime)
+    (or current-input-method ""))
+   ((eq ime 'fcitx5)
+    (string-trim (shell-command-to-string "fcitx5-remote -n")))
+   ((eq ime 'ibus)
+    (string-trim (shell-command-to-string "ibus engine")))))
+
+(defun vmacs-input-method-hook()
+  (when (member this-command '(vmacs-cancel-selection
+                               bray-state-stack-pop
+                               meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
+    (switch-to-english-input-method)));
+(add-hook 'meep-state-hook-normal-enter #'vmacs-input-method-hook)
+
+
+
+(defun vmacs-toggle-input-method()
+  (interactive)
+  (if (string-equal (get-input-method-state) "rime")
+      (switch-to-english-input-method)
+    (switch-to-rime-input-method)
+    (meep-insert)))
+
+(global-set-key (kbd "<f11>") #'vmacs-toggle-input-method)
+(global-set-key (kbd "<f18>") #'vmacs-toggle-input-method)
+(define-key isearch-mode-map (kbd  "<f11>") #'vmacs-toggle-input-method)
+(define-key isearch-mode-map (kbd  "<f18>") #'vmacs-toggle-input-method)
+(with-eval-after-load 'ghostel
+  (define-key ghostel-mode-map (kbd "<f18>")   #'vmacs-toggle-input-method)
+  (define-key ghostel-mode-map (kbd "<f11>")   #'vmacs-toggle-input-method))
+(with-eval-after-load 'vterm
+  (define-key vterm-mode-map (kbd "<f18>")   #'vmacs-toggle-input-method)
+  (define-key vterm-mode-map (kbd "<f11>")   #'vmacs-toggle-input-method))
+
 
 ;;
 ;; (setq rime-disable-predicates           ;临时英文模式

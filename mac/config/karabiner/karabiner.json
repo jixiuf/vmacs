@@ -103,7 +103,7 @@
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -133,11 +133,38 @@
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
                                 "description": "emacs 按 right_command 切换到 RIME 输入法",
+                                "from": {
+                                    "key_code": "right_shift",
+                                    "modifiers": { "optional": ["caps_lock"] }
+                                },
+                                "to": [{ "key_code": "right_shift" }],
+                                "to_if_alone": [
+                                    { "key_code": "f18" }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "input_sources": [{ "language": "en" }],
+                                        "type": "input_source_unless"
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^org\\.gnu\\.AquamacsEmacs$",
+                                            "^org\\.gnu\\.Aquamacs$"
+                                        ],
+                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "description": "emacs 按 right_command 切换到英文输入法",
                                 "from": {
                                     "key_code": "right_shift",
                                     "modifiers": { "optional": ["caps_lock"] }
@@ -155,39 +182,6 @@
                             {
                                 "conditions": [
                                     {
-                                        "input_sources": [{ "language": "en" }],
-                                        "type": "input_source_unless"
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^org\\.gnu\\.AquamacsEmacs$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^org\\.gnu\\.Aquamacs$"
-                                        ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "description": "emacs 按 right_command 切换到英文输入法",
-                                "from": {
-                                    "key_code": "right_shift",
-                                    "modifiers": { "optional": ["caps_lock"] }
-                                },
-                                "to": [{ "key_code": "right_shift" }],
-                                "to_if_alone": [
-                                    { "key_code": "f19" },
-                                    {
-                                        "key_code": "spacebar",
-                                        "modifiers": ["left_control"]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
                                         "input_sources": [{ "language": "zh-Hans" }],
                                         "type": "input_source_if"
                                     },
@@ -195,11 +189,9 @@
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -212,11 +204,10 @@
                                     }
                                 },
                                 "to": [
+                                  
                                     {
-                                        "select_input_source": {
-                                            "input_source_id": "^com\\.apple\\.keylayout\\.US$",
-                                            "language": "en"
-                                        }
+                                        "key_code": "spacebar",
+                                        "modifiers": ["left_control"]
                                     },
                                     {
                                         "key_code": "g",
