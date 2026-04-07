@@ -5,6 +5,8 @@
 ;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
 ;;
 
+(when (file-directory-p "~/repos/rimel/")
+  (add-to-list 'load-path "~/repos/rimel/"))
 (defvar ime (cond
              ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
              ((eq system-type 'darwin) 'rime)
@@ -17,7 +19,14 @@
 
 (setq liberime-auto-build t)
 (setq default-input-method "rimel")
-(setq rimel-show-candidate 'posframe)
+(if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
+    (setq rimel-show-candidate 'echo-area)
+  (setq rimel-show-candidate 'posframe))
+(setq rimel-posframe-style 'horizontal)
+;; should autoloaded after melpa
+(autoload 'rimel-activate "rimel" "" t)
+(register-input-method "rimel" "Chinese" #'rimel-activate "中"
+                       "Rime input method via liberime")
 (with-eval-after-load 'rimel
   (require 'rimel)
   ;; 使用 C-v / M-v 翻页
@@ -46,10 +55,10 @@
    ((eq ime 'fcitx5)
     (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
    ((eq ime 'rime)
-    (activate-input-method "rime"))
+    (activate-input-method default-input-method))
    ((eq ime 'ibus)
     (call-process "ibus" nil nil nil "engine" "rime")))
-  (message "rime"))
+  (message default-input-method))
 
 (defun get-input-method-state()
   (cond
@@ -71,7 +80,7 @@
 
 (defun vmacs-toggle-input-method()
   (interactive)
-  (if (string-equal (get-input-method-state) "rime")
+  (if (string-equal (get-input-method-state) default-input-method)
       (switch-to-english-input-method)
     (switch-to-rime-input-method)
     (meep-insert)))

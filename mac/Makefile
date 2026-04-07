@@ -79,9 +79,17 @@ sudo:
 	launchctl limit maxfiles 100000 100000
 	launchctl limit maxproc 20000 20000
 	sudo rm -f  /etc/zprofile
-	@-swiftc  ./run-or-raise.swift -o ./bin/run-or-raise
+	@find /opt/local -mindepth 1 -maxdepth 1 | while read src; do \
+		base=$$(basename "$$src"); \
+		dest="/usr/local/$$base"; \
+		if [ -e "$$src" ]; then \
+			if [ -e "$$dest" ] || [ -L "$$dest" ]; then \
+				rm -f "$$dest"; \
+			fi; \
+			$(LINK_CMD) "$$src" "$$dest"; \
+		fi; \
+	done
 	@mkdir -p /usr/local/bin
-	@chown -R jixiuf ./bin
 	@chown -R jixiuf /usr/local/bin
 	@-for file in bin/*; do \
 		if [ -h /$$file ]; then \
@@ -91,3 +99,4 @@ sudo:
 			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
 		fi;\
 	done
+# 将 /opt/local/ 下的所有文件 ln 到 /usr/local/ 下
