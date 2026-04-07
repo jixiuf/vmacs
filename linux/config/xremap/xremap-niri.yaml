@@ -25,7 +25,7 @@ keymap:
       
       # Super-C-d: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise  --hide-front-floating-window --move-to-current-workspace-if-floating --toggle 'foot.*|Alacritty|kitty' -- term.sh  --class=foot-ws --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM" ] }
       Super-C-d: 
-        - { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--auto-type" ,"--key control+super+alt+enter","--","^emacs$|^sshemacs$","emacsclient -c -r -n"] }
+        - { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--auto-type" ,"--key control+super+alt+d","--","^emacs$","emacsclient -c -r -n"] }
       Super-C-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv"] }
       # Super-C-5: { launch: ["niri","msg","action","spawn","--", "niri-run-or-raise","--toggle","apifox-pdv","/opt/Apifox/apifox-pdv","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime"] }
       # Super-M-6: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","Mysql-workbench-bin","mysql-workbench"] }

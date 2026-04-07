@@ -2,12 +2,25 @@
 
 ;;; Code:
 
-(define-key ghostel-mode-map (kbd "C-,") #'ghostel-other)
 (bray-state-map-set 'insert ghostel-mode-map "C-s-v" #'ghostel-yank)
 (bray-state-map-set 'normal ghostel-mode-map "C-s-v" #'ghostel-yank)
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
 
+(defun ghostel-latest ()
+  "Switch to the next ghostel terminal buffer, or create one."
+  (interactive)
+  (message "ss")
+  (let* ((bufs (cl-remove-if-not
+                (lambda (b)
+                  (with-current-buffer b
+                    (derived-mode-p 'ghostel-mode)))
+                (buffer-list)))
+         )
+    (if bufs
+        (pop-to-buffer (car bufs) (append display-buffer--same-window-action
+                                          '((category . comint))))
+      (ghostel))))
 
 
 (defun vmacs-ghostel-disable-copy()
@@ -21,7 +34,7 @@
   (when (member major-mode '(ghostel-mode))
     (display-line-numbers-mode)
     (setq display-line-numbers nil)
-    (when (member this-command '(ghostel ghostel-other))
+    (when (member this-command '(ghostel-latest ghostel ghostel-other))
       (ghostel-copy-mode)
       (ghostel--set-cursor-style 1 t))))
 
