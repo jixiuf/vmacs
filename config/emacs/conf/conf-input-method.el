@@ -27,11 +27,7 @@
 (autoload 'rimel-activate "rimel" "" t)
 (register-input-method "rimel" "Chinese" #'rimel-activate "中"
                        "Rime input method via liberime")
-(with-eval-after-load 'rimel
-  (require 'rimel)
-  ;; 使用 C-v / M-v 翻页
-  (setq rimel-page-down-keys '(next ?\C-v ?\] ?.))
-  (setq rimel-page-up-keys '(prior ?\C-o ?\[ ?,)))
+
 
 (with-eval-after-load 'meep
   (add-hook 'input-method-activate-hook 'meep-insert t))
@@ -58,12 +54,12 @@
     (activate-input-method default-input-method))
    ((eq ime 'ibus)
     (call-process "ibus" nil nil nil "engine" "rime")))
-  (message default-input-method))
+  (message "zh"))
 
 (defun get-input-method-state()
   (cond
    ((eq ime 'rime)
-    (or current-input-method ""))
+    (if current-input-method  "rime" ""))
    ((eq ime 'fcitx5)
     (string-trim (shell-command-to-string "fcitx5-remote -n")))
    ((eq ime 'ibus)
@@ -80,7 +76,7 @@
 
 (defun vmacs-toggle-input-method()
   (interactive)
-  (if (string-equal (get-input-method-state) default-input-method)
+  (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
     (switch-to-rime-input-method)
     (meep-insert)))
