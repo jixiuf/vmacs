@@ -17,7 +17,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -40,7 +40,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     },
                                     {
@@ -71,7 +71,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -103,7 +103,7 @@
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -133,7 +133,7 @@
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -143,9 +143,7 @@
                                     "modifiers": { "optional": ["caps_lock"] }
                                 },
                                 "to": [{ "key_code": "right_shift" }],
-                                "to_if_alone": [
-                                    { "key_code": "f18" }
-                                ],
+                                "to_if_alone": [{ "key_code": "f18" }],
                                 "type": "basic"
                             },
                             {
@@ -160,7 +158,7 @@
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -191,7 +189,7 @@
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -204,7 +202,6 @@
                                     }
                                 },
                                 "to": [
-                                  
                                     {
                                         "key_code": "spacebar",
                                         "modifiers": ["left_control"]
@@ -272,7 +269,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -305,7 +302,7 @@
                                             "^org\\.gnu\\.Emacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$"
                                         ],
-                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -317,9 +314,9 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title emacscwd --post-cmd /usr/local/bin/cd.sh --cmd /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd" }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title emacscwd --post-cmd /usr/local/bin/cd.sh --cmd /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session emacscwd" }],
                                 "type": "basic"
-                            }                          
+                            }
                         ]
                     },
                     {
@@ -462,7 +459,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.electron\\.lark$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -553,8 +550,41 @@
                         ]
                     },
                     {
-                      "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书,H-9:飞连 H-esc:sleep H-b:mongo H-6:db H-8:keepassxc",
+                        "description": "Toggle App H-d:iterm2 H-f:firefox H-e:Emacs H-5:apifox H-g:微信 H-3:飞书,H-9:飞连 H-esc:sleep H-b:mongo H-6:db H-8:keepassxc",
                         "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "input_sources": [{ "language": "en" }],
+                                        "type": "input_source_unless"
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^org\\.gnu\\.AquamacsEmacs$",
+                                            "^org\\.gnu\\.Aquamacs$"
+                                        ],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "description": "spacebar-e  toggle Emacs",
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "spacebar",
+                                        "modifiers": ["left_control"]
+                                    },
+                                    { "shell_command": "/usr/local/bin/run-or-raise --toggle --exec emacs --cmd emacs" }
+                                ],
+                                "type": "basic"
+                            },
                             {
                                 "description": "spacebar-e  toggle Emacs",
                                 "from": {
@@ -624,7 +654,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title ssh --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title ssh --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
                                 "type": "basic"
                             },
                             {
@@ -751,7 +781,6 @@
                                 "to": [{ "shell_command": "/usr/local/bin/kpmenu  --autotype --autotypeConfirm" }],
                                 "type": "basic"
                             }
-                          
                         ]
                     },
                     {
@@ -868,15 +897,11 @@
                                     "key_code": "r",
                                     "modifiers": { "mandatory": ["control"] }
                                 },
-                                "to": [
-                                    {
-                                        "key_code": "f5"
-                                    }
-                                ],
+                                "to": [{ "key_code": "f5" }],
                                 "type": "basic"
                             }
                         ]
-                    },                  
+                    },
                     {
                         "description": "firefox C-u reopen tab ctrl-s=cmd-f,C-,. =next/prev tab C-h/l=f/b",
                         "manipulators": [
@@ -2753,7 +2778,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2785,7 +2810,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2817,7 +2842,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -2848,7 +2873,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty"],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_if"
                                     }
                                 ],
@@ -3012,7 +3037,7 @@
                                             "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs","/usr/local/bin/alacritty"],
+                                        "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs", "/usr/local/bin/alacritty"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3040,7 +3065,7 @@
                                             "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3068,7 +3093,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3114,7 +3139,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3142,7 +3167,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3170,7 +3195,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3198,7 +3223,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3226,7 +3251,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3254,7 +3279,7 @@
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3397,7 +3422,7 @@
                                         "bundle_identifiers": [
                                             "^org\\.alacritty$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     },
                                     {
@@ -3505,7 +3530,7 @@
                                             "^org\\.alacritty",
                                             "^org\\.gnu\\.Emacs$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3564,7 +3589,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3602,7 +3627,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3636,7 +3661,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3670,7 +3695,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3699,7 +3724,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3728,7 +3753,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3768,7 +3793,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3797,7 +3822,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3826,7 +3851,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3855,7 +3880,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3884,7 +3909,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3918,7 +3943,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3952,7 +3977,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -3981,7 +4006,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4015,7 +4040,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
@@ -4049,7 +4074,7 @@
                                             "^com\\.googlecode\\.iterm2$",
                                             "^com\\.microsoft\\.VSCode$"
                                         ],
-                                      "file_paths": ["/usr/local/bin/alacritty","/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
+                                        "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
                                     }
                                 ],
