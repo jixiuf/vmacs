@@ -2,15 +2,18 @@
 
 ;;; Code:
 
-(bray-state-map-set 'insert ghostel-mode-map "C-s-v" #'ghostel-yank)
-(bray-state-map-set 'normal ghostel-mode-map "C-s-v" #'ghostel-yank)
+(with-eval-after-load 'ghostel
+  (bray-state-map-set 'insert ghostel-mode-map "C-s-v" #'ghostel-yank)
+  (bray-state-map-set 'normal ghostel-mode-map "C-s-v" #'ghostel-yank)
+  (bray-state-map-set 'normal ghostel-mode-map "k" #'ghostel-copy-mode-previous-line)
+  (bray-state-map-set 'normal ghostel-mode-map "j" #'ghostel-copy-mode-next-line)
+  )
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
 
 (defun ghostel-latest ()
   "Switch to the next ghostel terminal buffer, or create one."
   (interactive)
-  (message "ss")
   (let* ((bufs (cl-remove-if-not
                 (lambda (b)
                   (with-current-buffer b
@@ -30,12 +33,22 @@
     (setq display-line-numbers 'absolute)
     (ghostel--set-cursor-style 0 t)))
 
+(defvar-local vmacs-ghostel-starttime nil)
+(defun vmacs-ghostel-hook()
+  (setq vmacs-ghostel-starttime (current-time)))
+(add-hook 'ghostel-mode-hook #'vmacs-ghostel-hook)
+
 (defun vmacs-ghostel-enable-copy()
   (when (member major-mode '(ghostel-mode))
     (display-line-numbers-mode)
     (setq display-line-numbers nil)
-    (when (member this-command '(ghostel-latest ghostel ghostel-other))
-      (ghostel-copy-mode)
+    (when (member this-command '(keyboard-quit
+                                 bray-state-stack-pop
+                                 ghostel-latest
+                                 ghostel
+                                 ghostel-other))
+      (when (> (float-time (time-since vmacs-ghostel-starttime)) 2)
+        (ghostel-copy-mode))
       (ghostel--set-cursor-style 1 t))))
 
 (add-hook 'meep-state-hook-insert-enter 'vmacs-ghostel-disable-copy)
