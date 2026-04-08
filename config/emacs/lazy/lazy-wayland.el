@@ -85,17 +85,21 @@ Otherwise switch to the most recent matched buffer (first in buffer-list)."
      (t
       (wayland-run-or-raise--switch-to (car matched-buffers))))))
 
-(defun wayland-run-or-raise--exec (title app-id command args)
-  "Execute run-or-raise logic with parsed arguments."
+(defun wayland-run-or-raise--exec (title app-id command args after-exec)
+  "Execute run-or-raise logic with parsed arguments.
+AFTER-EXEC is a function to call after running the command (only when no matching buffer found)."
   (let* ((buffers (wayland-run-or-raise--get-buffers (string= app-id "emacs")))
          (matched-buffers (cl-loop for buf in buffers
-                                  when (wayland-run-or-raise--match-p buf app-id title)
-                                  collect buf)))
+                                   when (wayland-run-or-raise--match-p buf app-id title)
+                                   collect buf)))
     (cond
      ((null matched-buffers)
-      (wayland-run-or-raise--run command args))
-      ((= (length matched-buffers) 1)
-       (if (eq (current-buffer) (car matched-buffers))
+      (when-let* ((p (wayland-run-or-raise--run command args))
+                  (run (process-live-p p)))
+        (when after-exec
+          (funcall after-exec))))
+     ((= (length matched-buffers) 1)
+      (if (eq (current-buffer) (car matched-buffers))
           (bury-buffer)
         (wayland-run-or-raise--switch-to (car matched-buffers))))
      (t
@@ -107,10 +111,11 @@ Otherwise switch to the most recent matched buffer (first in buffer-list)."
   "Match wayland windows by TITLE or APP-ID and switch to them, or run COMMAND if none found.
 
 Keywords:
-  :title  - regexp pattern to match window title (string or nil)
-  :app-id - regexp pattern to match app-id (string or nil)
-  :command - the command to run if no match found
-  :name   - the name for the generated command (required for keybindings)
+  :title      - regexp pattern to match window title (string or nil)
+  :app-id     - regexp pattern to match app-id (string or nil)
+  :command    - the command to run if no match found
+  :name       - the name for the generated command (required for keybindings)
+  :after-exec - function to call after executing command or switching to buffer
 
 Additional arguments after keywords are passed as args to the command.
 
@@ -126,8 +131,9 @@ Example:
          (title (plist-get form :title))
          (app-id (plist-get form :app-id))
          (command (plist-get form :command))
+         (after-exec (plist-get form :after-exec))
          (args (cl-loop for (key val) on form by #'cddr
-                        unless (memq key '(:title :app-id :command :name))
+                        unless (memq key '(:title :app-id :command :name :after-exec))
                         append (list key val)))
          (args (if (and args (null (car (last args))))
                    (butlast args)
@@ -141,7 +147,7 @@ Example:
            (interactive)
            (when (string-equal (buffer-name) " *server*")
              (select-window (car (window-list)) t))
-           (wayland-run-or-raise--exec ,title ,app-id ,command-val ',args-val))
+           (wayland-run-or-raise--exec ,title ,app-id ,command-val ',args-val ,after-exec))
          #',func-sym))))
 
 
@@ -154,7 +160,13 @@ Example:
 (wayland-run-or-raise :name "mitp" :app-id "mitp" :command "sh" "-c" "EDITOR=ec term.sh  --title=mimtproxy --class=mitp  -- mitmproxy")
 (wayland-run-or-raise :name "apmssh" :app-id "APMSSH" :command "sh" "-c" "term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc")
 (wayland-run-or-raise :app-id "wechat" :command "/opt/bin/wechat")
-(wayland-run-or-raise :name "Bytedance-feishu"  :title "飞书" :command "bytedance-feishu-stable" "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--enable-wayland-ime" "--wayland-text-input-version=3" )
+(defun kill-feishu-icon()
+  (sleep-for 0.5)
+  (dolist (buf (buffer-list))
+    (when (string-match-p "\\*ewm:feishu:" (buffer-name buf))
+      (kill-buffer buf))))
+
+(wayland-run-or-raise :name "Bytedance-feishu"  :title "飞书" :after-exec 'kill-feishu-icon :command "bytedance-feishu-stable" "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--enable-wayland-ime" "--wayland-text-input-version=3" )
 (wayland-run-or-raise :name "keepassxc" :app-id "org.keepassxc.KeePassXC" :command "keepassxc")
 
 (provide 'lazy-wayland)
