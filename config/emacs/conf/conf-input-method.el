@@ -20,6 +20,12 @@
 
 (setq liberime-auto-build t)
 (setq default-input-method "rimel")
+
+(setq rimel-disable-predicates
+      '(rimel-predicate-prog-in-code-p
+        rimel-predicate-after-alphabet-char-p 
+        rimel-predicate-current-uppercase-letter-p))
+
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
     (setq rimel-show-candidate 'echo-area)
   (setq rimel-show-candidate 'posframe))
