@@ -10,6 +10,7 @@
   )
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
+(setq ghostel-copy-mode-auto-load-scrollback t)
 
 (defun ghostel-latest ()
   "Switch to the next ghostel terminal buffer, or create one."
