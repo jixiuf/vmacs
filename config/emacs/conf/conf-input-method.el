@@ -77,7 +77,7 @@
 
 (defun vmacs-toggle-input-method()
   (interactive)
-  (when (eq ime 'rime)
+  (when (and (eq system-type 'gnu/linux) (eq ime 'rime))
     (switch-to-english-input-method 'fcitx5))
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
