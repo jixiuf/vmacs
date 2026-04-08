@@ -8,6 +8,9 @@
   (require 'ewm)
   (global-set-key (kbd "C-<tab>") #'consult-buffer)
   (add-to-list 'ewm-intercept-prefixes "C-<tab>")
+  (add-to-list 'ewm-intercept-prefixes "C-s-d")
+  (add-to-list 'ewm-intercept-prefixes "C-s-M-d")
+  
   (add-to-list 'ewm-intercept-prefixes "<f11>")
   (add-to-list 'ewm-intercept-prefixes ?\M-:)
   (ewm--send-intercept-keys)
