@@ -62,6 +62,7 @@ patch:
 # show_notifications_when: growl_is_running # 狀態通知，默認裝有Growl時顯示，也可設爲全開（always）全關（never）
   style/horizontal: true # 候選窗横向顯示
   style/inline_preedit: true   # 关闭内嵌编码，为 true 的时候是单行，为 false 的时候就是两行
+  style/inline_candidate: true
   # 字体 大字库: 花园明朝 HanaMinA
   style/font_face: ".PingFang SC,HanaMinA" # 我喜歡的字體名稱
   style/font_point: 20 # 字號
