@@ -17,8 +17,9 @@
  ;; initial-buffer-choice t                ;默认打开 scratch buffer
  ;; initial-buffer-choice "~/*scratch*"
  initial-major-mode #'(lambda()(emacs-lisp-mode)
-                        (setq buffer-file-name "~/scratch.el")
+                        (setq buffer-file-name (expand-file-name "~/scratch.el"))
                         (setq default-directory "~/")
+                        (add-to-list 'trusted-content  (expand-file-name "~/scratch.el"))
                         ;; 避免autosave总是提醒是否真的保存
                         (setq-local write-contents-functions #'scratch-write-contents))
 

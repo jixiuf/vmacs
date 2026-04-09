@@ -70,12 +70,13 @@
  '(outline-minor-mode-use-buttons 'in-margins)
  '(package-selected-packages
    '(agent-shell async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face
-                 eglot-java elisp-autofmt embark embark-consult evil-textobj-tree-sitter
-                 exec-path-from-shell flash git-link go-translate golden-ratio-scroll-screen
-                 goto-chg gptel kdl-mode kkp liberime marginalia meep orderless pinyinlib repeat-fu
-                 verb visible-mark vundo web-mode wgrep with-editor yasnippet))
+                 eglot-java embark embark-consult evil-textobj-tree-sitter exec-path-from-shell
+                 flash git-link go-translate golden-ratio-scroll-screen goto-chg gptel kdl-mode kkp
+                 liberime marginalia meep orderless pinyinlib repeat-fu rimel verb visible-mark
+                 vundo web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
-   '((copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
+   '((rimel :url "https://github.com/jixiuf/rimel.git")
+     (copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")

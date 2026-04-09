@@ -5,8 +5,8 @@
 ;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
 ;;
 
-(when (file-directory-p "~/repos/rimel/")
-  (add-to-list 'load-path "~/repos/rimel/"))
+;; (package-vc-install '(rimel :url "https://github.com/jixiuf/rimel.git"))
+
 (defvar ime (cond
              ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
              ((eq system-type 'darwin) 'rime)
@@ -18,6 +18,10 @@
     (setq liberime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
   (setq liberime-user-data-dir (expand-file-name "~/Library/Rime/")))
 
+(if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
+    (setq rimel-show-candidate 'echo-area)
+  (setq rimel-show-candidate 'posframe))
+(setq rimel-posframe-style 'horizontal)
 (setq liberime-auto-build t)
 (setq default-input-method "rimel")
 (defun rimel-predicate-in-code-p ()
@@ -33,15 +37,6 @@ Only active in `prog-mode' derived buffers."
       '(rimel-predicate-in-code-p
         rimel-predicate-after-alphabet-char-p
         rimel-predicate-current-uppercase-letter-p))
-
-(if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
-    (setq rimel-show-candidate 'echo-area)
-  (setq rimel-show-candidate 'posframe))
-(setq rimel-posframe-style 'horizontal)
-;; should autoloaded after melpa
-(autoload 'rimel-activate "rimel" "" t)
-(register-input-method "rimel" "Chinese" #'rimel-activate "中"
-                       "Rime input method via liberime")
 
 
 (with-eval-after-load 'meep
