@@ -20,10 +20,18 @@
 
 (setq liberime-auto-build t)
 (setq default-input-method "rimel")
+(defun rimel-predicate-in-code-p ()
+  "Return non-nil when cursor is in code (not string/comment).
+Only active in `prog-mode' derived buffers."
+  (and (derived-mode-p 'prog-mode 'conf-mode)
+       (not (equal "*scratch*" (buffer-name)))
+       (let ((ppss (syntax-ppss)))
+         (not (or (nth 3 ppss)    ; in string
+                  (nth 4 ppss)))))) ; in comment
 
 (setq rimel-disable-predicates
-      '(rimel-predicate-prog-in-code-p
-        rimel-predicate-after-alphabet-char-p 
+      '(rimel-predicate-in-code-p
+        rimel-predicate-after-alphabet-char-p
         rimel-predicate-current-uppercase-letter-p))
 
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
