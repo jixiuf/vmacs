@@ -22,8 +22,13 @@
     (setq rimel-show-candidate 'echo-area)
   (setq rimel-show-candidate 'posframe))
 (setq rimel-posframe-style 'horizontal)
+(setq rimel-highlight-first t)
 (setq liberime-auto-build t)
 (setq default-input-method "rimel")
+(with-eval-after-load 'rimel
+  (add-to-list 'rimel-keymap '(?\C-s . "<down>"))
+  (add-to-list 'rimel-keymap '(?\C-h . "C-h"))
+  (add-to-list 'rimel-keymap '(?\C-l . "C-l")))
 (defun rimel-predicate-in-code-p ()
   "Return non-nil when cursor is in code (not string/comment).
 Only active in `prog-mode' derived buffers."
