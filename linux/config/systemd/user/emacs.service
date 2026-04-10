@@ -9,6 +9,9 @@ Requisite=graphical-session.target
 [Service]
 # Environment="XDG_SESSION_DESKTOP=Hyprland"
 # Environment="RUN_ENV=development"
+# 不使用系统级输入法
+Environment="GTK_IM_MODULE=emacs"
+Environment="XMODIFIERS=@im=emacs"
 Type=simple
 Restart=always
 ExecStart=/usr/bin/emacs --fg-daemon
