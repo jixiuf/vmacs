@@ -5,7 +5,7 @@
 ;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
 ;;
 
-;; (package-vc-install '(rimel :url "https://github.com/jixiuf/rimel.git"))
+;; (package-vc-install '(rimel :url "https://github.com/jixiuf/rimel.git" :branch "dev"))
 
 (defvar ime (cond
              ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
@@ -15,15 +15,15 @@
              ((executable-find "ibus")    'ibus)))
 
 (if (eq system-type 'gnu/linux)
-    (setq liberime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
-  (setq liberime-user-data-dir (expand-file-name "~/Library/Rime/")))
+    (setq rimel-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
+  (setq rimel-user-data-dir (expand-file-name "~/Library/Rime/")))
 
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
     (setq rimel-show-candidate 'echo-area)
   (setq rimel-show-candidate 'posframe))
 (setq rimel-posframe-style 'horizontal)
 (setq rimel-highlight-first t)
-(setq liberime-auto-build t)
+(setq rimel-auto-build t)
 (setq default-input-method "rimel")
 (with-eval-after-load 'rimel
   (add-to-list 'rimel-keymap '(?\C-s . "<down>"))
