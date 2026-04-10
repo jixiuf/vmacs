@@ -94,3 +94,4 @@ config/emacs/pyim/dcache/
 config/emacs/cache/rime/build/
 mac/bin/run-or-raise
 mac/run-or-raise
+config/emacs/rime/
