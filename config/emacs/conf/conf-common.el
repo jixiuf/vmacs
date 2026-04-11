@@ -18,8 +18,9 @@
  ;; initial-buffer-choice "~/*scratch*"
  initial-major-mode #'(lambda()(emacs-lisp-mode)
                         (setq buffer-file-name (expand-file-name "~/scratch.el"))
-                        (setq default-directory "~/")
+                        (setq buffer-file-truename buffer-file-name)
                         (add-to-list 'trusted-content  (expand-file-name "~/scratch.el"))
+                        (setq default-directory "~/")
                         ;; 避免autosave总是提醒是否真的保存
                         (setq-local write-contents-functions #'scratch-write-contents))
 
