@@ -1,10 +1,4 @@
 ;;; Code:  -*- lexical-binding: t; -*-
-;; https://github.com/DogLooksGood/emacs-rime/blob/master/README_CN.org
-;; https://gitlab.com/liberime/liberime
-;; RIME_PATH=~/repos/squirrel/librime/ make liberime
-;; (add-to-list 'load-path "~/.emacs.d/submodule/emacs-rime/")
-;;
-
 ;; (package-vc-install '(rimel :url "https://github.com/jixiuf/rimel.git" :branch "dev"))
 
 (defvar ime (cond
