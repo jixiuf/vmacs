@@ -37,10 +37,6 @@ Only active in `prog-mode' derived buffers."
         rimel-predicate-after-alphabet-char-p
         rimel-predicate-current-uppercase-letter-p))
 
-
-(with-eval-after-load 'meep
-  (add-hook 'input-method-activate-hook 'meep-insert t))
-
 (defun switch-to-english-input-method (&optional im)
   "Switch to English input method."
   (interactive)
@@ -60,6 +56,8 @@ Only active in `prog-mode' derived buffers."
    ((eq (or im ime) 'fcitx5)
     (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
    ((eq (or im ime) 'rime)
+    (require 'rimel)
+    (meep-insert)
     (activate-input-method default-input-method))
    ((eq (or im ime) 'ibus)
     (call-process "ibus" nil nil nil "engine" "rime")))
