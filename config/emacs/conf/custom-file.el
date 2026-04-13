@@ -72,7 +72,7 @@
    '(agent-shell async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face
                  eglot-java embark embark-consult evil-textobj-tree-sitter exec-path-from-shell
                  flash git-link go-translate golden-ratio-scroll-screen goto-chg gptel kdl-mode kkp
-                 liberime marginalia meep orderless pinyinlib repeat-fu rimel verb visible-mark
+                 marginalia meep orderless pinyinlib posframe repeat-fu rimel verb visible-mark
                  vundo web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((rimel :url "https://github.com/jixiuf/rimel.git")
