@@ -3,6 +3,7 @@
 ;;; Code:
 
 (with-eval-after-load 'ghostel
+  (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
   (bray-state-map-set 'insert ghostel-mode-map "C-s-v" #'ghostel-yank)
   (bray-state-map-set 'normal ghostel-mode-map "C-s-v" #'ghostel-yank)
   (bray-state-map-set 'normal ghostel-mode-map "k" #'ghostel-copy-mode-previous-line)
