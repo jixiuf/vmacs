@@ -1,5 +1,5 @@
 ;;; Code:  -*- lexical-binding: t; -*-
-;; (package-vc-install '(rimel :url "https://github.com/jixiuf/rimel.git" :branch "dev"))
+;; (package-vc-install '(rimel :url "https://github.com/jixiuf/rimel.git" :branch "main"))
 
 (defvar ime (cond
              ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
@@ -9,8 +9,8 @@
              ((executable-find "ibus")    'ibus)))
 
 (if (eq system-type 'gnu/linux)
-    (setq rimel-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
-  (setq rimel-user-data-dir (expand-file-name "~/Library/Rime/")))
+    (setq liberime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
+  (setq liberime-user-data-dir (expand-file-name "~/Library/Rime/")))
 
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
     (setq rimel-show-candidate 'echo-area)
@@ -20,9 +20,11 @@
 (setq rimel-auto-build t)
 (setq default-input-method "rimel")
 (with-eval-after-load 'rimel
-  (add-to-list 'rimel-keymap '(?\C-s . "<down>"))
-  (add-to-list 'rimel-keymap '(?\C-h . "C-h"))
-  (add-to-list 'rimel-keymap '(?\C-l . "C-l")))
+  (add-hook 'after-init-hook #'liberime-sync)
+  (add-to-list 'rimel-keymap '(?\C-o . "<pageup>"))
+  (add-to-list 'rimel-keymap '("C-s" . "<down>"))
+  (add-to-list 'rimel-keymap '("C-h" . "C-h"))
+  (add-to-list 'rimel-keymap '("C-l" . "C-l")))
 (defun rimel-predicate-in-code-p ()
   "Return non-nil when cursor is in code (not string/comment).
 Only active in `prog-mode' derived buffers."
@@ -101,48 +103,9 @@ Only active in `prog-mode' derived buffers."
   (define-key vterm-mode-map (kbd "<f18>")   #'vmacs-toggle-input-method)
   (define-key vterm-mode-map (kbd "<f11>")   #'vmacs-toggle-input-method))
 
-
-;;
-;; (setq rime-disable-predicates           ;临时英文模式
-;;       '(rime-predicate-evil-mode-p
-;;         rime-predicate-prog-in-code-p   ;在 prog-mode 和 conf-mode 中除了注释和引号内字符串之外的区域
-;;         ;; rime-predicate-in-code-string-p ;在代码的字符串中，不含注释的字符串。
-;;         rime-predicate-space-after-cc-p ;在中文字符且有空格之后
-;;         ;; rime-predicate-space-after-ascii-p ;在任意英文字符且有空格之后
-;;         rime-predicate-after-alphabet-char-p
-;;         rime-predicate-after-ascii-char-p
-;;         ;; rime-predicate-auto-english-p
-;;         ;; rime-predicate-current-uppercase-letter-p
-;;         ;; rime-predicate-punctuation-after-space-cc-p
-;;         ))
-;; (setq rime-inline-predicates '(rime-predicate-space-after-cc-p))
-
-;; (add-hook 'input-method-activate-hook 'vmacs-evil-input-method-activate t)
-;; (add-hook 'input-method-deactivate-hook 'vmacs-evil-input-method-deactive t)
-;; (defun vmacs-evil-input-method-activate()
-;;   (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=Squirrel" ))
-;; (defun vmacs-evil-input-method-deactive()
-;;   (call-process  "open" nil nil nil "-g" "hammerspoon://input_method_switch?id=U.S." ))
-
-;; (global-set-key (kbd "C-\\") 'toggle-input-method)
-;; (define-key rime-mode-map (kbd "M-j") 'rime-force-enable)
-
-;; ;; 输入法进入normal state时，关闭输入法的中文模式
-;; (add-hook 'evil-motion-state-entry-hook 'disable-input-method-hook)
-;; 结合 hammerspoon 实现按下shift 切换输入法时，当切换到中文中自动进入insert state
-;; https://github.com/jixiuf/dotfiles/blob/master/mac/hammerspoon/init.lua
-;; 当切换输入法到中文状态时的时候会回调到这里
-;;回调的时候有可能是上面disable-input-method-hook 里调，此时不应该切到insert模式
-;; (defun vmacs-evil-normal-state()
-;;   (interactive)
-;;   (vmacs-evil-input-method-deactive)
-;;   (evil-normal-state))
-
-;; "Non-nil means random control characters terminate incremental search."
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (provide 'conf-input-method)
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
 
-;;; conf-evil-input-method.el ends here.
+;;; conf-input-method.el ends here.
