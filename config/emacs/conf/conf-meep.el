@@ -13,7 +13,7 @@
 (defun my-meep-basis-keys ()
   (defvar-keymap m-map
     "i"         #'meep-insert-at-last
-    "v"         #'rectangle-mark-mode
+    "v"         #'meep-region-toggle-rectangle
     "$"         #'toggle-truncate-lines
     "f"         #'narrow-to-defun
     "n"         #'narrow-to-region
