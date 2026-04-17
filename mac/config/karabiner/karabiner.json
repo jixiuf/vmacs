@@ -690,7 +690,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id com.mongodb.compass" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id com.mongodb.compass.beta" }],
                                 "type": "basic"
                             },
                             {
