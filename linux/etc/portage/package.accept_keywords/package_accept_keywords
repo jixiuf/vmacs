@@ -36,7 +36,6 @@ app-editors/helix ~amd64
 dev-util/android-studio ~amd64  
 media-gfx/blender  ~amd64
 media-libs/openpgl  ~amd64
-app-admin/keepassxc ~amd64
 media-libs/opensubdiv ~amd64
 media-gfx/openvdb ~amd64
 gui-libs/cursor  ~amd64
