@@ -11,7 +11,6 @@
 (global-set-key (kbd "C-s-M-d") #'ghostel-latest)
 (global-set-key (kbd "C-s-M-w") #'bury-buffer)
 
-
 (global-set-key (kbd "C-c s") #'save-all)
 
 (with-eval-after-load 'smerge-mode  (define-key g-map "v" smerge-basic-map))
@@ -59,8 +58,8 @@
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
 ;; (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
-;; (global-set-key (kbd "C-;") #'query-replace-iedit-mode)
-(global-set-key (kbd "C-;") #'vmacs-repeat)
+(global-set-key (kbd "C-;") #'query-replace-iedit-mode)
+;; (global-set-key (kbd "C-;") #'vmacs-repeat)
 
 
 

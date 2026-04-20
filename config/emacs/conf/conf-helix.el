@@ -21,6 +21,8 @@
         (info-mode . motion)))
 
 
+(keymap-global-set "C-8" #'helix-symbol-at-point)
+(keymap-global-set "C-3" #'helix-symbol-at-point-backward)
 (helix-define-key 'motion "j" #'helix-next-line)
 (helix-define-key 'motion "k" #'helix-previous-line)
 (helix-define-key 'motion "g" helix-goto-map)
@@ -29,7 +31,16 @@
 (keymap-unset helix-normal-state-keymap "C-b" t)
 (keymap-unset helix-normal-state-keymap "g r" t)
 (helix-define-key 'normal "R" #'helix-replace)
-(helix-define-key 'normal "r" #'helix-replace-yanked)
+(defun helix-replace-yank ()
+  (interactive)
+  (let ((clipboard-text (current-kill 0)))
+    (when (region-active-p)
+      (kill-region (region-beginning) (region-end)))
+    (kill-new clipboard-text)
+    (yank)
+    (helix--clear-data)))
+
+(helix-define-key 'normal "r" #'helix-replace-yank)
 (helix-define-key 'normal "v" #'helix-backward-long-word)
 (helix-define-key 'normal "e" #'helix-forward-long-word)
 (helix-define-key 'normal "s" #'helix-select-line)

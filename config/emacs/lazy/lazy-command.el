@@ -21,6 +21,7 @@
   (interactive)
   (forward-symbol 2)
   (forward-symbol -1))
+;;;###autoload
 (defun vmacs-forward-word()
   (interactive)
   (forward-word 2)
@@ -31,9 +32,17 @@
   (interactive)
   (unless (eobp)
     (copy-region-as-kill (point) (1+ (point)))
-    (delete-char 1)
-      )
-  )
+    (delete-char 1)))
+;;;###autoload
+(defun helix-symbol-at-point ()
+  (interactive)
+  (helix-search(thing-at-point 'symbol)))
+
+;;;###autoload
+(defun helix-symbol-at-point-backward ()
+  (interactive)
+  (helix-begin-search-backward (thing-at-point 'symbol)))
+
 ;;;###autoload
 (defun vmacs-kill-ring-save()
   (interactive)
