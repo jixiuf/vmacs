@@ -8,6 +8,8 @@
         (calc-mode . insert)
         (special-mode . motion)
         (gud-mode . motion)
+        (vc-dir-mode . motion)
+        (diff-mode . motion)
         (term-mode . motion)
         (gnus-summary-mode . motion)
         (gnus-article-mode . motion)
@@ -17,6 +19,21 @@
         (dired-mode . motion)
         (help-mode . motion)
         (info-mode . motion)))
+
+(global-set-key (kbd "C-c m") helix-textobj-map)
+(set-keymap-parent helix-textobj-inner-map m-map)
+(helix-define-key 'motion "j" #'helix-next-line)
+(helix-define-key 'motion "k" #'helix-previous-line)
+(keymap-unset helix-normal-state-keymap "C-c" t)
+(keymap-unset helix-normal-state-keymap "C-f" t)
+(keymap-unset helix-normal-state-keymap "C-b" t)
+(helix-define-key 'normal "R" #'helix-replace)
+(helix-define-key 'normal "r" #'helix-replace-yanked)
+(helix-define-key 'normal "v" #'helix-backward-long-word)
+(helix-define-key 'normal "e" #'helix-forward-long-word)
+(helix-define-key 'normal "s" #'helix-select-line)
+(helix-define-key 'normal "x" #'helix-kill-thing-at-point)
+
 
 (defcustom meep-keypad-dispatch
   '((?h . "C-h")
@@ -147,18 +164,6 @@ Behavior depends on current state:
   "z"         #'hs-toggle-hiding
   "q"         #'fill-paragraph
   "<return>"  #'fill-region)
-
-(global-set-key (kbd "C-c m") helix-textobj-map)
-(set-keymap-parent helix-textobj-inner-map m-map)
-(keymap-unset helix-normal-state-keymap "C-c" t)
-(keymap-unset helix-normal-state-keymap "C-f" t)
-(keymap-unset helix-normal-state-keymap "C-b" t)
-(helix-define-key 'normal "R" #'helix-replace)
-(helix-define-key 'normal "r" #'helix-replace-yanked)
-(helix-define-key 'normal "v" #'helix-backward-long-word)
-(helix-define-key 'normal "e" #'helix-forward-long-word)
-(helix-define-key 'normal "s" #'helix-select-line)
-(helix-define-key 'normal "x" #'helix-kill-thing-at-point)
 
 (defmacro helix-set-keymap-parent (map-or-mode &optional parent)
   "Set the parent keymap for MAP-OR-MODE to PARENT.
