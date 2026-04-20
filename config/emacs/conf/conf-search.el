@@ -127,6 +127,10 @@
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (global-set-key (kbd "C-c w c") 'toggle-case-fold-search)
 (global-set-key (kbd "C-c C-s") 'toggle-case-fold)
+
+(keymap-global-set "C-8" #'lazy-isearch-at-point-next)
+(keymap-global-set "C-3" #'lazy-isearch-at-point-prev)
+
 (setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c/C-cC-s:case)")
 (global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))
 (defun vmacs-isearch-insert_()

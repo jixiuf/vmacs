@@ -21,8 +21,6 @@
         (info-mode . motion)))
 
 
-(keymap-global-set "C-8" #'helix-symbol-at-point)
-(keymap-global-set "C-3" #'helix-symbol-at-point-backward)
 (helix-define-key 'motion "j" #'helix-next-line)
 (helix-define-key 'motion "k" #'helix-previous-line)
 (helix-define-key 'motion "g" helix-goto-map)
@@ -45,6 +43,10 @@
 (helix-define-key 'normal "e" #'helix-forward-long-word)
 (helix-define-key 'normal "s" #'helix-select-line)
 (helix-define-key 'normal "x" #'helix-kill-thing-at-point)
+(helix-define-key 'normal "/" #'lazy-isearch-regexp-next)
+(helix-define-key 'normal "?" #'lazy-isearch-regexp-prev)
+(helix-define-key 'normal "n" #'lazy-isearch-repeat-next)
+(helix-define-key 'normal "N" #'lazy-isearch-repeat-prev)
 
 
 (defcustom meep-keypad-dispatch
