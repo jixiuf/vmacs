@@ -107,8 +107,8 @@
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 ;; (define-key dired-mode-map  "C" 'dired-rsync)
-(bray-state-map-set 'motion dired-mode-map "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)))
-(bray-state-map-set 'motion dired-mode-map "j" #'dired-next-line)
+(helix-define-key 'motion  "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) 'dired-mode)
+(helix-define-key 'motion "j" #'dired-next-line  'dired-mode)
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
 ;; C-gC-g 退出编辑或C-cC-c保存修改
 ;; "i" 'wdired-change-to-wdired-mode
@@ -123,7 +123,7 @@
 (with-eval-after-load 'image-mode
   (define-key image-mode-map  (kbd "C-f") #'image-scroll-up)
   (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
-  (bray-state-map-set 'motion image-mode-map "n" #'image-next-file)
+  (helix-define-key 'motion  "n" #'image-next-file 'image-mode)
   )
 
 ;; wdired == writable dired

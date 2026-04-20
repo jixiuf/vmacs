@@ -20,13 +20,14 @@
         (help-mode . motion)
         (info-mode . motion)))
 
-(global-set-key (kbd "C-c m") helix-textobj-map)
-(set-keymap-parent helix-textobj-inner-map m-map)
+
 (helix-define-key 'motion "j" #'helix-next-line)
 (helix-define-key 'motion "k" #'helix-previous-line)
+(helix-define-key 'motion "g" helix-goto-map)
 (keymap-unset helix-normal-state-keymap "C-c" t)
 (keymap-unset helix-normal-state-keymap "C-f" t)
 (keymap-unset helix-normal-state-keymap "C-b" t)
+(keymap-unset helix-normal-state-keymap "g r" t)
 (helix-define-key 'normal "R" #'helix-replace)
 (helix-define-key 'normal "r" #'helix-replace-yanked)
 (helix-define-key 'normal "v" #'helix-backward-long-word)
@@ -126,7 +127,7 @@ Behavior depends on current state:
   "g" #'vmacs-goto-line
   "T" #'consult-grep
   "t" #'consult-ripgrep
-  "e" #'grep
+  "r" #'revert-buffer
   "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
   "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
   "X" #'consult-ripgrep-root-symbol
@@ -164,6 +165,8 @@ Behavior depends on current state:
   "z"         #'hs-toggle-hiding
   "q"         #'fill-paragraph
   "<return>"  #'fill-region)
+(global-set-key (kbd "C-c m") helix-textobj-map)
+(set-keymap-parent helix-textobj-inner-map m-map)
 
 (defmacro helix-set-keymap-parent (map-or-mode &optional parent)
   "Set the parent keymap for MAP-OR-MODE to PARENT.

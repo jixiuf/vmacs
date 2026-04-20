@@ -295,7 +295,8 @@
       (delete-file file)
       (tab-line-mode -1)
       (forward-char 1)
-      (bray-state-stack-pop))
+      (helix-insert-exit)
+      )
     (switch-to-buffer buf)))
 
 (defun vmacs-calc-hook()
@@ -328,7 +329,7 @@
   
   (add-hook 'gt-buffer-render-init-hook
             #'(lambda()
-                (bray-mode)
+                (helix-normal-mode)
                 (setq truncate-lines nil)))
   (setq gt-langs '(en zh))
   (setq gt-buffer-render-window-config

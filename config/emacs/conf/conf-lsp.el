@@ -47,8 +47,8 @@
       "l" #'flymake-show-project-diagnostics
       "S" #'eglot-reconnect
       "h" #'eglot-code-actions)
-    (bray-state-map-set 'normal (current-local-map) "=" #'eglot-format)
-    (bray-state-map-set 'normal (current-local-map) "g" eglot-g-map)
+    (helix-define-key 'normal  "=" #'eglot-format 'eglot-managed-mode)
+    (helix-define-key 'normal  "g" eglot-g-map 'eglot-managed-mode)
     )
 
   ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)

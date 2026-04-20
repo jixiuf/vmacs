@@ -59,7 +59,7 @@ Only active in `prog-mode' derived buffers."
     (call-process "fcitx5-remote" nil nil nil "-s" "rime"))
    ((eq (or im ime) 'rime)
     (require 'rimel)
-    (meep-insert)
+    (helix-insert)
     (activate-input-method default-input-method))
    ((eq (or im ime) 'ibus)
     (call-process "ibus" nil nil nil "engine" "rime")))
@@ -77,9 +77,12 @@ Only active in `prog-mode' derived buffers."
 (defun vmacs-input-method-hook()
   (when (member this-command '(vmacs-cancel-selection
                                bray-state-stack-pop
-                               meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
+                               helix-insert-exit
+                               meow-insert-exit evil-force-normal-state
+                               evil-normal-state keyboard-quit))
     (switch-to-english-input-method)));
 (add-hook 'meep-state-hook-normal-enter #'vmacs-input-method-hook)
+(add-hook 'helix-normal-mode-hook #'vmacs-input-method-hook)
 
 
 
@@ -90,7 +93,7 @@ Only active in `prog-mode' derived buffers."
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
     (switch-to-rime-input-method)
-    (meep-insert)))
+    (helix-insert)))
 
 (global-set-key (kbd "<f11>") #'vmacs-toggle-input-method)
 (global-set-key (kbd "<f18>") #'vmacs-toggle-input-method)
