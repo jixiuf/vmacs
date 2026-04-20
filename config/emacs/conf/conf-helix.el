@@ -116,7 +116,6 @@ Behavior depends on current state:
   "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
   "/" #'consult-focus-lines
   "z" #'consult-hide-lines
-  "r" #'revert-buffer
   ";" #'goto-line
   ":" #'goto-char
   "n" #'next-error
@@ -138,11 +137,13 @@ Behavior depends on current state:
   "$"         #'toggle-truncate-lines
   "f"         #'narrow-to-defun
   "n"         #'narrow-to-region
-  "w"         #'widen
-  "h"         #'mark-defun
+  "r"         #'revert-buffer
+  "."         #'widen
+  "d"         #'mark-defun
   "s"         #'gt-translate
   ","         #'pop-to-mark-command
   "t"         #'org-capture
+  "m"         #'helix-begin-selection
   "z"         #'hs-toggle-hiding
   "q"         #'fill-paragraph
   "<return>"  #'fill-region)
@@ -150,6 +151,14 @@ Behavior depends on current state:
 (global-set-key (kbd "C-c m") helix-textobj-map)
 (set-keymap-parent helix-textobj-inner-map m-map)
 (keymap-unset helix-normal-state-keymap "C-c" t)
+(keymap-unset helix-normal-state-keymap "C-f" t)
+(keymap-unset helix-normal-state-keymap "C-b" t)
+(helix-define-key 'normal "R" #'helix-replace)
+(helix-define-key 'normal "r" #'helix-replace-yanked)
+(helix-define-key 'normal "v" #'helix-backward-long-word)
+(helix-define-key 'normal "e" #'helix-forward-long-word)
+(helix-define-key 'normal "s" #'helix-select-line)
+(helix-define-key 'normal "x" #'helix-kill-thing-at-point)
 
 (defmacro helix-set-keymap-parent (map-or-mode &optional parent)
   "Set the parent keymap for MAP-OR-MODE to PARENT.
