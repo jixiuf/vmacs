@@ -72,7 +72,7 @@
   "."         #'widen
   "d"         #'narrow-to-defun
   "f"         #'mark-defun
-  "s"         #'gt-translate
+  "e"         #'gt-translate
   ","         #'pop-to-mark-command
   "t"         #'org-capture
   "m"         #'helix-begin-selection
