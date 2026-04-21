@@ -59,8 +59,8 @@
 (advice-add 'keyboard-quit :before #'vmacs-bury-boring-windows)
 
 ;; (global-set-key (kbd "C-;") #'vmacs-meow-iedit)
-;; (global-set-key (kbd "C-;") #'query-replace-iedit-mode)
-(global-set-key (kbd "C-;") #'vmacs-repeat)
+(global-set-key (kbd "C-;") #'query-replace-iedit-mode)
+;; (global-set-key (kbd "C-;") #'vmacs-repeat)
 
 
 

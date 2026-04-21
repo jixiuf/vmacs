@@ -127,53 +127,14 @@
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (global-set-key (kbd "C-c w c") 'toggle-case-fold-search)
 (global-set-key (kbd "C-c C-s") 'toggle-case-fold)
+(global-set-key (kbd "C-3") 'lazy-isearch-at-point-prev)
+(global-set-key (kbd "C-8") 'lazy-isearch-at-point-next)
+(with-eval-after-load 'lazy-isearch (lazy-isearch-mode))
+(global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 (setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c/C-cC-s:case)")
-(global-set-key (kbd "C--")   #'(lambda() (interactive)(insert "_")))
-(defun vmacs-isearch-insert_()
-  (interactive)
-  (isearch-printing-char ?_))
-(define-key isearch-mode-map  (kbd "C--")   'vmacs-isearch-insert_)
 
-
-;; (add-hook 'isearch-mode-end-hook
-;;           (lambda()
-;;             (when isearch-success ; 只有在搜索成功时
-;;               (set-mark isearch-other-end)
-;;               (activate-mark))))
 
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
-;; isearch lazy counter
-
-(defun vmacs--lazy-count-hook ()
-  (save-mark-and-excursion
-    (when isearch-lazy-count-current
-      (let ((search-term (if isearch-regexp
-                             (format "/%s/"
-                                     (propertize isearch-string 'face 'font-lock-variable-name-face))
-                           (propertize isearch-string 'face 'font-lock-variable-name-face)))
-            (count-info (isearch-lazy-count-format)))
-        (vmacs--show-indicator 
-         (format "%s %s"
-                 search-term
-                 (propertize count-info 'face 'font-lock-function-name-face)))))))
-
-(add-hook 'lazy-count-update-hook #'vmacs--lazy-count-hook)
-
-
-(defun vmacs--show-indicator (msg)
-  (setq msg (string-trim-right msg))
-  (message "%s" msg))
-;; end of isearch (from meow)
-
-(defun vmacs-isearch-unhighlight ()
-  (isearch-dehighlight)
-  (lazy-highlight-cleanup t))
-
-(advice-add 'keyboard-quit :before #'vmacs-isearch-unhighlight)
-
-
-;;
-(global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
 
 ;; https://emacs.stackexchange.com/questions/80484/query-replace-ignore-events-not-binded-in-query-replace-map
 (defvar vmacs-do-nothing-map

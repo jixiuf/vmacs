@@ -47,7 +47,6 @@
       "l" #'flymake-show-project-diagnostics
       "S" #'eglot-reconnect
       "h" #'eglot-code-actions)
-    eglot-managed-mode
     (helix-define-key 'normal (kbd "=") #'eglot-format 'eglot-managed-mode)
     (helix-define-key 'normal "g" eglot-g-map 'eglot-managed-mode)
     )

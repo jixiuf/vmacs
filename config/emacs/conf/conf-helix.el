@@ -31,6 +31,10 @@
 (helix-define-key 'normal "e" #'helix-forward-long-word)
 (helix-define-key 'normal "s" #'helix-select-line)
 (helix-define-key 'normal "x" #'helix-kill-thing-at-point)
+(helix-define-key 'normal "/" #'lazy-isearch-regexp-next)
+(helix-define-key 'normal "?" #'lazy-isearch-regexp-prev)
+(helix-define-key 'normal "n" #'lazy-isearch-repeat-next)
+(helix-define-key 'normal "N" #'lazy-isearch-repeat-prev)
 (defvar-keymap g-map
   "4" #'query-replace ;space g4
   "5" #'re-builder                                 ;;query-replace-regexp
@@ -63,11 +67,11 @@
 
 (defvar-keymap m-map
   "$"         #'toggle-truncate-lines
-  "f"         #'narrow-to-defun
   "n"         #'narrow-to-region
   "r"         #'revert-buffer
   "."         #'widen
-  "d"         #'mark-defun
+  "d"         #'narrow-to-defun
+  "f"         #'mark-defun
   "s"         #'gt-translate
   ","         #'pop-to-mark-command
   "t"         #'org-capture
