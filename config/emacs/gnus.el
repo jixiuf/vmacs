@@ -151,11 +151,11 @@
   (define-key gnus-summary-mode-map  "T" #'gnus-summary-toggle-header)     ;old t
   (define-key gnus-summary-thread-map "t" #'gnus-summary-toggle-threads)   ;tt :切换是否thread old:TT
   (unless noninteractive
-    (bray-state-map-set 'motion gnus-summary-mode-map "g u" #'mbsync)
-    (bray-state-map-set 'motion gnus-summary-mode-map "g r" #'notmuch)
-    (bray-state-map-set 'motion gnus-summary-mode-map "g r" #'gnus-summary-reselect-current-group)
-    (bray-state-map-set 'motion gnus-summary-mode-map "/" #'gnus-summary-limit-map)
-    (bray-state-map-set 'motion gnus-summary-mode-map "G" gnus-summary-goto-map))
+    (helix-define-key 'motion "gu" #'mbsync 'gnus-summary-mode)
+    (helix-define-key 'motion "gr" #'notmuch 'gnus-summary-mode)
+    (helix-define-key 'motion "gr" #'gnus-summary-reselect-current-group 'gnus-summary-mode)
+    (helix-define-key 'motion "/" #'gnus-summary-limit-map 'gnus-summary-mode)
+    (helix-define-key 'motion "G" gnus-summary-goto-map 'gnus-summary-mode))
   (define-key gnus-summary-mode-map "b" #'gnus-select-group)
   ;; 见下面 关于gnus-widen-article-window 的注释，用于实现类似于 mu4e 查看article时隐藏summary的样式
   (define-key gnus-summary-mode-map  (kbd "C-m") #'(lambda()(interactive)
@@ -179,7 +179,7 @@
   (keymap-unset gnus-article-mode-map "m" t)
 
   (unless noninteractive
-    (bray-state-map-set 'motion gnus-article-mode-map "G" gnus-summary-goto-map))
+    (helix-define-key 'motion "G" gnus-summary-goto-map 'gnus-article-mode))
   ;; 下面几个key 通过在article buffer 中直接实现next/prev article
   ;; 需要gnus-widen-article-window=t
   (define-key gnus-article-mode-map "b" #'gnus-select-group)
@@ -470,11 +470,11 @@
 (add-hook 'gnus-group-mode-hook #'init-my-gnus-group)
 (defun init-my-gnus-group()
   (unless noninteractive
-    (bray-state-map-set 'motion gnus-group-mode-map "G" gnus-group-group-map)
-    (bray-state-map-set 'motion gnus-group-mode-map "n" #'gnus-group-next-unread-group)
-    (bray-state-map-set 'motion gnus-group-mode-map "/" #'gnus-group-read-ephemeral-search-group)
-    (bray-state-map-set 'motion gnus-group-mode-map "g u" #'mbsync)
-    (bray-state-map-set 'motion gnus-group-mode-map "g r" #'notmuch))
+    (helix-define-key 'motion "G" gnus-group-group-map 'gnus-group-mode)
+    (helix-define-key 'motion "n" #'gnus-group-next-unread-group 'gnus-group-mode)
+    (helix-define-key 'motion "/" #'gnus-group-read-ephemeral-search-group 'gnus-group-mode)
+    (helix-define-key 'motion "gu" #'mbsync 'gnus-group-mode)
+    (helix-define-key 'motion "gr" #'notmuch 'gnus-group-mode))
 
   ;; 这段代码是将以下手工创建group 的操作固化，以便我换电脑的时候
   ;; 不用再需要重新创建，而是通过代码自动化了

@@ -1,13 +1,13 @@
 ;; -*- lexical-binding: t; -*-
 
 (with-eval-after-load 'json-ts-mode
-  (bray-state-map-set 'normal json-ts-mode-map "C-c C-p" #'json-ts-jq-path-at-point)
-  (bray-state-map-set 'normal json-ts-mode-map "z" #'hs-toggle-hiding)
-  (bray-state-map-set 'normal json-ts-mode-map "<tab>" #'(lambda()
+  (helix-define-key 'normal (kbd "C-c C-p") #'json-ts-jq-path-at-point 'json-ts-mode)
+  (helix-define-key 'normal "z" #'hs-toggle-hiding 'json-ts-mode)
+  (helix-define-key 'normal (kbd "<tab>") #'(lambda()
                                                            (interactive)
                                                            (if (region-active-p)
                                                                (call-interactively #'json-pretty-print)
-                                                             (call-interactively #'json-pretty-print-buffer) ))))
+                                                             (call-interactively #'json-pretty-print-buffer) )) 'json-ts-mode))
 ;; (add-hook 'js-mode-hook 'vmacs-js-mode-hook)
 (add-hook 'json-ts-mode-hook 'vmacs-js-mode-hook)
 ;; (add-hook 'js-json-mode-hook 'vmacs-js-mode-hook)

@@ -175,10 +175,10 @@
   (require 'vc-git)
   
   (defvar-keymap vc-g-map    "d" #'vc-root-diff)
-  (bray-state-map-set 'motion vc-dir-mode-map "g" vc-g-map)
-  (bray-state-map-set 'motion vc-dir-mode-map "z" vc-git-stash-shared-map)
-  (bray-state-map-set 'motion vc-dir-mode-map "q" vc-action-map)
-  (bray-state-map-set 'motion vc-dir-mode-map "r" vc-r-map)
+  (helix-define-key 'motion "g" vc-g-map 'vc-dir-mode)
+  (helix-define-key 'motion "z" vc-git-stash-shared-map 'vc-dir-mode)
+  (helix-define-key 'motion "q" vc-action-map 'vc-dir-mode)
+  (helix-define-key 'motion "r" vc-r-map 'vc-dir-mode)
 )
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)

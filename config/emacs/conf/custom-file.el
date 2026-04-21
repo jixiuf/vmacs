@@ -82,7 +82,12 @@
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
  '(safe-local-variable-values
-   '((eglot-server-programs
+   '((eval and buffer-file-name (not (eq major-mode 'package-recipe-mode))
+           (or (require 'package-recipe-mode nil t)
+               (let ((load-path (cons "../package-build" load-path)))
+                 (require 'package-recipe-mode nil t)))
+           (package-recipe-mode))
+     (eglot-server-programs
       (typescript-ts-mode "~/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"))
      (eglot-server-programs (vue-mode "~/.nvm/versions/node/v16.20.2/bin/vls"))
      (web-mode-indent-style . 2) (web-mode-block-padding . 2) (web-mode-script-padding . 2)

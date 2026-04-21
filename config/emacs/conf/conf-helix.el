@@ -20,8 +20,6 @@
         (help-mode . motion)
         (info-mode . motion)))
 
-(global-set-key (kbd "C-c m") helix-textobj-map)
-(set-keymap-parent helix-textobj-inner-map m-map)
 (helix-define-key 'motion "j" #'helix-next-line)
 (helix-define-key 'motion "k" #'helix-previous-line)
 (keymap-unset helix-normal-state-keymap "C-c" t)
@@ -33,6 +31,52 @@
 (helix-define-key 'normal "e" #'helix-forward-long-word)
 (helix-define-key 'normal "s" #'helix-select-line)
 (helix-define-key 'normal "x" #'helix-kill-thing-at-point)
+(defvar-keymap g-map
+  "4" #'query-replace ;space g4
+  "5" #'re-builder                                 ;;query-replace-regexp
+  "g" #'vmacs-goto-line
+  "T" #'consult-grep
+  "t" #'consult-ripgrep
+  "e" #'grep
+  "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
+  "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "X" #'consult-ripgrep-root-symbol
+  "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
+  "/" #'consult-focus-lines
+  "z" #'consult-hide-lines
+  ";" #'goto-line
+  ":" #'goto-char
+  "n" #'next-error
+  "p" #'previous-error
+  "b" #'pop-global-mark
+  "u" #'upcase-dwim
+  "U" #'downcase-dwim
+  "m" #'push-mark-command
+  "P" #'project-or-external-find-file
+  "d" #'xref-find-definitions
+  "," #'goto-last-change
+  "." #'goto-last-change-reverse
+  "f" #'gptel-rewrite
+  )
+(global-set-key (kbd "C-c g") g-map)
+(set-keymap-parent helix-goto-map g-map)
+
+(defvar-keymap m-map
+  "$"         #'toggle-truncate-lines
+  "f"         #'narrow-to-defun
+  "n"         #'narrow-to-region
+  "r"         #'revert-buffer
+  "."         #'widen
+  "d"         #'mark-defun
+  "s"         #'gt-translate
+  ","         #'pop-to-mark-command
+  "t"         #'org-capture
+  "m"         #'helix-begin-selection
+  "z"         #'hs-toggle-hiding
+  "q"         #'fill-paragraph
+  "<return>"  #'fill-region)
+(global-set-key (kbd "C-c m") helix-textobj-map)
+(set-keymap-parent helix-textobj-inner-map m-map)
 
 
 (defcustom meep-keypad-dispatch
@@ -120,50 +164,6 @@ Behavior depends on current state:
 
 (keymap-set key-translation-map "<SPC>" 'my-meep-keypad)
 
-(defvar-keymap g-map
-  "4" #'query-replace ;space g4
-  "5" #'re-builder                                 ;;query-replace-regexp
-  "g" #'vmacs-goto-line
-  "T" #'consult-grep
-  "t" #'consult-ripgrep
-  "e" #'grep
-  "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
-  "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "X" #'consult-ripgrep-root-symbol
-  "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "/" #'consult-focus-lines
-  "z" #'consult-hide-lines
-  ";" #'goto-line
-  ":" #'goto-char
-  "n" #'next-error
-  "p" #'previous-error
-  "b" #'pop-global-mark
-  "u" #'upcase-dwim
-  "U" #'downcase-dwim
-  "m" #'push-mark-command
-  "P" #'project-or-external-find-file
-  "d" #'xref-find-definitions
-  "," #'goto-last-change
-  "." #'goto-last-change-reverse
-  "f" #'gptel-rewrite
-  )
-(global-set-key (kbd "C-c g") g-map)
-(set-keymap-parent helix-goto-map g-map)
-
-(defvar-keymap m-map
-  "$"         #'toggle-truncate-lines
-  "f"         #'narrow-to-defun
-  "n"         #'narrow-to-region
-  "r"         #'revert-buffer
-  "."         #'widen
-  "d"         #'mark-defun
-  "s"         #'gt-translate
-  ","         #'pop-to-mark-command
-  "t"         #'org-capture
-  "m"         #'helix-begin-selection
-  "z"         #'hs-toggle-hiding
-  "q"         #'fill-paragraph
-  "<return>"  #'fill-region)
 
 (defmacro helix-set-keymap-parent (map-or-mode &optional parent)
   "Set the parent keymap for MAP-OR-MODE to PARENT.
