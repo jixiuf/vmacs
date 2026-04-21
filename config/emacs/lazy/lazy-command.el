@@ -4,6 +4,22 @@
 (declare-function org-end-of-line "org")
 (declare-function org-beginning-of-line "org")
 (declare-function org-kill-line "org")
+
+;;;###autoload
+(defun helix-replace-yank ()
+  "Replace selection with the last stretch of killed text.
+
+If `helix--current-selection' is nil, replace character at point."
+  (interactive)
+  (if (= 0 (length kill-ring))
+      (message "nothing to yank")
+    (let ((txt (current-kill 0)))
+      (when (region-active-p)
+        (kill-region  (region-beginning) (region-end)))
+      (kill-new txt))
+    (yank)
+    (helix--clear-data)))
+
 ;;;###autoload
 (defun uid() (interactive) (let ((uid (completing-read "uid: " '("10064589" "545473" "60682172" "12880661" "492256045"))))
                              (when (called-interactively-p)
