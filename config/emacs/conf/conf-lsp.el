@@ -35,6 +35,7 @@
     (local-set-key (kbd "C-c C-f") 'dape-continue)
     ;; (local-set-key (kbd "C-<return>") (cape-capf-interactive #'copilot-complete))
     (defvar-keymap eglot-g-map
+      :parent helix-goto-map
       "=" #'eglot-format
       "R" #'eglot-rename
       "x" #'xref-find-references
@@ -47,8 +48,8 @@
       "l" #'flymake-show-project-diagnostics
       "S" #'eglot-reconnect
       "h" #'eglot-code-actions)
-    (helix-define-key 'normal (kbd "=") #'eglot-format 'eglot-managed-mode)
-    (helix-define-key 'normal "g" eglot-g-map 'eglot-managed-mode)
+    (helix-define-key 'normal (kbd "=") #'eglot-format major-mode)
+    (helix-define-key 'normal "g" eglot-g-map major-mode)
     )
 
   ;; (add-hook 'completion-at-point-functions 'codeium-completion-at-point -10 t)
