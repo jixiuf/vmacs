@@ -1,5 +1,6 @@
 ;;; conf-helix.el --- Description -*- lexical-binding: t; -*-
 ;; (package-vc-install '(helix-mode :url "https://github.com/jixiuf/helix-mode.git" :branch "main"))
+;;  (package-vc-install '(leader :url "https://github.com/jixiuf/leader.git" :branch "main"))
 ;;; Code:
 (require 'helix)
 (setq helix-major-mode-default-states
@@ -22,9 +23,13 @@
 
 (helix-define-key 'motion "j" #'helix-next-line)
 (helix-define-key 'motion "k" #'helix-previous-line)
+(helix-define-key 'motion "g" helix-goto-map)
+
 (keymap-unset helix-normal-state-keymap "C-c" t)
 (keymap-unset helix-normal-state-keymap "C-f" t)
 (keymap-unset helix-normal-state-keymap "C-b" t)
+(keymap-unset helix-normal-state-keymap "<SPC>" t)
+
 (helix-define-key 'normal "R" #'helix-replace)
 (helix-define-key 'normal "r" #'helix-replace-yank)
 (helix-define-key 'normal "v" #'helix-backward-long-word)
@@ -166,7 +171,7 @@ Behavior depends on current state:
      (t
       (vector leader)))))
 
-(keymap-set key-translation-map "<SPC>" 'my-meep-keypad)
+;; (keymap-set key-translation-map "<SPC>" 'my-meep-keypad)
 
 
 (defmacro helix-set-keymap-parent (map-or-mode &optional parent)
@@ -197,6 +202,10 @@ Default is 'helix-normal-state-keymap' when PARENT is nil."
 
 (helix-mode)
 
+(require 'leader)
+(add-to-list 'leader-pass-through-predicates
+             (lambda () (eq helix--current-state 'insert)))
+(leader-mode 1) 
 
 (provide 'conf-helix)
 
