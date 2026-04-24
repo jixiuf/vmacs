@@ -30,6 +30,8 @@
 (keymap-unset helix-normal-state-keymap "C-b" t)
 (keymap-unset helix-normal-state-keymap "<SPC>" t)
 
+(helix-define-key 'normal (kbd "C-2") #'helix-begin-selection)
+(helix-define-key 'motion (kbd "C-2") #'helix-begin-selection)
 (helix-define-key 'normal "R" #'helix-replace)
 (helix-define-key 'normal "r" #'helix-replace-yank)
 (helix-define-key 'normal "v" #'helix-backward-long-word)
