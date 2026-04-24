@@ -77,8 +77,9 @@ Only active in `prog-mode' derived buffers."
 (defun vmacs-input-method-hook()
   (when (member this-command '(vmacs-cancel-selection
                                bray-state-stack-pop
+                               helix-insert-exit
                                meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
-    (switch-to-english-input-method)));
+    (switch-to-english-input-method)))  ; 
 (add-hook 'meep-state-hook-normal-enter #'vmacs-input-method-hook)
 (add-hook 'helix-normal-mode-hook #'vmacs-input-method-hook)
 

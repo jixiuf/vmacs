@@ -37,6 +37,7 @@
 (helix-define-key 'normal "v" #'helix-backward-long-word)
 (helix-define-key 'normal "e" #'helix-forward-long-word-start)
 (helix-define-key 'normal "s" #'helix-select-line)
+(helix-define-key 'normal "S" #'helix-select-line-up)
 (helix-define-key 'normal "x" #'helix-kill-thing-at-point)
 (helix-define-key 'normal "/" #'lazy-isearch-regexp-next)
 (helix-define-key 'normal "?" #'lazy-isearch-regexp-prev)
