@@ -25,6 +25,7 @@
 (helix-define-key 'motion "k" #'helix-previous-line)
 (helix-define-key 'motion "g" helix-goto-map)
 
+(keymap-unset helix-goto-map "r" t)
 (keymap-unset helix-normal-state-keymap "C-c" t)
 (keymap-unset helix-normal-state-keymap "C-f" t)
 (keymap-unset helix-normal-state-keymap "C-b" t)
@@ -48,6 +49,7 @@
   "5" #'re-builder                                 ;;query-replace-regexp
   "g" #'vmacs-goto-line
   "T" #'consult-grep
+  "r" #'revert-buffer
   "t" #'consult-ripgrep
   "e" #'grep
   "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))

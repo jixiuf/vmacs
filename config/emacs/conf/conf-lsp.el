@@ -21,7 +21,7 @@
   (define-key copilot-completion-map (kbd "C-o") 'copilot-accept-completion))
 
 (defun vmacs-lsp-hook()
-  (copilot-mode)
+  ;; (copilot-mode)
   (which-function-mode)
   (when (eglot-managed-p)
     (eldoc-mode)
