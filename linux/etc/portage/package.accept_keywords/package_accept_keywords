@@ -106,6 +106,7 @@ dev-lang/zig-bin ~amd64
 gui-wm/river ** 
 gui-libs/wlroots ** 
 gui-apps/wayfreeze ** 
+ media-fonts/sarasa-term-sc-nerd ~amd64
 # Local Variables:
 # mode: conf
 # End:
