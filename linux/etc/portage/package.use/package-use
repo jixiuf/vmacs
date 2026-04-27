@@ -1,5 +1,6 @@
 # -*- mode:conf -*-
 # */* CPU_FLAGS_X86: aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3
+*/* VIDEO_CARDS: -* nvidia
 net-libs/libssh server
 sys-libs/zlib minizip
 app-editors/emacs  libxml2 gui gtk json   gzip-el cairo dynamic-loading xft harfbuzz tree-sitter  sqlite gif sound  dbus imagemagick -X
@@ -18,7 +19,7 @@ sys-fs/lvm2 lvm
 gui-apps/waybar wifi  network pipewire upower tray experimental mpd mpris niri 
 media-video/pipewire ffmpeg  extra bluetooth dbus  sound-server 
 media-sound/pulseaudio -daemon
-media-video/ffmpeg   libsoxr opus theora vpx openh264 lame
+media-video/ffmpeg   libsoxr opus theora vpx openh264 lame -sdl
 dev-vcs/subversion plaintext-password-storage 
 # net-misc/networkmanager 
 net-wireless/wpa_supplicant dbus 
@@ -53,10 +54,12 @@ sys-apps/man-pages L10N: -zh-CN
 # sys-devel/gcc jit
 net-im/wechat fcitx
 media-sound/playerctl introspection # for ngw-panel
-gui-wm/niri screencast
 sys-devel/gcc pgo lto           #match gcc 15 binary use
 app-emulation/fuse -pulseaudio
 gui-libs/gtk4-layer-shell introspection vala
+>=sys-kernel/installkernel-67 dracut
 
 # x11-libs/wxGTK gstreamer webkit
 # dev-python/wxpython webkit
+
+net-libs/webkit-gtk keyring systemd wayland
