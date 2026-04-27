@@ -106,7 +106,7 @@
 (beacon-mode 1)
 (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
 (require 'conf-tmp nil t)
-(require 'conf-vterm)
+;; (require 'conf-vterm)
 (require 'server)
 (unless (server-running-p) (server-start))
 
