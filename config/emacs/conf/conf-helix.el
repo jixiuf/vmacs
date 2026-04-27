@@ -3,6 +3,7 @@
 ;;  (package-vc-install '(leader :url "https://github.com/jixiuf/leader.git" :branch "main"))
 ;;; Code:
 (require 'helix)
+(setq helix-replace-yanked-delete-char-p nil)
 (setq helix-major-mode-default-states
       '((rob-mode . insert)
         (ghostel-mode . insert)
