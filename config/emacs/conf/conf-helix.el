@@ -46,6 +46,8 @@
 (helix-define-key 'normal "N" #'lazy-isearch-repeat-prev)
 (helix-define-key 'normal "," #'backward-sexp)
 (helix-define-key 'normal "." #'forward-sexp)
+(helix-define-key 'normal (kbd "C-r") #'exchange-point-and-mark)
+
 
 
 (defvar-keymap g-map
