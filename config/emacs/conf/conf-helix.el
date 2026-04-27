@@ -34,7 +34,7 @@
 (helix-define-key 'normal (kbd "C-2") #'helix-begin-selection)
 (helix-define-key 'motion (kbd "C-2") #'helix-begin-selection)
 (helix-define-key 'normal "R" #'helix-replace)
-(helix-define-key 'normal "r" #'helix-replace-yank)
+(helix-define-key 'normal "r" #'helix-replace-yanked)
 (helix-define-key 'normal "v" #'helix-backward-long-word)
 (helix-define-key 'normal "e" #'helix-forward-long-word-start)
 (helix-define-key 'normal "s" #'helix-select-line)

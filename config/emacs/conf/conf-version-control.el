@@ -20,6 +20,7 @@
  vc-follow-symlinks t
  vc-allow-rewriting-published-history 'ask
  vc-dir-hide-up-to-date-on-revert t
+ vc-dir-auto-hide-up-to-date t
  vc-log-show-limit 200
  diff-font-lock-prettify t
  vc-annotate-background-mode nil
