@@ -37,7 +37,7 @@
     (unless buffer-file-name
       (setq buffer-file-name
             (expand-file-name (format-time-string "%Y%m%d_%H%M%S.ai.txt" (current-time))
-                              "~/Documents/jianguo/jianguo/ai/")))
+                              "~/Documents/jianguo/Daedalus/ai")))
     (write-file buffer-file-name)))
 
 (add-hook 'gptel-post-response-functions #'vmacs-ai-after-chat-insertion-hook)

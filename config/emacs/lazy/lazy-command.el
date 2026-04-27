@@ -256,7 +256,7 @@ based on the current context and previous history."
 ;;;###autoload
 (defun vmacs-ai()
   (interactive)
-  (let ((default-directory "~/Documents/jianguo/jianguo/ai/")
+  (let ((default-directory "~/Documents/jianguo/Daedalus/ai")
         (name "*ai*"))
     (with-current-buffer (generate-new-buffer name)
       (org-mode)
@@ -267,7 +267,7 @@ based on the current context and previous history."
       (unless buffer-file-name
         (setq buffer-file-name
               (expand-file-name (format-time-string "%Y%m%d_%H%M%S.ai.txt" (current-time))
-                                "~/Documents/jianguo/jianguo/ai/")))
+                                "~/Documents/jianguo/Daedalus/ai")))
       (set-buffer-modified-p nil)
       (gptel-mode)
       (helix-insert)
