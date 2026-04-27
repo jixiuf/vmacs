@@ -44,6 +44,10 @@
 (helix-define-key 'normal "?" #'lazy-isearch-regexp-prev)
 (helix-define-key 'normal "n" #'lazy-isearch-repeat-next)
 (helix-define-key 'normal "N" #'lazy-isearch-repeat-prev)
+(helix-define-key 'normal "," #'backward-sexp)
+(helix-define-key 'normal "." #'forward-sexp)
+
+
 (defvar-keymap g-map
   "4" #'query-replace ;space g4
   "5" #'re-builder                                 ;;query-replace-regexp
