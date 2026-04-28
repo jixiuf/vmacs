@@ -19,7 +19,7 @@
 	    (gomod . ("https://github.com/camdencheek/tree-sitter-go-mod.git" "v1.1.0"))
         (java . ("https://github.com/tree-sitter/tree-sitter-java.git" "v0.23.5"))
 	    (rust . ("https://github.com/tree-sitter/tree-sitter-rust.git" "v0.23.2"))
-	    (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" "v0.2.0"))
+	    ;; (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git" "v0.2.0"))
 	    (yaml . ("https://github.com/ikatyang/tree-sitter-yaml.git" "v0.5.0"))
         (json . ("https://github.com/tree-sitter/tree-sitter-json.git" "v0.24.8"))
 	    (c . ("https://github.com/tree-sitter/tree-sitter-c.git" "v0.23.5"))
