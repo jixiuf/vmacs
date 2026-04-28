@@ -28,6 +28,7 @@
 (helix-define-key 'normal "s" #'helix-select-line)
 (helix-define-key 'normal "S" #'helix-select-line-up)
 (helix-define-key 'normal "x" #'helix-kill-thing-at-point)
+(helix-define-key 'normal "G" #'end-of-buffer)
 (helix-define-key 'normal "/" #'lazy-isearch-regexp-next)
 (helix-define-key 'normal "?" #'lazy-isearch-regexp-prev)
 (helix-define-key 'normal "n" #'lazy-isearch-repeat-next)
