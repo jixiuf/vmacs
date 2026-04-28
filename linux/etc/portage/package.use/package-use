@@ -63,3 +63,4 @@ gui-libs/gtk4-layer-shell introspection vala
 # dev-python/wxpython webkit
 
 net-libs/webkit-gtk keyring systemd wayland
+sys-libs/minizip-ng compat
