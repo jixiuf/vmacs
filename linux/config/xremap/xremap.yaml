@@ -34,7 +34,7 @@ modmap:
   - name: Global for luojilab
     device:
       #evtest
-      only: ["Apple Inc. Apple Internal Keyboard / Trackpad","SONiX Touch68@Lofree","SONiX Touch68@Lofree Keyboard" ]
+      only: ["Apple Inc. Apple Internal Keyboard / Trackpad","SONiX Touch68@Lofree","SONiX Touch68@Lofree Keyboard","AT Translated Set 2 keyboard" ]
     remap:
       super_l :
         held: super_l
