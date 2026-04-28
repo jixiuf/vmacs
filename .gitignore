@@ -95,3 +95,4 @@ config/emacs/cache/rime/build/
 mac/bin/run-or-raise
 mac/run-or-raise
 config/emacs/rime/
+config/emacs/projects.eld
