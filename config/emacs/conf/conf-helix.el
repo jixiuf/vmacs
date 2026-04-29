@@ -17,6 +17,7 @@
 (keymap-unset helix-normal-state-keymap "C-c" t)
 (keymap-unset helix-normal-state-keymap "C-f" t)
 (keymap-unset helix-normal-state-keymap "C-b" t)
+(keymap-unset helix-normal-state-keymap  "C-v" t)
 (keymap-unset helix-normal-state-keymap "<SPC>" t)
 
 (helix-define-key 'normal (kbd "C-2") #'helix-begin-selection)
@@ -81,6 +82,7 @@
   ","         #'pop-to-mark-command
   "t"         #'org-capture
   "m"         #'helix-begin-selection
+  "v"         #'helix-select-rectangle
   "z"         #'hs-toggle-hiding
   "q"         #'fill-paragraph
   "<return>"  #'fill-region)
