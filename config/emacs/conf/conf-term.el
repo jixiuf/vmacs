@@ -2,6 +2,8 @@
 
 ;;; Code:
 
+;; (package-vc-install '(ghostel :url "https://github.com/dakra/ghostel.git" :branch "main"))
+
 (with-eval-after-load 'ghostel
   (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
   (helix-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)

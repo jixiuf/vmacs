@@ -71,11 +71,13 @@
  '(package-selected-packages
    '(agent-shell async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face
                  eglot-java embark embark-consult evil-textobj-tree-sitter exec-path-from-shell
-                 flash git-link go-translate golden-ratio-scroll-screen goto-chg gptel helix-mode
-                 kdl-mode kkp marginalia meep orderless package-lint pinyinlib posframe repeat-fu
-                 rimel verb visible-mark vundo web-mode wgrep with-editor yasnippet))
+                 flash ghostel git-link go-translate golden-ratio-scroll-screen goto-chg gptel
+                 helix-mode kdl-mode kkp leader marginalia meep orderless package-lint pinyinlib
+                 posframe repeat-fu rimel verb visible-mark vundo web-mode wgrep with-editor
+                 yasnippet))
  '(package-vc-selected-packages
-   '((helix-mode :url "https://github.com/jixiuf/helix-mode.git" :branch "main")
+   '((leader :url "https://github.com/jixiuf/leader.git" :branch "main")
+     (helix-mode :url "https://github.com/jixiuf/helix-mode.git" :branch "main")
      (rimel :url "https://github.com/jixiuf/rimel.git")
      (copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
  '(proced-enable-color-flag t)
