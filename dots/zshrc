@@ -241,6 +241,7 @@ if [ $(uname -s ) = "Linux" ] ; then
     alias emerge='sudo -E emerge '
     alias emeu='sudo -E emerge -auvqDN --with-bdeps=y --keep-going @world;sudo -E emerge @preserved-rebuild;sudo -E eclean packages'
     alias emeU='sudo -E emerge --ask -q --keep-going  --emptytree @world'
+    alias emep='sudo emerge --pretend --getbinpkg --usepkgonly --binpkg-respect-use=n '
     alias esync="sudo -E emerge --sync"
     emec() {        if [ -z "$1" ]; then sudo -E emerge -ac;else sudo -E emerge -aqvC "$@";fi ;sudo -E emaint binhost -f   }
     alias emes='sudo -E emerge -aSqv'

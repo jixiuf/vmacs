@@ -8,8 +8,6 @@
   (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
   (helix-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
   (helix-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
-  (helix-define-key 'normal "k" #'ghostel-copy-mode-previous-line 'ghostel-mode)
-  (helix-define-key 'normal "j" #'ghostel-copy-mode-next-line 'ghostel-mode)
   )
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
