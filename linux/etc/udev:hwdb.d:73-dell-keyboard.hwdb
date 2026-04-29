@@ -15,5 +15,6 @@ evdev:input:b0011v0001p0001eAB83*
   KEYBOARD_KEY_38=leftctrl
   KEYBOARD_KEY_db=leftalt
   KEYBOARD_KEY_1d=leftmeta
-# right_alt->f9  
+  KEYBOARD_KEY_b8=rightmeta
+  # right_alt->f9  
 
