@@ -654,7 +654,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title ssh --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'ssh|@.*:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
                                 "type": "basic"
                             },
                             {
