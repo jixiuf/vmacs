@@ -18,7 +18,6 @@ ExecStart=/usr/bin/emacs --fg-daemon
 ExecReload=/usr/bin/kill -HUP $MAINPID
 KillMode=process
 TimeoutSec=180
-StartLimitIntervalSec=10s
 StartLimitBurst=100
 
 [Install]
