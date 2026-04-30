@@ -194,7 +194,7 @@ Default is 'helix-normal-state-keymap' when PARENT is nil."
 
 (defvar helix-motion-parent-keymaps (make-hash-table :test #'equal))
 (defun helix-motion-set-keymap-parent()
-  (unless (member major-mode '(special-mode))
+  (unless (member major-mode '(special-mode dired-mode wdired-mode))
     (when (and (equal helix--current-state 'motion)
                (not (gethash major-mode helix-motion-parent-keymaps)))
       (puthash major-mode t helix-motion-parent-keymaps)
