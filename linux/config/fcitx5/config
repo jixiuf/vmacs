@@ -1,30 +1,30 @@
 [Hotkey]
-# 反复按切换键时进行轮换
+# 按住切换键的修饰键时进行轮换切换
 EnumerateWithTriggerKeys=True
-# 轮换输入法时跳过第一个输入法
-EnumerateSkipFirst=False
-# 向前切换输入分组
-EnumerateGroupForwardKeys=
-# 向后切换输入法分组
-EnumerateGroupBackwardKeys=
 # 激活输入法
 ActivateKeys=
 # 取消激活输入法
 DeactivateKeys=
+# 向前切换输入法
+EnumerateForwardKeys=
+# 向后切换输入法
+EnumerateBackwardKeys=
+# 轮换输入法时跳过第一个输入法
+EnumerateSkipFirst=False
+# 向前切换输入法分组
+EnumerateGroupForwardKeys=
+# 向后切换输入法分组
+EnumerateGroupBackwardKeys=
 # 切换是否使用嵌入预编辑
 TogglePreedit=
+# 触发修饰键快捷键的时限 (毫秒)
+ModifierOnlyKeyTimeout=250
 
 [Hotkey/TriggerKeys]
 0=Shift_R
 
 [Hotkey/AltTriggerKeys]
 0=Shift_L
-
-[Hotkey/EnumerateForwardKeys]
-# 0=Control+Shift_L
-
-[Hotkey/EnumerateBackwardKeys]
-# 0=Control+Shift_R
 
 [Hotkey/PrevPage]
 0=Up
@@ -41,6 +41,8 @@ TogglePreedit=
 [Behavior]
 # 默认状态为激活
 ActiveByDefault=False
+# 重新聚焦时重置状态
+resetStateWhenFocusIn=No
 # 共享输入状态
 ShareInputState=All
 # 在程序中显示预编辑文本
@@ -55,9 +57,9 @@ CompactInputMethodInformation=True
 ShowFirstInputMethodInformation=True
 # 默认页大小
 DefaultPageSize=4
-# 覆盖 Xkb 选项
+# 覆盖 XKB 选项
 OverrideXkbOption=False
-# 自定义 Xkb 选项
+# 自定义 XKB 选项
 CustomXkbOption=
 # Force Enabled Addons
 EnabledAddons=
@@ -65,4 +67,10 @@ EnabledAddons=
 DisabledAddons=
 # Preload input method to be used by default
 PreloadInputMethod=True
+# 允许在密码框中使用输入法
+AllowInputMethodForPassword=False
+# 输入密码时显示预编辑文本
+ShowPreeditForPassword=False
+# 保存用户数据的时间间隔（以分钟为单位）
+AutoSavePeriod=30
 
