@@ -637,12 +637,15 @@ window-rule {
     match app-id="apifox-pdv"
     match app-id="MongoDB Compass"
     match app-id="DBeaver"
-    match app-id="emacs"
     match app-id="mitp"
     match app-id="Bytedance-feishu"
     match app-id="Bytedance-lark"
     match app-id="wechat"
     open-maximized true
+}
+window-rule {
+    match app-id="emacs"
+    default-column-width { proportion 0.618; }
 }
 
 environment {
