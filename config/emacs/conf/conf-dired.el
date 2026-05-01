@@ -117,7 +117,8 @@
 (define-key dired-mode-map  "V" 'add-dir-local-variable)
 (define-key dired-mode-map  "i"  #'wdired-change-to-wdired-mode);上层目录
 (define-key dired-mode-map  "o" 'consult-dir)
-  (keymap-unset dired-mode-map "y" t)
+(helix-define-key 'motion "/" #'consult-focus-lines 'dired-mode)
+(keymap-unset dired-mode-map "y" t)
 (define-key dired-mode-map  "f" 'open-in-filemanager)
 (define-key dired-mode-map  (kbd "<mouse-2>") #'dired-mouse-find-file)
 (with-eval-after-load 'image-mode
