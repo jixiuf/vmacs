@@ -18,6 +18,7 @@
 (keymap-unset helix-normal-state-keymap "C-f" t)
 (keymap-unset helix-normal-state-keymap "C-b" t)
 (keymap-unset helix-normal-state-keymap  "C-v" t)
+(keymap-unset helix-normal-state-keymap "C-w" t)
 (keymap-unset helix-normal-state-keymap "<SPC>" t)
 
 (helix-define-key 'normal (kbd "C-2") #'helix-begin-selection)
