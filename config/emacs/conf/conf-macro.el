@@ -15,7 +15,7 @@
 ;; (advice-add 'my-function :after #'my-after-advice)
 ;; advice-remove
 
-  (global-set-key (kbd "C-c h") help-map)
+  ;; (global-set-key (kbd "C-c h") help-map)
 (define-key help-map (kbd "C-f") nil)
 (define-key help-map (kbd "C-m") nil)
 
