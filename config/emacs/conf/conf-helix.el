@@ -1,6 +1,6 @@
 ;;; conf-helix.el --- Description -*- lexical-binding: t; -*-
 ;; (package-vc-install '(helix-mode :url "https://github.com/jixiuf/helix-mode.git" :branch "main"))
-;;  (package-vc-install '(leader :url "https://github.com/jixiuf/leader.git" :branch "main"))
+;;  (package-vc-install '(keypad :url "https://github.com/jixiuf/emacs-keypad.git" :branch "main"))
 ;;; Code:
 (require 'helix)
 (setq helix-replace-yanked-delete-char-p nil)
@@ -205,13 +205,25 @@ Default is 'helix-normal-state-keymap' when PARENT is nil."
 
 (helix-mode)
 
-(require 'leader)
-(require 'leader-which-key)
-(add-to-list 'leader-pass-through-predicates
+(require 'keypad)
+(require 'keypad-which-key)
+(add-to-list 'keypad-pass-through-predicates
              (lambda () (eq helix--current-state 'insert)))
-;; (setq leader-dispatch-priority t)
-(setq leader-toggle-priority t)
-(leader-mode 1)
+
+(setq keypad-keys
+      '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
+              :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"))
+                         (?h . (:prefix "C-h" :modifier nil  :fallback "C-"))
+                         (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))
+                         (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))
+                         (?m . (:prefix  nil  :modifier "M-" :fallback  nil))))
+        (:key "," :prefix "" :modifier "M-" :fallback nil)
+        (:key "." :prefix "" :modifier "C-M-" :fallback nil
+              :pass-through-predicates (vc-dir-mode))))
+
+;; (setq keypad-dispatch-priority t)
+(setq keypad-toggle-priority t)
+(keypad-mode 1)
 
 (provide 'conf-helix)
 
