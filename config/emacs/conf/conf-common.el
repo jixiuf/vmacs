@@ -315,25 +315,27 @@
 
 (setq backup-enable-predicate 'vmacs-backup-enable-predicate)
 
-(autoload 'gt-do-translate "go-translate" "go-translate" t)
-(with-eval-after-load 'go-translate
+(autoload 'gt-translate "gt" "gt" t)
+(with-eval-after-load 'gt
   ;; https://github.com/lorniu/go-translate/blob/master/README-zh.org
   ;; (add-to-list 'plz-curl-default-args "--dns-servers"  t)
   ;; (add-to-list 'plz-curl-default-args "1.1.1.1"  t)
-  (setq gt-default-http-client
-        (lambda (host)
-          (if (string-match-p "google\\|deepl\\|openai" host)
-              (gt-plz-http-client :args '("--proxy" "socks5://192.168.124.24:8088"))
-            (gt-plz-http-client))))
+  ;; (setq gt-default-http-client
+  ;;       (lambda (host)
+  ;;         (if (string-match-p "google\\|deepl\\|openai" host)
+  ;;             (gt-plz-http-client :args '("--proxy" "socks5://192.168.124.24:8088"))
+  ;;           (gt-plz-http-client))))
   
   (add-hook 'gt-buffer-render-init-hook
             #'(lambda()
-                (bray-mode)
+                (helix-normal-mode)
                 (setq truncate-lines nil)))
   (setq gt-langs '(en zh))
+  (setq gt-chatgpt-host "https://api.deepseek.com")
+  (setq gt-chatgpt-model "deepseek-chat")
   (setq gt-buffer-render-window-config
         '((display-buffer-same-window)))
-  (setq gt-chatgpt-system-prompt "You are a highly skilled translation engine with expertise in the technology sector. maintaining the original format, technical terms, and abbreviations. Do not add any explanations or annotations to the translated text.")
+  (setq gt-chatgpt-system-prompt "You are a highly skilled translation engine with expertise in the technology sector. maintaining the original format, technical terms, and abbreviations. Do not add any explanations or annotations to the translated text, translate it to zh or en by context")
   (setq gt-default-translator
         (gt-translator
          :taker   (list (gt-taker :pick nil :if 'selection) ;有选中则使用选中的内这
