@@ -206,9 +206,12 @@ Default is 'helix-normal-state-keymap' when PARENT is nil."
 (helix-mode)
 
 (require 'leader)
+(require 'leader-which-key)
 (add-to-list 'leader-pass-through-predicates
              (lambda () (eq helix--current-state 'insert)))
-(leader-mode 1) 
+;; (setq leader-dispatch-priority t)
+(setq leader-toggle-priority t)
+(leader-mode 1)
 
 (provide 'conf-helix)
 

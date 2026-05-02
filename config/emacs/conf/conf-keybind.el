@@ -13,6 +13,7 @@
 
 
 (global-set-key (kbd "C-c s") #'save-all)
+(global-set-key (kbd "M-s s") #'save-all)
 
 (with-eval-after-load 'smerge-mode  (define-key g-map "v" smerge-basic-map))
 
