@@ -21,6 +21,7 @@
 (keymap-unset helix-normal-state-keymap "C-w" t)
 (keymap-unset helix-normal-state-keymap "<SPC>" t)
 
+(helix-define-key 'normal (kbd "<f8>") #'repeat)
 (helix-define-key 'normal (kbd "C-2") #'helix-begin-selection)
 (helix-define-key 'motion (kbd "C-2") #'helix-begin-selection)
 (helix-define-key 'normal "R" #'helix-replace)
@@ -218,8 +219,10 @@ Default is 'helix-normal-state-keymap' when PARENT is nil."
                          (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))
                          (?m . (:prefix  nil  :modifier "M-" :fallback  nil))))
         (:key "," :prefix "" :modifier "M-" :fallback nil)
-        (:key "." :prefix "" :modifier "C-M-" :fallback nil
-              :pass-through-predicates (vc-dir-mode))))
+        (:key "x" :prefix "" :modifier "C-M-" :fallback nil
+              :pass-through-predicates (minibufferp isearch-mode
+                                        vc-dir-mode dired-mode
+                                        vc-annotate-mode))))
 
 ;; (setq keypad-dispatch-priority t)
 (setq keypad-toggle-priority t)
