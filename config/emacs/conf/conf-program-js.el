@@ -1,9 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 
 (with-eval-after-load 'json-ts-mode
-  (helix-define-key 'normal (kbd "C-c C-p") #'json-ts-jq-path-at-point 'json-ts-mode)
-  (helix-define-key 'normal "z" #'hs-toggle-hiding 'json-ts-mode)
-  (helix-define-key 'normal (kbd "<tab>") #'(lambda()
+  (hxel-define-key 'normal (kbd "C-c C-p") #'json-ts-jq-path-at-point 'json-ts-mode)
+  (hxel-define-key 'normal "z" #'hs-toggle-hiding 'json-ts-mode)
+  (hxel-define-key 'normal (kbd "<tab>") #'(lambda()
                                                            (interactive)
                                                            (if (region-active-p)
                                                                (call-interactively #'json-pretty-print)

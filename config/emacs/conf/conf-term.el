@@ -6,8 +6,8 @@
 
 (with-eval-after-load 'ghostel
   (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
-  (helix-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
-  (helix-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
+  (hxel-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
+  (hxel-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
   )
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
@@ -55,8 +55,8 @@
 
 ;; (add-hook 'meep-state-hook-insert-enter 'vmacs-ghostel-disable-copy)
 ;; (add-hook 'meep-state-hook-normal-enter 'vmacs-ghostel-enable-copy)
-(add-hook 'helix-normal-mode-hook 'vmacs-ghostel-enable-copy)
-(add-hook 'helix-insert-mode-hook 'vmacs-ghostel-disable-copy)
+(add-hook 'hxel-normal-mode-hook 'vmacs-ghostel-enable-copy)
+(add-hook 'hxel-insert-mode-hook 'vmacs-ghostel-disable-copy)
 ;; (defun vmacs-ghostel-self-insert()
 ;;   (interactive)
 ;;   (unless (bray-state-derived-p 'insert)

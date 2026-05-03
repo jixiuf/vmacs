@@ -1,8 +1,8 @@
 ;;   -*- lexical-binding: t; -*-
 ;; (with-eval-after-load 'org-capture  (add-to-list 'org-capture-mode-hook #'meow-insert))
 (with-eval-after-load 'org-agenda
-  (helix-define-key 'motion "gr" #'org-agenda-redo 'org-agenda-mode)
-  (helix-define-key 'motion "mt" #'org-capture 'org-agenda-mode))
+  (hxel-define-key 'motion "gr" #'org-agenda-redo 'org-agenda-mode)
+  (hxel-define-key 'motion "mt" #'org-capture 'org-agenda-mode))
 
 (setq verb-auto-kill-response-buffers t)
 (with-eval-after-load 'org
