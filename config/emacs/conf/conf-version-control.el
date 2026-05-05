@@ -176,10 +176,10 @@
   (require 'vc-git)
   
   (defvar-keymap vc-g-map    "d" #'vc-root-diff)
-  (hxel-define-key 'motion "g" vc-g-map 'vc-dir-mode)
-  (hxel-define-key 'motion "z" vc-git-stash-shared-map 'vc-dir-mode)
-  (hxel-define-key 'motion "q" vc-action-map 'vc-dir-mode)
-  (hxel-define-key 'motion "r" vc-r-map 'vc-dir-mode)
+  (helixel-define-key 'motion "g" vc-g-map 'vc-dir-mode)
+  (helixel-define-key 'motion "z" vc-git-stash-shared-map 'vc-dir-mode)
+  (helixel-define-key 'motion "q" vc-action-map 'vc-dir-mode)
+  (helixel-define-key 'motion "r" vc-r-map 'vc-dir-mode)
 )
 
 (define-advice vc-next-action (:around (orig-fun &rest args) default-mark-all)

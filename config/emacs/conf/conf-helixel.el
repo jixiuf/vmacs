@@ -1,42 +1,42 @@
 ;;; conf-lxel.el --- Description -*- lexical-binding: t; -*-
-;; (package-vc-install '(hxel-mode :url "https://github.com/jixiuf/hxel-mode.git" :branch "main"))
+;; (package-vc-install '(helixel-mode :url "https://github.com/jixiuf/helixel-mode.git" :branch "main"))
 ;;  (package-vc-install '(keypad :url "https://github.com/jixiuf/emacs-keypad.git" :branch "main"))
 ;;; Code:
-(require 'hxel)
-(setq hxel-replace-yanked-delete-char-p nil)
-(setq hxel-major-mode-default-states
+(require 'helixel)
+(setq helixel-replace-yanked-delete-char-p nil)
+(setq helixel-major-mode-default-states
       '((reb-mode . insert)
         (ghostel-mode . insert)
         (calc-mode . insert)))
 
-(hxel-define-key 'motion "j" #'hxel-next-line)
-(hxel-define-key 'motion "k" #'hxel-previous-line)
-(hxel-define-key 'motion "g" hxel-goto-map)
+(helixel-define-key 'motion "j" #'helixel-next-line)
+(helixel-define-key 'motion "k" #'helixel-previous-line)
+(helixel-define-key 'motion "g" helixel-goto-map)
 
-(keymap-unset hxel-goto-map "r" t)
-(keymap-unset hxel-normal-state-keymap "C-c" t)
-(keymap-unset hxel-normal-state-keymap "C-f" t)
-(keymap-unset hxel-normal-state-keymap "C-b" t)
-(keymap-unset hxel-normal-state-keymap  "C-v" t)
-(keymap-unset hxel-normal-state-keymap "C-w" t)
-(keymap-unset hxel-normal-state-keymap "<SPC>" t)
+(keymap-unset helixel-goto-map "r" t)
+(keymap-unset helixel-normal-state-keymap "C-c" t)
+(keymap-unset helixel-normal-state-keymap "C-f" t)
+(keymap-unset helixel-normal-state-keymap "C-b" t)
+(keymap-unset helixel-normal-state-keymap  "C-v" t)
+(keymap-unset helixel-normal-state-keymap "C-w" t)
+(keymap-unset helixel-normal-state-keymap "<SPC>" t)
 
-(hxel-define-key 'normal (kbd "<f8>") #'repeat)
-(hxel-define-key 'normal (kbd "C-2") #'hxel-begin-selection)
-(hxel-define-key 'motion (kbd "C-2") #'hxel-begin-selection)
-(hxel-define-key 'normal "R" #'hxel-replace)
-(hxel-define-key 'normal "r" #'hxel-replace-yanked)
-(hxel-define-key 'normal "v" #'hxel-backward-long-word)
-(hxel-define-key 'normal "e" #'hxel-forward-long-word-start)
-(hxel-define-key 'normal "s" #'hxel-select-line)
-(hxel-define-key 'normal "S" #'hxel-select-line-up)
-(hxel-define-key 'normal "x" #'hxel-kill-thing-at-point)
-(hxel-define-key 'normal "G" #'end-of-buffer)
-(hxel-define-key 'normal "," #'backward-sexp)
-(hxel-define-key 'normal "." #'forward-sexp)
-(hxel-define-key 'normal (kbd "C-r") #'exchange-point-and-mark)
-(global-set-key (kbd "C-3") 'hxel-search-at-point-prev)
-(global-set-key (kbd "C-8") 'hxel-search-at-point-next)
+(helixel-define-key 'normal (kbd "<f8>") #'repeat)
+(helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
+(helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
+(helixel-define-key 'normal "R" #'helixel-replace)
+(helixel-define-key 'normal "r" #'helixel-replace-yanked)
+;; (helixel-define-key 'normal "v" #'helixel-backward-long-word)
+;; (helixel-define-key 'normal "e" #'helixel-forward-long-word-start)
+(helixel-define-key 'normal "s" #'helixel-select-line)
+(helixel-define-key 'normal "S" #'helixel-select-line-up)
+(helixel-define-key 'normal "x" #'helixel-kill-thing-at-point)
+(helixel-define-key 'normal "G" #'end-of-buffer)
+(helixel-define-key 'normal "," #'backward-sexp)
+(helixel-define-key 'normal "." #'forward-sexp)
+(helixel-define-key 'normal (kbd "C-r") #'exchange-point-and-mark)
+(global-set-key (kbd "C-3") 'helixel-search-at-point-prev)
+(global-set-key (kbd "C-8") 'helixel-search-at-point-next)
 
 
 
@@ -69,7 +69,7 @@
   "f" #'gptel-rewrite
   )
 (global-set-key (kbd "C-c g") g-map)
-(set-keymap-parent hxel-goto-map g-map)
+(set-keymap-parent helixel-goto-map g-map)
 
 (defvar-keymap m-map
   "$"         #'toggle-truncate-lines
@@ -81,13 +81,13 @@
   "e"         #'gt-translate
   ","         #'pop-to-mark-command
   "t"         #'org-capture
-  "m"         #'hxel-begin-selection
-  "v"         #'hxel-select-rectangle
+  "m"         #'helixel-begin-selection
+  "v"         #'helixel-select-rectangle
   "z"         #'hs-toggle-hiding
   "q"         #'fill-paragraph
   "<return>"  #'fill-region)
-(global-set-key (kbd "C-c m") hxel-textobj-map)
-(set-keymap-parent hxel-textobj-inner-map m-map)
+(global-set-key (kbd "C-c m") helixel-textobj-map)
+(set-keymap-parent helixel-textobj-inner-map m-map)
 
 
 (defcustom meep-keypad-dispatch
@@ -115,7 +115,7 @@ Behavior depends on current state:
          (leader (aref vkeys (1- len))) ;latest one
          (default-prefix "C-c"))
     (cond
-     ((or (eq hxel--current-state 'insert) (bound-and-true-p isearch-mode) (minibufferp))
+     ((or (eq helixel--current-state 'insert) (bound-and-true-p isearch-mode) (minibufferp))
       ;; Return leader key directly in insert state or minibuffer
       (vector leader))
      ;; If leader key is pressed
@@ -176,12 +176,12 @@ Behavior depends on current state:
 ;; (keymap-set key-translation-map "<SPC>" 'my-meep-keypad)
 
 
-(defmacro hxel-set-keymap-parent (map-or-mode &optional parent)
+(defmacro helixel-set-keymap-parent (map-or-mode &optional parent)
   "Set the parent keymap for MAP-OR-MODE to PARENT.
 
 MAP-OR-MODE can be a map or a mode
 Returns PARENT. PARENT should be nil or another keymap.
-Default is 'hxel-normal-state-keymap' when PARENT is nil."
+Default is 'helixel-normal-state-keymap' when PARENT is nil."
   `(let ((map (if (keymapp ,map-or-mode)
                   ,map-or-mode
                 (let ((map-name (intern (concat (symbol-name ,map-or-mode) "-map"))))
@@ -189,25 +189,25 @@ Default is 'hxel-normal-state-keymap' when PARENT is nil."
                     (symbol-value map-name))))))
      (when (keymapp map)
        (set-keymap-parent map (make-composed-keymap (keymap-parent map)
-                                                    (or ,parent hxel-normal-state-keymap))))))
+                                                    (or ,parent helixel-normal-state-keymap))))))
 ;; (keymap-unset occur-mode-map "l" t)
 
-(defvar hxel-motion-parent-keymaps (make-hash-table :test #'equal))
-(defun hxel-motion-set-keymap-parent()
+(defvar helixel-motion-parent-keymaps (make-hash-table :test #'equal))
+(defun helixel-motion-set-keymap-parent()
   (unless (member major-mode '(special-mode dired-mode wdired-mode))
-    (when (and (equal hxel--current-state 'motion)
-               (not (gethash major-mode hxel-motion-parent-keymaps)))
-      (puthash major-mode t hxel-motion-parent-keymaps)
-      (hxel-set-keymap-parent major-mode hxel-normal-state-keymap))))
+    (when (and (equal helixel--current-state 'motion)
+               (not (gethash major-mode helixel-motion-parent-keymaps)))
+      (puthash major-mode t helixel-motion-parent-keymaps)
+      (helixel-set-keymap-parent major-mode helixel-normal-state-keymap))))
 
-(add-hook 'hxel-motion-mode-hook #'hxel-motion-set-keymap-parent)
+(add-hook 'helixel-motion-mode-hook #'helixel-motion-set-keymap-parent)
 
-(hxel-mode)
+(helixel-mode)
 
 (require 'keypad)
 (require 'keypad-which-key)
 (add-to-list 'keypad-pass-through-predicates
-             (lambda () (eq hxel--current-state 'insert)))
+             (lambda () (eq helixel--current-state 'insert)))
 
 (setq keypad-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
@@ -220,17 +220,17 @@ Default is 'hxel-normal-state-keymap' when PARENT is nil."
         (:key "x" :prefix "" :modifier "C-M-" :fallback nil
               :pass-through-predicates (minibufferp isearch-mode
                                         vc-dir-mode dired-mode
-                                        (lambda () (eq hxel--current-state 'insert))
+                                        (lambda () (eq helixel--current-state 'insert))
                                         vc-annotate-mode))))
 
 ;; (setq keypad-dispatch-priority t)
 (setq keypad-toggle-priority t)
 (keypad-mode 1)
 
-(provide 'conf-hxel)
+(provide 'conf-helixel)
 
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
 
-;;; conf-hxel.el ends here.
+;;; conf-helixel.el ends here.

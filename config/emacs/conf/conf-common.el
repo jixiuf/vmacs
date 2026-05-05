@@ -33,7 +33,7 @@
 
  use-dialog-box nil           ;不使用对话框进行（是，否 取消） 的选择，而是用 minibuffer
  ;; frame-title-format "%b  [%I] %f  GNU/Emacs" ;标题显示文件名，而不是默认的 username@localhost
- frame-title-format '( (:eval (upcase (char-to-string (aref  (symbol-name hxel--current-state) 0))) ) "「" mode-line-buffer-identification "」["  (:propertize ("" mode-name) ) "] "    mode-line-misc-info   " GNU/Emacs<" (:eval (concat hostname (expand-file-name default-directory))) ">")
+ frame-title-format '( (:eval (upcase (char-to-string (aref  (symbol-name helixel--current-state) 0))) ) "「" mode-line-buffer-identification "」["  (:propertize ("" mode-name) ) "] "    mode-line-misc-info   " GNU/Emacs<" (:eval (concat hostname (expand-file-name default-directory))) ">")
  xterm-set-window-title t
  xterm-extra-capabilities '( modifyOtherKeys reportBackground  )
  xterm-tmux-extra-capabilities xterm-extra-capabilities
@@ -328,7 +328,7 @@
   
   (add-hook 'gt-buffer-render-init-hook
             #'(lambda()
-                (hxel-normal-mode)
+                (helixel-normal-mode)
                 (setq truncate-lines nil)))
   (setq gt-langs '(en zh))
   (setq gt-chatgpt-host "https://api.deepseek.com")

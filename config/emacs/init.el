@@ -23,7 +23,7 @@
 (require 'conf-face)
 ;; (require 'conf-meow)
 ;; (require 'conf-meep)
-(require 'conf-hxel)
+(require 'conf-helixel)
 (require 'conf-keybind)
 (require 'conf-icomplete)
 

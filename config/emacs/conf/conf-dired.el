@@ -107,8 +107,8 @@
 (define-key dired-mode-map  "u" 'dired-up-directory );上层目录
   ;; 只显示匹配的文件 do filter  "/" 只显示匹配的文件
 ;; (define-key dired-mode-map  "C" 'dired-rsync)
-(hxel-define-key 'motion "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) 'dired-mode)
-  (hxel-define-key 'motion "j" #'dired-next-line 'dired-mode)
+(helixel-define-key 'motion "G" #'(lambda()(interactive) (end-of-buffer) (dired-previous-line 1)) 'dired-mode)
+  (helixel-define-key 'motion "j" #'dired-next-line 'dired-mode)
 ;; 第一次跳到文件名处，C-aC-a才跳到行首，再次则跳回
 ;; C-gC-g 退出编辑或C-cC-c保存修改
 ;; "i" 'wdired-change-to-wdired-mode
@@ -117,16 +117,16 @@
 (define-key dired-mode-map  "V" 'add-dir-local-variable)
 (define-key dired-mode-map  "i"  #'wdired-change-to-wdired-mode);上层目录
 (define-key dired-mode-map  "o" 'consult-dir)
-(hxel-define-key 'motion "/" #'consult-focus-lines 'dired-mode)
+(helixel-define-key 'motion "/" #'consult-focus-lines 'dired-mode)
 (keymap-unset dired-mode-map "y" t)
 (define-key dired-mode-map  "f" 'open-in-filemanager)
 (define-key dired-mode-map  (kbd "<mouse-2>") #'dired-mouse-find-file)
 (with-eval-after-load 'image-mode
   (define-key image-mode-map  (kbd "C-f") #'image-scroll-up)
   (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
-  (hxel-define-key 'motion "n" #'image-next-file 'image-mode)
+  (helixel-define-key 'motion "n" #'image-next-file 'image-mode)
   )
-(add-hook 'wdired-mode-hook #'hxel-normal-mode)
+(add-hook 'wdired-mode-hook #'helixel-normal-mode)
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state
