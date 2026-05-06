@@ -24,8 +24,8 @@
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
 (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
-(helixel-define-key 'normal "R" #'helixel-replace)
-(helixel-define-key 'normal "r" #'helixel-replace-yanked)
+(helixel-define-key 'normal "R" #'helixel-replace-char)
+(helixel-define-key 'normal "r" #'helixel-replace)
 ;; (helixel-define-key 'normal "v" #'helixel-backward-long-word)
 ;; (helixel-define-key 'normal "e" #'helixel-forward-long-word-start)
 (helixel-define-key 'normal "s" #'helixel-select-line)
@@ -220,6 +220,7 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
         (:key "x" :prefix "" :modifier "C-M-" :fallback nil
               :pass-through-predicates (minibufferp isearch-mode
                                         vc-dir-mode dired-mode
+                                        vc-git-log-view-mode
                                         (lambda () (eq helixel--current-state 'insert))
                                         vc-annotate-mode))))
 

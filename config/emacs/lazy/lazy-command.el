@@ -6,7 +6,8 @@
 (declare-function org-kill-line "org")
 
 ;;;###autoload
-(defun uid() (interactive) (let ((uid (completing-read "uid: " '("10064589" "545473" "60682172" "12880661" "492256045"))))
+(defun uid() (interactive) (let ((uid (completing-read "uid: " '("dedao_dev: 10064589" "dedao_prod: 545473" "dedao_prod: 60682172" "school_dev: 12880661"
+                                                                 "school_prod: 492256045" "getnote_dev: 12881768"))))
                              (when (called-interactively-p)
                                (insert uid))
                              uid))
