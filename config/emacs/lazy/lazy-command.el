@@ -256,7 +256,7 @@ based on the current context and previous history."
                                 "~/Documents/jianguo/Daedalus/ai")))
       (set-buffer-modified-p nil)
       (gptel-mode)
-      (lxel-insert)
+      (helixel-insert)
       (display-buffer (current-buffer) '(pop-to-buffer)))))
 
 ;;;###autoload
@@ -392,7 +392,7 @@ open-line if point is at end of line , new-line-and-indent"
                                    smart-end-of-line))
         (end-of-line))
       (newline-and-indent)))
-  (lxel-insert))
+  (helixel-insert))
 
 
 ;; 若光标不在行首则跳转到行首，若在行首则跳转到行首第一个非空字符处
