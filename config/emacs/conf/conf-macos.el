@@ -1,5 +1,5 @@
 ;; -*- lexical-binding: t; -*-
-
+(setenv "RUN_ENV" "testing")
 (setq auth-sources
    '("~/.authinfo.gpg" macos-keychain-internet macos-keychain-generic))
 (setq mac-command-modifier 'super)

@@ -228,6 +228,14 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
 (setq keypad-toggle-priority t)
 (keypad-mode 1)
 
+(define-thing-chars gopkg "-/[:alnum:]_.@:*")
+(put 'gopkg 'forward-op
+     (lambda (&optional count)
+       (helixel-forward-chars "-/[:alnum:]_.@:*" count)))
+(helixel-define-mark-object "gopkg" 'gopkg "gopkg" 'gopkg t)
+(define-key helixel-textobj-outer-map "p" #'helixel-mark-a-gopkg)
+(define-key helixel-textobj-inner-map "p" #'helixel-mark-inner-gopkg)
+
 (provide 'conf-helixel)
 
 ;; Local Variables:
