@@ -218,11 +218,13 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
                          (?m . (:prefix  nil  :modifier "M-" :fallback  nil))))
         (:key "," :prefix "" :modifier "M-" :fallback nil)
         (:key "x" :prefix "" :modifier "C-M-" :fallback nil
-              :pass-through-predicates (minibufferp isearch-mode
+              :pass-through-predicates (minibufferp
+                                        isearch-mode
                                         vc-dir-mode dired-mode
+                                        ibuffer-mode
+                                        vc-annotate-mode
                                         vc-git-log-view-mode
-                                        (lambda () (eq helixel--current-state 'insert))
-                                        vc-annotate-mode))))
+                                        (lambda () (eq helixel--current-state 'insert))))))
 
 ;; (setq keypad-dispatch-priority t)
 (setq keypad-toggle-priority t)
