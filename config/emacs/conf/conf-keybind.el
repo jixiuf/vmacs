@@ -70,7 +70,6 @@
 ;; (global-set-key  (kbd "s-t") 'shell-toggle-cd) ;mac Cmd+a
 ;; (global-set-key  (kbd "s-s") 'evil-write-all)
 (global-set-key  (kbd "s-z") 'undo)
-(global-set-key  (kbd "s-r") 'compile-dwim-compile)
 (global-set-key  (kbd "C-\\") 'hippie-expand)
 (global-set-key  (kbd "s-1") 'delete-other-windows)
 (global-set-key  (kbd "s-C-1") 'delete-other-windows) ;hyper-1
@@ -110,6 +109,7 @@
 (global-set-key  (kbd "C-M-d") 'backward-kill-sexp)
 (global-set-key (kbd "C-c C-k") 'compile-dwim-compile)
 (global-set-key (kbd "C-s-r") 'compile-dwim-run)
+(global-set-key  (kbd "s-r") 'compile-dwim-run)
 (global-set-key (kbd "C-c C-r") 'compile-dwim-run)
 (global-set-key (kbd "C-c r") 'compile-dwim-run) ;space r
 (global-set-key  (kbd "M-,") 'scroll-other-window-down)
