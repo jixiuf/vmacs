@@ -10,7 +10,7 @@
   (when (member (frame-live-p (or f (selected-frame)))
                 '(pgtk x ns))
     (unless (featurep 'conf-private)
-      (when (member (system-name) '("jxfhome" "jxfluoji" "ljmacjxf"))
+      (when (member (system-name) '("jxfhome" "jxfluoji" "ljmacjxf" "jxfhomed"))
         (load  (concat user-emacs-directory "conf/conf-private.el.gpg") t)))))
 ;; (add-hook 'after-make-frame-functions #'lazy-load-gpg)
 (run-with-idle-timer 1 nil 'lazy-load-gpg)

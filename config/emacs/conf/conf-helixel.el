@@ -239,6 +239,14 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
 (define-key helixel-textobj-outer-map "p" #'helixel-mark-a-gopkg)
 (define-key helixel-textobj-inner-map "p" #'helixel-mark-inner-gopkg)
 
+;; (define-key evil-outer-text-objects-map "f" (helixel-get-tree-sitter-textobj "function.outer"))
+;; (define-key evil-inner-text-objects-map "f" (helixel-get-tree-sitter-textobj "function.inner"))
+
+;; You can also bind multiple items and we will match the first one we can find
+(define-key helixel-textobj-outer-map "a" (helixel-get-tree-sitter-textobj "conditional.outer" ))
+(define-key helixel-textobj-outer-map "a" (helixel-get-tree-sitter-textobj "conditional.outer" ))
+(define-key helixel-textobj-outer-map "d" (helixel-get-tree-sitter-textobj "assignment.inner" ))
+
 (provide 'conf-helixel)
 
 ;; Local Variables:
