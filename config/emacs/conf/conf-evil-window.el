@@ -243,6 +243,7 @@
                         "*vcgit-reflog*"
                         "*Help*"
                         "*vc-diff*"
+                        "*compilation*"
                         "*vc-log*"
                         "*ai*"
                         "*org-ai-refactor*"

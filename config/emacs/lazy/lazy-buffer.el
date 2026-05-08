@@ -64,6 +64,7 @@
        "*Launch" "\*Warnings\*"
        "\*RE-Builder\*"
        "\*dape-repl\*" "\*dape-info"
+       "*compilation*"
        "\*vc-diff\*" "\*magit-" "\*vc-" "\*vc*"
        "*Backtrace*" "*Package-Lint*" "\*Completions\*" "\*Compile-Log\*"
        "\*vc-change-log\*" "\*VC-log\*"
