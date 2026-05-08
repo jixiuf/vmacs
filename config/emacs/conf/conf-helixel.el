@@ -221,6 +221,7 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
               :pass-through-predicates (minibufferp
                                         isearch-mode
                                         vc-dir-mode dired-mode
+                                        package-menu-mode
                                         ibuffer-mode
                                         vc-annotate-mode
                                         vc-git-log-view-mode
