@@ -239,14 +239,17 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
 (define-key helixel-textobj-outer-map "p" #'helixel-mark-a-gopkg)
 (define-key helixel-textobj-inner-map "p" #'helixel-mark-inner-gopkg)
 
+(define-key helixel-textobj-outer-map ";" #'helixel-mark-a-double-quote)
+(define-key helixel-textobj-inner-map ";" #'helixel-mark-inner-double-quote)
 ;; (define-key evil-outer-text-objects-map "f" (helixel-get-tree-sitter-textobj "function.outer"))
 ;; (define-key evil-inner-text-objects-map "f" (helixel-get-tree-sitter-textobj "function.inner"))
 
-;; You can also bind multiple items and we will match the first one we can find
-(define-key helixel-textobj-outer-map "a" (helixel-get-tree-sitter-textobj "conditional.outer" ))
-(define-key helixel-textobj-outer-map "a" (helixel-get-tree-sitter-textobj "conditional.outer" ))
-(define-key helixel-textobj-outer-map "d" (helixel-get-tree-sitter-textobj "assignment.inner" ))
-
+(define-key helixel-textobj-inner-map "q" (helixel-get-tree-sitter-textobj '("parameter.inner" "assignment.inner" )))
+(define-key helixel-textobj-outer-map "q" (helixel-get-tree-sitter-textobj '("parameter.outer"  "assignment.outer")))
+(define-key helixel-textobj-outer-map "x" (helixel-get-tree-sitter-textobj '("call.outer" "statement.outer" "block.outer" "loop.outer" "conditional.outer")))
+(define-key helixel-textobj-inner-map "x" (helixel-get-tree-sitter-textobj '("call.inner" "statement.inner" "block.inner" "loop.inner" "conditional.inner" )))
+(define-key helixel-textobj-outer-map "/" (helixel-get-tree-sitter-textobj "comment.outer" ))
+(define-key helixel-textobj-inner-map "/" (helixel-get-tree-sitter-textobj "comment.inner" ))
 (provide 'conf-helixel)
 
 ;; Local Variables:
