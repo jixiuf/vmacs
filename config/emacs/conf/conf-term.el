@@ -4,11 +4,6 @@
 
 ;; (package-vc-install '(ghostel :url "https://github.com/dakra/ghostel.git" :branch "main"))
 
-(with-eval-after-load 'ghostel
-  (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
-  (helixel-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
-  (helixel-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
-  )
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)
 (setq ghostel-ignore-cursor-change t)
@@ -50,11 +45,6 @@ placement math the native module performs in `src/render.zig'."
     (ghostel-reset-cursor-point)
     (ghostel--set-cursor-style 0 t)))
 
-(defvar-local vmacs-ghostel-starttime nil)
-(defun vmacs-ghostel-hook()
-  (setq vmacs-ghostel-starttime (current-time)))
-(add-hook 'ghostel-mode-hook #'vmacs-ghostel-hook)
-
 (defun vmacs-ghostel-enable-copy()
   (when (member major-mode '(ghostel-mode))
     (setq display-line-numbers nil)
@@ -65,16 +55,12 @@ placement math the native module performs in `src/render.zig'."
                                  ghostel-other))
       (ghostel-line-mode)
       (ghostel--set-cursor-style 1 t))))
-
-;; (add-hook 'meep-state-hook-insert-enter 'vmacs-ghostel-disable-copy)
-;; (add-hook 'meep-state-hook-normal-enter 'vmacs-ghostel-enable-copy)
-(add-hook 'helixel-normal-mode-hook 'vmacs-ghostel-enable-copy)
-(add-hook 'helixel-insert-mode-hook 'vmacs-ghostel-disable-copy)
-;; (defun vmacs-ghostel-self-insert()
-;;   (interactive)
-;;   (unless (bray-state-derived-p 'insert)
-;;     (bray-state-stack-push meep-state-insert))
-;;   (call-interactively 'ghostel--self-insert))
+(with-eval-after-load 'ghostel
+  (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
+  (helixel-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
+  (helixel-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
+  (add-hook 'helixel-normal-mode-hook 'vmacs-ghostel-enable-copy)
+  (add-hook 'helixel-insert-mode-hook 'vmacs-ghostel-disable-copy))
 
 (provide 'conf-term)
 

@@ -99,11 +99,9 @@ Only active in `prog-mode' derived buffers."
 (define-key isearch-mode-map (kbd  "<f11>") #'vmacs-toggle-input-method)
 (define-key isearch-mode-map (kbd  "<f18>") #'vmacs-toggle-input-method)
 (with-eval-after-load 'ghostel
+  (define-key ghostel-semi-char-mode-map (kbd "<f11>")   #'vmacs-toggle-input-method)
   (define-key ghostel-mode-map (kbd "<f18>")   #'vmacs-toggle-input-method)
   (define-key ghostel-mode-map (kbd "<f11>")   #'vmacs-toggle-input-method))
-(with-eval-after-load 'vterm
-  (define-key vterm-mode-map (kbd "<f18>")   #'vmacs-toggle-input-method)
-  (define-key vterm-mode-map (kbd "<f11>")   #'vmacs-toggle-input-method))
 
 (provide 'conf-input-method)
 ;; Local Variables:
