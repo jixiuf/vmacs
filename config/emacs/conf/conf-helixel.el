@@ -14,12 +14,12 @@
 (helixel-define-key 'motion "g" helixel-goto-map)
 
 (keymap-unset helixel-goto-map "r" t)
-(keymap-unset helixel-normal-state-keymap "C-c" t)
-(keymap-unset helixel-normal-state-keymap "C-f" t)
-(keymap-unset helixel-normal-state-keymap "C-b" t)
-(keymap-unset helixel-normal-state-keymap  "C-v" t)
-(keymap-unset helixel-normal-state-keymap "C-w" t)
-(keymap-unset helixel-normal-state-keymap "<SPC>" t)
+(keymap-unset helixel-normal-map "C-c" t)
+(keymap-unset helixel-normal-map "C-f" t)
+(keymap-unset helixel-normal-map "C-b" t)
+(keymap-unset helixel-normal-map  "C-v" t)
+(keymap-unset helixel-normal-map "C-w" t)
+(keymap-unset helixel-normal-map "<SPC>" t)
 
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
@@ -94,7 +94,7 @@
 
 MAP-OR-MODE can be a map or a mode
 Returns PARENT. PARENT should be nil or another keymap.
-Default is 'helixel-normal-state-keymap' when PARENT is nil."
+Default is 'helixel-normal-map' when PARENT is nil."
   `(let ((map (if (keymapp ,map-or-mode)
                   ,map-or-mode
                 (let ((map-name (intern (concat (symbol-name ,map-or-mode) "-map"))))
@@ -102,7 +102,7 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
                     (symbol-value map-name))))))
      (when (keymapp map)
        (set-keymap-parent map (make-composed-keymap (keymap-parent map)
-                                                    (or ,parent helixel-normal-state-keymap))))))
+                                                    (or ,parent helixel-normal-map))))))
 ;; (keymap-unset occur-mode-map "l" t)
 
 (defvar helixel-motion-parent-keymaps (make-hash-table :test #'equal))
@@ -111,7 +111,7 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
     (when (and (equal helixel--current-state 'motion)
                (not (gethash major-mode helixel-motion-parent-keymaps)))
       (puthash major-mode t helixel-motion-parent-keymaps)
-      (helixel-set-keymap-parent major-mode helixel-normal-state-keymap))))
+      (helixel-set-keymap-parent major-mode helixel-normal-map))))
 
 (add-hook 'helixel-motion-mode-hook #'helixel-motion-set-keymap-parent)
 
@@ -149,8 +149,8 @@ Default is 'helixel-normal-state-keymap' when PARENT is nil."
      (lambda (&optional count)
        (helixel-forward-chars "-/[:alnum:]_.@:*" count)))
 (helixel-define-mark-object "gopkg" 'gopkg "gopkg" 'gopkg t)
-(define-key helixel-textobj-outer-map "p" #'helixel-mark-a-gopkg)
-(define-key helixel-textobj-inner-map "p" #'helixel-mark-inner-gopkg)
+(define-key helixel-textobj-outer-map "y" #'helixel-mark-a-gopkg)
+(define-key helixel-textobj-inner-map "y" #'helixel-mark-inner-gopkg)
 
 (define-key helixel-textobj-outer-map ";" #'helixel-mark-a-double-quote)
 (define-key helixel-textobj-inner-map ";" #'helixel-mark-inner-double-quote)

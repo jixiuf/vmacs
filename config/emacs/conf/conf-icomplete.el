@@ -340,8 +340,9 @@
 (global-set-key (kbd "C-c f h") (vmacs-defun find-file-home (let ((default-directory "~/"))(call-interactively 'find-file))))
 (global-set-key (kbd "C-c f t") (vmacs-defun find-file-tmp (let ((default-directory "/tmp/"))(call-interactively 'find-file))))
 (global-set-key (kbd "C-c f u")(vmacs-defun find-file-http (find-file (expand-file-name "http/" dropbox-dir))))
+(global-set-key (kbd "C-c f w")(vmacs-defun find-file-world (find-file "/var/lib/portage/world")))
+(global-set-key (kbd "C-c f e")(vmacs-defun find-file-etc (find-file "/etc")))
 (global-set-key (kbd "C-c f n")(vmacs-defun find-file-note (require 'conf-org) (find-file org-default-notes-file)))
-
 (setq ffap-machine-p-known 'accept)  ; no pinging
 ;; (vmacs-leader (kbd "ff") (icomplete-horizontal find-file  (find-file-at-point)))
 (vmacs-leader (kbd "ff") #'find-file)
