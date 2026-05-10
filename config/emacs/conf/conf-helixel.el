@@ -113,7 +113,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
       (puthash major-mode t helixel-motion-parent-keymaps)
       (helixel-set-keymap-parent major-mode helixel-normal-map))))
 
-(add-hook 'helixel-motion-mode-hook #'helixel-motion-set-keymap-parent)
+(add-hook 'helixel-motion-state-hook #'helixel-motion-set-keymap-parent)
 
 (helixel-mode)
 

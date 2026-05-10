@@ -126,7 +126,7 @@
   (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
   (helixel-define-key 'motion "n" #'image-next-file 'image-mode)
   )
-(add-hook 'wdired-mode-hook #'helixel-normal-mode)
+(add-hook 'wdired-mode-hook #'helixel-normal-state)
 
 ;; wdired == writable dired
 ;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state

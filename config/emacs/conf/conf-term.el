@@ -61,8 +61,8 @@ placement math the native module performs in `src/render.zig'."
   (define-key  ghostel-char-mode-map (kbd "C-s-<return>") #'ghostel-semi-char-mode)
   (helixel-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
   (helixel-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
-  (add-hook 'helixel-normal-mode-hook 'vmacs-ghostel-enable-copy)
-  (add-hook 'helixel-insert-mode-hook 'vmacs-ghostel-disable-copy))
+  (add-hook 'helixel-normal-state-hook 'vmacs-ghostel-enable-copy)
+  (add-hook 'helixel-insert-state-hook 'vmacs-ghostel-disable-copy))
 
 (provide 'conf-term)
 
