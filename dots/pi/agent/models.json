@@ -3,7 +3,7 @@
     "deepseek": {
       "baseUrl": "https://api.deepseek.com",
       "api": "openai-completions",
-      "apiKey": "",
+      "apiKey": "deepseek",
       "models": [
         {
           "id": "deepseek-v4-pro",

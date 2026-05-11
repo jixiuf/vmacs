@@ -15,9 +15,6 @@ default:
 deploy:
 	@-unlink ~/.gnupg
 	mkdir -p ~/.gnupg
-	@-rm -rf ~/.pi/agent/session
-	mkdir ~/.pi/agent/ -p
-	ln -fs ~/Documents/jianguo/Daedalus/session ~/.pi/agent/session
 	for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
 		name="$$(basename $$file)"; \
 		if [ ! "$$name" = "private-keys-v1.d" ]; then \
@@ -47,11 +44,15 @@ deploy:
 		rm -rf ~/.$$name ;\
 		$(LINK_CMD_HARD) $(PWD)/$$file ~/.$$name ;\
 	done
+	@-rm -rf ~/.pi/agent/session
+	@-mkdir -p ~/.pi/agent/
+	@-ln -fs ~/Documents/jianguo/Daedalus/session ~/.pi/agent/session
+	@-gpg -d ~/.pi/agent/auth.json.gpg > ~/.pi/agent/auth.json
 
 
-	gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
-	gpg -d ~/.ssh/config.gpg > ~/.ssh/config 2>/dev/null
-	gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys 2>/dev/null
+	@-gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
+	@-gpg -d ~/.ssh/config.gpg > ~/.ssh/config 2>/dev/null
+	@-gpg -d ~/.ssh/authorized_keys.gpg > ~/.ssh/authorized_keys 2>/dev/null
 	chmod 600 ~/.ssh/id_rsa
 	chmod 600 ~/.ssh/config
 	chmod 600 ~/.ssh/authorized_keys

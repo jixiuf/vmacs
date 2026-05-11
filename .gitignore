@@ -97,3 +97,4 @@ mac/run-or-raise
 config/emacs/rime/
 config/emacs/projects.eld
 dots/pi/agent/auth.json
+dots/pi/agent/session
