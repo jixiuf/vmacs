@@ -44,9 +44,9 @@ deploy:
 		rm -rf ~/.$$name ;\
 		$(LINK_CMD_HARD) $(PWD)/$$file ~/.$$name ;\
 	done
-	@-rm -rf ~/.pi/agent/session
+	@-rm -rf ~/.pi/agent/sessions
 	@-mkdir -p ~/.pi/agent/
-	@-ln -fs ~/Documents/jianguo/Daedalus/session ~/.pi/agent/session
+	@-ln -fs ~/Documents/jianguo/Daedalus/session ~/.pi/agent/sessions
 	@-gpg -d ~/.pi/agent/auth.json.gpg > ~/.pi/agent/auth.json
 
 

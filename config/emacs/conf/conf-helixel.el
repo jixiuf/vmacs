@@ -6,6 +6,7 @@
 (setq helixel-replace-yanked-delete-char-p nil)
 (setq helixel-major-mode-default-states
       '((reb-mode . insert)
+        (pi-coding-agent-input-mode . insert)
         (ghostel-mode . insert)
         (calc-mode . insert)))
 

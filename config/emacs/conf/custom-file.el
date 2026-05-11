@@ -69,12 +69,11 @@
  '(outline-minor-mode-cycle-filter 'bolp)
  '(outline-minor-mode-use-buttons 'in-margins)
  '(package-selected-packages
-   '(agent-shell async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face
-                 eglot-java embark embark-consult evil-textobj-tree-sitter exec-path-from-shell
-                 flash ghostel git-link go-translate golden-ratio-scroll-screen goto-chg gptel gt
-                 helixel-mode kdl-mode keypad kkp marginalia meep orderless package-lint pinyinlib
-                 posframe repeat-fu rimel verb visible-mark vundo web-mode wgrep with-editor
-                 yasnippet))
+   '(async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face eglot-java embark
+           embark-consult evil-textobj-tree-sitter exec-path-from-shell flash ghostel git-link
+           go-translate golden-ratio-scroll-screen goto-chg gptel gt helixel-mode kdl-mode keypad
+           kkp marginalia meep orderless package-lint pi-coding-agent pinyinlib posframe repeat-fu
+           rimel verb visible-mark vundo web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((keypad :url "https://github.com/jixiuf/emacs-keypad.git" :branch "main")
      (helixel-mode :url "https://github.com/jixiuf/helixel-mode.git" :branch "main")
