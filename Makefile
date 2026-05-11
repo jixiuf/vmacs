@@ -15,6 +15,9 @@ default:
 deploy:
 	@-unlink ~/.gnupg
 	mkdir -p ~/.gnupg
+	@-rm -rf ~/.pi/agent/session
+	mkdir ~/.pi/agent/ -p
+	ln -fs ~/Documents/jianguo/Daedalus/session ~/.pi/agent/session
 	for file in ~/Documents/jianguo/jianguo/keepass/gnupg/*; do \
 		name="$$(basename $$file)"; \
 		if [ ! "$$name" = "private-keys-v1.d" ]; then \

@@ -1,4 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
+;; npm install -g @earendil-works/pi-coding-agent
 (require 'gptel)
 (setq gptel-default-mode 'org-mode)
 (setq gptel-display-buffer-action  '(pop-to-buffer-same-window))
