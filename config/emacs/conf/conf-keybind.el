@@ -19,7 +19,7 @@
 
 (autoload #'viper-ex  "viper" t)
 
-(global-set-key (kbd "C-c n") #'xref-go-back)
+;; (global-set-key (kbd "C-c n") #'xref-go-back)
 ;; (with-eval-after-load 'xref
 ;;   ;; for clean up second-selection set by vmacs-meow-grab-set-mark
 ;;   (add-hook 'xref-after-jump-hook #'meow--cancel-second-selection))
