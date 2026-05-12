@@ -1,5 +1,12 @@
 ;;; -*- lexical-binding: t; -*-
 ;; npm install -g @earendil-works/pi-coding-agent
+(with-eval-after-load 'pi-coding-agent
+  (setq pi-coding-agent-quit-without-confirmation t)
+  (setq pi-coding-agent-input-window-height 3)
+  (define-key pi-coding-agent-chat-mode-map (kbd "C-x k") #'pi-coding-agent-quit)
+  (define-key pi-coding-agent-input-mode-map (kbd "C-x k") #'pi-coding-agent-quit)
+  (add-hook 'pi-coding-agent-input-mode-hook #'(lambda() (tab-line-mode -1)))
+  )
 (require 'gptel)
 (setq gptel-default-mode 'org-mode)
 (setq gptel-display-buffer-action  '(pop-to-buffer-same-window))

@@ -99,3 +99,4 @@ config/emacs/projects.eld
 dots/pi/agent/auth.json
 dots/pi/agent/sessions/*
 dots/pi/agent/sessions
+dots/pi/agent/extensions/plan-mode/
