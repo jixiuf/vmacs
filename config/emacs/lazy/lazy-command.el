@@ -258,6 +258,15 @@ based on the current context and previous history."
       (gptel-mode)
       (helixel-insert)
       (display-buffer (current-buffer) '(pop-to-buffer)))))
+;;;###autoload
+(defun vmacs-pi-toggle ()
+  "Toggle pi coding agent session. Create one if none exists."
+  (interactive)
+  (condition-case nil
+      (pi-coding-agent-toggle)
+    (user-error
+     ;; No session exists — create one instead
+     (pi-coding-agent))))
 
 ;;;###autoload
 (defun dired-mp4togif()

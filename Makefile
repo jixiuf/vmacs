@@ -46,7 +46,7 @@ deploy:
 	done
 	@-rm -rf ~/.pi/agent/sessions
 	@-mkdir -p ~/.pi/agent/
-	@-ln -fs ~/Documents/jianguo/Daedalus/session ~/.pi/agent/sessions
+	@-ln -fs ~/Documents/jianguo/Daedalus/sessions ~/.pi/agent/sessions
 	@-gpg -d ~/.pi/agent/auth.json.gpg > ~/.pi/agent/auth.json
 
 
