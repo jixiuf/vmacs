@@ -5,10 +5,11 @@
 (require 'helixel)
 (setq helixel-replace-yanked-delete-char-p nil)
 (setq helixel-major-mode-default-states
+      (append helixel-major-mode-default-states
       '((reb-mode . insert)
-        (pi-coding-agent-input-mode . insert)
+        ;; (pi-coding-agent-input-mode . insert)
         (ghostel-mode . insert)
-        (calc-mode . insert)))
+        (calc-mode . insert))))
 
 (helixel-define-key 'motion "j" #'helixel-next-line)
 (helixel-define-key 'motion "k" #'helixel-previous-line)
@@ -108,7 +109,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
 
 (defvar helixel-motion-parent-keymaps (make-hash-table :test #'equal))
 (defun helixel-motion-set-keymap-parent()
-  (unless (member major-mode '(special-mode dired-mode wdired-mode))
+  (unless (member major-mode '(special-mode dired-mode wdired-mode Custom-mode))
     (when (and (equal helixel--current-state 'motion)
                (not (gethash major-mode helixel-motion-parent-keymaps)))
       (puthash major-mode t helixel-motion-parent-keymaps)
@@ -130,7 +131,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))
                          (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))
                          (?m . (:prefix  nil  :modifier "M-" :fallback  nil))))
-        (:key "," :prefix "" :modifier "M-" :fallback nil)
+        ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
         (:key "x" :prefix "" :modifier "C-M-" :fallback nil
               :pass-through-predicates (minibufferp
                                         isearch-mode

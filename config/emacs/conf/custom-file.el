@@ -79,6 +79,7 @@
      (helixel-mode :url "https://github.com/jixiuf/helixel-mode.git" :branch "main")
      (rimel :url "https://github.com/jixiuf/rimel.git")
      (copilot :url "https://github.com/copilot-emacs/copilot.el" :branch "main")))
+ '(pi-coding-agent-input-window-height 3)
  '(proced-enable-color-flag t)
  '(proced-format 'long)
  '(recentf-save-file "~/.cache/emacs/recentf")
