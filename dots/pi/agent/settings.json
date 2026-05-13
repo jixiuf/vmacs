@@ -3,5 +3,8 @@
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "medium",
-  "hideThinkingBlock": true
+  "hideThinkingBlock": true,
+  "packages": [
+    "npm:pi-subagents"
+  ]
 }

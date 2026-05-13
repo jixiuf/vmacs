@@ -100,3 +100,4 @@ dots/pi/agent/auth.json
 dots/pi/agent/sessions/*
 dots/pi/agent/sessions
 dots/pi/agent/extensions/plan-mode/
+dots/pi/agent/bin/fd-v10.4.2-aarch64-apple-darwin.tar.gz
