@@ -121,7 +121,7 @@
 (global-set-key (kbd "C-c t") 'org-agenda)   ;列出 todo list 等
 (global-set-key (kbd "C-c b") 'mode-line-other-buffer)
 (global-set-key  (kbd "C-c f g") #'vmacs-ai)
-(global-set-key (kbd "C-c f a") #'vmacs-pi-toggle)
+(global-set-key (kbd "C-s-s") #'vmacs-pi-toggle)
 (global-set-key (kbd "C-c f c") #'pi-coding-agent)
 
 (keymap-global-set  "C-c f m" (vmacs-defun switch-to-message
