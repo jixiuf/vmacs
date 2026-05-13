@@ -36,4 +36,5 @@
  (magit-show-refs nil)
  (magit-stash nil)
  (magit-submodule nil)
- (magit-tag nil))
+ (magit-tag nil)
+ (pi-coding-agent-menu nil))
