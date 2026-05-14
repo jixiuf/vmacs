@@ -1,4 +1,8 @@
 #!/bin/sh
+# show tags
+#  notmuch-post-new -n
+#  notmuch search --output=tags "*"
+
 
 # notmuch-post-new --- Notmuch rules that run after notmuch-new(1)
 #
