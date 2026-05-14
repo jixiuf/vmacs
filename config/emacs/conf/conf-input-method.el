@@ -79,9 +79,9 @@ Only active in `prog-mode' derived buffers."
                                bray-state-stack-pop
                                helixel-insert-exit
                                meow-insert-exit evil-force-normal-state evil-normal-state keyboard-quit))
-    (switch-to-english-input-method)))  ; 
+    (switch-to-english-input-method)))  ;
 (add-hook 'meep-state-hook-normal-enter #'vmacs-input-method-hook)
-(add-hook 'helixel-normal-mode-hook #'vmacs-input-method-hook)
+(add-hook 'helixel-normal-state-hook #'vmacs-input-method-hook)
 
 
 
