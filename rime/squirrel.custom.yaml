@@ -63,7 +63,7 @@ patch:
   style/horizontal: true # 候選窗横向顯示
   style/candidate_list_layout: linear  # Use 'linear' for horizontal, 'stacked' for vertical
   style/inline_preedit: true   # 关闭内嵌编码，为 true 的时候是单行，为 false 的时候就是两行
-  style/inline_candidate: true
+  style/inline_candidate: false
   # 字体 大字库: 花园明朝 HanaMinA
   style/font_face: ".PingFang SC,HanaMinA" # 我喜歡的字體名稱
   style/font_point: 20 # 字號
