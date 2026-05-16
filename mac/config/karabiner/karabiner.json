@@ -670,6 +670,18 @@
                                 "type": "basic"
                             },
                             {
+                                "description": "spacebar-/  toggle mitmproxy",
+                                "from": {
+                                    "key_code": "slash",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty --title '*mitmproxy*'  --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh    /Users/jixiuf/venv/bin/mitmproxy " }],
+                                "type": "basic"
+                            },
+                            {
                                 "description": "spacebar-return  toggle term and cd ",
                                 "from": {
                                     "key_code": "return_or_enter",

@@ -42,36 +42,25 @@
 
 
 
-(defvar-keymap g-map
-  "4" #'query-replace ;space g4
-  "5" #'re-builder                                 ;;query-replace-regexp
-  "g" #'vmacs-goto-line
-  "T" #'consult-grep
-  "r" #'revert-buffer
-  "t" #'consult-ripgrep
-  "e" #'grep
-  "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory))
-  "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "X" #'consult-ripgrep-root-symbol
-  "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b")))
-  "/" #'consult-focus-lines
-  "z" #'consult-hide-lines
-  ";" #'goto-line
-  ":" #'goto-char
-  "n" #'next-error
-  "p" #'previous-error
-  "b" #'pop-global-mark
-  "u" #'upcase-dwim
-  "U" #'downcase-dwim
-  "m" #'push-mark-command
-  "P" #'project-or-external-find-file
-  "d" #'xref-find-definitions
-  "," #'goto-last-change
-  "." #'goto-last-change-reverse
-  "f" #'gptel-rewrite
-  )
-(global-set-key (kbd "C-c g") g-map)
-(set-keymap-parent helixel-goto-map g-map)
+(define-key helixel-goto-map "4" #'query-replace)
+(define-key helixel-goto-map "5" #'re-builder)
+(define-key helixel-goto-map "T" #'consult-grep)
+(define-key helixel-goto-map "r" #'revert-buffer)
+(define-key helixel-goto-map "t" #'consult-ripgrep)
+(define-key helixel-goto-map "w" (vmacs-defun consult-ripgrep-default (consult-ripgrep default-directory)))
+(define-key helixel-goto-map "x" (vmacs-defun consult-ripgrep-root-symbol (consult-ripgrep(vc-root-dir)  (concat "\\b" (thing-at-point 'symbol) "\\b"))))
+(define-key helixel-goto-map "X" #'consult-ripgrep-root-symbol)
+(define-key helixel-goto-map "s" (vmacs-defun consult-ripgrep-default-symbol (consult-ripgrep default-directory (concat "\\b" (thing-at-point 'symbol) "\\b"))))
+(define-key helixel-goto-map "/" #'consult-focus-lines)
+(define-key helixel-goto-map "z" #'consult-hide-lines)
+(define-key helixel-goto-map "b" #'pop-global-mark)
+(define-key helixel-goto-map "u" #'upcase-dwim)
+(define-key helixel-goto-map "U" #'downcase-dwim)
+(define-key helixel-goto-map "m" #'push-mark-command)
+(define-key helixel-goto-map "P" #'project-or-external-find-file)
+(define-key helixel-goto-map "," #'goto-last-change)
+(define-key helixel-goto-map "." #'goto-last-change-reverse)
+(define-key helixel-goto-map "f" #'gptel-rewrite)
 
 (defvar-keymap m-map
   "$"         #'toggle-truncate-lines
@@ -129,8 +118,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
               :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"))
                          (?h . (:prefix "C-h" :modifier nil  :fallback "C-"))
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))
-                         (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))
-                         (?m . (:prefix  nil  :modifier "M-" :fallback  nil))))
+                         (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
         (:key "x" :prefix "" :modifier "C-M-" :fallback nil
               :pass-through-predicates (minibufferp
