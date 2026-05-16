@@ -26,13 +26,11 @@
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
 (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
-(helixel-define-key 'normal "R" #'helixel-replace-char)
-(helixel-define-key 'normal "r" #'helixel-replace)
+(helixel-define-key 'normal (kbd "M-y") #'helixel-replace-pop)
 ;; (helixel-define-key 'normal "v" #'helixel-backward-long-word)
 ;; (helixel-define-key 'normal "e" #'helixel-forward-long-word-start)
-(helixel-define-key 'normal "s" #'helixel-select-line)
-(helixel-define-key 'normal "S" #'helixel-select-line-up)
-(helixel-define-key 'normal "x" #'helixel-kill-thing-at-point)
+;; (helixel-define-key 'normal "s" #'helixel-select-line)
+;; (helixel-define-key 'normal "S" #'helixel-select-line-up)
 (helixel-define-key 'normal "G" #'end-of-buffer)
 ;; (helixel-define-key 'normal "," #'backward-sexp)
 ;; (helixel-define-key 'normal "." #'forward-sexp)
@@ -120,7 +118,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))
                          (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
-        (:key "x" :prefix "" :modifier "C-M-" :fallback nil
+        (:key "s" :prefix "" :modifier "C-M-" :fallback nil
               :pass-through-predicates (minibufferp
                                         isearch-mode
                                         vc-dir-mode dired-mode
