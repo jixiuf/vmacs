@@ -759,8 +759,24 @@
                                     {
                                         "key_code": "q",
                                         "modifiers": ["command", "control"]
-                                    },
-                                    { "software_function": { "iokit_power_management_sleep_system": {} } }
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "description": " space+` :lock+sleep",
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": {
+                                        "mandatory": ["left_command", "left_control"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "q",
+                                        "modifiers": ["command", "control"]
+                                    }
                                 ],
                                 "type": "basic"
                             },
