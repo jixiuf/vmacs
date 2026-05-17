@@ -163,6 +163,7 @@
                                 project-find-file
                                 project-or-external-find-file vc-switch-project
                                 indent-for-tab-command vmacs-yank-pop
+                                helixel-replace-pop
                                 ;; consult-isearch-history
                                 describe-function describe-variable
                                 yank-pop vmacs-complete
