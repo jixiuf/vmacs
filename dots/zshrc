@@ -579,3 +579,4 @@ down(){
 }
 
 export GOTOOLCHAIN=local
+alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
