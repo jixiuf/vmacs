@@ -126,12 +126,12 @@
   (define-key image-mode-map  (kbd "C-b") #'image-scroll-down)
   (helixel-define-key 'motion "n" #'image-next-file 'image-mode)
   )
-(add-hook 'wdired-mode-hook #'helixel-normal-state)
+;; wdired integration is now handled by helixel-shims-setup
+;; (switches to normal on enter, motion on exit)
 
 ;; wdired == writable dired
-;; i后 进入可以对dired文件名 权限等可以修改的mode，同时evil-mode 可进行evil-insert-state
+;; i后 进入可以对dired文件名 权限等可以修改的mode
 (setq-default wdired-allow-to-change-permissions t);; writable 时,不仅可以改文件名,还可以改权限
-
 
 (with-eval-after-load 'wdired
   (define-key wdired-mode-map (kbd "C-g") 'wdired-abort-changes))

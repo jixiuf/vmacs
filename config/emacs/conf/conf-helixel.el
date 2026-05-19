@@ -102,8 +102,8 @@ Default is 'helixel-normal-map' when PARENT is nil."
 
 (defvar helixel-motion-parent-keymaps (make-hash-table :test #'equal))
 (defun helixel-motion-set-keymap-parent()
-  (unless (member major-mode '(special-mode dired-mode wdired-mode Custom-mode))
-    (when (and (equal helixel--current-state 'motion)
+  (unless (member major-mode '(special-mode dired-mode Custom-mode))
+    (when (and (helixel-motion-state-p)
                (not (gethash major-mode helixel-motion-parent-keymaps)))
       (puthash major-mode t helixel-motion-parent-keymaps)
       (helixel-set-keymap-parent major-mode helixel-normal-map))))
@@ -111,11 +111,12 @@ Default is 'helixel-normal-map' when PARENT is nil."
 (add-hook 'helixel-motion-state-hook #'helixel-motion-set-keymap-parent)
 
 (helixel-mode)
+(define-key helixel-normal-map "\C-i" nil)
 
 (require 'keypad)
 (require 'keypad-which-key)
 (add-to-list 'keypad-pass-through-predicates
-             (lambda () (eq helixel--current-state 'insert)))
+             (lambda () (helixel-insert-state-p)))
 
 (setq keypad-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
@@ -131,7 +132,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
                                         ibuffer-mode
                                         vc-annotate-mode
                                         vc-git-log-view-mode
-                                        (lambda () (eq helixel--current-state 'insert))))))
+                                        (lambda () (helixel-insert-state-p))))))
 
 ;; (setq keypad-dispatch-priority t)
 (setq keypad-toggle-priority t)

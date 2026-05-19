@@ -328,7 +328,8 @@
   
   (add-hook 'gt-buffer-render-init-hook
             #'(lambda()
-                (helixel-normal-state)
+                (when (boundp 'helixel--current-state)
+                  (helixel-enter-normal-state))
                 (setq truncate-lines nil)))
   (setq gt-langs '(en zh))
   (setq gt-chatgpt-host "https://api.deepseek.com")
