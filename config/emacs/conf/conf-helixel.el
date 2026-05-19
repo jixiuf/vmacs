@@ -22,6 +22,10 @@
 (keymap-unset helixel-normal-map  "C-v" t)
 (keymap-unset helixel-normal-map "C-w" t)
 (keymap-unset helixel-normal-map "<SPC>" t)
+(keymap-unset helixel-normal-map "C-i" t)
+(keymap-unset helixel-normal-map "C-o" t)
+(global-set-key (kbd "C-c ,") #'helixel-jump-backward)
+(global-set-key (kbd "C-c .") #'helixel-jump-forward)
 
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
@@ -59,6 +63,8 @@
 (define-key helixel-goto-map "," #'goto-last-change)
 (define-key helixel-goto-map "." #'goto-last-change-reverse)
 (define-key helixel-goto-map "f" #'gptel-rewrite)
+
+(global-set-key (kbd "C-c g") helixel-goto-map)
 
 (defvar-keymap m-map
   "$"         #'toggle-truncate-lines
@@ -115,8 +121,7 @@ Default is 'helixel-normal-map' when PARENT is nil."
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
               :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"))
                          (?h . (:prefix "C-h" :modifier nil  :fallback "C-"))
-                         (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))
-                         (?g . (:prefix "M-g" :modifier nil  :fallback "M-"))))
+                         (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
         (:key "s" :prefix "" :modifier "C-M-" :fallback nil
               :pass-through-predicates (minibufferp

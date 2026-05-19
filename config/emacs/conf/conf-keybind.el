@@ -15,8 +15,8 @@
 (global-set-key (kbd "C-c s") #'save-all)
 (global-set-key (kbd "M-s s") #'save-all)
 
-(with-eval-after-load 'smerge-mode  (define-key g-map "v" smerge-basic-map))
 
+(with-eval-after-load 'smerge-mode  (define-key goto-map "v" smerge-basic-map))
 (autoload #'viper-ex  "viper" t)
 
 ;; (global-set-key (kbd "C-c n") #'xref-go-back)
