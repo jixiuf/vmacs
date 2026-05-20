@@ -22,8 +22,11 @@
 (keymap-unset helixel-normal-map  "C-v" t)
 (keymap-unset helixel-normal-map "C-w" t)
 (keymap-unset helixel-normal-map "<SPC>" t)
-(keymap-unset helixel-normal-map "C-i" t)
-(keymap-unset helixel-normal-map "C-o" t)
+;; (keymap-unset helixel-normal-map "C-i" t)
+;; (keymap-unset helixel-normal-map "C-o" t)
+(with-eval-after-load 'org
+     (helixel-define-key 'normal (kbd "C-i") nil 'org-mode))
+
 (global-set-key (kbd "C-c ,") #'helixel-jump-backward)
 (global-set-key (kbd "C-c .") #'helixel-jump-forward)
 
@@ -111,7 +114,6 @@ Default is 'helixel-normal-map' when PARENT is nil."
 (add-hook 'helixel-motion-state-hook #'helixel-motion-set-keymap-parent)
 
 (helixel-mode)
-(define-key helixel-normal-map "\C-i" nil)
 
 (require 'keypad)
 (require 'keypad-which-key)
