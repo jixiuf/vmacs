@@ -89,31 +89,7 @@
 (global-set-key (kbd "C-c m") helixel-textobj-map)
 (set-keymap-parent helixel-textobj-inner-map m-map)
 
-(defmacro helixel-set-keymap-parent (map-or-mode &optional parent)
-  "Set the parent keymap for MAP-OR-MODE to PARENT.
-
-MAP-OR-MODE can be a map or a mode
-Returns PARENT. PARENT should be nil or another keymap.
-Default is 'helixel-normal-map' when PARENT is nil."
-  `(let ((map (if (keymapp ,map-or-mode)
-                  ,map-or-mode
-                (let ((map-name (intern (concat (symbol-name ,map-or-mode) "-map"))))
-                  (when (boundp map-name)
-                    (symbol-value map-name))))))
-     (when (keymapp map)
-       (set-keymap-parent map (make-composed-keymap (keymap-parent map)
-                                                    (or ,parent helixel-normal-map))))))
 ;; (keymap-unset occur-mode-map "l" t)
-
-(defvar helixel-motion-parent-keymaps (make-hash-table :test #'equal))
-(defun helixel-motion-set-keymap-parent()
-  (unless (member major-mode '(special-mode dired-mode Custom-mode))
-    (when (and (helixel-motion-state-p)
-               (not (gethash major-mode helixel-motion-parent-keymaps)))
-      (puthash major-mode t helixel-motion-parent-keymaps)
-      (helixel-set-keymap-parent major-mode helixel-normal-map))))
-
-(add-hook 'helixel-motion-state-hook #'helixel-motion-set-keymap-parent)
 
 (helixel-mode)
 
