@@ -126,15 +126,16 @@ Default is 'helixel-normal-map' when PARENT is nil."
                          (?h . (:prefix "C-h" :modifier nil  :fallback "C-"))
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
-        (:key "s" :prefix "" :modifier "C-M-" :fallback nil
-              :pass-through-predicates (minibufferp
-                                        isearch-mode
-                                        vc-dir-mode dired-mode
-                                        package-menu-mode
-                                        ibuffer-mode
-                                        vc-annotate-mode
-                                        vc-git-log-view-mode
-                                        (lambda () (helixel-insert-state-p))))))
+        ;; (:key "s" :prefix "" :modifier "C-M-" :fallback nil
+        ;;       :pass-through-predicates (minibufferp
+        ;;                                 isearch-mode
+        ;;                                 vc-dir-mode dired-mode
+        ;;                                 package-menu-mode
+        ;;                                 ibuffer-mode
+        ;;                                 vc-annotate-mode
+        ;;                                 vc-git-log-view-mode
+        ;;                                 (lambda () (helixel-insert-state-p))))
+        ))
 
 ;; (setq keypad-dispatch-priority t)
 (setq keypad-toggle-priority t)
