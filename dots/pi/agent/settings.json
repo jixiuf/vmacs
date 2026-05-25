@@ -1,10 +1,9 @@
+
 {
-  "lastChangelogVersion": "0.75.1",
+  "lastChangelogVersion": "0.75.4",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": true,
-  "packages": [
-    "npm:pi-subagents"
-  ]
+  "packages": []
 }
