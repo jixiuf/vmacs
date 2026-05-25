@@ -105,3 +105,4 @@ dots/pi/agent/settings.json
 dots/pi/agent/npm/.gitignore
 dots/pi/agent/npm/
 dots/pi/agent/settings.json
+dots/pi/agent/run-history.jsonl
