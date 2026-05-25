@@ -1,9 +1,11 @@
-
 {
   "lastChangelogVersion": "0.75.4",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": true,
-  "packages": []
+  "packages": [
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:pi-cache-optimizer"
+  ]
 }

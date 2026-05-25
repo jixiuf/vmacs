@@ -10,7 +10,9 @@
           "name": "DeepSeek V4 Pro",
           "contextWindow": 1000000,
           "maxTokens": 384000,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "reasoning": true,
           "cost": {
             "input": 1.74,
@@ -21,6 +23,8 @@
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek",
+            "supportsLongCacheRetention": true,
+            "sendSessionAffinityHeaders": true,
             "reasoningEffortMap": {
               "minimal": "high",
               "low": "high",
@@ -35,7 +39,9 @@
           "name": "DeepSeek V4 Flash",
           "contextWindow": 1000000,
           "maxTokens": 384000,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "reasoning": true,
           "cost": {
             "input": 0.14,
@@ -46,6 +52,8 @@
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek",
+            "supportsLongCacheRetention": true,
+            "sendSessionAffinityHeaders": true,
             "reasoningEffortMap": {
               "minimal": "high",
               "low": "high",
