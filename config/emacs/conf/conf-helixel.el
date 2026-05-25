@@ -64,7 +64,7 @@
 (define-key helixel-goto-map "m" #'push-mark-command)
 (define-key helixel-goto-map "P" #'project-or-external-find-file)
 (define-key helixel-goto-map "," #'goto-last-change)
-(define-key helixel-goto-map "." #'goto-last-change-reverse)
+;; (define-key helixel-goto-map "." #'goto-last-change-reverse)
 (define-key helixel-goto-map "f" #'gptel-rewrite)
 (define-key helixel-goto-map ";" #'goto-line)
 (define-key helixel-goto-map ":" #'goto-char)
