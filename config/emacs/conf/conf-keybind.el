@@ -1,8 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 (setq widen-automatically nil)         ;for goto-line
 
- (when (file-directory-p "~/repos/ghostel/")
-   (add-to-list 'load-path "~/repos/ghostel/"))
+ ;; (when (file-directory-p "~/repos/ghostel/")
+ ;;   (add-to-list 'load-path "~/repos/ghostel/"))
 (autoload 'ghostel "ghostel" "" t)
 (autoload 'ghostel-other "ghostel" "" t)
 (autoload 'ghostel-latest "conf-term" "" t)

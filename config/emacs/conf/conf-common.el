@@ -208,15 +208,15 @@
                  )
                auto-mode-alist))
 
-(defun scratch-auto-set-major-mode (&optional arg)
-  (when (and (string= (buffer-name) "*scratch*")
-             (member this-command '(meep-clipboard-killring-yank yank )))
-    (set-auto-mode)
-    (setq-local write-contents-functions #'scratch-write-contents)
-    ))
+;; (defun scratch-auto-set-major-mode (&optional arg)
+;;   (when (and (string= (buffer-name) "*scratch*")
+;;              (member this-command '(meep-clipboard-killring-yank yank )))
+;;     (set-auto-mode)
+;;     (setq-local write-contents-functions #'scratch-write-contents)
+;;     ))
 
-(advice-add 'yank :after #'scratch-auto-set-major-mode)
-(advice-add 'meep-clipboard-killring-yank :after #'scratch-auto-set-major-mode)
+;; (advice-add 'yank :after #'scratch-auto-set-major-mode)
+;; (advice-add 'meep-clipboard-killring-yank :after #'scratch-auto-set-major-mode)
 
 
 (add-to-list 'magic-mode-alist
