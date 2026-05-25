@@ -41,7 +41,7 @@
 (helixel-define-key 'normal "G" #'end-of-buffer)
 ;; (helixel-define-key 'normal "," #'backward-sexp)
 ;; (helixel-define-key 'normal "." #'forward-sexp)
-(helixel-define-key 'normal (kbd "C-r") #'exchange-point-and-mark)
+(helixel-define-key 'normal (kbd "C-r") #'helixel-jump-to-match)
 (global-set-key (kbd "C-3") 'helixel-search-at-point-prev)
 (global-set-key (kbd "C-8") 'helixel-search-at-point-next)
 
