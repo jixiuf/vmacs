@@ -16,8 +16,6 @@
     (setq rimel-show-candidate 'echo-area)
   (setq rimel-show-candidate 'posframe))
 (setq rimel-posframe-style 'horizontal)
-(setq rimel-highlight-first t)
-(setq rimel-auto-build t)
 (setq default-input-method "rimel")
 (with-eval-after-load 'rimel
   (add-hook 'after-init-hook #'liberime-sync)
