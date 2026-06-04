@@ -68,6 +68,7 @@ local config = {
         remap = {
             -- TODO: add your emacs-specific remaps here
             -- { {"cmd","ctrl"}, "w",   {"cmd","ctrl","w"}  },
+            { {}, "escape",    {}, "f12" },
         },
     },
     {
