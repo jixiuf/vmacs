@@ -45,6 +45,7 @@ local _rules       = {}   -- all rule groups
 local _ruleStates  = {}   -- per-rule: { hotkeys, modal, leaderHk }
 local _globalFilter = nil -- single window filter for all rules
 local _pollTimer   = nil  -- fallback polling timer
+local _lastMatch   = nil  -- last matching state (for change logging)
 local _POLL_INTERVAL = 2  -- seconds
 
 -- ── helpers ─────────────────────────────────────────────────────────────
@@ -53,10 +54,37 @@ local function _sendKey(mods, key)
     hs.eventtap.keyStroke(mods, key)
 end
 
---- Play an output sequence. Each element is:
----   string: key with no modifiers
----   table:  {mod1, mod2, ..., key} — last = key, rest = modifiers
+--- Play an output sequence from entry[start] onward.
+--- Before sending, releases any physically-held modifiers that are NOT
+--- needed by the output — this prevents modifier leakage (e.g. if you
+--- press Cmd+Ctrl+W and remap to Cmd+W, the physical Ctrl is released).
 local function _playOutput(entry, start)
+    -- 1. Collect all modifiers needed by the output sequence
+    local needed = {}
+    for i = start, #entry do
+        local a = entry[i]
+        if type(a) == "table" then
+            for j = 1, #a - 1 do
+                needed[a[j]] = true
+            end
+        end
+    end
+
+    -- 2. Release any held modifiers that are NOT needed
+    local held = hs.eventtap.checkKeyboardModifiers()
+    local allMods = {"cmd", "ctrl", "alt", "shift"}
+    local released = {}
+    for _, m in ipairs(allMods) do
+        if held[m] and not needed[m] then
+            hs.eventtap.event.newKeyEvent({}, m, false):post()
+            released[m] = true
+        end
+    end
+    if next(released) then
+        hs.timer.usleep(15000)  -- let modifier release settle
+    end
+
+    -- 3. Send output keys
     for i = start, #entry do
         local a = entry[i]
         if type(a) == "table" then
@@ -69,6 +97,11 @@ local function _playOutput(entry, start)
         else
             _sendKey({}, a)
         end
+    end
+
+    -- 4. Restore released modifiers
+    for m, _ in pairs(released) do
+        hs.eventtap.event.newKeyEvent({}, m, true):post()
     end
 end
 
@@ -86,6 +119,7 @@ end
 -- ── rule matching ───────────────────────────────────────────────────────
 
 --- Check whether a window+app match a rule's filters.
+--- Matching is case-INsensitive.
 local function _ruleMatches(rule, win, app)
     if not win or not app then return false end
 
@@ -93,7 +127,7 @@ local function _ruleMatches(rule, win, app)
         local name = app:name() or ""
         local ok = false
         for _, pat in ipairs(rule.app_only) do
-            if name:match(pat) then ok = true; break end
+            if name:lower():match(pat:lower()) then ok = true; break end
         end
         if not ok then return false end
     end
@@ -101,7 +135,7 @@ local function _ruleMatches(rule, win, app)
     if rule.app_unless and #rule.app_unless > 0 then
         local name = app:name() or ""
         for _, pat in ipairs(rule.app_unless) do
-            if name:match(pat) then return false end
+            if name:lower():match(pat:lower()) then return false end
         end
     end
 
@@ -109,7 +143,7 @@ local function _ruleMatches(rule, win, app)
         local title = win:title() or ""
         local ok = false
         for _, pat in ipairs(rule.win_only) do
-            if title:match(pat) then ok = true; break end
+            if title:lower():match(pat:lower()) then ok = true; break end
         end
         if not ok then return false end
     end
@@ -117,7 +151,7 @@ local function _ruleMatches(rule, win, app)
     if rule.win_unless and #rule.win_unless > 0 then
         local title = win:title() or ""
         for _, pat in ipairs(rule.win_unless) do
-            if title:match(pat) then return false end
+            if title:lower():match(pat:lower()) then return false end
         end
     end
 
@@ -161,17 +195,16 @@ local function _buildEntry(entry)
         result.modal = m
 
     elseif entry.cmd then
-        -- Shell command — fire on key-up to avoid modifier interference
-        local hk = hs.hotkey.new(entry[1], entry[2], nil, function()
+        -- Shell command
+        local hk = hs.hotkey.new(entry[1], entry[2], function()
             _runCmd(entry.cmd)
         end)
         hk:disable()
         table.insert(result.hotkeys, hk)
 
     else
-        -- Simple key → key(s) — fire on key-up so held physical modifiers
-        -- (e.g. Ctrl from Cmd+Ctrl+W) don't leak into the output keys
-        local hk = hs.hotkey.new(entry[1], entry[2], nil, function()
+        -- Simple key → key(s) — extra modifiers auto-released by _playOutput
+        local hk = hs.hotkey.new(entry[1], entry[2], function()
             _playOutput(entry, 3)
         end)
         hk:disable()
@@ -186,18 +219,30 @@ end
 local function _updateAll()
     local win = hs.window.frontmostWindow()
     local app = win and win:application()
+    local appName = app and app:name() or "-"
+    local winTitle = win and win:title() or "-"
 
+    local anyMatch = false
     for i, rule in ipairs(_rules) do
         local state = _ruleStates[i]
         if state then
             local match = _ruleMatches(rule, win, app)
+            if match then anyMatch = true end
             for _, hk in ipairs(state.hotkeys) do
                 if match then hk:enable() else hk:disable() end
             end
-            -- If rule stopped matching, exit its modal (if any)
             if not match and state.modal then
                 state.modal:exit()
             end
+        end
+    end
+    -- Log when matching state changes (only when there are rules to match)
+    if #_rules > 0 and _lastMatch ~= anyMatch then
+        _lastMatch = anyMatch
+        if anyMatch then
+            print("[xremap] ✓ matched: app=" .. appName .. "  title=" .. winTitle)
+        else
+            print("[xremap] ✗ no match: app=" .. appName .. "  title=" .. winTitle)
         end
     end
 end

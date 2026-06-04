@@ -69,6 +69,10 @@ local config = {
             -- TODO: add your emacs-specific remaps here
             -- { {"cmd","ctrl"}, "w",   {"cmd","ctrl","w"}  },
             { {}, "escape",    {}, "f12" },
+            -- { {"ctrl"}, ",",    {"ctrl","x"}, "left" },
+            -- { {"ctrl"}, "p",    {"ctrl","x"}, "left" },
+            -- { {"ctrl"}, ",",         {"ctrl","x"}, "left" } ,    -- keycode for ','
+
         },
     },
     {
@@ -83,11 +87,13 @@ local config = {
             "GNU/Emacs",
         },
         remap = {
-            { {"cmd","ctrl"}, "w",    {"cmd","w"} },
+            { {"cmd","ctrl"}, "w",    {"ctrl","c"},{"k"} },
             -- { fromMods,   fromKey,       toSeq... }
             { {"cmd","ctrl"}, "\\",     {"ctrl","c"}, "space"         },
             { {"cmd","ctrl"}, "delete", {"ctrl","c"}, {"alt","2"}     },
             { {"cmd","alt"},  "v",      {"ctrl","w"}, {"ctrl","y"}    },
+            { {"ctrl"}, ",",         {"ctrl","c"}, "p" } ,
+            { {"ctrl"}, ".",         {"ctrl","c"}, "n" } ,
         },
     },
 }
