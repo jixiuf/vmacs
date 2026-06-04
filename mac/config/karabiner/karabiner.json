@@ -592,7 +592,7 @@
                                         "key_code": "spacebar",
                                         "modifiers": ["left_control"]
                                     },
-                                    { "shell_command": "/usr/local/bin/run-or-raise --toggle --exec emacs --cmd emacs" }
+                                  { "shell_command": "/usr/local/bin/run-or-raise --toggle --title 'GNU/Emacs' --cmd emacs" }
                                 ],
                                 "type": "basic"
                             },
@@ -605,7 +605,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --exec emacs --cmd emacs" }],
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle  --title 'GNU/Emacs' --cmd emacs" }],
                                 "type": "basic"
                             },
                             {
