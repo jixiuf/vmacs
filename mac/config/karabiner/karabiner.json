@@ -657,6 +657,18 @@
                                 "type": "basic"
                             },
                             {
+                                "description": " capslock-e:sshemacs",
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": {
+                                      "mandatory": ["right_command", "right_option"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:emacs:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s emacs " }],
+                                "type": "basic"
+                            },
+                            {
                                 "description": " space-t:apmssh",
                                 "from": {
                                     "key_code": "t",
@@ -665,7 +677,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'ssh|@.*:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:vc|ck' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc " }],
                                 "type": "basic"
                             },
                             {
@@ -677,7 +689,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session dterm " }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --skip-title 'ssh'  --skip-title 'TMUX:emacs' --skip-title 'admin@'  --skip-title 'TMUX:emacs' --skip-title 'mitmproxy'  --cmd  /usr/local/bin/term.sh --working-directory=$(cwd||echo $HOME) --tmux-session dterm " }],
                                 "type": "basic"
                             },
                             {
@@ -689,7 +701,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --title 'mitmproxy'  --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh --title=mitmproxy    /Users/jixiuf/venv/bin/mitmproxy " }],
+                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --title 'mitmproxy' --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh --title=mitmproxy    /Users/jixiuf/venv/bin/mitmproxy " }],
                                 "type": "basic"
                             },
                             {
