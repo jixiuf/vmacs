@@ -29,6 +29,7 @@
 
 (global-set-key (kbd "C-c ,") #'helixel-jump-backward)
 (global-set-key (kbd "C-c .") #'helixel-jump-forward)
+(global-set-key (kbd "C-h") #'negative-argument)
 
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
@@ -101,7 +102,7 @@
 (setq keypad-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
               :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"))
-                         (?h . (:prefix "C-h" :modifier nil  :fallback "C-"))
+                         (?h . (:prefix "<f1>" :modifier nil  :fallback "C-"))
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
         ;; (:key "s" :prefix "" :modifier "C-M-" :fallback nil
