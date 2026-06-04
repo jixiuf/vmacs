@@ -449,6 +449,17 @@
                                         "modifiers": ["right_command"]
                                     }
                                 ],
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.alacritty$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.electron\\.lark$"
+                                        ],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
                                 "type": "basic"
                             },
                             {

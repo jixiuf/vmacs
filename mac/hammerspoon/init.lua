@@ -46,6 +46,10 @@ require('cmd')
 require('windows_layout')
 require('input_method')
 require('paste')
+
+-- Xremap-style window-title-based key remapping
+local xremapConfig = require('my_xremap_config')
+require('xremap_style').setup(xremapConfig)
 -- require('app_watcher')
 -- local seal=hs.loadSpoon("Seal")
 -- seal.hotkeyToggle=hs.hotkey.new({"control"},"tab", function() seal:toggle() end)
