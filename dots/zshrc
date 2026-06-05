@@ -169,10 +169,10 @@ else
     \. "$NVM_DIR/nvm.sh"  # This loads nvm
     nvm install lts/krypton  # v24.x.x
     nvm alias default  lts/krypton
-    npm install  @qwen-code/qwen-code@latest -g
-    npm install  @github/copilot -g
-    npm install  opencode-ai -g
-    npm install -g node-gyp; npm install -g openclaw@latest;openclaw onboard --install-daemon
+    # npm install  @qwen-code/qwen-code@latest -g
+    # npm install  @github/copilot -g
+    # npm install  opencode-ai -g
+    # npm install -g node-gyp; npm install -g openclaw@latest;openclaw onboard --install-daemon
 fi
 
 
@@ -580,3 +580,6 @@ down(){
 
 export GOTOOLCHAIN=local
 alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
+
+# OpenClaw Completion
+source "/Users/jixiuf/.openclaw/completions/openclaw.zsh"
