@@ -34,7 +34,8 @@
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
 (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
-(helixel-define-key 'normal (kbd "M-y") #'helixel-replace-pop)
+(helixel-define-key 'normal (kbd "M-y") #'helixel-yank-pop)
+(helixel-define-key 'normal (kbd "M-r") #'helixel-yank-pop)
 ;; (helixel-define-key 'normal "v" #'helixel-backward-long-word)
 ;; (helixel-define-key 'normal "e" #'helixel-forward-long-word-start)
 ;; (helixel-define-key 'normal "s" #'helixel-select-line)
@@ -93,6 +94,7 @@
 ;; (keymap-unset occur-mode-map "l" t)
 
 (helixel-mode)
+(helixel-mc-mark-all-for-real-cursor-only '(vmacs-other-window))
 
 (require 'keypad)
 (require 'keypad-which-key)

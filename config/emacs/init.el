@@ -39,8 +39,7 @@
 (with-eval-after-load 'java-ts-mode (require 'conf-program-java))
 (with-eval-after-load 'web-mode (require 'conf-program-js))
 (with-eval-after-load 'typescript-ts-mode (require 'conf-program-js))
-(with-eval-after-load 'org-ai (require 'conf-ai))
-(with-eval-after-load 'aider (require 'conf-ai))
+(require 'conf-ai)
 (with-eval-after-load 'sql (require 'conf-sql))
 (with-eval-after-load 'erc (require 'conf-erc))
 

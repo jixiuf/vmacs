@@ -278,16 +278,16 @@ based on the current context and previous history."
 
 
 ;;;###autoload
-(defun vmacs-yank-pop()
-  (interactive "*")
-  (cond
-   ((eq last-command 'yank)
-    (call-interactively #'yank-pop)
-    (setq this-command 'yank))
-   ((member last-command '(meep-clipboard-killring-yank meep-clipboard-killring-yank-pop-stack))
-    (call-interactively #'meep-clipboard-killring-yank-pop-stack)
-    (setq this-command #'meep-clipboard-killring-yank-pop-stack))
-   (t (call-interactively #'yank-pop))))
+;; (defun vmacs-yank-pop()
+;;   (interactive "*")
+;;   (cond
+;;    ((eq last-command 'yank)
+;;     (call-interactively #'yank-pop)
+;;     (setq this-command 'yank))
+;;    ((member last-command '(meep-clipboard-killring-yank meep-clipboard-killring-yank-pop-stack))
+;;     (call-interactively #'meep-clipboard-killring-yank-pop-stack)
+;;     (setq this-command #'meep-clipboard-killring-yank-pop-stack))
+;;    (t (call-interactively #'yank-pop))))
 
 ;;;###autoload
 (defun vmacs-goto-line(arg)

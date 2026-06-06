@@ -1,5 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 ;; npm install -g @earendil-works/pi-coding-agent
+;; eca-start.sh
+(when (file-exists-p (expand-file-name "~/.emacs.d/eca/eca"))
+  (setq eca-custom-command '("/usr/local/bin/eca-start.sh")))
+
 (with-eval-after-load 'pi-coding-agent
   (setq pi-coding-agent-quit-without-confirmation t)
   (setq pi-coding-agent-input-window-height 3)
@@ -17,7 +21,7 @@
 (keymap-set gptel-mode-map "C-c C-f" #'gptel-add-file)
 (keymap-set gptel-mode-map "C-c C-b" #'gptel-add)
 (keymap-set gptel-mode-map "C-c C-k" #'gptel-context-remove-all)
-(eval-after-load 'dired
+(with-eval-after-load 'dired
 (keymap-set dired-mode-map "a" #'gptel-add))
 
 (defun vmacs-gptel-send(&optional arg)
