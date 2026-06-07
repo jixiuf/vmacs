@@ -87,7 +87,7 @@
                     "/TAGS$" "java_base.tag" ".erlang.cookie" "xhtml-loader.rnc" "COMMIT_EDITMSG")
  recentf-max-saved-items 1000
  ring-bell-function 'ignore
- savehist-additional-variables '(corfu-history magit-repository-directories kill-ring)
+ savehist-additional-variables '(kill-ring regexp-search-ring)
  ;;when meet long line ,whether to wrap it
  truncate-lines t ;一行过长时 是否 wrap 显示
  ;; bidi-display-reordering  nil ; panic when چ
@@ -423,7 +423,7 @@ Direct translation without separators
 (when (require 'which-key nil t)
   (setq which-key-max-description-length 36)
   (add-hook 'after-init-hook #'which-key-mode))
-
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 (provide 'conf-common)
 
 ;; Local Variables:
