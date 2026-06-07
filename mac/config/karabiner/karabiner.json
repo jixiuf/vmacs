@@ -657,6 +657,18 @@
                                 "type": "basic"
                             },
                             {
+                                "description": "capslock+f  launch Chrome with remote-debugging-port (for pi + chrome-devtools-mcp)",
+                                "from": {
+                                    "key_code": "f",
+                                    "modifiers": {
+                                        "mandatory": ["right_command", "right_option"],
+                                        "optional": ["caps_lock"]
+                                    }
+                                },
+                                "to": [{ "shell_command": "/usr/local/bin/run-or-raise --toggle --id com.google.Chrome --cmd '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 --user-data-dir=/Users/jixiuf/chrome-pi-profile --no-first-run --no-default-browser-check" }],
+                                "type": "basic"
+                            },
+                            {
                                 "description": " capslock-e:sshemacs",
                                 "from": {
                                     "key_code": "e",
