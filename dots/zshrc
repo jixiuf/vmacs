@@ -582,4 +582,6 @@ export GOTOOLCHAIN=local
 alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
 
 # OpenClaw Completion
-source "/Users/jixiuf/.openclaw/completions/openclaw.zsh"
+if [ -f "~/.openclaw/completions/openclaw.zsh"  ]; then
+    source "~/.openclaw/completions/openclaw.zsh"
+fi
