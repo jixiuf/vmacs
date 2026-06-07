@@ -404,6 +404,8 @@ keymap:
       only: ["Apple SPI Keyboard"]                  #evtest
     remap:
       super-M-k: j
+      M-k: M-J
+
           
   - name: Global
     remap:
