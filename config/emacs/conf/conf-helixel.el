@@ -1,6 +1,6 @@
 ;;; conf-lxel.el --- Description -*- lexical-binding: t; -*-
 ;; (package-vc-install '(helixel-mode :url "https://github.com/jixiuf/helixel-mode.git" :branch "main"))
-;;  (package-vc-install '(keypad :url "https://github.com/jixiuf/emacs-keypad.git" :branch "main"))
+;;  (package-vc-install '(leadkey :url "https://github.com/jixiuf/emacs-leadkey.git" :branch "main"))
 ;;; Code:
 (require 'helixel)
 (setq helixel-replace-yanked-delete-char-p nil)
@@ -96,12 +96,12 @@
 (helixel-mode)
 (helixel-mc-mark-all-for-real-cursor-only '(vmacs-other-window))
 
-(require 'keypad)
-(require 'keypad-which-key)
-(add-to-list 'keypad-pass-through-predicates
+(require 'leadkey)
+(require 'leadkey-which-key)
+(add-to-list 'leadkey-pass-through-predicates
              (lambda () (helixel-insert-state-p)))
 
-(setq keypad-keys
+(setq leadkey-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
               :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"))
                          (?h . (:prefix "<f1>" :modifier nil  :fallback "C-"))
@@ -119,8 +119,8 @@
         ))
 
 ;; (setq keypad-dispatch-priority t)
-(setq keypad-toggle-priority t)
-(keypad-mode 1)
+(setq leadkey-toggle-priority t)
+(leadkey-mode 1)
 
 (define-thing-chars gopkg "-/[:alnum:]_.@:*")
 (put 'gopkg 'forward-op
