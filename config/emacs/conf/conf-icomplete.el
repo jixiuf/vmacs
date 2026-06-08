@@ -157,24 +157,26 @@
 (defun vmacs-icomplete-vertical-mode()
   (setq-local truncate-lines t)
   (when  (or (member this-command '(xref-find-references
-                                xref-find-definitions xref-find-apropos
-                                eglot-find-declaration eglot-find-implementation
-                                eglot-code-actions execute-extended-command
-                                project-find-file
-                                project-or-external-find-file vc-switch-project
-                                indent-for-tab-command 
-                                helixel-yank-pop
-                                ;; consult-isearch-history
-                                describe-function describe-variable
-                                yank-pop vmacs-complete
-                                consult-dir consult-ripgrep
-                                consult-grep consult-completion-in-region
-                                consult-line consult-ripgrep-default-symbol
-                                consult-ripgrep-root-symbol consult-ripgrep-default))
+                                    xref-find-definitions xref-find-apropos
+                                    eglot-find-declaration eglot-find-implementation
+                                    eglot-code-actions execute-extended-command
+                                    project-find-file
+                                    project-or-external-find-file vc-switch-project
+                                    indent-for-tab-command
+                                    helixel-yank-pop
+                                    ;; consult-isearch-history
+                                    describe-function describe-variable
+                                    yank-pop vmacs-complete
+                                    pi-resume
+                                    pi-fork
+                                    pi-search-prompt
+                                    consult-dir consult-ripgrep
+                                    consult-grep consult-completion-in-region
+                                    consult-line consult-ripgrep-default-symbol
+                                    consult-ripgrep-root-symbol consult-ripgrep-default))
              (and (member this-command '(completion-at-point))
                   (not (minibufferp)))
-             (member last-command '(consult-todo-project consult-todo-all consult-todo))
-             )
+             (member last-command '(compile-dwim-run consult-todo-project widget-field-activate consult-todo-all consult-todo)))
     (setq-local icomplete-vertical-mode t)
     (when (minibufferp)
       (add-hook 'icomplete-minibuffer-setup-hook

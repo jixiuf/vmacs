@@ -9,6 +9,7 @@
       '((reb-mode . insert)
         ;; (pi-coding-agent-input-mode . insert)
         (ghostel-mode . insert)
+        (pi-chat-mode . insert)
         (calc-mode . insert))))
 
 (helixel-define-key 'motion "j" #'helixel-next-line)

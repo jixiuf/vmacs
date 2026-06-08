@@ -1,16 +1,14 @@
 ;;; -*- lexical-binding: t; -*-
 ;; npm install -g @earendil-works/pi-coding-agent
+;; (package-vc-install '(pi :url "https://github.com/ananthakumaran/pi.el.git" :branch "master"))
 ;; eca-start.sh
 (when (file-exists-p (expand-file-name "~/.emacs.d/eca/eca"))
   (setq eca-custom-command '("/usr/local/bin/eca-start.sh")))
 
-(with-eval-after-load 'pi-coding-agent
-  (setq pi-coding-agent-quit-without-confirmation t)
-  (setq pi-coding-agent-input-window-height 3)
-  (define-key pi-coding-agent-chat-mode-map (kbd "C-x k") #'pi-coding-agent-quit)
-  (define-key pi-coding-agent-input-mode-map (kbd "C-x k") #'pi-coding-agent-quit)
-  (add-hook 'pi-coding-agent-input-mode-hook #'(lambda() (tab-line-mode -1)))
-  )
+;; (with-eval-after-load 'pi
+;;   (keymap-set pi-chat-mode-map "C-c C-r" #'pi-resume)
+;;   )
+
 (require 'gptel)
 (setq gptel-default-mode 'org-mode)
 (setq gptel-display-buffer-action  '(pop-to-buffer-same-window))
