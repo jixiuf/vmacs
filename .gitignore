@@ -108,3 +108,7 @@ dots/pi/agent/settings.json
 dots/pi/agent/run-history.jsonl
 dots/pi/agent/pi-cache-optimizer-stats.json
 config/emacs/eca/
+dots/pi/agent/mcp-cache.json
+dots/pi/agent/mcp-npx-cache.json
+dots/pi/agent/mcp-onboarding.json
+dots/pi/agent/mcp.json
