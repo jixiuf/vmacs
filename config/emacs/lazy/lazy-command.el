@@ -260,6 +260,74 @@ based on the current context and previous history."
       (display-buffer (current-buffer) '(pop-to-buffer)))))
 
 ;;;###autoload
+(defun pi-project-toggle-chat ()
+  "Toggle between pi chat buffers.
+
+When invoked from a pi-chat buffer:
+- If the current buffer is a pi-chat, hide (bury) it.
+- If there are exactly two chats, switch directly to the other one.
+- Otherwise, display a selector to choose among all active chats.
+
+When invoked from a non-pi-chat buffer:
+- Show the most recent pi-chat buffer, or pick from a list."
+  (interactive)
+  (let* ((chat-buffers
+          (cl-remove-if-not
+           (lambda (buf) (and (buffer-live-p buf)
+                              (eq (buffer-local-value 'major-mode buf)
+                                  'pi-chat-mode)))
+           (hash-table-values pi-chats)))
+         (in-chat-p (eq major-mode 'pi-chat-mode)))
+    (cond
+     ((null chat-buffers)
+      (message "No pi chat buffers."))
+
+     ;; In a pi-chat buffer with only this one → hide it
+     ((and in-chat-p (= (length chat-buffers) 1))
+      (bury-buffer))
+
+     ;; In a pi-chat buffer with exactly one other → toggle to it
+     ((and in-chat-p (= (length chat-buffers) 2))
+      (let ((other (car (cl-remove (current-buffer) chat-buffers))))
+        (pop-to-buffer other)))
+
+     ;; In a pi-chat buffer with many → pick one
+     (in-chat-p
+      (let* ((candidates
+              (mapcar
+               (lambda (buf)
+                 (let ((name (buffer-name buf))
+                       (project (buffer-local-value 'pi-project-root buf)))
+                   (cons (format "%s  [%s]" name
+                                 (file-name-nondirectory
+                                  (directory-file-name project)))
+                         buf)))
+               chat-buffers))
+             (selected (completing-read "Switch to chat: " candidates nil t)))
+        (when-let ((buf (alist-get selected candidates nil nil #'equal)))
+          (pop-to-buffer buf))))
+
+     ;; From outside: one chat → show it
+     ((= (length chat-buffers) 1)
+      (pop-to-buffer (car chat-buffers)))
+
+     ;; From outside: multiple → pick one
+     (t
+      (let* ((candidates
+              (mapcar
+               (lambda (buf)
+                 (let ((name (buffer-name buf))
+                       (project (buffer-local-value 'pi-project-root buf)))
+                   (cons (format "%s  [%s]" name
+                                 (file-name-nondirectory
+                                  (directory-file-name project)))
+                         buf)))
+               chat-buffers))
+             (selected (completing-read "Switch to chat: " candidates nil t)))
+        (when-let ((buf (alist-get selected candidates nil nil #'equal)))
+          (pop-to-buffer buf)))))))
+
+;;;###autoload
 (defun dired-mp4togif()
   (interactive)
   (shell-command
