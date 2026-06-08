@@ -47,7 +47,8 @@ the row must be offset by the scrollback line count."
   (when (member major-mode '(ghostel-mode))
     (setq display-line-numbers nil)
     (when (member this-command '(keyboard-quit
-                                 bray-state-stack-pop
+                                 ;; helixel-normal-escape
+                                 helixel-insert-exit
                                  ghostel-latest
                                  ghostel
                                  ghostel-other))
