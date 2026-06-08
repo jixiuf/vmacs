@@ -23,21 +23,19 @@
                                           '((category . comint))))
       (ghostel))))
 
-
 (defun ghostel-reset-cursor-point ()
   "Move Emacs point to the terminal cursor position.
-`ghostel--cursor-position' returns row relative to the viewport
-\(the last `ghostel--term-rows' lines of the buffer), so the row
-must be offset by the scrollback line count.  Mirrors the
-placement math the native module performs in `src/render.zig'."
+`ghostel--cursor-pos' holds the viewport-relative (COL . ROW), so
+the row must be offset by the scrollback line count."
   (when (and ghostel--term ghostel--term-rows)
-    (let ((pos (ghostel--cursor-position ghostel--term)))
+    (let ((pos ghostel--cursor-pos))
       (when pos
         (let ((scrollback (max 0 (- (count-lines (point-min) (point-max))
                                     ghostel--term-rows))))
           (goto-char (point-min))
           (forward-line (+ scrollback (cdr pos)))
           (move-to-column (car pos)))))))
+
 
 (defun vmacs-ghostel-disable-copy()
   (when (member major-mode '(ghostel-mode))
