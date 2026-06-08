@@ -280,7 +280,7 @@ When invoked from a non-pi-chat buffer:
          (in-chat-p (eq major-mode 'pi-chat-mode)))
     (cond
      ((null chat-buffers)
-      (message "No pi chat buffers."))
+      (pi-chat))
 
      ;; In a pi-chat buffer with only this one → hide it
      ((and in-chat-p (= (length chat-buffers) 1))
