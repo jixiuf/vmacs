@@ -585,3 +585,4 @@ alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
 if [ -f "~/.openclaw/completions/openclaw.zsh"  ]; then
     source "~/.openclaw/completions/openclaw.zsh"
 fi
+[ -f "$HOME/.pi/pi-sync-func.sh" ] && source "$HOME/.pi/pi-sync-func.sh"
