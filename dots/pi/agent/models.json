@@ -1,5 +1,35 @@
 {
   "providers": {
+    
+    "dedao": {
+      "baseUrl": "https://llm.dedao.cn",
+      "api": "anthropic-messages",
+      "apiKey": "$DEDAO_API_KEY",
+      "compat": {
+        "forceAdaptiveThinking": true,
+        "supportsLongCacheRetention": true,
+        "sendSessionAffinityHeaders": true
+      },
+      "models": [
+        {
+          "id": "claude-opus-4-7",
+          "name": "claude-opus-4-7",
+          "contextWindow": 200000,
+          "maxTokens": 128000,
+          "input": [
+            "text"
+          ],
+          "reasoning": true,
+          "cost": {
+            "input": 1.74,
+            "output": 3.48,
+            "cacheRead": 0.145,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    },
+    
     "deepseek": {
       "baseUrl": "https://api.deepseek.com",
       "api": "openai-completions",
