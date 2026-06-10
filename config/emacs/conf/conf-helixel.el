@@ -3,6 +3,7 @@
 ;;  (package-vc-install '(leadkey :url "https://github.com/jixiuf/emacs-leadkey.git" :branch "main"))
 ;;; Code:
 (require 'helixel)
+(setq helixel-search-pcre t)
 (setq helixel-replace-yanked-delete-char-p nil)
 (setq helixel-major-mode-default-states
       (append helixel-major-mode-default-states
