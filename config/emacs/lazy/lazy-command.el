@@ -730,7 +730,7 @@ Move point to end-of-line ,if point was already at that position,
 ;;;###autoload
 (defun scratch-write-contents ()
   ;; 避免autosave总是提醒是否真的保存
-  (when (equal buffer-file-name "~/scratch.el")
+  (when (equal buffer-file-name (expand-file-name "~/scratch.el"))
     (with-current-buffer "*scratch*"
       (let ((txt (buffer-string)))
         (when buffer-file-name
@@ -768,6 +768,7 @@ Move point to end-of-line ,if point was already at that position,
       (delete-frame))
      ((equal (buffer-name) "*scratch*")
       (save-buffer)
+      (scratch-write-contents)
       (kill-current-buffer))
      ((and (featurep 'server)
            (boundp 'server-buffer-clients)
