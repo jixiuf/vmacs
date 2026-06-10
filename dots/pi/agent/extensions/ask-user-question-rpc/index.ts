@@ -343,7 +343,7 @@ const PROMPT_GUIDELINES = [
 export default function (pi: ExtensionAPI) {
   // Startup notification — visible in both TUI and RPC mode
   pi.on("session_start", async (_event, ctx) => {
-    ctx.ui.setStatus("ask-user-question", "✅ ask_user_question ready");
+    // ctx.ui.setStatus("ask-user-question", "✅ ask_user_question ready");
     ctx.ui.notify("ask_user_question tool loaded — I can ask clarifying questions!", "info");
   });
 

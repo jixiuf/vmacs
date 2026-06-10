@@ -199,7 +199,7 @@
       '(((lambda (bufname _)
            (memq this-command '(diff-goto-source vmacs-cancel-selection
                                                  pi-chat
-                                                 pi-project-toggle-chat
+                                                 pi-toggle-chat
                                                  vc-annotate-goto-line
                                                  flymake-show-project-diagnostics
                                                  vc-annotate-goto-revision-line
