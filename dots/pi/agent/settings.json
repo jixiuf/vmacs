@@ -1,10 +1,11 @@
 {
-  "lastChangelogVersion": "0.79.0",
+  "lastChangelogVersion": "0.79.1",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "medium",
   "hideThinkingBlock": true,
   "packages": [
     "npm:pi-cache-optimizer"
-  ]
+  ],
+  "steeringMode": "all"
 }
