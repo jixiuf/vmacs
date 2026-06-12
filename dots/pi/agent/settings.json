@@ -7,5 +7,7 @@
   "packages": [
     "npm:pi-cache-optimizer"
   ],
-  "steeringMode": "all"
+  "steeringMode": "all",
+  "followUpMode": "all",
+  "theme": "dark"
 }
