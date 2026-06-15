@@ -112,8 +112,8 @@
 (global-set-key  (kbd "s-r") 'compile-dwim-run)
 (global-set-key (kbd "C-c C-r") 'compile-dwim-run)
 (global-set-key (kbd "C-c r") 'compile-dwim-run) ;space r
-(global-set-key  (kbd "M-,") 'scroll-other-window-down)
-(global-set-key  (kbd "M-.") 'scroll-other-window)
+;; (global-set-key  (kbd "M-,") 'scroll-other-window-down)
+;; (global-set-key  (kbd "M-.") 'scroll-other-window)
 (global-set-key  (kbd "M-w") 'vmacs-kill-ring-save)
 (global-set-key  (kbd "C-d") 'vmacs-delete-char)
 
