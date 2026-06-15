@@ -38,6 +38,10 @@
 ;; (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
 (helixel-define-key 'normal "G" #'helixel-go-end-buffer)
 (helixel-define-key 'normal (kbd "C-r") #'helixel-jump-to-match)
+(helixel-define-key 'normal "q" helixel-left-map)
+(helixel-define-key 'normal "Q" helixel-inner-left-map)
+(helixel-define-key 'normal "v" helixel-right-map)
+(helixel-define-key 'normal "V" helixel-inner-right-map)
 (global-set-key (kbd "C-3") 'helixel-search-at-point-prev)
 (global-set-key (kbd "C-8") 'helixel-search-at-point-next)
 
