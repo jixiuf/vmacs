@@ -99,7 +99,6 @@
 (define-key isearch-mode-map  (kbd "C-f")   'isearch-yank-word-or-char)
 (define-key isearch-mode-map  (kbd "C-,")   'isearch-beginning-of-buffer)
 (define-key isearch-mode-map  (kbd "C-.")   'isearch-end-of-buffer)
-(define-key isearch-mode-map  (kbd "M-t")   'isearch-toggle-regexp)
 (define-key isearch-mode-map  (kbd "C-e")   'isearch-edit-string)
 (global-set-key (kbd "C-c w c") 'toggle-case-fold-search)
 (global-set-key (kbd "C-c C-s") 'toggle-case-fold)
@@ -107,7 +106,7 @@
 ;; (global-set-key (kbd "C-8") 'lazy-isearch-at-point-next)
 ;; (with-eval-after-load 'lazy-isearch (lazy-isearch-mode))
 (global-set-key (kbd "C-c C-c") #'exit-recursive-edit) ;query-replace C-r临时退出replace 后，可C-cC-c 继续replace
-(setq isearch-message-prefix-add "(C-t:rx C-e:edit M-c/C-cC-s:case)")
+(setq isearch-message-prefix-add "(M-r:rx C-e:edit M-c/C-cC-s:case)")
 
 
 (with-eval-after-load 'isearch (define-key isearch-mode-map [escape] 'isearch-abort))
