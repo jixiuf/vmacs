@@ -26,8 +26,6 @@
 (keymap-unset helixel-normal-map "<SPC>" t)
 
 
-(global-set-key (kbd "C-c ,") #'helixel-jump-backward)
-(global-set-key (kbd "C-c .") #'helixel-jump-forward)
 (global-set-key (kbd "C-h") #'negative-argument)
 
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
@@ -63,8 +61,8 @@
 (define-key helixel-goto-map "," #'goto-last-change)
 ;; (define-key helixel-goto-map "." #'goto-last-change-reverse)
 (define-key helixel-goto-map "f" #'gptel-rewrite)
-(define-key helixel-goto-map ";" #'goto-line)
-(define-key helixel-goto-map ":" #'goto-char)
+;; (define-key helixel-goto-map ";" #'goto-line)
+;; (define-key helixel-goto-map ":" #'goto-char)
 
 (global-set-key (kbd "C-c g") helixel-goto-map)
 
