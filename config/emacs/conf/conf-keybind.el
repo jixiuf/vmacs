@@ -141,6 +141,22 @@
 (keymap-global-set  "C-c $" 'toggle-truncate-lines)
 (keymap-global-set  "C-c w l" #'git-link)
 (keymap-global-set "C-c p" 'list-packages)
+(defun hel-make-C-i-and-C-m-available ()
+  "Make Emacs distinguish `TAB' from `C-i' and `RET' from `C-m'."
+  (when (display-graphic-p) ;; do translation only in gui
+    (keymap-set input-decode-map "C-m" [C-m])
+    (keymap-set input-decode-map "C-i" [C-i])))
+;; (single-key-description 'C-i)
+;; (key-valid-p "<C-i>")
+;; (key-valid-p "C-<i>")
+
+(hel-make-C-i-and-C-m-available)
+
+;; For daemon mode
+(add-hook 'after-make-frame-functions
+          (defun hel--after-make-frame-hook (frame)
+            (with-selected-frame frame
+              (hel-make-C-i-and-C-m-available))))
 
 
 (defun vmacs-tui(&optional f)

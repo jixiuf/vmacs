@@ -24,10 +24,7 @@
 (keymap-unset helixel-normal-map  "C-v" t)
 (keymap-unset helixel-normal-map "C-w" t)
 (keymap-unset helixel-normal-map "<SPC>" t)
-;; (keymap-unset helixel-normal-map "C-i" t)
-;; (keymap-unset helixel-normal-map "C-o" t)
-(with-eval-after-load 'org
-     (helixel-define-key 'normal (kbd "C-i") nil 'org-mode))
+
 
 (global-set-key (kbd "C-c ,") #'helixel-jump-backward)
 (global-set-key (kbd "C-c .") #'helixel-jump-forward)
