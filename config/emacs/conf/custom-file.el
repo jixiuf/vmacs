@@ -69,11 +69,11 @@
  '(outline-minor-mode-cycle-filter 'bolp)
  '(outline-minor-mode-use-buttons 'in-margins)
  '(package-selected-packages
-   '(async beacon bray cape clipetty consult-dir copilot dape dired-filetype-face eglot-java embark
+   '(async beacon cape clipetty consult-dir copilot dape dired-filetype-face eglot-java embark
            embark-consult evil-textobj-tree-sitter exec-path-from-shell ghostel git-link
            go-translate golden-ratio-scroll-screen goto-chg gptel gt helixel-mode kdl-mode kkp
-           leadkey marginalia meep orderless package-lint pi pinyinlib posframe repeat-fu rimel verb
-           vundo web-mode wgrep with-editor yasnippet))
+           leadkey marginalia orderless package-lint pi pinyinlib posframe rimel verb vundo web-mode
+           wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((pi :url "https://github.com/ananthakumaran/pi.el.git" :branch "master")
      (leadkey :url "https://github.com/jixiuf/emacs-leadkey.git" :branch "main")
