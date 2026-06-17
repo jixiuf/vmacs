@@ -91,8 +91,7 @@
 
 (require 'leadkey)
 (require 'leadkey-which-key)
-(add-to-list 'leadkey-pass-through-predicates
-             (lambda () (helixel-insert-state-p)))
+(add-to-list 'leadkey-pass-through-predicates #'helixel-insert-state-p)
 
 (setq leadkey-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
