@@ -449,15 +449,100 @@ func focusWindow(_ info: WindowInfo) {
     AXUIElementSetAttributeValue(info.element, kAXMainAttribute as CFString, kCFBooleanTrue)
     AXUIElementSetAttributeValue(info.element, kAXFocusedAttribute as CFString, kCFBooleanTrue)
 
-    // Retry activation until the OS confirms frontmost has changed,
-    // to handle race conditions when invoked from hotkey managers (e.g. karabiner).
-    let deadline = Date(timeIntervalSinceNow: 0.3)
-    repeat {
+    // Retry activation briefly to handle race conditions with hotkey managers
+    // (e.g. karabiner/skhd may still hold focus when we first try).
+    // Limit retries to avoid visible window flickering.
+    var retries = 0
+    while retries < 5 && NSWorkspace.shared.frontmostApplication?.processIdentifier != info.pid {
         AXUIElementSetAttributeValue(axApp, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
         info.app.activate()
-        // Thread.sleep(forTimeInterval: 0.001)
-    } while NSWorkspace.shared.frontmostApplication?.processIdentifier != info.pid
-           && Date() < deadline
+        Thread.sleep(forTimeInterval: 0.1)
+        retries += 1
+    }
+}
+
+// Get the current frontmost window info before any focus changes (source window)
+func getFrontmostWindowInfo() -> WindowInfo? {
+    guard let frontApp = NSWorkspace.shared.frontmostApplication else { return nil }
+    let pid = frontApp.processIdentifier
+    let windows = getWindowsForPid(pid, frontApp)
+    return windows.first { !$0.isMinimized }
+}
+
+// After launching an app via --cmd/--id/--exec, poll for its window to appear
+// using CGWindowList (AX may not be ready for newly launched apps).
+func launchThenFocus(options: Options, timeout: TimeInterval = 10.0) {
+    let deadline = Date(timeIntervalSinceNow: timeout)
+    while Date() < deadline {
+        Thread.sleep(forTimeInterval: 0.3)
+
+        // Phase 1: CGWindowList finds candidate windows by title
+        var seenPids = Set<pid_t>()
+        guard let windowList = CGWindowListCopyWindowInfo(
+            [.optionAll, .excludeDesktopElements], kCGNullWindowID
+        ) as? [[String: Any]] else { continue }
+
+        for cgWindow in windowList {
+            guard let layer = cgWindow[kCGWindowLayer as String] as? Int, layer == 0,
+                  let ownerPid = cgWindow[kCGWindowOwnerPID as String] as? Int,
+                  let cgTitle = cgWindow[kCGWindowName as String] as? String,
+                  !cgTitle.isEmpty
+            else { continue }
+
+            // Quick skip-title / title check on CG title
+            if options.skipTitlePatterns.contains(where: { regexMatch(cgTitle, $0) }) { continue }
+            if let tp = options.titlePattern, !regexMatch(cgTitle, tp) { continue }
+
+            let pid = pid_t(ownerPid)
+            if seenPids.contains(pid) { continue }
+            seenPids.insert(pid)
+
+            // Phase 2: try AX + full matchesOptions, or fallback to activate()
+            guard let app = NSRunningApplication(processIdentifier: pid) else { continue }
+
+            // Check if AX windows are available
+            let axApp = AXUIElementCreateApplication(pid)
+            var windowsRef: CFTypeRef?
+            if AXUIElementCopyAttributeValue(axApp, kAXWindowsAttribute as CFString, &windowsRef) == .success,
+               let axWindows = windowsRef as? [AXUIElement] {
+                // AX ready — do full matching
+                for axWindow in axWindows {
+                    var titleRef: CFTypeRef?
+                    AXUIElementCopyAttributeValue(axWindow, kAXTitleAttribute as CFString, &titleRef)
+                    let axTitle = (titleRef as? String) ?? ""
+
+                    var minimizedRef: CFTypeRef?
+                    let minResult = AXUIElementCopyAttributeValue(axWindow, kAXMinimizedAttribute as CFString, &minimizedRef)
+                    var isMinimized = false
+                    if minResult == .success, let boolRef = minimizedRef {
+                        isMinimized = (boolRef as! CFBoolean) == kCFBooleanTrue
+                    }
+
+                    let winfo = WindowInfo(app: app, element: axWindow, title: axTitle,
+                                            pid: pid, isMinimized: isMinimized, zOrder: 0)
+                    if matchesOptions(winfo, options, targetPid: pid) {
+                        let sourceWindow = getFrontmostWindowInfo()
+                        if !options.preCmd.isEmpty { executePreCmd(options.preCmd, sourceWindow: sourceWindow) }
+                        focusWindow(winfo)
+                        if !options.postCmd.isEmpty { executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: winfo) }
+                        exit(0)
+                    }
+                }
+            } else {
+                // AX not ready yet — just activate the app as fallback (limited retries)
+                app.activate()
+                var fr = 0
+                while fr < 5 && NSWorkspace.shared.frontmostApplication?.processIdentifier != pid {
+                    AXUIElementSetAttributeValue(axApp, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
+                    app.activate()
+                    Thread.sleep(forTimeInterval: 0.1)
+                    fr += 1
+                }
+                exit(0)
+            }
+        }
+    }
+    exit(0)
 }
 
 func executePreCmd(_ cmd: [String], sourceWindow: WindowInfo?) {
@@ -816,14 +901,14 @@ if matchedWindows.isEmpty {
             task.arguments = Array(options.fallbackCmd[1...])
         }
         try? task.run()
-        exit(0)
+        launchThenFocus(options: options)
     } else if let bundleId = options.bundleId {
         print("NOT_FOUND: Opening bundle: \(bundleId)")
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
         task.arguments = ["-b", bundleId]
         try? task.run()
-        exit(0)
+        launchThenFocus(options: options)
     } else if let execPath = options.execPath {
         if let execInfo = getExecInfo(execPath) {
             if let bundleId = execInfo.bundleId {
@@ -832,14 +917,14 @@ if matchedWindows.isEmpty {
                 task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
                 task.arguments = ["-b", bundleId]
                 try? task.run()
-                exit(0)
+                launchThenFocus(options: options)
             } else if execInfo.appName != nil {
                 print("NOT_FOUND: Opening: \(execInfo.appName ?? execPath)")
                 let task = Process()
                 task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
                 task.arguments = ["-a", execInfo.execPath]
                 try? task.run()
-                exit(0)
+                launchThenFocus(options: options)
             } else {
                 var runPath = execInfo.execPath
                 if !runPath.hasPrefix("/"), let found = which(runPath) {
@@ -861,7 +946,7 @@ if matchedWindows.isEmpty {
                 task.executableURL = URL(fileURLWithPath: runPath)
                 task.environment = env
                 try? task.run()
-                exit(0)
+                launchThenFocus(options: options)
             }
         } else {
             print("NOT_FOUND: No matching window")
@@ -900,15 +985,6 @@ func writeCycleState(pattern: String, index: Int) {
 // Build a pattern key for state tracking
 let patternKey =
     "\(options.appName ?? "")-\(options.bundleId ?? "")-\(options.titlePattern ?? "")-\(options.execPath ?? "")"
-
-// Get the current frontmost window info before any focus changes (source window)
-func getFrontmostWindowInfo() -> WindowInfo? {
-    guard let frontApp = NSWorkspace.shared.frontmostApplication else { return nil }
-    let pid = frontApp.processIdentifier
-    let windows = getWindowsForPid(pid, frontApp)
-    // Return the first non-minimized window (usually the focused one)
-    return windows.first { !$0.isMinimized }
-}
 
 if matchedWindows.count == 1 {
     // Only one matched window
