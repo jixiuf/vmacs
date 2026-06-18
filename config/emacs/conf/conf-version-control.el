@@ -190,15 +190,15 @@
   (apply orig-fun args))
 
 
-(define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
-  (interactive)
-  (let ((msg (apply orig-fun args)))
-    (when (eq vc-dir-backend 'Git)
-      (let ((gitdir (vc-git--git-path)))
-        (setq msg (string-trim-left msg "VC backend : Git\n")) ;
-        ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
-        (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))))
-    msg))
+;; (define-advice vc-dir-headers (:around (orig-fun &rest args) progress)
+;;   (interactive)
+;;   (let ((msg (apply orig-fun args)))
+;;     (when (eq vc-dir-backend 'Git)
+;;       (let ((gitdir (vc-git--git-path)))
+;;         (setq msg (string-trim-left msg "VC backend : Git\n")) ;
+;;         ;; (setq msg (string-trim-left msg "Working dir:.+?\n"))
+;;         (setq msg (string-trim-right msg "Stash      : Nothing stashed\n"))))
+;;     msg))
 (with-eval-after-load 'outline
   (keymap-unset outline-overlay-button-map "RET" t))
 
