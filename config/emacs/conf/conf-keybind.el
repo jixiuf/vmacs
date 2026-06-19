@@ -144,7 +144,7 @@
 (defun hel-make-C-i-and-C-m-available ()
   "Make Emacs distinguish `TAB' from `C-i' and `RET' from `C-m'."
   (when (display-graphic-p) ;; do translation only in gui
-    (keymap-set input-decode-map "C-m" [C-m])
+    ;; (keymap-set input-decode-map "C-m" [C-m])
     (keymap-set input-decode-map "C-i" [C-i])))
 ;; (single-key-description 'C-i)
 ;; (key-valid-p "<C-i>")
