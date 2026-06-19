@@ -4,7 +4,7 @@
 ;;  \ V /| | | | | | (_| | (__\__ \
 ;;   \_/ |_| |_| |_|\__,_|\___|___/
 
-(load-theme 'modus-vivendi)
+;; (load-theme 'modus-vivendi)
 (require 'conf-gpg)
 (defun lazy-load-gpg(&optional f)
   (when (member (frame-live-p (or f (selected-frame)))
