@@ -16,6 +16,7 @@
  vc-command-messages nil
  vc-find-revision-no-save t
  vc-use-short-revision t
+ vc-dir-show-key-binding-hints nil
  log-edit-hook nil
  vc-follow-symlinks t
  vc-allow-rewriting-published-history 'ask
