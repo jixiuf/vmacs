@@ -59,28 +59,23 @@
                         '(("\\<\\(quote\\|add-hook\\|equal\\)" .
                            font-lock-keyword-face)))
 
-(defun my-modus-themes-custom-faces (&optional f)
-  (run-with-timer 0.01 nil
-                  #'(lambda()
-                      (modus-themes-with-colors
-                        (custom-set-faces
-                         '(font-lock-comment-face ((t (:inherit modus-themes-slant :slant italic ))))
-                         ;; '(italic ((t (:slant italic :weight light :height 151 :width normal ))))
-                         '(show-paren-match ((t (:foreground "SpringGreen3" :weight bold))))
-                         '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
-                         '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
-                         `(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
-                         `(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
-                         ;; `(meow-region-cursor-1 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-0)))
-                         ;; `(meow-region-cursor-2 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-1)))
-                         ;; `(meow-region-cursor-3 ((,c :inherit (bold modus-themes-reset-soft) :background ,bg-char-2)))
+;; (defun my-modus-themes-custom-faces (&optional f)
+;;   (run-with-timer 0.01 nil
+;;                   #'(lambda()
+;;                       (modus-themes-with-colors
+;;                         (custom-set-faces
+;;                          '(font-lock-comment-face ((t (:inherit modus-themes-slant :slant italic ))))
+;;                          ;; '(italic ((t (:slant italic :weight light :height 151 :width normal ))))
+;;                          '(show-paren-match ((t (:foreground "SpringGreen3" :weight bold))))
+;;                          '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
+;;                          '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
+;;                          `(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
+;;                          `(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
 
-                         `(meow-position-highlight-number-1 ((t :inherit (bold modus-themes-reset-soft) :foreground "yellow")))
-                         `(meow-position-highlight-number-2 ((t :inherit (bold modus-themes-reset-soft) :foreground "magenta")))
-                         `(meow-position-highlight-number-3 ((t :inherit (bold modus-themes-reset-soft) )))))
-                      )))
-(my-modus-themes-custom-faces)
-(add-hook 'after-make-frame-functions #'my-modus-themes-custom-faces)
+;;                          ))
+;;                       )))
+;; (my-modus-themes-custom-faces)
+;; (add-hook 'after-make-frame-functions #'my-modus-themes-custom-faces)
 
 ;; (setq-default undo-tree-mode-lighter " Ü") ;undo
 ;; (setq-default helm-completion-mode-string " H")
