@@ -41,7 +41,7 @@ the row must be offset by the scrollback line count."
   (when (member major-mode '(ghostel-mode))
     (ghostel-readonly-exit)
     (ghostel-reset-cursor-point)
-    (ghostel--set-cursor-style 0 t)))
+    (ghostel--apply-cursor-style 0 t)))
 
 (defun vmacs-ghostel-enable-copy()
   (when (member major-mode '(ghostel-mode))
@@ -53,7 +53,7 @@ the row must be offset by the scrollback line count."
                                  ghostel
                                  ghostel-other))
       (ghostel-line-mode)
-      (ghostel--set-cursor-style 1 t))))
+      (ghostel--apply-cursor-style 1 t))))
 (with-eval-after-load 'ghostel
   (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
   (define-key  ghostel-mode-map (kbd "C-c C-f") #'ghostel-char-mode)
