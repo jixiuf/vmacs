@@ -665,23 +665,29 @@ Move point to end-of-line ,if point was already at that position,
   ;; 避免autosave总是提醒是否真的保存
   (when (equal buffer-file-name (expand-file-name "~/scratch.el"))
     (with-current-buffer "*scratch*"
-      (let ((txt (buffer-string)))
+      (let ((txt (buffer-string))
+            (home (expand-file-name "~/")))
         (when buffer-file-name
           (require 'vc-git)
-          (unless (file-exists-p "~/.git")
-            ;; git init ad ~
-            (vc-git-create-repo)
-            (with-temp-buffer
-              (insert "*")              ;default ignore all files in ~
-              (append-to-file (point-min)(point-max) "~/.git/info/exclude")))
+          (unless (file-exists-p (expand-file-name ".git" home))
+            ;; git init at ~
+            (let ((default-directory home))
+              (vc-git-create-repo)
+              (with-temp-buffer
+                (insert "*")              ;default ignore all files in ~
+                (append-to-file (point-min)(point-max)
+                                (expand-file-name ".git/info/exclude" home)))))
           (save-window-excursion
             (with-temp-file buffer-file-name
               (insert txt))
             (set-buffer-modified-p nil)
-            (vc-git-register `(,(buffer-file-name)))
-            (vc-git-command nil 'async buffer-file-name
-                            "commit" "-m" "autosave" "-q"
-                            )))))))
+            ;; Explicitly bind default-directory so vc-git-command
+            ;; runs git in ~ (the git repo), not whatever directory
+            ;; the current buffer happens to have.
+            (let ((default-directory home))
+              (vc-git-register `(,(buffer-file-name)))
+              (vc-git-command nil 'async buffer-file-name
+                              "commit" "-m" "autosave" "-q"))))))))
 ;; kill buffer 的包装，对于 emacsclient 连上来的 buffer,则表示编辑完了
 ;; 退出 emacsclient,否则就是普通的关闭文件
 (autoload 'server-edit "server")
@@ -700,8 +706,7 @@ Move point to end-of-line ,if point was already at that position,
                       "--hide-front-special-window"))
       (delete-frame))
      ((equal (buffer-name) "*scratch*")
-      (save-buffer)
-      (scratch-write-contents)
+      (save-buffer)             ; already calls scratch-write-contents via write-contents-functions
       (kill-current-buffer))
      ((and (featurep 'server)
            (boundp 'server-buffer-clients)
