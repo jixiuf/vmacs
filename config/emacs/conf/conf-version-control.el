@@ -294,7 +294,7 @@
 (advice-add 'vc-find-revision :after #'vc-find-revision-func)
 
 (add-hook 'vc-dir-mode-hook #'vc-remember-project)
-(add-hook 'vc-dir-mode-hook #'vcgit-global-minor-mode)
+(with-eval-after-load 'vc-dir (vcgit-global-minor-mode 1))
 
 (with-eval-after-load 'git-link
   (defun git-link-gitlab (hostname dirname filename branch commit start end)
