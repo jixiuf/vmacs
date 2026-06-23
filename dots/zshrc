@@ -122,7 +122,6 @@ PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
 # compaudit | xargs chmod g-w
 alias le=less.sh
 alias curl2='curl --http2-prior-knowledge'
-alias top4='ssh admin@bj-ali-zt-topology-04'
 alias apmdev='TERM=xterm-256color  ssh apmdev'
 alias apmprod="niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach "
 alias bench='TERM=xterm-256color ssh bench'
@@ -567,16 +566,16 @@ json2csv() {
 # - -m: 修剪空目录
 # - --delete: 删除目标多余文件
 alias rcp='rsync -avz -Erltm  --delete '
-up(){
-    /usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ admin@bj-vc-client-apm-01:/data/binpkgs;
-    # /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/
-}
-down(){
-    # sudo chown jixiuf:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/;
-    /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/;
-    # /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/;
-    # sudo chown root:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/
-}
+# up(){
+#     /usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ admin@bj-vc-client-apm-01:/data/binpkgs;
+#     # /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/
+# }
+# down(){
+#     # sudo chown jixiuf:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/;
+#     /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/;
+#     # /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/;
+#     # sudo chown root:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/
+# }
 
 export GOTOOLCHAIN=local
 alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
