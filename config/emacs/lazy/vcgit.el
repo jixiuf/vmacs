@@ -97,9 +97,9 @@ so existing overlays on the header (like the Outgoing count) are preserved."
   "Format a log section with TITLE, COUNT, BODY, and KEYMAP.
 The BODY string already has font-lock faces from the temp buffer;
 we add keymap and mouse-face on top without overwriting them."
-  (add-text-properties 0 (length body)
-                       `(keymap ,keymap mouse-face highlight)
-                       body)
+  ;; (add-text-properties 0 (length body)
+  ;;                      `(keymap ,keymap mouse-face highlight)
+  ;;                      body)
   (concat
    (propertize (if count
                    (format "%s(%d):" title count)
