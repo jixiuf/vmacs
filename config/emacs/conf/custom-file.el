@@ -12,7 +12,7 @@
  '(gnus-summary-normal-ancient ((t (:extend t :foreground "gray"))))
  '(gnus-summary-normal-read ((t (:inherit italic :extend t :foreground "gray58"))))
  '(log-view-file ((t (:inherit modus-themes-bold :extend t :background "gray"))))
-'(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
+ '(region ((t (:extend t :foreground unspecified :background "#5a5a5a"))))
  '(secondary-selection ((t (:extend t :foreground unspecified :background "#020202"))))
  '(show-paren-match ((t (:foreground "SpringGreen3" :weight bold))))
  '(tab-line-tab-current ((t (:inherit bold :background "chartreuse4" :box (:line-width (1 . -2) :color "#000000" :style pressed-button)))))
