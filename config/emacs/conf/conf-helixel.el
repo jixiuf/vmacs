@@ -36,8 +36,8 @@
 (keymap-unset helixel-normal-map "<SPC>" t)
 
 
-(global-set-key (kbd "C-h") #'negative-argument)
 
+(helixel-define-key 'normal (kbd "C-h") #'negative-argument)
 (helixel-define-key 'normal (kbd "`") #'helixel-select-register)
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
@@ -103,10 +103,13 @@
 (require 'leadkey)
 (require 'leadkey-which-key)
 (add-to-list 'leadkey-pass-through-predicates #'helixel-insert-state-p)
+(global-unset-key (kbd "C-x C-SPC"))
+(global-unset-key (kbd "C-x SPC"))
 
 (setq leadkey-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
-              :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"))
+              :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"
+                             :dispatch ((?\s . :toggle))))
                          (?h . (:prefix "<f1>" :modifier nil  :fallback "C-"))
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
