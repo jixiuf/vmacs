@@ -14,12 +14,16 @@
 
 ;;; Code:
 
+;; Declare functions to avoid byte-compiler warnings, without
+;; triggering eager macro-expansion cycles.  vc-dir is guaranteed
+;; to be loaded before vcgit.el (via `with-eval-after-load').
 (eval-when-compile
-  (require 'vc)
-  (require 'vc-git)
-  (require 'vc-dir)
-  (require 'log-view)
-  (require 'outline))
+  (declare-function vc-git--branch-remotes "vc-git")
+  (declare-function vc-git-working-branch "vc-git")
+  (declare-function vc-git-expanded-log-entry "vc-git")
+  (declare-function log-view-toggle-entry-display "log-view")
+  (declare-function outline-next-visible-heading "outline")
+  (declare-function outline-previous-visible-heading "outline"))
 
 ;;; Customization
 
@@ -186,7 +190,7 @@ we add keymap and mouse-face on top without overwriting them."
 
 ;;; TODO footer
 
-(defvar-keymap vc-todo-map
+(defvar-keymap vcgit-todo-map
   "RET" #'vcgit-todo-open-file-at-line)
 
 (defun vcgit-todo-open-file-at-line ()
@@ -260,7 +264,7 @@ backward for the nearest `::' header to get the file path."
                                    (line-end-position lines)))
                               "")))
               (when (> (length results) 0)
-                (setq results (propertize results 'keymap vc-todo-map))
+                (setq results (propertize results 'keymap vcgit-todo-map))
                 (with-current-buffer curbuf
                   ;; Insert TODO footer at end of buffer, before ewoc footer.
                   (goto-char (point-max))
@@ -320,7 +324,7 @@ VC backend and fileset."
 ;;; RET dispatch for log and TODO sections
 ;;
 ;; The log text has `log-view-mode-map' as a `keymap' text property and
-;; the TODO text has `vc-todo-map'.  We also install an :around advice
+;; the TODO text has `vcgit-todo-map'.  We also install an :around advice
 ;; on `vc-dir-find-file' as a belt-and-suspenders: if the text-property
 ;; keymaps work (they should per `keymap' char-property priority in the
 ;; key-lookup order), they handle RET directly.  If not, the advice
@@ -337,9 +341,9 @@ set only on the Unpulled/Recent commit log sections."
 
 (defun vcgit--on-todo-line-p ()
   "Return non-nil if point is on a TODO/FIXME result line.
-Checks for the `vc-todo-map' keymap text property, which is
+Checks for the `vcgit-todo-map' keymap text property, which is
 set only on the TODO search results."
-  (eq (get-char-property (point) 'keymap) vc-todo-map))
+  (eq (get-char-property (point) 'keymap) vcgit-todo-map))
 
 (defvar-keymap vcgit-minor-mode-map)
 
