@@ -97,9 +97,9 @@ so existing overlays on the header (like the Outgoing count) are preserved."
   "Format a log section with TITLE, COUNT, BODY, and KEYMAP.
 The BODY string already has font-lock faces from the temp buffer;
 we add keymap and mouse-face on top without overwriting them."
-  ;; (add-text-properties 0 (length body)
-  ;;                      `(keymap ,keymap mouse-face highlight)
-  ;;                      body)
+  (add-text-properties 0 (length body)
+                       `(keymap ,keymap)
+                       body)
   (concat
    (propertize (if count
                    (format "%s(%d):" title count)
@@ -190,29 +190,30 @@ we add keymap and mouse-face on top without overwriting them."
   "RET" #'vcgit-todo-open-file-at-line)
 
 (defun vcgit-todo-open-file-at-line ()
-  "Open the TODO file at the reported line number."
+  "Open the TODO file at the reported line number.
+The buffer format mirrors `rg --line-number' output after
+`vcgit--todo-finish' processing:
+  - File header lines end with `::' (e.g., \"src/foo.el::\")
+  - Match lines have the form \"LINENUM:TODO: message\"
+We extract the line number from the current line and search
+backward for the nearest `::' header to get the file path."
   (interactive)
-  (let (filepath linenum)
-    (save-excursion
-      (goto-char (point-at-eol))
-      (while (and (not filepath)
-                  (re-search-backward "^.*::$" nil t))
-        (let ((face (get-text-property (point) 'face)))
-          (when (and (listp face) (memq 'compilation-info face))
-            (setq filepath (string-trim-right
-                            (thing-at-point 'line t) "::\n"))))))
-    (save-excursion
-      (goto-char (point-at-bol))
-      (let ((face (get-text-property (point) 'face)))
-        (when (and (listp face)
-                   (memq 'compilation-line-number face))
-          (setq linenum (string-to-number
-                         (thing-at-point 'line t))))))
-    (when filepath
-      (find-file filepath)
-      (when linenum
-        (goto-char (point-min))
-        (forward-line (1- linenum))))))
+  (let ((line (string-trim (thing-at-point 'line t))))
+    ;; Skip file/dir header lines (they end with ::).
+    (unless (string-suffix-p "::" line)
+      (let (filepath linenum)
+        ;; Extract line number from current line: "42:TODO: message" -> 42.
+        (when (string-match "\\`\\([0-9]+\\):" line)
+          (setq linenum (string-to-number (match-string 1 line))))
+        ;; Walk backward to find the nearest file header line.
+        (save-excursion
+          (goto-char (point-at-bol))
+          (when (re-search-backward "^\\(.+\\)::$" nil t)
+            (setq filepath (match-string 1))))
+        (when (and filepath linenum (> linenum 0))
+          (find-file (expand-file-name filepath default-directory))
+          (goto-char (point-min))
+          (forward-line (1- linenum)))))))
 
 (defun vcgit-dir--todo ()
   "Search for TODO/FIXME items and display them in the vc-dir footer."
@@ -316,40 +317,48 @@ VC backend and fileset."
       (error (message "vcgit: refresh hook failed")))))
 
 
-;;; RET dispatch for log sections
+;;; RET dispatch for log and TODO sections
 ;;
-;; The log text has `log-view-mode-map' as a `keymap' text property,
-;; which normally gives it higher priority than `vc-dir-mode-map'.
-;; However, for robustness we also install a minor-mode binding that
-;; explicitly checks whether point is on a commit line.
+;; The log text has `log-view-mode-map' as a `keymap' text property and
+;; the TODO text has `vc-todo-map'.  We also install an :around advice
+;; on `vc-dir-find-file' as a belt-and-suspenders: if the text-property
+;; keymaps work (they should per `keymap' char-property priority in the
+;; key-lookup order), they handle RET directly.  If not, the advice
+;; inspects point and dispatches to the right command.  Everything else
+;; (stash, file entries, directories) falls through to the original
+;; `vc-dir-find-file'.
 
 (defun vcgit--on-log-line-p ()
-  "Return non-nil if point is on a log-entry line.
-Checks whether the current line matches `log-view-message-re'
-or has the `log-view-comment' text property (expanded entry)."
-  (or (and log-view-message-re
-           (save-excursion
-             (forward-line 0)
-             (looking-at log-view-message-re)))
+  "Return non-nil if point is on a log-entry line inserted by vcgit.
+Checks for the `log-view-mode-map' keymap text property, which is
+set only on the Unpulled/Recent commit log sections."
+  (or (eq (get-char-property (point) 'keymap) log-view-mode-map)
       (eq (get-text-property (point) 'log-view-comment) t)))
 
-(defun vcgit-ret ()
-  "Handle RET in vc-dir: expand/collapse log entries, or visit file.
-On a commit log line, toggles the expanded entry display.
-Otherwise calls `vc-dir-find-file'."
-  (interactive)
-  (if (vcgit--on-log-line-p)
-      (log-view-toggle-entry-display)
-    (vc-dir-find-file)))
+(defun vcgit--on-todo-line-p ()
+  "Return non-nil if point is on a TODO/FIXME result line.
+Checks for the `vc-todo-map' keymap text property, which is
+set only on the TODO search results."
+  (eq (get-char-property (point) 'keymap) vc-todo-map))
 
-(defvar-keymap vcgit-minor-mode-map
-  "RET" #'vcgit-ret
-  "<return>" #'vcgit-ret)
+(defvar-keymap vcgit-minor-mode-map)
+
+(defun vcgit--find-file-advice (orig-fun &rest args)
+  "Around-advice for `vc-dir-find-file'.
+When `vcgit-minor-mode' is active in a Git vc-dir buffer, intercepts
+RET on log and TODO lines.  Otherwise delegates to ORIG-FUN (which
+handles stash, file entries, etc. correctly)."
+  (if (and (bound-and-true-p vcgit-minor-mode)
+           (eq vc-dir-backend 'Git))
+      (cond
+       ((vcgit--on-log-line-p) (log-view-toggle-entry-display))
+       ((vcgit--on-todo-line-p) (vcgit-todo-open-file-at-line))
+       (t (apply orig-fun args)))
+    (apply orig-fun args)))
 
 (define-minor-mode vcgit-minor-mode
   "Minor mode for vcgit enhancements in `vc-dir-mode'.
-Adds RET dispatch so `log-view-toggle-entry-display' works on
-commit log lines inserted in the vc-dir buffer."
+Managed by `vcgit-global-minor-mode' — not intended for direct use."
   :keymap vcgit-minor-mode-map)
 
 ;;; Minor mode
@@ -386,7 +395,9 @@ Enable once in your config:
           (define-key vc-dir-mode-map (kbd "C-i") #'vc-diff))
         (with-eval-after-load 'log-view
           (define-key log-view-mode-map (kbd "C-i") #'log-view-diff))
+        (advice-add 'vc-dir-find-file :around #'vcgit--find-file-advice)
         (add-hook 'vc-dir-mode-hook #'vcgit--vc-dir-setup))
+    (advice-remove 'vc-dir-find-file #'vcgit--find-file-advice)
     (remove-hook 'vc-dir-mode-hook #'vcgit--vc-dir-setup)
     ;; Clean up refresh hooks and minor mode from existing vc-dir buffers.
     (dolist (buf (buffer-list))
