@@ -62,7 +62,7 @@
   "i" #'vcgit-rebase-i                 ;in log view mode
   "r" #'vcgit-rebase                   ;  ;in log view mode
   "d" #'vc-revert                       ;丢弃当前未提交的修改
-  "c" #'vc-revert-revision 
+  "c" #'vc-revert-revision
   "v" #'log-view-revert-or-delete-revisions)           ;  ;in log view mode revert 某个commit
 ;; for rebase/cherry-pick/am/revert/merge --continue/--skip/--abort
 (defvar-keymap  vc-action-map
@@ -175,7 +175,7 @@
   (define-key vc-dir-mode-map (kbd "v") vc-push-map)
   (define-key vc-dir-mode-map (kbd "t") vc-tag-map)
   (require 'vc-git)
-  
+
   (defvar-keymap vc-g-map    "d" #'vc-root-diff)
   (helixel-define-key 'motion "g" vc-g-map 'vc-dir-mode)
   (helixel-define-key 'motion "z" vc-git-stash-shared-map 'vc-dir-mode)
@@ -221,7 +221,7 @@
   (define-key log-view-mode-map (kbd "C-i") #'log-view-diff)
   (define-key log-view-mode-map (kbd "i") #'log-view-toggle-entry-display)
   (define-key log-view-mode-map (kbd "RET") #'log-view-find-revision)
-  
+
   (defvar-keymap log-view-mode--g-map    "a" #'log-view-annotate-version) ;ga
   (define-key log-view-mode-map (kbd "g") log-view-mode--g-map)
   )
@@ -230,10 +230,7 @@
   ;; (define-key diff-mode-shared-map (kbd "u") #'vcgit-unstage)
   (add-hook 'diff-mode-hook #'outline-minor-mode)
   (define-key diff-mode-map (kbd "c") #'vc-next-action)
-  (define-key diff-mode-map (kbd "d") #'outline-cycle)
   (define-key diff-mode-map (kbd "v") vc-push-map)
-  (define-key diff-mode-map (kbd "x") #'diff-hunk-kill)
-  (define-key diff-mode-map (kbd "X") #'diff-file-kill)
   (define-key diff-mode-map (kbd "C-c C-e") #'toggle-diff-whitespace)
   )
 (with-eval-after-load 'transient
