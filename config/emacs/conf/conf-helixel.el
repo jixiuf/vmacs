@@ -15,13 +15,8 @@
     (?s . primary)))
 (setq helixel-search-pcre t)
 (setq helixel-replace-yanked-delete-char-p nil)
-(setq helixel-major-mode-default-states
-      (append helixel-major-mode-default-states
-      '((reb-mode . insert)
-        ;; (pi-coding-agent-input-mode . insert)
-        (ghostel-mode . insert)
-        (pi-chat-mode . insert)
-        (calc-mode . insert))))
+
+;; (add-to-list  'helixel-major-mode-default-states '(reb-mode . insert))
 
 (helixel-define-key 'motion "j" #'helixel-next-line)
 (helixel-define-key 'motion "k" #'helixel-previous-line)
