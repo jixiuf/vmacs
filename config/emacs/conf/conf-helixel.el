@@ -37,6 +37,7 @@
 (helixel-define-key 'normal (kbd "C-h") #'negative-argument)
 (helixel-define-key 'normal (kbd "`") #'helixel-select-register)
 (helixel-define-key 'normal (kbd "RET") #'helixel-select-register)
+;; (helixel-define-key 'normal (kbd "<return>") #'helixel-select-register )
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
 ;; (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
