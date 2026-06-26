@@ -6,9 +6,7 @@
 (setq helixel-default-register ?`)
 (setq helixel-register-yank-char ?y)
 (setq helixel-register-small-delete-char ?x)
-(setq helixel-register-numbered-delete-start ?d); d e f g
-(setq helixel-register-numbered-delete-count 4)
-
+(setq helixel-register-delete-registers '(?d ?f ?g))
 (setq helixel-register-backends
   '((?` . kill-ring)
     (?c . clipboard)
