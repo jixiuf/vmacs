@@ -11,7 +11,7 @@
   '((?` . kill-ring)
     (?c . clipboard)
     (?s . primary)))
-(setq helixel-search-pcre t)
+(setq helixel-search-use-region t)
 (setq helixel-replace-delete-char-p nil)
 
 ;; (add-to-list  'helixel-major-mode-default-states '(reb-mode . insert))
