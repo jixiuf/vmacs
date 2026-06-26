@@ -3,18 +3,18 @@
 ;;  (package-vc-install '(leadkey :url "https://github.com/jixiuf/emacs-leadkey.git" :branch "main"))
 ;;; Code:
 (require 'helixel)
-(setq helixel-default-register ?\`)
+(setq helixel-default-register ?`)
 (setq helixel-register-yank-char ?y)
 (setq helixel-register-small-delete-char ?x)
 (setq helixel-register-numbered-delete-start ?d); d e f g
 (setq helixel-register-numbered-delete-count 4)
 
 (setq helixel-register-backends
-  '((?\` . kill-ring)
+  '((?` . kill-ring)
     (?c . clipboard)
     (?s . primary)))
 (setq helixel-search-pcre t)
-(setq helixel-replace-yanked-delete-char-p nil)
+(setq helixel-replace-delete-char-p nil)
 
 ;; (add-to-list  'helixel-major-mode-default-states '(reb-mode . insert))
 
@@ -36,6 +36,7 @@
 ;; (helixel-define-key 'normal (kbd "C-c /") #'helixel-comment-toggle)
 (helixel-define-key 'normal (kbd "C-h") #'negative-argument)
 (helixel-define-key 'normal (kbd "`") #'helixel-select-register)
+(helixel-define-key 'normal (kbd "RET") #'helixel-select-register)
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
 ;; (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
