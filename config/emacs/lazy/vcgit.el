@@ -63,6 +63,13 @@
 Uses the built-in `vc-git--branch-remotes'."
   (cdr (assq 'upstream (vc-git--branch-remotes branch))))
 
+(defun vcgit--branch-remote (branch)
+  "Return the remote name for BRANCH (e.g. \"origin\"), or nil.
+Looks up the upstream via `vc-git--branch-remotes' and extracts
+the remote portion."
+  (when-let* ((upstream (vcgit--tracking-branch branch)))
+    (car (split-string upstream "/"))))
+
 
 ;;; Outline
 
