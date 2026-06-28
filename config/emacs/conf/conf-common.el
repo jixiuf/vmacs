@@ -155,14 +155,14 @@
 (define-derived-mode vue-mode web-mode "Vue")
 (setq-default auto-mode-alist
               (append
-               '(("\\.pyx" . python-mode)
+               '(("\\.py" . python-ts-mode)
                  ("\\.vue" . vue-mode)
                  ("\\.ts$" . typescript-ts-mode)
                  ("\\.service" . conf-mode)
                  ("\\.target" . conf-mode)
                  ("\\.timer" . conf-mode)
                  ("zsh" . sh-mode)
-                 ("SConstruct" . python-mode)
+                 ("SConstruct" . python-ts-mode)
                  ("\\.yml$" . yaml-ts-mode)
                  ("authinfo.gpg" . authinfo-mode)
                  ("\\.yaml$" . yaml-ts-mode)
