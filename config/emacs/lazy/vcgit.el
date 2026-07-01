@@ -129,7 +129,7 @@ we add keymap and mouse-face on top without overwriting them."
       (let ((proc (apply #'start-process "vcgit-log" buf
                          "git" "--no-pager" "log" "--no-color"
                          "--graph"
-                         "--decorate" "--decorate-refs-exclude=refs/remotes/"
+                         "--decorate"
                          "--date=short"
                          (format "--pretty=tformat:%s"
                                  (car vc-git-root-log-format))
