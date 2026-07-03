@@ -47,8 +47,8 @@
 ;; ;; pip install jieba
 ;; (setq osx-dictionary-use-chinese-text-segmentation t)
 
-;; (setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
-;; (setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
+(setq exec-path (delete-dups  (cons "/usr/local/bin" exec-path)))
+(setenv "PATH" (concat  "/usr/local/bin:" (getenv "PATH") ))
 ;; (setq-default server-auth-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-socket-dir (expand-file-name "~/.emacs.d/cache/"))
 ;; (setq-default server-name "emacs-server-file")
