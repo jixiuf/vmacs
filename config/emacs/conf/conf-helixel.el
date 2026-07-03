@@ -2,7 +2,11 @@
 ;; (package-vc-install '(helixel-mode :url "https://github.com/jixiuf/helixel-mode.git" :branch "main"))
 ;;  (package-vc-install '(leadkey :url "https://github.com/jixiuf/emacs-leadkey.git" :branch "main"))
 ;;; Code:
+ ;; (when (file-directory-p "~/vmacs/config/emacs/elpa/helixel")
+ ;;   (add-to-list 'load-path "~/vmacs/config/emacs/elpa/helixel"))
+
 (require 'helixel)
+(helixel-treesit-setup)
 (setq helixel-default-register ?`)
 (setq helixel-register-yank-char ?y)
 (setq helixel-register-small-delete-char ?x)
@@ -130,8 +134,8 @@
      (lambda (&optional count)
        (helixel-forward-chars "-/[:alnum:]_.@:*" count)))
 (helixel-define-mark-object "gopkg" 'gopkg "gopkg" 'gopkg t)
-(define-key helixel-textobj-outer-map "y" #'helixel-mark-a-gopkg)
-(define-key helixel-textobj-inner-map "y" #'helixel-mark-inner-gopkg)
+(define-key helixel-textobj-outer-map "g" #'helixel-mark-a-gopkg)
+(define-key helixel-textobj-inner-map "g" #'helixel-mark-inner-gopkg)
 
 (define-key helixel-textobj-outer-map ";" #'helixel-mark-a-double-quote)
 (define-key helixel-textobj-inner-map ";" #'helixel-mark-inner-double-quote)
