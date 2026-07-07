@@ -109,7 +109,7 @@
 
 (setq leadkey-keys
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
-              :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback "C-"
+              :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback nil
                              :dispatch ((?\s . :toggle))))
                          (?h . (:prefix "<f1>" :modifier nil  :fallback "C-"))
                          (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))))
