@@ -6,7 +6,7 @@
    (add-to-list 'load-path "~/vmacs/config/emacs/elpa/helixel"))
 
 (require 'helixel)
-(helixel-treesit-setup)
+;(helixel-treesit-setup)
 (setq helixel-default-register ?`)
 (setq helixel-register-yank-char ?y)
 (setq helixel-register-small-delete-char ?x)
