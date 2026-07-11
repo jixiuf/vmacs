@@ -1,9 +1,8 @@
 [Unit]
-Description=Daily Portage Tree Sync
+Description=Monthly Portage Tree Sync
 
 [Timer]
-# OnCalendar=daily
-OnCalendar=22:00
+OnCalendar=*-*-01 22:00
 Persistent=true
 #  延迟执行 避免开机阻塞
 #RandomizedDelaySec=15min
