@@ -12,7 +12,7 @@
 (global-set-key (kbd "C-s-M-w") #'bury-buffer)
 
 
-(global-set-key (kbd "C-c s") #'save-all)
+;; (global-set-key (kbd "C-c s") #'save-all)
 (global-set-key (kbd "M-s s") #'save-all)
 
 
