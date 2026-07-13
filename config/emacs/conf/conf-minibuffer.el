@@ -1,4 +1,87 @@
 ;; -*- lexical-binding: t -*-
+;;; nn-fido-frame.el --- fido minibuffer in centered child frame -*- lexical-binding: t; -*-
+(defvar nn-fido--frame nil)
+(defvar nn-fido--saved-minibuffer-follow t
+  "Saved value of `minibuffer-follows-selected-frame' to restore on exit.")
+(defvar nn-fido-frame-width 0.7)
+(defvar nn-fido-frame-left 0.25)
+(defvar nn-fido-frame-top 0.3)
+
+(defun nn-fido-frame--init ()
+  (setq nn-fido--frame
+        (make-frame
+         `((parent-frame . ,(selected-frame))
+           (undecorated . t)  (z-group . above)
+           (minibuffer . only)
+           (left . ,nn-fido-frame-left) (top . ,nn-fido-frame-top)
+           (width . ,nn-fido-frame-width) (height . 1)
+           (left-fringe . 1) (right-fringe . 0)
+           (internal-border-width . 2)
+           ;; (background-color . "#cdd6f4")
+           ;; (foreground-color . "#1e1e2e")
+           (cursor-color . "green")
+           )))
+  ;; macOS NS port draws child-frame internal border using
+  ;; the 'child-frame-border' face, not frame parameters.
+  (set-face-background 'child-frame-border "cyan" nn-fido--frame))
+
+(defun nn-fido-frame-setup ()
+  "Setup minibuffer in centered child frame."
+  (setq-local max-mini-window-height 1)
+  (unless (frame-live-p nn-fido--frame)
+    (nn-fido-frame--init))
+  (make-frame-visible nn-fido--frame)
+  (select-frame-set-input-focus nn-fido--frame)
+  ;; Prevent minibuffer from moving to another frame when user clicks
+  ;; elsewhere, which would leave the child frame blank.
+  (setq nn-fido--saved-minibuffer-follow minibuffer-follows-selected-frame)
+  (setq minibuffer-follows-selected-frame nil)
+  (nn-fido-frame-resize))
+
+(defun nn-fido-frame-resize ()
+  "Resize child frame to fit completions count."
+  (let* ((s (and (boundp 'icomplete-overlay)
+                 (overlayp icomplete-overlay)
+                 (overlay-get icomplete-overlay 'after-string)))
+         (h (if s (1+ (with-temp-buffer (insert s) (count-lines 1 (point-max)))) 1)))
+    (set-frame-height nn-fido--frame (max 1 (min (or completions-max-height 10) h)))))
+
+(defun nn-fido-frame--max-mini-lines (orig-fun &optional _frame)
+  "Return completions-max-height so icomplete positions correctly."
+  (if nn-fido-frame-mode (or completions-max-height 10) (funcall orig-fun)))
+
+(defun nn-fido-frame-exit ()
+  "Handle minibuffer exit."
+  (when (frame-live-p nn-fido--frame)
+    (make-frame-invisible nn-fido--frame))
+  ;; Restore minibuffer-follows-selected-frame so it's not permanently
+  ;; nil after a minibuffer session.
+  (setq minibuffer-follows-selected-frame nn-fido--saved-minibuffer-follow)
+  (when-let* ((parent (and (frame-live-p nn-fido--frame)
+                           (frame-parameter nn-fido--frame 'parent-frame))))
+    (when (frame-live-p parent)
+      (select-frame-set-input-focus parent))))
+
+;;;###autoload
+(define-minor-mode nn-fido-frame-mode
+  "Show fido minibuffer completions in a centered child frame."
+  :global t
+  (if nn-fido-frame-mode
+      (progn
+        (add-hook 'minibuffer-setup-hook #'nn-fido-frame-setup)
+        (add-hook 'minibuffer-exit-hook #'nn-fido-frame-exit)
+        (advice-add 'icomplete-exhibit :after #'nn-fido-frame-resize)
+        (advice-add 'max-mini-window-lines :around #'nn-fido-frame--max-mini-lines))
+    (remove-hook 'minibuffer-setup-hook #'nn-fido-frame-setup)
+    (remove-hook 'minibuffer-exit-hook #'nn-fido-frame-exit)
+    (advice-remove 'icomplete-exhibit #'nn-fido-frame-resize)
+    (advice-remove 'max-mini-window-lines #'nn-fido-frame--max-mini-lines)
+    (when (frame-live-p nn-fido--frame)
+      (delete-frame nn-fido--frame)
+      (setq nn-fido--frame nil))))
+(nn-fido-frame-mode)
+
+
 ;; (setq enable-recursive-minibuffers t)        ;在 minibuffer 中也可以再次使用 minibuffer
 ;; (setq history-delete-duplicates t)          ;minibuffer 删除重复历史
 ;; (setq minibuffer-prompt-properties;minibuffer prompt 只读，且不允许光标进入其中
