@@ -35,13 +35,10 @@
 
 
 (global-set-key (kbd "C-c ;") #'helixel-comment-toggle)
-;; (helixel-define-key 'normal (kbd "C-c /") #'helixel-comment-toggle)
 (helixel-define-key 'normal (kbd "C-h") #'negative-argument)
 (helixel-define-key 'normal (kbd "RET") #'helixel-select-register)
-;; (helixel-define-key 'normal (kbd "<return>") #'helixel-select-register )
 (helixel-define-key 'normal (kbd "<f8>") #'repeat)
 (helixel-define-key 'normal (kbd "C-2") #'helixel-begin-selection)
-;; (helixel-define-key 'motion (kbd "C-2") #'helixel-begin-selection)
 (helixel-define-key 'normal "G" #'helixel-go-end-buffer)
 (helixel-define-key 'normal (kbd "C-r") #'helixel-jump-to-match)
 (helixel-define-key 'normal "q" helixel-left-map)
@@ -65,34 +62,28 @@
 (define-key helixel-goto-map "/" #'consult-focus-lines)
 (define-key helixel-goto-map "z" #'consult-hide-lines)
 (define-key helixel-goto-map "b" #'pop-global-mark)
-;; (define-key helixel-goto-map "u" #'upcase-dwim)
-;; (define-key helixel-goto-map "U" #'downcase-dwim)
 (define-key helixel-goto-map "m" #'push-mark-command)
 (define-key helixel-goto-map "P" #'project-or-external-find-file)
 (define-key helixel-goto-map "," #'goto-last-change)
-;; (define-key helixel-goto-map "." #'goto-last-change-reverse)
 (define-key helixel-goto-map "f" #'gptel-rewrite)
-;; (define-key helixel-goto-map ";" #'goto-line)
-;; (define-key helixel-goto-map ":" #'goto-char)
 
 (global-set-key (kbd "C-c g") helixel-goto-map)
+(global-set-key (kbd "C-c v") helixel-view-map)
+(global-set-key (kbd "C-c m") helixel-textobj-map)
+(global-set-key (kbd "C-c s") helixel-mc-map)
 
+(define-key search-map "e" #'gt-translate) ;s e
+(helixel-define-key 'view "w" #'widen)     ;v w
+(helixel-define-key 'view "n" #'narrow-to-region)
+(helixel-define-key 'view "f" #'narrow-to-defun)
+(helixel-define-key 'view "r" #'revert-buffer)
+(helixel-define-key 'view "$" #'toggle-truncate-lines)
+(helixel-define-key 'view "o" #'org-capture)
 (defvar-keymap m-map
-  "$"         #'toggle-truncate-lines
-  "n"         #'narrow-to-region
-  "r"         #'revert-buffer
-  "."         #'widen
-  "d"         #'narrow-to-defun
-  "f"         #'mark-defun
-  "e"         #'gt-translate
-  ","         #'pop-to-mark-command
-  "t"         #'org-capture
   "m"         #'helixel-begin-selection
   "v"         #'helixel-select-rectangle
   "z"         #'hs-toggle-hiding
-  "q"         #'fill-paragraph
   "<return>"  #'fill-region)
-(global-set-key (kbd "C-c m") helixel-textobj-map)
 (set-keymap-parent helixel-textobj-inner-map m-map)
 
 ;; (keymap-unset occur-mode-map "l" t)
@@ -110,8 +101,7 @@
       '((:key "<SPC>" :prefix "C-c" :modifier "" :fallback "C-"
               :dispatch ((?x . (:prefix "C-x" :modifier "C-" :fallback nil
                              :dispatch ((?\s . :toggle))))
-                         (?h . (:prefix "<f1>" :modifier nil  :fallback "C-"))
-                         (?s . (:prefix "M-s" :modifier nil  :fallback "M-"))))
+                         (?h . (:prefix "<f1>" :modifier nil  :fallback "C-"))))
         ;; (:key "," :prefix "" :modifier "M-" :fallback nil)
         ;; (:key "s" :prefix "" :modifier "C-M-" :fallback nil
         ;;       :pass-through-predicates (minibufferp
