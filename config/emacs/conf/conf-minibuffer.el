@@ -3,9 +3,17 @@
 (defvar nn-fido--frame nil)
 (defvar nn-fido--saved-minibuffer-follow t
   "Saved value of `minibuffer-follows-selected-frame' to restore on exit.")
-(defvar nn-fido-frame-width 0.6)
+(defvar nn-fido-frame-width 0.65)
 (defvar nn-fido-frame-left 0.25)
 (defvar nn-fido-frame-top 0.3)
+
+;; consult-focus-lines consult-hide-lines dired-flag-files-regexp
+(defcustom nn-fido-frame-ignore-commands '()
+  "List of commands that should NOT use the child frame.
+When `this-command' is in this list, the minibuffer appears in
+the parent frame instead."
+  :type '(repeat symbol)
+  :group 'convenience)
 
 (defun nn-fido-frame--init ()
   (setq nn-fido--frame
@@ -20,11 +28,9 @@
            (height . 1)
            (left-fringe . 1)
            (right-fringe . 0)
-           (min-height .  2)
            (internal-border-width . 2)
            (font . "Sarasa Term SC Nerd Light-24")
            (background-color . "gray26")
-           ;; (foreground-color . "#1e1e2e")
            (cursor-color . "green")
            )))
   ;; macOS NS port draws child-frame internal border using
@@ -35,23 +41,57 @@
 (defun nn-fido-frame-setup ()
   "Setup minibuffer in centered child frame."
   (setq-local max-mini-window-height 1)
-  (unless (frame-live-p nn-fido--frame)
-    (nn-fido-frame--init))
-  (make-frame-visible nn-fido--frame)
-  (select-frame-set-input-focus nn-fido--frame)
-  ;; Prevent minibuffer from moving to another frame when user clicks
-  ;; elsewhere, which would leave the child frame blank.
-  (setq nn-fido--saved-minibuffer-follow minibuffer-follows-selected-frame)
-  (setq minibuffer-follows-selected-frame nil)
-  (nn-fido-frame-resize))
+  ;; Skip if this command should not use the child frame.
+  (if (memq this-command nn-fido-frame-ignore-commands)
+      (progn
+        (when (frame-live-p nn-fido--frame)
+          (make-frame-invisible nn-fido--frame))
+        (setq minibuffer-follows-selected-frame t))
+    (unless (frame-live-p nn-fido--frame)
+      (nn-fido-frame--init))
+    ;; Re-apply float position/size: Emacs interprets them relative to
+    ;; the current parent frame, so the child adapts on parent resize.
+    (modify-frame-parameters
+     nn-fido--frame
+     `((left . ,nn-fido-frame-left)
+       (top . ,nn-fido-frame-top)
+       (width . ,nn-fido-frame-width)
+       (height . 1)))
+    (make-frame-visible nn-fido--frame)
+    (select-frame-set-input-focus nn-fido--frame)
+    (setq nn-fido--saved-minibuffer-follow minibuffer-follows-selected-frame)
+    (setq minibuffer-follows-selected-frame nil)))
 
-(defun nn-fido-frame-resize ()
+(defun nn-fido-frame-resize (&optional frame)
   "Resize child frame to fit completions count."
-  (let* ((s (and (boundp 'icomplete-overlay)
-                 (overlayp icomplete-overlay)
-                 (overlay-get icomplete-overlay 'after-string)))
-         (h (if s (1+ (with-temp-buffer (insert s) (count-lines 1 (point-max)))) 1)))
-    (set-frame-height nn-fido--frame (max 1 (min (or completions-max-height 10) h)))))
+  (when (and nn-fido--frame (frame-live-p nn-fido--frame)
+             (or (null frame) (eq frame nn-fido--frame)))
+    (let* ((ov (and (boundp 'icomplete-overlay)
+                    (overlayp icomplete-overlay)
+                    ;; Only use overlay if it belongs to the
+                    ;; minibuffer of our frame.
+                    (eq (overlay-buffer icomplete-overlay)
+                        (with-selected-frame nn-fido--frame
+                          (window-buffer (minibuffer-window))))
+                    icomplete-overlay))
+           (s (and ov (overlay-get ov 'after-string)))
+           (lines
+            (cond
+             ((not s) 0)
+             ((string-match-p "\n" s)
+              (1+ (length (split-string s "\n" t))))
+             (t 0)))
+           (target (max 1 (min (or completions-max-height 10) lines))))
+      (with-selected-frame nn-fido--frame
+        (ignore-errors
+          (modify-frame-parameters nil `((height . ,target))))))))
+
+(defun nn-fido-frame--resize-mini-frame-advice (orig-fun frame)
+  "Advice for `window--resize-mini-frame': delegate to `nn-fido-frame-resize'
+if FRAME is ours, otherwise call ORIG-FUN."
+  (if (eq frame nn-fido--frame)
+      (nn-fido-frame-resize frame)
+    (funcall orig-fun frame)))
 
 (defun nn-fido-frame--max-mini-lines (orig-fun &optional _frame)
   "Return completions-max-height so icomplete positions correctly."
@@ -59,15 +99,17 @@
 
 (defun nn-fido-frame-exit ()
   "Handle minibuffer exit."
-  (when (frame-live-p nn-fido--frame)
-    (make-frame-invisible nn-fido--frame))
-  ;; Restore minibuffer-follows-selected-frame so it's not permanently
-  ;; nil after a minibuffer session.
-  (setq minibuffer-follows-selected-frame nn-fido--saved-minibuffer-follow)
-  (when-let* ((parent (and (frame-live-p nn-fido--frame)
-                           (frame-parameter nn-fido--frame 'parent-frame))))
-    (when (frame-live-p parent)
-      (select-frame-set-input-focus parent))))
+  ;; Skip for ignored commands: setup didn't prepare the child frame.
+  (unless (memq this-command nn-fido-frame-ignore-commands)
+    (when (frame-live-p nn-fido--frame)
+      (make-frame-invisible nn-fido--frame))
+    ;; Restore minibuffer-follows-selected-frame so it's not permanently
+    ;; nil after a minibuffer session.
+    (setq minibuffer-follows-selected-frame nn-fido--saved-minibuffer-follow)
+    (when-let* ((parent (and (frame-live-p nn-fido--frame)
+                             (frame-parameter nn-fido--frame 'parent-frame))))
+      (when (frame-live-p parent)
+        (select-frame-set-input-focus parent)))))
 
 ;;;###autoload
 (define-minor-mode nn-fido-frame-mode
@@ -75,14 +117,18 @@
   :global t
   (if nn-fido-frame-mode
       (progn
+        (setq resize-mini-frames #'nn-fido-frame-resize)
         (add-hook 'minibuffer-setup-hook #'nn-fido-frame-setup)
         (add-hook 'minibuffer-exit-hook #'nn-fido-frame-exit)
         (advice-add 'icomplete-exhibit :after #'nn-fido-frame-resize)
-        (advice-add 'max-mini-window-lines :around #'nn-fido-frame--max-mini-lines))
+        (advice-add 'max-mini-window-lines :around #'nn-fido-frame--max-mini-lines)
+        (advice-add 'window--resize-mini-frame :around #'nn-fido-frame--resize-mini-frame-advice))
+    (setq resize-mini-frames nil)
     (remove-hook 'minibuffer-setup-hook #'nn-fido-frame-setup)
     (remove-hook 'minibuffer-exit-hook #'nn-fido-frame-exit)
     (advice-remove 'icomplete-exhibit #'nn-fido-frame-resize)
     (advice-remove 'max-mini-window-lines #'nn-fido-frame--max-mini-lines)
+    (advice-remove 'window--resize-mini-frame #'nn-fido-frame--resize-mini-frame-advice)
     (when (frame-live-p nn-fido--frame)
       (delete-frame nn-fido--frame)
       (setq nn-fido--frame nil))))

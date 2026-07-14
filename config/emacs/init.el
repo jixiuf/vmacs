@@ -26,6 +26,7 @@
 (require 'conf-helixel)
 (require 'conf-keybind)
 (require 'conf-icomplete)
+(require 'conf-minibuffer)
 
 
 (when (member system-type '(gnu/linux darwin)) (require 'conf-sudo))
