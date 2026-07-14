@@ -73,6 +73,7 @@
 (global-set-key (kbd "C-c s") helixel-mc-map)
 
 (define-key search-map "e" #'gt-translate) ;s e
+(define-key search-map "f" #'save-all) ;s f
 (helixel-define-key 'view "w" #'widen)     ;v w
 (helixel-define-key 'view "n" #'narrow-to-region)
 (helixel-define-key 'view "f" #'narrow-to-defun)
