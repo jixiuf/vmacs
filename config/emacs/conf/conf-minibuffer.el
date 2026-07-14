@@ -3,7 +3,7 @@
 (defvar nn-fido--frame nil)
 (defvar nn-fido--saved-minibuffer-follow t
   "Saved value of `minibuffer-follows-selected-frame' to restore on exit.")
-(defvar nn-fido-frame-width 0.7)
+(defvar nn-fido-frame-width 0.6)
 (defvar nn-fido-frame-left 0.25)
 (defvar nn-fido-frame-top 0.3)
 
@@ -11,19 +11,26 @@
   (setq nn-fido--frame
         (make-frame
          `((parent-frame . ,(selected-frame))
-           (undecorated . t)  (z-group . above)
+           (undecorated . t)
+           (z-group . above)
            (minibuffer . only)
-           (left . ,nn-fido-frame-left) (top . ,nn-fido-frame-top)
-           (width . ,nn-fido-frame-width) (height . 1)
-           (left-fringe . 1) (right-fringe . 0)
+           (left . ,nn-fido-frame-left)
+           (top . ,nn-fido-frame-top)
+           (width . ,nn-fido-frame-width)
+           (height . 1)
+           (left-fringe . 1)
+           (right-fringe . 0)
+           (min-height .  2)
            (internal-border-width . 2)
-           ;; (background-color . "#cdd6f4")
+           (font . "Sarasa Term SC Nerd Light-24")
+           (background-color . "gray26")
            ;; (foreground-color . "#1e1e2e")
            (cursor-color . "green")
            )))
   ;; macOS NS port draws child-frame internal border using
   ;; the 'child-frame-border' face, not frame parameters.
-  (set-face-background 'child-frame-border "cyan" nn-fido--frame))
+  ;; Inherit cursor color so it adapts to theme changes.
+  (set-face-attribute 'child-frame-border nn-fido--frame :inherit 'cursor))
 
 (defun nn-fido-frame-setup ()
   "Setup minibuffer in centered child frame."
