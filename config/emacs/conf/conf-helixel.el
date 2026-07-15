@@ -129,15 +129,9 @@
 
 (define-key helixel-textobj-outer-map "g" #'helixel-mark-a-double-quote)
 (define-key helixel-textobj-inner-map "g" #'helixel-mark-inner-double-quote)
-;; (define-key evil-outer-text-objects-map "f" (helixel-get-tree-sitter-textobj "function.outer"))
-;; (define-key evil-inner-text-objects-map "f" (helixel-get-tree-sitter-textobj "function.inner"))
 
-(define-key helixel-textobj-inner-map "q" (helixel-get-tree-sitter-textobj '("parameter.inner" "assignment.inner" )))
-(define-key helixel-textobj-outer-map "q" (helixel-get-tree-sitter-textobj '("parameter.outer"  "assignment.outer")))
-(define-key helixel-textobj-outer-map "x" (helixel-get-tree-sitter-textobj '("call.outer" "statement.outer" "block.outer" "loop.outer" "conditional.outer")))
-(define-key helixel-textobj-inner-map "x" (helixel-get-tree-sitter-textobj '("call.inner" "statement.inner" "block.inner" "loop.inner" "conditional.inner" )))
-(define-key helixel-textobj-outer-map "/" (helixel-get-tree-sitter-textobj "comment.outer" ))
-(define-key helixel-textobj-inner-map "/" (helixel-get-tree-sitter-textobj "comment.inner" ))
+(define-key helixel-textobj-outer-map "x" (helixel-get-tree-sitter-textobj '("call.outer" "statement.outer" "block.outer" )))
+(define-key helixel-textobj-inner-map "x" (helixel-get-tree-sitter-textobj '("call.inner" "statement.inner" "block.inner" )))
 (provide 'conf-helixel)
 
 ;; Local Variables:
