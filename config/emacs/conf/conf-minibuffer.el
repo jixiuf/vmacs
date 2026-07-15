@@ -3,8 +3,8 @@
 (defvar nn-fido--frame nil)
 (defvar nn-fido--saved-minibuffer-follow t
   "Saved value of `minibuffer-follows-selected-frame' to restore on exit.")
-(defvar nn-fido-frame-width 0.65)
-(defvar nn-fido-frame-left 0.25)
+(defvar nn-fido-frame-width 0.85)
+(defvar nn-fido-frame-left 0.35)
 (defvar nn-fido-frame-top 0.3)
 
 ;; consult-focus-lines consult-hide-lines dired-flag-files-regexp
