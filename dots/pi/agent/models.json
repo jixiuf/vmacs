@@ -30,6 +30,42 @@
       ]
     },
     
+    "moonshot": {
+      "baseUrl": "https://api.moonshot.cn/v1",
+      "api": "openai-completions",
+      "apiKey": "moonshot",
+      "models": [
+        {
+          "id": "kimi-k3",
+          "name": "Kimi K3",
+          "contextWindow": 200000,
+          "maxTokens": 128000,
+          "input": [
+            "text"
+          ],
+          "reasoning": true,
+          "cost": {
+            "input": 0.14,
+            "output": 0.56,
+            "cacheRead": 0.014,
+            "cacheWrite": 0
+          },
+          "compat": {
+            "requiresReasoningContentOnAssistantMessages": true,
+            "thinkingFormat": "deepseek",
+            "supportsLongCacheRetention": true,
+            "sendSessionAffinityHeaders": true,
+            "reasoningEffortMap": {
+              "minimal": "high",
+              "low": "high",
+              "medium": "high",
+              "high": "high",
+              "xhigh": "max"
+            }
+          }
+        }
+      ]
+    },
     "deepseek": {
       "baseUrl": "https://api.deepseek.com",
       "api": "openai-completions",
