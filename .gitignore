@@ -100,6 +100,7 @@ dots/pi/agent/auth.json
 dots/pi/agent/sessions/*
 dots/pi/agent/sessions
 dots/pi/agent/extensions/plan-mode/
+dots/pi/agent/extensions/*/node_modules/
 dots/pi/agent/bin/fd-v10.4.2-aarch64-apple-darwin.tar.gz
 dots/pi/agent/settings.json
 dots/pi/agent/npm/.gitignore
@@ -114,3 +115,4 @@ dots/pi/agent/mcp-onboarding.json
 dots/pi/agent/mcp.json
 dots/pi/agent/trust.json
 dots/pi/agent/models-store.json
+dots/pi/agent/mcp-servers/*/node_modules/

@@ -1,4 +1,4 @@
-.PHONY: all emacs-compile elisp-compile deploy
+.PHONY: all emacs-compile elisp-compile deploy pi-exts
 # build-mac:
 # 	 ./configure --disable-ns-self-contained  --with-ns  --with-modules --with-tree-sitter;make -j 4;sudo make install
 
@@ -48,6 +48,7 @@ deploy:
 	@-mkdir -p ~/.pi/agent/
 	@-ln -fs ~/Documents/jianguo/Daedalus/sessions ~/.pi/agent/sessions
 	@-gpg -d ~/.pi/agent/auth.json.gpg > ~/.pi/agent/auth.json
+	$(MAKE) pi-exts
 
 
 	@-gpg -d ~/.ssh/id_rsa.gpg > ~/.ssh/id_rsa 2>/dev/null
@@ -89,5 +90,23 @@ sudo:
 			$(LINK_CMD) $(PWD)/$$file /usr/local/$$file ;\
 		fi;\
 	done;
+# ── npm project dependencies ──
+# Auto-discovers all subdirs under mcp-servers/ and extensions/ that have
+# package.json and runs npm install in each when deps change.
+# To add a new npm project: just put it under one of these dirs and done.
+NPM_PARENT_DIRS := \
+	dots/pi/agent/mcp-servers \
+	dots/pi/agent/extensions
+
+# Find all directories containing package.json under any parent dir
+NPM_DIRS := $(sort $(foreach dir,$(NPM_PARENT_DIRS),$(dir $(wildcard $(dir)/*/package.json))))
+# Build target list: each dir/<name>/ → dir/<name>/node_modules
+NPM_TARGETS := $(addsuffix node_modules,$(NPM_DIRS))
+
+pi-exts: $(NPM_TARGETS)
+
+%/node_modules: %/package.json %/package-lock.json
+	cd $* && npm install
+
 meow:
 	make -C config/emacs meow
