@@ -10,8 +10,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-
   "dependencies": {
+    "@larksuiteoapi/node-sdk": "^1.71.1",
     "@modelcontextprotocol/sdk": "^1.29.0"
   }
 }
