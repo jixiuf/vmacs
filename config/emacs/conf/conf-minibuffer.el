@@ -3,6 +3,9 @@
 (defvar nn-fido--frame nil)
 (defvar nn-fido--saved-minibuffer-follow t
   "Saved value of `minibuffer-follows-selected-frame' to restore on exit.")
+(defvar nn-fido--redirected-frame nil
+  "Frame whose focus is temporarily redirected to the child frame.
+Only used on PGTK; see `nn-fido-frame-setup'.")
 (defvar nn-fido-frame-width 0.85)
 (defvar nn-fido-frame-left 0.35)
 (defvar nn-fido-frame-top 0.3)
@@ -21,6 +24,11 @@ the parent frame instead."
          `((parent-frame . ,(selected-frame))
            (undecorated . t)
            (z-group . above)
+           (minibuffer . only)
+           ;; On PGTK, do not let clicks grab GTK widget focus to the
+           ;; child edit widget: once grabbed, it cannot be moved back
+           ;; and the toplevel keyboard input dies on the next hide.
+           (no-accept-focus . t)
            (minibuffer . only)
            (left . ,nn-fido-frame-left)
            (top . ,nn-fido-frame-top)
@@ -58,7 +66,25 @@ the parent frame instead."
        (width . ,nn-fido-frame-width)
        (height . 1)))
     (make-frame-visible nn-fido--frame)
-    (select-frame-set-input-focus nn-fido--frame)
+    (if (eq window-system 'pgtk)
+        (progn
+          ;; PGTK child frames are plain widgets inside the parent
+          ;; toplevel.  Never let the child take GTK widget focus:
+          ;; `select-frame-set-input-focus' on the child runs
+          ;; gtk_widget_grab_focus on its edit widget (see
+          ;; pgtk_focus_frame in pgtkterm.c), and once grabbed,
+          ;; nothing can move widget focus back to the parent edit
+          ;; widget, so all keyboard input of the toplevel dies as
+          ;; soon as the child is hidden.  Instead, select the child
+          ;; frame without touching WM focus and temporarily redirect
+          ;; the invoking frame's focus to it: keystrokes keep
+          ;; arriving at the parent edit widget but are treated as
+          ;; the child frame's input (see kbd_buffer_get_event in
+          ;; keyboard.c).  The redirect is removed on exit.
+          (setq nn-fido--redirected-frame (selected-frame))
+          (redirect-frame-focus nn-fido--redirected-frame nn-fido--frame)
+          (select-frame nn-fido--frame))
+      (select-frame-set-input-focus nn-fido--frame))
     (setq nn-fido--saved-minibuffer-follow minibuffer-follows-selected-frame)
     (setq minibuffer-follows-selected-frame nil)))
 
@@ -101,6 +127,12 @@ if FRAME is ours, otherwise call ORIG-FUN."
   "Handle minibuffer exit."
   ;; Skip for ignored commands: setup didn't prepare the child frame.
   (unless (memq this-command nn-fido-frame-ignore-commands)
+    ;; Undo the temporary focus redirect made on PGTK (see
+    ;; `nn-fido-frame-setup'), so further keystrokes are routed
+    ;; normally again.
+    (when (frame-live-p nn-fido--redirected-frame)
+      (redirect-frame-focus nn-fido--redirected-frame nil))
+    (setq nn-fido--redirected-frame nil)
     (when (frame-live-p nn-fido--frame)
       (make-frame-invisible nn-fido--frame))
     ;; Restore minibuffer-follows-selected-frame so it's not permanently
@@ -129,10 +161,13 @@ if FRAME is ours, otherwise call ORIG-FUN."
     (advice-remove 'icomplete-exhibit #'nn-fido-frame-resize)
     (advice-remove 'max-mini-window-lines #'nn-fido-frame--max-mini-lines)
     (advice-remove 'window--resize-mini-frame #'nn-fido-frame--resize-mini-frame-advice)
+    (when (frame-live-p nn-fido--redirected-frame)
+      (redirect-frame-focus nn-fido--redirected-frame nil)
+      (setq nn-fido--redirected-frame nil))
     (when (frame-live-p nn-fido--frame)
       (delete-frame nn-fido--frame)
       (setq nn-fido--frame nil))))
-(nn-fido-frame-mode)
+ (nn-fido-frame-mode)
 
 
 ;; (setq enable-recursive-minibuffers t)        ;在 minibuffer 中也可以再次使用 minibuffer
