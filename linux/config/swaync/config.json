@@ -86,15 +86,15 @@
         },
         {
           "label": " 🖥️",
-          "command": "sh -c '/usr/local/bin/wf-record-start.sh 屏幕 &'"
+          "command": "sh -c 'swaync-client -t &/usr/local/bin/wf-record-start.sh 屏幕 &'"
         },
         {
           "label": " 🪟",
-          "command": "sh -c '/usr/local/bin/wf-record-start.sh 窗口 &'"
+          "command": "sh -c 'swaync-client -t &/usr/local/bin/wf-record-start.sh 窗口 &'"
         },
         {
           "label": " ⿻",
-          "command": "sh -c '/usr/local/bin/wf-record-start.sh 区域&'"
+          "command": "sh -c 'swaync-client -t &/usr/local/bin/wf-record-start.sh 区域&'"
         },
         {
           "label": " ⏸️️",
