@@ -28,7 +28,13 @@ the parent frame instead."
            ;; On PGTK, do not let clicks grab GTK widget focus to the
            ;; child edit widget: once grabbed, it cannot be moved back
            ;; and the toplevel keyboard input dies on the next hide.
-           (no-accept-focus . t)
+           ;; Only set on PGTK: on the macOS NS port `no-accept-focus'
+           ;; makes the child frame's window unable to become the key
+           ;; window (nsterm.m `canBecomeKeyWindow' returns
+           ;; !FRAME_NO_ACCEPT_FOCUS), so the mini frame can never
+           ;; receive keyboard input.
+           ,@(when (eq window-system 'pgtk)
+               '((no-accept-focus . t)))
            (minibuffer . only)
            (left . ,nn-fido-frame-left)
            (top . ,nn-fido-frame-top)
