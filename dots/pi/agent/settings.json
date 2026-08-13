@@ -1,11 +1,12 @@
 {
-  "lastChangelogVersion": "0.80.3",
+  "lastChangelogVersion": "0.82.1",
   "defaultProvider": "deepseek",
-  "defaultModel": "deepseek-v4-pro",
+  "defaultModel": "deepseek-v4-flash",
   "defaultThinkingLevel": "medium",
-  "hideThinkingBlock": true,
+  "hideThinkingBlock": false,
   "packages": [
-    "npm:pi-cache-optimizer"
+    "npm:pi-cache-optimizer",
+    "npm:pi-mcp-adapter"
   ],
   "steeringMode": "all",
   "followUpMode": "all",
