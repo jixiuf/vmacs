@@ -15,6 +15,7 @@
  vc-handled-backends '(Git )         ;default '(RCS CVS SVN SCCS Bzr Git Hg Mtn Arch)
  vc-command-messages nil
  vc-find-revision-no-save t
+ vc-dir-process-output-limit 9000
  vc-use-short-revision t
  vc-dir-show-key-binding-hints nil
  log-edit-hook nil
