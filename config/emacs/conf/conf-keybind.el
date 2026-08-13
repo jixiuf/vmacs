@@ -122,8 +122,8 @@
 (global-set-key (kbd "C-c b") 'mode-line-other-buffer)
 (global-set-key  (kbd "C-c f g") #'vmacs-ai)
 ;;(global-set-key (kbd "C-s-s") #'ghostel-pi-project-toggle-chat) ;
-(autoload 'pi-toggle-chat "pi" "Start a chat window. (fn &optional NAME)" t)
-(global-set-key (kbd "C-s-s") #'pi-toggle-chat)
+(autoload 'pimacs-toggle-chat "pimacs" "Start a chat window. (fn &optional NAME)" t)
+(global-set-key (kbd "C-s-s") #'pimacs-toggle-chat)
 
 (keymap-global-set  "C-c f m" (vmacs-defun switch-to-message
                       (if (equal (buffer-name) "*Messages*")
