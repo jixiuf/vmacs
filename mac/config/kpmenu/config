@@ -10,22 +10,8 @@ cacheTimeout = 60
 nootp = false
 daemon=true
 customAutotypeWindowID="""
-osascript <<'EOF'
-tell application "System Events"
-    set frontApp to first application process whose frontmost is true
-    set bundleID to bundle identifier of frontApp
-    set frontAppName to name of frontApp
-    tell process frontAppName
-        try
-            set windowTitle to name of front window
-        on error
-            set windowTitle to ""
-        end try
-    end tell
-end tell
-return windowTitle & " - " & bundleID
-EOF
- """
+"/Applications/Hammerspoon.app/Contents/Frameworks/hs/hs" -c 'local w = hs.window.focusedWindow(); if w then local bid = w:application():bundleID(); print(w:title() .. " - " .. (bid or "")) end'
+"""
  
  #add  require("hs.ipc") in your init.lua
 customAutotypeTyper="/Applications/Hammerspoon.app/Contents/Frameworks/hs/hs"
