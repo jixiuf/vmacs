@@ -18,6 +18,7 @@
 (setq rimel-posframe-style 'horizontal)
 (setq default-input-method "rimel")
 (with-eval-after-load 'rimel
+  (setq rimel-regexp-schema-id "egret_py")
   (add-hook 'after-init-hook #'liberime-sync)
   (add-to-list 'rimel-keymap '(?\C-o . "<pageup>"))
   (add-to-list 'rimel-keymap '("C-s" . "<down>"))
