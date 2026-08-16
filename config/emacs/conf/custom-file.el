@@ -77,7 +77,7 @@
    '(async avy beacon cape clipetty consult-dir copilot dape dired-filetype-face eglot-java embark
            embark-consult evil-textobj-tree-sitter exec-path-from-shell flex-x ghostel git-link
            go-translate golden-ratio-scroll-screen goto-chg gptel gt helixel-mode kdl-mode kkp
-           leadkey marginalia orderless package-lint pi pimacs pinyinlib posframe rimel verb vundo
+           leadkey liberime marginalia orderless package-lint pi pimacs posframe rimel verb vundo
            web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((flex-x :url "https://github.com/kn66/flex-x")

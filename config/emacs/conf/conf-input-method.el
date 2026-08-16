@@ -11,19 +11,22 @@
 (if (eq system-type 'gnu/linux)
     (setq liberime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
   (setq liberime-user-data-dir (expand-file-name "~/Library/Rime/")))
-
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
     (setq rimel-show-candidate 'echo-area)
   (setq rimel-show-candidate 'posframe))
 (setq rimel-posframe-style 'horizontal)
 (setq default-input-method "rimel")
-(with-eval-after-load 'rimel
+(defun vmacs-init-rimel()
+  (liberime-sync)
   (setq rimel-regexp-schema-id "egret_py")
-  (add-hook 'after-init-hook #'liberime-sync)
+  (rimel-regexp-enable)  )
+  (add-hook 'after-init-hook #'vmacs-init-rimel)
+(with-eval-after-load 'rimel
   (add-to-list 'rimel-keymap '(?\C-o . "<pageup>"))
   (add-to-list 'rimel-keymap '("C-s" . "<down>"))
   (add-to-list 'rimel-keymap '("C-h" . "C-h"))
   (add-to-list 'rimel-keymap '("C-l" . "C-l")))
+
 (defun rimel-predicate-in-code-p ()
   "Return non-nil when cursor is in code (not string/comment).
 Only active in `prog-mode' derived buffers."

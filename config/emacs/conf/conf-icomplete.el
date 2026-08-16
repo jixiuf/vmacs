@@ -106,11 +106,8 @@
 (when (require 'orderless nil t)
   (setq completion-styles '(basic partial-completion initials orderless))
   ;; 支持拼间首字母过滤中文， 不必切输入法
-  (defun completion--regex-pinyin (str)
-    (require 'pinyinlib)
-    (orderless-regexp (pinyinlib-build-regexp-string str)))
   ;; 默认按空格开隔的每个关键字支持 regexp/literal/initialism 3 种算法
-  (setq orderless-matching-styles '(completion--regex-pinyin orderless-regexp
+  (setq orderless-matching-styles '(orderless-regexp
                                                              orderless-literal orderless-initialism))
   ;; Define orderless style with initialism by default
   (orderless-define-completion-style +orderless-with-initialism
