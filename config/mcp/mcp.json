@@ -1,11 +1,5 @@
 {
   "mcpServers": {
-    "feishu": {
-      "command": "node",
-      "args": [
-        "/Users/jixiuf/.pi/agent/mcp-servers/feishu-mcp/server.js"
-      ]
-    },
     "chrome-devtools": {
       "command": "npx",
       "args": [
