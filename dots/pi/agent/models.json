@@ -1,6 +1,5 @@
 {
   "providers": {
-    
     "dedao": {
       "baseUrl": "https://llm.dedao.cn",
       "api": "anthropic-messages",
@@ -26,10 +25,25 @@
             "cacheRead": 0.145,
             "cacheWrite": 0
           }
+        },
+        {
+          "id": "claude-opus-5",
+          "name": "claude-opus-5",
+          "contextWindow": 200000,
+          "maxTokens": 128000,
+          "input": [
+            "text"
+          ],
+          "reasoning": true,
+          "cost": {
+            "input": 10.5,
+            "output": 52.5,
+            "cacheRead": 1.05,
+            "cacheWrite": 13.125
+          }
         }
       ]
     },
-    
     "moonshot": {
       "baseUrl": "https://api.moonshot.cn/v1",
       "api": "openai-completions",
