@@ -188,12 +188,31 @@ export default function hubExtension(pi: ExtensionAPI) {
         clearTakeoverRequest()
         await handleTakeover(req)
       }
+      // 本机广播文件：任意实例写入，本机其他实例各自 ack 后 reload
+      consumeLocalBroadcast()
       if (config.coordinatorUrl) {
         const envelopes = await fetchInbox(config.coordinatorUrl, currentInstanceName, os.hostname())
         for (const env of envelopes) {
           routeEnvelope(env)
         }
       }
+    } catch {
+      // ignore
+    }
+  }
+
+  /** 消费本机广播文件（broadcast.json）：本实例 ack 后触发 reload */
+  function consumeLocalBroadcast(): void {
+    try {
+      const req = readBroadcastRequest()
+      if (!req) return
+      if (req.command !== 'reload') return
+      if (!ackBroadcastRequest()) return
+      log(`收到本机广播命令: ${req.command}，重载扩展`)
+      void pi.sendUserMessage('/__hub_reload', {
+        deliverAs: 'followUp',
+        expandPromptTemplates: true,
+      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
     } catch {
       // ignore
     }
@@ -236,9 +255,19 @@ export default function hubExtension(pi: ExtensionAPI) {
         break
       }
       case 'lock':
-      case 'broadcast':
-        // lock 走独立文件协议；broadcast 走独立广播文件
+        // lock 走独立文件协议
         break
+      case 'broadcast': {
+        // 广播命令（如 reload-all）：通知本实例扩展重载
+        log(`收到广播命令: ${env.command} (from ${env.from})`)
+        if (env.command === 'reload' && latestCtx) {
+          void pi.sendUserMessage('/__hub_reload', {
+            deliverAs: 'followUp',
+            expandPromptTemplates: true,
+          } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
+        }
+        break
+      }
     }
   }
 
@@ -793,6 +822,14 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
   })
 
+  // 内部命令：广播触发的扩展重载（broadcast envelope → 本命令）
+  pi.registerCommand('__hub_reload', {
+    description: '广播重载（内部命令，由 broadcast envelope 触发）',
+    handler: async (_args, ctx) => {
+      await ctx.reload()
+    },
+  })
+
   async function parseTargetArgs(args: string): Promise<{ target: string | null; rest: string }> {
     const parts = args.trim().split(/\s+/)
     if (parts.length === 0) return { target: null, rest: '' }
@@ -895,6 +932,19 @@ export default function hubExtension(pi: ExtensionAPI) {
     unregisterInstance,
     listInstances,
     getConfig: () => loadHubConfig(),
+    /** 广播 reload-all：本机实例写广播文件 + 客户端模式 POST 到协调中心（跨机器分发） */
+    broadcastReload: () => {
+      writeBroadcastRequest('reload')
+      if (config.coordinatorUrl) {
+        void postEnvelope(config.coordinatorUrl, {
+          type: 'broadcast',
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          from: currentInstanceName || 'local',
+          command: 'reload',
+          ts: Date.now(),
+        }).catch(() => {})
+      }
+    },
   }
 
   // 兼容旧桥（pi-wechat-assistant 旧版仍读 __PI_COORDINATOR__）
