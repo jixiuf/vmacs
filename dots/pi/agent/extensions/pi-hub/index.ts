@@ -79,10 +79,17 @@ export default function hubExtension(pi: ExtensionAPI) {
 
   // --- 渠道注册表（IGateway） ---
   const gateways = new Map<string, IGateway>()
+  /** 接管让位回调：capability 被请求接管时通知渠道 */
+  const takeoverCallbacks = new Map<string, (req: TakeoverRequest) => void>()
 
   function registerGateway(gw: IGateway): void {
     gateways.set(gw.kind, gw)
     gw.onInbound((m) => bridge.handleInbound(m))
+  }
+
+  function onTakeoverRequest(cb: (req: TakeoverRequest) => void): void {
+    const key = `cb-${takeoverCallbacks.size}`
+    takeoverCallbacks.set(key, cb)
   }
 
   // --- 轮询定时器：模块加载即启动（不依赖 session_start，reload 后强制重建） ---
@@ -252,6 +259,14 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
     log(`收到接管请求: ${req.targetName} (capability=${req.capability ?? 'default'})`)
     bridge.notifyTakeover(req)
+    // 渠道让位回调：目标实例若正在轮询该 capability，应停止（由渠道注册）
+    for (const cb of takeoverCallbacks.values()) {
+      try {
+        cb(req)
+      } catch {
+        // ignore
+      }
+    }
   }
 
   // --- 轮询：本地消息队列 ---
@@ -833,6 +848,8 @@ export default function hubExtension(pi: ExtensionAPI) {
   g.__PI_HUB__ = {
     version: '2.0.0',
     registerGateway,
+    onTakeoverRequest,
+    getInstanceName: () => currentInstanceName,
     coordinatorTryLock,
     coordinatorReleaseLock,
     getGlobalLockHolder,
