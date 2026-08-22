@@ -36,6 +36,11 @@ export function listActiveClients(): string[] {
   return [...activeClients.keys()]
 }
 
+/** 活跃客户端的实例名 → 主机名（用于实例列表显示 host） */
+export function clientHostName(name: string): string | undefined {
+  return clientHosts.get(name)
+}
+
 /** 远程接管队列：targetName → 请求（等局域网机器轮询拉取） */
 const remoteQueue = new Map<string, TakeoverRequest>()
 

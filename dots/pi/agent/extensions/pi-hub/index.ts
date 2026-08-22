@@ -37,6 +37,7 @@ import {
   requestRemoteLock,
   releaseRemoteLock,
   listActiveClients,
+  clientHostName,
   type RemoteHostConfig,
 } from './src/transport.js'
 import { SessionBridge } from './src/bridge.js'
@@ -429,8 +430,20 @@ export default function hubExtension(pi: ExtensionAPI) {
     const local = listInstances()
     const all: InstanceInfo[] = [...local]
     if (config.coordinatorPort) {
+      // 协调中心模式：优先用实际活跃客户端（/inbox 轮询登记的实例名+主机名）；
+      // remoteInstanceNames 作为已知但可能离线的补充
+      const active = listActiveClients()
+      const activeNames = new Set<string>()
+      for (const name of active) {
+        activeNames.add(name)
+        if (!all.some((i) => i.name === name)) {
+          all.push({ name, pid: 0, cwd: '', sessionId: '', lastSeen: 0, host: clientHostName(name) })
+        }
+      }
       for (const nm of config.remoteInstanceNames ?? []) {
-        if (!all.some((i) => i.name === nm)) all.push({ name: nm, pid: 0, cwd: '', sessionId: '', lastSeen: 0 })
+        if (!activeNames.has(nm) && !all.some((i) => i.name === nm)) {
+          all.push({ name: nm, pid: 0, cwd: '', sessionId: '', lastSeen: 0 })
+        }
       }
     }
     if (config.coordinatorUrl) {
@@ -509,7 +522,8 @@ export default function hubExtension(pi: ExtensionAPI) {
       capability: cap,
       timestamp: Date.now(),
     }
-    if (config.coordinatorPort && (config.remoteInstanceNames ?? []).includes(target.name)) {
+    if (config.coordinatorPort && !local.some((i) => i.name === target.name)) {
+      // 协调中心模式：目标是远程实例（活跃客户端或已知远程名）→ 服务器→局域网
       enqueueRemoteTakeover(req)
       return `已向实例 ${target.name} 发送接管请求`
     }
@@ -542,7 +556,8 @@ export default function hubExtension(pi: ExtensionAPI) {
       command,
       ts: Date.now(),
     }
-    if (config.coordinatorPort && (config.remoteInstanceNames ?? []).includes(target)) {
+    if (config.coordinatorPort && !listInstances().some((i) => i.name === target)) {
+      // 协调中心模式：目标是远程实例 → 服务器→局域网
       enqueueRemoteTakeover({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts })
     } else if (config.coordinatorUrl) {
       await postEnvelope(config.coordinatorUrl, env)
