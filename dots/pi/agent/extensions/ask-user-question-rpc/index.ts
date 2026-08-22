@@ -182,6 +182,78 @@ function buildQuestionnaireResponse(result: QuestionnaireResult | null, params: 
   );
 }
 
+// ── WeChat bridge mode ──────────────────────────────────────────────────────
+
+/**
+ * 微信问卷桥接 API — 由 pi-wechat-assistant 挂到 globalThis.__PI_WECHAT_BRIDGE__。
+ * 当前 turn 由微信触发时，本工具委托它把选项式问题发到微信并等待回复。
+ */
+type WechatQuestionBridge = {
+  isWechatTurnActive(): boolean;
+  getActiveUserId(): string | null;
+  askQuestion(opts: {
+    userId?: string;
+    question: string;
+    header?: string;
+    options: Array<{ label: string; description?: string }>;
+    multiSelect?: boolean;
+    index?: number;
+    total?: number;
+    timeoutMs?: number;
+    signal?: AbortSignal;
+  }): Promise<{
+    kind: "option" | "custom" | "multi" | "chat";
+    answer: string | null;
+    selected?: string[];
+  } | null>;
+};
+
+async function executeViaWechat(
+  bridge: WechatQuestionBridge,
+  params: {
+    questions: Array<{
+      question: string;
+      header: string;
+      options: Array<{ label: string; description: string; preview?: string }>;
+      multiSelect?: boolean;
+    }>;
+  },
+  signal?: AbortSignal,
+): Promise<ReturnType<typeof buildToolResult>> {
+  const answers: QuestionAnswer[] = [];
+  let cancelled = false;
+
+  for (let i = 0; i < params.questions.length; i++) {
+    const q = params.questions[i];
+    const result = await bridge.askQuestion({
+      question: q.question,
+      header: q.header,
+      options: q.options.map((o) => ({ label: o.label, description: o.description })),
+      multiSelect: q.multiSelect ?? false,
+      index: i + 1,
+      total: params.questions.length,
+      signal,
+    });
+
+    if (!result || result.kind === "chat") {
+      // 超时 / 被取消 / 用户想继续对话 → 停止追问
+      answers.push({ questionIndex: i, question: q.question, kind: "chat", answer: null });
+      cancelled = true;
+      break;
+    }
+
+    answers.push({
+      questionIndex: i,
+      question: q.question,
+      kind: result.kind,
+      answer: result.answer,
+      selected: result.selected,
+    });
+  }
+
+  return buildQuestionnaireResponse({ answers, cancelled }, params);
+}
+
 function formatAnswer(a: QuestionAnswer): string {
   switch (a.kind) {
     case "chat":
@@ -359,12 +431,13 @@ export default function (pi: ExtensionAPI) {
 Usage notes:
 - Users will always be able to type a custom answer (the "Type something." row is appended automatically to every single-select question) or pick "Chat about this" to abandon the questionnaire.
 - Use multiSelect: true to allow multiple answers to be selected for a question. The "Type something." row is suppressed on multi-select questions.
-- Previews are echoed inline in the select title in RPC mode (no side-by-side layout).`,
+- Previews are echoed inline in the select title in RPC mode (no side-by-side layout).
+- When the user is chatting via WeChat (pi-wechat-assistant bridge active), questions are forwarded to WeChat as text with numbered options; the user replies with a number or free text.`,
     promptSnippet: PROMPT_SNIPPET,
     promptGuidelines: PROMPT_GUIDELINES,
     parameters: QuestionParamsSchema,
 
-    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+    async execute(_toolCallId, params, signal, _onUpdate, ctx) {
       const typed = params as {
         questions: Array<{
           question: string;
@@ -374,20 +447,26 @@ Usage notes:
         }>;
       };
 
-      if (!ctx.hasUI) {
-        return buildToolResult("Error: UI not available (running in non-interactive mode)", {
-          answers: [],
-          cancelled: true,
-          error: "no_ui",
-        });
-      }
-
       const validation = validateQuestionnaire(typed);
       if (!validation.ok) {
         return buildToolResult(validation.error, {
           answers: [],
           cancelled: true,
           error: validation.error,
+        });
+      }
+
+      // 微信桥接模式：当前 turn 由微信触发 → 把选项式问题发到微信，等用户回复数字/文字
+      const bridge = (globalThis as unknown as { __PI_WECHAT_BRIDGE__?: WechatQuestionBridge }).__PI_WECHAT_BRIDGE__;
+      if (bridge && typeof bridge.isWechatTurnActive === "function" && bridge.isWechatTurnActive()) {
+        return executeViaWechat(bridge, typed, signal);
+      }
+
+      if (!ctx.hasUI) {
+        return buildToolResult("Error: UI not available (running in non-interactive mode)", {
+          answers: [],
+          cancelled: true,
+          error: "no_ui",
         });
       }
 
