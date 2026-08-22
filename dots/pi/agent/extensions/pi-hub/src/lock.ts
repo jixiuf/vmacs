@@ -31,6 +31,21 @@ function writeJson(file: string, data: unknown): void {
   }
 }
 
+/** 原子创建锁文件：仅当文件不存在时成功（防止多进程同时读空后都写入的 TOCTOU 竞态） */
+function createLockFileExclusive(data: GlobalLock): boolean {
+  try {
+    const fd = fs.openSync(GLOBAL_LOCK_FILE, 'wx', 0o600)
+    try {
+      fs.writeFileSync(fd, JSON.stringify(data, null, 2))
+    } finally {
+      fs.closeSync(fd)
+    }
+    return true
+  } catch {
+    return false // 文件已存在（他人持有或竞态失败）
+  }
+}
+
 function readGlobalLockFile(): GlobalLock | null {
   const d = readJson<GlobalLock>(GLOBAL_LOCK_FILE)
   return d && d.name ? d : null
@@ -66,8 +81,16 @@ export function coordinatorTryLock(name: string, pid: number, capability?: strin
     }
     return false
   }
-  writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
-  return true
+  // 无持有者：原子创建（wx 独占），防止两个进程同时读空后都写成功
+  if (createLockFileExclusive({ name, pid, capability, lastSeen: now })) return true
+  // 创建失败：他人刚写入，重读判断
+  const after = readGlobalLockFile()
+  if (!after) return false
+  if (after.name === name && after.capability === capability && (after.pid === pid || after.pid === 0)) {
+    writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: Date.now() })
+    return true
+  }
+  return false
 }
 
 export function coordinatorReleaseLock(name: string, capability?: string, pid?: number): void {
@@ -78,7 +101,12 @@ export function coordinatorReleaseLock(name: string, capability?: string, pid?: 
     (!capability || cur.capability === capability) &&
     (pid === undefined || cur.pid === pid)
   ) {
-    writeJson(GLOBAL_LOCK_FILE, {})
+    // 删除文件（而非写空对象），让后续 wx 原子创建能成功
+    try {
+      fs.unlinkSync(GLOBAL_LOCK_FILE)
+    } catch {
+      // ignore
+    }
   }
 }
 
@@ -86,7 +114,11 @@ export function getGlobalLockHolder(): { name: string; capability?: string } | n
   const cur = readGlobalLockFile()
   if (!cur) return null
   if (Date.now() - cur.lastSeen > GLOBAL_LOCK_TTL_MS) {
-    writeJson(GLOBAL_LOCK_FILE, {})
+    try {
+      fs.unlinkSync(GLOBAL_LOCK_FILE)
+    } catch {
+      // ignore
+    }
     return null
   }
   return { name: cur.name, capability: cur.capability }
