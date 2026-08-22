@@ -117,3 +117,5 @@ dots/pi/agent/trust.json
 dots/pi/agent/models-store.json
 dots/pi/agent/mcp-servers/*/node_modules/
 linux/etc/portage/local/gui-apps/wayfreeze/metadata.xml
+dots/pi/agent/wechat-assistant/context-tokens.json
+dots/pi/agent/wechat-assistant/credentials.json
