@@ -188,7 +188,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         await handleTakeover(req)
       }
       if (config.coordinatorUrl) {
-        const envelopes = await fetchInbox(config.coordinatorUrl, currentInstanceName)
+        const envelopes = await fetchInbox(config.coordinatorUrl, currentInstanceName, os.hostname())
         for (const env of envelopes) {
           routeEnvelope(env)
         }

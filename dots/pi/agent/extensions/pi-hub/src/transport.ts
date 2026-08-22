@@ -15,14 +15,20 @@ const STATE_DIR = '/tmp' // 占位，实际由调用方传入
 
 /** 活跃客户端实例（通过协调中心轮询的客户端）：name → lastSeen（毫秒） */
 const activeClients = new Map<string, number>()
+/** 客户端实例名 → 主机名（从 /inbox 轮询登记，用于主机名/实例名互查） */
+const clientHosts = new Map<string, string>()
 const ACTIVE_CLIENT_TTL_MS = 60_000
 
-function markActiveClient(name: string): void {
+function markActiveClient(name: string, host?: string): void {
   if (!name) return
   activeClients.set(name, Date.now())
+  if (host) clientHosts.set(name, host)
   const now = Date.now()
   for (const [k, ts] of activeClients) {
-    if (now - ts > ACTIVE_CLIENT_TTL_MS) activeClients.delete(k)
+    if (now - ts > ACTIVE_CLIENT_TTL_MS) {
+      activeClients.delete(k)
+      clientHosts.delete(k)
+    }
   }
 }
 
@@ -58,21 +64,28 @@ export function startCoordinatorServer(
       // 客户端轮询：取出发给自己的 envelope（ack 语义在客户端处理）
       if (req.method === 'GET' && url.pathname === '/inbox') {
         const name = url.searchParams.get('name') ?? ''
-        markActiveClient(name)
+        const host = url.searchParams.get('host') ?? ''
+        markActiveClient(name, host)
         const pid = Number(url.searchParams.get('pid') ?? '0')
         const envelopes = queue.dequeue(name).map(({ env }) => env)
         // 服务器 → 局域网：把远程接管队列中的请求作为 takeover envelope 返回
-        const pending = remoteQueue.get(name)
-        if (pending && (pending.targetPid === 0 || pid === 0 || pending.targetPid === pid)) {
-          remoteQueue.delete(name)
-          envelopes.push({
-            type: 'takeover',
-            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-            from: pending.fromName,
-            to: pending.targetName,
-            capability: pending.capability ?? '',
-            ts: pending.timestamp,
-          })
+        // 匹配：实例名或主机名任一命中（兼容 remoteInstanceNames 配 hostname 的旧配置）
+        const byName = remoteQueue.get(name)
+        const byHost = host ? [...remoteQueue.entries()].find(([k, r]) => r.targetName === host || clientHosts.get(r.targetName) === host) : undefined
+        const entry = byName ? [name, byName] as const : byHost
+        if (entry) {
+          const [qKey, pending] = entry
+          if (pending && (pending.targetPid === 0 || pid === 0 || pending.targetPid === pid)) {
+            remoteQueue.delete(qKey)
+            envelopes.push({
+              type: 'takeover',
+              id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+              from: pending.fromName,
+              to: pending.targetName,
+              capability: pending.capability ?? '',
+              ts: pending.timestamp,
+            })
+          }
         }
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({ ok: true, envelopes }))
@@ -166,9 +179,9 @@ export function startCoordinatorServer(
 // 客户端（局域网机器）
 // ============================================================================
 
-export async function fetchInbox(baseUrl: string, name: string): Promise<Envelope[]> {
+export async function fetchInbox(baseUrl: string, name: string, host?: string): Promise<Envelope[]> {
   try {
-    const res = await fetch(`${baseUrl}/inbox?name=${encodeURIComponent(name)}`)
+    const res = await fetch(`${baseUrl}/inbox?name=${encodeURIComponent(name)}${host ? `&host=${encodeURIComponent(host)}` : ''}`)
     if (!res.ok) return []
     const data = (await res.json()) as { ok: boolean; envelopes: Envelope[] }
     return data.envelopes ?? []
