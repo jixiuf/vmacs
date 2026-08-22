@@ -1,0 +1,6 @@
+# wechat 独立 repo，不在 vmacs 中跟踪
+extensions/pi-wechat-assistant/
+# 运行时状态文件
+wechat-assistant/coordinator-lock.json
+wechat-assistant/coordinator-queue.json
+wechat-assistant/coordinator-processed.json
