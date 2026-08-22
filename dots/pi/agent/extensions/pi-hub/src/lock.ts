@@ -60,6 +60,12 @@ function readGlobalLockFile(): GlobalLock | null {
  */
 export function coordinatorTryLock(name: string, pid: number, capability?: string, force = false): boolean {
   const now = Date.now()
+  try {
+    if (process.env.PI_HUB_LOCK_DEBUG) {
+      const st = new Error().stack?.split('\n')[2]?.trim() ?? '?'
+      fs.appendFileSync(path.join(STATE_DIR, 'lock-debug.log'), `[${new Date().toISOString()}] tryLock name=${name} pid=${pid} cap=${capability} force=${force} from=${st}\n`)
+    }
+  } catch { /* ignore */ }
   const cur = readGlobalLockFile()
   if (cur) {
     const sameName = cur.name === name

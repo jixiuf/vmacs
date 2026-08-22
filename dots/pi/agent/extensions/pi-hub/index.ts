@@ -138,7 +138,10 @@ export default function hubExtension(pi: ExtensionAPI) {
   let unreachableCount = 0
   async function autoTakeoverIfIdle(): Promise<void> {
     try {
-      const baseUrl = config.coordinatorUrl ?? (config.coordinatorPort ? `http://127.0.0.1:${config.coordinatorPort}` : null)
+      // 仅协调中心模式（端口在本地）负责"锁空闲自动接管"；
+      // 客户端模式由协调中心统一仲裁，不自发抢锁（避免多客户端轮番争抢）
+      if (config.coordinatorUrl) return
+      const baseUrl = config.coordinatorPort ? `http://127.0.0.1:${config.coordinatorPort}` : null
       if (!baseUrl) return
       const res = await fetch(`${baseUrl}/lock`)
       if (!res.ok) {
@@ -155,8 +158,9 @@ export default function hubExtension(pi: ExtensionAPI) {
         unreachableCount = 0
       }
     } catch {
+      // 协调中心不可达：仅协调中心模式自身不适用；客户端降级由 wechat lock() 处理
       unreachableCount++
-      if (unreachableCount >= 3) {
+      if (unreachableCount >= 3 && !config.coordinatorUrl) {
         log(`协调中心持续不可达，降级接管微信`)
         notifyAutoTakeover('wechat')
       }
