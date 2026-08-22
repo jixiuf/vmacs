@@ -177,21 +177,23 @@ export async function fetchInbox(baseUrl: string, name: string): Promise<Envelop
   }
 }
 
-/** 客户端向协调中心请求/续约全局锁（服务器端是唯一仲裁者） */
+/** 客户端向协调中心请求/续约全局锁（服务器端是唯一仲裁者）
+ * 返回 unreachable=true 表示协调中心不可达（服务器 pi 可能已停），
+ * 调用方应降级为本地接管而不是让位。 */
 export async function requestRemoteLock(
   baseUrl: string,
   name: string,
   pid: number,
   capability?: string,
   force = false,
-): Promise<{ ok: boolean; holder?: { name?: string } | null }> {
+): Promise<{ ok: boolean; unreachable?: boolean; holder?: { name?: string } | null }> {
   try {
     const query = `name=${encodeURIComponent(name)}&pid=${pid}${capability ? `&capability=${encodeURIComponent(capability)}` : ''}${force ? '&force=1' : ''}`
     const res = await fetch(`${baseUrl}/lock?${query}`)
     if (!res.ok) return { ok: false }
     return (await res.json()) as { ok: boolean; holder?: { name?: string } | null }
   } catch {
-    return { ok: false }
+    return { ok: false, unreachable: true }
   }
 }
 

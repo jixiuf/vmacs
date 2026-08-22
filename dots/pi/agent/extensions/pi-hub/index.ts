@@ -149,13 +149,8 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (!d.holder || !d.holder.name) {
         unreachableCount = 0
         log(`协调锁空闲（持有者已退出），自动接管微信`)
-        writeLocalTakeoverRequest({
-          targetName: currentInstanceName,
-          targetPid: 0,
-          fromName: currentInstanceName,
-          capability: 'wechat',
-          timestamp: Date.now(),
-        })
+        // 通知渠道自动接管（capability=wechat，target 为空表示本机接管）
+        notifyAutoTakeover('wechat')
       } else {
         unreachableCount = 0
       }
@@ -163,13 +158,18 @@ export default function hubExtension(pi: ExtensionAPI) {
       unreachableCount++
       if (unreachableCount >= 3) {
         log(`协调中心持续不可达，降级接管微信`)
-        writeLocalTakeoverRequest({
-          targetName: currentInstanceName,
-          targetPid: 0,
-          fromName: currentInstanceName,
-          capability: 'wechat',
-          timestamp: Date.now(),
-        })
+        notifyAutoTakeover('wechat')
+      }
+    }
+  }
+
+  /** 自动接管：通知已注册的渠道（如 wechat）启动轮询 */
+  function notifyAutoTakeover(capability: string): void {
+    for (const cb of takeoverCallbacks.values()) {
+      try {
+        cb({ targetName: currentInstanceName, targetPid: 0, fromName: currentInstanceName, capability, timestamp: Date.now() })
+      } catch {
+        // ignore
       }
     }
   }
