@@ -517,6 +517,14 @@ export default function hubExtension(pi: ExtensionAPI) {
         rememberTarget(target.name)
         return `已请求 ${target.name} 接管微信`
       }
+      if (config.coordinatorPort) {
+        // 协调中心模式：本机即仲裁者，直接 force 抢锁并通知本机渠道接管
+        const ok = coordinatorTryLock(currentInstanceName, process.pid, cap, true)
+        if (!ok) return `接管 ${target.name} 失败：锁仍被 ${holder?.name ?? '未知'} 持有`
+        rememberTarget(target.name)
+        notifyAutoTakeover(cap)
+        return `已请求 ${target.name} 接管微信（强制）`
+      }
       return `已经在当前实例（${target.name}），但无协调通道可发起接管`
     }
     rememberTarget(target.name)
