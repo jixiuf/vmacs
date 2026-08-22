@@ -1,0 +1,29 @@
+{
+  "name": "pi-coordinator",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "pi session 间协调：实例注册、接管切换、指令/消息互发",
+  "main": "index.ts",
+  "license": "MIT",
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "^0.84.2",
+    "@mariozechner/pi-coding-agent": "^0.73.1"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    },
+    "@mariozechner/pi-coding-agent": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.52",
+    "typescript": "^7.0.2"
+  }
+}

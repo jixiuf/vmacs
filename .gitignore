@@ -119,3 +119,4 @@ dots/pi/agent/mcp-servers/*/node_modules/
 linux/etc/portage/local/gui-apps/wayfreeze/metadata.xml
 dots/pi/agent/wechat-assistant/context-tokens.json
 dots/pi/agent/wechat-assistant/credentials.json
+dots/pi/agent/coordinator/config.json

@@ -1,14 +1,15 @@
 {
-  "lastChangelogVersion": "0.84.2",
-  "defaultProvider": "deepseek",
   "defaultModel": "deepseek-v4-flash",
-  "defaultThinkingLevel": "medium",
+  "defaultProvider": "deepseek",
+  "defaultThinkingLevel": "high",
+  "followUpMode": "all",
   "hideThinkingBlock": false,
+  "lastChangelogVersion": "0.84.2",
   "packages": [
     "npm:pi-cache-optimizer",
-    "npm:pi-mcp-adapter"
+    "npm:pi-mcp-adapter",
+    "npm:@ollama/pi-web-search"
   ],
   "steeringMode": "all",
-  "followUpMode": "all",
   "theme": "dark"
 }
