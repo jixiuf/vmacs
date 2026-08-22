@@ -7,7 +7,7 @@ import * as http from 'node:http'
 import { execFile } from 'node:child_process'
 import type { Envelope, InstanceInfo, TakeoverRequest } from './types.js'
 import { EnvelopeQueue } from './queue.js'
-import { preassignLock } from './lock.js'
+import { preassignLock, coordinatorTryLock, coordinatorReleaseLock, getGlobalLockHolder } from './lock.js'
 
 // --- 状态目录 ---
 
@@ -94,6 +94,47 @@ export function startCoordinatorServer(
         return
       }
 
+      // 全局锁（服务器权威）：客户端通过 HTTP 请求锁，服务器端是唯一仲裁者
+      //  GET /lock → 仅查询持有者
+      //  GET /lock?name=X&pid=P&capability=C[&force=1] → 获取/续约
+      //  POST /unlock {name, capability} → 释放
+      if (url.pathname === '/lock') {
+        if (req.method === 'GET') {
+          const name = url.searchParams.get('name')
+          if (name) {
+            const pid = Number(url.searchParams.get('pid') ?? '0')
+            const capability = url.searchParams.get('capability') ?? undefined
+            const force = url.searchParams.get('force') === '1'
+            const ok = coordinatorTryLock(name, pid, capability, force)
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({ ok, holder: getGlobalLockHolder() }))
+          } else {
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            res.end(JSON.stringify({ holder: getGlobalLockHolder() }))
+          }
+          return
+        }
+        if (req.method === 'POST') {
+          let body = ''
+          for await (const chunk of req) body += chunk
+          const data = JSON.parse(body) as { name?: string; pid?: number; capability?: string; force?: boolean }
+          const ok = coordinatorTryLock(data.name ?? '', data.pid ?? 0, data.capability, !!data.force)
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok, holder: getGlobalLockHolder() }))
+          return
+        }
+      }
+
+      if (req.method === 'POST' && url.pathname === '/unlock') {
+        let body = ''
+        for await (const chunk of req) body += chunk
+        const data = JSON.parse(body) as { name?: string; capability?: string }
+        coordinatorReleaseLock(data.name ?? '', data.capability)
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ ok: true }))
+        return
+      }
+
       // 实例列表（服务器本地 + 活跃客户端）
       if (req.method === 'GET' && url.pathname === '/instances') {
         const clients = [...activeClients.keys()]
@@ -133,6 +174,41 @@ export async function fetchInbox(baseUrl: string, name: string): Promise<Envelop
     return data.envelopes ?? []
   } catch {
     return []
+  }
+}
+
+/** 客户端向协调中心请求/续约全局锁（服务器端是唯一仲裁者） */
+export async function requestRemoteLock(
+  baseUrl: string,
+  name: string,
+  pid: number,
+  capability?: string,
+  force = false,
+): Promise<{ ok: boolean; holder?: { name?: string } | null }> {
+  try {
+    const query = `name=${encodeURIComponent(name)}&pid=${pid}${capability ? `&capability=${encodeURIComponent(capability)}` : ''}${force ? '&force=1' : ''}`
+    const res = await fetch(`${baseUrl}/lock?${query}`)
+    if (!res.ok) return { ok: false }
+    return (await res.json()) as { ok: boolean; holder?: { name?: string } | null }
+  } catch {
+    return { ok: false }
+  }
+}
+
+/** 客户端释放协调中心全局锁 */
+export async function releaseRemoteLock(
+  baseUrl: string,
+  name: string,
+  capability?: string,
+): Promise<void> {
+  try {
+    await fetch(`${baseUrl}/unlock`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, capability }),
+    })
+  } catch {
+    // ignore
   }
 }
 

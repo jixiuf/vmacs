@@ -10,6 +10,8 @@ export default defineConfig({
   test: {
     include: ['tests/**/*.test.ts'],
     environment: 'node',
+    // 状态文件共享，串行执行避免锁竞态
+    fileParallelism: false,
     env: {
       PI_HUB_STATE_DIR: testStateDir,
     },

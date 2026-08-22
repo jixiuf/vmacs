@@ -88,6 +88,9 @@ describe('全局锁', () => {
   beforeEach(() => {
     coordinatorReleaseLock('test', 'wechat')
     coordinatorReleaseLock('other', 'wechat')
+    coordinatorReleaseLock('new', 'wechat')
+    coordinatorReleaseLock('instance-a', 'wechat')
+    coordinatorReleaseLock('instance-b', 'wechat')
   })
 
   it('无锁时可获取；同 name+cap 续约', () => {
