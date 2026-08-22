@@ -70,11 +70,8 @@ export default function hubExtension(pi: ExtensionAPI) {
     handleCommand: handleCommand,
     handleMessage: handleMessage,
     handleTakeover: handleTakeoverEnvelope,
+    getGateway: (channel) => gateways.get(channel),
   })
-  router.onCommandReply = (m, reply) => {
-    const gw = gateways.get(m.channel)
-    if (gw) void gw.send(m.userId, { text: reply }).catch(() => {})
-  }
   bridge.setInboundHandler((m) => router.routeInbound(m))
 
   const watcherKey = '__PI_COORDINATOR_WATCHER__'

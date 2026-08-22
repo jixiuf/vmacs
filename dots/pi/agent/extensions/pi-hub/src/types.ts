@@ -92,6 +92,12 @@ export interface IGateway {
   send(target: string, m: OutboundMessage): Promise<void>
   /** 附件下载（供 hub 需要时取内容，如图片喂给 agent） */
   fetchAttachment(ref: unknown): Promise<Buffer | null>
+  /**
+   * 渠道自有消息处理（可选）：hub 判定为非协调命令的入站消息回调给渠道，
+   * 由渠道完成会话命令（/model /status 等需 pi 上下文）、问卷拦截、入队投递。
+   * 不实现时 hub 走默认投递（直接注入 agent）。
+   */
+  handleUserMessage?(m: InboundMessage): void | Promise<void>
 }
 
 // ============================================================================

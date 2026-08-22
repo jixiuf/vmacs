@@ -5,6 +5,7 @@
 
 import type { InboundMessage } from './types.js'
 import type { Envelope } from './types.js'
+import type { IGateway } from './types.js'
 
 export interface RouterDeps {
   /** 斜杠命令/中文别名执行；返回回复文本（null 表示非命令，继续走普通消息） */
@@ -13,6 +14,8 @@ export interface RouterDeps {
   handleMessage: (m: InboundMessage) => Promise<boolean>
   /** 接管请求处理 */
   handleTakeover: (env: Extract<Envelope, { type: 'takeover' }>) => void
+  /** 渠道注册表（用于命令回复 + 非命令消息回调） */
+  getGateway: (channel: string) => IGateway | undefined
 }
 
 export class Router {
@@ -21,15 +24,20 @@ export class Router {
   /** 渠道入站（IGateway.onInbound 注册此方法） */
   routeInbound(m: InboundMessage): void {
     void (async () => {
-      // 命令：斜杠 / 中文别名 / 语音容错
+      // 命令：斜杠 / 中文别名 / 语音容错（协调命令由 hub 处理）
       if (m.text) {
         const reply = await this.deps.handleCommand(m.text, m.userId, m.channel)
         if (reply !== null) {
-          // 命令结果由 gateway 发送（通过 hub 的出站通道）
-          this.deps.handleMessage({ ...m, text: undefined } as InboundMessage).catch(() => {})
-          this.sendCommandReply(m, reply)
+          const gw = this.deps.getGateway(m.channel)
+          if (gw) void gw.send(m.userId, { text: reply }).catch(() => {})
           return
         }
+      }
+      // 非协调命令：优先回调渠道自有处理（会话命令/问卷/入队），否则默认投递
+      const gw = this.deps.getGateway(m.channel)
+      if (gw?.handleUserMessage) {
+        void gw.handleUserMessage(m)
+        return
       }
       await this.deps.handleMessage(m)
     })().catch(() => {})
@@ -46,11 +54,4 @@ export class Router {
         break
     }
   }
-
-  private sendCommandReply(m: InboundMessage, reply: string): void {
-    // 命令回复走出站通道：由装配方提供 gateway 映射
-    this.onCommandReply?.(m, reply)
-  }
-
-  onCommandReply: ((m: InboundMessage, reply: string) => void) | null = null
 }
