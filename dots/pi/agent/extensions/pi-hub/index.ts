@@ -38,6 +38,11 @@ import {
   releaseRemoteLock,
   listActiveClients,
   clientHostName,
+  readLastMsgLocal,
+  writeLastMsgLocal,
+  fetchLastMsgRemote,
+  pushLastMsgRemote,
+  type LastWechatMsg,
   type RemoteHostConfig,
 } from './src/transport.js'
 import { SessionBridge } from './src/bridge.js'
@@ -943,6 +948,25 @@ export default function hubExtension(pi: ExtensionAPI) {
           command: 'reload',
           ts: Date.now(),
         }).catch(() => {})
+      }
+    },
+    /** 读取最后一条微信对话：协调中心模式读本地（权威），客户端模式从协调中心拉 */
+    getLastMsg: async (): Promise<LastWechatMsg | null> => {
+      if (config.coordinatorUrl) return fetchLastMsgRemote(config.coordinatorUrl)
+      return readLastMsgLocal()
+    },
+    /** 写入最后一条微信对话：协调中心模式写本地（权威），客户端模式 POST 到协调中心 */
+    setLastMsg: async (data: Partial<LastWechatMsg>): Promise<void> => {
+      if (config.coordinatorUrl) {
+        await pushLastMsgRemote(config.coordinatorUrl, data)
+      } else {
+        const prev = readLastMsgLocal()
+        writeLastMsgLocal({
+          userId: data.userId ?? prev?.userId ?? '',
+          userMsg: (data.userMsg ?? prev?.userMsg ?? '').slice(0, 200),
+          aiMsg: (data.aiMsg ?? prev?.aiMsg ?? '').slice(0, 500),
+          ts: Date.now(),
+        })
       }
     },
   }

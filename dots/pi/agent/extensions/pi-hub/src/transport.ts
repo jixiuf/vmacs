@@ -4,6 +4,9 @@
 // ============================================================================
 
 import * as http from 'node:http'
+import * as fs from 'node:fs'
+import * as os from 'node:os'
+import * as path from 'node:path'
 import { execFile } from 'node:child_process'
 import type { Envelope, InstanceInfo, TakeoverRequest } from './types.js'
 import { EnvelopeQueue } from './queue.js'
@@ -11,7 +14,34 @@ import { preassignLock, coordinatorTryLock, coordinatorReleaseLock, getGlobalLoc
 
 // --- 状态目录 ---
 
-const STATE_DIR = '/tmp' // 占位，实际由调用方传入
+const STATE_DIR =
+  process.env.PI_HUB_STATE_DIR ?? path.join(os.homedir(), '.pi', 'agent', 'wechat-assistant')
+const LAST_MSG_FILE = path.join(STATE_DIR, 'last-wechat-msg.json')
+
+/** 最后一条微信对话（跨实例共享，协调中心为权威存储） */
+export interface LastWechatMsg {
+  userId: string
+  userMsg: string
+  aiMsg: string
+  ts: number
+}
+
+export function readLastMsgLocal(): LastWechatMsg | null {
+  try {
+    const d = JSON.parse(fs.readFileSync(LAST_MSG_FILE, 'utf8')) as LastWechatMsg
+    return d && (d.userMsg || d.aiMsg) ? d : null
+  } catch {
+    return null
+  }
+}
+
+export function writeLastMsgLocal(data: LastWechatMsg): void {
+  try {
+    fs.writeFileSync(LAST_MSG_FILE, JSON.stringify(data), { mode: 0o600 })
+  } catch {
+    // ignore
+  }
+}
 
 /** 活跃客户端实例（通过协调中心轮询的客户端）：name → lastSeen（毫秒） */
 const activeClients = new Map<string, number>()
@@ -153,6 +183,33 @@ export function startCoordinatorServer(
         return
       }
 
+      // 最后一条微信对话（协调中心权威存储，跨实例共享）
+      //  GET /lastmsg → 读取
+      //  POST /lastmsg {userId, userMsg, aiMsg} → 写入
+      if (url.pathname === '/lastmsg') {
+        if (req.method === 'GET') {
+          const d = readLastMsgLocal()
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok: true, msg: d }))
+          return
+        }
+        if (req.method === 'POST') {
+          let body = ''
+          for await (const chunk of req) body += chunk
+          const data = JSON.parse(body) as Partial<LastWechatMsg>
+          const prev = readLastMsgLocal()
+          writeLastMsgLocal({
+            userId: data.userId ?? prev?.userId ?? '',
+            userMsg: (data.userMsg ?? prev?.userMsg ?? '').slice(0, 200),
+            aiMsg: (data.aiMsg ?? prev?.aiMsg ?? '').slice(0, 500),
+            ts: Date.now(),
+          })
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok: true }))
+          return
+        }
+      }
+
       // 实例列表（服务器本地 + 活跃客户端）
       if (req.method === 'GET' && url.pathname === '/instances') {
         const clients = [...activeClients.keys()]
@@ -192,6 +249,31 @@ export async function fetchInbox(baseUrl: string, name: string, host?: string): 
     return data.envelopes ?? []
   } catch {
     return []
+  }
+}
+
+/** 客户端向协调中心读取最后一条微信对话 */
+export async function fetchLastMsgRemote(baseUrl: string): Promise<LastWechatMsg | null> {
+  try {
+    const res = await fetch(`${baseUrl}/lastmsg`)
+    if (!res.ok) return null
+    const data = (await res.json()) as { ok: boolean; msg?: LastWechatMsg | null }
+    return data.msg ?? null
+  } catch {
+    return null
+  }
+}
+
+/** 客户端向协调中心写入最后一条微信对话 */
+export async function pushLastMsgRemote(baseUrl: string, data: Partial<LastWechatMsg>): Promise<void> {
+  try {
+    await fetch(`${baseUrl}/lastmsg`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+  } catch {
+    // ignore
   }
 }
 
