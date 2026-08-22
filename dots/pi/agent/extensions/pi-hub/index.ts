@@ -441,7 +441,12 @@ export default function hubExtension(pi: ExtensionAPI) {
         }
       }
       for (const nm of config.remoteInstanceNames ?? []) {
-        if (!activeNames.has(nm) && !all.some((i) => i.name === nm)) {
+        // 已被活跃客户端覆盖（实例名或主机名匹配）→ 跳过，避免重复条目
+        const covered =
+          activeNames.has(nm) ||
+          all.some((i) => i.host === nm) ||
+          active.some((name) => clientHostName(name) === nm)
+        if (!covered) {
           all.push({ name: nm, pid: 0, cwd: '', sessionId: '', lastSeen: 0 })
         }
       }
