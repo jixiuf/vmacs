@@ -851,7 +851,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     version: '2.0.0',
     registerGateway,
     onTakeoverRequest,
-    getInstanceName: () => currentInstanceName,
+    getInstanceName: () => currentInstanceName || loadHubConfig().instanceName || path.basename(process.cwd()) || 'local',
     getCoordinatorUrl: () => config.coordinatorUrl,
     coordinatorTryLock,
     coordinatorReleaseLock,

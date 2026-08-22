@@ -39,30 +39,45 @@ function readGlobalLockFile(): GlobalLock | null {
 /**
  * 尝试获取/续约全局锁。
  * - 无持有者 → 直接获取
- * - 持有者是自己（同 name + capability）→ 续约
+ * - 持有者是自己（同 name + 同 pid + 同 capability）→ 续约
+ * - 持有者 pid=0（接管预占，目标未定）→ 同 name 可接管（写真实 pid）
  * - 持有者是别人：force 或已超时 → 抢占；否则失败
  */
 export function coordinatorTryLock(name: string, pid: number, capability?: string, force = false): boolean {
   const now = Date.now()
   const cur = readGlobalLockFile()
   if (cur) {
-    if (cur.name !== name || cur.capability !== capability) {
-      if (force || now - cur.lastSeen > GLOBAL_LOCK_TTL_MS) {
-        writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
-        return true
-      }
-      return false
+    const sameName = cur.name === name
+    const sameCap = cur.capability === capability
+    // 自己：name + pid + capability 全部一致 → 续约
+    if (sameName && sameCap && cur.pid === pid) {
+      writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
+      return true
     }
-    writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
-    return true
+    // 接管预占：pid=0 表示目标未定，同 name 的实例可接管（写入真实 pid）
+    if (sameName && sameCap && cur.pid === 0) {
+      writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
+      return true
+    }
+    // 别人持有：force 或 TTL 超时才可抢占
+    if (force || now - cur.lastSeen > GLOBAL_LOCK_TTL_MS) {
+      writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
+      return true
+    }
+    return false
   }
   writeJson(GLOBAL_LOCK_FILE, { name, pid, capability, lastSeen: now })
   return true
 }
 
-export function coordinatorReleaseLock(name: string, capability?: string): void {
+export function coordinatorReleaseLock(name: string, capability?: string, pid?: number): void {
   const cur = readGlobalLockFile()
-  if (cur && cur.name === name && (!capability || cur.capability === capability)) {
+  if (
+    cur &&
+    cur.name === name &&
+    (!capability || cur.capability === capability) &&
+    (pid === undefined || cur.pid === pid)
+  ) {
     writeJson(GLOBAL_LOCK_FILE, {})
   }
 }

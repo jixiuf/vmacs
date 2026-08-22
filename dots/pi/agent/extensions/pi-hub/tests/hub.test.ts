@@ -117,6 +117,28 @@ describe('全局锁', () => {
     preassignLock('new', 0, 'wechat')
     expect(getGlobalLockHolder()?.name).toBe('new')
   })
+
+  it('同名不同 pid 不能同时持锁（多实例互斥核心）', () => {
+    // 模拟两个实例名相同（如 config.instanceName 都是 home）但进程不同
+    expect(coordinatorTryLock('home', 1001, 'wechat')).toBe(true)
+    // 同 pid 续约 → 成功
+    expect(coordinatorTryLock('home', 1001, 'wechat')).toBe(true)
+    // 不同 pid（另一进程，同名同 capability）→ 必须失败（不能双轮询）
+    expect(coordinatorTryLock('home', 2002, 'wechat')).toBe(false)
+    // 释放需带 pid（1001 释放；2002 释放无效）
+    coordinatorReleaseLock('home', 'wechat', 2002)
+    expect(getGlobalLockHolder()?.name).toBe('home')
+    coordinatorReleaseLock('home', 'wechat', 1001)
+    expect(getGlobalLockHolder()).toBeNull()
+  })
+
+  it('预占锁 pid=0 可被同名实例接管', () => {
+    preassignLock('home', 0, 'wechat')
+    expect(getGlobalLockHolder()?.name).toBe('home')
+    // 目标实例用真实 pid 接管预占锁
+    expect(coordinatorTryLock('home', 3003, 'wechat')).toBe(true)
+    expect(getGlobalLockHolder()).toEqual({ name: 'home', capability: 'wechat' })
+  })
 })
 
 describe('命令归一化', () => {
