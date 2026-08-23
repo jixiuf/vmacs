@@ -120,3 +120,5 @@ linux/etc/portage/local/gui-apps/wayfreeze/metadata.xml
 dots/pi/agent/wechat-assistant/context-tokens.json
 dots/pi/agent/wechat-assistant/credentials.json
 dots/pi/agent/coordinator/config.json
+dots/pi/agent/pi-cache-optimizer-stats.d/maintenance/last-cleanup
+dots/pi/agent/pi-cache-optimizer-stats.d/shards/
