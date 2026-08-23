@@ -8,6 +8,7 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as net from 'node:net'
+import { execFile } from 'node:child_process'
 
 try {
   fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] EXT LOADED pid=${process.pid}\n`)
@@ -32,6 +33,7 @@ import {
   postEnvelope,
   fetchCoordinatorInstances,
   listRemoteInstances,
+  sshExec,
   writeRemoteTakeoverRequest,
   enqueueRemoteTakeover,
   requestRemoteLock,
@@ -215,7 +217,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (!ackBroadcastRequest()) return
       log(`收到本机广播命令: ${req.command}，重载扩展`)
       void pi.sendUserMessage('/__hub_reload', {
-        deliverAs: 'followUp',
+        deliverAs: 'steer',
         expandPromptTemplates: true,
       } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
     } catch {
@@ -244,7 +246,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       case 'command': {
         log(`收到来自 ${env.from} 的指令: ${env.command}`)
         void pi.sendUserMessage(env.command, {
-          deliverAs: 'followUp',
+          deliverAs: 'steer',
           expandPromptTemplates: true,
         } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
         break
@@ -267,7 +269,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         log(`收到广播命令: ${env.command} (from ${env.from})`)
         if (env.command === 'reload' && latestCtx) {
           void pi.sendUserMessage('/__hub_reload', {
-            deliverAs: 'followUp',
+            deliverAs: 'steer',
             expandPromptTemplates: true,
           } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
         }
@@ -292,7 +294,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (command) {
         log(`收到来自 ${req.fromName} 的指令: ${command}`)
         await pi.sendUserMessage(command, {
-          deliverAs: 'followUp',
+          deliverAs: 'steer',
           expandPromptTemplates: true,
         } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
       }
@@ -344,8 +346,12 @@ export default function hubExtension(pi: ExtensionAPI) {
       doSendMessage,
       rememberTarget,
       getLastTarget: () => lastTargetName,
+      doStartPi,
     }
-    const result = await executeCommand(text, ctx)
+    // 渠道正在等待问卷答案时禁用宽松 use 匹配（数字可能是答案，不是切换命令）
+    const gw = gateways.get(channel)
+    const awaitingAnswer = gw?.isAwaitingAnswer?.(userId) ?? false
+    const result = await executeCommand(text, ctx, { loose: !awaitingAnswer })
     return result ? result.reply : null
   }
 
@@ -358,13 +364,13 @@ export default function hubExtension(pi: ExtensionAPI) {
     // 协调消息直接注入（文本）
     if (m.channel === 'coord') {
       return pi.sendUserMessage(`[协调消息 @${m.userId}] ${m.text ?? ''}`, {
-        deliverAs: 'followUp',
+        deliverAs: 'steer',
         expandPromptTemplates: true,
       } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
     }
     // 普通渠道消息：带渠道标识注入
     return pi.sendUserMessage(m.text ?? '[消息]', {
-      deliverAs: 'followUp',
+      deliverAs: 'steer',
       expandPromptTemplates: true,
     } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
   }
@@ -451,6 +457,34 @@ export default function hubExtension(pi: ExtensionAPI) {
         return ok(await doSendMessage(String(params.target).trim(), String(params.text).trim()))
       } catch (err) {
         return fail(`发送消息失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'start_pi',
+    label: 'Start Pi',
+    description: '在指定实例（默认当前本机）的 tmux pi 会话中启动 pi。',
+    promptSnippet: '在实例上启动 pi',
+    promptGuidelines: ['用户要求启动 pi / start pi / 启动派时调用。'],
+    parameters: Type.Object({
+      target: Type.Optional(Type.String({ description: '目标实例名（默认当前本机）' })),
+      cwd: Type.Optional(Type.String({ description: '启动目录（默认实例 cwd 或 ~）' })),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const { all } = await collectInstances()
+        let inst: InstanceInfo | undefined
+        if (params.target) {
+          inst = resolveTarget(all, String(params.target).trim())
+          if (!inst) return fail(`未找到实例 ${params.target}，先 /instances 查看`)
+        } else {
+          inst = all.find((i) => i.name === currentInstanceName)
+          if (!inst) return fail('未找到当前实例')
+        }
+        return ok(await doStartPi(inst, params.cwd ? String(params.cwd) : undefined))
+      } catch (err) {
+        return fail(`启动失败: ${(err as Error).message}`)
       }
     },
   })
@@ -636,6 +670,89 @@ export default function hubExtension(pi: ExtensionAPI) {
       queue.enqueue(env)
     }
     return `已向实例 ${target} 发送消息`
+  }
+
+  // ============================================================================
+  // 启动 pi：在目标实例所在机器的 tmux 中新建会话运行 pi
+  // ============================================================================
+
+  function execCapture(file: string, args: string[], timeoutMs = 20000): Promise<string> {
+    return new Promise((resolve) => {
+      execFile(file, args, { timeout: timeoutMs, maxBuffer: 64 * 1024 }, (err, stdout) => {
+        if (err) {
+          resolve(`__EXEC_ERR__ ${(err as Error).message}`)
+          return
+        }
+        resolve(stdout ?? '')
+      })
+    })
+  }
+
+  async function doStartPi(target: InstanceInfo, cwd?: string): Promise<string> {
+    // 复用实例所在的 tmux 会话（不新建会话）：窗口名带唯一后缀（实例 pid，未知时回退时间戳）
+    const pidSuffix = target.pid > 0 ? String(target.pid) : String(Date.now()).slice(-6)
+    const winName = `pi-${target.name}-${pidSuffix}`
+    const dir = cwd?.trim() || target.cwd?.trim() || '~'
+    const isLocal = !target.host || target.host === os.hostname()
+    const hostLabel = isLocal ? `${os.hostname()}（本机）` : target.host
+
+    // 1) 定位当前 tmux 会话（复用，绝不新建）
+    let sessionName: string
+    let sessionTarget: string
+    let remote: RemoteHostConfig | undefined
+    if (!isLocal) remote = config.remoteHosts?.[target.name] ?? { target: target.host as string }
+    try {
+      if (isLocal) {
+        if (!process.env.TMUX) return `❌ ${hostLabel} 当前实例不在 tmux 会话中，无法开窗口`
+        sessionName = (await execCapture('tmux', ['display-message', '-p', '#S'])).trim()
+        // 用 session id（如 $1）作 new-window 目标，避免纯数字会话名被当成窗口索引
+        sessionTarget = (await execCapture('tmux', ['display-message', '-p', '#{session_id}'])).trim()
+        if (!sessionName || !sessionTarget) return `❌ ${hostLabel} 无法获取当前 tmux 会话`
+      } else {
+        if (!target.pid || target.pid <= 0) return `❌ 实例 ${target.name} pid 未知，无法定位其 tmux 会话`
+        const probe = [
+          `SID=$(tr '\\0' '\\n' < /proc/${target.pid}/environ 2>/dev/null | sed -n 's/^TMUX=.*,\\([0-9][0-9]*\\)$/\\1/p' | head -1)`,
+          `if [ -z "$SID" ]; then echo 'NO_TMUX'; exit 0; fi`,
+          `tmux list-sessions -F '#{session_id} #{session_name}' | awk -v id="\\$$SID" '$1==id{print $1, $2; exit}'`,
+        ].join('\n')
+        const probeOut = (await sshExec(remote!.target, remote!.port, probe)).trim()
+        const [idPart, namePart] = probeOut.split(/\s+/, 2)
+        if (!idPart || idPart === 'NO_TMUX') return `❌ 实例 ${target.name} 不在 tmux 会话中（或会话已不存在）`
+        sessionTarget = idPart
+        sessionName = namePart || target.name
+      }
+    } catch (err) {
+      return `❌ 启动失败（${hostLabel}）: ${(err as Error).message}`
+    }
+
+    // 2) 在复用的会话中开窗口
+    const shellCmd = [
+      `if tmux list-windows -t '${sessionTarget}' -F '#W' 2>/dev/null | grep -qx '${winName}'; then`,
+      `  echo 'TMUX_EXISTS'`,
+      `else`,
+      `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
+      `fi`,
+    ].join('\n')
+
+    let output: string
+    try {
+      if (isLocal) {
+        output = await execCapture('bash', ['-lc', shellCmd])
+      } else {
+        output = await sshExec(remote!.target, remote!.port, shellCmd)
+      }
+    } catch (err) {
+      return `❌ 启动失败（${hostLabel}）: ${(err as Error).message}`
+    }
+
+    const line = output.trim().split('\n').pop() ?? ''
+    if (line.includes('TMUX_EXISTS')) {
+      return `⚠️ 窗口 ${winName} 已存在（${hostLabel}，tmux 会话 ${sessionName}），未重复启动。查看: tmux attach -t ${sessionName}`
+    }
+    if (line.includes('TMUX_STARTED')) {
+      return `✅ 已在 ${hostLabel} 启动 pi，tmux 会话 ${sessionName} 窗口 ${winName}（目录 ${dir}）。查看: tmux attach -t ${sessionName}`
+    }
+    return `❌ 启动失败（${hostLabel}）: ${output.trim() || 'tmux 执行异常'}`
   }
 
   // ============================================================================
@@ -832,6 +949,29 @@ export default function hubExtension(pi: ExtensionAPI) {
     description: '广播重载（内部命令，由 broadcast envelope 触发）',
     handler: async (_args, ctx) => {
       await ctx.reload()
+    },
+  })
+
+  pi.registerCommand('start-pi', {
+    getArgumentCompletions: instanceCompletions,
+    description: '在实例（默认本机）的 tmux pi 会话中启动 pi：/start-pi [实例名] [目录]',
+    handler: async (args, ctx) => {
+      const parts = args.trim().split(/\s+/)
+      const { all } = await collectInstances()
+      let inst: InstanceInfo | undefined
+      let rest = args.trim()
+      if (parts[0] && all.some((i) => i.name === parts[0])) {
+        inst = all.find((i) => i.name === parts[0])
+        rest = parts.slice(1).join(' ')
+      } else {
+        // 未指定实例 → 默认当前实例（本机）
+        inst = all.find((i) => i.name === currentInstanceName)
+      }
+      if (!inst) {
+        ctx.ui.notify('未找到当前实例', 'warning')
+        return
+      }
+      ctx.ui.notify(await doStartPi(inst, rest.trim() || undefined), 'info')
     },
   })
 

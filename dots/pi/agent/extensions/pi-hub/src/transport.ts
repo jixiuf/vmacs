@@ -380,7 +380,7 @@ export async function writeRemoteTakeoverRequest(
   await sshExec(remote.target, remote.port, command)
 }
 
-function sshExec(target: string, port: number | undefined, command: string, timeoutMs = 15000): Promise<string> {
+export function sshExec(target: string, port: number | undefined, command: string, timeoutMs = 15000): Promise<string> {
   return new Promise((resolve, reject) => {
     const args = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5']
     if (port && port !== 22) args.push('-p', String(port))

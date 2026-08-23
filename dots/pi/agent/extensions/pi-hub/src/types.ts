@@ -98,6 +98,12 @@ export interface IGateway {
    * 不实现时 hub 走默认投递（直接注入 agent）。
    */
   handleUserMessage?(m: InboundMessage): void | Promise<void>
+  /**
+   * 渠道是否正在等待某用户的答案（问卷/问题拦截中，可选）。
+   * hub 在宽松命令匹配（数字/实例名 → use）前检查：等待答案时用户发的数字可能真是答案，
+   * 不应作为切换命令消费。不实现时按 false 处理。
+   */
+  isAwaitingAnswer?(userId: string): boolean
 }
 
 // ============================================================================

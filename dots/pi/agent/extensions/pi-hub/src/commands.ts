@@ -22,6 +22,8 @@ export interface CommandCtx {
   rememberTarget: (name: string) => void
   /** 获取上次目标实例 */
   getLastTarget: () => string | null
+  /** 在目标实例所在机器的 tmux 中启动 pi（新会话 pi-<实例名>） */
+  doStartPi: (target: InstanceInfo, cwd?: string) => Promise<string>
 }
 
 export interface CommandResult {
@@ -105,6 +107,24 @@ async function cmdSendMessage(args: string, ctx: CommandCtx): Promise<CommandRes
   return { reply: '未指定实例且无上次实例，先 /use <实例>', consumed: true }
 }
 
+async function cmdStartPi(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const parts = args.trim().split(/\s+/)
+  const { all } = await ctx.collectInstances()
+  let inst: InstanceInfo | undefined
+  let rest = args.trim()
+  if (parts[0] && all.some((i) => i.name === parts[0])) {
+    // 第一个参数匹配实例名 → 指定实例
+    inst = ctx.resolveTarget(all, parts[0])
+    rest = parts.slice(1).join(' ')
+  } else {
+    // 未指定实例 → 默认当前实例（接收消息的本机）
+    inst = ctx.resolveTarget(all, ctx.currentInstanceName)
+  }
+  if (!inst) return { reply: '未找到当前实例', consumed: true }
+  const cwd = rest.trim() || undefined
+  return { reply: await ctx.doStartPi(inst, cwd), consumed: true }
+}
+
 /** /cmd /msg 解析：参数 1 若匹配已知实例名则视为实例，否则复用上次实例并把全部参数当内容 */
 async function parseTargetArgs(args: string, ctx: CommandCtx): Promise<{ target: string | null; rest: string }> {
   const parts = args.trim().split(/\s+/)
@@ -114,6 +134,51 @@ async function parseTargetArgs(args: string, ctx: CommandCtx): Promise<{ target:
     return { target: parts[0], rest: parts.slice(1).join(' ') }
   }
   return { target: null, rest: args.trim() }
+}
+
+// ============================================================================
+// 文本清理（语音转文字前缀 / 语气词前缀 / 尾部标点 / 全角斜杠）
+// ============================================================================
+
+function cleanCommandText(text: string): string {
+  let trimmed = text.trim()
+  // 去掉语音转文字前缀
+  trimmed = trimmed.replace(/^\[语音转文字\]\s*/, '')
+  // 去掉语气词前缀
+  trimmed = trimmed.replace(/^(?:嗯|唔|不|啊|哦|好|对)[，,、\s]+/, '')
+  trimmed = trimmed.replace(/[。！？!?.,，、；;：:\s]+$/u, '')
+  trimmed = trimmed.replace(/^／/, '/')
+  return trimmed
+}
+
+// ============================================================================
+// 宽松 use 匹配：纯数字 / use xxx / 整句实例名 → 切换命令
+// 基于实例列表上下文校验（编号在范围内、实例数 >= 2），避免误吞普通对话；
+// 命中后由命令系统直接消费，不再作为普通消息投递给 agent。
+// ============================================================================
+
+export function tryLooseUse(text: string, all: InstanceInfo[]): { name: 'use'; rest: string } | null {
+  const trimmed = cleanCommandText(text)
+  if (!trimmed || trimmed.startsWith('/')) return null
+
+  // 1) 纯数字（阿拉伯 / 中文数字）：仅在编号有效且实例数 >= 2 时视为切换
+  if (/^\d{1,2}$/.test(trimmed) || parseChineseNumber(trimmed) !== null) {
+    const n = toNumber(trimmed)
+    if (Number.isFinite(n) && n >= 1 && n <= all.length && all.length >= 2) {
+      return { name: 'use', rest: String(n) }
+    }
+    return null
+  }
+
+  // 2) 无斜杠英文形式：use <实例名/编号>
+  const useMatch = trimmed.match(/^use\s+(.+)$/i)
+  if (useMatch) return { name: 'use', rest: useMatch[1].trim() }
+
+  // 3) 整句恰好等于某实例名（忽略大小写）
+  const lower = trimmed.toLowerCase()
+  const hit = all.find((i) => i.name.toLowerCase() === lower)
+  if (hit) return { name: 'use', rest: hit.name }
+  return null
 }
 
 // ============================================================================
@@ -130,17 +195,12 @@ const COMMANDS: Record<string, CommandEntry> = {
   use: { run: cmdUse, aliases: ['切换', '切换到', '切到'] },
   cmd: { run: cmdSendCommand, aliases: ['发送命令', '执行命令'] },
   msg: { run: cmdSendMessage, aliases: ['发送消息', '发消息'] },
+  'start-pi': { run: cmdStartPi, aliases: ['start pi', 'start-pi', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
 }
 
 /** 检查文本是否是命令（斜杠 / 中文别名），返回规范化命令名 */
 export function normalizeCommand(text: string): { name: string; rest: string } | null {
-  let trimmed = text.trim()
-  // 去掉语音转文字前缀
-  trimmed = trimmed.replace(/^\[语音转文字\]\s*/, '')
-  // 去掉语气词前缀
-  trimmed = trimmed.replace(/^(?:嗯|唔|不|啊|哦|好|对)[，,、\s]+/, '')
-  trimmed = trimmed.replace(/[。！？!?.,，、；;：:\s]+$/u, '')
-  trimmed = trimmed.replace(/^／/, '/')
+  const trimmed = cleanCommandText(text)
 
   let name: string | null = null
   let rest = ''
@@ -173,11 +233,24 @@ export function normalizeCommand(text: string): { name: string; rest: string } |
   return { name, rest }
 }
 
-export async function executeCommand(text: string, ctx: CommandCtx): Promise<CommandResult | null> {
+export interface ExecuteOptions {
+  /** 是否启用宽松 use 匹配（纯数字 / use xxx / 整句实例名 → 切换）。
+   *  渠道正在等待问卷答案时应置 false：用户发的数字可能真是答案，不能当切换命令消费。 */
+  loose?: boolean
+}
+
+export async function executeCommand(text: string, ctx: CommandCtx, opts: ExecuteOptions = {}): Promise<CommandResult | null> {
   const norm = normalizeCommand(text)
-  if (!norm) return null
-  const entry = COMMANDS[norm.name]
-  if (!entry) return null
-  const result = await entry.run(norm.rest, ctx)
-  return result
+  if (norm) {
+    const entry = COMMANDS[norm.name]
+    if (!entry) return null
+    return await entry.run(norm.rest, ctx)
+  }
+  // 宽松 use：说「2」「use home」「home」→ 直接执行切换并消费，不投递给 agent
+  if (opts.loose !== false) {
+    const { all } = await ctx.collectInstances()
+    const loose = tryLooseUse(text, all)
+    if (loose) return await COMMANDS.use.run(loose.rest, ctx)
+  }
+  return null
 }

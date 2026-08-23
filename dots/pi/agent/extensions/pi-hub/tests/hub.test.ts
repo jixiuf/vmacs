@@ -9,7 +9,7 @@ import {
   getGlobalLockHolder,
   preassignLock,
 } from '../src/lock.js'
-import { toNumber, parseChineseNumber, normalizeCommand } from '../src/commands.js'
+import { toNumber, parseChineseNumber, normalizeCommand, tryLooseUse, executeCommand, type CommandCtx } from '../src/commands.js'
 
 // 隔离状态目录，避免污染真实 ~/.pi 状态
 const TEST_STATE_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'pi-hub-test-'))
@@ -153,5 +153,125 @@ describe('命令归一化', () => {
   it('非命令返回 null', () => {
     expect(normalizeCommand('你好')).toBeNull()
     expect(normalizeCommand('帮我看看代码')).toBeNull()
+  })
+})
+
+describe('宽松 use 匹配（说「2」/「use home」/「home」直接切换并消费）', () => {
+  const instances = (names: string[]) =>
+    names.map((name, i) => ({
+      name,
+      pid: i + 1,
+      cwd: '',
+      sessionId: '',
+      lastSeen: Date.now(),
+      host: undefined,
+    }))
+
+  it('纯数字命中有效编号', () => {
+    expect(tryLooseUse('2', instances(['extensions', 'home']))).toEqual({ name: 'use', rest: '2' })
+  })
+  it('单实例时不匹配纯数字（避免误吞普通数字）', () => {
+    expect(tryLooseUse('2', instances(['extensions']))).toBeNull()
+    expect(tryLooseUse('1', instances(['extensions']))).toBeNull()
+  })
+  it('编号超出实例范围不匹配', () => {
+    expect(tryLooseUse('3', instances(['extensions', 'home']))).toBeNull()
+  })
+  it('中文数字也识别', () => {
+    expect(tryLooseUse('二', instances(['extensions', 'home']))).toEqual({ name: 'use', rest: '2' })
+  })
+  it('无斜杠 use 形式', () => {
+    expect(tryLooseUse('use home', instances(['extensions', 'home']))).toEqual({ name: 'use', rest: 'home' })
+    expect(tryLooseUse('USE 2', instances(['extensions', 'home']))).toEqual({ name: 'use', rest: '2' })
+  })
+  it('整句等于实例名（忽略大小写）', () => {
+    expect(tryLooseUse('home', instances(['extensions', 'home']))).toEqual({ name: 'use', rest: 'home' })
+    expect(tryLooseUse('Home', instances(['extensions', 'home']))).toEqual({ name: 'use', rest: 'home' })
+  })
+  it('普通对话不匹配', () => {
+    const all = instances(['extensions', 'home'])
+    expect(tryLooseUse('你好', all)).toBeNull()
+    expect(tryLooseUse('帮我看看代码', all)).toBeNull()
+    expect(tryLooseUse('给我两个方案', all)).toBeNull()
+    expect(tryLooseUse('/instances', all)).toBeNull()
+    expect(tryLooseUse('今天2点开会', all)).toBeNull()
+  })
+})
+
+describe('executeCommand 宽松 use 执行', () => {
+  const makeCtx = (): CommandCtx => ({
+    currentInstanceName: 'extensions',
+    collectInstances: async () => ({
+      local: [],
+      all: [
+        { name: 'extensions', pid: 1, cwd: '', sessionId: '', lastSeen: Date.now(), host: undefined },
+        { name: 'home', pid: 2, cwd: '', sessionId: '', lastSeen: Date.now(), host: undefined },
+      ],
+    }),
+    resolveTarget: () => undefined,
+    doSwitch: async (name) => `switched ${name}`,
+    doSendCommand: async () => '',
+    doSendMessage: async () => '',
+    rememberTarget: () => {},
+    getLastTarget: () => null,
+    doStartPi: async () => '',
+  })
+
+  it('说「2」执行 use 并消费（不投递给 agent）', async () => {
+    expect(await executeCommand('2', makeCtx())).toEqual({ reply: 'switched 2', consumed: true })
+  })
+  it('「use home」执行切换', async () => {
+    expect(await executeCommand('use home', makeCtx())).toEqual({ reply: 'switched home', consumed: true })
+  })
+  it('loose=false（问卷等待中）不消费普通数字', async () => {
+    expect(await executeCommand('2', makeCtx(), { loose: false })).toBeNull()
+  })
+  it('普通对话返回 null', async () => {
+    expect(await executeCommand('你好', makeCtx())).toBeNull()
+  })
+})
+
+describe('start-pi 命令（在实例 tmux 中启动 pi）', () => {
+  const makeCtx = (): CommandCtx => ({
+    currentInstanceName: 'extensions',
+    collectInstances: async () => ({
+      local: [],
+      all: [
+        { name: 'extensions', pid: 1, cwd: '/home/ext', sessionId: '', lastSeen: Date.now(), host: 'ljmacjxf' },
+        { name: 'home', pid: 2, cwd: '/home/admin', sessionId: '', lastSeen: Date.now(), host: 'bj-vc-client-apm-01' },
+      ],
+    }),
+    resolveTarget: (all, name) => all.find((i) => i.name === name),
+    doSwitch: async (name) => `switched ${name}`,
+    doSendCommand: async () => '',
+    doSendMessage: async () => '',
+    rememberTarget: () => {},
+    getLastTarget: () => null,
+    doStartPi: async (target, cwd) => `started ${target.name}${cwd ? ` @${cwd}` : ''}`,
+  })
+
+  it('斜杠 /start-pi home 命中并转发目录', async () => {
+    expect(await executeCommand('/start-pi home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
+  })
+  it('英文 start pi 命中', async () => {
+    expect(await executeCommand('start pi home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
+  })
+  it('中文别名「启动pi」命中', async () => {
+    expect(await executeCommand('启动pi home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
+  })
+  it('带目录参数', async () => {
+    expect(await executeCommand('/start-pi home ~/proj', makeCtx())).toEqual({ reply: 'started home @~/proj', consumed: true })
+  })
+  it('无参数时默认当前实例（本机）', async () => {
+    expect(await executeCommand('/start-pi', makeCtx())).toEqual({ reply: 'started extensions', consumed: true })
+  })
+  it('第一个参数不是实例名时作为目录，默认本机', async () => {
+    expect(await executeCommand('/start-pi ~/proj', makeCtx())).toEqual({ reply: 'started extensions @~/proj', consumed: true })
+  })
+  it('中文别名无实例默认本机', async () => {
+    expect(await executeCommand('启动pi', makeCtx())).toEqual({ reply: 'started extensions', consumed: true })
+  })
+  it('普通对话不命中 start-pi', async () => {
+    expect(await executeCommand('帮我在服务器上启动pi', makeCtx())).toBeNull()
   })
 })
