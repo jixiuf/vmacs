@@ -1300,39 +1300,6 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
   })
 
-  pi.registerCommand('clipboard', {
-    description: '复制内容到系统剪贴板：/clipboard <内容>；无参数时复制最后一条回复',
-    handler: async (args, ctx) => {
-      let content = args.trim()
-      if (!content) {
-        // 无参数：取最近一条 assistant 文本回复
-        try {
-          const branch = ctx.sessionManager.getBranch()
-          for (let i = branch.length - 1; i >= 0; i--) {
-            const entry = branch[i]
-            if (entry.type !== 'message') continue
-            const msg = (entry as { message?: { role?: string; content?: Array<{ type?: string; text?: string }> } }).message
-            if (msg?.role === 'assistant') {
-              content = (msg.content ?? [])
-                .filter((p) => p.type === 'text' && p.text)
-                .map((p) => p.text ?? '')
-                .join('\n')
-              break
-            }
-          }
-        } catch {
-          // 读取会话失败则忽略
-        }
-      }
-      if (!content) {
-        ctx.ui.notify('没有可复制的内容（/clipboard <内容> 或等待回复后重试）', 'warning')
-        return
-      }
-      const ok = await writeClipboard(content)
-      ctx.ui.notify(ok ? `✅ 已复制 ${content.length} 字符到剪贴板` : `❌ 剪贴板写入失败（${process.platform}）`, ok ? 'info' : 'warning')
-    },
-  })
-
   pi.registerCommand('start-pi', {
     getArgumentCompletions: instanceCompletions,
     description: '在实例（默认本机）的 tmux pi 会话中启动 pi：/start-pi [实例名] [目录]',

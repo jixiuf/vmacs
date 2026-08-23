@@ -122,3 +122,7 @@ dots/pi/agent/wechat-assistant/credentials.json
 dots/pi/agent/coordinator/config.json
 dots/pi/agent/pi-cache-optimizer-stats.d/maintenance/last-cleanup
 dots/pi/agent/pi-cache-optimizer-stats.d/shards/
+
+# 运行时缓存（pid 变化，用通配符）
+dots/pi/agent/pi-cache-optimizer-stats.json.*.tmp
+dots/pi/agent/wechat-assistant/instances.json

@@ -3,7 +3,7 @@
   "defaultProvider": "deepseek",
   "defaultThinkingLevel": "high",
   "followUpMode": "all",
-  "hideThinkingBlock": false,
+  "hideThinkingBlock": true,
   "lastChangelogVersion": "0.84.2",
   "packages": [
     "npm:pi-cache-optimizer",
