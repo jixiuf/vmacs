@@ -123,12 +123,6 @@ export function connectCoordinatorWS(
     ws = socket
   }
 
-  const hb = setInterval(() => {
-    if (ws?.readyState === WebSocket.OPEN) {
-      try { ws.send(JSON.stringify({ type: 'ping' })) } catch { /* ignore */ }
-    }
-  }, 15000)
-
   connect()
   return {
     sendEnvelope(env) {
@@ -139,7 +133,6 @@ export function connectCoordinatorWS(
     },
     close() {
       closed = true
-      clearInterval(hb)
       try { ws?.close() } catch { /* ignore */ }
     },
   }
@@ -183,7 +176,7 @@ const activeClients = new Map<string, number>()
 const clientHosts = new Map<string, string>()
 /** 客户端实例名 → 会话标题（/ws 连接上报，/instances 展示） */
 const clientSessionNames = new Map<string, string>()
-const ACTIVE_CLIENT_TTL_MS = 30_000
+const ACTIVE_CLIENT_TTL_MS = Number(process.env.PI_HUB_ACTIVE_TTL_MS) || 30_000
 
 function markActiveClient(name: string, host?: string): void {
   if (!name) return
@@ -454,11 +447,16 @@ export function startCoordinatorServer(
           buffer = buffer.subarray(parsed.consumed)
           try {
             if (parsed.opcode === WS_OP.PING) {
-              // 心跳：刷新活跃登记 + 回 pong
+              // 客户端主动 ping（协议层）：刷新活跃登记 + 回 pong
               markActiveClient(name, host)
-      if (session) clientSessionNames.set(name, session)
-      else clientSessionNames.delete(name)
+              if (session) clientSessionNames.set(name, session)
+              else clientSessionNames.delete(name)
               sock.write(wsFrame(WS_OP.PONG, Buffer.alloc(0)))
+              continue
+            }
+            if (parsed.opcode === WS_OP.PONG) {
+              // 心跳响应：服务器主动 PING 后，标准 WebSocket 客户端自动回 PONG → 刷新活跃登记
+              markActiveClient(name, host)
               continue
             }
             if (parsed.opcode === WS_OP.CLOSE) {
@@ -509,7 +507,19 @@ export function startCoordinatorServer(
       }
     }
   }, 30000)
-  server.on('close', () => clearInterval(activePrune))
+
+  // 服务器主动心跳：定期向所有 WS 客户端发协议层 PING 帧。标准 WebSocket 客户端
+  // （Node/浏览器）收到 PING 后自动回 PONG（协议层行为，无需应用代码），服务器以
+  // PONG 刷新活跃登记。TTL(30s) 大于心跳间隔(15s)，正常连接不会被误清理。
+  const wsHeartbeat = setInterval(() => {
+    for (const [, sock] of [...wsClients]) {
+      try { sock.write(wsFrame(WS_OP.PING, Buffer.alloc(0))) } catch { /* ignore */ }
+    }
+  }, Number(process.env.PI_HUB_WS_HEARTBEAT_MS) || 15000)
+  server.on('close', () => {
+    clearInterval(activePrune)
+    clearInterval(wsHeartbeat)
+  })
 
   server.listen(port)
   return server
