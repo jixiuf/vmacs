@@ -12,6 +12,8 @@ export interface InstanceInfo {
   sessionId: string
   lastSeen: number
   host?: string
+  /** 会话标题（/name 设置），供 /msg 补全 / /instances 展示 */
+  sessionName?: string
 }
 
 // --- 接管请求 ---

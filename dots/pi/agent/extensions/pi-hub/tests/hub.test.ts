@@ -3,6 +3,7 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import { EnvelopeQueue } from '../src/queue.js'
+import { registerInstance, listInstances } from '../src/registry.js'
 import {
   coordinatorTryLock,
   coordinatorReleaseLock,
@@ -215,6 +216,8 @@ describe('executeCommand 宽松 use 执行', () => {
     rememberTarget: () => {},
     getLastTarget: () => null,
     doStartPi: async () => '',
+    doReloadAll: async () => 'reloaded all',
+    writeClipboard: async () => true,
   })
 
   it('说「2」执行 use 并消费（不投递给 agent）', async () => {
@@ -248,6 +251,8 @@ describe('start-pi 命令（在实例 tmux 中启动 pi）', () => {
     rememberTarget: () => {},
     getLastTarget: () => null,
     doStartPi: async (target, cwd) => `started ${target.name}${cwd ? ` @${cwd}` : ''}`,
+    doReloadAll: async () => 'reloaded all',
+    writeClipboard: async () => true,
   })
 
   it('斜杠 /start-pi home 命中并转发目录', async () => {
@@ -268,10 +273,66 @@ describe('start-pi 命令（在实例 tmux 中启动 pi）', () => {
   it('第一个参数不是实例名时作为目录，默认本机', async () => {
     expect(await executeCommand('/start-pi ~/proj', makeCtx())).toEqual({ reply: 'started extensions @~/proj', consumed: true })
   })
+  it('打错的实例名（非目录）报错不静默当目录', async () => {
+    expect(await executeCommand('/start-pi home2', makeCtx())).toEqual({ reply: '未找到实例 home2，先 /instances 查看', consumed: true })
+  })
   it('中文别名无实例默认本机', async () => {
     expect(await executeCommand('启动pi', makeCtx())).toEqual({ reply: 'started extensions', consumed: true })
   })
   it('普通对话不命中 start-pi', async () => {
     expect(await executeCommand('帮我在服务器上启动pi', makeCtx())).toBeNull()
+  })
+})
+
+describe('reloadall 命令', () => {
+  const makeCtx = (): CommandCtx => ({
+    currentInstanceName: 'extensions',
+    collectInstances: async () => ({
+      local: [],
+      all: [
+        { name: 'extensions', pid: 1, cwd: '', sessionId: '', lastSeen: Date.now(), host: undefined },
+        { name: 'home', pid: 2, cwd: '', sessionId: '', lastSeen: Date.now(), host: undefined },
+      ],
+    }),
+    resolveTarget: () => undefined,
+    doSwitch: async () => '',
+    doSendCommand: async () => '',
+    doSendMessage: async () => '',
+    rememberTarget: () => {},
+    getLastTarget: () => null,
+    doStartPi: async () => '',
+    doReloadAll: async () => 'reloaded extensions, home',
+  })
+
+  it('斜杠 /reloadall 命中并调用 doReloadAll', async () => {
+    expect(await executeCommand('/reloadall', makeCtx())).toEqual({ reply: 'reloaded extensions, home', consumed: true })
+  })
+  it('中文别名「重载全部」命中', async () => {
+    expect(await executeCommand('重载全部', makeCtx())).toEqual({ reply: 'reloaded extensions, home', consumed: true })
+  })
+  it('英文「reload all」命中', async () => {
+    expect(await executeCommand('reload all', makeCtx())).toEqual({ reply: 'reloaded extensions, home', consumed: true })
+  })
+  it('普通对话不命中', async () => {
+    expect(await executeCommand('重载一下这个', makeCtx())).toBeNull()
+  })
+})
+
+describe('实例注册唯一性（同名存活冲突自动改名）', () => {
+  it('同名但旧 pid 已死 → 正常覆盖（回收名字）', () => {
+    // 假 pid（进程不存在）→ isProcessRunning 视为已死 → 正常覆盖
+    const n1 = registerInstance({ name: 'same', pid: 999991, cwd: '/tmp', sessionId: 's1', host: 'h' })
+    const n2 = registerInstance({ name: 'same', pid: 999992, cwd: '/tmp', sessionId: 's2', host: 'h' })
+    expect(n1).toBe('same')
+    expect(n2).toBe('same') // 旧 pid 已死 → 回收名字，不触发改名
+  })
+
+  it('同名且旧 pid 存活 → 新实例自动改名（-pid），不覆盖', () => {
+    // 用当前进程真实 pid 模拟存活冲突
+    const alivePid = process.pid
+    const n1 = registerInstance({ name: 'dup', pid: alivePid, cwd: '/tmp', sessionId: 'd1', host: 'h' })
+    const n2 = registerInstance({ name: 'dup', pid: alivePid + 1, cwd: '/tmp', sessionId: 'd2', host: 'h' })
+    expect(n1).toBe('dup')
+    expect(n2).toBe(`dup-${alivePid + 1}`) // 存活冲突 → 新实例改名，两个并存
   })
 })

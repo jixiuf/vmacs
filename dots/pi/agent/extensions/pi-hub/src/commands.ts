@@ -24,6 +24,10 @@ export interface CommandCtx {
   getLastTarget: () => string | null
   /** 在目标实例所在机器的 tmux 中启动 pi（新会话 pi-<实例名>） */
   doStartPi: (target: InstanceInfo, cwd?: string) => Promise<string>
+  /** 重载所有实例（当前实例本地执行，其他实例发指令），返回汇总 */
+  doReloadAll: () => Promise<string>
+  /** 写入系统剪贴板（本机 pbcopy/xclip） */
+  writeClipboard: (text: string) => Promise<boolean>
 }
 
 export interface CommandResult {
@@ -74,7 +78,10 @@ async function cmdInstances(_args: string, ctx: CommandCtx): Promise<CommandResu
     if (inst.pid === process.pid) marks.push('当前')
     if (!local.some((l) => l.name === inst.name)) marks.push('远程')
     const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
-    return `${inst.name}${inst.host ? '@' + inst.host : ''}${mark}`
+    const host = inst.host ? `@${inst.host}` : ''
+    // cwd 列在行尾（远程实例 cwd 可能为空则不显示）
+    const cwd = inst.cwd ? ` ${inst.cwd}` : ''
+    return `${inst.name}${host}${mark}${cwd}`
   })
   return { reply: `实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}`, consumed: true }
 }
@@ -107,22 +114,50 @@ async function cmdSendMessage(args: string, ctx: CommandCtx): Promise<CommandRes
   return { reply: '未指定实例且无上次实例，先 /use <实例>', consumed: true }
 }
 
-async function cmdStartPi(args: string, ctx: CommandCtx): Promise<CommandResult> {
+export interface StartPiTarget {
+  inst: InstanceInfo
+  rest: string
+}
+
+/**
+ * start-pi 参数解析：第一参数匹配实例名 → 指定实例；否则默认当前实例（本机）。
+ * 第一参数含 / ~ 或以 . 开头视为目录；否则像实例名但找不到 → 报错（避免打错实例名被静默当目录）。
+ */
+export function parseStartPiTarget(
+  all: InstanceInfo[],
+  currentInstanceName: string,
+  args: string,
+): StartPiTarget | { error: string } {
   const parts = args.trim().split(/\s+/)
-  const { all } = await ctx.collectInstances()
-  let inst: InstanceInfo | undefined
-  let rest = args.trim()
-  if (parts[0] && all.some((i) => i.name === parts[0])) {
-    // 第一个参数匹配实例名 → 指定实例
-    inst = ctx.resolveTarget(all, parts[0])
-    rest = parts.slice(1).join(' ')
-  } else {
-    // 未指定实例 → 默认当前实例（接收消息的本机）
-    inst = ctx.resolveTarget(all, ctx.currentInstanceName)
+  const first = parts[0] ?? ''
+  const looksLikeDir = first.includes('/') || first.includes('~') || first.startsWith('.')
+  if (first && !looksLikeDir) {
+    const hit = all.find((i) => i.name === first)
+    if (hit) return { inst: hit, rest: parts.slice(1).join(' ') }
+    return { error: `未找到实例 ${first}，先 /instances 查看` }
   }
-  if (!inst) return { reply: '未找到当前实例', consumed: true }
-  const cwd = rest.trim() || undefined
-  return { reply: await ctx.doStartPi(inst, cwd), consumed: true }
+  const inst = all.find((i) => i.name === currentInstanceName)
+  if (!inst) return { error: '未找到当前实例' }
+  return { inst, rest: args.trim() }
+}
+
+async function cmdStartPi(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const { all } = await ctx.collectInstances()
+  const parsed = parseStartPiTarget(all, ctx.currentInstanceName, args)
+  if ('error' in parsed) return { reply: parsed.error, consumed: true }
+  const cwd = parsed.rest.trim() || undefined
+  return { reply: await ctx.doStartPi(parsed.inst, cwd), consumed: true }
+}
+
+async function cmdReloadAll(_args: string, ctx: CommandCtx): Promise<CommandResult> {
+  return { reply: await ctx.doReloadAll(), consumed: true }
+}
+
+async function cmdClipboard(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const content = args.trim()
+  if (!content) return { reply: '用法: /clipboard <内容>（复制内容到本机剪贴板）', consumed: true }
+  const ok = await ctx.writeClipboard(content)
+  return { reply: ok ? `✅ 已复制 ${content.length} 字符到剪贴板` : '❌ 剪贴板写入失败（本机无 pbcopy/xclip）', consumed: true }
 }
 
 /** /cmd /msg 解析：参数 1 若匹配已知实例名则视为实例，否则复用上次实例并把全部参数当内容 */
@@ -196,6 +231,8 @@ const COMMANDS: Record<string, CommandEntry> = {
   cmd: { run: cmdSendCommand, aliases: ['发送命令', '执行命令'] },
   msg: { run: cmdSendMessage, aliases: ['发送消息', '发消息'] },
   'start-pi': { run: cmdStartPi, aliases: ['start pi', 'start-pi', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
+  reloadall: { run: cmdReloadAll, aliases: ['重载全部', '全部重载', 'reload all', 'reloadall', '重载所有', '重启全部'] },
+  clipboard: { run: cmdClipboard, aliases: ['复制', '拷贝', '复制到剪贴板'] },
 }
 
 /** 检查文本是否是命令（斜杠 / 中文别名），返回规范化命令名 */

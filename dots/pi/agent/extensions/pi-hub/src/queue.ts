@@ -18,10 +18,14 @@ import * as path from 'node:path'
 import type { Envelope } from './types.js'
 import { makeEnvelopeId } from './types.js'
 
-const STATE_DIR =
-  process.env.PI_HUB_STATE_DIR ?? path.join(os.homedir(), '.pi', 'agent', 'wechat-assistant')
-const QUEUE_FILE = path.join(STATE_DIR, 'coordinator-queue.json')
-const DEDUP_FILE = path.join(STATE_DIR, 'coordinator-processed.json')
+// 惰性读取：测试环境可在 import 后设置 PI_HUB_STATE_DIR 隔离
+function stateDir(): string {
+  return process.env.PI_HUB_STATE_DIR ?? path.join(os.homedir(), '.pi', 'agent', 'wechat-assistant')
+}
+function queueFile(): string {
+  return path.join(stateDir(), 'coordinator-queue.json')
+}
+const DEDUP_FILE = (): string => path.join(stateDir(), 'coordinator-processed.json')
 
 /** 消息在队列中的最大存活时间：超过则视为投递失败，重投 */
 const ENVELOPE_TTL_MS = 5 * 60_000
@@ -60,7 +64,7 @@ class DedupSet {
   private readonly map = new Map<string, number>() // id → 处理时间
 
   constructor() {
-    const data = readJson<Array<{ id: string; ts: number }>>(DEDUP_FILE)
+    const data = readJson<Array<{ id: string; ts: number }>>(DEDUP_FILE())
     const now = Date.now()
     for (const { id, ts } of data ?? []) {
       if (now - ts < DEDUP_TTL_MS) this.map.set(id, ts)
@@ -79,7 +83,7 @@ class DedupSet {
 
   private persist(): void {
     const data = [...this.map.entries()].map(([id, ts]) => ({ id, ts }))
-    writeJson(DEDUP_FILE, data)
+    writeJson(DEDUP_FILE(), data)
   }
 }
 
@@ -151,11 +155,11 @@ export class EnvelopeQueue {
   }
 
   private readEntries(): QueueEntry[] {
-    return readJson<QueueEntry[]>(QUEUE_FILE) ?? []
+    return readJson<QueueEntry[]>(queueFile()) ?? []
   }
 
   private writeEntries(entries: QueueEntry[]): void {
-    writeJson(QUEUE_FILE, entries)
+    writeJson(queueFile(), entries)
   }
 
   /** 队列长度（调试用） */

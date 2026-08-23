@@ -19,7 +19,7 @@ import { Type } from '@sinclair/typebox'
 // @ts-ignore — @earendil-works is the current package, but the older package still carries TS declarations used for compatibility here
 import type { ExtensionAPI, ExtensionContext, ExtensionCommandContext } from '@mariozechner/pi-coding-agent'
 import { loadHubConfig, isChannelEnabled, type HubConfig } from './src/config.js'
-import { registerInstance, unregisterInstance, listInstances } from './src/registry.js'
+import { registerInstance, unregisterInstance, listInstances, pruneInstances } from './src/registry.js'
 import {
   coordinatorTryLock,
   coordinatorReleaseLock,
@@ -29,11 +29,11 @@ import {
 import { EnvelopeQueue } from './src/queue.js'
 import {
   startCoordinatorServer,
-  fetchInbox,
   postEnvelope,
   fetchCoordinatorInstances,
   listRemoteInstances,
   sshExec,
+  connectCoordinatorWS,
   writeRemoteTakeoverRequest,
   enqueueRemoteTakeover,
   requestRemoteLock,
@@ -44,12 +44,13 @@ import {
   writeLastMsgLocal,
   fetchLastMsgRemote,
   pushLastMsgRemote,
+  type WsClientHandle,
   type LastWechatMsg,
   type RemoteHostConfig,
 } from './src/transport.js'
 import { SessionBridge } from './src/bridge.js'
 import { Router } from './src/router.js'
-import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
+import { executeCommand, toNumber, parseStartPiTarget, type CommandCtx } from './src/commands.js'
 import type {
   IGateway,
   InboundMessage,
@@ -71,6 +72,7 @@ const TAKEOVER_TTL_MS = 60_000
 export default function hubExtension(pi: ExtensionAPI) {
   let currentInstanceName = ''
   let coordinatorServer: ReturnType<typeof startCoordinatorServer> | null = null
+  let wsClient: WsClientHandle | null = null
   let latestCtx: Ctx | null = null
   let config: HubConfig = loadHubConfig()
 
@@ -107,6 +109,14 @@ export default function hubExtension(pi: ExtensionAPI) {
   if (oldWatcher) clearInterval(oldWatcher)
   const oldAuto = g[`${watcherKey}_AUTO_TAKEOVER`] as ReturnType<typeof setInterval> | undefined
   if (oldAuto) clearInterval(oldAuto)
+  // reload 时关闭旧协调中心 server（旧代码无 WS upgrade），让新 session_start 用新代码重启
+  const SERVER_KEY = '__PI_HUB_SERVER__'
+  const oldServer = g[SERVER_KEY] as ReturnType<typeof startCoordinatorServer> | undefined
+  if (oldServer) {
+    try { oldServer.closeAllConnections?.() } catch { /* ignore */ }
+    try { oldServer.close() } catch { /* ignore */ }
+    delete g[SERVER_KEY]
+  }
   g[watcherKey] = setInterval(() => {
     void pollIncoming().catch(() => {})
     void pollMessages().catch(() => {})
@@ -114,6 +124,45 @@ export default function hubExtension(pi: ExtensionAPI) {
   g[`${watcherKey}_AUTO_TAKEOVER`] = setInterval(() => {
     void autoTakeoverIfIdle().catch(() => {})
     void ensureCoordinatorIfNeeded().catch(() => {})
+  }, 5000)
+  // 定期清理死亡实例条目（低频原子写，避免与注册/注销并发竞争）
+  const PRUNE_KEY = '__PI_HUB_PRUNE__'
+  if (!g[PRUNE_KEY]) {
+    g[PRUNE_KEY] = setInterval(() => pruneInstances(), 60000)
+  }
+
+  // 兜底初始化：pi 重启恢复会话时扩展加载可能晚于 session_start 事件派发（事件错过），
+  // 导致 currentInstanceName 未设置、实例不注册/不连 WS（哑巴实例）。
+  // 扩展加载后延时检查，若 session_start 未触发则用 process.cwd() 兜底完成初始化。
+  setTimeout(() => {
+    if (currentInstanceName) return // session_start 已正常触发
+    log(`session_start 未触发，兜底初始化（cwd=${process.cwd()}）`)
+    try {
+      currentInstanceName = registerInstance({
+        name: process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(process.cwd()) || 'pi',
+        pid: process.pid,
+        cwd: process.cwd(),
+        sessionId: 'fallback',
+        host: os.hostname(),
+        sessionName: pi.getSessionName() ?? undefined,
+      })
+      if (config.coordinatorUrl) {
+        wsClient?.close()
+        wsClient = connectCoordinatorWS(
+          config.coordinatorUrl,
+          currentInstanceName,
+          os.hostname(),
+          (env) => routeEnvelope(env),
+          (connected) => {
+            log(connected ? '协调中心 WS 已连接（兜底初始化）' : '协调中心 WS 断开，重连中')
+            if (connected) flushPendingOutbox()
+          },
+          pi.getSessionName() ?? undefined,
+        )
+      }
+    } catch (err) {
+      log(`兜底初始化失败: ${(err as Error).message}`)
+    }
   }, 5000)
   try {
     fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] WATCHER STARTED pid=${process.pid}\n`)
@@ -197,10 +246,12 @@ export default function hubExtension(pi: ExtensionAPI) {
       }
       // 本机广播文件：任意实例写入，本机其他实例各自 ack 后 reload
       consumeLocalBroadcast()
-      if (config.coordinatorUrl) {
-        const envelopes = await fetchInbox(config.coordinatorUrl, currentInstanceName, os.hostname())
-        for (const env of envelopes) {
-          routeEnvelope(env)
+      if (config.coordinatorPort) {
+        // 协调中心模式：消费本地队列中发给自己的 envelope（指令/消息），ack 防重投
+        const items = queue.dequeue(currentInstanceName)
+        for (const item of items) {
+          routeEnvelope(item.env)
+          item.ack()
         }
       }
     } catch {
@@ -216,10 +267,10 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (req.command !== 'reload') return
       if (!ackBroadcastRequest()) return
       log(`收到本机广播命令: ${req.command}，重载扩展`)
-      void pi.sendUserMessage('/__hub_reload', {
+      safeSendUserMessage('/__hub_reload', {
         deliverAs: 'steer',
         expandPromptTemplates: true,
-      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
+      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
     } catch {
       // ignore
     }
@@ -245,10 +296,10 @@ export default function hubExtension(pi: ExtensionAPI) {
       }
       case 'command': {
         log(`收到来自 ${env.from} 的指令: ${env.command}`)
-        void pi.sendUserMessage(env.command, {
+        safeSendUserMessage(env.command, {
           deliverAs: 'steer',
           expandPromptTemplates: true,
-        } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
+        } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
         break
       }
       case 'takeover': {
@@ -268,10 +319,10 @@ export default function hubExtension(pi: ExtensionAPI) {
         // 广播命令（如 reload-all）：通知本实例扩展重载
         log(`收到广播命令: ${env.command} (from ${env.from})`)
         if (env.command === 'reload' && latestCtx) {
-          void pi.sendUserMessage('/__hub_reload', {
+          safeSendUserMessage('/__hub_reload', {
             deliverAs: 'steer',
             expandPromptTemplates: true,
-          } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean }).catch(() => {})
+          } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
         }
         break
       }
@@ -293,7 +344,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       const command = (req.payload as { command?: string } | undefined)?.command
       if (command) {
         log(`收到来自 ${req.fromName} 的指令: ${command}`)
-        await pi.sendUserMessage(command, {
+        safeSendUserMessage(command, {
           deliverAs: 'steer',
           expandPromptTemplates: true,
         } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
@@ -347,12 +398,33 @@ export default function hubExtension(pi: ExtensionAPI) {
       rememberTarget,
       getLastTarget: () => lastTargetName,
       doStartPi,
+      doReloadAll,
+      writeClipboard,
     }
     // 渠道正在等待问卷答案时禁用宽松 use 匹配（数字可能是答案，不是切换命令）
     const gw = gateways.get(channel)
     const awaitingAnswer = gw?.isAwaitingAnswer?.(userId) ?? false
     const result = await executeCommand(text, ctx, { loose: !awaitingAnswer })
     return result ? result.reply : null
+  }
+
+  /**
+   * 安全投递消息到 agent 会话：扩展 reload / 会话替换后，旧扩展实例的 pi API 会同步抛
+   * "ctx is stale" 错误（uncaughtException 会让整个 pi 进程退出）。所有 sendUserMessage
+   * 调用都必须经此包装捕获，stale 时静默丢弃。
+   */
+  function safeSendUserMessage(
+    content: string,
+    opts?: Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates?: boolean },
+  ): void {
+    try {
+      const p = pi.sendUserMessage(content, opts)
+      if (p && typeof (p as Promise<unknown>).catch === 'function') {
+        void (p as Promise<unknown>).catch(() => { /* 异步失败忽略 */ })
+      }
+    } catch (err) {
+      log(`sendUserMessage 失败（扩展可能已 reload，消息丢弃）: ${(err as Error).message}`)
+    }
   }
 
   async function handleMessage(m: InboundMessage): Promise<boolean> {
@@ -363,16 +435,18 @@ export default function hubExtension(pi: ExtensionAPI) {
   async function deliverToAgent(m: InboundMessage): Promise<unknown> {
     // 协调消息直接注入（文本）
     if (m.channel === 'coord') {
-      return pi.sendUserMessage(`[协调消息 @${m.userId}] ${m.text ?? ''}`, {
+      safeSendUserMessage(`[协调消息 @${m.userId}] ${m.text ?? ''}`, {
         deliverAs: 'steer',
         expandPromptTemplates: true,
       } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+      return null
     }
     // 普通渠道消息：带渠道标识注入
-    return pi.sendUserMessage(m.text ?? '[消息]', {
+    safeSendUserMessage(m.text ?? '[消息]', {
       deliverAs: 'steer',
       expandPromptTemplates: true,
     } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+    return null
   }
 
   // ============================================================================
@@ -489,6 +563,33 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
   })
 
+  pi.registerTool({
+    name: 'dispatch_task',
+    label: 'Dispatch Task',
+    description: '向一个或多个子实例分发子任务（带 TASK#N 标记的消息），等待各实例回传 [TASK#N结果] 后汇总。',
+    promptSnippet: '分发子任务给多个实例',
+    promptGuidelines: ['subagent 协作：先 list_instances 确认可用实例，再分发任务；结果由子实例 send_message 回传。'],
+    parameters: Type.Object({
+      tasks: Type.Array(Type.Object({
+        instance: Type.String({ description: '目标实例名' }),
+        task: Type.String({ description: '任务描述，建议明确输出格式（JSON/表格/固定模板）' }),
+      })),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const lines: string[] = []
+        for (const [i, t] of params.tasks.entries()) {
+          const tag = `[TASK#${i + 1}]`
+          const reply = await doSendMessage(t.instance, `${tag} ${t.task}\n完成后请回复「${tag}结果」+ 结果内容。`)
+          lines.push(`TASK#${i + 1} → ${t.instance}: ${reply}`)
+        }
+        return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。`)
+      } catch (err) {
+        return fail(`分发失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
   // ============================================================================
   // 公共逻辑（工具与 / 命令共用）
   // ============================================================================
@@ -544,7 +645,11 @@ export default function hubExtension(pi: ExtensionAPI) {
   function resolveTarget(all: InstanceInfo[], name: string): InstanceInfo | undefined {
     const num = toNumber(name)
     if (Number.isFinite(num) && num >= 1) return all[num - 1]
-    return all.find((i) => i.name === name)
+    // 支持 name 与 name@host 两种形式（list_instances 展示的是 name@host）
+    return (
+      all.find((i) => i.name === name) ??
+      all.find((i) => i.host && `${i.name}@${i.host}` === name)
+    )
   }
 
   const instanceCompletions = async (argumentPrefix: string) => {
@@ -553,8 +658,14 @@ export default function hubExtension(pi: ExtensionAPI) {
       .filter((i) => i.name.startsWith(argumentPrefix))
       .map((i) => {
         const isRemote = !local.some((l) => l.name === i.name)
-        const label = isRemote ? (i.host ? `${i.name}@${i.host}` : `${i.name}（远程）`) : i.name
-        const description = i.host ? `@${i.host} · ${i.cwd || '(远程)'}` : i.cwd
+        const isCurrent = i.name === currentInstanceName || i.pid === process.pid
+        const marks: string[] = []
+        if (isCurrent) marks.push('当前')
+        if (isRemote) marks.push('远程')
+        const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
+        const label = `${i.host ? `${i.name}@${i.host}` : i.name}${mark}`
+        const title = i.sessionName ? ` 「${i.sessionName}」` : ''
+        const description = `${i.host ? `@${i.host} · ${i.cwd || '(远程)'}` : i.cwd}${title}`
         return { value: i.name, label, description }
       })
   }
@@ -574,7 +685,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       const holder = getGlobalLockHolder()
       if (holder?.name === currentInstanceName) return `微信已由 ${target.name} 接管`
       if (config.coordinatorUrl) {
-        await postEnvelope(config.coordinatorUrl, {
+        await sendEnvelopeToCoordinator({
           type: 'takeover',
           id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
           from: currentInstanceName || 'local',
@@ -609,7 +720,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       return `已向实例 ${target.name} 发送接管请求`
     }
     if (config.coordinatorUrl && !local.some((i) => i.name === target.name)) {
-      await postEnvelope(config.coordinatorUrl, {
+      await sendEnvelopeToCoordinator({
         type: 'takeover',
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         from: currentInstanceName || 'local',
@@ -627,36 +738,151 @@ export default function hubExtension(pi: ExtensionAPI) {
     return `实例 ${target.name} 没有可用的通道`
   }
 
+  /** 重载所有实例：当前实例本地执行，其他实例发 /__hub_reload（扩展命令，注入后目标端真正执行 reload；内置 /reload 注入只显示文本不执行） */
+  async function doReloadAll(): Promise<string> {
+    const { all } = await collectInstances()
+    if (all.length === 0) return '没有登记的实例'
+    const lines: string[] = []
+    for (const inst of all) {
+      lines.push(await doSendCommand(inst.name, '/__hub_reload'))
+    }
+    return `已向 ${all.length} 个实例发送 reload:\n${lines.join('\n')}`
+  }
+
+  /** 重载当前实例扩展：仅命令上下文（ExtensionCommandContext）有 reload()，session 上下文没有 */
+  function reloadCurrentInstance(): boolean {
+    const ctx = latestCtx as { reload?: () => unknown } | null
+    if (ctx && typeof ctx.reload === 'function') {
+      void ctx.reload()
+      return true
+    }
+    return false
+  }
+
+  /** 发 envelope 到协调中心：WS 在线 → 直接发送（低延迟）；否则回退 HTTP POST */
+  async function sendEnvelopeToCoordinator(env: Envelope): Promise<void> {
+    // 自投防护：目标为当前实例时不发协调中心（避免回投注入形成消息循环）
+    const to = (env as { to?: string }).to
+    if (to && isCurrentInstance(to)) {
+      if (env.type === 'message') {
+        safeSendUserMessage(`[本地消息] ${(env as { text?: string }).text ?? ''}`, {
+          deliverAs: 'steer',
+          expandPromptTemplates: true,
+        } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+      }
+      return
+    }
+    if (wsClient && wsClient.sendEnvelope(env)) return
+    if (config.coordinatorUrl) {
+      try {
+        await postEnvelope(config.coordinatorUrl, env)
+        return
+      } catch { /* 协调中心不可达 → 降级本地排队 */ }
+    }
+    // 降级：本地暂存，WS 恢复后 flush 补发（消息不丢）
+    pendingOutbox.push(env)
+    if (pendingOutbox.length > 200) pendingOutbox.shift()
+  }
+
+  /** 协调中心不可达时的发送降级队列（WS 恢复后补发） */
+  const pendingOutbox: Envelope[] = []
+
+  /** WS 恢复（onStatus=true）时补发积压消息 */
+  function flushPendingOutbox(): void {
+    if (!wsClient || pendingOutbox.length === 0) return
+    const still: Envelope[] = []
+    for (const env of pendingOutbox) {
+      if (!wsClient.sendEnvelope(env)) still.push(env)
+    }
+    pendingOutbox.length = 0
+    for (const env of still) pendingOutbox.push(env)
+    if (still.length > 0) log(`仍有 ${still.length} 条消息待补发（协调中心未完全恢复）`)
+  }
+
+  /** 目标是否是当前实例（名字相同或注册 pid 相同） */
+  function isCurrentInstance(name: string): boolean {
+    return name === currentInstanceName || (listInstances().find((i) => i.name === name)?.pid ?? 0) === process.pid
+  }
+
   async function doSendCommand(target: string, command: string): Promise<string> {
     rememberTarget(target)
+    // 归一化目标：name@host / 编号 → 实例名（协调中心按实例名匹配 inbox）
+    const { all } = await collectInstances()
+    const resolved = resolveTarget(all, target)
+    const realTarget = resolved?.name ?? target
+    // 目标为当前实例：本地直接执行（/reload → 扩展重载），
+    // 避免经协调中心回投注入会话，形成“发送→注入→再发送”的自我循环
+    if (isCurrentInstance(realTarget)) {
+      const cmd = command.trim().toLowerCase()
+      if (cmd === '/reload' || cmd === 'reload' || cmd === '/__hub_reload') {
+        return reloadCurrentInstance()
+          ? `已向实例 ${target} 发送指令: ${command}（当前实例，已本地执行 reload）`
+          : `❌ 当前实例上下文不支持 reload()，请直接在 TUI 执行 /reload`
+      }
+      return `❌ 目标 ${target} 是当前实例，仅支持本地执行 /reload（其他指令请在目标实例会话中操作）`
+    }
+    // 远程实例：envelope 注入（__hub_cmd 包装，pi 命令系统执行）
+    // 不依赖 tmux 模拟输入（TUI 忙碌时不生效，不可靠）
+    if (resolved) {
+      return await doSendCommandViaEnvelope(realTarget, command)
+    }
+    return `❌ 目标 ${target} 无法投递指令`
+  }
+
+  /** 远程指令：envelope 注入（/ 指令包装为 __hub_cmd 由目标 pi 命令系统执行） */
+  async function doSendCommandViaEnvelope(target: string, command: string): Promise<string> {
     const env: Envelope = {
       type: 'command',
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       from: currentInstanceName || 'local',
       to: target,
-      command,
+      // 远程执行：/ 开头的指令包装为 __hub_cmd（目标实例注入后触发 handler 真正执行）；
+      // __hub_* 内部命令保持原样；非 / 文本原样注入（普通提示）
+      command: command.startsWith('/') && !command.startsWith('/__hub_')
+        ? `/__hub_cmd ${command}`
+        : command,
       ts: Date.now(),
     }
     if (config.coordinatorPort && !listInstances().some((i) => i.name === target)) {
       // 协调中心模式：目标是远程实例 → 服务器→局域网
       enqueueRemoteTakeover({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts })
+      return `已向实例 ${target} 发送指令: ${command}`
     } else if (config.coordinatorUrl) {
-      await postEnvelope(config.coordinatorUrl, env)
+      try {
+        await sendEnvelopeToCoordinator(env)
+        return `已向实例 ${target} 发送指令: ${command}（注入）`
+      } catch (err) {
+        return `❌ 指令投递失败（${target}）: ${(err as Error).message}`
+      }
     } else if (config.remoteHosts?.[target]) {
       await writeRemoteTakeoverRequest(config.remoteHosts[target], { targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts }, TAKEOVER_FILE)
+      return `已向实例 ${target} 发送指令: ${command}`
     } else {
       writeLocalTakeoverRequest({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts })
+      return `已向实例 ${target} 发送指令: ${command}`
     }
-    return `已向实例 ${target} 发送指令: ${command}`
   }
 
   async function doSendMessage(target: string, text: string): Promise<string> {
     rememberTarget(target)
+    // 归一化目标：name@host / 编号 → 实例名
+    const { all } = await collectInstances()
+    const resolved = resolveTarget(all, target)
+    const realTarget = resolved?.name ?? target
+    // 目标为当前实例：本地注入一次（带标记，不经过协调中心），避免自我循环
+    // 注意用归一化后的 realTarget（name@host / 编号也能正确命中自己）
+    if (isCurrentInstance(realTarget)) {
+      safeSendUserMessage(`[本地消息] ${text}`, {
+        deliverAs: 'steer',
+        expandPromptTemplates: true,
+      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+      return `已向实例 ${target} 发送消息（当前实例，本地注入）`
+    }
     const env: Envelope = {
       type: 'message',
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       from: currentInstanceName || 'local',
-      to: target,
+      to: realTarget,
       text,
       ts: Date.now(),
     }
@@ -664,7 +890,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       // 服务器模式：本地入队（ack 语义消费）
       queue.enqueue(env)
     } else if (config.coordinatorUrl) {
-      await postEnvelope(config.coordinatorUrl, env)
+      await sendEnvelopeToCoordinator(env)
     } else {
       // 本机实例：直接写本地 takeover 通道？消息走本地队列
       queue.enqueue(env)
@@ -676,23 +902,53 @@ export default function hubExtension(pi: ExtensionAPI) {
   // 启动 pi：在目标实例所在机器的 tmux 中新建会话运行 pi
   // ============================================================================
 
-  function execCapture(file: string, args: string[], timeoutMs = 20000): Promise<string> {
+  function execCapture(file: string, args: string[], timeoutMs = 20000): Promise<{ ok: boolean; stdout: string; stderr: string }> {
     return new Promise((resolve) => {
-      execFile(file, args, { timeout: timeoutMs, maxBuffer: 64 * 1024 }, (err, stdout) => {
+      execFile(file, args, { timeout: timeoutMs, maxBuffer: 64 * 1024 }, (err, stdout, stderr) => {
         if (err) {
-          resolve(`__EXEC_ERR__ ${(err as Error).message}`)
+          resolve({ ok: false, stdout: stdout ?? '', stderr: stderr?.toString() ?? (err as Error).message })
           return
         }
-        resolve(stdout ?? '')
+        resolve({ ok: true, stdout: stdout ?? '', stderr: stderr?.toString() ?? '' })
       })
     })
   }
 
+  /** 写入系统剪贴板：macOS pbcopy / Linux xclip / Windows clip */
+  function writeClipboard(text: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const cmd =
+        process.platform === 'darwin' ? 'pbcopy'
+        : process.platform === 'linux' ? (process.env.DISPLAY ? 'xclip' : 'xclip')
+        : process.platform === 'win32' ? 'clip' : null
+      if (!cmd) { resolve(false); return }
+      try {
+        const child = execFile(cmd, process.platform === 'linux' ? ['-selection', 'clipboard'] : [], (err) => resolve(!err))
+        child.stdin?.write(text)
+        child.stdin?.end()
+      } catch {
+        resolve(false)
+      }
+    })
+  }
+
+  /** 目录/路径安全校验：拒绝 shell 元字符，杜绝注入（远程经 shell 执行） */
+  function isSafePath(p: string): boolean {
+    return !/[;&|`'"$()<>*?\[\]{}#\\\n\r]/.test(p)
+  }
+
   async function doStartPi(target: InstanceInfo, cwd?: string): Promise<string> {
+    // 参数安全校验：实例名只允许安全字符，目录拒绝 shell 元字符（远程=shell 执行，必须防注入）
+    if (!/^[A-Za-z0-9._-]+$/.test(target.name)) {
+      return `❌ 实例名 ${target.name} 含不安全字符，拒绝启动`
+    }
+    const dir = cwd?.trim() || target.cwd?.trim() || '~'
+    if (!isSafePath(dir)) {
+      return `❌ 启动目录含不安全字符，拒绝启动: ${dir}`
+    }
     // 复用实例所在的 tmux 会话（不新建会话）：窗口名带唯一后缀（实例 pid，未知时回退时间戳）
     const pidSuffix = target.pid > 0 ? String(target.pid) : String(Date.now()).slice(-6)
     const winName = `pi-${target.name}-${pidSuffix}`
-    const dir = cwd?.trim() || target.cwd?.trim() || '~'
     const isLocal = !target.host || target.host === os.hostname()
     const hostLabel = isLocal ? `${os.hostname()}（本机）` : target.host
 
@@ -704,9 +960,9 @@ export default function hubExtension(pi: ExtensionAPI) {
     try {
       if (isLocal) {
         if (!process.env.TMUX) return `❌ ${hostLabel} 当前实例不在 tmux 会话中，无法开窗口`
-        sessionName = (await execCapture('tmux', ['display-message', '-p', '#S'])).trim()
+        sessionName = (await execCapture('tmux', ['display-message', '-p', '#S'])).stdout.trim()
         // 用 session id（如 $1）作 new-window 目标，避免纯数字会话名被当成窗口索引
-        sessionTarget = (await execCapture('tmux', ['display-message', '-p', '#{session_id}'])).trim()
+        sessionTarget = (await execCapture('tmux', ['display-message', '-p', '#{session_id}'])).stdout.trim()
         if (!sessionName || !sessionTarget) return `❌ ${hostLabel} 无法获取当前 tmux 会话`
       } else {
         if (!target.pid || target.pid <= 0) return `❌ 实例 ${target.name} pid 未知，无法定位其 tmux 会话`
@@ -726,33 +982,38 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
 
     // 2) 在复用的会话中开窗口
-    const shellCmd = [
-      `if tmux list-windows -t '${sessionTarget}' -F '#W' 2>/dev/null | grep -qx '${winName}'; then`,
-      `  echo 'TMUX_EXISTS'`,
-      `else`,
-      `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
-      `fi`,
-    ].join('\n')
-
-    let output: string
+    let status: string
     try {
       if (isLocal) {
-        output = await execCapture('bash', ['-lc', shellCmd])
+        // 本机：execFile 数组参数（不经 shell），窗口去重后创建
+        const listRes = await execCapture('tmux', ['list-windows', '-t', sessionTarget, '-F', '#W'])
+        if (listRes.ok && listRes.stdout.split('\n').some((w) => w.trim() === winName)) {
+          status = 'TMUX_EXISTS'
+        } else {
+          const createRes = await execCapture('tmux', ['new-window', '-t', sessionTarget, '-n', winName, '-c', dir, 'pi'])
+          status = createRes.ok ? 'TMUX_STARTED' : `TMUX_FAILED ${createRes.stderr.trim()}`
+        }
       } else {
-        output = await sshExec(remote!.target, remote!.port, shellCmd)
+        const shellCmd = [
+          `if tmux list-windows -t '${sessionTarget}' -F '#W' 2>/dev/null | grep -qx '${winName}'; then`,
+          `  echo 'TMUX_EXISTS'`,
+          `else`,
+          `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
+          `fi`,
+        ].join('\n')
+        status = (await sshExec(remote!.target, remote!.port, shellCmd)).trim().split('\n').pop() ?? ''
       }
     } catch (err) {
       return `❌ 启动失败（${hostLabel}）: ${(err as Error).message}`
     }
 
-    const line = output.trim().split('\n').pop() ?? ''
-    if (line.includes('TMUX_EXISTS')) {
+    if (status.includes('TMUX_EXISTS')) {
       return `⚠️ 窗口 ${winName} 已存在（${hostLabel}，tmux 会话 ${sessionName}），未重复启动。查看: tmux attach -t ${sessionName}`
     }
-    if (line.includes('TMUX_STARTED')) {
+    if (status.includes('TMUX_STARTED')) {
       return `✅ 已在 ${hostLabel} 启动 pi，tmux 会话 ${sessionName} 窗口 ${winName}（目录 ${dir}）。查看: tmux attach -t ${sessionName}`
     }
-    return `❌ 启动失败（${hostLabel}）: ${output.trim() || 'tmux 执行异常'}`
+    return `❌ 启动失败（${hostLabel}）: ${status.replace('TMUX_FAILED', '').trim() || 'tmux 执行异常'}`
   }
 
   // ============================================================================
@@ -857,7 +1118,10 @@ export default function hubExtension(pi: ExtensionAPI) {
         if (inst.pid === process.pid) marks.push('当前')
         if (!local.some((l) => l.name === inst.name)) marks.push('远程')
         const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
-        return `${inst.name}${inst.host ? '@' + inst.host : ''}${mark}`
+        const host = inst.host ? `@${inst.host}` : ''
+        // cwd 列在行尾（远程实例 cwd 可能为空则不显示）
+        const cwd = inst.cwd ? ` ${inst.cwd}` : ''
+        return `${inst.name}${host}${mark}${cwd}`
       })
       ctx.ui.notify(`实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}`, 'info')
     },
@@ -952,26 +1216,134 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
   })
 
+  // 内部命令：远程命令执行（command envelope 注入 /__hub_cmd <cmd> 触发，真正在目标实例执行）
+  pi.registerCommand('__hub_cmd', {
+    description: '内部命令：远程执行会话命令（/new /fork /goto /reload /name 等，未知命令回退 tmux 模拟输入）',
+    handler: async (args, ctx) => {
+      const parts = args.trim().split(/\s+/)
+      const raw = parts[0] ?? ''
+      const rest = parts.slice(1).join(' ')
+      const cmd = raw.replace(/^\//, '')
+      try {
+        switch (cmd) {
+          case 'new':
+            log(`[HUB-CMD] 远程执行 /new`)
+            await ctx.newSession()
+            break
+          case 'fork':
+            if (rest) {
+              log(`[HUB-CMD] 远程执行 /fork ${rest}`)
+              await ctx.fork(rest)
+            }
+            break
+          case 'goto':
+          case 'switch':
+            if (rest) {
+              log(`[HUB-CMD] 远程执行 /goto ${rest}`)
+              await ctx.switchSession(rest)
+            }
+            break
+          case 'reload':
+            log(`[HUB-CMD] 远程执行 /reload`)
+            await ctx.reload()
+            break
+          case 'name':
+            if (rest) {
+              log(`[HUB-CMD] 远程执行 /name ${rest}`)
+              pi.setSessionName(rest)
+            }
+            break
+          case 'thinking':
+            if (rest) {
+              log(`[HUB-CMD] 远程执行 /thinking ${rest}`)
+              pi.setThinkingLevel(rest as Parameters<typeof pi.setThinkingLevel>[0])
+            }
+            break
+          case 'quit':
+            // 退出 pi：命令上下文无 quit API，直接退出进程（不依赖 tmux）；注册条目由定时 prune 清理
+            log(`[HUB-CMD] 远程执行 /quit（退出 pi）`)
+            setTimeout(() => process.exit(0), 300)
+            break
+          default:
+            // 未知命令：仅记录，不执行（避免不可靠的 tmux 模拟输入）
+            log(`[HUB-CMD] 未知命令: ${raw}，忽略`)
+        }
+      } catch (err) {
+        log(`[HUB-CMD] 执行 ${raw} 失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerCommand('reloadall', {
+    description: '重载所有实例（当前实例本地执行，其他实例发指令）',
+    handler: async (_args, ctx) => {
+      const { all } = await collectInstances()
+      if (all.length === 0) {
+        ctx.ui.notify('没有登记的实例', 'warning')
+        return
+      }
+      const lines: string[] = []
+      let needLocalReload = false
+      for (const inst of all) {
+        if (inst.pid === process.pid || inst.name === currentInstanceName) {
+          needLocalReload = true
+          lines.push(`${inst.name}: 将本地 reload`)
+        } else {
+          lines.push(await doSendCommand(inst.name, '/__hub_reload'))
+        }
+      }
+      // 注意：ctx.reload() 后 ctx 即失效（stale），必须先 notify 再 reload，reload 放最后
+      ctx.ui.notify(lines.join('\n'), 'info')
+      if (needLocalReload) {
+        await ctx.reload()
+      }
+    },
+  })
+
+  pi.registerCommand('clipboard', {
+    description: '复制内容到系统剪贴板：/clipboard <内容>；无参数时复制最后一条回复',
+    handler: async (args, ctx) => {
+      let content = args.trim()
+      if (!content) {
+        // 无参数：取最近一条 assistant 文本回复
+        try {
+          const branch = ctx.sessionManager.getBranch()
+          for (let i = branch.length - 1; i >= 0; i--) {
+            const entry = branch[i]
+            if (entry.type !== 'message') continue
+            const msg = (entry as { message?: { role?: string; content?: Array<{ type?: string; text?: string }> } }).message
+            if (msg?.role === 'assistant') {
+              content = (msg.content ?? [])
+                .filter((p) => p.type === 'text' && p.text)
+                .map((p) => p.text ?? '')
+                .join('\n')
+              break
+            }
+          }
+        } catch {
+          // 读取会话失败则忽略
+        }
+      }
+      if (!content) {
+        ctx.ui.notify('没有可复制的内容（/clipboard <内容> 或等待回复后重试）', 'warning')
+        return
+      }
+      const ok = await writeClipboard(content)
+      ctx.ui.notify(ok ? `✅ 已复制 ${content.length} 字符到剪贴板` : `❌ 剪贴板写入失败（${process.platform}）`, ok ? 'info' : 'warning')
+    },
+  })
+
   pi.registerCommand('start-pi', {
     getArgumentCompletions: instanceCompletions,
     description: '在实例（默认本机）的 tmux pi 会话中启动 pi：/start-pi [实例名] [目录]',
     handler: async (args, ctx) => {
-      const parts = args.trim().split(/\s+/)
       const { all } = await collectInstances()
-      let inst: InstanceInfo | undefined
-      let rest = args.trim()
-      if (parts[0] && all.some((i) => i.name === parts[0])) {
-        inst = all.find((i) => i.name === parts[0])
-        rest = parts.slice(1).join(' ')
-      } else {
-        // 未指定实例 → 默认当前实例（本机）
-        inst = all.find((i) => i.name === currentInstanceName)
-      }
-      if (!inst) {
-        ctx.ui.notify('未找到当前实例', 'warning')
+      const parsed = parseStartPiTarget(all, currentInstanceName, args)
+      if ('error' in parsed) {
+        ctx.ui.notify(parsed.error, 'warning')
         return
       }
-      ctx.ui.notify(await doStartPi(inst, rest.trim() || undefined), 'info')
+      ctx.ui.notify(await doStartPi(parsed.inst, parsed.rest.trim() || undefined), 'info')
     },
   })
 
@@ -997,17 +1369,37 @@ export default function hubExtension(pi: ExtensionAPI) {
     } catch {
       // ignore
     }
-    currentInstanceName = config.instanceName || path.basename(ctx.cwd) || 'pi'
-
-    registerInstance({
+    // 实例名优先级：PI_INSTANCE_NAME 环境变量（远程 subagent 用）> config > cwd basename
+    currentInstanceName =
+      process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(ctx.cwd) || 'pi'
+    // 先注册（同名存活实例会自动改名，保证唯一），再连 WS——WS 必须用改名后的名字，
+    // 否则多个同 cwd 实例会以同名连接协调中心，wsClients 互相覆盖导致收不到消息
+    currentInstanceName = registerInstance({
       name: currentInstanceName,
       pid: process.pid,
       cwd: ctx.cwd,
       sessionId: ctx.sessionManager.getSessionId(),
       host: os.hostname(),
+      sessionName: pi.getSessionName() ?? undefined,
     })
 
-    if (config.coordinatorPort && !g[watcherKey]) {
+    // 客户端模式：WS 长连接接收协调中心推送（替代 2s HTTP 轮询，低延迟）
+    if (config.coordinatorUrl) {
+      wsClient?.close()
+      wsClient = connectCoordinatorWS(
+        config.coordinatorUrl,
+        currentInstanceName,
+        os.hostname(),
+        (env) => routeEnvelope(env),
+        (connected) => {
+          log(connected ? '协调中心 WS 已连接' : '协调中心 WS 断开，重连中')
+          if (connected) flushPendingOutbox()
+        },
+        pi.getSessionName() ?? undefined,
+      )
+    }
+
+    if (config.coordinatorPort && !coordinatorServer) {
       const inUse = await isPortInUse(config.coordinatorPort)
       if (!inUse) {
         coordinatorServer = startCoordinatorServer(
@@ -1016,6 +1408,14 @@ export default function hubExtension(pi: ExtensionAPI) {
           config.remoteInstanceNames ?? [],
           queue,
         )
+        g['__PI_HUB_SERVER__'] = coordinatorServer
+        // listen 失败（端口实际被占，isPortInUse 误判）→ 降级为客户端，避免卡在协调中心模式死锁
+        coordinatorServer.on('error', (err: NodeJS.ErrnoException) => {
+          if (err.code === 'EADDRINUSE') {
+            log(`协调端口 ${config.coordinatorPort} 被占用，降级为客户端接入`)
+            config = { ...config, coordinatorUrl: `http://127.0.0.1:${config.coordinatorPort}` }
+          }
+        })
         log(`协调中心已启动: 端口 ${config.coordinatorPort}`)
       } else {
         log(`协调端口 ${config.coordinatorPort} 已被占用，本实例作为客户端接入 (127.0.0.1:${config.coordinatorPort})`)
@@ -1081,7 +1481,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     broadcastReload: () => {
       writeBroadcastRequest('reload')
       if (config.coordinatorUrl) {
-        void postEnvelope(config.coordinatorUrl, {
+        void sendEnvelopeToCoordinator({
           type: 'broadcast',
           id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
           from: currentInstanceName || 'local',
