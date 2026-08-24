@@ -12,7 +12,7 @@ import type { TaskRegistry, SubTask } from './task.js'
 
 export interface ToolsDeps {
   currentInstanceName: () => string
-  collectInstances: () => Promise<{ local: InstanceInfo[]; all: InstanceInfo[] }>
+  collectInstances: () => Promise<{ local: InstanceInfo[]; all: InstanceInfo[]; coordinatorName?: string }>
   resolveTarget: (all: InstanceInfo[], name: string) => InstanceInfo | undefined
   doSwitch: (name: string, capability?: string) => Promise<string>
   doSendCommand: (target: string, command: string) => Promise<string>
@@ -45,10 +45,12 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
     parameters: Type.Object({}),
     async execute() {
       try {
-        const { local, all } = await deps.collectInstances()
+        const { local, all, coordinatorName } = await deps.collectInstances()
         if (all.length === 0) return ok('没有登记的实例')
         const lines = all.map((inst) => {
           const marks: string[] = []
+          if (inst.name === coordinatorName) marks.push('协调中心')
+          else if (/^[A-Za-z0-9._-]+$/.test(inst.name) && /-\d+$/.test(inst.name)) marks.push('subagent')
           if (inst.pid === process.pid) marks.push('当前')
           if (!local.some((l) => l.name === inst.name)) marks.push('远程')
           const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''

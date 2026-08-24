@@ -573,11 +573,14 @@ export default function hubExtension(pi: ExtensionAPI) {
   // 公共逻辑（工具与 / 命令共用）
   // ============================================================================
 
-  async function collectInstances(): Promise<{ local: InstanceInfo[]; all: InstanceInfo[] }> {
+  async function collectInstances(): Promise<{ local: InstanceInfo[]; all: InstanceInfo[]; coordinatorName?: string }> {
     const remoteCfg = config.remoteHosts ?? {}
     const local = listInstances()
     const all: InstanceInfo[] = [...local]
+    let coordinatorName: string | undefined
     if (config.coordinatorPort) {
+      // 协调中心模式：本机即协调中心
+      coordinatorName = currentInstanceName
       // 协调中心模式：优先用实际活跃客户端（/inbox 轮询登记的实例名+主机名）；
       // remoteInstanceNames 作为已知但可能离线的补充
       const active = listActiveClients()
@@ -604,6 +607,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (ci) {
         for (const li of ci.local) {
           if (!all.some((i) => i.name === li.name)) all.push({ name: li.name, pid: li.pid, cwd: li.cwd, sessionId: '', lastSeen: 0, host: li.host })
+          coordinatorName = li.name
         }
         for (const c of ci.clients ?? []) {
           if (!all.some((i) => i.name === c.name)) all.push({ name: c.name, pid: 0, cwd: c.cwd ?? '', sessionId: '', lastSeen: 0, host: c.host })
@@ -618,7 +622,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     } catch {
       // ignore
     }
-    return { local, all }
+    return { local, all, coordinatorName }
   }
 
   function resolveTarget(all: InstanceInfo[], name: string): InstanceInfo | undefined {

@@ -10,7 +10,7 @@ export interface CommandCtx {
   /** 当前实例名 */
   currentInstanceName: string
   /** 收集所有实例（本机 + 远程） */
-  collectInstances: () => Promise<{ local: InstanceInfo[]; all: InstanceInfo[] }>
+  collectInstances: () => Promise<{ local: InstanceInfo[]; all: InstanceInfo[]; coordinatorName?: string }>
   /** 实例名/编号 → InstanceInfo */
   resolveTarget: (all: InstanceInfo[], name: string) => InstanceInfo | undefined
   /** 切换接管 */
@@ -74,10 +74,12 @@ export function toNumber(s: string): number {
 // ============================================================================
 
 async function cmdInstances(_args: string, ctx: CommandCtx): Promise<CommandResult> {
-  const { local, all } = await ctx.collectInstances()
+  const { local, all, coordinatorName } = await ctx.collectInstances()
   if (all.length === 0) return { reply: '没有登记的实例', consumed: true }
   const lines = all.map((inst) => {
     const marks: string[] = []
+    if (inst.name === coordinatorName) marks.push('协调中心')
+    else if (/^-?\d+$/.test(inst.name.slice(inst.name.lastIndexOf('-') + 1)) && inst.name !== coordinatorName) marks.push('subagent')
     if (inst.pid === process.pid) marks.push('当前')
     if (!local.some((l) => l.name === inst.name)) marks.push('远程')
     const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
@@ -163,6 +165,103 @@ async function cmdClipboard(args: string, ctx: CommandCtx): Promise<CommandResul
   return { reply: ok ? `✅ 已复制 ${content.length} 字符到剪贴板` : '❌ 剪贴板写入失败（本机无 pbcopy/xclip）', consumed: true }
 }
 
+async function cmdTaskStart(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const parts = args.trim().split(/\s+/)
+  const hostOrInst = parts[0] ?? ''
+  if (!hostOrInst) return { reply: '用法: /task <主机|实例> [路径] <任务消息>，如 /task home 分析 README.md；本机用 /task-local', consumed: true }
+  const { all } = await ctx.collectInstances()
+  // host 参数：优先匹配实例名，其次匹配主机名（协调者所在机器）
+  const target =
+    all.find((i) => i.name === hostOrInst) ??
+    all.find((i) => i.host === hostOrInst) ??
+    all.find((i) => `${i.name}@${i.host}` === hostOrInst)
+  if (!target) return { reply: `未找到主机/实例 ${hostOrInst}，先 /instances 查看`, consumed: true }
+  const rest = parts.slice(1)
+  let cwd: string | undefined
+  let msg: string
+  if (rest.length > 0 && looksLikePath(rest[0])) {
+    cwd = rest[0]
+    msg = rest.slice(1).join(' ').trim()
+  } else {
+    msg = rest.join(' ').trim()
+  }
+  if (!msg) return { reply: '任务消息为空', consumed: true }
+  return taskStartAndDispatch(ctx, target, cwd, msg)
+}
+
+async function cmdTaskStartLocal(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const parts = args.trim().split(/\s+/)
+  let cwd: string | undefined
+  let msg: string
+  if (parts.length > 0 && looksLikePath(parts[0])) {
+    cwd = parts[0]
+    msg = parts.slice(1).join(' ').trim()
+  } else {
+    msg = args.trim()
+  }
+  if (!msg) return { reply: '用法: /task-local [路径] <任务消息>，本机直接起 subagent 并分发', consumed: true }
+  const { all } = await ctx.collectInstances()
+  const local = all.find((i) => i.name === ctx.currentInstanceName) ?? all.find((i) => i.pid === process.pid)
+  if (!local) return { reply: '未找到当前实例', consumed: true }
+  return taskStartAndDispatch(ctx, local, cwd, msg)
+}
+
+/** 路径识别：含 / ~ 或以 . 开头视为路径 */
+function looksLikePath(s: string): boolean {
+  return s.includes('/') || s.includes('~') || s.startsWith('.')
+}
+
+/** 目标机器启动 subagent → 等注册 → 写任务注册表并分发 → 返回汇总 */
+async function taskStartAndDispatch(
+  ctx: CommandCtx,
+  target: InstanceInfo,
+  cwd: string | undefined,
+  msg: string,
+): Promise<CommandResult> {
+  const before = new Set((await ctx.collectInstances()).all.map((i) => i.name))
+  const startInfo = await ctx.doStartPi(target, cwd)
+  if (startInfo.includes('❌')) return { reply: startInfo, consumed: true }
+  // 等新实例注册（最多 ~15s）
+  const fresh = await waitForNewInstance(ctx, target.host ?? os.hostname(), before)
+  if (!fresh) {
+    return { reply: `${startInfo}\n⚠️ 等待新实例注册超时，请稍后用 /tasks 查看或手动 dispatch_task`, consumed: true }
+  }
+  const task = ctx.taskRegistry.create({ title: msg.slice(0, 40), assignee: fresh.name, payload: msg })
+  const tag = '[TASK#1]'
+  const tagResult = `[${task.id}结果]`
+  const sendInfo = await ctx.doSendMessage(
+    fresh.name,
+    `${tag} ${msg}\n\n【回传协议（必须执行，否则主实例看不到你的结果）】\n` +
+      `你的本会话回复不会被主实例看到。处理完成后必须调用 send_message 工具：\n` +
+      `1. target（目标实例）: ${ctx.currentInstanceName}\n` +
+      `2. text: ${tagResult} + JSON，示例：{"status":"done","data":...} 或 {"status":"failed","error":"原因"}\n` +
+      `任务ID: ${task.id}（回传时保留，主实例自动识别并更新状态）。`,
+  )
+  return {
+    reply: `${startInfo}\n${sendInfo}（${task.id}）\n任务列表: /tasks`,
+    consumed: true,
+  }
+}
+
+/** 轮询 collectInstances 直到出现新实例（排除启动前已知的） */
+async function waitForNewInstance(
+  ctx: CommandCtx,
+  host: string,
+  before: Set<string>,
+): Promise<InstanceInfo | null> {
+  for (let i = 0; i < 15; i++) {
+    await new Promise((r) => setTimeout(r, 1000))
+    try {
+      const { all } = await ctx.collectInstances()
+      const fresh = all.find((x) => x.host === host && !before.has(x.name))
+      if (fresh) return fresh
+    } catch {
+      // ignore
+    }
+  }
+  return null
+}
+
 async function cmdTasks(_args: string, ctx: CommandCtx): Promise<CommandResult> {
   const all = ctx.taskRegistry.list()
   if (all.length === 0) return { reply: '没有 subagent 任务', consumed: true }
@@ -174,14 +273,17 @@ async function cmdTasks(_args: string, ctx: CommandCtx): Promise<CommandResult> 
 }
 
 async function cmdTask(args: string, ctx: CommandCtx): Promise<CommandResult> {
-  const id = args.trim()
-  if (!id) return { reply: '用法: /task <任务ID>', consumed: true }
-  const t = ctx.taskRegistry.get(id)
-  if (!t) return { reply: `未找到任务 ${id}`, consumed: true }
-  return {
-    reply: `${t.id} [${t.status}] ${t.title} @${t.assignee}\npayload: ${t.payload}\n结果: ${t.result ?? '(无)'}\n错误: ${t.error ?? '(无)'}`,
-    consumed: true,
+  const first = args.trim().split(/\s+/)[0] ?? ''
+  // 首 token 是已知任务 ID → 任务详情
+  const t = ctx.taskRegistry.get(first)
+  if (t) {
+    return {
+      reply: `${t.id} [${t.status}] ${t.title} @${t.assignee}\npayload: ${t.payload}\n结果: ${t.result ?? '(无)'}\n错误: ${t.error ?? '(无)'}`,
+      consumed: true,
+    }
   }
+  // 否则 → 在目标机器起 subagent 并分发任务：/task <主机|实例> [路径] <任务消息>
+  return cmdTaskStart(args, ctx)
 }
 
 /** /cmd /msg 解析：参数 1 若匹配已知实例名则视为实例，否则复用上次实例并把全部参数当内容 */
@@ -257,8 +359,9 @@ const COMMANDS: Record<string, CommandEntry> = {
   'start-pi': { run: cmdStartPi, aliases: ['start pi', 'start-pi', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
   reloadall: { run: cmdReloadAll, aliases: ['重载全部', '全部重载', 'reload all', 'reloadall', '重载所有', '重启全部'] },
   clipboard: { run: cmdClipboard, aliases: ['复制', '拷贝', '复制到剪贴板'] },
-  tasks: { run: cmdTasks, aliases: ['任务列表', '所有任务', '任务'] },
-  task: { run: cmdTask, aliases: ['任务详情', '查看任务'] },
+  tasks: { run: cmdTasks, aliases: ['任务列表', '所有任务'] },
+  task: { run: cmdTask, aliases: ['任务详情', '查看任务', '分派任务', '派任务', '起个子代理'] },
+  'task-local': { run: cmdTaskStartLocal, aliases: ['本地子代理', '本地起个子代理', 'task local'] },
 }
 
 /** 检查文本是否是命令（斜杠 / 中文别名），返回规范化命令名 */
