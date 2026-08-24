@@ -314,6 +314,7 @@ export function startCoordinatorServer(
               from: pending.fromName,
               to: pending.targetName,
               capability: pending.capability ?? '',
+              payload: pending.payload,
               ts: pending.timestamp,
             })
           }

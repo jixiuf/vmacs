@@ -106,7 +106,7 @@ export interface IGateway {
 export type Envelope =
   | { type: 'message';   id: string; from: string; to: string; text: string; ts: number }
   | { type: 'command';   id: string; from: string; to: string; command: string; ts: number }
-  | { type: 'takeover';  id: string; from: string; to: string; capability: string; ts: number }
+  | { type: 'takeover';  id: string; from: string; to: string; capability: string; payload?: unknown; ts: number }
   | { type: 'lock';      id: string; from: string; capability: string; ts: number }
   | { type: 'broadcast'; id: string; from: string; command: string; ts: number }
 

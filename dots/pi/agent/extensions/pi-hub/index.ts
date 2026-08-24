@@ -165,6 +165,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         targetPid: 0,
         fromName: env.from,
         capability: env.capability,
+        payload: env.payload,
         timestamp: env.ts,
       })
     },
@@ -939,7 +940,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
     if (config.coordinatorPort && !listInstances().some((i) => i.name === target)) {
       // 协调中心模式：目标是远程实例 → 服务器→局域网
-      enqueueRemoteTakeover({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts })
+      enqueueRemoteTakeover({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command: env.command }, timestamp: env.ts })
       return `已向实例 ${target} 发送指令: ${command}`
     } else if (config.coordinatorUrl) {
       try {
@@ -949,10 +950,10 @@ export default function hubExtension(pi: ExtensionAPI) {
         return `❌ 指令投递失败（${target}）: ${(err as Error).message}`
       }
     } else if (config.remoteHosts?.[target]) {
-      await writeRemoteTakeoverRequest(config.remoteHosts[target], { targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts }, TAKEOVER_FILE)
+      await writeRemoteTakeoverRequest(config.remoteHosts[target], { targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command: env.command }, timestamp: env.ts }, TAKEOVER_FILE)
       return `已向实例 ${target} 发送指令: ${command}`
     } else {
-      writeLocalTakeoverRequest({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command }, timestamp: env.ts })
+      writeLocalTakeoverRequest({ targetName: target, targetPid: 0, fromName: env.from, capability: 'command', payload: { command: env.command }, timestamp: env.ts })
       return `已向实例 ${target} 发送指令: ${command}`
     }
   }
