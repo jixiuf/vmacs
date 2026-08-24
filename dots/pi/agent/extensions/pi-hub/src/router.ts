@@ -4,7 +4,6 @@
 // ============================================================================
 
 import type { InboundMessage } from './types.js'
-import type { Envelope } from './types.js'
 import type { IGateway } from './types.js'
 
 export interface RouterDeps {
@@ -12,8 +11,6 @@ export interface RouterDeps {
   handleCommand: (text: string, userId: string, channel: string) => Promise<string | null>
   /** 普通消息投递给 agent（返回是否已消费） */
   handleMessage: (m: InboundMessage) => Promise<boolean>
-  /** 接管请求处理 */
-  handleTakeover: (env: Extract<Envelope, { type: 'takeover' }>) => void
   /** 渠道注册表（用于命令回复 + 非命令消息回调） */
   getGateway: (channel: string) => IGateway | undefined
 }
@@ -41,17 +38,5 @@ export class Router {
       }
       await this.deps.handleMessage(m)
     })().catch(() => {})
-  }
-
-  /** envelope 入站（跨实例：message/command/takeover/lock/broadcast） */
-  routeEnvelope(env: Envelope): void {
-    switch (env.type) {
-      case 'takeover':
-        this.deps.handleTakeover(env)
-        break
-      default:
-        // message/command/lock/broadcast 由具体模块处理
-        break
-    }
   }
 }

@@ -28,16 +28,6 @@ export interface TakeoverRequest {
   timestamp: number
 }
 
-// --- 协调消息（实例间普通消息） ---
-
-export interface CoordinatorMessage {
-  id: string
-  from: string
-  to: string
-  text: string
-  timestamp: number
-}
-
 // --- 全局锁 ---
 
 export interface GlobalLock {

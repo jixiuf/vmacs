@@ -96,9 +96,15 @@ export class EnvelopeQueue {
 
   enqueue(env: Omit<Envelope, 'id'> & { id?: string }): void {
     const full: Envelope = { ...env, id: env.id ?? makeEnvelopeId() } as Envelope
+    const now = Date.now()
     const entries = this.readEntries()
-    entries.push({ env: full, enqueuedAt: Date.now(), attempts: 0 })
-    this.writeEntries(entries.slice(-500))
+    // 顺带清理过期/超限条目（enqueue 方即队列所有者，无跨实例风险；
+    // 避免 to 永不匹配的死消息（@host/旧 pid）无限积压）
+    const alive = entries.filter(
+      (e) => now - e.enqueuedAt <= ENVELOPE_TTL_MS && e.attempts < MAX_ATTEMPTS,
+    )
+    alive.push({ env: full, enqueuedAt: now, attempts: 0 })
+    this.writeEntries(alive.slice(-500))
   }
 
   // --- 取出（处理成功才 ack） ---

@@ -81,7 +81,6 @@ export default function hubExtension(pi: ExtensionAPI) {
   const router = new Router({
     handleCommand: handleCommand,
     handleMessage: handleMessage,
-    handleTakeover: handleTakeoverEnvelope,
     getGateway: (channel) => gateways.get(channel),
   })
   bridge.setInboundHandler((m) => router.routeInbound(m))
@@ -254,8 +253,8 @@ export default function hubExtension(pi: ExtensionAPI) {
           item.ack()
         }
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      log(`pollIncoming 异常: ${(err as Error).message}`)
     }
   }
 
@@ -378,8 +377,8 @@ export default function hubExtension(pi: ExtensionAPI) {
           }
         }
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      log(`pollMessages 异常: ${(err as Error).message}`)
     }
   }
 
@@ -1479,7 +1478,8 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
   }
 
-  // 兼容旧桥（pi-wechat-assistant 旧版仍读 __PI_COORDINATOR__）
+  // 兼容旧桥（pi-wechat-assistant 旧版仍读 __PI_COORDINATOR__）。
+  // DEPRECATED：所有渠道已迁移到 __PI_HUB__（v2.0.0），待确认全部实例升级后移除。
   g.__PI_COORDINATOR__ = {
     version: '0.1.0',
     coordinatorTryLock,
