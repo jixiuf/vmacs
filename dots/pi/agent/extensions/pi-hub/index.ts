@@ -685,15 +685,16 @@ export default function hubExtension(pi: ExtensionAPI) {
       const holder = getGlobalLockHolder()
       if (holder?.name === currentInstanceName) return `微信已由 ${target.name} 接管`
       if (config.coordinatorUrl) {
-        await sendEnvelopeToCoordinator({
-          type: 'takeover',
-          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-          from: currentInstanceName || 'local',
-          to: target.name,
-          capability: cap,
-          ts: Date.now(),
-        })
+        // 目标为当前实例：不能只发 takeover envelope——sendEnvelopeToCoordinator 的
+        // 自投防护（isCurrentInstance）会直接拦截，切换静默失效。改为经协调中心
+        // force 抢锁 + 通知本机渠道接管（与协调中心模式分支同语义）。
+        try {
+          await requestRemoteLock(config.coordinatorUrl, currentInstanceName, process.pid, cap, true)
+        } catch {
+          // ignore
+        }
         rememberTarget(target.name)
+        notifyAutoTakeover(cap)
         return `已请求 ${target.name} 接管微信`
       }
       if (config.coordinatorPort) {
