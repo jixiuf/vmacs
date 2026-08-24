@@ -122,7 +122,7 @@ export function connectCoordinatorWS(
         setTimeout(connect, delay)
       }
     }
-    socket.onerror = () => { logEvent('WS_CONNECT_ERROR', `name=${name} error事件`); try { socket.close() } catch { /* ignore */ } }
+    socket.onerror = (e) => { logEvent('WS_CONNECT_ERROR', `name=${name} err=${(e as ErrorEvent).message ?? 'unknown'}`); try { socket.close() } catch { /* ignore */ } }
     ws = socket
   }
 
