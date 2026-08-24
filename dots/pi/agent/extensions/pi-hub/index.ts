@@ -10,7 +10,7 @@ import * as path from 'node:path'
 import * as net from 'node:net'
 
 try {
-  fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] EXT LOADED pid=${process.pid}\n`)
+  logEvent('EXT_LOADED', `pid=${process.pid}`)
 } catch {
   // ignore
 }
@@ -52,6 +52,7 @@ import { Router } from './src/router.js'
 import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
 import { doStartPi as doStartPiFn, writeClipboard, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
+import { log, logEvent } from './src/logger.js'
 import type {
   IGateway,
   InboundMessage,
@@ -89,6 +90,44 @@ export default function hubExtension(pi: ExtensionAPI) {
     handleCommand: handleCommand,
     handleMessage: handleMessage,
     getGateway: (channel) => gateways.get(channel),
+    // envelope 分发实现：装配方提供各类型处理（实现留在 index.ts，分发收敛于 Router）
+    onMessage: (env) => {
+      log(`收到来自 ${env.from} 的消息: ${env.text.slice(0, 50)}`)
+      logEvent('RECV', `from=${env.from} text=${env.text.slice(0, 80)} id=${env.id}`)
+      bridge.handleInbound({
+        id: env.id,
+        channel: 'coord',
+        userId: env.from,
+        text: env.text,
+        ts: env.ts,
+      })
+    },
+    onCommand: (env) => {
+      log(`收到来自 ${env.from} 的指令: ${env.command}`)
+      safeSendUserMessage(env.command, {
+        deliverAs: 'steer',
+        expandPromptTemplates: true,
+      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+    },
+    onTakeover: (env) => {
+      handleTakeover({
+        targetName: env.to,
+        targetPid: 0,
+        fromName: env.from,
+        capability: env.capability,
+        timestamp: env.ts,
+      })
+    },
+    onBroadcast: (env) => {
+      // 广播命令（如 reload-all）：通知本实例扩展重载
+      log(`收到广播命令: ${env.command} (from ${env.from})`)
+      if (env.command === 'reload' && latestCtx) {
+        safeSendUserMessage('/__hub_reload', {
+          deliverAs: 'steer',
+          expandPromptTemplates: true,
+        } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+      }
+    },
   })
   bridge.setInboundHandler((m) => router.routeInbound(m))
 
@@ -171,7 +210,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
   }, 5000)
   try {
-    fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] WATCHER STARTED pid=${process.pid}\n`)
+    logEvent('WATCHER_STARTED', `pid=${process.pid}`)
   } catch {
     // ignore
   }
@@ -282,67 +321,9 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
   }
 
+  /** envelope 入站（统一经 Router 分发） */
   function routeEnvelope(env: Envelope): void {
-    switch (env.type) {
-      case 'message': {
-        log(`收到来自 ${env.from} 的消息: ${env.text.slice(0, 50)}`)
-        try {
-          fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] RECV from=${env.from} text=${env.text.slice(0, 80)} id=${env.id}\n`)
-        } catch {
-          // ignore
-        }
-        bridge.handleInbound({
-          id: env.id,
-          channel: 'coord',
-          userId: env.from,
-          text: env.text,
-          ts: env.ts,
-        })
-        break
-      }
-      case 'command': {
-        log(`收到来自 ${env.from} 的指令: ${env.command}`)
-        safeSendUserMessage(env.command, {
-          deliverAs: 'steer',
-          expandPromptTemplates: true,
-        } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
-        break
-      }
-      case 'takeover': {
-        handleTakeover({
-          targetName: env.to,
-          targetPid: 0,
-          fromName: env.from,
-          capability: env.capability,
-          timestamp: env.ts,
-        })
-        break
-      }
-      case 'lock':
-        // lock 走独立文件协议
-        break
-      case 'broadcast': {
-        // 广播命令（如 reload-all）：通知本实例扩展重载
-        log(`收到广播命令: ${env.command} (from ${env.from})`)
-        if (env.command === 'reload' && latestCtx) {
-          safeSendUserMessage('/__hub_reload', {
-            deliverAs: 'steer',
-            expandPromptTemplates: true,
-          } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
-        }
-        break
-      }
-    }
-  }
-
-  async function handleTakeoverEnvelope(env: Extract<Envelope, { type: 'takeover' }>): Promise<void> {
-    await handleTakeover({
-      targetName: env.to,
-      targetPid: 0,
-      fromName: env.from,
-      capability: env.capability || undefined,
-      timestamp: env.ts,
-    })
+    router.routeEnvelope(env)
   }
 
   async function handleTakeover(req: TakeoverRequest): Promise<void> {
@@ -982,11 +963,7 @@ export default function hubExtension(pi: ExtensionAPI) {
   pi.on('session_start', async (_event, ctx) => {
     latestCtx = ctx
     config = loadHubConfig()
-    try {
-      fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] SESSION_START reason=${(_event as { reason?: string } | undefined)?.reason ?? '?'} cwd=${ctx.cwd} url=${config.coordinatorUrl ?? 'none'}\n`)
-    } catch {
-      // ignore
-    }
+    logEvent('SESSION_START', `reason=${(_event as { reason?: string } | undefined)?.reason ?? '?'} cwd=${ctx.cwd} url=${config.coordinatorUrl ?? 'none'}`)
     // 实例名优先级：PI_INSTANCE_NAME 环境变量（远程 subagent 用）> config > cwd basename
     currentInstanceName =
       process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(ctx.cwd) || 'pi'
@@ -1153,11 +1130,6 @@ export default function hubExtension(pi: ExtensionAPI) {
 
   function fail(text: string) {
     return { content: [{ type: 'text' as const, text: `❌ ${text}` }], details: {} }
-  }
-
-  const isDebug = !!process.env.PI_COORDINATOR_DEBUG
-  function log(msg: string): void {
-    if (isDebug) console.log(`[pi-hub] ${msg}`)
   }
 
   function isPortInUse(port: number): Promise<boolean> {
