@@ -29,6 +29,7 @@ import { EnvelopeQueue } from './src/queue.js'
 import {
   startCoordinatorServer,
   postEnvelope,
+  fetchInbox,
   fetchCoordinatorInstances,
   listRemoteInstances,
   sshExec,
@@ -50,7 +51,7 @@ import {
 import { SessionBridge } from './src/bridge.js'
 import { Router } from './src/router.js'
 import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
-import { doStartPi as doStartPiFn, writeClipboard, type StartPiDeps } from './src/start-pi.js'
+import { doStartPi as doStartPiFn, writeClipboard, execCapture, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
 import { TaskRegistry, extractTaskId, extractReplyText } from './src/task.js'
@@ -219,10 +220,7 @@ export default function hubExtension(pi: ExtensionAPI) {
           currentInstanceName,
           os.hostname(),
           (env) => routeEnvelope(env),
-          (connected) => {
-            log(connected ? '协调中心 WS 已连接（兜底初始化）' : '协调中心 WS 断开，重连中')
-            if (connected) flushPendingOutbox()
-          },
+          onWsStatus,
           pi.getSessionName() ?? undefined,
         )
       }
@@ -251,10 +249,7 @@ export default function hubExtension(pi: ExtensionAPI) {
             currentInstanceName,
             os.hostname(),
             (env) => routeEnvelope(env),
-            (connected) => {
-              log(connected ? '协调中心 WS 已连接（降级客户端）' : '协调中心 WS 断开，重连中')
-              if (connected) flushPendingOutbox()
-            },
+            onWsStatus,
             pi.getSessionName() ?? undefined,
           )
         }
@@ -773,6 +768,40 @@ export default function hubExtension(pi: ExtensionAPI) {
   const pendingOutbox: Envelope[] = []
 
   /** WS 恢复（onStatus=true）时补发积压消息 */
+  /** 协调中心 WS 状态回调：连接恢复补发积压；断开时启用 HTTP /inbox 轮询兜底 */
+  function onWsStatus(connected: boolean): void {
+    log(connected ? '协调中心 WS 已连接' : '协调中心 WS 断开，重连中（启用 /inbox 轮询兜底）')
+    if (connected) {
+      flushPendingOutbox()
+      stopInboxPoll()
+    } else {
+      ensureInboxPoll()
+    }
+  }
+
+  // 客户端模式 WS 断线兜底：HTTP /inbox 轮询（保证消息可达 + 活跃登记，即使 WS 连接异常）
+  let inboxPollTimer: ReturnType<typeof setInterval> | null = null
+  function ensureInboxPoll(): void {
+    if (inboxPollTimer || !config.coordinatorUrl) return
+    const baseUrl = config.coordinatorUrl
+    inboxPollTimer = setInterval(() => {
+      void (async () => {
+        try {
+          const envs = await fetchInbox(baseUrl, currentInstanceName, os.hostname())
+          for (const env of envs) routeEnvelope(env)
+        } catch (err) {
+          log(`/inbox 轮询异常: ${(err as Error).message}`)
+        }
+      })()
+    }, 3000)
+  }
+  function stopInboxPoll(): void {
+    if (inboxPollTimer) {
+      clearInterval(inboxPollTimer)
+      inboxPollTimer = null
+    }
+  }
+
   function flushPendingOutbox(): void {
     if (!wsClient || pendingOutbox.length === 0) return
     const still: Envelope[] = []
@@ -1159,10 +1188,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         currentInstanceName,
         os.hostname(),
         (env) => routeEnvelope(env),
-        (connected) => {
-          log(connected ? '协调中心 WS 已连接' : '协调中心 WS 断开，重连中')
-          if (connected) flushPendingOutbox()
-        },
+        onWsStatus,
         pi.getSessionName() ?? undefined,
       )
     }
@@ -1196,10 +1222,7 @@ export default function hubExtension(pi: ExtensionAPI) {
           currentInstanceName,
           os.hostname(),
           (env) => routeEnvelope(env),
-          (connected) => {
-            log(connected ? '协调中心 WS 已连接（降级客户端）' : '协调中心 WS 断开，重连中')
-            if (connected) flushPendingOutbox()
-          },
+          onWsStatus,
           pi.getSessionName() ?? undefined,
         )
       }
