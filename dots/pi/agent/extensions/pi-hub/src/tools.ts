@@ -8,6 +8,7 @@ import { Type } from '@sinclair/typebox'
 // @ts-ignore — @earendil-works is the current package, but the older package still carries TS declarations used for compatibility here
 import type { ExtensionAPI } from '@mariozechner/pi-coding-agent'
 import type { InstanceInfo } from './types.js'
+import type { TaskRegistry, SubTask } from './task.js'
 
 export interface ToolsDeps {
   currentInstanceName: () => string
@@ -17,6 +18,8 @@ export interface ToolsDeps {
   doSendCommand: (target: string, command: string) => Promise<string>
   doSendMessage: (target: string, text: string) => Promise<string>
   doStartPi: (target: InstanceInfo, cwd?: string) => Promise<string>
+  /** subagent 任务注册表 */
+  taskRegistry: TaskRegistry
 }
 
 function ok(text: string) {
@@ -25,6 +28,11 @@ function ok(text: string) {
 
 function fail(text: string) {
   return { content: [{ type: 'text' as const, text: `❌ ${text}` }], details: {} }
+}
+
+function fmtTask(t: SubTask): string {
+  const age = Math.round((Date.now() - t.createdAt) / 1000)
+  return `${t.id} [${t.status}] ${t.title} @${t.assignee} (${age}s${t.result ? ` | 结果:${t.result.slice(0, 40)}` : ''}${t.error ? ` | err:${t.error}` : ''})`
 }
 
 export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
@@ -141,9 +149,9 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
   pi.registerTool({
     name: 'dispatch_task',
     label: 'Dispatch Task',
-    description: '向一个或多个子实例分发子任务（带 TASK#N 标记的消息），等待各实例回传 [TASK#N结果] 后汇总。',
+    description: '向一个或多个子实例分发子任务（写任务注册表 + 带 TASK#N 标记的消息），等待各实例回传 [TASK#N结果] 后汇总。',
     promptSnippet: '分发子任务给多个实例',
-    promptGuidelines: ['subagent 协作：先 list_instances 确认可用实例，再分发任务；结果由子实例 send_message 回传。'],
+    promptGuidelines: ['subagent 协作：先 list_instances 确认可用实例，再分发任务；结果由子实例 send_message 回传。用 /tasks 或 task_list 跟踪状态。'],
     parameters: Type.Object({
       tasks: Type.Array(Type.Object({
         instance: Type.String({ description: '目标实例名' }),
@@ -153,14 +161,115 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
     async execute(_toolCallId, params) {
       try {
         const lines: string[] = []
+        const ids: string[] = []
         for (const [i, t] of params.tasks.entries()) {
           const tag = `[TASK#${i + 1}]`
-          const reply = await deps.doSendMessage(t.instance, `${tag} ${t.task}\n完成后请回复「${tag}结果」+ 结果内容。`)
-          lines.push(`TASK#${i + 1} → ${t.instance}: ${reply}`)
+          // 写任务注册表（状态跟踪/超时/自动回收）
+          const task = deps.taskRegistry.create({
+            title: t.task.slice(0, 40),
+            assignee: t.instance,
+            payload: t.task,
+          })
+          ids.push(task.id)
+          const reply = await deps.doSendMessage(t.instance, `${tag} ${t.task}\n完成后请回复「${tag}结果」+ 内容（建议 JSON），任务ID: ${task.id}`)
+          lines.push(`${tag} → ${t.instance}: ${reply}（${task.id}）`)
         }
-        return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。`)
+        return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。任务列表可用 /tasks 或 task_list 查看。`)
       } catch (err) {
         return fail(`分发失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'task_list',
+    label: 'List Tasks',
+    description: '列出所有 subagent 任务（按状态过滤可选：pending/running/done/failed/timeout）。',
+    promptSnippet: '列出 subagent 任务',
+    promptGuidelines: ['用户问任务进度/有哪些任务时调用。'],
+    parameters: Type.Object({
+      status: Type.Optional(Type.String({ description: '按状态过滤（pending/running/done/failed/timeout）' })),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const all = deps.taskRegistry.list()
+        const filtered = params.status ? all.filter((t) => t.status === params.status) : all
+        if (filtered.length === 0) return ok('没有任务')
+        return ok(`任务列表（${filtered.length}/${all.length}）：\n${filtered.map(fmtTask).join('\n')}`)
+      } catch (err) {
+        return fail(`查询任务失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'task_status',
+    label: 'Task Status',
+    description: '查询单个 subagent 任务详情（状态/结果/错误/耗时）。',
+    promptSnippet: '查询任务状态',
+    promptGuidelines: ['用户问某个任务的状态时调用。'],
+    parameters: Type.Object({
+      id: Type.String({ description: '任务 ID（如 TASK-1787...）' }),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const t = deps.taskRegistry.get(String(params.id).trim())
+        if (!t) return fail(`未找到任务 ${params.id}`)
+        return ok(`任务详情：\n${fmtTask(t)}\n\npayload: ${t.payload}\n结果: ${t.result ?? '(无)'}\n错误: ${t.error ?? '(无)'}`)
+      } catch (err) {
+        return fail(`查询失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'task_reclaim',
+    label: 'Reclaim Subagent',
+    description: '手动回收子实例（发 /quit + 标记其任务），防泄漏。目标可传实例名或任务 ID。',
+    promptSnippet: '回收子代理',
+    promptGuidelines: ['用户要求清理/回收子代理时调用；任务全部完成后的自动回收由 taskMonitor 处理。'],
+    parameters: Type.Object({
+      target: Type.String({ description: '实例名或任务 ID' }),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const target = String(params.target).trim()
+        const tasks = deps.taskRegistry.list()
+        // 任务 ID → 其 assignee
+        const byId = tasks.find((t) => t.id === target)
+        const assignee = byId?.assignee ?? target
+        const owned = tasks.filter((t) => t.assignee === assignee)
+        if (owned.length > 0) {
+          for (const t of owned) deps.taskRegistry.update(t.id, { status: t.status === 'pending' || t.status === 'running' ? 'failed' : t.status, error: (t.error ?? '') + ' 手动回收' })
+        }
+        const reply = await deps.doSendCommand(assignee, '/quit')
+        return ok(`已回收 ${assignee}：${reply}${owned.length > 0 ? `（${owned.length} 个任务已标记）` : ''}`)
+      } catch (err) {
+        return fail(`回收失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'task_retry',
+    label: 'Retry Task',
+    description: '重试失败/超时的 subagent 任务（重新分发）。',
+    promptSnippet: '重试任务',
+    promptGuidelines: ['任务 failed/timeout 且用户要求重试时调用。'],
+    parameters: Type.Object({
+      id: Type.String({ description: '任务 ID' }),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const id = String(params.id).trim()
+        const t = deps.taskRegistry.get(id)
+        if (!t) return fail(`未找到任务 ${id}`)
+        deps.taskRegistry.update(id, { status: 'pending', attempts: t.attempts + 1, deadline: Date.now() + 10 * 60_000, error: '手动重试' })
+        const tag = `[TASK#${id.slice(-3)}]`
+        const reply = await deps.doSendMessage(t.assignee, `${tag} ${t.payload}\n（重试）完成后请回复「${tag}结果」+ 内容，任务ID: ${t.id}`)
+        return ok(`已重试 ${id} → ${t.assignee}: ${reply}`)
+      } catch (err) {
+        return fail(`重试失败: ${(err as Error).message}`)
       }
     },
   })

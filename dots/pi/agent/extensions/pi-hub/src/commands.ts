@@ -4,6 +4,7 @@
 // ============================================================================
 
 import type { InstanceInfo } from './types.js'
+import type { TaskRegistry } from './task.js'
 
 export interface CommandCtx {
   /** 当前实例名 */
@@ -28,6 +29,8 @@ export interface CommandCtx {
   doReloadAll: () => Promise<string>
   /** 写入系统剪贴板（本机 pbcopy/xclip） */
   writeClipboard: (text: string) => Promise<boolean>
+  /** subagent 任务注册表 */
+  taskRegistry: TaskRegistry
 }
 
 export interface CommandResult {
@@ -160,6 +163,27 @@ async function cmdClipboard(args: string, ctx: CommandCtx): Promise<CommandResul
   return { reply: ok ? `✅ 已复制 ${content.length} 字符到剪贴板` : '❌ 剪贴板写入失败（本机无 pbcopy/xclip）', consumed: true }
 }
 
+async function cmdTasks(_args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const all = ctx.taskRegistry.list()
+  if (all.length === 0) return { reply: '没有 subagent 任务', consumed: true }
+  const lines = all.map((t) => {
+    const age = Math.round((Date.now() - t.createdAt) / 1000)
+    return `${t.id} [${t.status}] ${t.title} @${t.assignee} (${age}s${t.result ? ` | 结果:${t.result.slice(0, 30)}` : ''}${t.error ? ` | err:${t.error}` : ''})`
+  })
+  return { reply: `任务列表（${all.length}）：\n${lines.join('\n')}`, consumed: true }
+}
+
+async function cmdTask(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  const id = args.trim()
+  if (!id) return { reply: '用法: /task <任务ID>', consumed: true }
+  const t = ctx.taskRegistry.get(id)
+  if (!t) return { reply: `未找到任务 ${id}`, consumed: true }
+  return {
+    reply: `${t.id} [${t.status}] ${t.title} @${t.assignee}\npayload: ${t.payload}\n结果: ${t.result ?? '(无)'}\n错误: ${t.error ?? '(无)'}`,
+    consumed: true,
+  }
+}
+
 /** /cmd /msg 解析：参数 1 若匹配已知实例名则视为实例，否则复用上次实例并把全部参数当内容 */
 async function parseTargetArgs(args: string, ctx: CommandCtx): Promise<{ target: string | null; rest: string }> {
   const parts = args.trim().split(/\s+/)
@@ -233,6 +257,8 @@ const COMMANDS: Record<string, CommandEntry> = {
   'start-pi': { run: cmdStartPi, aliases: ['start pi', 'start-pi', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
   reloadall: { run: cmdReloadAll, aliases: ['重载全部', '全部重载', 'reload all', 'reloadall', '重载所有', '重启全部'] },
   clipboard: { run: cmdClipboard, aliases: ['复制', '拷贝', '复制到剪贴板'] },
+  tasks: { run: cmdTasks, aliases: ['任务列表', '所有任务', '任务'] },
+  task: { run: cmdTask, aliases: ['任务详情', '查看任务'] },
 }
 
 /** 检查文本是否是命令（斜杠 / 中文别名），返回规范化命令名 */

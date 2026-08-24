@@ -53,6 +53,7 @@ import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
 import { doStartPi as doStartPiFn, writeClipboard, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
+import { TaskRegistry } from './src/task.js'
 import type {
   IGateway,
   InboundMessage,
@@ -85,6 +86,8 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   const queue = new EnvelopeQueue()
+  // subagent 任务注册表（tasks.json 持久化）
+  const taskRegistry = new TaskRegistry()
   const bridge = new SessionBridge({ pi, deliverToAgent: deliverToAgent })
   const router = new Router({
     handleCommand: handleCommand,
@@ -174,6 +177,11 @@ export default function hubExtension(pi: ExtensionAPI) {
   const PRUNE_KEY = '__PI_HUB_PRUNE__'
   if (!g[PRUNE_KEY]) {
     g[PRUNE_KEY] = setInterval(() => pruneInstances(), 60000)
+  }
+  // subagent 任务监控：30s 超时/重试/自动回收（幂等，重复加载不叠加）
+  const TASK_KEY = '__PI_HUB_TASK_MONITOR__'
+  if (!g[TASK_KEY]) {
+    g[TASK_KEY] = setInterval(() => void taskMonitorTick().catch(() => {}), 30_000)
   }
 
   // 兜底初始化：pi 重启恢复会话时扩展加载可能晚于 session_start 事件派发（事件错过），
@@ -388,6 +396,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
       doReloadAll,
       writeClipboard,
+      taskRegistry,
     }
   }
 
@@ -453,6 +462,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     doSendCommand,
     doSendMessage,
     doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
+    taskRegistry,
   })
 
   // ============================================================================
@@ -765,6 +775,37 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   // ============================================================================
+  // subagent 任务监控：30s 超时/重试/自动回收（由 TASK_KEY 定时器驱动）
+  // ============================================================================
+
+  async function taskMonitorTick(): Promise<void> {
+    try {
+      const events = taskRegistry.monitor()
+      for (const ev of events) {
+        if (ev.kind === 'retry' && ev.id && ev.assignee) {
+          const t = taskRegistry.get(ev.id)
+          if (!t) continue
+          const tag = `[TASK#${ev.id.slice(-3)}]`
+          log(`任务 ${ev.id} 超时重试（attempts=${t.attempts}）`)
+          await doSendMessage(ev.assignee, `${tag}（超时重试）${t.payload}\n完成后请回复「${tag}结果」+ 内容，任务ID: ${ev.id}`)
+        } else if (ev.kind === 'timeout') {
+          log(`任务 ${ev.id} 超时放弃`)
+        } else if (ev.kind === 'reclaim' && ev.assignee) {
+          // 保护：不回收协调中心实例（/quit 会中断全部客户端）
+          if (config.coordinatorPort && !config.coordinatorUrl && ev.assignee === currentInstanceName) {
+            log(`跳过回收协调中心实例 ${ev.assignee}`)
+            continue
+          }
+          log(`自动回收子实例 ${ev.assignee}`)
+          await doSendCommand(ev.assignee, '/quit')
+        }
+      }
+    } catch (err) {
+      log(`taskMonitor 异常: ${(err as Error).message}`)
+    }
+  }
+
+  // ============================================================================
   // 本地 takeover 文件（本机实例间）
   // ============================================================================
 
@@ -1040,6 +1081,11 @@ export default function hubExtension(pi: ExtensionAPI) {
     if (autoTakeover) {
       clearInterval(autoTakeover)
       delete g[`${watcherKey}_AUTO_TAKEOVER`]
+    }
+    const taskMonitor = g[TASK_KEY] as ReturnType<typeof setInterval> | undefined
+    if (taskMonitor) {
+      clearInterval(taskMonitor)
+      delete g[TASK_KEY]
     }
     if (coordinatorServer) {
       try {
