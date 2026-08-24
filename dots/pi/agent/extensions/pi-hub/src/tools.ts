@@ -20,6 +20,8 @@ export interface ToolsDeps {
   doStartPi: (target: InstanceInfo, cwd?: string) => Promise<string>
   /** subagent 任务注册表 */
   taskRegistry: TaskRegistry
+  /** 在目标机器启动 subagent 并登记，注册后由扩展自动分发任务（/task 等价） */
+  requestSubagent: (target: InstanceInfo, cwd: string | undefined, msg: string) => Promise<string>
 }
 
 function ok(text: string) {
@@ -144,6 +146,33 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
         return ok(await deps.doStartPi(inst, params.cwd ? String(params.cwd) : undefined))
       } catch (err) {
         return fail(`启动失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'task_subagent',
+    label: 'Task Subagent',
+    description: '在目标机器启动 subagent 并分发任务（等价 /task）。登记后扩展自动分发，无需等待。',
+    promptSnippet: '起子代理跑任务',
+    promptGuidelines: ['用户说「在 X 起个子代理跑任务」「分派任务给子代理」时调用；等价于 /task 命令（host 支持实例名/主机名/name@host）。'],
+    parameters: Type.Object({
+      host: Type.String({ description: '主机或实例名（如 home / ljmacjxf / name@host）' }),
+      cwd: Type.Optional(Type.String({ description: '可选工作目录' })),
+      task: Type.String({ description: '任务消息' }),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const { all } = await deps.collectInstances()
+        const hostOrInst = String(params.host).trim()
+        const target =
+          deps.resolveTarget(all, hostOrInst) ?? all.find((i) => i.host === hostOrInst)
+        if (!target) return fail(`未找到主机/实例 ${hostOrInst}，先 list_instances 查看`)
+        const msg = String(params.task).trim()
+        if (!msg) return fail('任务消息为空')
+        return ok(await deps.requestSubagent(target, params.cwd ? String(params.cwd) : undefined, msg))
+      } catch (err) {
+        return fail(`启动子代理失败: ${(err as Error).message}`)
       }
     },
   })

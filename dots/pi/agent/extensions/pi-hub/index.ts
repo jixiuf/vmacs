@@ -569,6 +569,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     doSendMessage,
     doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
     taskRegistry,
+    requestSubagent,
   })
 
   // ============================================================================
@@ -1096,6 +1097,9 @@ export default function hubExtension(pi: ExtensionAPI) {
     'start-pi': 'start-pi',
     reloadall: 'reloadall',
     clipboard: 'clipboard',
+    tasks: 'tasks',
+    task: 'task',
+    'task-local': 'task-local',
   }
   for (const [tuiName, cmdName] of Object.entries(TUI_COMMAND_MAP)) {
     pi.registerCommand(tuiName, {
