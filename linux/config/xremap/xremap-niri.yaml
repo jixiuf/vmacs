@@ -31,7 +31,7 @@ keymap:
         - { launch: ["fcitx5-remote","-s","keyboard-us"] }
       super-C-Shift-e: { launch: ["niri","msg","action","spawn-sh","--","term.sh --termenv=tmux-direct --class=sshemacs --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux  new-session -A  -s emacs" ] }
       super-C-Shift-f: { launch: ["niri","msg","action","spawn-sh","--","term.sh  --working-directory '/jixiuf@ljmacjxf:~' --class=sshemacs -- zsh -l" ] }
-      super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc" ] }
+      super-C-t: { launch: ["niri","msg","action","spawn-sh","--","niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh vc" ] }
       super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--","google-chrome|firefox|firefox-esr","firefox-bin"] }
       # super-C-f: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise --toggle -- 'google-chrome|firefox|firefox-esr' google-chrome-stable ---enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime"] }
       
