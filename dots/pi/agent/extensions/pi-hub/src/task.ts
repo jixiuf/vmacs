@@ -65,6 +65,36 @@ function writeJson(file: string, data: unknown): void {
   }
 }
 
+/** 提取文本中的任务 ID（TASK-<ts>-<rand>） */
+export function extractTaskId(text: string): string | null {
+  return text.match(/TASK-\d+-[a-z0-9]+/)?.[0] ?? null
+}
+
+/**
+ * 从会话 branch 提取最后一条 assistant 回复的文本（截断 MAX_REPLY_CHARS）。
+ * 用于子实例 agent 回复后的自动回传。
+ */
+export function extractReplyText(branch: unknown[], maxChars = 4000): string {
+  for (let i = branch.length - 1; i >= 0; i--) {
+    const entry = branch[i] as { type?: string; message?: { role?: string; content?: unknown } }
+    if (entry.type !== 'message' || entry.message?.role !== 'assistant') continue
+    const content = entry.message.content
+    if (typeof content === 'string') return content.slice(0, maxChars)
+    if (Array.isArray(content)) {
+      const texts: string[] = []
+      for (const c of content) {
+        if (typeof c === 'object' && c !== null && typeof (c as { text?: unknown }).text === 'string') {
+          texts.push((c as { text: string }).text)
+        }
+      }
+      const joined = texts.join('\n').trim()
+      if (joined) return joined.slice(0, maxChars)
+    }
+    break // 最后一条 assistant 消息无文本 → 不再向上找历史回复
+  }
+  return ''
+}
+
 export class TaskRegistry {
   create(opts: { title?: string; assignee: string; payload: string; ttlMs?: number; keep?: boolean }): SubTask {
     const now = Date.now()

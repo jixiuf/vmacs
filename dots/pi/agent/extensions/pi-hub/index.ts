@@ -53,7 +53,7 @@ import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
 import { doStartPi as doStartPiFn, writeClipboard, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
-import { TaskRegistry } from './src/task.js'
+import { TaskRegistry, extractTaskId, extractReplyText } from './src/task.js'
 import type {
   IGateway,
   InboundMessage,
@@ -61,6 +61,7 @@ import type {
   TakeoverRequest,
   Envelope,
 } from './src/types.js'
+import { makeEnvelopeId } from './src/types.js'
 
 type Ctx = ExtensionContext | ExtensionCommandContext
 
@@ -88,6 +89,8 @@ export default function hubExtension(pi: ExtensionAPI) {
   const queue = new EnvelopeQueue()
   // subagent 任务注册表（tasks.json 持久化）
   const taskRegistry = new TaskRegistry()
+  /** 待自动回传的任务（FIFO）：子实例 agent 回复后回传给发起者（无需子实例调用工具） */
+  const pendingTaskReplies: Array<{ from: string; taskId: string }> = []
   const bridge = new SessionBridge({ pi, deliverToAgent: deliverToAgent })
   const router = new Router({
     handleCommand: handleCommand,
@@ -99,6 +102,12 @@ export default function hubExtension(pi: ExtensionAPI) {
       logEvent('RECV', `from=${env.from} text=${env.text.slice(0, 80)} id=${env.id}`)
       // 识别 subagent 任务回传（[TASK-xxx结果] / 含任务 ID 的正文）→ 自动更新注册表
       tryAutoUpdateTask(env.from, env.text)
+      // 识别任务消息（含 TASK-id，来自其他实例）→ 入待回传队列（agent 回复后自动回传）
+      const taskId = extractTaskId(env.text)
+      if (taskId && env.from !== currentInstanceName) {
+        pendingTaskReplies.push({ from: env.from, taskId })
+        log(`登记待回传任务 ${taskId}（来自 ${env.from}）`)
+      }
       bridge.handleInbound({
         id: env.id,
         channel: 'coord',
@@ -342,9 +351,9 @@ export default function hubExtension(pi: ExtensionAPI) {
    * 且任务未终结 → 提取正文为 result，按 JSON status 判定 done/failed。
    */
   function tryAutoUpdateTask(from: string, text: string): void {
-    const m = text.match(/TASK-\d+-[a-z0-9]+/)
-    if (!m) return
-    const t = taskRegistry.get(m[0])
+    const taskId = extractTaskId(text)
+    if (!taskId) return
+    const t = taskRegistry.get(taskId)
     if (!t || t.assignee !== from) return
     if (t.status === 'done' || t.status === 'failed' || t.status === 'timeout') return
     // 去前缀（[TASK-xxx结果] / [TASK#N结果]）与任务 ID，取剩余正文
@@ -1091,6 +1100,45 @@ export default function hubExtension(pi: ExtensionAPI) {
         void autoTakeoverIfIdle().catch(() => {})
         void ensureCoordinatorIfNeeded().catch(() => {})
       }, 5000)
+    }
+  })
+
+  // --- subagent 任务自动回传：agent 回复完成后回传给发起者（无需子实例调用工具） ---
+  pi.on('agent_settled', async (_event, ctx) => {
+    const pending = pendingTaskReplies.shift()
+    if (!pending) return
+    try {
+      const sm = (ctx as { sessionManager?: { getBranch?: () => unknown[] } }).sessionManager
+      const branch = sm?.getBranch?.() ?? []
+      const replyText = extractReplyText(branch)
+      if (replyText) {
+        const text = `[${pending.taskId}结果] ${replyText}`
+        log(`自动回传任务 ${pending.taskId} → ${pending.from}`)
+        const env: Envelope = {
+          type: 'message',
+          id: makeEnvelopeId(),
+          from: currentInstanceName || 'local',
+          to: pending.from,
+          text,
+          ts: Date.now(),
+        }
+        if (pending.from === currentInstanceName) {
+          safeSendUserMessage(`[本地消息] ${text}`, {
+            deliverAs: 'steer',
+            expandPromptTemplates: true,
+          } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+        } else if (config.coordinatorPort && !config.coordinatorUrl) {
+          queue.enqueue(env)
+        } else if (config.coordinatorUrl) {
+          await sendEnvelopeToCoordinator(env)
+        } else {
+          queue.enqueue(env)
+        }
+      } else {
+        log(`任务 ${pending.taskId} 无回复文本，跳过回传`)
+      }
+    } catch (err) {
+      log(`自动回传异常: ${(err as Error).message}`)
     }
   })
 

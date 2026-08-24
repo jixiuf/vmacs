@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { TaskRegistry, TASK_TTL_MS, TASK_MAX_ATTEMPTS } from '../src/task.js'
+import { TaskRegistry, TASK_TTL_MS, TASK_MAX_ATTEMPTS, extractTaskId, extractReplyText } from '../src/task.js'
 
 // 隔离状态目录：vitest 每文件独立进程，这里用临时目录避免污染真实 tasks.json
 const testDir = path.join(os.tmpdir(), `pi-hub-task-test-${process.pid}`)
@@ -108,5 +108,35 @@ describe('TaskRegistry 回收判定', () => {
   it('instanceDone 对无任务实例返回 false', () => {
     const reg = new TaskRegistry()
     expect(reg.instanceDone('ghost')).toBe(false)
+  })
+})
+
+describe('任务协议纯函数', () => {
+  it('extractTaskId 提取 TASK-id', () => {
+    expect(extractTaskId('请处理，任务ID: TASK-1787553502281-kgd9')).toBe('TASK-1787553502281-kgd9')
+    expect(extractTaskId('[TASK-123-abc结果] {"status":"done"}')).toBe('TASK-123-abc')
+    expect(extractTaskId('普通消息没有任务')).toBeNull()
+  })
+
+  it('extractReplyText 提取字符串 content', () => {
+    const branch = [{ type: 'message', message: { role: 'user', content: 'hi' } }, { type: 'message', message: { role: 'assistant', content: '你好，结果是 X' } }]
+    expect(extractReplyText(branch)).toBe('你好，结果是 X')
+  })
+
+  it('extractReplyText 提取数组 content（text 块拼接）', () => {
+    const branch = [{ type: 'message', message: { role: 'assistant', content: [{ type: 'text', text: '{"status":"done"}' }, { type: 'text', text: '完成' }] } }]
+    expect(extractReplyText(branch)).toContain('"status":"done"')
+    expect(extractReplyText(branch)).toContain('完成')
+  })
+
+  it('extractReplyText 无 assistant 消息返回空串', () => {
+    expect(extractReplyText([])).toBe('')
+    expect(extractReplyText([{ type: 'message', message: { role: 'user', content: 'x' } }])).toBe('')
+  })
+
+  it('extractReplyText 截断超长内容', () => {
+    const long = 'x'.repeat(5000)
+    const branch = [{ type: 'message', message: { role: 'assistant', content: long } }]
+    expect(extractReplyText(branch, 100).length).toBe(100)
   })
 })
