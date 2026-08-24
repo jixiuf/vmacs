@@ -8,7 +8,6 @@ import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import * as net from 'node:net'
-import { execFile } from 'node:child_process'
 
 try {
   fs.appendFileSync('/tmp/pi-coordinator-msg.log', `[${new Date().toISOString()}] EXT LOADED pid=${process.pid}\n`)
@@ -50,7 +49,9 @@ import {
 } from './src/transport.js'
 import { SessionBridge } from './src/bridge.js'
 import { Router } from './src/router.js'
-import { executeCommand, toNumber, parseStartPiTarget, type CommandCtx } from './src/commands.js'
+import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
+import { doStartPi as doStartPiFn, writeClipboard, type StartPiDeps } from './src/start-pi.js'
+import { registerTools } from './src/tools.js'
 import type {
   IGateway,
   InboundMessage,
@@ -75,6 +76,12 @@ export default function hubExtension(pi: ExtensionAPI) {
   let wsClient: WsClientHandle | null = null
   let latestCtx: Ctx | null = null
   let config: HubConfig = loadHubConfig()
+
+  // start-pi 依赖（remoteHosts 取自 config，sshExec 来自传输层）
+  const startPiDeps: StartPiDeps = {
+    remoteHosts: config.remoteHosts ?? {},
+    sshExec,
+  }
 
   const queue = new EnvelopeQueue()
   const bridge = new SessionBridge({ pi, deliverToAgent: deliverToAgent })
@@ -386,8 +393,9 @@ export default function hubExtension(pi: ExtensionAPI) {
   // 渠道入站处理（IGateway.onInbound → bridge → router）
   // ============================================================================
 
-  async function handleCommand(text: string, userId: string, channel: string): Promise<string | null> {
-    const ctx: CommandCtx = {
+  /** 构造命令上下文（TUI 命令与渠道命令共用同一实现） */
+  function buildCommandCtx(): CommandCtx {
+    return {
       currentInstanceName,
       collectInstances,
       resolveTarget,
@@ -396,10 +404,14 @@ export default function hubExtension(pi: ExtensionAPI) {
       doSendMessage,
       rememberTarget,
       getLastTarget: () => lastTargetName,
-      doStartPi,
+      doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
       doReloadAll,
       writeClipboard,
     }
+  }
+
+  async function handleCommand(text: string, userId: string, channel: string): Promise<string | null> {
+    const ctx = buildCommandCtx()
     // 渠道正在等待问卷答案时禁用宽松 use 匹配（数字可能是答案，不是切换命令）
     const gw = gateways.get(channel)
     const awaitingAnswer = gw?.isAwaitingAnswer?.(userId) ?? false
@@ -449,144 +461,17 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   // ============================================================================
-  // 工具：list_instances / switch_instance / send_command / send_message
+  // 工具注册（list_instances / switch_instance / send_command / send_message / start_pi / dispatch_task）
   // ============================================================================
 
-  pi.registerTool({
-    name: 'list_instances',
-    label: 'List Instances',
-    description: '列出所有 pi 实例（本机 + 远程），标注当前实例。供实例间协调、切换前查看。',
-    promptSnippet: '列出所有 pi 实例',
-    promptGuidelines: ['用户询问实例状态、切换前先调用本工具。编号可用于 switch_instance 的 target。'],
-    parameters: Type.Object({}),
-    async execute() {
-      try {
-        const { local, all } = await collectInstances()
-        if (all.length === 0) return ok('没有登记的实例')
-        const lines = all.map((inst) => {
-          const marks: string[] = []
-          if (inst.pid === process.pid) marks.push('当前')
-          if (!local.some((l) => l.name === inst.name)) marks.push('远程')
-          const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
-          return `${inst.name}${inst.host ? '@' + inst.host : ''}${mark}`
-        })
-        return ok(`实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}`)
-      } catch (err) {
-        return fail(`列出实例失败: ${(err as Error).message}`)
-      }
-    },
-  })
-
-  pi.registerTool({
-    name: 'switch_instance',
-    label: 'Switch Instance',
-    description: '把指定能力（默认接管）切换到目标实例，或在实例间发送接管请求。target 传实例名或编号。',
-    promptSnippet: '切换实例接管',
-    promptGuidelines: ['用户要求把控制权切到另一个实例时调用。先 list_instances 查看。'],
-    parameters: Type.Object({
-      target: Type.String({ description: '目标实例名或编号' }),
-      capability: Type.Optional(Type.String({ description: '能力标识（如 wechat），未指定时默认 wechat（微信接管）' })),
-    }),
-    async execute(_toolCallId, params) {
-      try {
-        return ok(await doSwitch(String(params.target).trim(), params.capability ?? 'wechat'))
-      } catch (err) {
-        return fail(`切换失败: ${(err as Error).message}`)
-      }
-    },
-  })
-
-  pi.registerTool({
-    name: 'send_command',
-    label: 'Send Command',
-    description: '向指定 pi 实例发送斜杠指令（如 /new /reload /compact）或任意命令文本。',
-    promptSnippet: '向实例发送指令',
-    promptGuidelines: ['用户要求远程实例执行指令时调用。target 为目标实例名。'],
-    parameters: Type.Object({
-      target: Type.String({ description: '目标实例名' }),
-      command: Type.String({ description: '要执行的指令，如 /reload' }),
-    }),
-    async execute(_toolCallId, params) {
-      try {
-        return ok(await doSendCommand(String(params.target).trim(), String(params.command).trim()))
-      } catch (err) {
-        return fail(`发送指令失败: ${(err as Error).message}`)
-      }
-    },
-  })
-
-  pi.registerTool({
-    name: 'send_message',
-    label: 'Send Message',
-    description: '向指定 pi 实例的用户/agent 发送普通消息（对方拉取后可见）。',
-    promptSnippet: '向实例发送消息',
-    promptGuidelines: ['用户要求给另一个实例/agent 留言时调用。'],
-    parameters: Type.Object({
-      target: Type.String({ description: '目标实例名' }),
-      text: Type.String({ description: '消息内容' }),
-    }),
-    async execute(_toolCallId, params) {
-      try {
-        return ok(await doSendMessage(String(params.target).trim(), String(params.text).trim()))
-      } catch (err) {
-        return fail(`发送消息失败: ${(err as Error).message}`)
-      }
-    },
-  })
-
-  pi.registerTool({
-    name: 'start_pi',
-    label: 'Start Pi',
-    description: '在指定实例（默认当前本机）的 tmux pi 会话中启动 pi。',
-    promptSnippet: '在实例上启动 pi',
-    promptGuidelines: ['用户要求启动 pi / start pi / 启动派时调用。'],
-    parameters: Type.Object({
-      target: Type.Optional(Type.String({ description: '目标实例名（默认当前本机）' })),
-      cwd: Type.Optional(Type.String({ description: '启动目录（默认实例 cwd 或 ~）' })),
-    }),
-    async execute(_toolCallId, params) {
-      try {
-        const { all } = await collectInstances()
-        let inst: InstanceInfo | undefined
-        if (params.target) {
-          inst = resolveTarget(all, String(params.target).trim())
-          if (!inst) return fail(`未找到实例 ${params.target}，先 /instances 查看`)
-        } else {
-          inst = all.find((i) => i.name === currentInstanceName)
-          if (!inst) return fail('未找到当前实例')
-        }
-        return ok(await doStartPi(inst, params.cwd ? String(params.cwd) : undefined))
-      } catch (err) {
-        return fail(`启动失败: ${(err as Error).message}`)
-      }
-    },
-  })
-
-  pi.registerTool({
-    name: 'dispatch_task',
-    label: 'Dispatch Task',
-    description: '向一个或多个子实例分发子任务（带 TASK#N 标记的消息），等待各实例回传 [TASK#N结果] 后汇总。',
-    promptSnippet: '分发子任务给多个实例',
-    promptGuidelines: ['subagent 协作：先 list_instances 确认可用实例，再分发任务；结果由子实例 send_message 回传。'],
-    parameters: Type.Object({
-      tasks: Type.Array(Type.Object({
-        instance: Type.String({ description: '目标实例名' }),
-        task: Type.String({ description: '任务描述，建议明确输出格式（JSON/表格/固定模板）' }),
-      })),
-    }),
-    async execute(_toolCallId, params) {
-      try {
-        const lines: string[] = []
-        for (const [i, t] of params.tasks.entries()) {
-          const tag = `[TASK#${i + 1}]`
-          const reply = await doSendMessage(t.instance, `${tag} ${t.task}\n完成后请回复「${tag}结果」+ 结果内容。`)
-          lines.push(`TASK#${i + 1} → ${t.instance}: ${reply}`)
-        }
-        return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。`)
-      } catch (err) {
-        return fail(`分发失败: ${(err as Error).message}`)
-      }
-    },
+  registerTools(pi, {
+    currentInstanceName: () => currentInstanceName,
+    collectInstances,
+    resolveTarget,
+    doSwitch,
+    doSendCommand,
+    doSendMessage,
+    doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
   })
 
   // ============================================================================
@@ -899,124 +784,6 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   // ============================================================================
-  // 启动 pi：在目标实例所在机器的 tmux 中新建会话运行 pi
-  // ============================================================================
-
-  function execCapture(file: string, args: string[], timeoutMs = 20000): Promise<{ ok: boolean; stdout: string; stderr: string }> {
-    return new Promise((resolve) => {
-      execFile(file, args, { timeout: timeoutMs, maxBuffer: 64 * 1024 }, (err, stdout, stderr) => {
-        if (err) {
-          resolve({ ok: false, stdout: stdout ?? '', stderr: stderr?.toString() ?? (err as Error).message })
-          return
-        }
-        resolve({ ok: true, stdout: stdout ?? '', stderr: stderr?.toString() ?? '' })
-      })
-    })
-  }
-
-  /** 写入系统剪贴板：macOS pbcopy / Linux xclip / Windows clip */
-  function writeClipboard(text: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      const cmd =
-        process.platform === 'darwin' ? 'pbcopy'
-        : process.platform === 'linux' ? (process.env.DISPLAY ? 'xclip' : 'xclip')
-        : process.platform === 'win32' ? 'clip' : null
-      if (!cmd) { resolve(false); return }
-      try {
-        const child = execFile(cmd, process.platform === 'linux' ? ['-selection', 'clipboard'] : [], (err) => resolve(!err))
-        child.stdin?.write(text)
-        child.stdin?.end()
-      } catch {
-        resolve(false)
-      }
-    })
-  }
-
-  /** 目录/路径安全校验：拒绝 shell 元字符，杜绝注入（远程经 shell 执行） */
-  function isSafePath(p: string): boolean {
-    return !/[;&|`'"$()<>*?\[\]{}#\\\n\r]/.test(p)
-  }
-
-  async function doStartPi(target: InstanceInfo, cwd?: string): Promise<string> {
-    // 参数安全校验：实例名只允许安全字符，目录拒绝 shell 元字符（远程=shell 执行，必须防注入）
-    if (!/^[A-Za-z0-9._-]+$/.test(target.name)) {
-      return `❌ 实例名 ${target.name} 含不安全字符，拒绝启动`
-    }
-    const dir = cwd?.trim() || target.cwd?.trim() || '~'
-    if (!isSafePath(dir)) {
-      return `❌ 启动目录含不安全字符，拒绝启动: ${dir}`
-    }
-    // 复用实例所在的 tmux 会话（不新建会话）：窗口名带唯一后缀（实例 pid，未知时回退时间戳）
-    const pidSuffix = target.pid > 0 ? String(target.pid) : String(Date.now()).slice(-6)
-    const winName = `pi-${target.name}-${pidSuffix}`
-    const isLocal = !target.host || target.host === os.hostname()
-    const hostLabel = isLocal ? `${os.hostname()}（本机）` : target.host
-
-    // 1) 定位当前 tmux 会话（复用，绝不新建）
-    let sessionName: string
-    let sessionTarget: string
-    let remote: RemoteHostConfig | undefined
-    if (!isLocal) remote = config.remoteHosts?.[target.name] ?? { target: target.host as string }
-    try {
-      if (isLocal) {
-        if (!process.env.TMUX) return `❌ ${hostLabel} 当前实例不在 tmux 会话中，无法开窗口`
-        sessionName = (await execCapture('tmux', ['display-message', '-p', '#S'])).stdout.trim()
-        // 用 session id（如 $1）作 new-window 目标，避免纯数字会话名被当成窗口索引
-        sessionTarget = (await execCapture('tmux', ['display-message', '-p', '#{session_id}'])).stdout.trim()
-        if (!sessionName || !sessionTarget) return `❌ ${hostLabel} 无法获取当前 tmux 会话`
-      } else {
-        if (!target.pid || target.pid <= 0) return `❌ 实例 ${target.name} pid 未知，无法定位其 tmux 会话`
-        const probe = [
-          `SID=$(tr '\\0' '\\n' < /proc/${target.pid}/environ 2>/dev/null | sed -n 's/^TMUX=.*,\\([0-9][0-9]*\\)$/\\1/p' | head -1)`,
-          `if [ -z "$SID" ]; then echo 'NO_TMUX'; exit 0; fi`,
-          `tmux list-sessions -F '#{session_id} #{session_name}' | awk -v id="\\$$SID" '$1==id{print $1, $2; exit}'`,
-        ].join('\n')
-        const probeOut = (await sshExec(remote!.target, remote!.port, probe)).trim()
-        const [idPart, namePart] = probeOut.split(/\s+/, 2)
-        if (!idPart || idPart === 'NO_TMUX') return `❌ 实例 ${target.name} 不在 tmux 会话中（或会话已不存在）`
-        sessionTarget = idPart
-        sessionName = namePart || target.name
-      }
-    } catch (err) {
-      return `❌ 启动失败（${hostLabel}）: ${(err as Error).message}`
-    }
-
-    // 2) 在复用的会话中开窗口
-    let status: string
-    try {
-      if (isLocal) {
-        // 本机：execFile 数组参数（不经 shell），窗口去重后创建
-        const listRes = await execCapture('tmux', ['list-windows', '-t', sessionTarget, '-F', '#W'])
-        if (listRes.ok && listRes.stdout.split('\n').some((w) => w.trim() === winName)) {
-          status = 'TMUX_EXISTS'
-        } else {
-          const createRes = await execCapture('tmux', ['new-window', '-t', sessionTarget, '-n', winName, '-c', dir, 'pi'])
-          status = createRes.ok ? 'TMUX_STARTED' : `TMUX_FAILED ${createRes.stderr.trim()}`
-        }
-      } else {
-        const shellCmd = [
-          `if tmux list-windows -t '${sessionTarget}' -F '#W' 2>/dev/null | grep -qx '${winName}'; then`,
-          `  echo 'TMUX_EXISTS'`,
-          `else`,
-          `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
-          `fi`,
-        ].join('\n')
-        status = (await sshExec(remote!.target, remote!.port, shellCmd)).trim().split('\n').pop() ?? ''
-      }
-    } catch (err) {
-      return `❌ 启动失败（${hostLabel}）: ${(err as Error).message}`
-    }
-
-    if (status.includes('TMUX_EXISTS')) {
-      return `⚠️ 窗口 ${winName} 已存在（${hostLabel}，tmux 会话 ${sessionName}），未重复启动。查看: tmux attach -t ${sessionName}`
-    }
-    if (status.includes('TMUX_STARTED')) {
-      return `✅ 已在 ${hostLabel} 启动 pi，tmux 会话 ${sessionName} 窗口 ${winName}（目录 ${dir}）。查看: tmux attach -t ${sessionName}`
-    }
-    return `❌ 启动失败（${hostLabel}）: ${status.replace('TMUX_FAILED', '').trim() || 'tmux 执行异常'}`
-  }
-
-  // ============================================================================
   // 本地 takeover 文件（本机实例间）
   // ============================================================================
 
@@ -1102,113 +869,37 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   // ============================================================================
-  // TUI 斜杠命令
+  // ============================================================================
+  // TUI 斜杠命令：统一复用 commands.ts 命令表
+  // （/instances /use /send-command /send-message /cmd /msg /start-pi /reloadall /clipboard）
   // ============================================================================
 
-  pi.registerCommand('instances', {
-    description: '列出所有 pi 实例（本机 + 远程）',
-    handler: async (_args, ctx) => {
-      const { local, all } = await collectInstances()
-      if (all.length === 0) {
-        ctx.ui.notify('没有登记的实例', 'warning')
-        return
-      }
-      const lines = all.map((inst) => {
-        const marks: string[] = []
-        if (inst.pid === process.pid) marks.push('当前')
-        if (!local.some((l) => l.name === inst.name)) marks.push('远程')
-        const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
-        const host = inst.host ? `@${inst.host}` : ''
-        // cwd 列在行尾（远程实例 cwd 可能为空则不显示）
-        const cwd = inst.cwd ? ` ${inst.cwd}` : ''
-        return `${inst.name}${host}${mark}${cwd}`
-      })
-      ctx.ui.notify(`实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}`, 'info')
-    },
-  })
-
-  pi.registerCommand('use', {
-    getArgumentCompletions: instanceCompletions,
-    description: '把接管权切换到指定实例（实例名/编号/默认复用上次）',
-    handler: async (args, ctx) => {
-      const name = args.trim()
-      if (!name) {
-        if (lastTargetName) {
-          ctx.ui.notify(await doSwitch(lastTargetName, 'wechat'), 'info')
-          return
+  const TUI_COMMAND_MAP: Record<string, string> = {
+    instances: 'instances',
+    use: 'use',
+    'send-command': 'cmd',
+    'send-message': 'msg',
+    cmd: 'cmd',
+    msg: 'msg',
+    'start-pi': 'start-pi',
+    reloadall: 'reloadall',
+    clipboard: 'clipboard',
+  }
+  for (const [tuiName, cmdName] of Object.entries(TUI_COMMAND_MAP)) {
+    pi.registerCommand(tuiName, {
+      getArgumentCompletions: instanceCompletions,
+      description: `/${tuiName}（复用渠道命令实现）`,
+      handler: async (args, ctx) => {
+        try {
+          const result = await executeCommand(`/${cmdName}${args.trim() ? ' ' + args.trim() : ''}`, buildCommandCtx(), { loose: false })
+          if (result?.reply) ctx.ui.notify(result.reply, 'info')
+        } catch (err) {
+          ctx.ui.notify(`命令失败: ${(err as Error).message}`, 'error')
         }
-        ctx.ui.notify('用法: /use <实例名或编号>，如 /use pigw 或 /use 2', 'warning')
-        return
-      }
-      ctx.ui.notify(await doSwitch(name, 'wechat'), 'info')
-    },
-  })
-
-  const notifyCmdResult = (ctx: { ui: { notify: (m: string, t?: 'info' | 'warning' | 'error') => void } }, result: string) => {
-    ctx.ui.notify(result, 'info')
+      },
+    })
   }
 
-  pi.registerCommand('send-command', {
-    getArgumentCompletions: instanceCompletions,
-    description: '向实例发送指令：/send-command [实例名] <指令>（不写实例名复用上次）',
-    handler: async (args, ctx) => {
-      const { target, rest } = await parseTargetArgs(args)
-      if (!rest) {
-        ctx.ui.notify('用法: /send-command [实例名] <指令>，如 /send-command /reload 或 /send-command agent /reload', 'warning')
-        return
-      }
-      if (target) notifyCmdResult(ctx, await doSendCommand(target, rest))
-      else if (lastTargetName) notifyCmdResult(ctx, await doSendCommand(lastTargetName, rest))
-      else ctx.ui.notify('未指定实例且没有上次实例，先 /use <实例> 或 /send-command <实例> <指令>', 'warning')
-    },
-  })
-
-  pi.registerCommand('send-message', {
-    getArgumentCompletions: instanceCompletions,
-    description: '向实例发送消息：/send-message [实例名] <内容>（不写实例名复用上次）',
-    handler: async (args, ctx) => {
-      const { target, rest } = await parseTargetArgs(args)
-      if (!rest) {
-        ctx.ui.notify('用法: /send-message [实例名] <内容>，如 /send-message hello 或 /send-message agent hello', 'warning')
-        return
-      }
-      if (target) notifyCmdResult(ctx, await doSendMessage(target, rest))
-      else if (lastTargetName) notifyCmdResult(ctx, await doSendMessage(lastTargetName, rest))
-      else ctx.ui.notify('未指定实例且没有上次实例，先 /use <实例> 或 /send-message <实例> <内容>', 'warning')
-    },
-  })
-
-  pi.registerCommand('cmd', {
-    getArgumentCompletions: instanceCompletions,
-    description: '别名：/send-command',
-    handler: async (args, ctx) => {
-      const { target, rest } = await parseTargetArgs(args)
-      if (!rest) {
-        ctx.ui.notify('用法: /cmd [实例名] <指令>', 'warning')
-        return
-      }
-      if (target) notifyCmdResult(ctx, await doSendCommand(target, rest))
-      else if (lastTargetName) notifyCmdResult(ctx, await doSendCommand(lastTargetName, rest))
-      else ctx.ui.notify('未指定实例且无上次实例', 'warning')
-    },
-  })
-
-  pi.registerCommand('msg', {
-    getArgumentCompletions: instanceCompletions,
-    description: '别名：/send-message',
-    handler: async (args, ctx) => {
-      const { target, rest } = await parseTargetArgs(args)
-      if (!rest) {
-        ctx.ui.notify('用法: /msg [实例名] <内容>', 'warning')
-        return
-      }
-      if (target) notifyCmdResult(ctx, await doSendMessage(target, rest))
-      else if (lastTargetName) notifyCmdResult(ctx, await doSendMessage(lastTargetName, rest))
-      else ctx.ui.notify('未指定实例且无上次实例', 'warning')
-    },
-  })
-
-  // 内部命令：广播触发的扩展重载（broadcast envelope → 本命令）
   pi.registerCommand('__hub_reload', {
     description: '广播重载（内部命令，由 broadcast envelope 触发）',
     handler: async (_args, ctx) => {
@@ -1271,46 +962,6 @@ export default function hubExtension(pi: ExtensionAPI) {
       } catch (err) {
         log(`[HUB-CMD] 执行 ${raw} 失败: ${(err as Error).message}`)
       }
-    },
-  })
-
-  pi.registerCommand('reloadall', {
-    description: '重载所有实例（当前实例本地执行，其他实例发指令）',
-    handler: async (_args, ctx) => {
-      const { all } = await collectInstances()
-      if (all.length === 0) {
-        ctx.ui.notify('没有登记的实例', 'warning')
-        return
-      }
-      const lines: string[] = []
-      let needLocalReload = false
-      for (const inst of all) {
-        if (inst.pid === process.pid || inst.name === currentInstanceName) {
-          needLocalReload = true
-          lines.push(`${inst.name}: 将本地 reload`)
-        } else {
-          lines.push(await doSendCommand(inst.name, '/__hub_reload'))
-        }
-      }
-      // 注意：ctx.reload() 后 ctx 即失效（stale），必须先 notify 再 reload，reload 放最后
-      ctx.ui.notify(lines.join('\n'), 'info')
-      if (needLocalReload) {
-        await ctx.reload()
-      }
-    },
-  })
-
-  pi.registerCommand('start-pi', {
-    getArgumentCompletions: instanceCompletions,
-    description: '在实例（默认本机）的 tmux pi 会话中启动 pi：/start-pi [实例名] [目录]',
-    handler: async (args, ctx) => {
-      const { all } = await collectInstances()
-      const parsed = parseStartPiTarget(all, currentInstanceName, args)
-      if ('error' in parsed) {
-        ctx.ui.notify(parsed.error, 'warning')
-        return
-      }
-      ctx.ui.notify(await doStartPi(parsed.inst, parsed.rest.trim() || undefined), 'info')
     },
   })
 
