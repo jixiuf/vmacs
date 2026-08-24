@@ -1138,6 +1138,25 @@ export default function hubExtension(pi: ExtensionAPI) {
             await hubCmdReply(out.ok ? out.stdout.trim() : `tmux 失败: ${out.stderr.trim()}`)
             break
           }
+          // 跨机启动 subagent：在“本机”直接启动新 pi（非 tmux 也能），结果回传发起者。
+          // 由目标机器的实例执行（经 envelope 到达），无需反向 ssh。
+          case 'start-subagent': {
+            const cwd = rest.trim() || undefined
+            const out = await doStartPiFn(
+              {
+                name: `${currentInstanceName}-sub`,
+                pid: process.pid,
+                cwd: process.cwd(),
+                sessionId: '',
+                lastSeen: 0,
+                host: os.hostname(),
+              },
+              cwd,
+              startPiDeps,
+            )
+            await hubCmdReply(out)
+            break
+          }
           default:
             // 未知命令：仅记录，不执行（避免不可靠的 tmux 模拟输入）
             log(`[HUB-CMD] 未知命令: ${raw}，忽略`)

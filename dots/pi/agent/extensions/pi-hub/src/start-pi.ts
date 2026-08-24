@@ -131,5 +131,26 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
   if (status.includes('TMUX_STARTED')) {
     return `✅ 已在 ${hostLabel} 启动 pi，tmux 会话 ${sessionName} 窗口 ${winName}（目录 ${dir}）。查看: tmux attach -t ${sessionName}`
   }
-  return `❌ 启动失败（${hostLabel}）: ${status.replace('TMUX_FAILED', '').trim() || 'tmux 执行异常'}`
+  if (status.includes('DIRECT_STARTED')) {
+    return `✅ 已在 ${hostLabel} 直接启动 pi（非 tmux：${process.platform === 'darwin' ? '新 Terminal 窗口' : '后台进程'}），标识 ${winName}（目录 ${dir}）`
+  }
+  return `❌ 启动失败（${hostLabel}）: ${status.replace(/TMUX_FAILED|DIRECT_FAILED/, '').trim() || '执行异常'}`
+}
+
+/**
+ * 非 tmux 直接启动新 pi：macOS 开 Terminal 窗口；Linux nohup 后台（日志 /tmp/<winName>.log）。
+ * dir 已过 isSafePath 校验（拒绝 shell 元字符），注入安全。
+ */
+async function startDirectLocal(dir: string, winName: string): Promise<string> {
+  if (process.platform === 'darwin') {
+    const script = `tell application "Terminal" to do script "cd '${dir}' && exec pi"`
+    const res = await execCapture('osascript', ['-e', script])
+    return res.ok ? 'DIRECT_STARTED' : `DIRECT_FAILED ${res.stderr.trim()}`
+  }
+  if (process.platform === 'linux') {
+    const log = `/tmp/${winName}.log`
+    const res = await execCapture('bash', ['-lc', `cd '${dir}' && exec pi > '${log}' 2>&1 &`])
+    return res.ok ? 'DIRECT_STARTED' : `DIRECT_FAILED ${res.stderr.trim()}`
+  }
+  return 'DIRECT_FAILED 非 tmux 直接启动仅支持 macOS/Linux'
 }
