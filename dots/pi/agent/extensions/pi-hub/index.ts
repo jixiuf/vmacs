@@ -503,6 +503,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       doReloadAll,
       writeClipboard,
       taskRegistry,
+      requestSubagent,
     }
   }
 
