@@ -240,7 +240,24 @@ export default function hubExtension(pi: ExtensionAPI) {
     try {
       if (!config.coordinatorPort || coordinatorServer) return
       const inUse = await isPortInUse(config.coordinatorPort)
-      if (inUse) return
+      if (inUse) {
+        // 端口被占（已有协调中心）：降级客户端并确保 WS 连接（否则不可见，收不到推送）
+        if (!wsClient && config.coordinatorPort) {
+          config = { ...config, coordinatorUrl: `http://127.0.0.1:${config.coordinatorPort}` }
+          wsClient = connectCoordinatorWS(
+            config.coordinatorUrl,
+            currentInstanceName,
+            os.hostname(),
+            (env) => routeEnvelope(env),
+            (connected) => {
+              log(connected ? '协调中心 WS 已连接（降级客户端）' : '协调中心 WS 断开，重连中')
+              if (connected) flushPendingOutbox()
+            },
+            pi.getSessionName() ?? undefined,
+          )
+        }
+        return
+      }
       coordinatorServer = startCoordinatorServer(
         config.coordinatorPort,
         { name: currentInstanceName, pid: process.pid, cwd: process.cwd(), host: os.hostname() },
@@ -1088,6 +1105,20 @@ export default function hubExtension(pi: ExtensionAPI) {
       } else {
         log(`协调端口 ${config.coordinatorPort} 已被占用，本实例作为客户端接入 (127.0.0.1:${config.coordinatorPort})`)
         config = { ...config, coordinatorUrl: `http://127.0.0.1:${config.coordinatorPort}` }
+        // 降级客户端：立即建立 WS 连接（否则不注册 WS，协调中心/主实例看不到本实例，
+        // 消息/指令/回收都无法投递——只能靠共享本地队列轮询兜底）
+        wsClient?.close()
+        wsClient = connectCoordinatorWS(
+          config.coordinatorUrl,
+          currentInstanceName,
+          os.hostname(),
+          (env) => routeEnvelope(env),
+          (connected) => {
+            log(connected ? '协调中心 WS 已连接（降级客户端）' : '协调中心 WS 断开，重连中')
+            if (connected) flushPendingOutbox()
+          },
+          pi.getSessionName() ?? undefined,
+        )
       }
     }
 
