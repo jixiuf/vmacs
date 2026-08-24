@@ -83,22 +83,28 @@ export interface WsClientHandle {
 
 /**
  * WS 重连退避（毫秒）：
- * - 连接稳定存活（≥stableMs）→ 重置退避（正常断线 1s/2s/4s 指数退避）
- * - 快速失败（存活 <fastFailMs）→ 强制提升退避下限（≥8s，升到 15s 上限）
- *   防止两个同名连接源被服务器端互相 destroy 时形成每秒重连风暴，
- *   给竞争源消失留出收敛时间，最终恢复稳定连接。
- * aliveMs 传 -1 表示从未成功 OPEN（握手失败/连接被拒），保持正常递增退避。
+ * - 连接稳定存活（≥stableMs）且距上次断开足够久（≥competitionMs）→ 重置退避
+ *   （正常断线 1s/2s/4s 指数退避）
+ * - 距上次断开 <competitionMs（同名连接源互相 destroy 的竞争节奏）或
+ *   连接快速失败（存活 <fastFailMs）→ 强制提升退避下限（≥8s，升到 15s 上限）
+ *   防止两个同名连接源互相 destroy 时形成每秒重连风暴，给竞争源消失留出收敛时间。
+ * aliveMs 传 -1 表示从未成功 OPEN（握手失败/连接被拒）。
+ * sinceLastCloseMs 传 Infinity 表示首次断开。
+ * 注意：仅看 aliveMs 不够——竞争时连接常“稳定运行后被踢”（alive 很大），
+ * 必须结合断开节奏（sinceLastCloseMs）识别竞争状态。
  */
 export function wsRetryDelay(
   aliveMs: number,
   retry: number,
-  opts?: { stableMs?: number; fastFailMs?: number },
+  sinceLastCloseMs: number,
+  opts?: { stableMs?: number; fastFailMs?: number; competitionMs?: number },
 ): number {
   const stableMs = opts?.stableMs ?? 10_000
   const fastFailMs = opts?.fastFailMs ?? 3_000
+  const competitionMs = opts?.competitionMs ?? 30_000
   let r = retry
-  if (aliveMs >= stableMs) r = 0
-  else if (aliveMs >= 0 && aliveMs < fastFailMs) r = Math.max(r, 3)
+  if (aliveMs >= stableMs && sinceLastCloseMs >= competitionMs) r = 0
+  else if (sinceLastCloseMs < competitionMs || (aliveMs >= 0 && aliveMs < fastFailMs)) r = Math.max(r, 3)
   return Math.min(1000 * 2 ** r, 15000)
 }
 
@@ -116,7 +122,7 @@ export function connectCoordinatorWS(
   let closed = false
   let retry = 0
   let lastOpenTs = 0
-  let lastCloseTs = 0
+  let prevCloseTs = 0
 
   function connect(): void {
     if (closed) return
@@ -140,19 +146,20 @@ export function connectCoordinatorWS(
       } catch { /* 忽略坏消息 */ }
     }
     socket.onclose = () => {
+      const now = Date.now()
       logEvent('WS_CLOSE', `name=${name}`)
-      lastCloseTs = Date.now()
       onStatus?.(false)
       if (ws === socket) ws = null
       if (!closed) {
-        // 快速失败保护：连接刚建立就被断开（如被服务器端同名连接 destroy），
-        // 若仍按 1s 起步退避重连，两个同名连接源会互相 destroy 形成每秒重连风暴
-        // （此前 onopen 即重置 retry 使指数退避形同虚设）。退避决策见 wsRetryDelay：
-        // - 稳定存活才重置退避 → 正常断线仍 1s/2s/4s 指数退避
-        // - 快速失败强制提升退避下限 → 竞争风暴退避到 8s→15s 上限，最终收敛
-        const alive = lastOpenTs > 0 ? lastCloseTs - lastOpenTs : -1
-        const delay = wsRetryDelay(alive, retry)
+        // 竞争保护：连接刚建立就被断开（快速失败）或距上次断开 <30s（两个同名
+        // 连接源互相 destroy 的竞争节奏，即使本次连接曾稳定运行也会被踢）→
+        // 强制提升退避下限，风暴退避到 8s→15s 上限，竞争源消失后自然收敛。
+        // 仅稳定运行且长时间无断连才重置退避（正常 1s/2s/4s 指数退避）。
+        const alive = lastOpenTs > 0 ? now - lastOpenTs : -1
+        const sinceLastClose = prevCloseTs > 0 ? now - prevCloseTs : Infinity
+        const delay = wsRetryDelay(alive, retry, sinceLastClose)
         retry++
+        prevCloseTs = now
         setTimeout(connect, delay)
       }
     }

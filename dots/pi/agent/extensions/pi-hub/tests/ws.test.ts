@@ -48,30 +48,37 @@ describe('WebSocket 帧编解码（手写，无依赖）', () => {
 
 describe('WS 重连退避 wsRetryDelay（防同名竞争重连风暴）', () => {
   it('从未 OPEN（alive=-1）→ 保持正常指数退避递增', () => {
-    expect(wsRetryDelay(-1, 0)).toBe(1000)
-    expect(wsRetryDelay(-1, 2)).toBe(4000)
+    expect(wsRetryDelay(-1, 0, Infinity)).toBe(1000)
+    expect(wsRetryDelay(-1, 2, Infinity)).toBe(4000)
   })
 
-  it('稳定存活（≥10s）→ 重置退避到 1s', () => {
-    expect(wsRetryDelay(20_000, 7)).toBe(1000)
-    expect(wsRetryDelay(10_000, 3)).toBe(1000)
+  it('稳定存活（≥10s）且距上次断开久（≥30s）→ 重置退避到 1s', () => {
+    expect(wsRetryDelay(20_000, 7, 60_000)).toBe(1000)
+    expect(wsRetryDelay(10_000, 3, 45_000)).toBe(1000)
   })
 
   it('快速失败（存活 <3s）→ 强制提升退避下限 ≥8s', () => {
-    expect(wsRetryDelay(1000, 0)).toBe(8000)
-    expect(wsRetryDelay(500, 1)).toBe(8000)
-    expect(wsRetryDelay(2999, 0)).toBe(8000)
+    expect(wsRetryDelay(1000, 0, Infinity)).toBe(8000)
+    expect(wsRetryDelay(500, 1, Infinity)).toBe(8000)
+    expect(wsRetryDelay(2999, 0, Infinity)).toBe(8000)
+  })
+
+  it('关键：稳定运行后被踢（alive 很大但距上次断开 <30s）→ 竞争节奏，仍强制大退避', () => {
+    // 复现真实风暴：连接稳定 76s 后被同名竞争源踢掉，仅看 alive 会误重置 retry
+    expect(wsRetryDelay(76_000, 0, 1000)).toBe(8000)
+    expect(wsRetryDelay(50_000, 1, 5000)).toBe(8000)
+    expect(wsRetryDelay(76_000, 4, 10_000)).toBe(15000)
   })
 
   it('快速失败持续 → 退避指数增长至 15s 上限（风暴抑制）', () => {
-    expect(wsRetryDelay(500, 3)).toBe(8000)
-    expect(wsRetryDelay(500, 4)).toBe(15000)
-    expect(wsRetryDelay(500, 9)).toBe(15000)
+    expect(wsRetryDelay(500, 3, 1000)).toBe(8000)
+    expect(wsRetryDelay(500, 4, 1000)).toBe(15000)
+    expect(wsRetryDelay(500, 9, 1000)).toBe(15000)
   })
 
-  it('介于稳定与快速失败之间（3s~10s）→ 不重置不强制，保持当前退避', () => {
-    expect(wsRetryDelay(5000, 2)).toBe(4000)
-    expect(wsRetryDelay(5000, 5)).toBe(15000)
+  it('介于稳定与快速失败之间（3s~10s）且无竞争节奏 → 保持当前退避', () => {
+    expect(wsRetryDelay(5000, 2, 60_000)).toBe(4000)
+    expect(wsRetryDelay(5000, 5, 60_000)).toBe(15000)
   })
 })
 
