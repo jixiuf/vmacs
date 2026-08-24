@@ -72,6 +72,15 @@ const BROADCAST_FILE = path.join(STATE_DIR, 'broadcast.json')
 
 const TAKEOVER_TTL_MS = 60_000
 
+/**
+ * 上报用逻辑 cwd：优先 $PWD（shell 软链接逻辑路径，如 /var/tmp/pi-sync/jixiuf/vmacs/...），
+ * 回落物理路径（process.cwd() 返回内核解析后的真实路径）。用户可能经软链接/同步路径进入，
+ * 上报 cwd 与实例名 basename 需保留用户视角的逻辑路径，便于跨机器以相同路径引用。
+ */
+function logicalCwd(fallback?: string): string {
+  return process.env.PWD || fallback || process.cwd()
+}
+
 // ============================================================================
 
 export default function hubExtension(pi: ExtensionAPI) {
@@ -226,12 +235,12 @@ export default function hubExtension(pi: ExtensionAPI) {
   // 扩展加载后延时检查，若 session_start 未触发则用 process.cwd() 兜底完成初始化。
   setTimeout(() => {
     if (currentInstanceName) return // session_start 已正常触发
-    log(`session_start 未触发，兜底初始化（cwd=${process.cwd()}）`)
+    log(`session_start 未触发，兜底初始化（cwd=${logicalCwd()}）`)
     try {
       currentInstanceName = registerInstance({
-        name: process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(process.cwd()) || 'pi',
+        name: process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(logicalCwd()) || 'pi',
         pid: process.pid,
-        cwd: process.cwd(),
+        cwd: logicalCwd(),
         sessionId: 'fallback',
         host: os.hostname(),
         sessionName: pi.getSessionName() ?? undefined,
@@ -280,7 +289,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       }
       coordinatorServer = startCoordinatorServer(
         config.coordinatorPort,
-        { name: currentInstanceName, pid: process.pid, cwd: process.cwd(), host: os.hostname() },
+        { name: currentInstanceName, pid: process.pid, cwd: logicalCwd(), host: os.hostname() },
         config.remoteInstanceNames ?? [],
         queue,
       )
@@ -1298,7 +1307,7 @@ export default function hubExtension(pi: ExtensionAPI) {
               {
                 name: `${currentInstanceName}-sub`,
                 pid: process.pid,
-                cwd: process.cwd(),
+                cwd: logicalCwd(),
                 sessionId: '',
                 lastSeen: 0,
                 host: os.hostname(),
@@ -1339,13 +1348,13 @@ export default function hubExtension(pi: ExtensionAPI) {
     logEvent('SESSION_START', `reason=${(_event as { reason?: string } | undefined)?.reason ?? '?'} cwd=${ctx.cwd} url=${config.coordinatorUrl ?? 'none'}`)
     // 实例名优先级：PI_INSTANCE_NAME 环境变量（远程 subagent 用）> config > cwd basename
     currentInstanceName =
-      process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(ctx.cwd) || 'pi'
+      process.env.PI_INSTANCE_NAME || config.instanceName || path.basename(logicalCwd(ctx.cwd)) || 'pi'
     // 先注册（同名存活实例会自动改名，保证唯一），再连 WS——WS 必须用改名后的名字，
     // 否则多个同 cwd 实例会以同名连接协调中心，wsClients 互相覆盖导致收不到消息
     currentInstanceName = registerInstance({
       name: currentInstanceName,
       pid: process.pid,
-      cwd: ctx.cwd,
+      cwd: logicalCwd(ctx.cwd),
       sessionId: ctx.sessionManager.getSessionId(),
       host: os.hostname(),
       sessionName: pi.getSessionName() ?? undefined,
@@ -1369,7 +1378,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (!inUse) {
         coordinatorServer = startCoordinatorServer(
           config.coordinatorPort,
-          { name: currentInstanceName, pid: process.pid, cwd: ctx.cwd, host: os.hostname() },
+          { name: currentInstanceName, pid: process.pid, cwd: logicalCwd(ctx.cwd), host: os.hostname() },
           config.remoteInstanceNames ?? [],
           queue,
         )
