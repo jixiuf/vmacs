@@ -1112,6 +1112,11 @@ export default function hubExtension(pi: ExtensionAPI) {
       const branch = sm?.getBranch?.() ?? []
       const replyText = extractReplyText(branch)
       if (replyText) {
+        // 子实例已手动回传（回复文本含 [TASK-id结果]）→ 跳过自动回传，避免双回传
+        if (replyText.includes(`[${pending.taskId}结果]`)) {
+          log(`任务 ${pending.taskId} 已手动回传，跳过自动回传`)
+          return
+        }
         const text = `[${pending.taskId}结果] ${replyText}`
         log(`自动回传任务 ${pending.taskId} → ${pending.from}`)
         const env: Envelope = {
