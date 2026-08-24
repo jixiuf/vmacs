@@ -12,6 +12,7 @@ import * as crypto from 'node:crypto'
 import { execFile } from 'node:child_process'
 import type { Envelope, InstanceInfo, TakeoverRequest } from './types.js'
 import { EnvelopeQueue } from './queue.js'
+import { logEvent } from './logger.js'
 import { preassignLock, coordinatorTryLock, coordinatorReleaseLock, getGlobalLockHolder } from './lock.js'
 
 // ============================================================================
@@ -99,11 +100,12 @@ export function connectCoordinatorWS(
     let socket: WebSocket
     try {
       socket = new WebSocket(wsUrl)
-    } catch {
+    } catch (err) {
+      logEvent('WS_CONNECT_ERROR', `name=${name} err=${(err as Error).message}`)
       if (!closed) setTimeout(connect, 3000)
       return
     }
-    socket.onopen = () => { retry = 0; onStatus?.(true) }
+    socket.onopen = () => { logEvent('WS_OPEN', `name=${name}`); retry = 0; onStatus?.(true) }
     socket.onmessage = (ev) => {
       try {
         const msg = JSON.parse(String(ev.data)) as { type?: string; env?: Envelope }
@@ -111,6 +113,7 @@ export function connectCoordinatorWS(
       } catch { /* 忽略坏消息 */ }
     }
     socket.onclose = () => {
+      logEvent('WS_CLOSE', `name=${name}`)
       onStatus?.(false)
       if (ws === socket) ws = null
       if (!closed) {
@@ -119,7 +122,7 @@ export function connectCoordinatorWS(
         setTimeout(connect, delay)
       }
     }
-    socket.onerror = () => { try { socket.close() } catch { /* ignore */ } }
+    socket.onerror = () => { logEvent('WS_CONNECT_ERROR', `name=${name} error事件`); try { socket.close() } catch { /* ignore */ } }
     ws = socket
   }
 
