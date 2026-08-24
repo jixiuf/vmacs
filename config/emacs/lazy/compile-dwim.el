@@ -77,9 +77,9 @@ Its value should be 'always or list like (filename run compile).")
           (compile-dwim-make)
           "firefox %n.swf")
 
-    (pi-chat (mode . pi-chat-mode)
-          pi-resume
-          pi-resume
+    (pimacs-chat (mode . pimacs-chat-mode)
+          pimacs-resume
+          pimacs-resume
           )
     (objc (mode . objc-mode)
           compile-dwim-xcode:build
@@ -441,7 +441,7 @@ that alist."
            (not (eq major-mode 'dape-repl-mode))
            (not (derived-mode-p 'vc-dir-mode))
            (not (derived-mode-p 'log-view-mode))
-           (not (derived-mode-p 'pi-chat-mode))
+           (not (derived-mode-p 'pimacs-chat-mode))
            (not (derived-mode-p 'magit-mode))
            (not (eq major-mode 'dired-mode)))
       (call-interactively 'term-compile)
