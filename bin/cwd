@@ -58,6 +58,13 @@ if [ -z "$class" ] || [ -z "$title" ]; then
     elif [ "$(uname)" = "Darwin" ]; then
         class=$(osascript -e 'tell application "System Events" to get name of (first application process whose frontmost is true)' 2>/dev/null)
         title=$(osascript -e 'tell application "System Events" to tell (first application process whose frontmost is true) to get value of attribute "AXTitle" of front window' 2>/dev/null)
+        if [ $? -ne 0 ]; then
+            echo "cwd: 无法通过 osascript 读取前台窗口标题" >&2
+            echo "     macOS 需要辅助功能权限，请先授予:" >&2
+            echo "     系统设置 → 隐私与安全性 → 辅助功能" >&2
+            echo "     → 勾选你的终端应用(如 alacritty/iTerm/Terminal)，然后重试。" >&2
+            exit 1
+        fi
     fi
     # Merge with env vars (env vars take precedence)
     class=${class:-${SOURCE_APP:-}}
@@ -69,6 +76,9 @@ if [[ "$class" = "emacs" ]]; then
     cwd=${temp%>*}
     # eval "cwd=$cwd"         # replace ~ -> $HOME
     cwd="${cwd/#\~/$HOME}"
+    if [ -z "$cwd" ]; then
+        exit 1
+    fi
     echo $cwd
     exit 0
 elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ ]]; then
@@ -96,6 +106,9 @@ elif [[ "$class" =~ ^($TERM_CLASS_REGEX)$ ]]; then
         cwd=${cwd%>*}
     done
     cwd="${cwd/#\~/$HOME}"  # replace ~ -> $HOME
+    if [ -z "$cwd" ]; then
+        exit 1
+    fi
     echo $cwd
     exit 0
 fi
