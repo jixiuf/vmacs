@@ -118,6 +118,8 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
     onCommand: (env) => {
       log(`收到来自 ${env.from} 的指令: ${env.command}`)
+      // 记录命令发起者（供 __hub_cmd 查询类命令回传结果）
+      g['__PI_HUB_LAST_CMD_FROM__'] = env.from
       safeSendUserMessage(env.command, {
         deliverAs: 'steer',
         expandPromptTemplates: true,
@@ -381,6 +383,64 @@ export default function hubExtension(pi: ExtensionAPI) {
     const isFail = /"status"\s*:\s*"failed"/.test(result) || /失败|出错|error/i.test(result.slice(0, 80))
     taskRegistry.update(t.id, { status: isFail ? 'failed' : 'done', result })
     log(`任务 ${t.id} 收到回传：${isFail ? 'failed' : 'done'}`)
+  }
+
+  // --- 查询类命令（hub-log/hub-status/...）辅助：结果经 WS 回传发起者（替代 ssh） ---
+
+  /** 读本机 /tmp/pi-hub.log 尾部 N 行（协调中心机器本地文件） */
+  function readHubLog(n: number): string {
+    try {
+      const content = fs.readFileSync('/tmp/pi-hub.log', 'utf8')
+      const lines = content.split('\n').filter(Boolean)
+      return lines.slice(-n).join('\n')
+    } catch (err) {
+      return `读取日志失败: ${(err as Error).message}`
+    }
+  }
+
+  /** 本机协调状态快照（锁 / 队列 / 活跃客户端 / 实例） */
+  function buildHubStatus(): string {
+    const lock = (() => {
+      try {
+        const d = JSON.parse(fs.readFileSync(path.join(STATE_DIR, 'coordinator-lock.json'), 'utf8'))
+        return d && d.name ? `${d.name}(pid=${d.pid},cap=${d.capability ?? '-'})` : '(空)'
+      } catch {
+        return '(无锁文件)'
+      }
+    })()
+    const queueLen = queue.pendingCount
+    const clients = listActiveClients().map((n) => n).join(', ') || '(无)'
+    const instances = listInstances().map((i) => `${i.name}@${i.host ?? ''}`).join(', ') || '(无)'
+    return `锁: ${lock}\n队列: ${queueLen} 条\n活跃客户端: ${clients}\n本机实例: ${instances}`
+  }
+
+  /** 回传查询结果给命令发起者（经 envelope message，跨实例；本机发起则本地注入） */
+  async function hubCmdReply(text: string): Promise<void> {
+    const from = (g['__PI_HUB_LAST_CMD_FROM__'] as string | undefined) ?? currentInstanceName
+    const reply = `[hub结果] ${text}`
+    if (from === currentInstanceName) {
+      safeSendUserMessage(`[本地消息] ${reply}`, {
+        deliverAs: 'steer',
+        expandPromptTemplates: true,
+      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+      return
+    }
+    const env: Envelope = {
+      type: 'message',
+      id: makeEnvelopeId(),
+      from: currentInstanceName || 'local',
+      to: from,
+      text: reply,
+      ts: Date.now(),
+    }
+    if (config.coordinatorPort && !config.coordinatorUrl) {
+      // 协调中心模式：经本机 HTTP /envelope 投递（deliverEnvelope 推送给目标 WS 或入队）
+      await postEnvelope(`http://127.0.0.1:${config.coordinatorPort}`, env)
+    } else if (config.coordinatorUrl) {
+      await sendEnvelopeToCoordinator(env)
+    } else {
+      queue.enqueue(env)
+    }
   }
 
   async function handleTakeover(req: TakeoverRequest): Promise<void> {
@@ -980,7 +1040,7 @@ export default function hubExtension(pi: ExtensionAPI) {
 
   // 内部命令：远程命令执行（command envelope 注入 /__hub_cmd <cmd> 触发，真正在目标实例执行）
   pi.registerCommand('__hub_cmd', {
-    description: '内部命令：远程执行会话命令（/new /fork /goto /reload /name 等，未知命令回退 tmux 模拟输入）',
+    description: '内部命令：远程执行会话命令（/new /fork /goto /reload /name 等）+ 查询命令（hub-log/hub-status/hub-ps/hub-tmux，结果经 WS 回传发起者）',
     handler: async (args, ctx) => {
       const parts = args.trim().split(/\s+/)
       const raw = parts[0] ?? ''
@@ -1026,6 +1086,29 @@ export default function hubExtension(pi: ExtensionAPI) {
             log(`[HUB-CMD] 远程执行 /quit（退出 pi）`)
             setTimeout(() => process.exit(0), 300)
             break
+          // --- 查询类命令：执行并回传结果给发起者（替代 ssh，经 WS 协议双向通道） ---
+          case 'hub-log': {
+            const n = Math.min(Math.max(parseInt(rest || '20', 10) || 20, 1), 200)
+            const content = await readHubLog(n)
+            await hubCmdReply(content)
+            break
+          }
+          case 'hub-status': {
+            const status = await buildHubStatus()
+            await hubCmdReply(status)
+            break
+          }
+          case 'hub-ps': {
+            const out = await execCapture('ps', ['aux'])
+            const lines = (out.ok ? out.stdout : '').split('\n').filter((l) => /\bpi($|\s)/.test(l) || l.includes('PID')).slice(0, 12)
+            await hubCmdReply(lines.join('\n'))
+            break
+          }
+          case 'hub-tmux': {
+            const out = await execCapture('tmux', ['list-windows', '-a', '-F', '#{session_name}:#{window_index} #{window_name}'])
+            await hubCmdReply(out.ok ? out.stdout.trim() : `tmux 失败: ${out.stderr.trim()}`)
+            break
+          }
           default:
             // 未知命令：仅记录，不执行（避免不可靠的 tmux 模拟输入）
             log(`[HUB-CMD] 未知命令: ${raw}，忽略`)
@@ -1164,7 +1247,8 @@ export default function hubExtension(pi: ExtensionAPI) {
             expandPromptTemplates: true,
           } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
         } else if (config.coordinatorPort && !config.coordinatorUrl) {
-          queue.enqueue(env)
+          // 协调中心模式：经本机 HTTP /envelope 投递（deliverEnvelope 推送给目标 WS 或入队）
+          await postEnvelope(`http://127.0.0.1:${config.coordinatorPort}`, env)
         } else if (config.coordinatorUrl) {
           await sendEnvelopeToCoordinator(env)
         } else {
