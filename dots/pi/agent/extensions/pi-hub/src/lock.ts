@@ -12,8 +12,9 @@ const STATE_DIR =
   process.env.PI_HUB_STATE_DIR ?? path.join(os.homedir(), '.pi', 'agent', 'wechat-assistant')
 const GLOBAL_LOCK_FILE = path.join(STATE_DIR, 'coordinator-lock.json')
 
-/** 全局锁心跳超时：超过此时长未续约视为持有者下线 */
-export const GLOBAL_LOCK_TTL_MS = 10_000
+/** 全局锁心跳超时：超过此时长未续约视为持有者下线。
+ * 与客户端 3s 续约匹配（余量 >=3 次），降频后仍安全。 */
+export const GLOBAL_LOCK_TTL_MS = 15_000
 
 function readJson<T>(file: string): T | null {
   try {

@@ -361,7 +361,9 @@ export function startCoordinatorServer(
 
       res.writeHead(404)
       res.end('not found')
-    } catch {
+    } catch (err) {
+      // 服务器端异常必须可观测（曾因静默 500 导致 POST /envelope 排查困难）
+      console.error('[pi-hub:http] 500', (err as Error).message)
       res.writeHead(500)
       res.end('error')
     }
@@ -482,7 +484,9 @@ export function startCoordinatorServer(
               if (env.type === 'takeover') preassignLock(env.to, 0, env.capability)
               deliverEnvelope(env)
             }
-          } catch { /* ignore */ }
+          } catch (err) {
+            console.error('[pi-hub:ws] 帧处理异常', (err as Error).message)
+          }
         }
       })
       sock.on('close', () => {
@@ -502,7 +506,9 @@ export function startCoordinatorServer(
           clientSessionNames.delete(name)
         }
       })
-    } catch { /* ignore */ }
+    } catch (err) {
+      console.error('[pi-hub:ws] upgrade 处理异常', (err as Error).message)
+    }
   })
 
   // TTL 兜底清理：进程突然退出（process.exit/RST）不触发 close 事件时，靠心跳超时清理残留登记

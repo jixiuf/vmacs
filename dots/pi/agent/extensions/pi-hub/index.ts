@@ -1106,20 +1106,6 @@ export default function hubExtension(pi: ExtensionAPI) {
     },
   }
 
-  // 兼容旧桥（pi-wechat-assistant 旧版仍读 __PI_COORDINATOR__）。
-  // DEPRECATED：所有渠道已迁移到 __PI_HUB__（v2.0.0），待确认全部实例升级后移除。
-  g.__PI_COORDINATOR__ = {
-    version: '0.1.0',
-    coordinatorTryLock,
-    coordinatorReleaseLock,
-    registerInstance,
-    unregisterInstance,
-    listInstances,
-    listActiveClients,
-    getGlobalLockHolder,
-    getConfig: () => loadHubConfig(),
-  }
-
   // ============================================================================
   // 工具函数
   // ============================================================================

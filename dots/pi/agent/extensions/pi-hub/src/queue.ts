@@ -27,8 +27,10 @@ function queueFile(): string {
 }
 const DEDUP_FILE = (): string => path.join(stateDir(), 'coordinator-processed.json')
 
-/** 消息在队列中的最大存活时间：超过则视为投递失败，重投 */
-const ENVELOPE_TTL_MS = 5 * 60_000
+/** 消息在队列中的最大存活时间：超过则视为投递失败，重投。
+ * 2min 内未 ack（客户端离线/处理失败）即重投，attempts 上限后丢弃；
+ * 缩短滞留窗口，避免死消息（to 永不匹配）长期占用文件。 */
+const ENVELOPE_TTL_MS = 2 * 60_000
 /** 已处理 id 保留时间：超过则从去重集清理 */
 const DEDUP_TTL_MS = 30 * 60_000
 
@@ -40,7 +42,7 @@ interface QueueEntry {
   attempts: number
 }
 
-const MAX_ATTEMPTS = 5
+const MAX_ATTEMPTS = 3
 
 function readJson<T>(file: string): T | null {
   try {
