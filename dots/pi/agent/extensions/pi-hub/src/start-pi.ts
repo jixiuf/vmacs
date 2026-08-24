@@ -67,6 +67,9 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
   // 复用实例所在的 tmux 会话（不新建会话）：窗口名带唯一后缀（实例 pid，未知时回退时间戳）
   const pidSuffix = target.pid > 0 ? String(target.pid) : String(Date.now()).slice(-6)
   const winName = `pi-${target.name}-${pidSuffix}`
+  // 实例名确定化：PI_INSTANCE_NAME=<name>-<pid>，避免 start-pi 起的子代理注册名与
+  // 协调中心/其他实例冲突（同名存活时 registerInstance 会改协调中心的名字——名字漂移）
+  const instName = target.name.endsWith(`-${pidSuffix}`) ? target.name : `${target.name}-${pidSuffix}`
   const isLocal = !target.host || target.host === os.hostname()
   const hostLabel = isLocal ? `${os.hostname()}（本机）` : target.host
 
@@ -77,7 +80,10 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
   if (!isLocal) remote = deps.remoteHosts?.[target.name] ?? { target: target.host as string }
   try {
     if (isLocal) {
-      if (!process.env.TMUX) return `❌ ${hostLabel} 当前实例不在 tmux 会话中，无法开窗口`
+      if (!process.env.TMUX) {
+        // 非 tmux 直接启动（macOS 开 Terminal / Linux nohup），无需 tmux 会话
+        return await startDirectLocal(dir, winName, instName)
+      }
       sessionName = (await execCapture('tmux', ['display-message', '-p', '#S'])).stdout.trim()
       // 用 session id（如 $1）作 new-window 目标，避免纯数字会话名被当成窗口索引
       sessionTarget = (await execCapture('tmux', ['display-message', '-p', '#{session_id}'])).stdout.trim()
@@ -108,7 +114,8 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
       if (listRes.ok && listRes.stdout.split('\n').some((w) => w.trim() === winName)) {
         status = 'TMUX_EXISTS'
       } else {
-        const createRes = await execCapture('tmux', ['new-window', '-t', sessionTarget, '-n', winName, '-c', dir, 'pi'])
+        // env 程序设置 PI_INSTANCE_NAME 后执行 pi（execFile 不经 shell，变量赋值前缀不生效）
+        const createRes = await execCapture('tmux', ['new-window', '-t', sessionTarget, '-n', winName, '-c', dir, 'env', `PI_INSTANCE_NAME=${instName}`, 'pi'])
         status = createRes.ok ? 'TMUX_STARTED' : `TMUX_FAILED ${createRes.stderr.trim()}`
       }
     } else {
@@ -116,7 +123,7 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
         `if tmux list-windows -t '${sessionTarget}' -F '#W' 2>/dev/null | grep -qx '${winName}'; then`,
         `  echo 'TMUX_EXISTS'`,
         `else`,
-        `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
+        `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "PI_INSTANCE_NAME=${instName} pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
         `fi`,
       ].join('\n')
       status = (await deps.sshExec(remote!.target, remote!.port, shellCmd)).trim().split('\n').pop() ?? ''
@@ -140,16 +147,17 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
 /**
  * 非 tmux 直接启动新 pi：macOS 开 Terminal 窗口；Linux nohup 后台（日志 /tmp/<winName>.log）。
  * dir 已过 isSafePath 校验（拒绝 shell 元字符），注入安全。
+ * instName 作为 PI_INSTANCE_NAME 传入（子代理实例名确定化，避免与协调中心冲突）。
  */
-async function startDirectLocal(dir: string, winName: string): Promise<string> {
+async function startDirectLocal(dir: string, winName: string, instName: string): Promise<string> {
   if (process.platform === 'darwin') {
-    const script = `tell application "Terminal" to do script "cd '${dir}' && exec pi"`
+    const script = `tell application "Terminal" to do script "cd '${dir}' && PI_INSTANCE_NAME=${instName} exec pi"`
     const res = await execCapture('osascript', ['-e', script])
     return res.ok ? 'DIRECT_STARTED' : `DIRECT_FAILED ${res.stderr.trim()}`
   }
   if (process.platform === 'linux') {
     const log = `/tmp/${winName}.log`
-    const res = await execCapture('bash', ['-lc', `cd '${dir}' && exec pi > '${log}' 2>&1 &`])
+    const res = await execCapture('bash', ['-lc', `cd '${dir}' && PI_INSTANCE_NAME=${instName} exec pi > '${log}' 2>&1 &`])
     return res.ok ? 'DIRECT_STARTED' : `DIRECT_FAILED ${res.stderr.trim()}`
   }
   return 'DIRECT_FAILED 非 tmux 直接启动仅支持 macOS/Linux'

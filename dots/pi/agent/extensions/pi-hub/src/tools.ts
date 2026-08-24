@@ -22,6 +22,8 @@ export interface ToolsDeps {
   taskRegistry: TaskRegistry
   /** 在目标机器启动 subagent 并登记，注册后由扩展自动分发任务（/task 等价） */
   requestSubagent: (target: InstanceInfo, cwd: string | undefined, msg: string) => Promise<string>
+  /** 全局锁持有者（微信等服务接管方），用于 list_instances 标注 */
+  getLockHolder: () => Promise<{ name?: string; capability?: string } | null>
 }
 
 function ok(text: string) {
@@ -58,7 +60,11 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
           const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
           return `${inst.name}${inst.host ? '@' + inst.host : ''}${mark}`
         })
-        return ok(`实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}`)
+        const holder = await deps.getLockHolder()
+        const holderLine = holder?.name
+          ? `\n当前接管（锁）: ${holder.name}${holder.capability ? ` (cap=${holder.capability})` : ''}`
+          : '\n当前接管（锁）: (无)'
+        return ok(`实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}${holderLine}`)
       } catch (err) {
         return fail(`列出实例失败: ${(err as Error).message}`)
       }

@@ -33,6 +33,8 @@ export interface CommandCtx {
   taskRegistry: TaskRegistry
   /** 在目标机器启动 subagent 并登记，注册后由扩展自动分发任务（事件驱动，无需 sleep） */
   requestSubagent: (target: InstanceInfo, cwd: string | undefined, msg: string) => Promise<string>
+  /** 全局锁持有者（微信等服务接管方），用于 /instances 标注 */
+  getLockHolder: () => Promise<{ name?: string; capability?: string } | null>
 }
 
 export interface CommandResult {
@@ -90,7 +92,11 @@ async function cmdInstances(_args: string, ctx: CommandCtx): Promise<CommandResu
     const cwd = inst.cwd ? ` ${inst.cwd}` : ''
     return `${inst.name}${host}${mark}${cwd}`
   })
-  return { reply: `实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}`, consumed: true }
+  const holder = await ctx.getLockHolder()
+  const holderLine = holder?.name
+    ? `\n当前接管（锁）: ${holder.name}${holder.capability ? ` (cap=${holder.capability})` : ''}`
+    : '\n当前接管（锁）: (无)'
+  return { reply: `实例列表：\n${lines.map((l, i) => `${i + 1}. ${l}`).join('\n')}${holderLine}`, consumed: true }
 }
 
 async function cmdUse(args: string, ctx: CommandCtx): Promise<CommandResult> {

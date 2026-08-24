@@ -440,6 +440,21 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
   }
 
+  /** 全局锁持有者查询：协调中心模式读本地（权威），客户端模式向协调中心 GET /lock */
+  async function getLockHolder(): Promise<{ name?: string; capability?: string } | null> {
+    if (config.coordinatorUrl) {
+      try {
+        const res = await fetch(`${config.coordinatorUrl}/lock`)
+        if (!res.ok) return null
+        const d = (await res.json()) as { holder?: { name?: string; capability?: string } | null }
+        return d.holder ?? null
+      } catch {
+        return null
+      }
+    }
+    return getGlobalLockHolder()
+  }
+
   async function handleTakeover(req: TakeoverRequest): Promise<void> {
     if (req.capability === 'command') {
       const command = (req.payload as { command?: string } | undefined)?.command
@@ -504,6 +519,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       writeClipboard,
       taskRegistry,
       requestSubagent,
+      getLockHolder,
     }
   }
 
@@ -571,6 +587,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
     taskRegistry,
     requestSubagent,
+    getLockHolder,
   })
 
   // ============================================================================
