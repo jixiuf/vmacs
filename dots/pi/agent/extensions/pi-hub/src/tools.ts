@@ -173,9 +173,11 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
           ids.push(task.id)
           const reply = await deps.doSendMessage(
             t.instance,
-            `${tag} ${t.task}\n\n【回传要求】处理完成后，请用 send_message 工具把结果发送给发起者「${deps.currentInstanceName()}」：\n` +
-              `内容格式：[${task.id}结果] + JSON（示例：{"status":"done","data":...} 或 {"status":"failed","error":"原因"}）。` +
-              `回传必须保留任务ID ${task.id}，主实例自动识别并更新任务状态。`,
+            `${tag} ${t.task}\n\n【回传协议（必须执行，否则主实例看不到你的结果）】\n` +
+              `你的本会话回复不会被主实例看到。处理完成后必须调用 send_message 工具：\n` +
+              `1. target（目标实例）: ${deps.currentInstanceName()}\n` +
+              `2. text（消息内容）: [${task.id}结果] + JSON，示例：{"status":"done","data":...} 或 {"status":"failed","error":"原因"}\n` +
+              `任务ID: ${task.id}（回传时保留，主实例自动识别并更新状态）。`,
           )
           lines.push(`${tag} → ${t.instance}: ${reply}（${task.id}）`)
         }
