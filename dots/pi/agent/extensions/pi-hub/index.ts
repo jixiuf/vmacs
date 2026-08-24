@@ -54,7 +54,7 @@ import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
 import { doStartPi as doStartPiFn, writeClipboard, execCapture, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
-import { TaskRegistry, extractTaskId, extractReplyText } from './src/task.js'
+import { TaskRegistry, extractTaskId, extractReplyText, hasManualTaskReply } from './src/task.js'
 import type {
   IGateway,
   InboundMessage,
@@ -1250,7 +1250,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       const replyText = extractReplyText(branch)
       if (replyText) {
         // 子实例已手动回传（回复文本含 [TASK-id结果]）→ 跳过自动回传，避免双回传
-        if (replyText.includes(`[${pending.taskId}结果]`)) {
+        if (hasManualTaskReply(replyText, pending.taskId)) {
           log(`任务 ${pending.taskId} 已手动回传，跳过自动回传`)
           return
         }

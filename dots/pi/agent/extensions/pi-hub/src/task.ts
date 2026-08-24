@@ -65,6 +65,11 @@ function writeJson(file: string, data: unknown): void {
   }
 }
 
+/** 子实例回复是否已手动回传（含 [TASK-id结果] 前缀）→ 跳过自动回传，避免双回传 */
+export function hasManualTaskReply(replyText: string, taskId: string): boolean {
+  return replyText.includes(`[${taskId}结果]`)
+}
+
 /** 提取文本中的任务 ID（TASK-<ts>-<rand>） */
 export function extractTaskId(text: string): string | null {
   return text.match(/TASK-\d+-[a-z0-9]+/)?.[0] ?? null

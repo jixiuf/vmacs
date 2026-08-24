@@ -143,29 +143,50 @@ src/config.ts     配置读取（双文件回退 + 自动重建）
 | `start_pi` | 在实例 tmux 中启动 pi |
 | `dispatch_task` | 向多个子实例分发子任务（带 TASK#N 标记） |
 
-## Subagents：任务分发与汇总
+## Subagents：任务分发、回传与回收
 
-**原则：subagent = 按需创建的新 pi session，用完即回收（/quit）**。
+**原则：subagent = 按需创建的新 pi session，用完即自动回收**。
 不要复用存活节点（如协调中心 home）当 subagent——存活节点承担协调/微信职责，不应被任务占用或退出。
 
 ```
 主实例 agent
-  ├─ start_pi home 或其他机器      → 起全新 pi 会话（subagent，独立 tmux 窗口/会话）
-  ├─ dispatch_task([{instance: subagent, task: "分析..."}])
-  │     → 自动带 [TASK#N] 标记发消息给子实例
+  ├─ start_pi home 或其他机器     → 起全新 pi 会话（subagent，独立 tmux 窗口）
+  ├─ dispatch_task([{instance, task}, ...])
+  │     → 写任务注册表 tasks.json + 发 [TASK#N] 消息（含任务 ID 与回传协议）
   ▼
-子实例 agent 处理任务 → 回传 [TASK#N结果]
+子实例 agent 处理 → 正常回复（无需任何工具调用）
   ▼
-主实例 agent 按 ID 汇总
+扩展自动回传（agent_settled 取最后回复 → send_message 回发起者 [TASK-id结果]）
   ▼
-/cmd <subagent> /quit → 用完即回收（实例自动注销）
+主实例自动识别 → 注册表 status=done + result
+  ▼
+taskMonitor（30s）→ 实例全部任务结束 → 自动 /quit 回收
 ```
 
-- **创建**：`/start-pi <主机>` 起专用 subagent（窗口名 `pi-<实例名>-<pid>`，唯一）；或 `start_pi` 工具
-- **分发**：`dispatch_task` 自动加 `[TASK#N]`，要求子实例回传 `[TASK#N结果]` + 固定格式（JSON/表格）
-- **催办**：无回传时 `/msg <subagent> 请回复 [TASK#N] 进度`
-- **回收**：`/cmd <subagent> /quit` 退出（**不要对协调中心实例用 /quit**，会中断全部客户端）
-- **协调中心**：保持一个稳定节点（配置 `coordinatorPort`）；subagent 用完即弃，不承担协调职责
+### 工具与命令
+
+| 工具/命令 | 说明 |
+|-----------|------|
+| `dispatch_task` | 分发任务（写注册表 + 发消息 + 回传协议） |
+| `task_list` / `/tasks` | 列出任务（按状态过滤） |
+| `task_status <id>` / `/task <id>` | 任务详情 |
+| `task_reclaim <实例\|id>` | 手动回收（发 /quit + 标记） |
+| `task_retry <id>` | 重试失败/超时任务 |
+| `task_update <id> <done\|failed> [result]` | 手动更新（自动识别兜底） |
+
+### 回传协议（自动，子实例无需操作）
+
+- 任务消息含任务 ID（`TASK-<ts>-<rand>`）与回传说明
+- 子实例**正常回复**即触发自动回传：`agent_settled` 取最后 assistant 回复 → `[TASK-id结果] <回复>` 回传发起者
+- 主实例收到 `[TASK-id结果]` → 自动更新注册表（按 JSON `status` 判定 done/failed）
+- 子实例若已手动回传（回复含 `[TASK-id结果]`）→ 自动回传跳过（防双回传）
+
+### 超时与回收
+
+- 任务默认 TTL 10min：超时未回传 → 自动重试（attempts+1，重新分发）；达上限（2 次）→ `timeout`
+- `taskMonitor`（30s）检测实例全部任务结束（done/failed/timeout 且非 keep）→ **自动 `/quit` 回收**（协调中心实例受保护）
+
+> 详细方案见 `docs/subagent-task-management.md`。
 
 ## 远程命令执行
 

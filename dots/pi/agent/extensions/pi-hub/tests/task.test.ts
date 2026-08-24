@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { TaskRegistry, TASK_TTL_MS, TASK_MAX_ATTEMPTS, extractTaskId, extractReplyText } from '../src/task.js'
+import { TaskRegistry, TASK_TTL_MS, TASK_MAX_ATTEMPTS, extractTaskId, extractReplyText, hasManualTaskReply } from '../src/task.js'
 
 // 隔离状态目录：vitest 每文件独立进程，这里用临时目录避免污染真实 tasks.json
 const testDir = path.join(os.tmpdir(), `pi-hub-task-test-${process.pid}`)
@@ -138,5 +138,21 @@ describe('任务协议纯函数', () => {
     const long = 'x'.repeat(5000)
     const branch = [{ type: 'message', message: { role: 'assistant', content: long } }]
     expect(extractReplyText(branch, 100).length).toBe(100)
+  })
+})
+
+describe('hasManualTaskReply（手动回传跳过）', () => {
+  it('回复含 [TASK-id结果] 前缀 → true（已手动回传，跳过自动回传）', () => {
+    expect(hasManualTaskReply('[TASK-123-abc结果] {"status":"done"}', 'TASK-123-abc')).toBe(true)
+    expect(hasManualTaskReply('已完成。\n[TASK-123-abc结果] 结果如下', 'TASK-123-abc')).toBe(true)
+  })
+
+  it('回复不含该任务 ID → false（需要自动回传）', () => {
+    expect(hasManualTaskReply('我完成了任务，结果如下', 'TASK-123-abc')).toBe(false)
+    expect(hasManualTaskReply('[TASK-999-xyz结果] 别的任务', 'TASK-123-abc')).toBe(false)
+  })
+
+  it('ID 前缀不完整（无 ]）不匹配', () => {
+    expect(hasManualTaskReply('[TASK-123-abc结果', 'TASK-123-abc')).toBe(false)
   })
 })
