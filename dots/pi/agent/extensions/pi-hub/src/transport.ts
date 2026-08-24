@@ -123,6 +123,9 @@ export function connectCoordinatorWS(
   let retry = 0
   let lastOpenTs = 0
   let prevCloseTs = 0
+  /** 握手超时：N 秒未 OPEN 视为挂起/假连接（TCP 建立但 WS 握手未完成，服务器端不会登记），
+   * 触发 onStatus(false) 启用 /inbox 轮询兜底，并关闭重连。 */
+  const OPEN_TIMEOUT_MS = 10_000
 
   function connect(): void {
     if (closed) return
@@ -134,7 +137,17 @@ export function connectCoordinatorWS(
       if (!closed) setTimeout(connect, 3000)
       return
     }
+    // 未 OPEN 超时检测：握手挂起时 socket 不会触发任何事件，若不处理会永久“假连接”，
+    // 消息只能依赖 /inbox 轮询（但 onStatus(true) 从未触发 → 轮询也未启用 → 丢消息）。
+    const openTimer = setTimeout(() => {
+      if (!closed && socket.readyState !== WebSocket.OPEN) {
+        logEvent('WS_CONNECT_ERROR', `name=${name} err=open-timeout`)
+        onStatus?.(false)
+        try { socket.close() } catch { /* ignore */ }
+      }
+    }, OPEN_TIMEOUT_MS)
     socket.onopen = () => {
+      clearTimeout(openTimer)
       logEvent('WS_OPEN', `name=${name}`)
       lastOpenTs = Date.now()
       onStatus?.(true)
@@ -146,6 +159,7 @@ export function connectCoordinatorWS(
       } catch { /* 忽略坏消息 */ }
     }
     socket.onclose = () => {
+      clearTimeout(openTimer)
       const now = Date.now()
       logEvent('WS_CLOSE', `name=${name}`)
       onStatus?.(false)
@@ -177,7 +191,15 @@ export function connectCoordinatorWS(
     },
     close() {
       closed = true
-      try { ws?.close() } catch { /* ignore */ }
+      const s = ws
+      ws = null
+      if (s) {
+        try {
+          const raw = s as unknown as { terminate?: () => void; close?: () => void }
+          if (raw.terminate) raw.terminate() // 立即断开 TCP（针对挂起/半死连接），无需 close 握手
+          else raw.close?.()
+        } catch { /* ignore */ }
+      }
     },
   }
 }

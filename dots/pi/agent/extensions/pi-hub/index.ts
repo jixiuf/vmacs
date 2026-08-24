@@ -54,6 +54,7 @@ import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
 import { doStartPi as doStartPiFn, writeClipboard, execCapture, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
+import { registerCleanup, unregisterCleanup, disposeAllCleanups } from './src/lifecycle.js'
 import { TaskRegistry, extractTaskId, extractReplyText, hasManualTaskReply } from './src/task.js'
 import type {
   IGateway,
@@ -183,6 +184,38 @@ export default function hubExtension(pi: ExtensionAPI) {
   const watcherKey = '__PI_COORDINATOR_WATCHER__'
   const g = globalThis as Record<string, unknown>
 
+  // --- 扩展 reload 生命周期：先清理上一代全部资源，再注册本代 ---
+  // 旧模块的闭包资源（WS 客户端/定时器/协调中心 server/轮询）在 reload 后不会自动销毁：
+  // 尤其旧 WS 闭包持有自己的重连 setTimeout，会继续重连并与新连接在协调中心互相 destroy
+  // （服务器「新连接 destroy 旧同名连接」）→ 每秒风暴/假在线丢消息。disposeAllCleanups()
+  // 统一 close 旧 WS（closed=true 短路其 pending 重连）、clearInterval 旧定时器、关闭旧 server。
+  disposeAllCleanups()
+  // 兼容清理：上一代可能用旧机制（globalThis key）注册的定时器/server
+  const oldWatcher = g[watcherKey] as ReturnType<typeof setInterval> | undefined
+  if (oldWatcher) clearInterval(oldWatcher)
+  const oldAuto = g[`${watcherKey}_AUTO_TAKEOVER`] as ReturnType<typeof setInterval> | undefined
+  if (oldAuto) clearInterval(oldAuto)
+  const SERVER_KEY = '__PI_HUB_SERVER__'
+  const oldServer = g[SERVER_KEY] as ReturnType<typeof startCoordinatorServer> | undefined
+  if (oldServer) {
+    try { oldServer.closeAllConnections?.() } catch { /* ignore */ }
+    try { oldServer.close() } catch { /* ignore */ }
+    delete g[SERVER_KEY]
+  }
+
+  // 注册本模块全部长生命周期资源（集中式）：reload 时由下一代的 disposeAllCleanups() 统一清理。
+  // 闭包捕获模块级变量引用，后续赋值（wsClient/coordinatorServer/inboxPollTimer）自动生效。
+  let watcherTimer: ReturnType<typeof setInterval> | undefined
+  let autoTimer: ReturnType<typeof setInterval> | undefined
+  registerCleanup('watcher', () => { if (watcherTimer) clearInterval(watcherTimer) })
+  registerCleanup('auto', () => { if (autoTimer) clearInterval(autoTimer) })
+  registerCleanup('wsClient', () => wsClient?.close())
+  registerCleanup('server', () => {
+    try { coordinatorServer?.closeAllConnections?.() } catch { /* ignore */ }
+    try { coordinatorServer?.close() } catch { /* ignore */ }
+  })
+  registerCleanup('inboxPoll', () => { if (inboxPollTimer) clearInterval(inboxPollTimer) })
+
   // --- 渠道注册表（IGateway） ---
   const gateways = new Map<string, IGateway>()
   /** 接管让位回调：capability 被请求接管时通知渠道 */
@@ -198,24 +231,12 @@ export default function hubExtension(pi: ExtensionAPI) {
     takeoverCallbacks.set(key, cb)
   }
 
-  // --- 轮询定时器：模块加载即启动（不依赖 session_start，reload 后强制重建） ---
-  const oldWatcher = g[watcherKey] as ReturnType<typeof setInterval> | undefined
-  if (oldWatcher) clearInterval(oldWatcher)
-  const oldAuto = g[`${watcherKey}_AUTO_TAKEOVER`] as ReturnType<typeof setInterval> | undefined
-  if (oldAuto) clearInterval(oldAuto)
-  // reload 时关闭旧协调中心 server（旧代码无 WS upgrade），让新 session_start 用新代码重启
-  const SERVER_KEY = '__PI_HUB_SERVER__'
-  const oldServer = g[SERVER_KEY] as ReturnType<typeof startCoordinatorServer> | undefined
-  if (oldServer) {
-    try { oldServer.closeAllConnections?.() } catch { /* ignore */ }
-    try { oldServer.close() } catch { /* ignore */ }
-    delete g[SERVER_KEY]
-  }
-  g[watcherKey] = setInterval(() => {
+  // --- 轮询定时器：模块加载即启动（不依赖 session_start；reload 后由 lifecycle 统一清理重建） ---
+  watcherTimer = setInterval(() => {
     void pollIncoming().catch(() => {})
     void pollMessages().catch(() => {})
   }, 2000)
-  g[`${watcherKey}_AUTO_TAKEOVER`] = setInterval(() => {
+  autoTimer = setInterval(() => {
     void autoTakeoverIfIdle().catch(() => {})
     void ensureCoordinatorIfNeeded().catch(() => {})
   }, 5000)
@@ -824,21 +845,22 @@ export default function hubExtension(pi: ExtensionAPI) {
   /** 协调中心不可达时的发送降级队列（WS 恢复后补发） */
   const pendingOutbox: Envelope[] = []
 
-  /** WS 恢复（onStatus=true）时补发积压消息 */
-  /** 协调中心 WS 状态回调：连接恢复补发积压；断开时启用 HTTP /inbox 轮询兜底 */
+  /** WS 状态回调：连接恢复补发积压；无论 WS 状态如何都保持 /inbox 轮询兜底常驻
+   * （WS 正常时低频 30s，防「假在线」——服务器端未登记时消息入队仍可拉到；
+   * WS 断开时高频 3s）。 */
   function onWsStatus(connected: boolean): void {
-    log(connected ? '协调中心 WS 已连接' : '协调中心 WS 断开，重连中（启用 /inbox 轮询兜底）')
+    log(connected ? '协调中心 WS 已连接（/inbox 低频轮询兜底常驻）' : '协调中心 WS 断开，重连中（/inbox 高频轮询兜底）')
     if (connected) {
       flushPendingOutbox()
-      stopInboxPoll()
+      ensureInboxPoll(30_000)
     } else {
-      ensureInboxPoll()
+      ensureInboxPoll(3_000)
     }
   }
 
-  // 客户端模式 WS 断线兜底：HTTP /inbox 轮询（保证消息可达 + 活跃登记，即使 WS 连接异常）
+  // 客户端模式 /inbox 轮询兜底（常驻）：保证消息可达 + 活跃登记，即使 WS 异常/假在线
   let inboxPollTimer: ReturnType<typeof setInterval> | null = null
-  function ensureInboxPoll(): void {
+  function ensureInboxPoll(intervalMs = 3000): void {
     if (inboxPollTimer || !config.coordinatorUrl) return
     const baseUrl = config.coordinatorUrl
     inboxPollTimer = setInterval(() => {
@@ -850,12 +872,13 @@ export default function hubExtension(pi: ExtensionAPI) {
           log(`/inbox 轮询异常: ${(err as Error).message}`)
         }
       })()
-    }, 3000)
+    }, intervalMs)
   }
   function stopInboxPoll(): void {
     if (inboxPollTimer) {
       clearInterval(inboxPollTimer)
       inboxPollTimer = null
+      unregisterCleanup('inboxPoll')
     }
   }
 
@@ -1382,7 +1405,6 @@ export default function hubExtension(pi: ExtensionAPI) {
           config.remoteInstanceNames ?? [],
           queue,
         )
-        g['__PI_HUB_SERVER__'] = coordinatorServer
         // listen 失败（端口实际被占，isPortInUse 误判）→ 降级为客户端，避免卡在协调中心模式死锁
         coordinatorServer.on('error', (err: NodeJS.ErrnoException) => {
           if (err.code === 'EADDRINUSE') {
@@ -1466,28 +1488,12 @@ export default function hubExtension(pi: ExtensionAPI) {
   })
 
   pi.on('session_shutdown', async () => {
-    const watcher = g[watcherKey] as ReturnType<typeof setInterval> | undefined
-    if (watcher) {
-      clearInterval(watcher)
-      delete g[watcherKey]
-    }
-    const autoTakeover = g[`${watcherKey}_AUTO_TAKEOVER`] as ReturnType<typeof setInterval> | undefined
-    if (autoTakeover) {
-      clearInterval(autoTakeover)
-      delete g[`${watcherKey}_AUTO_TAKEOVER`]
-    }
+    // 统一清理本代全部资源（WS 客户端/定时器/协调中心 server/轮询），等价于 reload 清理
+    disposeAllCleanups()
     const taskMonitor = g[TASK_KEY] as ReturnType<typeof setInterval> | undefined
     if (taskMonitor) {
       clearInterval(taskMonitor)
       delete g[TASK_KEY]
-    }
-    if (coordinatorServer) {
-      try {
-        coordinatorServer.close()
-      } catch {
-        // ignore
-      }
-      coordinatorServer = null
     }
     if (currentInstanceName) unregisterInstance(currentInstanceName, process.pid)
   })
