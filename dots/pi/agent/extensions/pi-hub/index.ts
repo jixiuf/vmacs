@@ -109,6 +109,29 @@ export default function hubExtension(pi: ExtensionAPI) {
         pendingTaskReplies.push({ from: env.from, taskId })
         log(`登记待回传任务 ${taskId}（来自 ${env.from}）`)
       }
+      // 跨机启动结果回传（[hub结果] [start]）：更新待认领状态或唤醒同步等待（startPiViaWs）
+      if (/\[hub结果\]\s*\[start\]/.test(env.text)) {
+        const body = env.text.replace(/\[hub结果\]\s*\[start\]\s*/, '').trim()
+        const failed = /❌|失败/.test(body)
+        if (pendingSubagent?.viaWs && !pendingSubagent.started) {
+          if (failed) {
+            log(`跨机启动失败：${body}`)
+            safeSendUserMessage(`[子代理启动失败] ${body}`, {
+              deliverAs: 'steer',
+              expandPromptTemplates: true,
+            } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+            pendingSubagent = null
+          } else {
+            pendingSubagent.started = true
+            log('跨机启动成功，等待子代理注册')
+          }
+        }
+        const waiter = wsStartWaiter
+        if (waiter) {
+          wsStartWaiter = null
+          waiter(body)
+        }
+      }
       bridge.handleInbound({
         id: env.id,
         channel: 'coord',
@@ -514,7 +537,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       doSendMessage,
       rememberTarget,
       getLastTarget: () => lastTargetName,
-      doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
+      doStartPi: (target, cwd) => doStartPiSmart(target, cwd),
       doReloadAll,
       writeClipboard,
       taskRegistry,
@@ -584,7 +607,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     doSwitch,
     doSendCommand,
     doSendMessage,
-    doStartPi: (target, cwd) => doStartPiFn(target, cwd, startPiDeps),
+    doStartPi: (target, cwd) => doStartPiSmart(target, cwd),
     taskRegistry,
     requestSubagent,
     getLockHolder,
@@ -974,20 +997,75 @@ export default function hubExtension(pi: ExtensionAPI) {
   // ============================================================================
 
   /** 待认领的 subagent 启动请求（一次一个；/task 登记后由 pollIncoming 自动完成分发） */
-  let pendingSubagent: { host: string; before: Set<string>; msg: string } | null = null
+  let pendingSubagent: { host: string; before: Set<string>; msg: string; viaWs: boolean; started: boolean } | null = null
+
+  /** startPiViaWs 同步等待的回传 resolver（一次一个） */
+  let wsStartWaiter: ((text: string) => void) | null = null
 
   async function requestSubagent(target: InstanceInfo, cwd: string | undefined, msg: string): Promise<string> {
-    const before = new Set((await collectInstances()).all.map((i) => i.name))
-    const startInfo = await doStartPiFn(target, cwd, startPiDeps)
-    if (startInfo.includes('❌')) return startInfo
-    pendingSubagent = { host: target.host ?? os.hostname(), before, msg }
-    log(`登记待认领 subagent：host=${pendingSubagent.host} msg=${msg.slice(0, 40)}`)
-    return `${startInfo}\n⏳ 已登记，检测到子实例注册后自动分发任务`
+    const { all, coordinatorName } = await collectInstances()
+    const before = new Set(all.map((i) => i.name))
+    const machineHost = target.host ?? all.find((i) => i.name === target.name)?.host ?? os.hostname()
+    const isLocal = machineHost === os.hostname()
+    if (isLocal) {
+      // 本机：直接本地启动（无需 ssh/WS）
+      const startInfo = await doStartPiFn(target, cwd, startPiDeps)
+      if (startInfo.includes('❌')) return startInfo
+      pendingSubagent = { host: machineHost, before, msg, viaWs: false, started: true }
+      log(`登记待认领 subagent：host=${pendingSubagent.host} msg=${msg.slice(0, 40)}`)
+      return `${startInfo}\n⏳ 已登记，检测到子实例注册后自动分发任务`
+    }
+    // 跨机：经 WS 发 /start-subagent 到目标机器协调中心（目标机器本地执行，零 ssh）
+    const targetCoord =
+      coordinatorName && all.find((i) => i.name === coordinatorName && (i.host === machineHost || !i.host))
+    if (!targetCoord) {
+      // 找不到目标机器协调中心：回退 ssh 旧通道
+      const startInfo = await doStartPiFn(target, cwd, startPiDeps)
+      if (startInfo.includes('❌')) return startInfo
+      pendingSubagent = { host: machineHost, before, msg, viaWs: false, started: true }
+      log(`登记待认领 subagent（ssh 回退）：host=${pendingSubagent.host}`)
+      return `${startInfo}\n⏳ 已登记，检测到子实例注册后自动分发任务`
+    }
+    const cmd = `/__hub_cmd /start-subagent${cwd ? ' ' + cwd : ''}`
+    const sent = await doSendCommand(targetCoord.name, cmd)
+    pendingSubagent = { host: machineHost, before, msg, viaWs: true, started: false }
+    log(`登记待认领 subagent（WS 跨机）：host=${machineHost} → ${targetCoord.name} msg=${msg.slice(0, 40)}`)
+    return `${sent}\n⏳ 已登记，等待目标机器启动确认后自动分发任务`
+  }
+
+  /** 跨机启动（同步等待回传，供 start_pi 工具/命令用）；本机直接本地启动 */
+  async function doStartPiSmart(target: InstanceInfo, cwd: string | undefined): Promise<string> {
+    const { all, coordinatorName } = await collectInstances()
+    const machineHost = target.host ?? all.find((i) => i.name === target.name)?.host ?? os.hostname()
+    if (machineHost === os.hostname()) return doStartPiFn(target, cwd, startPiDeps)
+    const targetCoord =
+      coordinatorName && all.find((i) => i.name === coordinatorName && (i.host === machineHost || !i.host))
+    if (!targetCoord) return `❌ 无法定位 ${machineHost} 的协调中心，无法经 WS 启动（可检查目标机器协调中心是否在线）`
+    const cmd = `/__hub_cmd /start-subagent${cwd ? ' ' + cwd : ''}`
+    const reply = await new Promise<string>((resolve) => {
+      wsStartWaiter = resolve
+      setTimeout(() => {
+        if (wsStartWaiter) {
+          wsStartWaiter = null
+          resolve('')
+        }
+      }, 25_000)
+      void doSendCommand(targetCoord.name, cmd).catch(() => {
+        if (wsStartWaiter) {
+          wsStartWaiter = null
+          resolve('')
+        }
+      })
+    })
+    if (!reply) return `已向 ${targetCoord.name} 发送启动指令，但等待启动结果超时（可稍后 /instances 查看）`
+    return `[WS] ${reply}`
   }
 
   async function checkPendingSubagent(): Promise<void> {
     const p = pendingSubagent
     if (!p) return
+    // 跨机启动：等目标机器回传启动确认（成功）后才找注册；失败已清空 pendingSubagent
+    if (p.viaWs && !p.started) return
     try {
       const { all } = await collectInstances()
       const fresh = all.find((x) => x.host === p.host && !p.before.has(x.name))
@@ -1228,7 +1306,7 @@ export default function hubExtension(pi: ExtensionAPI) {
               cwd,
               startPiDeps,
             )
-            await hubCmdReply(out)
+            await hubCmdReply(`[start] ${out}`)
             break
           }
           default:
