@@ -97,6 +97,8 @@ export default function hubExtension(pi: ExtensionAPI) {
     onMessage: (env) => {
       log(`收到来自 ${env.from} 的消息: ${env.text.slice(0, 50)}`)
       logEvent('RECV', `from=${env.from} text=${env.text.slice(0, 80)} id=${env.id}`)
+      // 识别 subagent 任务回传（[TASK-xxx结果] / 含任务 ID 的正文）→ 自动更新注册表
+      tryAutoUpdateTask(env.from, env.text)
       bridge.handleInbound({
         id: env.id,
         channel: 'coord',
@@ -332,6 +334,27 @@ export default function hubExtension(pi: ExtensionAPI) {
   /** envelope 入站（统一经 Router 分发） */
   function routeEnvelope(env: Envelope): void {
     router.routeEnvelope(env)
+  }
+
+  /**
+   * 识别 subagent 任务回传并自动更新注册表。
+   * 协议：子实例回传文本含任务 ID（TASK-\d+-[a-z0-9]+），发送者是任务的 assignee，
+   * 且任务未终结 → 提取正文为 result，按 JSON status 判定 done/failed。
+   */
+  function tryAutoUpdateTask(from: string, text: string): void {
+    const m = text.match(/TASK-\d+-[a-z0-9]+/)
+    if (!m) return
+    const t = taskRegistry.get(m[0])
+    if (!t || t.assignee !== from) return
+    if (t.status === 'done' || t.status === 'failed' || t.status === 'timeout') return
+    // 去前缀（[TASK-xxx结果] / [TASK#N结果]）与任务 ID，取剩余正文
+    const result = text
+      .replace(/\[?TASK-\d+-[a-z0-9]+\s*结果?\]?/g, '')
+      .replace(/\[TASK#\d+\s*结果?\]?/g, '')
+      .trim()
+    const isFail = /"status"\s*:\s*"failed"/.test(result) || /失败|出错|error/i.test(result.slice(0, 80))
+    taskRegistry.update(t.id, { status: isFail ? 'failed' : 'done', result })
+    log(`任务 ${t.id} 收到回传：${isFail ? 'failed' : 'done'}`)
   }
 
   async function handleTakeover(req: TakeoverRequest): Promise<void> {

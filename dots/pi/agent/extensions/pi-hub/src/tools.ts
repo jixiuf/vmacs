@@ -171,7 +171,12 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
             payload: t.task,
           })
           ids.push(task.id)
-          const reply = await deps.doSendMessage(t.instance, `${tag} ${t.task}\n完成后请回复「${tag}结果」+ 内容（建议 JSON），任务ID: ${task.id}`)
+          const reply = await deps.doSendMessage(
+            t.instance,
+            `${tag} ${t.task}\n\n【回传要求】处理完成后，请用 send_message 工具把结果发送给发起者「${deps.currentInstanceName()}」：\n` +
+              `内容格式：[${task.id}结果] + JSON（示例：{"status":"done","data":...} 或 {"status":"failed","error":"原因"}）。` +
+              `回传必须保留任务ID ${task.id}，主实例自动识别并更新任务状态。`,
+          )
           lines.push(`${tag} → ${t.instance}: ${reply}（${task.id}）`)
         }
         return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。任务列表可用 /tasks 或 task_list 查看。`)
@@ -266,10 +271,36 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
         if (!t) return fail(`未找到任务 ${id}`)
         deps.taskRegistry.update(id, { status: 'pending', attempts: t.attempts + 1, deadline: Date.now() + 10 * 60_000, error: '手动重试' })
         const tag = `[TASK#${id.slice(-3)}]`
-        const reply = await deps.doSendMessage(t.assignee, `${tag} ${t.payload}\n（重试）完成后请回复「${tag}结果」+ 内容，任务ID: ${t.id}`)
+        const reply = await deps.doSendMessage(t.assignee, `${tag} ${t.payload}\n（重试）完成后请用 send_message 回传发起者「${deps.currentInstanceName()}」：${t.id}结果 + JSON，任务ID: ${t.id}`)
         return ok(`已重试 ${id} → ${t.assignee}: ${reply}`)
       } catch (err) {
         return fail(`重试失败: ${(err as Error).message}`)
+      }
+    },
+  })
+
+  pi.registerTool({
+    name: 'task_update',
+    label: 'Update Task',
+    description: '手动更新任务状态/结果（自动回传识别失败时的兜底）。',
+    promptSnippet: '更新任务状态',
+    promptGuidelines: ['收到子实例回传但自动识别未生效时，用它把结果写入注册表。'],
+    parameters: Type.Object({
+      id: Type.String({ description: '任务 ID' }),
+      status: Type.String({ description: '目标状态：done / failed' }),
+      result: Type.Optional(Type.String({ description: '结果内容（JSON 或文本）' })),
+    }),
+    async execute(_toolCallId, params) {
+      try {
+        const id = String(params.id).trim()
+        const t = deps.taskRegistry.get(id)
+        if (!t) return fail(`未找到任务 ${id}`)
+        const status = String(params.status).trim()
+        if (status !== 'done' && status !== 'failed') return fail(`状态仅支持 done/failed，收到: ${status}`)
+        deps.taskRegistry.update(id, { status, result: params.result ? String(params.result) : t.result })
+        return ok(`已更新 ${id} → ${status}`)
+      } catch (err) {
+        return fail(`更新失败: ${(err as Error).message}`)
       }
     },
   })
