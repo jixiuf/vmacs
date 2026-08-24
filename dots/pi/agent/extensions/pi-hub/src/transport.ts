@@ -231,7 +231,8 @@ export function startCoordinatorServer(
         const host = url.searchParams.get('host') ?? ''
         markActiveClient(name, host)
         const pid = Number(url.searchParams.get('pid') ?? '0')
-        const envelopes = queue.dequeue(name).map(({ env }) => env)
+        const pendingItems = queue.dequeue(name)
+        const envelopes = pendingItems.map(({ env }) => env)
         // 服务器 → 局域网：把远程接管队列中的请求作为 takeover envelope 返回
         // 匹配：实例名或主机名任一命中（兼容 remoteInstanceNames 配 hostname 的旧配置）
         const byName = remoteQueue.get(name)
@@ -253,6 +254,8 @@ export function startCoordinatorServer(
         }
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({ ok: true, envelopes }))
+        // 队列消息已返回给轮询客户端：视为投递成功即 ack（防轮询重取/重启重投导致重复）
+        for (const { ack } of pendingItems) ack()
         return
       }
 
@@ -410,7 +413,16 @@ export function startCoordinatorServer(
       else clientSessionNames.delete(name)
 
       // 连接即投递积压（本地队列 + 远程接管）
-      const pending = queue.dequeue(name).map(({ env }) => env)
+      const pendingItems = queue.dequeue(name)
+      // 队列中的点对点消息：推送成功即 ack（ack 后进入 dedup 集并从队列删除）。
+      // 不 ack 会导致消息滞留队列，每次重连/重启后重复投递（已处理消息重复进入会话）。
+      for (const { env, ack } of pendingItems) {
+        try {
+          sock.write(wsFrame(WS_OP.TEXT, JSON.stringify({ type: 'envelope', env })))
+          ack()
+        } catch { break }
+      }
+      // 远程接管请求（即时构造，非队列消息）：单独推送
       const byName = remoteQueue.get(name)
       const byHost = host ? [...remoteQueue.entries()].find(([k, r]) => r.targetName === host || clientHosts.get(r.targetName) === host) : undefined
       const entry = byName ? [name, byName] as const : byHost
@@ -418,18 +430,16 @@ export function startCoordinatorServer(
         const [qKey, p] = entry
         if (p && (p.targetPid === 0 || p.targetPid === 0)) {
           remoteQueue.delete(qKey)
-          pending.push({
+          const takeoverEnv = {
             type: 'takeover',
             id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
             from: p.fromName,
             to: p.targetName,
             capability: p.capability ?? '',
             ts: p.timestamp,
-          })
+          } as Envelope
+          try { sock.write(wsFrame(WS_OP.TEXT, JSON.stringify({ type: 'envelope', env: takeoverEnv }))) } catch { /* ignore */ }
         }
-      }
-      for (const env of pending) {
-        try { sock.write(wsFrame(WS_OP.TEXT, JSON.stringify({ type: 'envelope', env }))) } catch { break }
       }
 
       const old = wsClients.get(name)

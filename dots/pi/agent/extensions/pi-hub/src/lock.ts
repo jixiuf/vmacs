@@ -48,7 +48,16 @@ function createLockFileExclusive(data: GlobalLock): boolean {
 
 function readGlobalLockFile(): GlobalLock | null {
   const d = readJson<GlobalLock>(GLOBAL_LOCK_FILE)
-  return d && d.name ? d : null
+  // 损坏/无主锁文件（如写入中断残留、异常半写）：删除，避免阻塞后续 wx 原子创建（死锁）
+  if (!d || !d.name) {
+    try {
+      fs.unlinkSync(GLOBAL_LOCK_FILE)
+    } catch {
+      // ignore
+    }
+    return null
+  }
+  return d
 }
 
 /**
