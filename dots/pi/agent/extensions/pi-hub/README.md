@@ -36,17 +36,36 @@ IM 渠道（wechat 等）通过 `IGateway` 契约接入，渠道只依赖类型�
 ### 通信：WebSocket 双向（替代 HTTP 短轮询）
 
 - 协调中心与客户端间为 **WS 长连接**（`/ws?name=&host=`），服务器**即时推送** envelope（延迟毫秒级，无 2s 轮询）
-- WS 为**手写帧实现（无 npm 依赖）**：握手（SHA1 accept）+ 帧编解码（mask/len）+ 心跳（30s ping）
-- 客户端断线**指数退避重连**（1s→15s）；投递时目标不在线则入队，连接后补投
+- WS 为**手写帧实现（无 npm 依赖）**：握手（SHA1 accept）+ 帧编解码（mask/len）
+- **服务器主动心跳**：每 15s 发协议层 PING，客户端（标准 WebSocket）自动回 PONG → 刷新活跃登记（`ACTIVE_CLIENT_TTL=30s`）。进程活着但心跳停止的实例不再被误展示（修复文本帧心跳不被识别的问题）
+- 客户端断线**指数退避重连**（1s→15s）；投递时目标不在线则入队，连接后补投（**投递成功即 ack**，防重启/重连重复投递）
 - 协调中心故障转移：协调中心退出后，其他配置了 `coordinatorPort` 的实例自动接管（`ensureCoordinatorIfNeeded`）
 - 保留 HTTP 查询端点（`/instances` `/lock` `/lastmsg`）与 `/envelope` POST（发送 fallback）
 
 ### 关键设计
 
-- **注入 ≠ 执行**：`send_command` 的指令经协调中心注入目标会话后，**只显示为消息，不执行命令**（pi 内置命令只响应真实 TUI 输入）。因此远程执行走 `__hub_cmd` 扩展命令（pi 命令系统分发 handler）或 tmux 模拟输入。
-- **循环防护**：指令发给自己时本地处理（`isCurrentInstance`），不再经协调中心回投注入，避免"发送→注入→再发送"死循环。
+- **注入即可执行**：`sendUserMessage(..., { expandPromptTemplates: true })` 注入的斜杠命令会被 **pi 命令系统 dispatch**（非仅显示）。因此 `send_command /__hub_reload`（或 `/__hub_cmd /reload`）可**可靠触发远程 reload**（实测验证）；TUI 手动 `/reload` 仍是兜底。
+- **循环防护**：指令发给自己时本地处理（`isCurrentInstance`），不再经协调中心回投注入，避免“发送→注入→再发送”死循环。
 - **stale ctx 防护**：`ctx.reload()` 后命令上下文立即失效，reload 放最后执行。
 - **注册表并发安全**：`listInstances` 只读不写回（防并发读-改-写清空注册表），写入走 tmp+rename 原子写。
+- **全局锁**：`coordinator-lock.json` 仲裁多实例接管。客户端 3s 续约（原 1s，降频降 IO），`TTL=15s` 余量充足；`force` 可立即抢占；损坏/无主锁文件自动清理（防 wx 原子创建死锁）。
+- **日志**：`/tmp/pi-hub.log`（`logEvent` 统一落盘，5MB 自动轮转）；调试日志 `PI_COORDINATOR_DEBUG=1` → console。
+
+## 代码结构
+
+```
+index.ts          入口/装配（生命周期、轮询、桥、公共逻辑）
+src/commands.ts   命令表（TUI 与渠道共用一份实现）
+src/tools.ts      工具注册（list_instances / switch_instance / …）
+src/transport.ts  协调中心 HTTP+WS / 客户端 WS / SSH 通道
+src/router.ts     入站路由 + envelope 统一分发
+src/queue.ts      可靠消息队列（ack + dedup + TTL 2min + 重投上限 3）
+src/lock.ts       全局锁（TTL 15s / force / 损坏自愈）
+src/registry.ts   实例注册表（原子写）
+src/start-pi.ts   tmux 启动 pi（纯逻辑 + 依赖注入）
+src/logger.ts     统一日志（debug 开关 + 落盘轮转）
+src/config.ts     配置读取（双文件回退 + 自动重建）
+```
 
 ## 安装
 
@@ -205,7 +224,7 @@ npx tsc --noEmit
 npx vitest run
 ```
 
-测试：49 个用例（中文数字解析 / 消息队列 ack / 全局锁 / 命令归一化 / 宽松 use / start-pi / reloadall）。
+测试：60 个用例（中文数字解析 / 消息队列 ack / 全局锁 / 命令归一化 / 宽松 use / start-pi / reloadall / 心跳 / 去重）。
 
 ## License
 
