@@ -31,6 +31,8 @@ export interface CommandCtx {
   writeClipboard: (text: string) => Promise<boolean>
   /** subagent 任务注册表 */
   taskRegistry: TaskRegistry
+  /** 在目标机器启动 subagent 并登记，注册后由扩展自动分发任务（事件驱动，无需 sleep） */
+  requestSubagent: (target: InstanceInfo, cwd: string | undefined, msg: string) => Promise<string>
 }
 
 export interface CommandResult {
@@ -211,55 +213,15 @@ function looksLikePath(s: string): boolean {
   return s.includes('/') || s.includes('~') || s.startsWith('.')
 }
 
-/** 目标机器启动 subagent → 等注册 → 写任务注册表并分发 → 返回汇总 */
+/** 目标机器启动 subagent → 登记待认领 → 扩展（pollIncoming）检测注册后自动分发（事件驱动，无需 sleep） */
 async function taskStartAndDispatch(
   ctx: CommandCtx,
   target: InstanceInfo,
   cwd: string | undefined,
   msg: string,
 ): Promise<CommandResult> {
-  const before = new Set((await ctx.collectInstances()).all.map((i) => i.name))
-  const startInfo = await ctx.doStartPi(target, cwd)
-  if (startInfo.includes('❌')) return { reply: startInfo, consumed: true }
-  // 等新实例注册（最多 ~15s）
-  const fresh = await waitForNewInstance(ctx, target.host ?? os.hostname(), before)
-  if (!fresh) {
-    return { reply: `${startInfo}\n⚠️ 等待新实例注册超时，请稍后用 /tasks 查看或手动 dispatch_task`, consumed: true }
-  }
-  const task = ctx.taskRegistry.create({ title: msg.slice(0, 40), assignee: fresh.name, payload: msg })
-  const tag = '[TASK#1]'
-  const tagResult = `[${task.id}结果]`
-  const sendInfo = await ctx.doSendMessage(
-    fresh.name,
-    `${tag} ${msg}\n\n【回传协议（必须执行，否则主实例看不到你的结果）】\n` +
-      `你的本会话回复不会被主实例看到。处理完成后必须调用 send_message 工具：\n` +
-      `1. target（目标实例）: ${ctx.currentInstanceName}\n` +
-      `2. text: ${tagResult} + JSON，示例：{"status":"done","data":...} 或 {"status":"failed","error":"原因"}\n` +
-      `任务ID: ${task.id}（回传时保留，主实例自动识别并更新状态）。`,
-  )
-  return {
-    reply: `${startInfo}\n${sendInfo}（${task.id}）\n任务列表: /tasks`,
-    consumed: true,
-  }
-}
-
-/** 轮询 collectInstances 直到出现新实例（排除启动前已知的） */
-async function waitForNewInstance(
-  ctx: CommandCtx,
-  host: string,
-  before: Set<string>,
-): Promise<InstanceInfo | null> {
-  for (let i = 0; i < 15; i++) {
-    await new Promise((r) => setTimeout(r, 1000))
-    try {
-      const { all } = await ctx.collectInstances()
-      const fresh = all.find((x) => x.host === host && !before.has(x.name))
-      if (fresh) return fresh
-    } catch {
-      // ignore
-    }
-  }
-  return null
+  const reply = await ctx.requestSubagent(target, cwd, msg)
+  return { reply, consumed: true }
 }
 
 async function cmdTasks(_args: string, ctx: CommandCtx): Promise<CommandResult> {

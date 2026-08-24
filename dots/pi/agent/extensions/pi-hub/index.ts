@@ -324,6 +324,8 @@ export default function hubExtension(pi: ExtensionAPI) {
       }
       // 本机广播文件：任意实例写入，本机其他实例各自 ack 后 reload
       consumeLocalBroadcast()
+      // 事件驱动：检测待认领 subagent 是否已注册 → 自动分发任务（无需主动 sleep）
+      await checkPendingSubagent()
       if (config.coordinatorPort) {
         // 协调中心模式：消费本地队列中发给自己的 envelope（指令/消息），ack 防重投
         const items = queue.dequeue(currentInstanceName)
@@ -948,6 +950,52 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   // ============================================================================
+  // ============================================================================
+  // subagent 启动自动分发：扩展维护待认领状态，pollIncoming 检测注册后自动分发（事件驱动，无需主动 sleep）
+  // ============================================================================
+
+  /** 待认领的 subagent 启动请求（一次一个；/task 登记后由 pollIncoming 自动完成分发） */
+  let pendingSubagent: { host: string; before: Set<string>; msg: string } | null = null
+
+  async function requestSubagent(target: InstanceInfo, cwd: string | undefined, msg: string): Promise<string> {
+    const before = new Set((await collectInstances()).all.map((i) => i.name))
+    const startInfo = await doStartPiFn(target, cwd, startPiDeps)
+    if (startInfo.includes('❌')) return startInfo
+    pendingSubagent = { host: target.host ?? os.hostname(), before, msg }
+    log(`登记待认领 subagent：host=${pendingSubagent.host} msg=${msg.slice(0, 40)}`)
+    return `${startInfo}\n⏳ 已登记，检测到子实例注册后自动分发任务`
+  }
+
+  async function checkPendingSubagent(): Promise<void> {
+    const p = pendingSubagent
+    if (!p) return
+    try {
+      const { all } = await collectInstances()
+      const fresh = all.find((x) => x.host === p.host && !p.before.has(x.name))
+      if (!fresh) return
+      pendingSubagent = null
+      // 写注册表 + 分发（带回传协议）
+      const task = taskRegistry.create({ title: p.msg.slice(0, 40), assignee: fresh.name, payload: p.msg })
+      const tag = '[TASK#1]'
+      const tagResult = `[${task.id}结果]`
+      const sendInfo = await doSendMessage(
+        fresh.name,
+        `${tag} ${p.msg}\n\n【回传协议（必须执行，否则主实例看不到你的结果）】\n` +
+          `你的本会话回复不会被主实例看到。处理完成后必须调用 send_message 工具：\n` +
+          `1. target（目标实例）: ${currentInstanceName}\n` +
+          `2. text: ${tagResult} + JSON，示例：{"status":"done","data":...} 或 {"status":"failed","error":"原因"}\n` +
+          `任务ID: ${task.id}（回传时保留，主实例自动识别并更新状态）。`,
+      )
+      log(`子实例 ${fresh.name} 已注册，自动分发任务 ${task.id}`)
+      safeSendUserMessage(`[子代理就绪] ${fresh.name} 已注册，任务已自动分发（${task.id}）。${sendInfo}`, {
+        deliverAs: 'steer',
+        expandPromptTemplates: true,
+      } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
+    } catch (err) {
+      log(`checkPendingSubagent 异常: ${(err as Error).message}`)
+    }
+  }
+
   // 本地 takeover 文件（本机实例间）
   // ============================================================================
 
