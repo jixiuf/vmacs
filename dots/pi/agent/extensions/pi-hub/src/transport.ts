@@ -512,6 +512,8 @@ export function startCoordinatorServer(
   })
 
   // TTL 兜底清理：进程突然退出（process.exit/RST）不触发 close 事件时，靠心跳超时清理残留登记
+  // 关键：删除登记前先 destroy 假死连接（TCP 半开/PONG 停）。否则客户端连接仍 ESTAB 认为在线、
+  // 不重连，但服务器 wsClients 已删 → deliverEnvelope 入队不推送 → 客户端永久“假在线”收不到消息。
   const activePrune = setInterval(() => {
     const now = Date.now()
     for (const [k, ts] of [...activeClients]) {
@@ -519,6 +521,14 @@ export function startCoordinatorServer(
         activeClients.delete(k)
         clientHosts.delete(k)
         clientSessionNames.delete(k)
+        const stale = wsClients.get(k)
+        if (stale) {
+          try {
+            stale.destroy() // 触发客户端 close → 重连 → 重新握手注册（恢复可见性）
+          } catch {
+            // ignore
+          }
+        }
         wsClients.delete(k)
       }
     }
