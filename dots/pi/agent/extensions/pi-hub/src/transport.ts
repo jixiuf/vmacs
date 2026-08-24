@@ -81,6 +81,27 @@ export interface WsClientHandle {
   close(): void
 }
 
+/**
+ * WS 重连退避（毫秒）：
+ * - 连接稳定存活（≥stableMs）→ 重置退避（正常断线 1s/2s/4s 指数退避）
+ * - 快速失败（存活 <fastFailMs）→ 强制提升退避下限（≥8s，升到 15s 上限）
+ *   防止两个同名连接源被服务器端互相 destroy 时形成每秒重连风暴，
+ *   给竞争源消失留出收敛时间，最终恢复稳定连接。
+ * aliveMs 传 -1 表示从未成功 OPEN（握手失败/连接被拒），保持正常递增退避。
+ */
+export function wsRetryDelay(
+  aliveMs: number,
+  retry: number,
+  opts?: { stableMs?: number; fastFailMs?: number },
+): number {
+  const stableMs = opts?.stableMs ?? 10_000
+  const fastFailMs = opts?.fastFailMs ?? 3_000
+  let r = retry
+  if (aliveMs >= stableMs) r = 0
+  else if (aliveMs >= 0 && aliveMs < fastFailMs) r = Math.max(r, 3)
+  return Math.min(1000 * 2 ** r, 15000)
+}
+
 export function connectCoordinatorWS(
   baseUrl: string,
   name: string,
@@ -94,6 +115,8 @@ export function connectCoordinatorWS(
   let ws: WebSocket | null = null
   let closed = false
   let retry = 0
+  let lastOpenTs = 0
+  let lastCloseTs = 0
 
   function connect(): void {
     if (closed) return
@@ -105,7 +128,11 @@ export function connectCoordinatorWS(
       if (!closed) setTimeout(connect, 3000)
       return
     }
-    socket.onopen = () => { logEvent('WS_OPEN', `name=${name}`); retry = 0; onStatus?.(true) }
+    socket.onopen = () => {
+      logEvent('WS_OPEN', `name=${name}`)
+      lastOpenTs = Date.now()
+      onStatus?.(true)
+    }
     socket.onmessage = (ev) => {
       try {
         const msg = JSON.parse(String(ev.data)) as { type?: string; env?: Envelope }
@@ -114,10 +141,17 @@ export function connectCoordinatorWS(
     }
     socket.onclose = () => {
       logEvent('WS_CLOSE', `name=${name}`)
+      lastCloseTs = Date.now()
       onStatus?.(false)
       if (ws === socket) ws = null
       if (!closed) {
-        const delay = Math.min(1000 * 2 ** retry, 15000)
+        // 快速失败保护：连接刚建立就被断开（如被服务器端同名连接 destroy），
+        // 若仍按 1s 起步退避重连，两个同名连接源会互相 destroy 形成每秒重连风暴
+        // （此前 onopen 即重置 retry 使指数退避形同虚设）。退避决策见 wsRetryDelay：
+        // - 稳定存活才重置退避 → 正常断线仍 1s/2s/4s 指数退避
+        // - 快速失败强制提升退避下限 → 竞争风暴退避到 8s→15s 上限，最终收敛
+        const alive = lastOpenTs > 0 ? lastCloseTs - lastOpenTs : -1
+        const delay = wsRetryDelay(alive, retry)
         retry++
         setTimeout(connect, delay)
       }

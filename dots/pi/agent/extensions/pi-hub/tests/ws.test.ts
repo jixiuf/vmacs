@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll, beforeAll } from 'vitest'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
-import { wsFrame, wsParseFrame, WS_OP, startCoordinatorServer, connectCoordinatorWS } from '../src/transport.js'
+import { wsFrame, wsParseFrame, WS_OP, startCoordinatorServer, connectCoordinatorWS, wsRetryDelay } from '../src/transport.js'
 import { EnvelopeQueue } from '../src/queue.js'
 import type { Envelope } from '../src/types.js'
 
@@ -43,6 +43,35 @@ describe('WebSocket 帧编解码（手写，无依赖）', () => {
 
   it('缓冲不足返回 null（等待更多数据）', () => {
     expect(wsParseFrame(Buffer.from([0x81]))).toBeNull()
+  })
+})
+
+describe('WS 重连退避 wsRetryDelay（防同名竞争重连风暴）', () => {
+  it('从未 OPEN（alive=-1）→ 保持正常指数退避递增', () => {
+    expect(wsRetryDelay(-1, 0)).toBe(1000)
+    expect(wsRetryDelay(-1, 2)).toBe(4000)
+  })
+
+  it('稳定存活（≥10s）→ 重置退避到 1s', () => {
+    expect(wsRetryDelay(20_000, 7)).toBe(1000)
+    expect(wsRetryDelay(10_000, 3)).toBe(1000)
+  })
+
+  it('快速失败（存活 <3s）→ 强制提升退避下限 ≥8s', () => {
+    expect(wsRetryDelay(1000, 0)).toBe(8000)
+    expect(wsRetryDelay(500, 1)).toBe(8000)
+    expect(wsRetryDelay(2999, 0)).toBe(8000)
+  })
+
+  it('快速失败持续 → 退避指数增长至 15s 上限（风暴抑制）', () => {
+    expect(wsRetryDelay(500, 3)).toBe(8000)
+    expect(wsRetryDelay(500, 4)).toBe(15000)
+    expect(wsRetryDelay(500, 9)).toBe(15000)
+  })
+
+  it('介于稳定与快速失败之间（3s~10s）→ 不重置不强制，保持当前退避', () => {
+    expect(wsRetryDelay(5000, 2)).toBe(4000)
+    expect(wsRetryDelay(5000, 5)).toBe(15000)
   })
 })
 
