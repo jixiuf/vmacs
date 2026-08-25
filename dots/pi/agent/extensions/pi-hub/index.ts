@@ -91,7 +91,7 @@ export default function hubExtension(pi: ExtensionAPI) {
   let latestCtx: Ctx | null = null
   let config: HubConfig = loadHubConfig()
 
-  // start-pi 依赖（remoteHosts 取自 config，sshExec 来自传输层）
+  // start 依赖（remoteHosts 取自 config，sshExec 来自传输层）
   const startPiDeps: StartPiDeps = {
     remoteHosts: config.remoteHosts ?? {},
     sshExec,
@@ -1213,7 +1213,7 @@ export default function hubExtension(pi: ExtensionAPI) {
   // ============================================================================
   // ============================================================================
   // TUI 斜杠命令：统一复用 commands.ts 命令表
-  // （/instances /use /send-command /send-message /cmd /msg /start-pi /reloadall /clipboard）
+  // （/instances /use /send-command /send-message /cmd /msg /start /reloadall /clipboard）
   // ============================================================================
 
   const TUI_COMMAND_MAP: Record<string, string> = {
@@ -1223,12 +1223,12 @@ export default function hubExtension(pi: ExtensionAPI) {
     'send-message': 'msg',
     cmd: 'cmd',
     msg: 'msg',
-    'start-pi': 'start-pi',
+    'start': 'start',
     reloadall: 'reloadall',
     clipboard: 'clipboard',
     tasks: 'tasks',
     task: 'task',
-    'task-local': 'task-local',
+    'tasklocal': 'tasklocal',
   }
   for (const [tuiName, cmdName] of Object.entries(TUI_COMMAND_MAP)) {
     pi.registerCommand(tuiName, {

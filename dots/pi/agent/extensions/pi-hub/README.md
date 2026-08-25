@@ -10,7 +10,7 @@ IM 渠道（wechat 等）通过 `IGateway` 契约接入，渠道只依赖类型�
 - **指令/消息互发**：`/cmd` 向实例发指令（真正执行），`/msg` 发消息
 - **广播重载**：`/reloadall` 一键重载所有实例（当前实例本地执行，其他实例注入触发）
 - **远程命令执行**：`/cmd <实例> /new`、`/fork`、`/goto`、`/reload`、`/name` 等真正在目标实例执行
-- **启动 pi**：`/start-pi` 在指定实例（默认本机）的 tmux 会话中开窗口启动 pi
+- **启动 pi**：`/start` 在指定实例（默认本机）的 tmux 会话中开窗口启动 pi
 - **宽松 use 匹配**：微信里说「2」「use home」「home」即可切换接管（语音友好）
 - **IM 渠道接入**：任何渠道实现 `IGateway` 即接入（当前有 wechat）
 
@@ -62,7 +62,7 @@ src/router.ts     入站路由 + envelope 统一分发
 src/queue.ts      可靠消息队列（ack + dedup + TTL 2min + 重投上限 3）
 src/lock.ts       全局锁（TTL 15s / force / 损坏自愈）
 src/registry.ts   实例注册表（原子写）
-src/start-pi.ts   tmux 启动 pi（纯逻辑 + 依赖注入）
+src/start.ts   tmux 启动 pi（纯逻辑 + 依赖注入）
 src/logger.ts     统一日志（debug 开关 + 落盘轮转）
 src/config.ts     配置读取（双文件回退 + 自动重建）
 ```
@@ -119,7 +119,7 @@ src/config.ts     配置读取（双文件回退 + 自动重建）
 | `/cmd [实例] <指令>` | 向实例发送指令（远程真正执行） |
 | `/msg [实例] <内容>` | 向实例发送消息 |
 | `/reloadall` | 重载所有实例（当前本地执行，其他注入触发） |
-| `/start-pi [实例] [目录]` | 在实例 tmux 会话中启动 pi（默认本机） |
+| `/start [实例] [目录]` | 在实例 tmux 会话中启动 pi（默认本机） |
 
 ### 微信命令（中文别名 / 语音友好）
 
@@ -130,7 +130,7 @@ src/config.ts     配置读取（双文件回退 + 自动重建）
 | 「发送命令」「执行命令」 | `/cmd` |
 | 「发送消息」「发消息」 | `/msg` |
 | 「重载全部」「全部重载」「reload all」 | `/reloadall` |
-| 「启动pi」「启动派」「start pi」「开pi」 | `/start-pi` |
+| 「启动pi」「启动派」「start pi」「开pi」 | `/start` |
 
 ### Agent 工具
 
@@ -210,7 +210,7 @@ taskMonitor（30s）→ 实例全部任务结束 → 自动 /quit 回收
 > 当前实例自己的指令仅本地处理 `/reload`（session 命令需要 TUI 上下文）。
 > 未知指令仅记录忽略（不做不可靠的 tmux 模拟输入）。
 
-## start-pi
+## start
 
 在目标实例（默认本机）的 **tmux 会话中开窗口**启动 pi（不新建会话）：
 
@@ -245,7 +245,7 @@ npx tsc --noEmit
 npx vitest run
 ```
 
-测试：60 个用例（中文数字解析 / 消息队列 ack / 全局锁 / 命令归一化 / 宽松 use / start-pi / reloadall / 心跳 / 去重）。
+测试：60 个用例（中文数字解析 / 消息队列 ack / 全局锁 / 命令归一化 / 宽松 use / start / reloadall / 心跳 / 去重）。
 
 ## License
 

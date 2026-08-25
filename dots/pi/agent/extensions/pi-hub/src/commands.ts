@@ -133,7 +133,7 @@ export interface StartPiTarget {
 }
 
 /**
- * start-pi 参数解析：第一参数匹配实例名 → 指定实例；否则默认当前实例（本机）。
+ * start 参数解析：第一参数匹配实例名 → 指定实例；否则默认当前实例（本机）。
  * 第一参数含 / ~ 或以 . 开头视为目录；否则像实例名但找不到 → 报错（避免打错实例名被静默当目录）。
  */
 export function parseStartPiTarget(
@@ -176,7 +176,7 @@ async function cmdClipboard(args: string, ctx: CommandCtx): Promise<CommandResul
 async function cmdTaskStart(args: string, ctx: CommandCtx): Promise<CommandResult> {
   const parts = args.trim().split(/\s+/)
   const hostOrInst = parts[0] ?? ''
-  if (!hostOrInst) return { reply: '用法: /task <主机|实例> [路径] <任务消息>，如 /task home 分析 README.md；本机用 /task-local', consumed: true }
+  if (!hostOrInst) return { reply: '用法: /task <主机|实例> [路径] <任务消息>，如 /task home 分析 README.md；本机用 /tasklocal', consumed: true }
   const { all } = await ctx.collectInstances()
   // host 参数：优先匹配实例名，其次匹配主机名（协调者所在机器）
   const target =
@@ -207,7 +207,7 @@ async function cmdTaskStartLocal(args: string, ctx: CommandCtx): Promise<Command
   } else {
     msg = args.trim()
   }
-  if (!msg) return { reply: '用法: /task-local [路径] <任务消息>，本机直接起 subagent 并分发', consumed: true }
+  if (!msg) return { reply: '用法: /tasklocal [路径] <任务消息>，本机直接起 subagent 并分发', consumed: true }
   const { all } = await ctx.collectInstances()
   const local = all.find((i) => i.name === ctx.currentInstanceName) ?? all.find((i) => i.pid === process.pid)
   if (!local) return { reply: '未找到当前实例', consumed: true }
@@ -324,12 +324,12 @@ const COMMANDS: Record<string, CommandEntry> = {
   use: { run: cmdUse, aliases: ['切换', '切换到', '切到'] },
   cmd: { run: cmdSendCommand, aliases: ['发送命令', '执行命令'] },
   msg: { run: cmdSendMessage, aliases: ['发送消息', '发消息'] },
-  'start-pi': { run: cmdStartPi, aliases: ['start pi', 'start-pi', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
+  'start': { run: cmdStartPi, aliases: ['start pi', 'start', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
   reloadall: { run: cmdReloadAll, aliases: ['重载全部', '全部重载', 'reload all', 'reloadall', '重载所有', '重启全部'] },
   clipboard: { run: cmdClipboard, aliases: ['复制', '拷贝', '复制到剪贴板'] },
   tasks: { run: cmdTasks, aliases: ['任务列表', '所有任务'] },
   task: { run: cmdTask, aliases: ['任务详情', '查看任务', '分派任务', '派任务', '起个子代理'] },
-  'task-local': { run: cmdTaskStartLocal, aliases: ['本地子代理', '本地起个子代理', 'task local'] },
+  'tasklocal': { run: cmdTaskStartLocal, aliases: ['本地子代理', '本地起个子代理', 'task local'] },
 }
 
 /** 检查文本是否是命令（斜杠 / 中文别名），返回规范化命令名 */

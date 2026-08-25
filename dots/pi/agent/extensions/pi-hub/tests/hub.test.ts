@@ -234,7 +234,7 @@ describe('executeCommand 宽松 use 执行', () => {
   })
 })
 
-describe('start-pi 命令（在实例 tmux 中启动 pi）', () => {
+describe('start 命令（在实例 tmux 中启动 pi）', () => {
   const makeCtx = (): CommandCtx => ({
     currentInstanceName: 'extensions',
     collectInstances: async () => ({
@@ -255,8 +255,8 @@ describe('start-pi 命令（在实例 tmux 中启动 pi）', () => {
     writeClipboard: async () => true,
   })
 
-  it('斜杠 /start-pi home 命中并转发目录', async () => {
-    expect(await executeCommand('/start-pi home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
+  it('斜杠 /start home 命中并转发目录', async () => {
+    expect(await executeCommand('/start home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
   })
   it('英文 start pi 命中', async () => {
     expect(await executeCommand('start pi home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
@@ -265,21 +265,21 @@ describe('start-pi 命令（在实例 tmux 中启动 pi）', () => {
     expect(await executeCommand('启动pi home', makeCtx())).toEqual({ reply: 'started home', consumed: true })
   })
   it('带目录参数', async () => {
-    expect(await executeCommand('/start-pi home ~/proj', makeCtx())).toEqual({ reply: 'started home @~/proj', consumed: true })
+    expect(await executeCommand('/start home ~/proj', makeCtx())).toEqual({ reply: 'started home @~/proj', consumed: true })
   })
   it('无参数时默认当前实例（本机）', async () => {
-    expect(await executeCommand('/start-pi', makeCtx())).toEqual({ reply: 'started extensions', consumed: true })
+    expect(await executeCommand('/start', makeCtx())).toEqual({ reply: 'started extensions', consumed: true })
   })
   it('第一个参数不是实例名时作为目录，默认本机', async () => {
-    expect(await executeCommand('/start-pi ~/proj', makeCtx())).toEqual({ reply: 'started extensions @~/proj', consumed: true })
+    expect(await executeCommand('/start ~/proj', makeCtx())).toEqual({ reply: 'started extensions @~/proj', consumed: true })
   })
   it('打错的实例名（非目录）报错不静默当目录', async () => {
-    expect(await executeCommand('/start-pi home2', makeCtx())).toEqual({ reply: '未找到实例 home2，先 /instances 查看', consumed: true })
+    expect(await executeCommand('/start home2', makeCtx())).toEqual({ reply: '未找到实例 home2，先 /instances 查看', consumed: true })
   })
   it('中文别名无实例默认本机', async () => {
     expect(await executeCommand('启动pi', makeCtx())).toEqual({ reply: 'started extensions', consumed: true })
   })
-  it('普通对话不命中 start-pi', async () => {
+  it('普通对话不命中 start', async () => {
     expect(await executeCommand('帮我在服务器上启动pi', makeCtx())).toBeNull()
   })
 })

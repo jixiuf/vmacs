@@ -67,7 +67,7 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
   // 复用实例所在的 tmux 会话（不新建会话）：窗口名带唯一后缀（实例 pid，未知时回退时间戳）
   const pidSuffix = target.pid > 0 ? String(target.pid) : String(Date.now()).slice(-6)
   const winName = `pi-${target.name}-${pidSuffix}`
-  // 实例名确定化：PI_INSTANCE_NAME=<name>-<pid>，避免 start-pi 起的子代理注册名与
+  // 实例名确定化：PI_INSTANCE_NAME=<name>-<pid>，避免 start 起的子代理注册名与
   // 协调中心/其他实例冲突（同名存活时 registerInstance 会改协调中心的名字——名字漂移）
   const instName = target.name.endsWith(`-${pidSuffix}`) ? target.name : `${target.name}-${pidSuffix}`
   const isLocal = !target.host || target.host === os.hostname()

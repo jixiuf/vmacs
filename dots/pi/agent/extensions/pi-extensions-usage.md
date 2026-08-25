@@ -27,7 +27,7 @@
 | `/__hub_reload` | 广播重载（内部命令，由 broadcast envelope 触发） |
 | `/__hub_cmd` | 内部命令：远程执行会话命令（/new /fork /goto /reload /name 等，未知命令回退 tmux 模拟输入） |
 | `/reloadall` | 重载所有实例（当前实例本地执行，其他实例发指令） |
-| `/start-pi` | 在实例（默认本机）的 tmux pi 会话中启动 pi：/start-pi [实例名] [目录] |
+| `/start` | 在实例（默认本机）的 tmux pi 会话中启动 pi：/start [实例名] [目录] |
 
 ## pi-hub — 渠道命令表（微信/语音别名，6）
 
@@ -37,7 +37,7 @@
 | `use` | 切换、切换到、切到 |
 | `cmd` | 发送命令、执行命令 |
 | `msg` | 发送消息、发消息 |
-| `start-pi` | start pi、start-pi、启动pi、启动派、启动皮、启动Pi、启动一个pi、开pi、开个pi |
+| `start` | start pi、start、启动pi、启动派、启动皮、启动Pi、启动一个pi、开pi、开个pi |
 | `reloadall` | 重载全部、全部重载、reload all、reloadall、重载所有、重启全部 |
 
 ## pi-wechat-assistant — 微信远程命令（17）
@@ -64,7 +64,7 @@
 
 ## 架构速览
 
-- **pi-hub**：协调中心（8089）+ WS 双向通信；实例注册/发现、接管切换、指令/消息互发、reloadall、start-pi、subagent 分发汇总
+- **pi-hub**：协调中心（8089）+ WS 双向通信；实例注册/发现、接管切换、指令/消息互发、reloadall、start、subagent 分发汇总
 - **pi-wechat-assistant**：WechatGateway（iLink 轮询）→ hub（协调命令）→ 会话；消息/图片/文件、会话管理、远程命令
 
 ## 相关文档
