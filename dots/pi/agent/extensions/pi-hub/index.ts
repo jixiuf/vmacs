@@ -82,6 +82,10 @@ interface ExternalFeishuBridge {
     text: string,
     opts?: { echo?: boolean },
   ): Promise<{ ok: boolean; reply?: string; error?: string; key?: string }>
+  notify(
+    key: string,
+    text: string,
+  ): Promise<{ ok: boolean; error?: string; key?: string }>
   acquire(): Promise<{ ok: boolean; message?: string }>
   release(): Promise<{ ok: boolean; message?: string }>
 }
@@ -652,7 +656,22 @@ export default function hubExtension(pi: ExtensionAPI) {
     // 文件一致），sendUserMessage 注入即到达飞书会话；daemon 模式的跨进程注入是未来增强。
     // 避免 fb.inject 走 createAgentSession 的另一会话对象与 TUI 会话并行操作同一文件。
     if (m.channel === 'coord') {
-      safeSendUserMessage(`[协调消息 @${m.userId}] ${m.text ?? ''}`, {
+      const text = `[协调消息 @${m.userId}] ${m.text ?? ''}`
+      // feishu 桥激活（daemon 内 pi-hub 与 feishu 同进程）时：先直接推送原始消息到飞书，
+      // 用户立即看到 subagent 回传等；再注入 agent 上下文供后续处理（tryAutoUpdateTask 已先行）。
+      const fb = feishuBridge()
+      if (fb?.isActive()) {
+        const key = fb.activeKey()
+        if (key) {
+          try {
+            const r = await fb.notify(key, formatCoordForFeishu(text))
+            if (!r.ok) log(`feishu 推送失败（继续注入）: ${r.error ?? 'unknown'}`)
+          } catch (err) {
+            log(`feishu 推送异常（继续注入）: ${(err as Error).message}`)
+          }
+        }
+      }
+      safeSendUserMessage(text, {
         deliverAs: 'steer',
         expandPromptTemplates: true,
       } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
@@ -664,6 +683,41 @@ export default function hubExtension(pi: ExtensionAPI) {
       expandPromptTemplates: true,
     } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
     return null
+  }
+
+  /**
+   * 协调消息 → 飞书展示格式化：
+   *  - [hub结果] [start] → ✅ 子任务已启动
+   *  - [子代理就绪] → ⏳ 子任务执行中
+   *  - [TASK-xxx结果] + JSON → ✅ 子任务完成 + 键值对美化
+   *  - 其余原样
+   */
+  function formatCoordForFeishu(text: string): string {
+    // TASK 结果 JSON 美化
+    const taskResultMatch = text.match(/\[TASK-[^\]]+结果\]\s*(\{.*\})/s)
+    if (taskResultMatch) {
+      const raw = taskResultMatch[1].trim()
+      try {
+        const obj = JSON.parse(raw)
+        const failed = obj && typeof obj === 'object' && obj.status === 'failed'
+        const lines: string[] = [failed ? '❌ 子任务失败' : '✅ 子任务完成']
+        for (const [k, v] of Object.entries(obj)) {
+          if (typeof v === 'object' && v !== null) {
+            lines.push(`${k}: ${JSON.stringify(v)}`)
+          } else if (typeof v === 'string' && v.length > 300) {
+            lines.push(`${k}: ${v.slice(0, 297)}...`)
+          } else {
+            lines.push(`${k}: ${String(v)}`)
+          }
+        }
+        return lines.join('\n')
+      } catch {
+        // 非 JSON，走状态分支或原文
+      }
+    }
+    if (/\[hub结果\]\s*\[start\]/.test(text)) return `✅ 子任务已启动\n${text}`
+    if (/\[子代理就绪\]/.test(text)) return `⏳ 子任务执行中\n${text}`
+    return text
   }
 
   // ============================================================================
