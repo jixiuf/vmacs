@@ -127,3 +127,6 @@ dots/pi/agent/pi-cache-optimizer-stats.d/shards/
 dots/pi/agent/pi-cache-optimizer-stats.json.*.tmp
 dots/pi/agent/wechat-assistant/instances.json
 dots/pi/agent/wechat-assistant/tasks.json
+dots/pi/agent/feishu/
+dots/pi/agent/locks.json
+dots/pi/agent/extensions/ax-feishu-bridge/
