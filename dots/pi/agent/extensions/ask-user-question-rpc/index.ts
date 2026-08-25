@@ -462,6 +462,16 @@ Usage notes:
         return executeViaWechat(bridge, typed, signal);
       }
 
+      // 飞书桥接模式（ax-feishu-bridge）：接口与微信桥同构（isFeishuTurnActive / getActiveUserId / askQuestion）
+      const feishuBridge = (globalThis as unknown as { __AX_FEISHU_BRIDGE__?: WechatQuestionBridge }).__AX_FEISHU_BRIDGE__;
+      if (
+        feishuBridge &&
+        typeof feishuBridge.isFeishuTurnActive === "function" &&
+        feishuBridge.isFeishuTurnActive()
+      ) {
+        return executeViaWechat(feishuBridge, typed, signal);
+      }
+
       if (!ctx.hasUI) {
         return buildToolResult("Error: UI not available (running in non-interactive mode)", {
           answers: [],
