@@ -180,6 +180,7 @@
 [diff "gpg"]
 	textconv = gpg -q --no-tty --decrypt
 [diff "plist"]
+# need *.plist diff=plist  in gitattributes
 	textconv = plutil -convert xml1 -o -
 	# run : git difftool
 # [diff]
