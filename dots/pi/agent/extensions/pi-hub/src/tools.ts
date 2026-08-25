@@ -201,7 +201,10 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
         const ids: string[] = []
         for (const [i, t] of params.tasks.entries()) {
           const tag = `[TASK#${i + 1}]`
-          // 写任务注册表（状态跟踪/超时/自动回收）
+          // 写任务注册表（状态跟踪/超时/自动回收）。注意：dispatch_task 分发给【任意实例】
+          // （可能是长期运行的主实例/远程实例），故不标记 isSubagent——不参与自动回收，
+          // 避免实例名撞上 assignee 字符串被误 /quit；仅 task_subagent/checkPendingSubagent
+          // 启动的本系统 subagent 任务标记 isSubagent=true（完成后自动回收）。
           const task = deps.taskRegistry.create({
             title: t.task.slice(0, 40),
             assignee: t.instance,

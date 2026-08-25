@@ -18,7 +18,7 @@ beforeEach(() => {
 
 function createDoneTasks(reg: TaskRegistry, assignee: string, n: number): void {
   for (let i = 0; i < n; i++) {
-    const t = reg.create({ assignee, payload: `task-${i}` })
+    const t = reg.create({ assignee, payload: `task-${i}`, isSubagent: true })
     reg.update(t.id, { status: 'done', result: 'ok' })
   }
 }
@@ -99,10 +99,38 @@ describe('TaskRegistry 回收判定', () => {
 
   it('keep 任务不触发回收', () => {
     const reg = new TaskRegistry()
-    const t = reg.create({ assignee: 'sub1', payload: 'p', keep: true })
+    const t = reg.create({ assignee: 'sub1', payload: 'p', keep: true, isSubagent: true })
     reg.update(t.id, { status: 'done' })
     const events = reg.monitor()
     expect(events.some((e) => e.kind === 'reclaim' && e.assignee === 'sub1')).toBe(false)
+  })
+
+  it('回归：无 isSubagent 标记的 done 任务不触发回收（assignee 撞实例名也不误杀）', () => {
+    const reg = new TaskRegistry()
+    // 模拟历史遗留任务：dispatch_task 分发给 "admin"（无 isSubagent 标记），已完成
+    const t = reg.create({ assignee: 'admin', payload: '旧任务' })
+    reg.update(t.id, { status: 'done', result: 'ok' })
+    const events = reg.monitor()
+    expect(events.some((e) => e.kind === 'reclaim' && e.assignee === 'admin')).toBe(false)
+  })
+
+  it('回归：dispatch_task 分发的新任务（无 isSubagent）完成后也不回收', () => {
+    const reg = new TaskRegistry()
+    const t = reg.create({ assignee: 'src-12345', payload: '协作任务' })
+    reg.update(t.id, { status: 'done' })
+    const events = reg.monitor()
+    expect(events.some((e) => e.kind === 'reclaim' && e.assignee === 'src-12345')).toBe(false)
+  })
+
+  it('本系统 subagent（isSubagent）任务完成 → reclaim；同一 assignee 的旧任务不污染判定', () => {
+    const reg = new TaskRegistry()
+    // 历史遗留任务（无标记，done）+ 本系统 subagent 任务（isSubagent，done）
+    const old = reg.create({ assignee: 'sub1', payload: 'old' })
+    reg.update(old.id, { status: 'done' })
+    const sub = reg.create({ assignee: 'sub1', payload: 'new', isSubagent: true })
+    reg.update(sub.id, { status: 'done' })
+    const events = reg.monitor()
+    expect(events).toContainEqual(expect.objectContaining({ kind: 'reclaim', assignee: 'sub1' }))
   })
 
   it('instanceDone 对无任务实例返回 false', () => {

@@ -37,6 +37,13 @@ export interface SubTask {
   attempts: number
   /** 完成后不自动回收（调试用） */
   keep?: boolean
+  /**
+   * 是否为【本系统主动建立的 subagent】任务（checkPendingSubagent 自动分发时标记）。
+   * 只有标记了 isSubagent 的任务才参与自动回收（monitor → /quit）；
+   * 历史遗留任务（dispatch_task 分发给任意实例、或旧版无标记）一律不回收，
+   * 避免实例名撞上任务 assignee 字符串被误杀（如 assignee="admin" 误回收主实例）。
+   */
+  isSubagent?: boolean
 }
 
 /** monitor 返回的事件：主实例轮询处理 */
@@ -101,7 +108,7 @@ export function extractReplyText(branch: unknown[], maxChars = 4000): string {
 }
 
 export class TaskRegistry {
-  create(opts: { title?: string; assignee: string; payload: string; ttlMs?: number; keep?: boolean }): SubTask {
+  create(opts: { title?: string; assignee: string; payload: string; ttlMs?: number; keep?: boolean; isSubagent?: boolean }): SubTask {
     const now = Date.now()
     const task: SubTask = {
       id: `TASK-${now}-${Math.random().toString(36).slice(2, 6)}`,
@@ -113,6 +120,7 @@ export class TaskRegistry {
       deadline: now + (opts.ttlMs ?? TASK_TTL_MS),
       attempts: 0,
       keep: opts.keep,
+      isSubagent: opts.isSubagent,
     }
     const tasks = this.list()
     tasks.push(task)
@@ -169,10 +177,12 @@ export class TaskRegistry {
         }
       }
     }
-    // 回收判定（用最新任务列表）
+    // 回收判定（用最新任务列表）：只回收【本系统主动建立的 subagent】任务（isSubagent），
+    // 历史遗留任务（dispatch_task 分发给任意实例、或旧版无标记）即使 done 也不产生 reclaim，
+    // 避免实例名撞上任务 assignee 字符串被误杀（如 assignee="admin" 的旧任务误回收新起的主实例）。
     const reclaimSet = new Set<string>()
     for (const t of this.list()) {
-      if (!t.keep && t.status === 'done') reclaimSet.add(t.assignee)
+      if (t.isSubagent && !t.keep && t.status === 'done') reclaimSet.add(t.assignee)
     }
     for (const a of reclaimSet) {
       if (this.instanceDone(a)) events.push({ id: '', kind: 'reclaim', assignee: a })

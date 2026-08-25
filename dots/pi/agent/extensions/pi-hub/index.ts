@@ -1014,6 +1014,13 @@ export default function hubExtension(pi: ExtensionAPI) {
             log(`跳过回收协调中心实例 ${ev.assignee}`)
             continue
           }
+          // 双保险：仅当该 assignee 名下存在【本系统主动建立的 subagent】任务（isSubagent）
+          // 才允许回收；历史遗留任务（无 isSubagent 标记）即使 assignee 名撞上新实例也不 /quit。
+          const isOwnSubagent = taskRegistry.list().some((t) => t.assignee === ev.assignee && t.isSubagent)
+          if (!isOwnSubagent) {
+            log(`跳过回收非本系统 subagent ${ev.assignee}（无 isSubagent 任务）`)
+            continue
+          }
           log(`自动回收子实例 ${ev.assignee}`)
           await doSendCommand(ev.assignee, '/quit')
         }
@@ -1103,8 +1110,9 @@ export default function hubExtension(pi: ExtensionAPI) {
       const fresh = all.find((x) => x.host === p.host && !p.before.has(x.name))
       if (!fresh) return
       pendingSubagent = null
-      // 写注册表 + 分发（带回传协议）
-      const task = taskRegistry.create({ title: p.msg.slice(0, 40), assignee: fresh.name, payload: p.msg })
+      // 写注册表 + 分发（带回传协议）。isSubagent=true：这是本系统主动建立的 subagent，
+      // 任务完成后允许自动回收（monitor 只对 isSubagent 任务发 reclaim → /quit）。
+      const task = taskRegistry.create({ title: p.msg.slice(0, 40), assignee: fresh.name, payload: p.msg, isSubagent: true })
       const tag = '[TASK#1]'
       const tagResult = `[${task.id}结果]`
       const sendInfo = await doSendMessage(
