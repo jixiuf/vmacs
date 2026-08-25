@@ -51,7 +51,7 @@ import {
 import { SessionBridge } from './src/bridge.js'
 import { Router } from './src/router.js'
 import { executeCommand, toNumber, type CommandCtx } from './src/commands.js'
-import { doStartPi as doStartPiFn, writeClipboard, execCapture, type StartPiDeps } from './src/start-pi.js'
+import { doStartPi as doStartPiFn, execCapture, type StartPiDeps } from './src/start-pi.js'
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
 import { registerCleanup, unregisterCleanup, disposeAllCleanups } from './src/lifecycle.js'
@@ -570,7 +570,6 @@ export default function hubExtension(pi: ExtensionAPI) {
       getLastTarget: () => lastTargetName,
       doStartPi: (target, cwd) => doStartPiSmart(target, cwd),
       doReloadAll,
-      writeClipboard,
       taskRegistry,
       requestSubagent,
       getLockHolder,
@@ -1213,7 +1212,7 @@ export default function hubExtension(pi: ExtensionAPI) {
   // ============================================================================
   // ============================================================================
   // TUI 斜杠命令：统一复用 commands.ts 命令表
-  // （/instances /use /send-command /send-message /cmd /msg /start /reloadall /clipboard）
+  // （/instances /use /send-command /send-message /cmd /msg /start /reloadall）
   // ============================================================================
 
   const TUI_COMMAND_MAP: Record<string, string> = {
@@ -1225,7 +1224,6 @@ export default function hubExtension(pi: ExtensionAPI) {
     msg: 'msg',
     'start': 'start',
     reloadall: 'reloadall',
-    clipboard: 'clipboard',
     tasks: 'tasks',
     task: 'task',
     'tasklocal': 'tasklocal',

@@ -32,24 +32,6 @@ export function execCapture(file: string, args: string[], timeoutMs = 20000): Pr
   })
 }
 
-/** 写入系统剪贴板：macOS pbcopy / Linux xclip / Windows clip */
-export function writeClipboard(text: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    const cmd =
-      process.platform === 'darwin' ? 'pbcopy'
-      : process.platform === 'linux' ? 'xclip'
-      : process.platform === 'win32' ? 'clip' : null
-    if (!cmd) { resolve(false); return }
-    try {
-      const child = execFile(cmd, process.platform === 'linux' ? ['-selection', 'clipboard'] : [], (err) => resolve(!err))
-      child.stdin?.write(text)
-      child.stdin?.end()
-    } catch {
-      resolve(false)
-    }
-  })
-}
-
 /** 目录/路径安全校验：拒绝 shell 元字符，杜绝注入（远程经 shell 执行） */
 export function isSafePath(p: string): boolean {
   return !/[;&|`'"$()<>*?\[\]{}#\\\n\r]/.test(p)

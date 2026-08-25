@@ -27,8 +27,6 @@ export interface CommandCtx {
   doStartPi: (target: InstanceInfo, cwd?: string) => Promise<string>
   /** 重载所有实例（当前实例本地执行，其他实例发指令），返回汇总 */
   doReloadAll: () => Promise<string>
-  /** 写入系统剪贴板（本机 pbcopy/xclip） */
-  writeClipboard: (text: string) => Promise<boolean>
   /** subagent 任务注册表 */
   taskRegistry: TaskRegistry
   /** 在目标机器启动 subagent 并登记，注册后由扩展自动分发任务（事件驱动，无需 sleep） */
@@ -164,13 +162,6 @@ async function cmdStartPi(args: string, ctx: CommandCtx): Promise<CommandResult>
 
 async function cmdReloadAll(_args: string, ctx: CommandCtx): Promise<CommandResult> {
   return { reply: await ctx.doReloadAll(), consumed: true }
-}
-
-async function cmdClipboard(args: string, ctx: CommandCtx): Promise<CommandResult> {
-  const content = args.trim()
-  if (!content) return { reply: '用法: /clipboard <内容>（复制内容到本机剪贴板）', consumed: true }
-  const ok = await ctx.writeClipboard(content)
-  return { reply: ok ? `✅ 已复制 ${content.length} 字符到剪贴板` : '❌ 剪贴板写入失败（本机无 pbcopy/xclip）', consumed: true }
 }
 
 async function cmdTaskStart(args: string, ctx: CommandCtx): Promise<CommandResult> {
@@ -326,7 +317,6 @@ const COMMANDS: Record<string, CommandEntry> = {
   msg: { run: cmdSendMessage, aliases: ['发送消息', '发消息'] },
   'start': { run: cmdStartPi, aliases: ['start pi', 'start', '启动pi', '启动派', '启动皮', '启动Pi', '启动一个pi', '开pi', '开个pi'] },
   reloadall: { run: cmdReloadAll, aliases: ['重载全部', '全部重载', 'reload all', 'reloadall', '重载所有', '重启全部'] },
-  clipboard: { run: cmdClipboard, aliases: ['复制', '拷贝', '复制到剪贴板'] },
   tasks: { run: cmdTasks, aliases: ['任务列表', '所有任务'] },
   task: { run: cmdTask, aliases: ['任务详情', '查看任务', '分派任务', '派任务', '起个子代理'] },
   'tasklocal': { run: cmdTaskStartLocal, aliases: ['本地子代理', '本地起个子代理', 'task local'] },
