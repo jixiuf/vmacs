@@ -33,6 +33,8 @@ export interface CommandCtx {
   requestSubagent: (target: InstanceInfo, cwd: string | undefined, msg: string) => Promise<string>
   /** 全局锁持有者（微信等服务接管方），用于 /instances 标注 */
   getLockHolder: () => Promise<{ name?: string; capability?: string } | null>
+  /** 发起命令的渠道（'wechat' | 'feishu' | 空=TUI），决定 /use 的默认接管能力 */
+  channel?: string
 }
 
 export interface CommandResult {
@@ -98,13 +100,15 @@ async function cmdInstances(_args: string, ctx: CommandCtx): Promise<CommandResu
 }
 
 async function cmdUse(args: string, ctx: CommandCtx): Promise<CommandResult> {
+  // 渠道感知：飞书里 /use 切飞书接管；微信/TUI 保持微信接管
+  const cap = ctx.channel === 'feishu' ? 'feishu' : 'wechat'
   const name = args.trim()
   if (!name) {
     const last = ctx.getLastTarget()
-    if (last) return { reply: await ctx.doSwitch(last, 'wechat'), consumed: true }
+    if (last) return { reply: await ctx.doSwitch(last, cap), consumed: true }
     return { reply: '用法: /use <实例名或编号>，如 /use pigw 或 /use 2', consumed: true }
   }
-  return { reply: await ctx.doSwitch(name, 'wechat'), consumed: true }
+  return { reply: await ctx.doSwitch(name, cap), consumed: true }
 }
 
 async function cmdSendCommand(args: string, ctx: CommandCtx): Promise<CommandResult> {

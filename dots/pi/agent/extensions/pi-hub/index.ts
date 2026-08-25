@@ -67,6 +67,25 @@ import { makeEnvelopeId } from './src/types.js'
 
 type Ctx = ExtensionContext | ExtensionCommandContext
 
+/** ax-feishu-bridge 外部协作桥的 globalThis key（与其 src/feishu/external-bridge.ts 约定一致） */
+const FEISHU_BRIDGE_KEY = '__AX_FEISHU_BRIDGE__'
+
+/** feishu 外部桥的最小结构化接口（避免跨扩展 import，字段以实际扩展为准） */
+interface ExternalFeishuBridge {
+  version: string
+  isActive(): boolean
+  owner(): unknown
+  activeKey(): string | undefined
+  keys(): string[]
+  inject(
+    key: string,
+    text: string,
+    opts?: { echo?: boolean },
+  ): Promise<{ ok: boolean; reply?: string; error?: string; key?: string }>
+  acquire(): Promise<{ ok: boolean; message?: string }>
+  release(): Promise<{ ok: boolean; message?: string }>
+}
+
 const STATE_DIR = path.join(os.homedir(), '.pi', 'agent', 'wechat-assistant')
 const TAKEOVER_FILE = path.join(STATE_DIR, 'takeover.json')
 const BROADCAST_FILE = path.join(STATE_DIR, 'broadcast.json')
@@ -523,6 +542,14 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
     log(`收到接管请求: ${req.targetName} (capability=${req.capability ?? 'default'})`)
     bridge.notifyTakeover(req)
+    // feishu 接管让位：capability=feishu 时，本机若持有飞书 gateway 则释放，交给接管方
+    if (req.capability === 'feishu') {
+      const fb = feishuBridge()
+      if (fb?.isActive()) {
+        log('feishu 接管让位，释放本机飞书连接')
+        void fb.release().catch((err) => log(`feishu 让位失败: ${(err as Error).message}`))
+      }
+    }
     // 渠道让位回调：目标实例若正在轮询该 capability，应停止（由渠道注册）
     for (const cb of takeoverCallbacks.values()) {
       try {
@@ -558,7 +585,7 @@ export default function hubExtension(pi: ExtensionAPI) {
   // ============================================================================
 
   /** 构造命令上下文（TUI 命令与渠道命令共用同一实现） */
-  function buildCommandCtx(): CommandCtx {
+  function buildCommandCtx(channel?: string): CommandCtx {
     return {
       currentInstanceName,
       collectInstances,
@@ -573,11 +600,12 @@ export default function hubExtension(pi: ExtensionAPI) {
       taskRegistry,
       requestSubagent,
       getLockHolder,
+      channel,
     }
   }
 
   async function handleCommand(text: string, userId: string, channel: string): Promise<string | null> {
-    const ctx = buildCommandCtx()
+    const ctx = buildCommandCtx(channel)
     // 渠道正在等待问卷答案时禁用宽松 use 匹配（数字可能是答案，不是切换命令）
     const gw = gateways.get(channel)
     const awaitingAnswer = gw?.isAwaitingAnswer?.(userId) ?? false
@@ -604,6 +632,15 @@ export default function hubExtension(pi: ExtensionAPI) {
     }
   }
 
+  /**
+   * ax-feishu-bridge 外部协作桥（globalThis.__AX_FEISHU_BRIDGE__）。
+   * 存在且 isActive() 时，说明本进程持有飞书 gateway（飞书会话独立于 TUI 主进程会话），
+   * 协调消息 / 本地消息应优先注入飞书会话，否则用户（在飞书侧）看不到。
+   */
+  function feishuBridge(): ExternalFeishuBridge | undefined {
+    return (globalThis as Record<string, unknown>)[FEISHU_BRIDGE_KEY] as ExternalFeishuBridge | undefined
+  }
+
   async function handleMessage(m: InboundMessage): Promise<boolean> {
     void deliverToAgent(m)
     return true
@@ -611,6 +648,9 @@ export default function hubExtension(pi: ExtensionAPI) {
 
   async function deliverToAgent(m: InboundMessage): Promise<unknown> {
     // 协调消息直接注入（文本）
+    // ⚠️ 不感知 feishu：当前架构下 TUI 当前会话与飞书会话为同一 session（state.pi.json 与会话
+    // 文件一致），sendUserMessage 注入即到达飞书会话；daemon 模式的跨进程注入是未来增强。
+    // 避免 fb.inject 走 createAgentSession 的另一会话对象与 TUI 会话并行操作同一文件。
     if (m.channel === 'coord') {
       safeSendUserMessage(`[协调消息 @${m.userId}] ${m.text ?? ''}`, {
         deliverAs: 'steer',
@@ -739,6 +779,16 @@ export default function hubExtension(pi: ExtensionAPI) {
     if (!target) return `未找到实例 ${name}，先 /instances 查看`
     const cap = capability ?? 'wechat'
     if (target.pid === process.pid) {
+      if (cap === 'feishu') {
+        // 飞书接管：本机启动/抢占飞书 gateway（幂等：已持有则直接 ok）
+        const fb = feishuBridge()
+        if (!fb) return `目标 ${target.name} 未加载 feishu 桥，无法接管飞书`
+        const r = await fb.acquire()
+        rememberTarget(target.name)
+        return r.ok
+          ? `已在本机接管飞书（${r.message ?? 'ok'}）`
+          : `飞书接管失败：${r.message ?? 'unknown'}`
+      }
       const holder = getGlobalLockHolder()
       if (holder?.name === currentInstanceName) return `微信已由 ${target.name} 接管`
       if (config.coordinatorUrl) {
@@ -965,6 +1015,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     const realTarget = resolved?.name ?? target
     // 目标为当前实例：本地注入一次（带标记，不经过协调中心），避免自我循环
     // 注意用归一化后的 realTarget（name@host / 编号也能正确命中自己）
+    // ⚠️ 不感知 feishu：保持注入 TUI 当前会话，避免破坏微信/多渠道的本地消息投递
     if (isCurrentInstance(realTarget)) {
       safeSendUserMessage(`[本地消息] ${text}`, {
         deliverAs: 'steer',

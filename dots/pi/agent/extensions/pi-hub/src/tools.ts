@@ -76,7 +76,7 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
     label: 'Switch Instance',
     description: '把指定能力（默认接管）切换到目标实例，或在实例间发送接管请求。target 传实例名或编号。',
     promptSnippet: '切换实例接管',
-    promptGuidelines: ['用户要求把控制权切到另一个实例时调用。先 list_instances 查看。'],
+    promptGuidelines: ['用户要求把控制权切到另一个实例时调用。先 list_instances 查看。', '若当前对话渠道是飞书（Feishu/Lark），切换应传 capability="feishu"（飞书接管）；微信/TUI 用默认 wechat。'],
     parameters: Type.Object({
       target: Type.String({ description: '目标实例名或编号' }),
       capability: Type.Optional(Type.String({ description: '能力标识（如 wechat），未指定时默认 wechat（微信接管）' })),
