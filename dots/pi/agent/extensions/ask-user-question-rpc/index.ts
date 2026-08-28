@@ -83,7 +83,7 @@ const QuestionParamsSchema = Type.Object({
 type QuestionAnswer = {
   questionIndex: number;
   question: string;
-  kind: "option" | "custom" | "chat" | "multi";
+  kind: "option" | "custom" | "chat" | "multi" | "timeout";
   answer: string | null;
   selected?: string[];
   preview?: string;
@@ -156,7 +156,12 @@ function buildToolResult(text: string, details: QuestionnaireResult) {
 
 function buildQuestionnaireResponse(result: QuestionnaireResult | null, params: { questions: unknown[] }) {
   if (!result || result.cancelled) {
-    return buildToolResult(DECLINE_MESSAGE, {
+    // 超时未回答 ≠ 用户拒绝:明确告知 agent 停下,不要默认选/猜测
+    const timedOut = result?.answers.some((a) => a.kind === "timeout");
+    const msg = timedOut
+      ? "提问超时,用户未回答。立即停止当前执行,等待用户新的输入——不要替用户选择选项,也不要继续猜测。"
+      : DECLINE_MESSAGE;
+    return buildToolResult(msg, {
       answers: result?.answers ?? [],
       cancelled: true,
     });
@@ -219,6 +224,7 @@ async function executeViaWechat(
     }>;
   },
   signal?: AbortSignal,
+  userId?: string,
 ): Promise<ReturnType<typeof buildToolResult>> {
   const answers: QuestionAnswer[] = [];
   let cancelled = false;
@@ -226,6 +232,7 @@ async function executeViaWechat(
   for (let i = 0; i < params.questions.length; i++) {
     const q = params.questions[i];
     const result = await bridge.askQuestion({
+      userId,
       question: q.question,
       header: q.header,
       options: q.options.map((o) => ({ label: o.label, description: o.description })),
@@ -235,8 +242,14 @@ async function executeViaWechat(
       signal,
     });
 
-    if (!result || result.kind === "chat") {
-      // 超时 / 被取消 / 用户想继续对话 → 停止追问
+    if (!result) {
+      // 问卷超时未获回答:停下,不替用户选、不继续猜
+      answers.push({ questionIndex: i, question: q.question, kind: "timeout", answer: null });
+      cancelled = true;
+      break;
+    }
+    if (result.kind === "chat") {
+      // 用户想继续对话 → 停止追问
       answers.push({ questionIndex: i, question: q.question, kind: "chat", answer: null });
       cancelled = true;
       break;
@@ -264,7 +277,13 @@ function formatAnswer(a: QuestionAnswer): string {
       return a.answer && a.answer.length > 0 ? a.answer : "(no input)";
     case "option":
       return a.answer ?? "(no input)";
+    case "timeout":
+      return "(timeout, unanswered)";
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // ── Dialog-API-based questionnaire UI ───────────────────────────────────────
@@ -480,21 +499,77 @@ Usage notes:
         });
       }
 
+      // TUI 提问三路等待:桌面 select / 微信消息信号(转微信问卷) / 超时停下。
+      // 挂起期间登记全局 __PENDING_TUI_QUESTION__:pi-wechat-assistant 在微信消息到达时
+      // 调用 onWechatMessage 触发转微信,避免 TUI 弹窗无限挂起导致微信侧消息石沉大海。
+      const TUI_QUESTION_TIMEOUT_MS = 120_000;
+      let wechatSignalResolve: ((userId: string) => void) | null = null;
+      const pendingReg = {
+        onWechatMessage: (userId: string) => {
+          wechatSignalResolve?.(userId);
+          wechatSignalResolve = null;
+        },
+      };
+      (globalThis as unknown as Record<string, unknown>).__PENDING_TUI_QUESTION__ = pendingReg;
+
       const answers: QuestionAnswer[] = [];
       let cancelled = false;
 
-      // Ask questions sequentially
-      for (let i = 0; i < typed.questions.length; i++) {
-        const answer = await askQuestion(ctx, typed.questions[i], i);
+      try {
+        for (let i = 0; i < typed.questions.length; i++) {
+          const q = typed.questions[i];
 
-        if (answer.kind === "chat") {
-          // User wants to chat — stop asking further questions, return what we have
-          answers.push(answer);
-          cancelled = true;
-          break;
+          wechatSignalResolve = null;
+          const wechatSignal = new Promise<{ kind: "wechat"; userId: string }>((resolve) => {
+            wechatSignalResolve = (userId) => resolve({ kind: "wechat", userId });
+          });
+
+          // 三路竞争:桌面选择 / 微信消息信号 / 超时
+          const tuiAnswer = askQuestion(ctx, q, i).then((a): { kind: "tui"; answer: QuestionAnswer } => ({
+            kind: "tui",
+            answer: a,
+          }));
+          const wechatOrTimeout = Promise.race([
+            wechatSignal,
+            sleep(TUI_QUESTION_TIMEOUT_MS).then(() => ({ kind: "timeout" as const })),
+          ]);
+          const winner = await Promise.race([tuiAnswer, wechatOrTimeout]);
+
+          if (winner.kind === "tui") {
+            const answer = winner.answer;
+            if (answer.kind === "chat") {
+              answers.push(answer);
+              cancelled = true;
+              break;
+            }
+            answers.push(answer);
+            continue;
+          }
+
+          if (winner.kind === "timeout") {
+            // 超时未回答:停下,不替用户选、不继续猜
+            answers.push({ questionIndex: i, question: q.question, kind: "timeout", answer: null });
+            cancelled = true;
+            break;
+          }
+
+          // 微信消息到达(用户此刻在微信)→ 当前及剩余问题全部转微信问卷
+          if (bridge && typeof bridge.askQuestion === "function") {
+            ctx.ui.notify?.(`❓ 检测到微信消息,提问已转至微信处理`);
+            return executeViaWechat(bridge, { questions: typed.questions.slice(i) }, signal, winner.userId);
+          }
+          // 桥不存在(理论上收不到信号,防御路径):退回桌面等待
+          wechatSignalResolve = null;
+          const fallbackAnswer = await askQuestion(ctx, q, i);
+          if (fallbackAnswer.kind === "chat") {
+            answers.push(fallbackAnswer);
+            cancelled = true;
+            break;
+          }
+          answers.push(fallbackAnswer);
         }
-
-        answers.push(answer);
+      } finally {
+        delete (globalThis as unknown as Record<string, unknown>).__PENDING_TUI_QUESTION__;
       }
 
       return buildQuestionnaireResponse(
