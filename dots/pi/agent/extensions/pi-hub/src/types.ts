@@ -14,6 +14,9 @@ export interface InstanceInfo {
   host?: string
   /** 会话标题（/name 设置），供 /msg 补全 / /instances 展示 */
   sessionName?: string
+  /** 实例角色：normal=常驻（start_pi 启动），subagent=临时子代理（task_subagent 启动）。
+   * 用于区分「可 use 接管的常驻实例」与「不可接管的子代理」，替代按名字后缀猜测。 */
+  role?: 'normal' | 'subagent'
 }
 
 // --- 接管请求 ---

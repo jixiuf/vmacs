@@ -193,7 +193,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       })
     },
     onBroadcast: (env) => {
-      // 广播命令（如 reload-all）：通知本实例扩展重载
+      // 广播命令（如 reloadall）：通知本实例扩展重载
       log(`收到广播命令: ${env.command} (from ${env.from})`)
       if (env.command === 'reload' && latestCtx) {
         safeSendUserMessage('/__hub_reload', {
@@ -289,6 +289,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         sessionId: 'fallback',
         host: os.hostname(),
         sessionName: pi.getSessionName() ?? undefined,
+        role: process.env.PI_INSTANCE_ROLE === 'subagent' ? 'subagent' : 'normal',
       })
       if (config.coordinatorUrl) {
         wsClient?.close()
@@ -398,6 +399,14 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (req && req.capability === 'command') {
         clearTakeoverRequest()
         await handleTakeover(req)
+      } else if (req && req.capability !== 'command') {
+        // 渠道接管（wechat/feishu）：仅当目标匹配当前实例才接管（防多实例抢同一文件）
+        const target = req.targetName
+        if (!target || target === currentInstanceName) {
+          clearTakeoverRequest()
+          await handleTakeover(req)
+        }
+        // 目标不是自己：不动文件，留给目标实例（target.name）轮询接管
       }
       // 本机广播文件：任意实例写入，本机其他实例各自 ack 后 reload
       consumeLocalBroadcast()
@@ -542,6 +551,11 @@ export default function hubExtension(pi: ExtensionAPI) {
           expandPromptTemplates: true,
         } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
       }
+      return
+    }
+    // 渠道接管：目标必须匹配当前实例（或未指定目标=本机），否则忽略（防多实例抢同一 takeover 文件）
+    if (req.targetName && req.targetName !== currentInstanceName) {
+      log(`接管请求目标 ${req.targetName} 非当前实例 ${currentInstanceName}，忽略`)
       return
     }
     log(`收到接管请求: ${req.targetName} (capability=${req.capability ?? 'default'})`)
@@ -832,6 +846,9 @@ export default function hubExtension(pi: ExtensionAPI) {
     const target = resolveTarget(all, name)
     if (!target) return `未找到实例 ${name}，先 /instances 查看`
     const cap = capability ?? 'wechat'
+    // subagent（task_subagent 启动的临时子代理）不可被 use 接管：它是一次性任务代理，
+    // 无独立通道承载能力。常驻实例（normal）才可走接管通道。
+    if (target.role === 'subagent') return `实例 ${target.name} 是 subagent（临时子代理），不可 use 接管`
     if (target.pid === process.pid) {
       if (cap === 'feishu') {
         // 飞书接管：本机启动/抢占飞书 gateway（幂等：已持有则直接 ok）
@@ -869,6 +886,32 @@ export default function hubExtension(pi: ExtensionAPI) {
       return `已经在当前实例（${target.name}），但无协调通道可发起接管`
     }
     rememberTarget(target.name)
+    // 本机另一实例：把渠道接管权（主要为微信）直接切给目标。
+    // 目标在本机列表（local.some 命中）→ 走本地 takeover 文件，写请求让目标实例读走接管；
+    // 同时经协调中心把锁更新到目标（抢占），避免旧持有者继续轮询导致切不过来。
+    const isLocalTarget = local.some((i) => i.name === target.name)
+    if (isLocalTarget) {
+      const req: TakeoverRequest = {
+        targetName: target.name,
+        targetPid: target.pid,
+        fromName: currentInstanceName || 'local',
+        capability: cap,
+        timestamp: Date.now(),
+      }
+      // 锁交给目标：协调中心模式经服务器更新；本地仲裁模式直接 force 抢锁
+      if (config.coordinatorUrl) {
+        try {
+          await requestRemoteLock(config.coordinatorUrl, target.name, target.pid, cap, true)
+        } catch {
+          // ignore
+        }
+      } else if (config.coordinatorPort) {
+        coordinatorTryLock(target.name, target.pid, cap, true)
+      }
+      // 写本地接管文件，目标实例 (target.name) 轮询读到后接管渠道
+      writeLocalTakeoverRequest(req)
+      return `已请求本机实例 ${target.name} 接管${cap === 'feishu' ? '飞书' : '微信'}`
+    }
     const req: TakeoverRequest = {
       targetName: target.name,
       targetPid: target.pid,
@@ -1153,7 +1196,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     const isLocal = machineHost === os.hostname()
     if (isLocal) {
       // 本机：直接本地启动（无需 ssh/WS）
-      const startInfo = await doStartPiFn(target, cwd, startPiDeps)
+      const startInfo = await doStartPiFn(target, cwd, startPiDeps, 'subagent')
       if (startInfo.includes('❌')) return startInfo
       pendingSubagent = { host: machineHost, before, msg, viaWs: false, started: true }
       log(`登记待认领 subagent：host=${pendingSubagent.host} msg=${msg.slice(0, 40)}`)
@@ -1164,7 +1207,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       coordinatorName && all.find((i) => i.name === coordinatorName && (i.host === machineHost || !i.host))
     if (!targetCoord) {
       // 找不到目标机器协调中心：回退 ssh 旧通道
-      const startInfo = await doStartPiFn(target, cwd, startPiDeps)
+      const startInfo = await doStartPiFn(target, cwd, startPiDeps, 'subagent')
       if (startInfo.includes('❌')) return startInfo
       pendingSubagent = { host: machineHost, before, msg, viaWs: false, started: true }
       log(`登记待认领 subagent（ssh 回退）：host=${pendingSubagent.host}`)
@@ -1271,7 +1314,7 @@ export default function hubExtension(pi: ExtensionAPI) {
   }
 
   // ============================================================================
-  // 广播（reload-all 等）：独立广播文件，多消费者各自 ack
+  // 广播（reloadall 等）：独立广播文件，多消费者各自 ack
   // ============================================================================
 
   interface BroadcastRequest {
@@ -1493,6 +1536,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       sessionId: ctx.sessionManager.getSessionId(),
       host: os.hostname(),
       sessionName: pi.getSessionName() ?? undefined,
+      role: process.env.PI_INSTANCE_ROLE === 'subagent' ? 'subagent' : 'normal',
     })
 
     // 客户端模式：WS 长连接接收协调中心推送（替代 2s HTTP 轮询，低延迟）
@@ -1630,7 +1674,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     unregisterInstance,
     listInstances,
     getConfig: () => loadHubConfig(),
-    /** 广播 reload-all：本机实例写广播文件 + 客户端模式 POST 到协调中心（跨机器分发） */
+    /** 广播 reloadall：本机实例写广播文件 + 客户端模式 POST 到协调中心（跨机器分发） */
     broadcastReload: () => {
       writeBroadcastRequest('reload')
       if (config.coordinatorUrl) {

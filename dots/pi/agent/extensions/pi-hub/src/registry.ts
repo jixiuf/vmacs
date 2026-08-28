@@ -44,16 +44,33 @@ function isProcessRunning(pid: number): boolean {
   }
 }
 
+/**
+ * 从实例名剥离末尾已附加的 pid 及可选随机后缀，得到基础名。
+ * 如 `models-1313-1234` / `models-1313-abcd` → `models`。
+ * 防止多次改名后实例名无限变长（models-1313-1234-5678...）。
+ */
+export function baseInstanceName(name: string): string {
+  return name.replace(/-\d{2,7}(-[0-9a-z]{4})?$/, '')
+}
+
 export function registerInstance(info: Omit<InstanceInfo, 'lastSeen'>): string {
   const instances = readJson<Record<string, InstanceInfo>>(instancesFile()) ?? {}
-  let name = info.name
-  // 同名冲突：已有同名且存活（非自身）→ 自动改名（加 pid 后缀），保证实例名唯一，避免覆盖
+  // 同 pid 去重：同一进程（pid）重复注册时只保留一条。
+  // 扩展 reloadall / IM 桥接多会话会令同一进程多次触发注册（fallback 或 session_start），
+  // 旧条目不清理则同 pid 无限累积，且 pruneInstances 按 pid 存活判断永远清不掉。
+  const samePidKeys = Object.keys(instances).filter((key) => instances[key].pid === info.pid)
+  if (samePidKeys.length > 0) {
+    for (const key of samePidKeys) delete instances[key]
+  }
+  // 名字从基础名重建（剥离已附加的 pid/随机后缀），避免派生/reload 后越加越长
+  let name = baseInstanceName(info.name)
+  // 同名冲突：已有同名且存活（非自身）→ 加 pid 后缀，保证实例名唯一，避免覆盖
   const existing = instances[name]
   if (existing && existing.pid !== info.pid && isProcessRunning(existing.pid)) {
-    name = `${info.name}-${info.pid}`
+    name = `${name}-${info.pid}`
     // 极端情况仍冲突（多个同名存活）→ 追加随机后缀
     while (instances[name] && isProcessRunning(instances[name].pid)) {
-      name = `${info.name}-${info.pid}-${Math.random().toString(36).slice(2, 6)}`
+      name = `${baseInstanceName(info.name)}-${info.pid}-${Math.random().toString(36).slice(2, 6)}`
     }
   }
   instances[name] = { ...info, name, host: info.host ?? os.hostname(), lastSeen: Date.now() }

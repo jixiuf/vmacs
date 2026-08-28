@@ -5,6 +5,7 @@
 
 import { execFile } from 'node:child_process'
 import * as os from 'node:os'
+import { baseInstanceName } from './registry.js'
 import type { InstanceInfo, RemoteHostConfig } from './types.js'
 
 export interface ExecResult {
@@ -37,7 +38,7 @@ export function isSafePath(p: string): boolean {
   return !/[;&|`'"$()<>*?\[\]{}#\\\n\r]/.test(p)
 }
 
-export async function doStartPi(target: InstanceInfo, cwd: string | undefined, deps: StartPiDeps): Promise<string> {
+export async function doStartPi(target: InstanceInfo, cwd: string | undefined, deps: StartPiDeps, role: 'normal' | 'subagent' = 'normal'): Promise<string> {
   // 参数安全校验：实例名只允许安全字符，目录拒绝 shell 元字符（远程=shell 执行，必须防注入）
   if (!/^[A-Za-z0-9._-]+$/.test(target.name)) {
     return `❌ 实例名 ${target.name} 含不安全字符，拒绝启动`
@@ -48,10 +49,13 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
   }
   // 复用实例所在的 tmux 会话（不新建会话）：窗口名带唯一后缀（实例 pid，未知时回退时间戳）
   const pidSuffix = target.pid > 0 ? String(target.pid) : String(Date.now()).slice(-6)
-  const winName = `pi-${target.name}-${pidSuffix}`
-  // 实例名确定化：PI_INSTANCE_NAME=<name>-<pid>，避免 start 起的子代理注册名与
-  // 协调中心/其他实例冲突（同名存活时 registerInstance 会改协调中心的名字——名字漂移）
-  const instName = target.name.endsWith(`-${pidSuffix}`) ? target.name : `${target.name}-${pidSuffix}`
+  const winSuffix = role === 'subagent' ? `-${pidSuffix}` : ''
+  const winName = `pi-${target.name}${winSuffix}`
+  // 实例名确定化：PI_INSTANCE_NAME=<name>[-pid]。
+  // - normal（start_pi 常驻）：保留原名（如 models），可被 use 正常接管；
+  // - subagent（task_subagent 临时）：从基础名重建并加 -pid 后缀，
+  //   避免源实例名已带 pid（如 models-1313）时叠加成 models-1313-1234 越加越长。
+  const instName = role === 'subagent' ? `${baseInstanceName(target.name)}-${pidSuffix}` : target.name
   const isLocal = !target.host || target.host === os.hostname()
   const hostLabel = isLocal ? `${os.hostname()}（本机）` : target.host
 
@@ -64,7 +68,7 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
     if (isLocal) {
       if (!process.env.TMUX) {
         // 非 tmux 直接启动（macOS 开 Terminal / Linux nohup），无需 tmux 会话
-        return await startDirectLocal(dir, winName, instName)
+        return await startDirectLocal(dir, winName, instName, role)
       }
       sessionName = (await execCapture('tmux', ['display-message', '-p', '#S'])).stdout.trim()
       // 用 session id（如 $1）作 new-window 目标，避免纯数字会话名被当成窗口索引
@@ -89,6 +93,7 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
 
   // 2) 在复用的会话中开窗口
   let status: string
+  const roleEnv = `PI_INSTANCE_ROLE=${role}`
   try {
     if (isLocal) {
       // 本机：execFile 数组参数（不经 shell），窗口去重后创建
@@ -96,8 +101,8 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
       if (listRes.ok && listRes.stdout.split('\n').some((w) => w.trim() === winName)) {
         status = 'TMUX_EXISTS'
       } else {
-        // env 程序设置 PI_INSTANCE_NAME 后执行 pi（execFile 不经 shell，变量赋值前缀不生效）
-        const createRes = await execCapture('tmux', ['new-window', '-t', sessionTarget, '-n', winName, '-c', dir, 'env', `PI_INSTANCE_NAME=${instName}`, 'pi'])
+        // env 程序设置 PI_INSTANCE_NAME / PI_INSTANCE_ROLE 后执行 pi（execFile 不经 shell，变量赋值前缀不生效）
+        const createRes = await execCapture('tmux', ['new-window', '-t', sessionTarget, '-n', winName, '-c', dir, 'env', `PI_INSTANCE_NAME=${instName}`, roleEnv, 'pi'])
         status = createRes.ok ? 'TMUX_STARTED' : `TMUX_FAILED ${createRes.stderr.trim()}`
       }
     } else {
@@ -105,7 +110,7 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
         `if tmux list-windows -t '${sessionTarget}' -F '#W' 2>/dev/null | grep -qx '${winName}'; then`,
         `  echo 'TMUX_EXISTS'`,
         `else`,
-        `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "PI_INSTANCE_NAME=${instName} pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
+        `  tmux new-window -t '${sessionTarget}' -n '${winName}' -c '${dir}' "PI_INSTANCE_NAME=${instName} ${roleEnv} pi" && echo 'TMUX_STARTED' || echo 'TMUX_FAILED'`,
         `fi`,
       ].join('\n')
       status = (await deps.sshExec(remote!.target, remote!.port, shellCmd)).trim().split('\n').pop() ?? ''
@@ -131,15 +136,15 @@ export async function doStartPi(target: InstanceInfo, cwd: string | undefined, d
  * dir 已过 isSafePath 校验（拒绝 shell 元字符），注入安全。
  * instName 作为 PI_INSTANCE_NAME 传入（子代理实例名确定化，避免与协调中心冲突）。
  */
-async function startDirectLocal(dir: string, winName: string, instName: string): Promise<string> {
+async function startDirectLocal(dir: string, winName: string, instName: string, role: 'normal' | 'subagent'): Promise<string> {
   if (process.platform === 'darwin') {
-    const script = `tell application "Terminal" to do script "cd '${dir}' && PI_INSTANCE_NAME=${instName} exec pi"`
+    const script = `tell application "Terminal" to do script "cd '${dir}' && PI_INSTANCE_NAME=${instName} PI_INSTANCE_ROLE=${role} exec pi"`
     const res = await execCapture('osascript', ['-e', script])
     return res.ok ? 'DIRECT_STARTED' : `DIRECT_FAILED ${res.stderr.trim()}`
   }
   if (process.platform === 'linux') {
     const log = `/tmp/${winName}.log`
-    const res = await execCapture('bash', ['-lc', `cd '${dir}' && PI_INSTANCE_NAME=${instName} exec pi > '${log}' 2>&1 &`])
+    const res = await execCapture('bash', ['-lc', `cd '${dir}' && PI_INSTANCE_NAME=${instName} PI_INSTANCE_ROLE=${role} exec pi > '${log}' 2>&1 &`])
     return res.ok ? 'DIRECT_STARTED' : `DIRECT_FAILED ${res.stderr.trim()}`
   }
   return 'DIRECT_FAILED 非 tmux 直接启动仅支持 macOS/Linux'

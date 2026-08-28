@@ -54,7 +54,7 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
         const lines = all.map((inst) => {
           const marks: string[] = []
           if (inst.name === coordinatorName) marks.push('协调中心')
-          else if (/^[A-Za-z0-9._-]+$/.test(inst.name) && /-\d+$/.test(inst.name)) marks.push('subagent')
+          else if (inst.role === 'subagent') marks.push('subagent')
           if (inst.pid === process.pid) marks.push('当前')
           if (!local.some((l) => l.name === inst.name)) marks.push('远程')
           const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
