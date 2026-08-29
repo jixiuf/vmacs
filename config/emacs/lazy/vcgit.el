@@ -227,22 +227,26 @@ backward for the nearest `::' header to get the file path."
           (forward-line (1- linenum)))))))
 
 (defun vcgit-dir--todo ()
-  "Search for TODO/FIXME items and display them in the vc-dir footer."
-  (let* ((default-directory (expand-file-name default-directory))
-         (buf (format "*vc-todo : %s*" default-directory))
-         (curbuf (current-buffer)))
-    (condition-case nil
-        (let ((proc (start-process "vc-todo" buf
-                                   "rg" "--line-number"
-                                   "--max-filesize=1M"
-                                   "-g" "!*.git*"
-                                   "TODO:|FIXME:" ".")))
-          (set-process-sentinel
-           proc
-           (lambda (proc _ev)
-             (vcgit--todo-finish (process-buffer proc) curbuf)
-             (kill-buffer (process-buffer proc)))))
-      (error (message "vcgit: todo start-process failed")))))
+  "Search for TODO/FIXME items and display them in the vc-dir footer.
+Do nothing for remote (Tramp) directories, where `rg' is often
+unavailable or too slow over the connection."
+  (if (file-remote-p default-directory)
+      (message "vcgit: skip TODO search (remote/Tramp directory)")
+    (let* ((default-directory (expand-file-name default-directory))
+           (buf (format "*vc-todo : %s*" default-directory))
+           (curbuf (current-buffer)))
+      (condition-case nil
+          (let ((proc (start-process "vc-todo" buf
+                                     "rg" "--line-number"
+                                     "--max-filesize=1M"
+                                     "-g" "!*.git*"
+                                     "TODO:|FIXME:" ".")))
+            (set-process-sentinel
+             proc
+             (lambda (proc _ev)
+               (vcgit--todo-finish (process-buffer proc) curbuf)
+               (kill-buffer (process-buffer proc)))))
+        (error (message "vcgit: todo start-process failed"))))))
 
 (defun vcgit--todo-finish (buf curbuf)
   "Process TODO rg output in BUF and insert into CURBUF footer."
@@ -320,12 +324,17 @@ VC backend and fileset."
 (defun vcgit--dir-refresh ()
   "Run after each vc-dir refresh to insert async log sections."
   (when (eq vc-dir-backend 'Git)
-    (condition-case nil
-        (progn
-          (vcgit--async-unpulled)
-          (vcgit--async-recent)
-          (vcgit-dir--todo))
-      (error (message "vcgit: refresh hook failed")))))
+    (if (file-remote-p default-directory)
+        ;; Async `git log' over Tramp is slow and its process sentinels
+        ;; are easily interrupted with `quit' ("error in process
+        ;; sentinel: Quit").  Skip, like the TODO search does.
+        (message "vcgit: skip async sections (remote/Tramp directory)")
+      (condition-case nil
+          (progn
+            (vcgit--async-unpulled)
+            (vcgit--async-recent)
+            (vcgit-dir--todo))
+        (error (message "vcgit: refresh hook failed"))))))
 
 
 ;;; RET dispatch for log and TODO sections
