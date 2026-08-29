@@ -21,6 +21,10 @@
  *
  * Usage:
  *   /clipboard               Copy session as Markdown via OSC 52 (always)
+ *   /clipboard file.md       Write the session Markdown to file.md instead of
+ *                            copying (relative to the session cwd; parent
+ *                            directories are created if missing)
+ *   /clipboard tail 30 file.md  Write only the last 30 entries to file.md
  *   /clipboard osc52 tail 30 Only the last 30 entries
  *   /clipboard --no-tools    Skip tool execution details (bash outputs, results)
  *   /clipboard test          Send a tiny OSC 52 test token (paste locally to verify the chain)
@@ -32,7 +36,8 @@
 import type { ExtensionAPI, ExtensionCommandContext, SessionMessageEntry } from "@earendil-works/pi-coding-agent";
 import type { ImageContent, TextContent, ThinkingContent, ToolCall } from "@earendil-works/pi-ai";
 import { platform } from "node:os";
-import { closeSync, openSync, writeSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, writeFileSync, writeSync } from "node:fs";
+import { dirname, isAbsolute, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 
 // ── Clipboard helpers ────────────────────────────────────────────────────────
@@ -391,6 +396,31 @@ export default function (pi: ExtensionAPI) {
 
 			if (diag) {
 				ctx.ui.notify(buildDiag(ctx, markdown, count, totalEntries), "info");
+				return;
+			}
+
+			// 第一个非关键词参数 = 输出文件：写入后不再复制到剪贴板。
+			const knownFlags = new Set(["osc52", "diag", "test", "--no-tools", "tail"]);
+			const positional: string[] = [];
+			for (let i = 0; i < parts.length; i++) {
+				const p = parts[i];
+				if (p === "tail") {
+					i++; // skip "tail" and its count
+					continue;
+				}
+				if (knownFlags.has(p)) continue;
+				positional.push(p);
+			}
+			const filename = positional[0];
+			if (filename) {
+				const target = isAbsolute(filename) ? filename : resolve(ctx.cwd, filename);
+				try {
+					mkdirSync(dirname(target), { recursive: true });
+					writeFileSync(target, markdown, "utf8");
+					ctx.ui.notify(`已写入 ${count} 条消息（${size}）到 ${target}`, "info");
+				} catch (e) {
+					ctx.ui.notify(`写入文件失败: ${e instanceof Error ? e.message : String(e)}`, "error");
+				}
 				return;
 			}
 
