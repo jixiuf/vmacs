@@ -173,7 +173,7 @@ if FRAME is ours, otherwise call ORIG-FUN."
     (when (frame-live-p nn-fido--frame)
       (delete-frame nn-fido--frame)
       (setq nn-fido--frame nil))))
- (nn-fido-frame-mode)
+ ;; (nn-fido-frame-mode)
 
 
 ;; (setq enable-recursive-minibuffers t)        ;在 minibuffer 中也可以再次使用 minibuffer
