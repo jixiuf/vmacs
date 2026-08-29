@@ -9,10 +9,18 @@
  * decides whether to accept it (tmux hard limit ~1MB base64, Alacritty
  * handles 1MB+). Use `tail` / `--no-tools` to shrink very large exports.
  *
+ * This extension ALWAYS copies via OSC 52: the sequence is broadcast to every
+ * attached tmux client, so content reaches the terminal you are physically at
+ * (remote SSH) and local direct attaches alike. Auto-detection of "remote" is
+ * unreliable when SSH_CONNECTION never reaches the tmux client (tunnels /
+ * jump hosts / login scripts), so there is no system-clipboard fast path.
+ *
+ * The export uses sessionManager.getBranch(), i.e. the FULL branch history
+ * from root to the current leaf — content summarized by /compact is still
+ * included (buildContextEntries() would omit it).
+ *
  * Usage:
- *   /clipboard               Copy session as Markdown (auto: system clipboard
- *                            first, OSC 52 for remote sessions)
- *   /clipboard osc52         Force OSC 52 only (via the terminal)
+ *   /clipboard               Copy session as Markdown via OSC 52 (always)
  *   /clipboard osc52 tail 30 Only the last 30 entries
  *   /clipboard --no-tools    Skip tool execution details (bash outputs, results)
  *   /clipboard test          Send a tiny OSC 52 test token (paste locally to verify the chain)
@@ -22,14 +30,74 @@
  */
 
 import type { ExtensionAPI, ExtensionCommandContext, SessionMessageEntry } from "@earendil-works/pi-coding-agent";
-import { copyToClipboard } from "@earendil-works/pi-coding-agent";
 import type { ImageContent, TextContent, ThinkingContent, ToolCall } from "@earendil-works/pi-ai";
 import { platform } from "node:os";
 import { closeSync, openSync, writeSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 
 // ── Clipboard helpers ────────────────────────────────────────────────────────
 
+/**
+ * Query the tmux server for the *live* SSH connection of the client attached
+ * to the current pane. Pane env vars are a stale snapshot from when the pane
+ * was created — old panes can lack SSH_CONNECTION even when the current
+ * client is attached over SSH. Returns null when not in tmux or on failure.
+ */
+function tmuxClientSshConnection(): string | null {
+	if (!process.env.TMUX) return null;
+	try {
+		const out = execFileSync(
+			"tmux",
+			["display-message", "-p", "#{client_ssh_connection}"],
+			{ encoding: "utf8", timeout: 3000, stdio: ["ignore", "pipe", "ignore"] },
+		).trim();
+		return out || null;
+	} catch {
+		return null;
+	}
+}
+
+/** List SSH connections of every attached tmux client ("a | b" format). */
+function tmuxAllClientSsh(): string | null {
+	if (!process.env.TMUX) return null;
+	try {
+		const out = execFileSync(
+			"tmux",
+			["list-clients", "-F", "#{client_ssh_connection}"],
+			{ encoding: "utf8", timeout: 3000, stdio: ["ignore", "pipe", "ignore"] },
+		);
+		return out.trim() || null;
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * True when the current session is remote and content must travel back to the
+ * local terminal via OSC 52. Inside tmux, trust the live client connection
+ * from the server; outside tmux (or when tmux is unreachable) fall back to
+ * the process environment.
+ */
 function isRemoteSession(env: NodeJS.ProcessEnv = process.env): boolean {
+	// Explicit override: force OSC 52 even when tmux cannot detect the SSH link
+	// (e.g. SSH_CONNECTION is stripped by tunnels / jump hosts / login scripts).
+	if (env.PI_CLIPBOARD_MODE === "osc52") return true;
+	if (env.TMUX) {
+		// Any SSH-attached client makes this remote: OSC 52 is broadcast to every
+		// attached client, so the remote one receives it. display-message only
+		// reflects the current pane's client and misses remote clients when a
+		// local client is also attached.
+		try {
+			const clients = execFileSync(
+				"tmux",
+				["list-clients", "-F", "#{client_ssh_connection}"],
+				{ encoding: "utf8", timeout: 3000, stdio: ["ignore", "pipe", "ignore"] },
+			).toString();
+			if (clients.split("\n").some((l) => l.trim() !== "")) return true;
+		} catch {
+			// tmux unavailable or query failed — fall through to env check.
+		}
+	}
 	return Boolean(env.SSH_CONNECTION || env.SSH_CLIENT || env.MOSH_CONNECTION);
 }
 
@@ -204,7 +272,7 @@ function buildMarkdown(
 	includeTools: boolean,
 	tailCount?: number,
 ): { markdown: string; count: number; totalEntries: number } {
-	let entries = ctx.sessionManager.buildContextEntries();
+	let entries = ctx.sessionManager.getBranch();
 	const totalEntries = entries.length;
 	if (tailCount != null && tailCount > 0 && entries.length > tailCount) {
 		entries = entries.slice(-tailCount);
@@ -280,6 +348,9 @@ function buildDiag(
 	lines.push(`MOSH_CONNECTION: ${env.MOSH_CONNECTION ?? "unset"}`);
 	lines.push(`DISPLAY: ${env.DISPLAY ?? "unset"}`);
 	lines.push(`WAYLAND_DISPLAY: ${env.WAYLAND_DISPLAY ?? "unset"}`);
+	lines.push(`tmux 客户端 SSH 连接(实时): ${tmuxClientSshConnection() ?? "无（本地直连）"}`);
+	lines.push(`tmux 全部客户端: ${tmuxAllClientSsh() ?? "查询失败"}`);
+	lines.push(`PI_CLIPBOARD_MODE: ${env.PI_CLIPBOARD_MODE ?? "unset"}${env.PI_CLIPBOARD_MODE === "osc52" ? "（强制 OSC 52）" : ""}`);
 	lines.push(`是否判定远程: ${isRemoteSession() ? "是" : "否"}`);
 	lines.push("");
 	lines.push("OSC 52 链路检查：");
@@ -294,7 +365,6 @@ export default function (pi: ExtensionAPI) {
 		description: "Copy the session as Markdown to the clipboard (OSC 52 aware)",
 		handler: async (args, ctx) => {
 			const parts = args.trim().split(/\s+/).filter(Boolean);
-			const forceOsc52 = parts.includes("osc52");
 			const diag = parts.includes("diag");
 			const includeTools = !parts.includes("--no-tools");
 
@@ -324,40 +394,19 @@ export default function (pi: ExtensionAPI) {
 				return;
 			}
 
-			if (forceOsc52) {
-				if (!emitOsc52(markdown)) {
-					ctx.ui.notify(`OSC 52 写入失败（${size}）`, "error");
-					return;
-				}
-				ctx.ui.notify(`已复制 ${count} 条消息（${size}）到剪贴板（OSC 52）`, "info");
+			// 始终使用 OSC 52：序列广播给所有 attach 的 tmux 客户端，写入各自
+			// 终端所在机器的剪贴板。远程 ssh 操作时内容回到面前的终端；本地
+			// 直连时同样写入本机剪贴板。自动检测在隧道/跳板链路上不可靠
+			// （SSH_CONNECTION 传不到 tmux 客户端），因此不再区分场景。
+			if (!emitOsc52(markdown)) {
+				ctx.ui.notify(
+					`OSC 52 写入失败（${size}）。终端不支持 OSC 52 或超出缓冲。\n` +
+						`可尝试：/clipboard tail 30、/clipboard --no-tools、/clipboard diag 查看大小`,
+					"error",
+				);
 				return;
 			}
-
-			// 远程会话：系统剪贴板只会写到远程机器（本地拿不到），OSC 52 才是穿透本地的关键。
-			// 直接用无限制的 emitOsc52（内置 copyToClipboard 的 OSC 52 有 100KB 限制且会静默失败）。
-			if (isRemoteSession()) {
-				if (emitOsc52(markdown)) {
-					ctx.ui.notify(`已复制 ${count} 条消息（${size}）到本地剪贴板（OSC 52）`, "info");
-				} else {
-					ctx.ui.notify(
-						`OSC 52 写入失败（${size}）。可能超过 tmux 1MB base64 硬限（≈750KB 原文）或终端不支持。\n` +
-							`可尝试：/clipboard osc52 tail 30、/clipboard osc52 --no-tools、/clipboard diag 查看大小`,
-						"error",
-					);
-				}
-				return;
-			}
-
-			try {
-				await copyToClipboard(markdown);
-				ctx.ui.notify(`已复制 ${count} 条消息（${size}）到剪贴板（system clipboard）`, "info");
-			} catch {
-				if (emitOsc52(markdown)) {
-					ctx.ui.notify(`已复制 ${count} 条消息（${size}）到剪贴板（OSC 52 fallback）`, "info");
-				} else {
-					ctx.ui.notify(`复制失败：剪贴板工具不可用，OSC 52 写入也失败`, "error");
-				}
-			}
+			ctx.ui.notify(`已复制 ${count} 条消息（${size}）到剪贴板（OSC 52）`, "info");
 		},
 	});
 }
