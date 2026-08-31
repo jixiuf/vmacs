@@ -9,6 +9,12 @@
         "http://127.0.0.1:9222"
       ]
     },
+    "xiaohongshu-mcp": {
+      "url": "http://localhost:18060/mcp",
+      "headers": {
+        "Authorization": "Bearer your-secret-token"
+      }
+    },
     "jaeger": {
       "type": "http",
       "url": "https://apm-jaeger.luojilab.com/api/ai/mcp/"
