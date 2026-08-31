@@ -127,3 +127,7 @@ else
     PS1=$PS1'\[$(vterm_prompt_end)\]'
 fi
 
+
+. "$HOME/.local/bin/env"
+export HF_TOKEN=HF_TOKEN_REDACTED
+export HUGGING_FACE_HUB_TOKEN=HF_TOKEN_REDACTED

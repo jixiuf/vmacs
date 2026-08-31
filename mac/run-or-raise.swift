@@ -184,13 +184,6 @@ func getWindowsInZOrder(targetPids: Set<pid_t>? = nil) -> [WindowInfo] {
 
         let cgTitle = cgWindow[kCGWindowName as String] as? String ?? ""
 
-        // Skip empty titles (usually non-main windows)
-        if cgTitle.isEmpty { continue }
-
-        let key = "\(pid):\(cgTitle)"
-        if seenPidTitle.contains(key) { continue }
-        seenPidTitle.insert(key)
-
         // Get AX windows from cache or fetch
         let axWindows: [AXUIElement]
         if let cached = axWindowsCache[pid] {
@@ -219,8 +212,24 @@ func getWindowsInZOrder(targetPids: Set<pid_t>? = nil) -> [WindowInfo] {
             )
             let axTitle = (titleRef as? String) ?? ""
 
-            // Match by title
-            if axTitle == cgTitle || (cgTitle.isEmpty && axTitle.isEmpty) {
+            // Effective title: prefer the AX title, which is readable with only
+            // Accessibility permission. kCGWindowName (cgTitle) needs Screen
+            // Recording permission; when that permission is missing every window
+            // title is empty, so we must NOT rely on it. Fall back to cgTitle
+            // only when the AX title is unavailable (rare, e.g. no AX support).
+            let effectiveTitle = axTitle.isEmpty ? cgTitle : axTitle
+
+            // Skip windows without any title (aux panels, menu bars, tooltips).
+            if effectiveTitle.isEmpty { continue }
+
+            let key = "\(pid):\(effectiveTitle)"
+            if seenPidTitle.contains(key) { continue }
+            seenPidTitle.insert(key)
+
+            // When the CG title is present, keep the original CG<->AX window
+            // correspondence check. When it is absent (no Screen Recording),
+            // accept the AX window directly since it is the authoritative source.
+            if axTitle == cgTitle || cgTitle.isEmpty {
                 var minimizedRef: CFTypeRef?
                 let minResult = AXUIElementCopyAttributeValue(
                     axWindow,
@@ -236,7 +245,7 @@ func getWindowsInZOrder(targetPids: Set<pid_t>? = nil) -> [WindowInfo] {
                     WindowInfo(
                         app: app,
                         element: axWindow,
-                        title: axTitle,
+                        title: effectiveTitle,
                         pid: pid,
                         isMinimized: isMinimized,
                         zOrder: zOrder
@@ -484,16 +493,19 @@ func launchThenFocus(options: Options, timeout: TimeInterval = 10.0) {
 
         for cgWindow in windowList {
             guard let layer = cgWindow[kCGWindowLayer as String] as? Int, layer == 0,
-                  let ownerPid = cgWindow[kCGWindowOwnerPID as String] as? Int,
-                  let cgTitle = cgWindow[kCGWindowName as String] as? String,
-                  !cgTitle.isEmpty
+                  let ownerPid = cgWindow[kCGWindowOwnerPID as String] as? Int
             else { continue }
 
-            // Quick skip-title / title check on CG title
-            if options.skipTitlePatterns.contains(where: { regexMatch(cgTitle, $0) }) { continue }
-            if let tp = options.titlePattern, !regexMatch(cgTitle, tp) { continue }
-
             let pid = pid_t(ownerPid)
+
+            // CG title may be empty when Screen Recording permission is missing.
+            // Only apply the CG-based quick title/skip-title filter when we
+            // actually have a title; otherwise defer to the AX matching below.
+            let cgTitle = cgWindow[kCGWindowName as String] as? String ?? ""
+            if !cgTitle.isEmpty {
+                if options.skipTitlePatterns.contains(where: { regexMatch(cgTitle, $0) }) { continue }
+                if let tp = options.titlePattern, !regexMatch(cgTitle, tp) { continue }
+            }
             if seenPids.contains(pid) { continue }
             seenPids.insert(pid)
 
