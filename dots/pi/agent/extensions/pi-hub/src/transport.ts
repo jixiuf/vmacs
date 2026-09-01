@@ -236,6 +236,61 @@ export function writeLastMsgLocal(data: LastWechatMsg): void {
   }
 }
 
+const WECHAT_STATE_FILE = path.join(STATE_DIR, 'wechat-state.json')
+/** 已推送 messageId 保留时长：超过视为过期清理（后端重投窗口远小于此） */
+const WECHAT_MSGID_TTL_MS = Number(process.env.PI_WECHAT_MSGID_TTL_MS) || 30 * 60_000
+
+/** 微信轮询状态（跨实例/跨机共享，协调中心为权威存储）。
+ *  语义：推送即消费——消息被实例拉取并推送的瞬间即标记已消费，
+ *  不论该实例后续是否真正从队列消费（/use 切换后新实例不重收）。 */
+export interface WechatPollState {
+  /** iLink get_updates_buf 游标（最新拉取位置） */
+  cursor: string
+  /** 已推送 messageId → 标记时间（毫秒），去重兑底 */
+  messageIds: Record<string, number>
+  ts: number
+}
+
+function pruneWechatState(data: WechatPollState): WechatPollState {
+  const now = Date.now()
+  const messageIds: Record<string, number> = {}
+  for (const [id, ts] of Object.entries(data.messageIds ?? {})) {
+    if (now - ts <= WECHAT_MSGID_TTL_MS) messageIds[id] = ts
+  }
+  return { ...data, messageIds, ts: now }
+}
+
+export function readWechatStateLocal(): WechatPollState | null {
+  try {
+    const d = JSON.parse(fs.readFileSync(WECHAT_STATE_FILE, 'utf8')) as WechatPollState
+    if (!d || !d.cursor) return null
+    const pruned = pruneWechatState(d)
+    writeWechatStateLocal(pruned)
+    return pruned
+  } catch {
+    return null
+  }
+}
+
+export function writeWechatStateLocal(data: WechatPollState): void {
+  try {
+    fs.writeFileSync(WECHAT_STATE_FILE, JSON.stringify(pruneWechatState(data)), { mode: 0o600 })
+  } catch {
+    // ignore
+  }
+}
+
+/** 合并写入（POST 语义）：cursor 非空则更新，messageIds 按 id 合并（保留最早时间戳） */
+export function mergeWechatStateLocal(update: { cursor?: string; messageIds?: string[] }): void {
+  const prev = readWechatStateLocal()
+  const now = Date.now()
+  const messageIds: Record<string, number> = { ...(prev?.messageIds ?? {}) }
+  for (const id of update.messageIds ?? []) {
+    if (id) messageIds[id] = messageIds[id] ?? now
+  }
+  writeWechatStateLocal({ cursor: update.cursor || prev?.cursor || '', messageIds, ts: now })
+}
+
 /** 活跃客户端实例（通过协调中心轮询的客户端）：name → lastSeen（毫秒） */
 const activeClients = new Map<string, number>()
 /** 客户端实例名 → 主机名（从 /inbox 轮询登记，用于主机名/实例名互查） */
@@ -404,6 +459,27 @@ export function startCoordinatorServer(
             aiMsg: (data.aiMsg ?? prev?.aiMsg ?? '').slice(0, 500),
             ts: Date.now(),
           })
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok: true }))
+          return
+        }
+      }
+
+      // 微信轮询状态（游标 + 已推送 messageId，跨实例/跨机共享；推送即消费）
+      //  GET /wechat-state → 读取
+      //  POST /wechat-state {cursor?, messageIds?} → 合并写入
+      if (url.pathname === '/wechat-state') {
+        if (req.method === 'GET') {
+          const state = readWechatStateLocal()
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.end(JSON.stringify({ ok: true, state }))
+          return
+        }
+        if (req.method === 'POST') {
+          let body = ''
+          for await (const chunk of req) body += chunk
+          const data = JSON.parse(body) as { cursor?: string; messageIds?: string[] }
+          mergeWechatStateLocal(data)
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.end(JSON.stringify({ ok: true }))
           return
@@ -630,6 +706,36 @@ export async function fetchInbox(baseUrl: string, name: string, host?: string): 
     return data.envelopes ?? []
   } catch {
     return []
+  }
+}
+
+export interface WechatStateUpdate {
+  cursor?: string
+  messageIds?: string[]
+}
+
+/** 客户端向协调中心读取微信轮询状态（游标 + 已推送 messageId） */
+export async function fetchWechatStateRemote(baseUrl: string): Promise<WechatPollState | null> {
+  try {
+    const res = await fetch(`${baseUrl}/wechat-state`)
+    if (!res.ok) return null
+    const data = (await res.json()) as { ok: boolean; state?: WechatPollState | null }
+    return data.state ?? null
+  } catch {
+    return null
+  }
+}
+
+/** 客户端向协调中心合并写入微信轮询状态 */
+export async function pushWechatStateRemote(baseUrl: string, data: WechatStateUpdate): Promise<void> {
+  try {
+    await fetch(`${baseUrl}/wechat-state`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+  } catch {
+    // ignore
   }
 }
 

@@ -44,8 +44,14 @@ import {
   writeLastMsgLocal,
   fetchLastMsgRemote,
   pushLastMsgRemote,
+  readWechatStateLocal,
+  mergeWechatStateLocal,
+  fetchWechatStateRemote,
+  pushWechatStateRemote,
   type WsClientHandle,
   type LastWechatMsg,
+  type WechatPollState,
+  type WechatStateUpdate,
   type RemoteHostConfig,
 } from './src/transport.js'
 import { SessionBridge } from './src/bridge.js'
@@ -1704,6 +1710,19 @@ export default function hubExtension(pi: ExtensionAPI) {
           aiMsg: (data.aiMsg ?? prev?.aiMsg ?? '').slice(0, 500),
           ts: Date.now(),
         })
+      }
+    },
+    /** 读取微信轮询状态（游标+已推送 messageId）：协调中心模式读本地（权威），客户端模式从协调中心拉 */
+    getWechatState: async (): Promise<WechatPollState | null> => {
+      if (config.coordinatorUrl) return fetchWechatStateRemote(config.coordinatorUrl)
+      return readWechatStateLocal()
+    },
+    /** 合并写入微信轮询状态：协调中心模式写本地（权威），客户端模式 POST 到协调中心 */
+    pushWechatState: async (data: WechatStateUpdate): Promise<void> => {
+      if (config.coordinatorUrl) {
+        await pushWechatStateRemote(config.coordinatorUrl, data)
+      } else {
+        mergeWechatStateLocal(data)
       }
     },
   }
