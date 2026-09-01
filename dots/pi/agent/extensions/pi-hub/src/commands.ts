@@ -83,7 +83,9 @@ async function cmdInstances(_args: string, ctx: CommandCtx): Promise<CommandResu
   const lines = all.map((inst) => {
     const marks: string[] = []
     if (inst.name === coordinatorName) marks.push('协调中心')
-    else if (/^-?\d+$/.test(inst.name.slice(inst.name.lastIndexOf('-') + 1)) && inst.name !== coordinatorName) marks.push('subagent')
+    // 与 tools.ts list_instances 一致：按注册时的 role 判定。
+    // 不能用名字末段纯数字猜测：同名冲突自动改名的普通实例（如 jixiuf-59741）会被误标。
+    else if (inst.role === 'subagent') marks.push('subagent')
     if (inst.pid === process.pid) marks.push('当前')
     if (!local.some((l) => l.name === inst.name)) marks.push('远程')
     const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
