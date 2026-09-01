@@ -1,4 +1,19 @@
 ;;; -*- lexical-binding: t; -*-
+
+;; Tramp: run async remote processes on a dedicated connection
+;; (`ssh -t -t`) instead of the shared main connection.  Without this,
+;; vc-git's multi-stage dir-status chain (`git update-index` etc.) runs
+;; async commands on the main Tramp connection, and the stage callbacks
+;; then issue *synchronous* commands on the same locked connection
+;; (e.g. `vc-git--empty-db-p` -> `git rev-parse --verify HEAD`), which
+;; signals "Forbidden reentrant call of Tramp" and kills the
+;; connection ("Process has died", then a secondary
+;; "Wrong type argument: stringp nil" from tramp-signal-hook-function).
+(connection-local-set-profile-variables
+ 'remote-direct-async '((tramp-direct-async-process . t)))
+(connection-local-set-profiles
+ '(:application tramp :protocol "ssh") 'remote-direct-async)
+
 ;; smerge
 ;; cn next
 ;; cu （upper） 选择上面的部分，cl (lower) 选下部分

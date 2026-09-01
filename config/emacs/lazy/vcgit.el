@@ -327,36 +327,87 @@ VC backend and fileset."
 
 ;;; Refresh hook
 
+(defconst vcgit--tramp-retry-delay 1.0
+  "Seconds to wait before (re)trying vcgit Tramp operations.
+Used when the Tramp connection is still locked, e.g. vc-git's
+dir-status callback chain is still running on it.")
+
+(defun vcgit--tramp-busy-p ()
+  "Return non-nil when the Tramp connection for `default-directory'
+is locked and a synchronous Tramp call would re-enter it.
+Synchronous re-entry signals `Forbidden reentrant call of Tramp',
+which kills the connection and cascades into `Wrong type argument:
+stringp nil' from `tramp-signal-hook-function'."
+  (when-let* ((remote (file-remote-p default-directory))
+              (proc (ignore-errors
+                      (tramp-get-connection-process
+                       (tramp-dissect-file-name default-directory)))))
+    (tramp-get-connection-property proc "locked")))
+
 (defun vcgit--dir-refresh ()
   "Run after each vc-dir refresh to insert async log sections.
 
 `vc-dir-refresh-hook' runs inside the vc-git dir-status process
 sentinel (`vc-exec-after').  For remote (Tramp) vc-dir buffers that
-sentinel executes while the Tramp connection is locked, so any
-synchronous Tramp call from here (`vc-git-working-branch',
+sentinel executes while the Tramp connection may still be locked, so
+any synchronous Tramp call from here (`vc-git-working-branch',
 `vc-git--branch-remotes', `executable-find') would signal
 `Forbidden reentrant call of Tramp' and corrupt the connection.
 Defer the actual work with a timer so it runs after the Tramp
-callback has unwound and the lock is released."
+callback has unwound; `vcgit--dir-refresh-deferred' additionally
+retries while the connection is still locked."
   (when (eq vc-dir-backend 'Git)
-    (run-at-time 0 nil #'vcgit--dir-refresh-deferred (current-buffer))))
+    (run-at-time vcgit--tramp-retry-delay nil
+                 #'vcgit--dir-refresh-deferred (current-buffer))))
 
-(defun vcgit--dir-refresh-deferred (buf)
+(defun vcgit--dir-refresh-deferred (buf &optional retries)
   "Insert async log/todo sections for vc-dir buffer BUF.
 Runs from a timer, outside any Tramp callback; see
 `vcgit--dir-refresh'.  No-ops when BUF is dead, no longer a Git
-vc-dir buffer, or vcgit has been disabled in the meantime."
+vc-dir buffer, or vcgit has been disabled in the meantime.  When
+the Tramp connection is still locked, reschedules itself (up to 10
+times) instead of re-entering Tramp."
   (when (buffer-live-p buf)
     (with-current-buffer buf
       (when (and (eq vc-dir-backend 'Git)
                  (bound-and-true-p vcgit-minor-mode))
-        (condition-case err
-            (progn
-              (vcgit--async-unpulled)
-              (vcgit--async-recent)
-              (vcgit-dir--todo))
-          (error (message "vcgit: refresh hook failed: %S" err))
-          (quit (message "vcgit: refresh interrupted")))))))
+        (if (vcgit--tramp-busy-p)
+            (if (< (or retries 0) 10)
+                (run-at-time vcgit--tramp-retry-delay nil
+                             #'vcgit--dir-refresh-deferred
+                             buf (1+ (or retries 0)))
+              (message "vcgit: Tramp still busy, skipping async sections"))
+          (condition-case err
+              (progn
+                (vcgit--async-unpulled)
+                (vcgit--async-recent)
+                (vcgit-dir--todo))
+            (error (message "vcgit: refresh hook failed: %S" err))
+            (quit (message "vcgit: refresh interrupted"))))))))
+
+;;; vc-git dir-status callback workaround
+;;
+;; `vc-git-after-dir-status-stage' runs inside the dir-status process
+;; sentinel/filter; on Tramp that context can hold the main connection
+;; locked while a *synchronous* call (`vc-git--empty-db-p' ->
+;; `git rev-parse --verify HEAD') re-enters it.  That signals
+;; "Forbidden reentrant call of Tramp", kills the connection and
+;; cascades into "Wrong type argument: stringp nil".  Detect the lock
+;; and skip the synchronous call, assuming a non-empty repository so
+;; the next stage stays `diff-index'.
+(defun vcgit--empty-db-p-around (orig-fun)
+  "Call ORIG-FUN unless the Tramp connection is locked."
+  (if (vcgit--tramp-busy-p)
+      nil
+    (funcall orig-fun)))
+
+(defun vcgit--enable-vc-git-workaround ()
+  "Install the Tramp workaround for vc-git's dir-status callback."
+  (advice-add 'vc-git--empty-db-p :around #'vcgit--empty-db-p-around))
+
+(defun vcgit--disable-vc-git-workaround ()
+  "Remove the Tramp workaround for vc-git's dir-status callback."
+  (advice-remove 'vc-git--empty-db-p #'vcgit--empty-db-p-around))
 
 
 ;;; RET dispatch for log and TODO sections
@@ -437,8 +488,12 @@ Enable once in your config:
           (define-key vc-dir-mode-map (kbd "C-i") #'vc-diff))
         (with-eval-after-load 'log-view
           (define-key log-view-mode-map (kbd "C-i") #'log-view-diff))
+        (with-eval-after-load 'vc-git
+          (when vcgit-global-minor-mode
+            (vcgit--enable-vc-git-workaround)))
         (advice-add 'vc-dir-find-file :around #'vcgit--find-file-advice)
         (add-hook 'vc-dir-mode-hook #'vcgit--vc-dir-setup))
+    (vcgit--disable-vc-git-workaround)
     (advice-remove 'vc-dir-find-file #'vcgit--find-file-advice)
     (remove-hook 'vc-dir-mode-hook #'vcgit--vc-dir-setup)
     ;; Clean up refresh hooks and minor mode from existing vc-dir buffers.
