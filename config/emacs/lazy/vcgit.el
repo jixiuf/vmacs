@@ -121,12 +121,16 @@ we add keymap and mouse-face on top without overwriting them."
    "\n"))
 
 (defun vcgit--run-git-log (buf args vcdir-buf section-title count-p)
-  "Run `git log' with ARGS into BUF, then insert result into VCDIR-BUF."
+  "Run `git log' with ARGS into BUF, then insert result into VCDIR-BUF.
+Uses `start-file-process' so that for remote (Tramp) vc-dir buffers
+`git' runs on the remote host.  The sentinel tolerates `quit' (e.g.
+C-g interrupting a Tramp operation), which `with-demoted-errors'
+does not catch."
   (let ((default-directory (with-current-buffer vcdir-buf
                              default-directory))
         (process-connection-type nil))   ; pipe, not pty (no pager)
     (with-current-buffer buf
-      (let ((proc (apply #'start-process "vcgit-log" buf
+      (let ((proc (apply #'start-file-process "vcgit-log" buf
                          "git" "--no-pager" "log" "--no-color"
                          "--graph"
                          "--decorate"
@@ -139,42 +143,44 @@ we add keymap and mouse-face on top without overwriting them."
         (set-process-sentinel
          proc
          (lambda (_process _event)
-           (unwind-protect
-               (with-demoted-errors "vcgit: %S"
-                 (when (buffer-live-p vcdir-buf)
-                   (with-current-buffer buf
-                     ;; Apply faces manually using the regex and specs from
-                     ;; `vc-git-root-log-format'. Each spec is (GROUP FACE ...).
-                     (let ((re (nth 1 vc-git-root-log-format))
-                           (specs (nth 2 vc-git-root-log-format)))
-                       (goto-char (point-min))
-                       (while (re-search-forward re nil t)
-                         (dolist (spec specs)
-                           (let ((grp (car spec))
-                                 (face (eval (nth 1 spec) t)))
-                             (when (and grp face (facep face)
-                                        (match-beginning grp))
-                               (put-text-property
-                                (match-beginning grp)
-                                (match-end grp)
-                                'face face))))))
-                     (let ((total (count-lines (point-min) (point-max))))
-                       (unless (zerop total)
-                         (let* ((shown (min vcgit-log-commit-count total))
-                                (body (buffer-substring
-                                       (point-min)
-                                       (save-excursion
-                                         (goto-char (point-min))
-                                         (line-end-position shown)))))
-                           (with-current-buffer vcdir-buf
-                             (vcgit--append-to-header
-                              (vcgit--format-log-section
-                               section-title
-                               (and count-p shown)
-                               body
-                               log-view-mode-map)))))))))
-             (when (buffer-live-p buf)
-               (kill-buffer buf)))))))))
+           (condition-case err
+               (unwind-protect
+                   (with-demoted-errors "vcgit: %S"
+                     (when (buffer-live-p vcdir-buf)
+                       (with-current-buffer buf
+                         ;; Apply faces manually using the regex and specs from
+                         ;; `vc-git-root-log-format'. Each spec is (GROUP FACE ...).
+                         (let ((re (nth 1 vc-git-root-log-format))
+                               (specs (nth 2 vc-git-root-log-format)))
+                           (goto-char (point-min))
+                           (while (re-search-forward re nil t)
+                             (dolist (spec specs)
+                               (let ((grp (car spec))
+                                     (face (eval (nth 1 spec) t)))
+                                 (when (and grp face (facep face)
+                                            (match-beginning grp))
+                                   (put-text-property
+                                    (match-beginning grp)
+                                    (match-end grp)
+                                    'face face))))))
+                         (let ((total (count-lines (point-min) (point-max))))
+                           (unless (zerop total)
+                             (let* ((shown (min vcgit-log-commit-count total))
+                                    (body (buffer-substring
+                                           (point-min)
+                                           (save-excursion
+                                             (goto-char (point-min))
+                                             (line-end-position shown)))))
+                               (with-current-buffer vcdir-buf
+                                 (vcgit--append-to-header
+                                  (vcgit--format-log-section
+                                   section-title
+                                   (and count-p shown)
+                                   body
+                                   log-view-mode-map)))))))))
+                 (when (buffer-live-p buf)
+                   (kill-buffer buf)))
+             (quit (message "vcgit: git log interrupted: %S" err)))))))))
 
 (defun vcgit--async-unpulled ()
   "Start async computation of the unpulled commit log."
@@ -228,25 +234,25 @@ backward for the nearest `::' header to get the file path."
 
 (defun vcgit-dir--todo ()
   "Search for TODO/FIXME items and display them in the vc-dir footer.
-Do nothing for remote (Tramp) directories, where `rg' is often
-unavailable or too slow over the connection."
-  (if (file-remote-p default-directory)
-      (message "vcgit: skip TODO search (remote/Tramp directory)")
-    (let* ((default-directory (expand-file-name default-directory))
-           (buf (format "*vc-todo : %s*" default-directory))
-           (curbuf (current-buffer)))
-      (condition-case nil
-          (let ((proc (start-process "vc-todo" buf
-                                     "rg" "--line-number"
-                                     "--max-filesize=1M"
-                                     "-g" "!*.git*"
-                                     "TODO:|FIXME:" ".")))
-            (set-process-sentinel
-             proc
-             (lambda (proc _ev)
-               (vcgit--todo-finish (process-buffer proc) curbuf)
-               (kill-buffer (process-buffer proc)))))
-        (error (message "vcgit: todo start-process failed"))))))
+Uses `start-file-process' so remote (Tramp) directories run `rg'
+on the remote host.  Skips when `rg' is unavailable there."
+  (if (executable-find "rg" t)
+      (let* ((default-directory (expand-file-name default-directory))
+             (buf (format "*vc-todo : %s*" default-directory))
+             (curbuf (current-buffer)))
+        (condition-case nil
+            (let ((proc (start-file-process "vc-todo" buf
+                                            "rg" "--line-number"
+                                            "--max-filesize=1M"
+                                            "-g" "!*.git*"
+                                            "TODO:|FIXME:" ".")))
+              (set-process-sentinel
+               proc
+               (lambda (proc _ev)
+                 (vcgit--todo-finish (process-buffer proc) curbuf)
+                 (kill-buffer (process-buffer proc)))))
+          (error (message "vcgit: todo start-process failed"))))
+    (message "vcgit: skip TODO search (no rg available)")))
 
 (defun vcgit--todo-finish (buf curbuf)
   "Process TODO rg output in BUF and insert into CURBUF footer."
@@ -322,19 +328,35 @@ VC backend and fileset."
 ;;; Refresh hook
 
 (defun vcgit--dir-refresh ()
-  "Run after each vc-dir refresh to insert async log sections."
+  "Run after each vc-dir refresh to insert async log sections.
+
+`vc-dir-refresh-hook' runs inside the vc-git dir-status process
+sentinel (`vc-exec-after').  For remote (Tramp) vc-dir buffers that
+sentinel executes while the Tramp connection is locked, so any
+synchronous Tramp call from here (`vc-git-working-branch',
+`vc-git--branch-remotes', `executable-find') would signal
+`Forbidden reentrant call of Tramp' and corrupt the connection.
+Defer the actual work with a timer so it runs after the Tramp
+callback has unwound and the lock is released."
   (when (eq vc-dir-backend 'Git)
-    (if (file-remote-p default-directory)
-        ;; Async `git log' over Tramp is slow and its process sentinels
-        ;; are easily interrupted with `quit' ("error in process
-        ;; sentinel: Quit").  Skip, like the TODO search does.
-        (message "vcgit: skip async sections (remote/Tramp directory)")
-      (condition-case nil
-          (progn
-            (vcgit--async-unpulled)
-            (vcgit--async-recent)
-            (vcgit-dir--todo))
-        (error (message "vcgit: refresh hook failed"))))))
+    (run-at-time 0 nil #'vcgit--dir-refresh-deferred (current-buffer))))
+
+(defun vcgit--dir-refresh-deferred (buf)
+  "Insert async log/todo sections for vc-dir buffer BUF.
+Runs from a timer, outside any Tramp callback; see
+`vcgit--dir-refresh'.  No-ops when BUF is dead, no longer a Git
+vc-dir buffer, or vcgit has been disabled in the meantime."
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (when (and (eq vc-dir-backend 'Git)
+                 (bound-and-true-p vcgit-minor-mode))
+        (condition-case err
+            (progn
+              (vcgit--async-unpulled)
+              (vcgit--async-recent)
+              (vcgit-dir--todo))
+          (error (message "vcgit: refresh hook failed: %S" err))
+          (quit (message "vcgit: refresh interrupted")))))))
 
 
 ;;; RET dispatch for log and TODO sections
