@@ -61,7 +61,7 @@ import { doStartPi as doStartPiFn, execCapture, type StartPiDeps } from './src/s
 import { registerTools } from './src/tools.js'
 import { log, logEvent } from './src/logger.js'
 import { registerCleanup, unregisterCleanup, disposeAllCleanups } from './src/lifecycle.js'
-import { TaskRegistry, extractTaskId, extractReplyText, hasManualTaskReply } from './src/task.js'
+import { TaskRegistry, extractTaskId, extractReplyText, hasManualTaskReply, isPendingReplyEligible } from './src/task.js'
 import type {
   IGateway,
   InboundMessage,
@@ -129,8 +129,29 @@ export default function hubExtension(pi: ExtensionAPI) {
   const queue = new EnvelopeQueue()
   // subagent 任务注册表（tasks.json 持久化）
   const taskRegistry = new TaskRegistry()
-  /** 待自动回传的任务（FIFO）：子实例 agent 回复后回传给发起者（无需子实例调用工具） */
-  const pendingTaskReplies: Array<{ from: string; taskId: string }> = []
+  /**
+   * 待自动回传的任务登记（FIFO）：子实例 agent 回复后回传给发起者（无需子实例调用工具）。
+   * 按 taskId 去重 + TTL/已回传标记，防止同一任务重复登记与陈旧条目泄漏。
+   */
+  interface PendingTaskReply {
+    from: string
+    taskId: string
+    ts: number
+    replied: boolean
+  }
+  const pendingTaskReplies: PendingTaskReply[] = []
+  /** 待回传登记的最大保留时间；超时后清理（防陈旧条目长期占据队列） */
+  const PENDING_REPLY_TTL_MS = 30 * 60_000
+  /** 清理已回传/过期的待回传登记 */
+  function prunePendingTaskReplies(): void {
+    const now = Date.now()
+    for (let i = pendingTaskReplies.length - 1; i >= 0; i--) {
+      const p = pendingTaskReplies[i]
+      if (p.replied || now - p.ts > PENDING_REPLY_TTL_MS) {
+        pendingTaskReplies.splice(i, 1)
+      }
+    }
+  }
   const bridge = new SessionBridge({ pi, deliverToAgent: deliverToAgent })
   const router = new Router({
     handleCommand: handleCommand,
@@ -143,10 +164,23 @@ export default function hubExtension(pi: ExtensionAPI) {
       // 识别 subagent 任务回传（[TASK-xxx结果] / 含任务 ID 的正文）→ 自动更新注册表
       tryAutoUpdateTask(env.from, env.text)
       // 识别任务消息（含 TASK-id，来自其他实例）→ 入待回传队列（agent 回复后自动回传）
+      // 防 ping-pong 死循环：结果消息（[TASK-x结果]，回传正文回流）与已终结任务（done/failed/timeout）
+      // 不再登记为待回传；并按 taskId 去重（同一任务已有未回传登记则跳过）。
       const taskId = extractTaskId(env.text)
       if (taskId && env.from !== currentInstanceName) {
-        pendingTaskReplies.push({ from: env.from, taskId })
-        log(`登记待回传任务 ${taskId}（来自 ${env.from}）`)
+        const task = taskRegistry.get(taskId)
+        if (!isPendingReplyEligible(env.text, task?.status)) {
+          log(`任务 ${taskId} 为结果消息/已终结，跳过待回传登记（防死循环）`)
+        } else {
+          prunePendingTaskReplies()
+          const dup = pendingTaskReplies.some((p) => p.taskId === taskId && !p.replied)
+          if (!dup) {
+            pendingTaskReplies.push({ from: env.from, taskId, ts: Date.now(), replied: false })
+            log(`登记待回传任务 ${taskId}（来自 ${env.from}）`)
+          } else {
+            log(`任务 ${taskId} 已在待回传队列，跳过重复登记`)
+          }
+        }
       }
       // 跨机启动结果回传（[hub结果] [start]）：更新待认领状态或唤醒同步等待（startPiViaWs）
       if (/\[hub结果\]\s*\[start\]/.test(env.text)) {
@@ -1606,8 +1640,15 @@ export default function hubExtension(pi: ExtensionAPI) {
 
   // --- subagent 任务自动回传：agent 回复完成后回传给发起者（无需子实例调用工具） ---
   pi.on('agent_settled', async (_event, ctx) => {
-    const pending = pendingTaskReplies.shift()
+    prunePendingTaskReplies()
+    const pending = pendingTaskReplies.find((p) => !p.replied)
     if (!pending) return
+    // 防自我回流：不回传给自身（登记时 env.from 已过滤，此处双保险）
+    if (pending.from === currentInstanceName) {
+      pending.replied = true
+      log(`任务 ${pending.taskId} 发起者是自身，跳过自动回传`)
+      return
+    }
     try {
       const sm = (ctx as { sessionManager?: { getBranch?: () => unknown[] } }).sessionManager
       const branch = sm?.getBranch?.() ?? []
@@ -1615,6 +1656,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       if (replyText) {
         // 子实例已手动回传（回复文本含 [TASK-id结果]）→ 跳过自动回传，避免双回传
         if (hasManualTaskReply(replyText, pending.taskId)) {
+          pending.replied = true
           log(`任务 ${pending.taskId} 已手动回传，跳过自动回传`)
           return
         }
@@ -1628,12 +1670,7 @@ export default function hubExtension(pi: ExtensionAPI) {
           text,
           ts: Date.now(),
         }
-        if (pending.from === currentInstanceName) {
-          safeSendUserMessage(`[本地消息] ${text}`, {
-            deliverAs: 'steer',
-            expandPromptTemplates: true,
-          } as Parameters<typeof pi.sendUserMessage>[1] & { expandPromptTemplates: boolean })
-        } else if (config.coordinatorPort && !config.coordinatorUrl) {
+        if (config.coordinatorPort && !config.coordinatorUrl) {
           // 协调中心模式：经本机 HTTP /envelope 投递（deliverEnvelope 推送给目标 WS 或入队）
           await postEnvelope(`http://127.0.0.1:${config.coordinatorPort}`, env)
         } else if (config.coordinatorUrl) {
@@ -1641,11 +1678,14 @@ export default function hubExtension(pi: ExtensionAPI) {
         } else {
           queue.enqueue(env)
         }
+        pending.replied = true
       } else {
+        pending.replied = true
         log(`任务 ${pending.taskId} 无回复文本，跳过回传`)
       }
     } catch (err) {
       log(`自动回传异常: ${(err as Error).message}`)
+      pending.replied = true
     }
   })
 

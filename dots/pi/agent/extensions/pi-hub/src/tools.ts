@@ -186,21 +186,35 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
   pi.registerTool({
     name: 'dispatch_task',
     label: 'Dispatch Task',
-    description: '向一个或多个子实例分发子任务（写任务注册表 + 带 TASK#N 标记的消息），等待各实例回传 [TASK#N结果] 后汇总。',
+    description: '向一个或多个子实例分发子任务（写任务注册表 + 带 TASK#N 标记的消息），等待各实例回传 [TASK#N结果] 后汇总。只应分发给 role=subagent 的临时实例；常驻/协调中心实例请改用 task_subagent 起新实例。',
     promptSnippet: '分发子任务给多个实例',
-    promptGuidelines: ['subagent 协作：先 list_instances 确认可用实例，再分发任务；结果由子实例 send_message 回传。用 /tasks 或 task_list 跟踪状态。'],
+    promptGuidelines: [
+      'subagent 协作：先 list_instances 确认可用实例，再分发任务；结果由子实例 send_message 回传。用 /tasks 或 task_list 跟踪状态。',
+      '只分发给 role=subagent 的临时实例；若目标是常驻/协调中心实例（role 非 subagent），改用 task_subagent 起新实例，勿复用存活节点（避免任务占用协调/微信职责）。',
+    ],
     parameters: Type.Object({
       tasks: Type.Array(Type.Object({
-        instance: Type.String({ description: '目标实例名' }),
+        instance: Type.String({ description: '目标实例名（应为 role=subagent 的实例）' }),
         task: Type.String({ description: '任务描述，建议明确输出格式（JSON/表格/固定模板）' }),
       })),
     }),
     async execute(_toolCallId, params) {
       try {
+        const { all } = await deps.collectInstances()
+        const roleByName = new Map(all.map((i) => [i.name, i.role]))
         const lines: string[] = []
+        const warnings: string[] = []
         const ids: string[] = []
         for (const [i, t] of params.tasks.entries()) {
           const tag = `[TASK#${i + 1}]`
+          // 角色引导：目标为常驻/协调中心实例（role 非 subagent）时提示改用 task_subagent。
+          // 常驻实例承担协调/微信职责，若被 dispatch 占用易引发「持续 ACK→回传→再登记」风险。
+          const role = roleByName.get(t.instance)
+          if (role !== 'subagent') {
+            warnings.push(
+              `${tag} → ${t.instance}（${role ?? '未在册/未知角色'}）：目标是常驻/协调中心实例，建议改用 task_subagent 起新实例再分发，避免任务占用协调职责。`,
+            )
+          }
           // 写任务注册表（状态跟踪/超时/自动回收）。注意：dispatch_task 分发给【任意实例】
           // （可能是长期运行的主实例/远程实例），故不标记 isSubagent——不参与自动回收，
           // 避免实例名撞上 assignee 字符串被误 /quit；仅 task_subagent/checkPendingSubagent
@@ -221,7 +235,8 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
           )
           lines.push(`${tag} → ${t.instance}: ${reply}（${task.id}）`)
         }
-        return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。任务列表可用 /tasks 或 task_list 查看。`)
+        const warnBlock = warnings.length ? `\n\n⚠️ 角色提示：\n${warnings.join('\n')}` : ''
+        return ok(`已分发 ${params.tasks.length} 个任务：\n${lines.join('\n')}${warnBlock}\n\n等待各实例回传「[TASK#N结果]」，收到后请汇总。任务列表可用 /tasks 或 task_list 查看。`)
       } catch (err) {
         return fail(`分发失败: ${(err as Error).message}`)
       }

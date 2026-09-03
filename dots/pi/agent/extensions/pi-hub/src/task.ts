@@ -77,6 +77,33 @@ export function hasManualTaskReply(replyText: string, taskId: string): boolean {
   return replyText.includes(`[${taskId}结果]`)
 }
 
+/** 任务是否已终结（不再接受回传登记 / 不触发自动回传） */
+export function isTerminalStatus(status: string | undefined): boolean {
+  return status === 'done' || status === 'failed' || status === 'timeout'
+}
+
+/**
+ * 判断文本是否为「任务结果消息」：以 [TASK-<ts>-<rand>结果] 或 [TASK#<n>结果] 开头。
+ * 结果消息是回传正文（自动回传/手动 send_message 产物），不应再被登记为待回传。
+ * 注意：任务【分配】消息（[TASK#1] ... 任务ID: TASK-xxx ...）不以「结果]」开头，
+ * 因此不会被误判，仍能正常登记。这是防 ping-pong 死循环的关键判定。
+ */
+export function isTaskResultText(text: string): boolean {
+  const t = text.trim()
+  return /^\[TASK-\d+-[a-z0-9]+\s*结果\]/.test(t) || /^\[TASK#\d+\s*结果?\]/.test(t)
+}
+
+/**
+ * 统一判定：一条含任务 ID 的消息是否应进入待回传队列。
+ * 返回 false 的场景：① 结果消息（[TASK-x结果]，回传正文回流）；② 任务已终结（done/failed/timeout）。
+ * 两者任一命中则不登记，从而切断「A派→B回ACK→B把ACK当结果回传→A又登记→…」的无限互发。
+ */
+export function isPendingReplyEligible(text: string, taskStatus: string | undefined): boolean {
+  if (isTaskResultText(text)) return false
+  if (isTerminalStatus(taskStatus)) return false
+  return true
+}
+
 /** 提取文本中的任务 ID（TASK-<ts>-<rand>） */
 export function extractTaskId(text: string): string | null {
   return text.match(/TASK-\d+-[a-z0-9]+/)?.[0] ?? null
