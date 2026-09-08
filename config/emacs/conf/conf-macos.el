@@ -20,12 +20,31 @@
 (setq-default default-frame-alist initial-frame-alist)
 
 (defun vmacs-set-font(&optional f)
-  ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析
+  ;; 当 font 设置为单一字体的时候，遇到当前字体处理不了的，则使用 fontset-default 来解析。
+  ;; 但 fontset fallback 会为 CJK 等字符集挑选系统字体（macOS 上常为 PingFang），
+  ;; 因此需显式把 han/cjk-misc 等字符集绑定到 Sarasa，见下方 dolist。
   ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Fontsets.html
   ;; (set-fontset-font "fontset-default" 'emoji "Apple Color Emoji")
   ;; (set-fontset-font "fontset-default" 'symbol "Apple Color Emoji")
   (with-selected-frame (or f (selected-frame))
     (when (display-graphic-p)
+      ;; 用 font-spec 明确 family + light 字重：macOS 上 "Sarasa Term SC Nerd Light" 会被解析成
+      ;; regular（family 才是 "Sarasa Term SC Nerd"，Light 属于 weight），所以这里显式指定。
+      (set-face-attribute 'default nil
+                          :family "Sarasa Term SC Nerd"
+                          :weight 'light)
+      ;; fixed-pitch 默认是 Monospace（macOS 上实际渲染为 Courier），而 markdown 的
+      ;; 代码块/行内代码、org 的 src block 等 face 都 inherit fixed-pitch，导致这些区域
+      ;; 英文用 Courier、中文却回落 fontset 里的 Sarasa，中英文字体分裂。
+      ;; 这里显式把 fixed-pitch 与 default 对齐为 Sarasa light（Term 是等宽字体，不影响对齐）。
+      (set-face-attribute 'fixed-pitch nil
+                          :family "Sarasa Term SC Nerd"
+                          :weight 'light)
+      ;; 让中日韩等字符集也用 Sarasa，否则会 fallback 到系统字体（如 PingFang SC）。
+      (dolist (charset '(han cjk-misc kana hangul bopomofo))
+        (set-fontset-font t charset
+                          (font-spec :family "Sarasa Term SC Nerd"
+                                     :weight 'light)))
       (when (>= emacs-major-version 29)
         (set-fontset-font t 'emoji "Apple Color Emoji-17"))
       (set-fontset-font t 'symbol "Apple Symbols"))
