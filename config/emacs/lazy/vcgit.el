@@ -120,12 +120,25 @@ we add keymap and mouse-face on top without overwriting them."
    body
    "\n"))
 
-(defun vcgit--run-git-log (buf args vcdir-buf section-title count-p)
+(defvar-local vcgit--refresh-gen 0
+  "Generation counter, incremented on each deferred refresh.
+Async processes capture the value at spawn time; their sentinels
+drop the result unless it still matches.  This prevents sections
+inserted twice when a refresh (which erases and rebuilds the
+buffer) lands while a previous refresh's git log is still running.");;
+
+(defun vcgit--gen-current-p (buf gen)
+  "Return non-nil if GEN is still the current refresh generation of BUF."
+  (and (buffer-live-p buf)
+       (eq (buffer-local-value 'vcgit--refresh-gen buf) gen)))
+
+(defun vcgit--run-git-log (buf args vcdir-buf section-title count-p gen)
   "Run `git log' with ARGS into BUF, then insert result into VCDIR-BUF.
 Uses `start-file-process' so that for remote (Tramp) vc-dir buffers
 `git' runs on the remote host.  The sentinel tolerates `quit' (e.g.
 C-g interrupting a Tramp operation), which `with-demoted-errors'
-does not catch."
+does not catch.  GEN is the refresh generation at spawn time; the
+result is discarded if BUF has been refreshed since."
   (let ((default-directory (with-current-buffer vcdir-buf
                              default-directory))
         (process-connection-type nil))   ; pipe, not pty (no pager)
@@ -146,7 +159,7 @@ does not catch."
            (condition-case err
                (unwind-protect
                    (with-demoted-errors "vcgit: %S"
-                     (when (buffer-live-p vcdir-buf)
+                     (when (vcgit--gen-current-p vcdir-buf gen)
                        (with-current-buffer buf
                          ;; Apply faces manually using the regex and specs from
                          ;; `vc-git-root-log-format'. Each spec is (GROUP FACE ...).
@@ -182,23 +195,23 @@ does not catch."
                    (kill-buffer buf)))
              (quit (message "vcgit: git log interrupted: %S" err)))))))))
 
-(defun vcgit--async-unpulled ()
-  "Start async computation of the unpulled commit log."
+(defun vcgit--async-unpulled (gen)
+  "Start async computation of the unpulled commit log for generation GEN."
   (when-let* ((tracking (vcgit--tracking-branch)))
     (vcgit--run-git-log
      (generate-new-buffer " *vcgit-unpulled*" t)
      (list (format "HEAD..%s" tracking))
      (current-buffer)
-     "Unpulled" t)))
+     "Unpulled" t gen)))
 
-(defun vcgit--async-recent ()
-  "Start async computation of the recent branch commit log."
+(defun vcgit--async-recent (gen)
+  "Start async computation of the recent branch commit log for generation GEN."
   (when-let* ((branch (vc-git-working-branch)))
     (vcgit--run-git-log
      (generate-new-buffer " *vcgit-recent*" t)
      (list branch)
      (current-buffer)
-     (format "Recent(%s)" branch) nil)))
+     (format "Recent(%s)" branch) nil gen)))
 
 
 ;;; TODO footer
@@ -232,10 +245,12 @@ backward for the nearest `::' header to get the file path."
           (goto-char (point-min))
           (forward-line (1- linenum)))))))
 
-(defun vcgit-dir--todo ()
+(defun vcgit-dir--todo (gen)
   "Search for TODO/FIXME items and display them in the vc-dir footer.
 Uses `start-file-process' so remote (Tramp) directories run `rg'
-on the remote host.  Skips when `rg' is unavailable there."
+on the remote host.  Skips when `rg' is unavailable there.
+GEN is the refresh generation at spawn time; the result is
+dropped if the vc-dir buffer has been refreshed since."
   (if (executable-find "rg" t)
       (let* ((default-directory (expand-file-name default-directory))
              (buf (format "*vc-todo : %s*" default-directory))
@@ -249,7 +264,8 @@ on the remote host.  Skips when `rg' is unavailable there."
               (set-process-sentinel
                proc
                (lambda (proc _ev)
-                 (vcgit--todo-finish (process-buffer proc) curbuf)
+                 (when (vcgit--gen-current-p curbuf gen)
+                   (vcgit--todo-finish (process-buffer proc) curbuf))
                  (kill-buffer (process-buffer proc)))))
           (error (message "vcgit: todo start-process failed"))))
     (message "vcgit: skip TODO search (no rg available)")))
@@ -344,6 +360,12 @@ stringp nil' from `tramp-signal-hook-function'."
                        (tramp-dissect-file-name default-directory)))))
     (tramp-get-connection-property proc "locked")))
 
+(defvar-local vcgit--refresh-timer nil
+  "Pending deferred-refresh timer of this vc-dir buffer, or nil.
+Kept so a new refresh can cancel a still-pending one; otherwise
+two stacked timers each spawn their own git log and both sentinels
+append their section, duplicating Recent/Unpulled/TODOs.");;
+
 (defun vcgit--dir-refresh ()
   "Run after each vc-dir refresh to insert async log sections.
 
@@ -355,10 +377,16 @@ any synchronous Tramp call from here (`vc-git-working-branch',
 `Forbidden reentrant call of Tramp' and corrupt the connection.
 Defer the actual work with a timer so it runs after the Tramp
 callback has unwound; `vcgit--dir-refresh-deferred' additionally
-retries while the connection is still locked."
+retries while the connection is still locked.
+
+A still-pending timer from a previous refresh is cancelled first,
+so rapid successive refreshes only schedule one deferred run."
   (when (eq vc-dir-backend 'Git)
-    (run-at-time vcgit--tramp-retry-delay nil
-                 #'vcgit--dir-refresh-deferred (current-buffer))))
+    (when vcgit--refresh-timer
+      (cancel-timer vcgit--refresh-timer))
+    (setq vcgit--refresh-timer
+          (run-at-time vcgit--tramp-retry-delay nil
+                       #'vcgit--dir-refresh-deferred (current-buffer)))))
 
 (defun vcgit--dir-refresh-deferred (buf &optional retries)
   "Insert async log/todo sections for vc-dir buffer BUF.
@@ -369,21 +397,27 @@ the Tramp connection is still locked, reschedules itself (up to 10
 times) instead of re-entering Tramp."
   (when (buffer-live-p buf)
     (with-current-buffer buf
+      (setq vcgit--refresh-timer nil)
       (when (and (eq vc-dir-backend 'Git)
                  (bound-and-true-p vcgit-minor-mode))
         (if (vcgit--tramp-busy-p)
             (if (< (or retries 0) 10)
-                (run-at-time vcgit--tramp-retry-delay nil
-                             #'vcgit--dir-refresh-deferred
-                             buf (1+ (or retries 0)))
+                (setq vcgit--refresh-timer
+                      (run-at-time vcgit--tramp-retry-delay nil
+                                   #'vcgit--dir-refresh-deferred
+                                   buf (1+ (or retries 0))))
               (message "vcgit: Tramp still busy, skipping async sections"))
-          (condition-case err
-              (progn
-                (vcgit--async-unpulled)
-                (vcgit--async-recent)
-                (vcgit-dir--todo))
-            (error (message "vcgit: refresh hook failed: %S" err))
-            (quit (message "vcgit: refresh interrupted"))))))))
+          ;; New generation: results from async processes spawned by
+          ;; older refreshes are now stale and will be dropped.
+          (setq vcgit--refresh-gen (1+ vcgit--refresh-gen))
+          (let ((gen vcgit--refresh-gen))
+            (condition-case err
+                (progn
+                  (vcgit--async-unpulled gen)
+                  (vcgit--async-recent gen)
+                  (vcgit-dir--todo gen))
+              (error (message "vcgit: refresh hook failed: %S" err))
+              (quit (message "vcgit: refresh interrupted")))))))))
 
 ;;; vc-git dir-status callback workaround
 ;;
@@ -500,6 +534,9 @@ Enable once in your config:
     (dolist (buf (buffer-list))
       (when (buffer-local-value 'vc-dir-backend buf)
         (with-current-buffer buf
+          (when vcgit--refresh-timer
+            (cancel-timer vcgit--refresh-timer)
+            (setq vcgit--refresh-timer nil))
           (remove-hook 'vc-dir-refresh-hook #'vcgit--dir-refresh t)
           (vcgit-minor-mode -1))))))
 
