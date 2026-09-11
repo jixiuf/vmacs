@@ -1,6 +1,6 @@
 {
-  "defaultModel": "deepseek-v4-flash",
-  "defaultProvider": "deepseek",
+  "defaultModel": "glm-5.3-flash",
+  "defaultProvider": "zai-coding-cn",
   "defaultThinkingLevel": "high",
   "followUpMode": "all",
   "hideThinkingBlock": true,
