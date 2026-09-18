@@ -159,6 +159,7 @@
                                     eglot-code-actions execute-extended-command
                                     project-find-file
                                     project-or-external-find-file vc-switch-project
+                                    liberime-option-menu
                                     indent-for-tab-command
                                     helixel-yank-pop
                                     ;; consult-isearch-history
