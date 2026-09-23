@@ -25,18 +25,24 @@ local dynamic = {}
 --    script_translator: script_translator@translator
 
 function dynamic.init(env)
-    -- 创建 translator 组件，供后续调用
+    -- 创建 translator 组件，供后续调用。
+    -- 注意：组件必须挂在 env 上（每个 engine 实例独立），
+    -- 不能存在模块级全局变量里：rimel-regexp / liberime-search 会频繁
+    -- 创建并销毁临时 session（engine），全局引用会在临时 engine 销毁后
+    -- 变成悬空指针，导致默认 session 查询时 SIGSEGV。
     env.name_space = env.name_space:gsub("^*", "")
     local config = env.engine.schema.config
     local table_translator_name = config:get_string(env.name_space .. "/table_translator")
         or "table_translator@custom_phrase"
     local script_translator_name = config:get_string(env.name_space .. "/script_translator")
         or "script_translator@translator"
-    dynamic.table_translator = Component.Translator(env.engine, "", table_translator_name)
-    dynamic.script_translator = Component.Translator(env.engine, "", script_translator_name)
+    env.table_translator = Component.Translator(env.engine, "", table_translator_name)
+    env.script_translator = Component.Translator(env.engine, "", script_translator_name)
 end
 
 function dynamic.fini(env)
+    env.table_translator = nil
+    env.script_translator = nil
 end
 
 function dynamic.func(input, seg, env)
@@ -45,7 +51,7 @@ function dynamic.func(input, seg, env)
     -- 比如 初始输入为 : nihaoma  当你先中 “你好” 后 就剩下 ma
     -- 此时 "env.engine.context.input"=="nihaoma", input="ma"
     if (env.engine.context.input == input) then
-        local table_translator_res = dynamic.table_translator:query(input, seg)
+        local table_translator_res = env.table_translator:query(input, seg)
         if  table_translator_res ~= nil then
             for cand in table_translator_res:iter() do
                 yield(cand)
@@ -53,7 +59,7 @@ function dynamic.func(input, seg, env)
         end
     end
 
-    local script_translator_res = dynamic.script_translator:query(input, seg)
+    local script_translator_res = env.script_translator:query(input, seg)
     if script_translator_res~=nil then
         for cand in script_translator_res:iter() do
             yield(cand)
