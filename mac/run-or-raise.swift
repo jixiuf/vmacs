@@ -1,5 +1,6 @@
 import AppKit
 import ApplicationServices
+import Darwin
 import Foundation
 
 struct Options {
@@ -438,10 +439,66 @@ func matchesOptions(_ info: WindowInfo, _ options: Options, targetPid: pid_t? = 
     }
 }
 
+// Frontmost pid according to the Accessibility API.
+func axFrontmostPid() -> pid_t? {
+    let systemWide = AXUIElementCreateSystemWide()
+    var focusedAppRef: CFTypeRef?
+    guard
+        AXUIElementCopyAttributeValue(
+            systemWide, kAXFocusedApplicationAttribute as CFString, &focusedAppRef
+        ) == .success, let focusedApp = focusedAppRef
+    else { return nil }
+    var pid = pid_t(0)
+    AXUIElementGetPid(focusedApp as! AXUIElement, &pid)
+    return pid
+}
+
+// Pid owning the visually topmost layer-0 window (CGWindowList order).
+func cgFrontmostWindowPid() -> pid_t? {
+    guard
+        let list = CGWindowListCopyWindowInfo(
+            [.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID
+        ) as? [[String: Any]]
+    else { return nil }
+    for w in list {
+        guard let layer = w[kCGWindowLayer as String] as? Int, layer == 0,
+            let owner = w[kCGWindowOwnerPID as String] as? Int
+        else { continue }
+        return pid_t(owner)
+    }
+    return nil
+}
+
+// True when the given pid is the active application according to any of the
+// three signals. The two first occasionally disagree (e.g. a bundle-less
+// emacs daemon process is reported by NSWorkspace while the AX focused
+// application is the actually visible app; some apps like WeChat never
+// report kAXFocusedApplication at all).
+func isFrontmost(_ pid: pid_t) -> Bool {
+    if NSWorkspace.shared.frontmostApplication?.processIdentifier == pid { return true }
+    if axFrontmostPid() == pid { return true }
+    return cgFrontmostWindowPid() == pid
+}
+
 func focusWindow(_ info: WindowInfo) {
-    // Unhide the app if it was hidden via app.hide()
+    // Unhide the app if it was hidden via app.hide(). unhide() is async and
+    // cooperative activation (macOS 14+) denies activation of an app that is
+    // still hidden, so wait for it to take effect before activating.
     if info.app.isHidden {
-        info.app.unhide()
+        // open -b unhides + activates in one reliable LaunchServices shot;
+        // plain unhide()+activate() is slow and often gets denied while the
+        // app is still hidden (isHidden also stays stale-true afterwards).
+        if let bid = info.app.bundleIdentifier {
+            log("UNHIDE_VIA_OPEN pid=\(info.pid) bundle=\(bid)")
+            let task = Process()
+            task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            task.arguments = ["-b", bid]
+            try? task.run()
+        } else {
+            log("UNHIDE pid=\(info.pid) via unhide()")
+            info.app.unhide()
+        }
+        Thread.sleep(forTimeInterval: 0.05)
     }
 
     if info.isMinimized {
@@ -461,13 +518,48 @@ func focusWindow(_ info: WindowInfo) {
     // Retry activation briefly to handle race conditions with hotkey managers
     // (e.g. karabiner/skhd may still hold focus when we first try).
     // Limit retries to avoid visible window flickering.
+    // Short verification only: the activation actions (AXFrontmost/activate,
+    // or the open -b that ran before) are already issued; both frontmost
+    // signals can be unreliable here, so do not burn time re-confirming.
     var retries = 0
-    while retries < 5 && NSWorkspace.shared.frontmostApplication?.processIdentifier != info.pid {
+    let activateDeadline = Date().addingTimeInterval(0.4)
+    while !isFrontmost(info.pid) && Date() < activateDeadline && retries < 2 {
+        if info.app.isHidden { info.app.unhide() }
         AXUIElementSetAttributeValue(axApp, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
         info.app.activate()
-        Thread.sleep(forTimeInterval: 0.1)
+        Thread.sleep(forTimeInterval: 0.2)
         retries += 1
     }
+
+    // Last resort: ask LaunchServices to activate the app. This reliably
+    // unhides + activates even when the app was hidden moments ago or has
+    // limited AX support (e.g. alacritty).
+    if !isFrontmost(info.pid) {
+        log("ACTIVATE_FALLBACK pid=\(info.pid) bundle=\(info.app.bundleIdentifier ?? "nil")")
+        if let bid = info.app.bundleIdentifier {
+            let task = Process()
+            task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+            task.arguments = ["-b", bid]
+            try? task.run()
+        } else {
+            let script =
+                "tell application \"System Events\" to set frontmost of "
+                + "(first application process whose unix id is \(info.pid)) to true"
+            let task = Process()
+            task.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+            task.arguments = ["-e", script]
+            try? task.run()
+        }
+        var waits = 0
+        while !isFrontmost(info.pid) && waits < 3 {
+            Thread.sleep(forTimeInterval: 0.1)
+            waits += 1
+        }
+    }
+
+    log(
+        "FOCUS_WINDOW pid=\(info.pid) '\(info.title)' retries=\(retries) front=\(NSWorkspace.shared.frontmostApplication?.localizedName ?? "nil") axFront=\(axFrontmostPid().map(String.init) ?? "nil")"
+    )
 }
 
 // Get the current frontmost window info before any focus changes (source window)
@@ -481,79 +573,107 @@ func getFrontmostWindowInfo() -> WindowInfo? {
 // After launching an app via --cmd/--id/--exec, poll for its window to appear
 // using CGWindowList (AX may not be ready for newly launched apps).
 func launchThenFocus(options: Options, timeout: TimeInterval = 10.0) {
+    // Restrict polling to the app we just opened/launched so that windows of
+    // unrelated apps can never be focused from here. Previously ANY app's
+    // window could be picked up here (e.g. Emacs got focused when toggling
+    // WeChat), because matchesOptions(targetPid:) passes any pid when no
+    // --title is given.
+    let expectedBundle = options.bundleId ?? cachedExecInfo?.bundleId
+    // Processes launched directly from an executable (e.g. alacritty via
+    // term.sh) may report a nil bundleIdentifier even when the binary lives
+    // inside an .app bundle, so match by executable path as well.
+    let expectedExecPath =
+        options.execPath.map { which($0) ?? $0 } ?? cachedExecInfo?.execPath
+    log("LAUNCH_POLL bundle=\(expectedBundle ?? "-") exec=\(expectedExecPath ?? "-")")
+
     let deadline = Date(timeIntervalSinceNow: timeout)
     while Date() < deadline {
-        Thread.sleep(forTimeInterval: 0.3)
+        Thread.sleep(forTimeInterval: 0.15)
 
-        // Phase 1: CGWindowList finds candidate windows by title
-        var seenPids = Set<pid_t>()
         guard let windowList = CGWindowListCopyWindowInfo(
             [.optionAll, .excludeDesktopElements], kCGNullWindowID
         ) as? [[String: Any]] else { continue }
 
+        var processedPids = Set<pid_t>()
+
         for cgWindow in windowList {
             guard let layer = cgWindow[kCGWindowLayer as String] as? Int, layer == 0,
-                  let ownerPid = cgWindow[kCGWindowOwnerPID as String] as? Int
+                let ownerPid = cgWindow[kCGWindowOwnerPID as String] as? Int
             else { continue }
 
             let pid = pid_t(ownerPid)
+            if processedPids.contains(pid) { continue }
 
             // CG title may be empty when Screen Recording permission is missing.
             // Only apply the CG-based quick title/skip-title filter when we
             // actually have a title; otherwise defer to the AX matching below.
             let cgTitle = cgWindow[kCGWindowName as String] as? String ?? ""
             if !cgTitle.isEmpty {
-                if options.skipTitlePatterns.contains(where: { regexMatch(cgTitle, $0) }) { continue }
+                if options.skipTitlePatterns.contains(where: { regexMatch(cgTitle, $0) }) {
+                    continue
+                }
                 if let tp = options.titlePattern, !regexMatch(cgTitle, tp) { continue }
             }
-            if seenPids.contains(pid) { continue }
-            seenPids.insert(pid)
 
-            // Phase 2: try AX + full matchesOptions, or fallback to activate()
             guard let app = NSRunningApplication(processIdentifier: pid) else { continue }
 
-            // Check if AX windows are available
+            // Only the app we launched/opened is a valid target here.
+            var pidAccepted = false
+            if let eb = expectedBundle, let bid = app.bundleIdentifier, bid == eb {
+                pidAccepted = true
+            } else if let ep = expectedExecPath, let exec = app.executableURL?.path {
+                let fm = FileManager.default
+                let resolvedExec = (try? fm.destinationOfSymbolicLink(atPath: exec)) ?? exec
+                let resolvedEp = (try? fm.destinationOfSymbolicLink(atPath: ep)) ?? ep
+                if resolvedExec == resolvedEp || exec == ep { pidAccepted = true }
+            }
+            guard pidAccepted else { continue }
+            processedPids.insert(pid)
+
+            // Wait until AX windows are actually available. Hidden apps report
+            // no windows yet, so stay in the polling loop instead of falling
+            // back to a blind activate() of an arbitrary pid.
             let axApp = AXUIElementCreateApplication(pid)
             var windowsRef: CFTypeRef?
-            if AXUIElementCopyAttributeValue(axApp, kAXWindowsAttribute as CFString, &windowsRef) == .success,
-               let axWindows = windowsRef as? [AXUIElement] {
-                // AX ready — do full matching
-                for axWindow in axWindows {
-                    var titleRef: CFTypeRef?
-                    AXUIElementCopyAttributeValue(axWindow, kAXTitleAttribute as CFString, &titleRef)
-                    let axTitle = (titleRef as? String) ?? ""
+            guard
+                AXUIElementCopyAttributeValue(
+                    axApp, kAXWindowsAttribute as CFString, &windowsRef
+                ) == .success,
+                let axWindows = windowsRef as? [AXUIElement], !axWindows.isEmpty
+            else { continue }
 
-                    var minimizedRef: CFTypeRef?
-                    let minResult = AXUIElementCopyAttributeValue(axWindow, kAXMinimizedAttribute as CFString, &minimizedRef)
-                    var isMinimized = false
-                    if minResult == .success, let boolRef = minimizedRef {
-                        isMinimized = (boolRef as! CFBoolean) == kCFBooleanTrue
-                    }
+            for axWindow in axWindows {
+                var titleRef: CFTypeRef?
+                AXUIElementCopyAttributeValue(
+                    axWindow, kAXTitleAttribute as CFString, &titleRef
+                )
+                let axTitle = (titleRef as? String) ?? ""
 
-                    let winfo = WindowInfo(app: app, element: axWindow, title: axTitle,
-                                            pid: pid, isMinimized: isMinimized, zOrder: 0)
-                    if matchesOptions(winfo, options, targetPid: pid) {
-                        let sourceWindow = getFrontmostWindowInfo()
-                        if !options.preCmd.isEmpty { executePreCmd(options.preCmd, sourceWindow: sourceWindow) }
-                        focusWindow(winfo)
-                        if !options.postCmd.isEmpty { executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: winfo) }
-                        exit(0)
-                    }
+                var minimizedRef: CFTypeRef?
+                let minResult = AXUIElementCopyAttributeValue(
+                    axWindow, kAXMinimizedAttribute as CFString, &minimizedRef
+                )
+                var isMinimized = false
+                if minResult == .success, let boolRef = minimizedRef {
+                    isMinimized = (boolRef as! CFBoolean) == kCFBooleanTrue
                 }
-            } else {
-                // AX not ready yet — just activate the app as fallback (limited retries)
-                app.activate()
-                var fr = 0
-                while fr < 5 && NSWorkspace.shared.frontmostApplication?.processIdentifier != pid {
-                    AXUIElementSetAttributeValue(axApp, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
-                    app.activate()
-                    Thread.sleep(forTimeInterval: 0.1)
-                    fr += 1
+
+                let winfo = WindowInfo(
+                    app: app, element: axWindow, title: axTitle, pid: pid,
+                    isMinimized: isMinimized, zOrder: 0
+                )
+                if matchesOptions(winfo, options, targetPid: pid) {
+                    log("LAUNCH_MATCH pid=\(pid) '\(winfo.title)'")
+                    let sourceWindow = getFrontmostWindowInfo()
+                    if !options.preCmd.isEmpty { executePreCmd(options.preCmd, sourceWindow: sourceWindow) }
+                    focusWindow(winfo)
+                    if !options.postCmd.isEmpty { executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: winfo) }
+                    exit(0)
                 }
-                exit(0)
             }
         }
     }
+    log("LAUNCH_TIMEOUT")
     exit(0)
 }
 
@@ -651,10 +771,7 @@ func hideWindow(_ info: WindowInfo) {
 }
 
 func isFocusedWindow(_ info: WindowInfo) -> Bool {
-    let workspace = NSWorkspace.shared
-    guard let frontApp = workspace.frontmostApplication else { return false }
-
-    if info.pid != frontApp.processIdentifier { return false }
+    guard isFrontmost(info.pid) else { return false }
 
     let axApp = AXUIElementCreateApplication(info.pid)
     var focusedWindowRef: CFTypeRef?
@@ -678,6 +795,50 @@ func isFocusedWindow(_ info: WindowInfo) -> Bool {
     let focusedTitle = (titleRef as? String) ?? ""
 
     return info.title == focusedTitle
+}
+
+// MARK: - Debug logging & single-instance lock
+
+let logFilePath = "/tmp/run-or-raise.log"
+let logMaxBytes: UInt64 = 1_000_000
+
+func log(_ message: String) {
+    let ts = String(format: "%.3f", Date().timeIntervalSince1970)
+    let line = "[\(ts)] [pid \(ProcessInfo.processInfo.processIdentifier)] \(message)\n"
+    guard let data = line.data(using: .utf8) else { return }
+    let fm = FileManager.default
+    if let attrs = try? fm.attributesOfItem(atPath: logFilePath),
+        let size = attrs[.size] as? UInt64, size > logMaxBytes
+    {
+        try? fm.removeItem(atPath: logFilePath)
+    }
+    if fm.fileExists(atPath: logFilePath),
+        let handle = FileHandle(forWritingAtPath: logFilePath)
+    {
+        handle.seekToEndOfFile()
+        handle.write(data)
+        handle.closeFile()
+    } else {
+        fm.createFile(atPath: logFilePath, contents: data)
+    }
+}
+
+// Serialize concurrent invocations (e.g. a fast double key press) so that a
+// second run observes the final state produced by the first one instead of
+// racing with it. Returns false if the lock could not be acquired in time.
+func acquireInstanceLock(timeout: TimeInterval) -> Bool {
+    let path = "/tmp/run-or-raise.lock"
+    let fd = open(path, O_CREAT | O_RDWR, 0o644)
+    guard fd >= 0 else { return true }  // fail open; never block on lock errors
+    let deadline = Date().addingTimeInterval(timeout)
+    while true {
+        if flock(fd, LOCK_EX | LOCK_NB) == 0 { return true }
+        if Date() >= deadline {
+            close(fd)
+            return false
+        }
+        usleep(50_000)
+    }
 }
 
 // MARK: - Main
@@ -770,6 +931,17 @@ guard
 else {
     print("ERROR: Must specify --title, --id, --app, or --exec")
     exit(1)
+}
+
+let startFront = NSWorkspace.shared.frontmostApplication
+log(
+    "START args=\(ProcessInfo.processInfo.arguments.dropFirst().joined(separator: " ")) front=\(startFront?.bundleIdentifier ?? "nil")/\(startFront?.localizedName ?? "nil")"
+)
+
+guard acquireInstanceLock(timeout: 1.5) else {
+    log("LOCK_TIMEOUT exit")
+    print("SKIP: another run-or-raise instance is running")
+    exit(0)
 }
 
 // Pre-resolve exec info once before filtering
@@ -884,7 +1056,14 @@ if !targetPidSet.isEmpty {
     frontmostIsTarget = matchedWindows.contains { $0.pid == frontPid }
 }
 
+log(
+    "MATCHED targetPids=[\(targetPidSet.map(String.init).joined(separator: ","))] matched=\(matchedWindows.map { "pid=\($0.pid) '\($0.title)' min=\($0.isMinimized) hid=\($0.app.isHidden)" }.joined(separator: " | "))"
+)
+
 if matchedWindows.isEmpty {
+    log(
+        "NOT_FOUND cmd=\(!options.fallbackCmd.isEmpty) bid=\(options.bundleId ?? "-") exec=\(options.execPath ?? "-")"
+    )
     if !options.fallbackCmd.isEmpty {
         print(
             "NOT_FOUND: Running command: \(options.fallbackCmd.joined(separator: " "))"
@@ -998,76 +1177,45 @@ func writeCycleState(pattern: String, index: Int) {
 let patternKey =
     "\(options.appName ?? "")-\(options.bundleId ?? "")-\(options.titlePattern ?? "")-\(options.execPath ?? "")"
 
-if matchedWindows.count == 1 {
-    // Only one matched window
-    let theMatch = matchedWindows[0]
-
-    // Check if this specific window is already focused (not just the app)
-    let isWindowFocused = isFocusedWindow(theMatch)
-
-    if options.isToggle && isWindowFocused {
-        // Hide the target app - macOS auto-activates the previous app
-        theMatch.app.hide()
-        writeCycleState(pattern: patternKey, index: -1)
-        print("HIDDEN: '\(theMatch.title)'")
-        exit(0)
-    } else {
-        // Get source window before focus change
-        let sourceWindow = getFrontmostWindowInfo()
-        
-        // Execute pre command if specified
-        if !options.preCmd.isEmpty {
-            executePreCmd(options.preCmd, sourceWindow: sourceWindow)
-        }
-        
-        focusWindow(theMatch)
-        writeCycleState(pattern: patternKey, index: 0)
-        print("FOCUS: '\(theMatch.title)'")
-
-        // Execute post command if specified
-        if !options.postCmd.isEmpty {
-            executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: theMatch)
-        }
-
-        exit(0)
-    }
-}
-
-// Multiple matched windows
-// Check state to determine next index
-var nextIndex = 0
+// ---- Decide the action: toggle-hide, cycle, or focus ----
 let now = Date().timeIntervalSince1970
-
-if let state = readCycleState(),
-    state.pattern == patternKey,
-    now - state.timestamp < 5.0
-{  // State is fresh (within 5 seconds)
-    // Continue cycling from last position
-    nextIndex = (state.index + 1) % matchedWindows.count
+let cycleState = readCycleState()
+let stateFresh: Bool
+let stateIndex: Int
+if let st = cycleState, st.pattern == patternKey, now - st.timestamp < 5.0, st.index >= 0 {
+    stateFresh = true
+    stateIndex = st.index
 } else {
-    // Fresh start or different pattern, start from 0
-    nextIndex = 0
+    stateFresh = false
+    stateIndex = -1
 }
 
-// Check if we should toggle (at the end of cycle)
-// Only hide if the currently focused window is the one we would focus (matchedWindows[nextIndex])
-if options.isToggle && nextIndex == 0 {
-    let currentWindow = matchedWindows[0]
-    let isCurrentWindowFocused = isFocusedWindow(currentWindow)
-    
-    if isCurrentWindowFocused,
-        let state = readCycleState(),
-        state.pattern == patternKey,
-        state.index == matchedWindows.count - 1,
-        now - state.timestamp < 5.0
-    {
-        // Just finished a complete cycle, hide the app
-        matchedWindows[0].app.hide()
-        writeCycleState(pattern: patternKey, index: -1)
-        print("HIDDEN: '\(matchedWindows[0].title)'")
-        exit(0)
-    }
+// Index of the currently focused window among matchedWindows (nil = none of
+// the matched windows is focused right now).
+let focusedIndex = matchedWindows.firstIndex { isFocusedWindow($0) }
+
+// Mid-cycle: the focused window is the one a previous press (within 5s)
+// focused, and there are still more matched windows after it.
+let midCycle =
+    stateFresh && focusedIndex == stateIndex
+    && stateIndex < matchedWindows.count - 1
+
+log(
+    "DECIDE matched=\(matchedWindows.count) focusedIdx=\(focusedIndex.map(String.init) ?? "none") fresh=\(stateFresh) idx=\(stateIndex) midCycle=\(midCycle)"
+)
+
+if options.isToggle, let fi = focusedIndex, !midCycle {
+    // The focused window is a matched window and this press is not continuing
+    // a cycle: hide the app. macOS auto-activates the previous app.
+    let theMatch = matchedWindows[fi]
+    theMatch.app.hide()
+    writeCycleState(pattern: patternKey, index: -1)
+    print("HIDDEN: '\(theMatch.title)'")
+    log("HIDDEN '\(theMatch.title)'")
+    exit(0)
 }
+
+let nextIndex = stateFresh ? (stateIndex + 1) % matchedWindows.count : 0
 
 // Get source window before any focus change
 let sourceWindow = getFrontmostWindowInfo()
@@ -1079,13 +1227,25 @@ if !options.preCmd.isEmpty {
 
 focusWindow(matchedWindows[nextIndex])
 writeCycleState(pattern: patternKey, index: nextIndex)
-print(
-    "CYCLE: \(nextIndex + 1)/\(matchedWindows.count) '\(matchedWindows[nextIndex].title)'"
-)
+
+if matchedWindows.count > 1 {
+    print(
+        "CYCLE: \(nextIndex + 1)/\(matchedWindows.count) '\(matchedWindows[nextIndex].title)'"
+    )
+    log(
+        "CYCLE \(nextIndex + 1)/\(matchedWindows.count) '\(matchedWindows[nextIndex].title)'"
+    )
+} else {
+    print("FOCUS: '\(matchedWindows[nextIndex].title)'")
+    log("FOCUS '\(matchedWindows[nextIndex].title)'")
+}
 
 // Execute post command if specified (after focus)
 if !options.postCmd.isEmpty {
     executePostCmd(options.postCmd, sourceWindow: sourceWindow, targetWindow: matchedWindows[nextIndex])
 }
 
+log(
+    "DONE frontAfter=\(NSWorkspace.shared.frontmostApplication?.localizedName ?? "nil")"
+)
 exit(0)
