@@ -11,6 +11,11 @@
 (if (eq system-type 'gnu/linux)
     (setq liberime-user-data-dir (expand-file-name "~/.local/share/fcitx5/rime/"))
   (setq liberime-user-data-dir (expand-file-name "~/Library/Rime/")))
+;; Use locally built librime 1.17 with lua & octagram plugins,
+;; so lua-based schemas (e.g. egret_wubi_py) can produce candidates.
+(when (and (eq system-type 'darwin)
+           (file-exists-p "~/repos/liberime/src/liberime-core.dylib"))
+  (setq liberime-module-file (expand-file-name "~/repos/liberime/src/liberime-core.dylib")))
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
     (setq rimel-show-candidate 'echo-area)
   (setq rimel-show-candidate 'posframe))
