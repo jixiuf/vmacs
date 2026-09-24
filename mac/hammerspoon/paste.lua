@@ -61,6 +61,44 @@ local last_change = pasteboard.changeCount() -- displays how many times the past
 local clipboard_history = settings.get("so.victor.hs.jumpcut.jixiuf") or {} --If no history is saved on the system, create an empty history
 local clipboard_history_persist = settings.get("so.victor.hs.jumpcut.persist") or {} --If no history is saved on the system, create an empty history
 
+-- Debounced persistence: settings.set serializes the whole history to
+-- NSUserDefaults on every call, which lags badly when entries are large.
+-- Instead, schedule a single write 2s after the last change.
+local saveTimer = nil
+local function saveHistory()
+   settings.set("so.victor.hs.jumpcut.jixiuf", clipboard_history)
+   settings.set("so.victor.hs.jumpcut.persist", clipboard_history_persist)
+end
+local function scheduleSave()
+   if saveTimer ~= nil then saveTimer:stop() end
+   saveTimer = hs.timer.doAfter(2, function()
+      saveTimer = nil
+      saveHistory()
+   end)
+end
+
+-- Build a short single-line preview for chooser/menu rows. Rendering huge or
+-- multiline strings in hs.chooser rows is slow; full content stays in history.
+local function previewText(v)
+   if type(v) ~= "string" then return v end
+   local s = v:gsub("[\r\n]+", " ")
+   if #s > mod.config.label_length then
+      s = string.sub(s, 1, mod.config.label_length) .. "…"
+   end
+   return s
+end
+
+-- Chooser state. Rows shown in the UI carry only a short preview plus a
+-- numeric id; the full contents and pre-lowered search text live in these
+-- Lua-side tables. Keeping large strings out of the row tables is essential:
+-- hs.chooser converts every row table to NSArray/NSDictionary on each query
+-- refresh, so full text must never cross the Lua/ObjC bridge per keystroke.
+local chooserAllRows = {}      -- all rows, rebuilt when the chooser opens
+local chooserFilteredRows = {} -- rows matching the current query
+local chooserFullContents = {} -- id -> full content
+local chooserSearchIndex = {}  -- id -> lowercased full text (for fast find)
+local chooserRowId = 0
+
 -- Append a history counter to the menu
 function setTitle()
    if ((#clipboard_history == 0) or (mod.config.show_menu_counter == false)) then
@@ -76,6 +114,15 @@ function putOnPaste(value,key)
       mod.prevFocusedWindow:focus()
    end
    if value == nil then return end
+   if type(value) == "table" then
+      if value.valid == false then return end -- placeholder row (e.g. empty history)
+      if value.id ~= nil then
+         value = chooserFullContents[value.id] -- resolve preview row to full content
+         if value == nil then return end
+      elseif value.fullContent ~= nil then
+         value = value.fullContent
+      end
+   end
    if type(value) == "string" then
       pasteboard.setContents(value)
    else if type(value) == "table" then
@@ -105,14 +152,14 @@ end
 function clearAll()
    pasteboard.clearContents()
    clipboard_history = {}
-   settings.set("so.victor.hs.jumpcut.jixiuf",clipboard_history)
+   scheduleSave()
    now = pasteboard.changeCount()
    setTitle()
 end
 function clearAllPersist()
    pasteboard.clearContents()
    clipboard_history_persist = {}
-   settings.set("so.victor.hs.jumpcut.persist",clipboard_history_persist)
+   scheduleSave()
    now = pasteboard.changeCount()
    setTitle()
 end
@@ -120,7 +167,7 @@ end
 -- Clears the last added to the history
 function clearLastItem()
    table.remove(clipboard_history,#clipboard_history)
-   settings.set("so.victor.hs.jumpcut.jixiuf",clipboard_history)
+   scheduleSave()
    now = pasteboard.changeCount()
    setTitle()
 end
@@ -146,7 +193,7 @@ function pasteboardToClipboard(item)
       table.remove(clipboard_history,1)
    end
    table.insert(clipboard_history, item)
-   settings.set("so.victor.hs.jumpcut.jixiuf",clipboard_history) -- updates the saved history
+   scheduleSave() -- updates the saved history (debounced)
    setTitle() -- updates the menu counter
 end
 
@@ -158,7 +205,7 @@ function persistLastItem()
 
    -- Loop to enforce limit on qty of elements in history. Removes the oldest items
    table.insert(clipboard_history_persist, clipboard_history[#clipboard_history])
-   settings.set("so.victor.hs.jumpcut.persist",clipboard_history_persist) -- updates the saved history
+   scheduleSave() -- updates the saved history (debounced)
    clearLastItem()
 end
 -- Dynamic menu by cmsj https://github.com/Hammerspoon/hammerspoon/issues/61#issuecomment-64826257
@@ -206,42 +253,55 @@ populateMenubar = function(key)
    return menuData
 end
 
-populateChooser = function(key)
-   menuData = {}
-   if (#clipboard_history == 0) then
-      table.insert(menuData, {text="", subtext = "Clipboard history is empty"}) -- If the history is empty, display "None"
+-- When a queryChangedCallback is set, HSChooser skips its own filtering
+-- entirely, so search cost and result order are fully under our control here.
+-- Filtering uses a plain C-level string.find over pre-lowered text.
+local function addChooserRow(menuData, v)
+   chooserRowId = chooserRowId + 1
+   local id = chooserRowId
+   chooserFullContents[id] = v
+   chooserSearchIndex[id] = (type(v) == "string") and string.lower(v) or ""
+   if type(v) == "userdata" then
+      table.insert(menuData, {text="(image)", image=v, id=id})
    else
-      for k,v in pairs(clipboard_history_persist) do
-         if (type(v) == "string") then
-            table.insert(menuData,1, {text=v, subText=""})
-         else
-            if type(v) == "userdata" then
-               table.insert(menuData,1, {text="(image)", subText = "", image=v })
-            else
-               table.insert(menuData,1, {text=v, subText = ""})
-            end
-         end -- end if else
-      end-- end for
+      table.insert(menuData, {text=previewText(v), id=id})
+   end
+end
 
-      for k,v in pairs(clipboard_history) do
-         if (type(v) == "string") then
-            table.insert(menuData,1, {text=v, subText=""})
-         else
-            if type(v) == "userdata" then
-               table.insert(menuData,1, {text="(image)", subText = "", image=v })
-            else
-               table.insert(menuData,1, {text=v, subText = ""})
-            end
-         end -- end if else
-      end-- end for
-   end-- end if else
-   -- footer
-   -- table.insert(menuData, {title="-"})
-   -- table.insert(menuData, {title="Clear All", fn = function() clearAll() end })
-   -- if (key.alt == true or mod.config.paste_on_select) then
-   --    table.insert(menuData, {title="Direct Paste Mode ✍", disabled=true})
-   -- end
-   return menuData
+local function buildChooserRows()
+   chooserRowId = 0
+   chooserFullContents = {}
+   chooserSearchIndex = {}
+   local rows = {}
+   if (#clipboard_history == 0 and #clipboard_history_persist == 0) then
+      table.insert(rows, {text="Clipboard history is empty", valid=false})
+   else
+      for i = #clipboard_history, 1, -1 do -- newest first
+         addChooserRow(rows, clipboard_history[i])
+      end
+      for i = #clipboard_history_persist, 1, -1 do
+         addChooserRow(rows, clipboard_history_persist[i])
+      end
+   end
+   chooserAllRows = rows
+   chooserFilteredRows = rows
+end
+
+local function chooserQueryChanged(query)
+   query = string.lower(query or "")
+   if query == "" then
+      chooserFilteredRows = chooserAllRows
+   else
+      local filtered = {}
+      for _, row in ipairs(chooserAllRows) do
+         local hay = chooserSearchIndex[row.id]
+         if hay and string.find(hay, query, 1, true) then
+            table.insert(filtered, row)
+         end
+      end
+      chooserFilteredRows = filtered
+   end
+   mod.chooser:refreshChoicesCallback()
 end
 
 -- If the pasteboard owner has changed, we add the current item to our history and update the counter.
@@ -272,11 +332,12 @@ function mod.init()
 
    if mod.config.use_chooser then
       mod.chooser = hs.chooser.new(putOnPaste)
-      mod.chooser:choices(populateChooser)
+      mod.chooser:choices(function() return chooserFilteredRows end)
+      mod.chooser:queryChangedCallback(chooserQueryChanged)
       hs.hotkey.bind(mod.config.clipboard_menu_key[1],
                      mod.config.clipboard_menu_key[2],
                      function()
-                        mod.chooser:refreshChoicesCallback()
+                        buildChooserRows()
                         mod.prevFocusedWindow = hs.window.focusedWindow()
                         mod.chooser:show()
       end)
