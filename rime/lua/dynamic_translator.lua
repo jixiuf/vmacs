@@ -19,8 +19,9 @@
 -- 使用 Component 实现该功能。
 
 local dynamic = {}
--- 可以通过 指定 
+-- 可以通过 指定
 -- dynamic_translator
+--    first_translator: table_translator@wubi_jianma2   （可选：最先查询，如传统二级简码微型库）
 --    table_translator: table_translator@custom_phrase
 --    script_translator: script_translator@translator
 
@@ -36,32 +37,43 @@ function dynamic.init(env)
         or "table_translator@custom_phrase"
     local script_translator_name = config:get_string(env.name_space .. "/script_translator")
         or "script_translator@translator"
+    -- 可选：最先查询的 translator（如拼音冲突的传统二级简码微型库）
+    local first_translator_name = config:get_string(env.name_space .. "/first_translator")
+    env.first_translator = first_translator_name
+        and Component.Translator(env.engine, "", first_translator_name) or nil
     env.table_translator = Component.Translator(env.engine, "", table_translator_name)
     env.script_translator = Component.Translator(env.engine, "", script_translator_name)
 end
 
 function dynamic.fini(env)
+    env.first_translator = nil
     env.table_translator = nil
     env.script_translator = nil
 end
 
 function dynamic.func(input, seg, env)
-    -- print(env.engine.context.input .. " |" .. input)
-    -- (env.engine.context.input == input) 判断用户是否已经选过字
-    -- 比如 初始输入为 : nihaoma  当你先中 “你好” 后 就剩下 ma
-    -- 此时 "env.engine.context.input"=="nihaoma", input="ma"
+    -- 未选字时顺序 = jianma2(简码) -> table(字/造词) -> script(词/句子)
+    -- （1~2码首候选由 jianma2 保证；词库层已让二字词压过同码全码生僻字）
+    -- 选字后 table 禁用，只剩 script 继续造词
     if (env.engine.context.input == input) then
-        local table_translator_res = env.table_translator:query(input, seg)
-        if  table_translator_res ~= nil then
-            for cand in table_translator_res:iter() do
+        if env.first_translator ~= nil then
+            local first_res = env.first_translator:query(input, seg)
+            if first_res ~= nil then
+                for cand in first_res:iter() do
+                    yield(cand)
+                end
+            end
+        end
+        local table_res = env.table_translator:query(input, seg)
+        if table_res ~= nil then
+            for cand in table_res:iter() do
                 yield(cand)
             end
         end
     end
-
-    local script_translator_res = env.script_translator:query(input, seg)
-    if script_translator_res~=nil then
-        for cand in script_translator_res:iter() do
+    local script_res = env.script_translator:query(input, seg)
+    if script_res ~= nil then
+        for cand in script_res:iter() do
             yield(cand)
         end
     end

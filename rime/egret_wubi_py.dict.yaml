@@ -41,8 +41,16 @@ import_tables:
 
   # 这里引入的五笔字典（可以用于script_translator的）
   # 来自 https://github.com/gaboolic/rime-wubi-sentence
-  - dicts/wb86_cn_dicts/8105     # 字表
-  - dicts/wb86_cn_dicts/base.small     # 基础词库
+  # 2026-09: 改用 wb86_wangxiang 系列（五笔编码+万象词频），与下方 wangxiang
+  # 拼音词库共享同一套权重，消除两套词库 1.5 万倍的权重鸿沟，
+  # 否则语言模型无法正确组句（如 “今天的天气” 会被五笔高权重字碾成 “今天在有天气”）
+  # 字表: chars_wubi_py_x035 = chars.dict.yaml 权重×0.35 + 25个一级简码显式条目
+  # （缩放使派生五笔短码与拼音音节碰撞时，如 有de,简->de、扔re,n->ren，拼音读音获胜）
+  # 生成脚本: scripts/gen_wubi_py_unified_dicts.py
+  - dicts/egret_wubi_py/egret_wubi_py_chars   # 字表(五笔码+万象权重×0.35+一级简码)
+  - dicts/wb86_wangxiang_cn_dicts/base.small    # 基础词库(五笔码+万象权重,>450过滤碎片词)
+  # - dicts/wb86_cn_dicts/8105     # 旧字表(知频权重，量级与万象不兼容，弃用)
+  # - dicts/wb86_cn_dicts/base.small     # 旧基础词库(同上)
   # - dicts/wb86_cn_dicts/ext.small      # 扩展词库
   # - dicts/wb86_cn_dicts/41448
   # - dicts/wb86_cn_dicts/base     # 基础词库
@@ -50,8 +58,10 @@ import_tables:
   # - dicts/wb86_cn_dicts/others   # 一些杂项 容错音和错字 可以不开
 
 # 有声调
-  - dicts/wangxiang_cn_dicts/8105            #字表，包含了常用带拼音的汉字
-  - dicts/wangxiang_cn_dicts/base.small      #         #基础词库，2-3字词汇(高权重的)
+  - dicts/egret_wubi_py/egret_wubi_py_pinyin_8105  # 拼音字表(无调化副本, 同音异调合并为同一音节)
+  # - dicts/wangxiang_cn_dicts/8105        # 旧带调字表(派生无调拼写会跨音节竞争,弃用)
+  - dicts/egret_wubi_py/egret_wubi_py_pinyin_base_small # 拼音基础词库(无调化副本)
+  # - dicts/wangxiang_cn_dicts/base.small   # 旧带调词库(弃用)
   # - dicts/wangxiang_cn_dicts/correlation.small
   # - dicts/wangxiang_cn_dicts/chars            #字表，包含了所有带拼音的汉字
   # - dicts/wangxiang_cn_dicts/base            #基础词库，2-3字词汇

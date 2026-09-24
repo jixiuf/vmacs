@@ -1,0 +1,8 @@
+# 自定义词组(用户手工维护): 与 wubi_py_wubi 词库合并
+# 编码规则与传统一致: 4字词=各字全码首码(生不逢时=tgtj)
+---
+name: wubi_py_user_phrases
+version: "2025-09-24"
+sort: by_weight
+...
+生不逢时	tgtj	900

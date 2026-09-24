@@ -1,0 +1,23 @@
+#   -*- coding: utf-8 -*-
+# 内部辅助 schema：仅为让部署器编译 egret_wubi_py_wubi 词库
+# （egret_wubi_py 的 dependencies 引用依赖时需要依赖方有 schema 文件）。
+# 不要加入 default.custom.yaml 的 schema_list，不要直接使用。
+schema:
+  schema_id: egret_wubi_py_wubi
+  name: "wubi py wubi (internal)"
+  version: "1"
+  author:
+    - jixiuf
+  description: |
+    internal helper schema, do not select.
+    传统结构五笔词库（显式简码/全码/词组码），供
+    table_translator@egret_wubi_py_wubi 精确查询，见 egret_wubi_py.schema.yaml
+  dependencies:
+    - stroke
+
+translator:
+  dictionary: egret_wubi_py_wubi
+  enable_user_dict: false
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 1000
