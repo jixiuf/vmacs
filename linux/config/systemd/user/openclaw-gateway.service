@@ -4,16 +4,16 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/home/jixiuf/.nvm/versions/node/v24.14.0/bin/node /home/jixiuf/.nvm/versions/node/v24.14.0/lib/node_modules/openclaw/dist/index.js gateway --port 18789
+ExecStart=/Users/jixiuf/.nvm/versions/node/v24.14.0/bin/node /Users/jixiuf/.nvm/versions/node/v24.14.0/lib/node_modules/openclaw/dist/index.js gateway --port 18789
 Restart=always
 RestartSec=5
 TimeoutStopSec=30
 TimeoutStartSec=30
 SuccessExitStatus=0 143
 KillMode=control-group
-Environment=HOME=/home/jixiuf
+Environment=HOME=/Users/jixiuf
 Environment=TMPDIR=/tmp
-Environment=PATH=/home/jixiuf/.nvm/current/bin:/home/jixiuf/.local/bin:/home/jixiuf/.npm-global/bin:/home/jixiuf/bin:/home/jixiuf/.volta/bin:/home/jixiuf/.asdf/shims:/home/jixiuf/.bun/bin:/home/jixiuf/.fnm/current/bin:/home/jixiuf/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/Users/jixiuf/.nvm/current/bin:/Users/jixiuf/.local/bin:/Users/jixiuf/.npm-global/bin:/Users/jixiuf/bin:/Users/jixiuf/.volta/bin:/Users/jixiuf/.asdf/shims:/Users/jixiuf/.bun/bin:/Users/jixiuf/.fnm/current/bin:/Users/jixiuf/.local/share/pnpm:/usr/local/bin:/usr/bin:/bin
 Environment=OPENCLAW_GATEWAY_PORT=18789
 Environment=OPENCLAW_SYSTEMD_UNIT=openclaw-gateway.service
 Environment="OPENCLAW_WINDOWS_TASK_NAME=OpenClaw Gateway"

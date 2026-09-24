@@ -5,7 +5,7 @@
 # Steve Challis 2011
 # http://schallis.com/2011/mar/20/nasa-astronomy-picture-of-the-day-background/
 skip_download="$1"
-DEST='/home/jixiuf/Documents/jianguo/jianguo/wallpaper'
+DEST='/Users/jixiuf/Documents/jianguo/jianguo/wallpaper'
 NAME_COPY='imgcopy.jpg'
 BASE='http://apod.nasa.gov'
 DATE=`date "+%Y%m%d"`

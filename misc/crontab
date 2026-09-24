@@ -18,15 +18,15 @@ MAILTO=root
 #每小时更新一次 locate db
 #@hourly        root   updatedb 
 #@hourly        root   cd /resource/gentoo/distfiles/bzr-src/emacs/trunk ; bzr pull
-#@hourly        root   cd /home/jixiuf/.config/awesome                          ; git checkout master  ;git pull ; git push
-#@hourly        root   cd /home/jixiuf/documents/org/public_html/               ; git checkout master  ;git pull ; git push
-#@hourly        root   cd /home/jixiuf/documents/org/src/                       ; git checkout master  ;git pull ; git push 
-#@hourly        root   cd /home/jixiuf/.emacs.d/                                ; git checkout master  ;git pull ; git push ;make compile
-#@hourly        root   cd /home/jixiuf/.emacs.d/                                ; make pull;make push ;make compile
-#@hourly        root   cd /home/jixiuf/dotfiles/                                ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /Users/jixiuf/.config/awesome                          ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /Users/jixiuf/documents/org/public_html/               ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /Users/jixiuf/documents/org/src/                       ; git checkout master  ;git pull ; git push 
+#@hourly        root   cd /Users/jixiuf/.emacs.d/                                ; git checkout master  ;git pull ; git push ;make compile
+#@hourly        root   cd /Users/jixiuf/.emacs.d/                                ; make pull;make push ;make compile
+#@hourly        root   cd /Users/jixiuf/dotfiles/                                ; git checkout master  ;git pull ; git push
 #@hourly        root   cd /mnt/d/ahk                                            ; git checkout master  ;git pull ; git push
-#@hourly        root   cd /home/jixiuf/c/                                       ; git checkout master  ;git pull ; git push
-#@hourly        root   cd /home/jixiuf/ex/                                      ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /Users/jixiuf/c/                                       ; git checkout master  ;git pull ; git push
+#@hourly        root   cd /Users/jixiuf/ex/                                      ; git checkout master  ;git pull ; git push
 
 # man 5 crontab
 #* *  * * *	root	notify-send hello

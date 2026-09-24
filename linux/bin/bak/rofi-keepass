@@ -2,7 +2,7 @@
 
 KEEPASS_DB_PATH="$HOME/Documents/jianguo/jianguo/keepass/pass.kdbx"
 CACHE_FILE="$HOME/.cache/keepassxc/cache"
-PATH="/home/jixiuf/venv/bin:$PATH"
+PATH="/Users/jixiuf/venv/bin:$PATH"
 
 
 # my master key is encrpted by gpg

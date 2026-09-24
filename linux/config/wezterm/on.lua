@@ -14,7 +14,7 @@ local function update_window_background(window, pane)
 	-- and use a different background color
 	local name = window:active_key_table()
     if name == "copy_mode" then
-       -- overrides.window_background_image = '/home/jixiuf/.config/wallpaper/wallpaper.png'
+       -- overrides.window_background_image = '/Users/jixiuf/.config/wallpaper/wallpaper.png'
        -- overrides.color_scheme = "OneHalfDark"
        -- overrides.colors = { background = "#222222" }
        -- overrides.window_background_opacity=1
@@ -40,7 +40,7 @@ local function update_window_background(window, pane)
 	-- if pane:get_user_vars().production == "1" then
 	--  overrides.color_scheme = "OneHalfDark"
 	-- end
-    -- overrides.window_background_image = '/home/jixiuf/.config/wallpaper/blured.jpg'
+    -- overrides.window_background_image = '/Users/jixiuf/.config/wallpaper/blured.jpg'
 	window:set_config_overrides(overrides)
 end
 -- wezterm.on("update-right-status", function(window, pane)

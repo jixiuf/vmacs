@@ -82,7 +82,7 @@
   // https://github.com/calico32/waybar-niri-windows/releases/download/v2.3.0/waybar-niri-windows.so  
   "cffi/niri-windows": {
     // path where you placed the .so file
-    "module_path": "/home/jixiuf/.config/waybar/waybar-niri-windows.so",
+    "module_path": "/Users/jixiuf/.config/waybar/waybar-niri-windows.so",
     // configure the module's behavior
     "options": {
       // set the module mode
@@ -430,7 +430,7 @@
   },
   "custom/power": {
     "tooltip": false,
-    "on-click": "wlogout||/home/jixiuf/.config/rofi/scripts/power",
+    "on-click": "wlogout||/Users/jixiuf/.config/rofi/scripts/power",
     "format": "⭘",
   },
   "custom/quit": {

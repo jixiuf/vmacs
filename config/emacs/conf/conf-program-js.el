@@ -58,8 +58,8 @@
 ;; eglot-workspace-configuration 
 ;; ;;; Directory Local Variables
 ;; ;;; For more information see (info "(emacs) Directory Variables")
-;; ((typescript-ts-mode . ((eglot-server-programs . ((typescript-ts-mode . ("/home/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"))))))
-;;  (vue-mode . ((eglot-server-programs . ((vue-mode . ("/home/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))))
+;; ((typescript-ts-mode . ((eglot-server-programs . ((typescript-ts-mode . ("/Users/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server" "--stdio"))))))
+;;  (vue-mode . ((eglot-server-programs . ((vue-mode . ("/Users/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))))
 ;;               (eglot-workspace-configuration . (:vetur (:useWorkspaceDependencies t
 ;;                                                                                   :validation (:script t)))))))
 (dolist (mod '(vue-mode-hook typescript-ts-mode-hook ))

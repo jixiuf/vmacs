@@ -31,7 +31,7 @@
 
   (setenv "XDG_SESSION_DESKTOP" "ewm")
   (shell-command "/usr/bin/dbus-update-activation-environment --systemd --all;")
-  ;; /usr/local/bin/xremap-ewm /home/jixiuf/.config/xremap/xremap.yaml /home/jixiuf/.config/xremap/xremap-ewm.yaml --watch=device --ignore=dotool keyboard --ignore=Yubico YubiKey OTP+CCID
+  ;; /usr/local/bin/xremap-ewm /Users/jixiuf/.config/xremap/xremap.yaml /Users/jixiuf/.config/xremap/xremap-ewm.yaml --watch=device --ignore=dotool keyboard --ignore=Yubico YubiKey OTP+CCID
 
   ;; /usr/bin/dbus-update-activation-environment --systemd --all
   ;; EWM compositor must start immediately in daemon mode (runs on TTY)

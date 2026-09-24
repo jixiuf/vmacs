@@ -19,7 +19,7 @@
 
 [[ ${PORTAGE_DEBUG} || ${GETUTO_DEBUG} ]] && set -x
 
-export GNUPGHOME="${ROOT%/}"/home/jixiuf/.gnupg
+export GNUPGHOME="${ROOT%/}"/Users/jixiuf/.gnupg
 
 LASTRUNFILE=${GNUPGHOME}/.getuto.last
 QUIET='1'

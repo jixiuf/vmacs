@@ -176,7 +176,7 @@
 	defaultBranch = master
 [safe]
 	directory = /var/tmp/portage/gui-wm/sway-9999/work/sway-9999
-	directory = /home/jixiuf/repos/emacs
+	directory = /Users/jixiuf/repos/emacs
 [diff "gpg"]
 	textconv = gpg -q --no-tty --decrypt
 [diff "plist"]

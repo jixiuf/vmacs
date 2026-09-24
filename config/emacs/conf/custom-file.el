@@ -103,10 +103,10 @@
      (web-mode-indent-style . 2) (web-mode-block-padding . 2) (web-mode-script-padding . 2)
      (web-mode-style-padding . 2)
      (eglot-server-programs
-      (typescript-ts-mode "/home/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
+      (typescript-ts-mode "/Users/jixiuf/.nvm/versions/node/v16.20.2/bin/typescript-language-server"
                           "--stdio"))
      (eglot-server-programs (typescript-ts-mode "typescript-language-server" "--stdio"))
-     (eglot-server-programs (vue-mode "/home/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))
+     (eglot-server-programs (vue-mode "/Users/jixiuf/.nvm/versions/node/v16.20.2/bin/vls"))
      (projectile-project-run-cmd . "mkdir -p build; cd build; cmake ..; make run")
      (projectile-project-compilation-cmd . "mkdir -p build; cd build; cmake ..; make")
      (eval add-hook (make-local-variable 'after-save-hook)
