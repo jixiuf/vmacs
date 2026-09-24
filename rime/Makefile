@@ -31,4 +31,4 @@ deploy:
 	@if [ ! -f wanxiang-lts-zh-hans.gram  ]; then \
 		wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram;\
 	fi
-	ln -f "$(CURDIR)/"*.gram "$(TARGET)"
+	ln -sf "$(CURDIR)/"*.gram "$(TARGET)"
