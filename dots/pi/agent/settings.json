@@ -3,7 +3,7 @@
   "defaultProvider": "zai-coding-cn",
   "defaultThinkingLevel": "high",
   "followUpMode": "all",
-  "hideThinkingBlock": true,
+  "hideThinkingBlock": false,
   "lastChangelogVersion": "0.84.2",
   "packages": [
     "npm:pi-cache-optimizer",
