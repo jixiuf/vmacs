@@ -155,3 +155,7 @@ dots/pi/agent/skills/lark-skill-maker
 dots/pi/agent/skills/lark-wiki
 dots/pi/agent/skills/lark-workflow-standup-report
 mac/config/fish/conf.d/uv.env.fish
+rime/installation.yaml
+rime/user.yaml
+rime/scripts/__pycache__/
+rime/zh-hans-t-essay-bgc.gram

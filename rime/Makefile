@@ -31,4 +31,13 @@ deploy:
 	@if [ ! -f wanxiang-lts-zh-hans.gram  ]; then \
 		wget -c https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram;\
 	fi
+# https://github.com/rimeinn/octagram-data/
+#https://github.com/lotem/rime-octagram-data/releases/tag/20260712
+# hant 为繁体字，hans 为简体字
+# bg 表示 bigram，tg 表示 trigram
+# c 表示字级，w 表示词级
+# 如 wqhao 五笔wq: 你，+hao:好 -> 你好 就需要 char 级的才能实现
+	@if [ ! -f zh-hans-t-essay-bgc.gram  ]; then \
+		wget -c https://github.com/lotem/rime-octagram-data/releases/download/20260712/zh-hans-t-essay-bgc.gram;\
+	fi
 	ln -sf "$(CURDIR)/"*.gram "$(TARGET)"

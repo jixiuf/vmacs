@@ -52,31 +52,44 @@ function dynamic.fini(env)
 end
 
 function dynamic.func(input, seg, env)
-    -- 未选字时顺序 = jianma2(简码) -> table(字/造词) -> script(词/句子)
-    -- （1~2码首候选由 jianma2 保证；词库层已让二字词压过同码全码生僻字）
-    -- 选字后 table 禁用，只剩 script 继续造词
+    -- 分组而非排序(关键认知):
+    -- 1) dynamic_translator 是单条翻译流, Menu 不在流内按 quality 重排;
+    -- 2) script 流的原生顺序自带语义(句子 > user phrase > 词 > completion),
+    --    且 Sentence 的 quality 是 log 尺度, 与 phrase 的 exp 尺度不可比;
+    -- 3) 传统库 enable_completion 的补全候选(如 wan 输入时 佢/代收)会整体
+    --    压在拼音候选前 → 挪到流尾; 精确码(简码/全码/词组)仍最前。
+    -- 4) custom_phrase(混合库 table) 的精确词不能排在 script 句子前:
+    --    混流输入 sk|yi 时, 五笔词"可就"精确匹配会压住组句"可以"
+    --    (配合 translator/always_make_sentences 让 grammar 裁决)。
+    -- 最终顺序: first(传统简码/词组) > script(句子/用户词/词) >
+    --           custom_phrase(混合库词) > 补全(first+table 的 completion)。
+    -- (选字后 table 禁用, 只剩 script 继续造词, 保持原逻辑)
+    local first_early, script_cands, table_early, tail = {}, {}, {}, {}
+    local function collect(res, early, to_tail)
+        if res == nil then return end
+        for cand in res:iter() do
+            if to_tail and cand.type == "completion" then
+                tail[#tail + 1] = cand
+            elseif early then
+                early[#early + 1] = cand
+            end
+        end
+    end
+
     if (env.engine.context.input == input) then
         if env.first_translator ~= nil then
-            local first_res = env.first_translator:query(input, seg)
-            if first_res ~= nil then
-                for cand in first_res:iter() do
-                    yield(cand)
-                end
-            end
-        end
-        local table_res = env.table_translator:query(input, seg)
-        if table_res ~= nil then
-            for cand in table_res:iter() do
-                yield(cand)
-            end
+            collect(env.first_translator:query(input, seg), first_early, true)
         end
     end
-    local script_res = env.script_translator:query(input, seg)
-    if script_res ~= nil then
-        for cand in script_res:iter() do
-            yield(cand)
-        end
+    collect(env.script_translator:query(input, seg), script_cands, false)
+    if (env.engine.context.input == input) then
+        collect(env.table_translator:query(input, seg), table_early, true)
     end
+
+    for _, cand in ipairs(first_early) do yield(cand) end
+    for _, cand in ipairs(script_cands) do yield(cand) end
+    for _, cand in ipairs(table_early) do yield(cand) end
+    for _, cand in ipairs(tail) do yield(cand) end
 end
 
 return dynamic

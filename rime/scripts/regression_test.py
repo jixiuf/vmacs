@@ -27,7 +27,16 @@ LIBRIME_CONSOLE = os.path.expanduser(
     "~/repos/librime/build/bin/rime_api_console")
 LIBRIME_DEPLOYER = os.path.expanduser(
     "~/repos/librime/build/bin/rime_deployer")
+
+# 共享数据目录按平台探测: macOS=Squirrel SharedSupport;
+# Linux=ibus-rime 的 /usr/share/rime-data 或 fcitx5 的数据目录。
+# 均不可用时用 --shared-dir 指定(部署时 punctuator/recognizer 的
+# import_preset: symbols/default 需要 symbols.yaml/default.yaml 源文件)。
 SQUIRREL_SHARED = "/Library/Input Methods/Squirrel.app/Contents/SharedSupport"
+LINUX_SHARED_CANDIDATES = [
+    "/usr/share/rime-data",
+    "/usr/share/fcitx5/rime-data",
+]
 
 # (输入码, 期望首候选, 说明)
 CASES = [
@@ -53,6 +62,12 @@ CASES = [
     ("wojintianmeiyoukong", "我今天没有空", "LM 组句"),
     # 用户词组/造词
     ("tgtj", "生不逢时", "用户词组(手工维护)"),
+    # 2026-09-25 实测新增: 拼音音节首候选(传统库补全污染修复后)
+    ("wan", "万", "拼音单音节(曾披传统库 wan* 补全污染→佢/代收)"),
+    ("taiwan", "台湾", "拼音词组直查(混合库 tai wan 词条)"),
+    ("ckiy", "台湾", "传统词组 2+2"),
+    # 已知行为: ck+wan 组句因 万850>湾719 权重差 > LM 贡献(~±20), 出「台万」;
+    # 逐字选台选湾一次后 userdb 记住 ck+wan=台湾, 之后 ckwan→台湾。不作硬性断言。
 ]
 
 # 已知 LM 级问题: wanxiang 官方模型=才最, 自训 jixiuf gram=都不可能。
@@ -94,19 +109,48 @@ def first_candidate(code, cwd):
     return None
 
 
+def detect_shared_dir(explicit=None):
+    """按平台探测共享数据目录(需含 symbols.yaml/default.yaml 等源文件)。"""
+    if explicit:
+        return explicit
+    import platform
+    candidates = []
+    if platform.system() == "Darwin":
+        candidates = [SQUIRREL_SHARED]
+    else:
+        candidates = LINUX_SHARED_CANDIDATES
+    for c in candidates:
+        if os.path.isdir(c) and os.path.exists(os.path.join(c, "symbols.yaml")):
+            return c
+    return None
+
+
+def deploy(user_dir, shared_dir):
+    cmd = [LIBRIME_DEPLOYER, "--build", user_dir]
+    if shared_dir:
+        cmd.append(shared_dir)
+    r = subprocess.run(cmd, capture_output=True)
+    print("部署完成" if r.returncode == 0 else "部署异常(仍继续测试)")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default=os.path.expanduser("~/Library/Rime"),
-                    help="被测用户目录 (默认 ~/Library/Rime)")
+                    help="被测用户目录 (macOS 默认 ~/Library/Rime; "
+                         "Linux 如 ~/.config/ibus/rime 或调试目录)")
     ap.add_argument("--rebuild", action="store_true",
                     help="先删除 build 并重新部署")
     ap.add_argument("--clean", action="store_true",
                     help="先清除用户词典 userdb(调频/自学习归零)")
+    ap.add_argument("--shared-dir", default=None,
+                    help="共享数据目录(默认按平台探测; Linux 无 rime-data 时"
+                         "可指向含 symbols.yaml/default.yaml 的自备目录)")
     args = ap.parse_args()
 
     user_dir = args.dir
     if not os.path.isdir(user_dir):
         sys.exit(f"用户目录不存在: {user_dir}")
+    shared_dir = detect_shared_dir(args.shared_dir)
 
     if args.clean:
         for d in USERDB_DIRS:
@@ -120,9 +164,8 @@ def main():
         import shutil
         shutil.rmtree(os.path.join(user_dir, "build"),
                       ignore_errors=True)
-        r = subprocess.run([LIBRIME_DEPLOYER, "--build", user_dir,
-                            SQUIRREL_SHARED], capture_output=True)
-        print("部署完成" if r.returncode == 0 else "部署异常(仍继续测试)")
+        deploy(user_dir, shared_dir)
+        print(f"共享数据目录: {shared_dir or '(未找到, 依赖已有 build 产物)'}")
 
     reset_selected_schema(user_dir)
 

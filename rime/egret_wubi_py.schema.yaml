@@ -24,6 +24,7 @@ schema:
     - egret_py        # 这里依赖 egret 输入法的字库反查
     - stroke # builtin: hspnz(一丨丿丶乙)
     - egret_wubi_py_wubi    # 传统五笔库(first_translator 置顶用)
+    - egret_wubi            # wubi_comment 反查注释用(原缺失, 补上确保 reverse.bin 被编译)
 __include: egret.common.yaml:editor
 __include: egret.common.yaml:switches
 __include: egret.common.yaml:opencc
@@ -83,6 +84,8 @@ engine:
     - lua_filter@*long_word_filter
     - lua_filter@*reduce_emoji_filter   # 按需启用，作用是降低Emoji在候选项中的位置排序(顺序要求：Emoji > 降低排序)
     - reverse_lookup_filter@wubi_comment # 展示五笔的编码
+    - charset_filter                   # 默认隐藏CJK扩展区生僻字(2026-09实测: 否则混合库权重1的
+                                       # 𠳙/𨾱等会占拼音输入首屏; 切 extended_charset 选项可显示)
     - simplifier@traditionalize                     # 简繁切换
     - uniquifier                # 去重，比如多个繁体字对应一个简体字，此时可能需要去重
 
@@ -102,7 +105,9 @@ egret_wubi_py_wubi:
   enable_encoder: true
   encode_commit_history: true
   enable_sentence: false       # 纯精确码匹配，候选完全确定
-  enable_completion: true      # 简码后补全显示同前缀字词(exact 仍在首位)
+  # 补全能力必须保留(如输入 y 需列出 y 开头的字)。拼音被 wan* 补全污染的
+  # 问题改由 dynamic_translator 对 type=completion 的候选降权解决(见 lua)。
+  enable_completion: true
   initial_quality: 1000        # 置顶（词典内同码词组按权重排序）
   db_class: userdb             # 用户词典必须 userdb(LevelDB) 才能造词/调频; tabledb 只读!
   user_dict: egret_wubi_py_wubi.user.dict
@@ -130,15 +135,23 @@ custom_phrase:
   enable_completion: false
   initial_quality: 1
   db_class: tabledb
-  user_dict: egret_wubi_py.user.dict
+  user_dict: egret_wubi_py.user.dict   # 手工维护的 custom phrase 文本库
+  # 2026-09-25 实测注记: 本块与下方 translator 的 user_dict 同名, librime
+  # db_pool 按名共享同一 db 实例 → 实际后端由创建顺序决定(先创建的 tabledb 胜出)。
+  # 效果: 混流学习(如选台→选湾→上屏)写入本 txt, 且 script 组句能看到
+  # 「湾 wan」user phrase, 从而 ckwan 能出「台湾」——这是当前刻意的共享行为,
+  # 代价是学习条目会写入本手工库(用 rime_dict_manager 清理)。若改为分离名,
+  # script 看不到学习结果, ckwan 永远台万(已实测)。
   spelling_hints: 2
 
 # ---- 混合库 script：五笔+拼音混合分词 + LM 组句（混流核心）----
 translator:
+  always_make_sentences: true    # 实验: 精确词匹配也让 grammar 参与裁决
   dictionary: egret_wubi_py
   prism: egret_wubi_py
   enable_user_dict: true
-  db_class: userdb             # 拼音侧也启用自学习调频
+  db_class: tabledb     # 拼音侧自学习调频
+  # 注: user_dict 与 custom_phrase 同名 → db_pool 共享(实际 tabledb), 见上块说明
   user_dict: egret_wubi_py.user.dict
   contextual_suggestions: true
   max_homophones: 7
