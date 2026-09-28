@@ -24,11 +24,21 @@ function readJson<T>(file: string): T | null {
   }
 }
 
+/** 原子替换写入：先写同目录临时文件（mode 0600），再 rename 覆盖目标。
+ * 直接 writeFileSync 会先截断后写，留下"空文件/半截 JSON"窗口，
+ * 被并发读方解析失败后误删并抢占（本次回弹根因）。rename 在同一文件系统内是原子的。 */
 function writeJson(file: string, data: unknown): void {
+  const tmp = `${file}.tmp-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`
   try {
-    fs.writeFileSync(file, JSON.stringify(data, null, 2), { mode: 0o600 })
+    fs.writeFileSync(tmp, JSON.stringify(data, null, 2), { mode: 0o600 })
+    fs.renameSync(tmp, file)
   } catch {
-    // ignore
+    // ignore；并清理可能残留的临时文件
+    try {
+      fs.unlinkSync(tmp)
+    } catch {
+      // ignore
+    }
   }
 }
 
@@ -47,14 +57,29 @@ function createLockFileExclusive(data: GlobalLock): boolean {
   }
 }
 
+/** 锁文件是否已是陈年残渣：mtime 超过 TTL。用于清理损坏文件，避免误删他人正在写的锁。 */
+function isLockFileStale(): boolean {
+  try {
+    const st = fs.statSync(GLOBAL_LOCK_FILE)
+    return Date.now() - st.mtimeMs > GLOBAL_LOCK_TTL_MS
+  } catch {
+    return false // 不存在或无法 stat：不删
+  }
+}
+
 function readGlobalLockFile(): GlobalLock | null {
   const d = readJson<GlobalLock>(GLOBAL_LOCK_FILE)
-  // 损坏/无主锁文件（如写入中断残留、异常半写）：删除，避免阻塞后续 wx 原子创建（死锁）
+  // 损坏/无主锁文件（如写入中断残留、异常半写）：**不要立即删除**。
+  // 立即 unlink 会误删他人刚写入/正在更新的锁，导致抢锁（本次回弹根因）。
+  // 仅当 mtime 超过 TTL（明显是陈年残渣）才清理；否则返回 null，
+  // 由 createLockFileExclusive 的 wx 独占语义判定为"已被占用"，不抢占。
   if (!d || !d.name) {
-    try {
-      fs.unlinkSync(GLOBAL_LOCK_FILE)
-    } catch {
-      // ignore
+    if (isLockFileStale()) {
+      try {
+        fs.unlinkSync(GLOBAL_LOCK_FILE)
+      } catch {
+        // ignore
+      }
     }
     return null
   }
