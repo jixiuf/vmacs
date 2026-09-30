@@ -110,6 +110,10 @@ gui-apps/wayfreeze **
 media-fonts/sarasa-term-sc-nerd ~amd64
 app-admin/keepassxc ~amd64
 app-misc/cliphist  ~amd64
+app-i18n/librime ~amd64
+app-i18n/librime-lua ~amd64
+app-i18n/librime-octagram ~amd64
+
 # Local Variables:
 # mode: conf
 # End:
