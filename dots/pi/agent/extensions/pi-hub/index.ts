@@ -354,6 +354,19 @@ export default function hubExtension(pi: ExtensionAPI) {
 
   // --- 协调中心故障转移 ---
 
+  /** 以客户端模式连接协调中心 WS（先关旧连接；调用前需确保 config.coordinatorUrl 已指向协调中心） */
+  function connectWsAsClient(): void {
+    wsClient?.close()
+    wsClient = connectCoordinatorWS(
+      config.coordinatorUrl as string,
+      currentInstanceName,
+      os.hostname(),
+      (env) => routeEnvelope(env),
+      onWsStatus,
+      pi.getSessionName() ?? undefined,
+    )
+  }
+
   async function ensureCoordinatorIfNeeded(): Promise<void> {
     try {
       if (!config.coordinatorPort || coordinatorServer) return
@@ -362,14 +375,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         // 端口被占（已有协调中心）：降级客户端并确保 WS 连接（否则不可见，收不到推送）
         if (!wsClient && config.coordinatorPort) {
           config = { ...config, coordinatorUrl: `http://127.0.0.1:${config.coordinatorPort}` }
-          wsClient = connectCoordinatorWS(
-            config.coordinatorUrl,
-            currentInstanceName,
-            os.hostname(),
-            (env) => routeEnvelope(env),
-            onWsStatus,
-            pi.getSessionName() ?? undefined,
-          )
+          connectWsAsClient()
         }
         return
       }
@@ -379,6 +385,17 @@ export default function hubExtension(pi: ExtensionAPI) {
         config.remoteInstanceNames ?? [],
         queue,
       )
+      // listen 是异步绑定：isPortInUse 检查通过后端口仍可能被并发实例抢绑（多实例同时启动 /
+      // session_start 与 auto 定时器并发触发故障转移的竞态）。若不挂 error 监听，EADDRINUSE
+      // 会以 uncaughtException 直接杀死整个 pi 进程。此处降级为客户端并补建 WS 连接，
+      // 与 session_start 中的占用分支保持一致。
+      coordinatorServer.on('error', (err: NodeJS.ErrnoException) => {
+        if (err?.code !== 'EADDRINUSE') return
+        log(`协调端口 ${config.coordinatorPort} 被并发实例占用（接管竞态），降级为客户端接入`)
+        coordinatorServer = null
+        config = { ...config, coordinatorUrl: `http://127.0.0.1:${config.coordinatorPort}` }
+        connectWsAsClient()
+      })
       log(`协调中心故障转移：本实例接管端口 ${config.coordinatorPort}`)
       config = { ...config, coordinatorUrl: undefined }
     } catch {
@@ -1581,15 +1598,7 @@ export default function hubExtension(pi: ExtensionAPI) {
 
     // 客户端模式：WS 长连接接收协调中心推送（替代 2s HTTP 轮询，低延迟）
     if (config.coordinatorUrl) {
-      wsClient?.close()
-      wsClient = connectCoordinatorWS(
-        config.coordinatorUrl,
-        currentInstanceName,
-        os.hostname(),
-        (env) => routeEnvelope(env),
-        onWsStatus,
-        pi.getSessionName() ?? undefined,
-      )
+      connectWsAsClient()
     }
 
     if (config.coordinatorPort && !coordinatorServer) {
@@ -1614,15 +1623,7 @@ export default function hubExtension(pi: ExtensionAPI) {
         config = { ...config, coordinatorUrl: `http://127.0.0.1:${config.coordinatorPort}` }
         // 降级客户端：立即建立 WS 连接（否则不注册 WS，协调中心/主实例看不到本实例，
         // 消息/指令/回收都无法投递——只能靠共享本地队列轮询兜底）
-        wsClient?.close()
-        wsClient = connectCoordinatorWS(
-          config.coordinatorUrl,
-          currentInstanceName,
-          os.hostname(),
-          (env) => routeEnvelope(env),
-          onWsStatus,
-          pi.getSessionName() ?? undefined,
-        )
+        connectWsAsClient()
       }
     }
 
