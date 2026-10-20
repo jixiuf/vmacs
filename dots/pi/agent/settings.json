@@ -2,14 +2,18 @@
   "defaultModel": "glm-5.3-flash",
   "defaultProvider": "zai-coding-cn",
   "defaultThinkingLevel": "high",
+  "defaultTools": ["+codemode"],
   "followUpMode": "all",
   "hideThinkingBlock": false,
-  "lastChangelogVersion": "0.84.2",
+  "lastChangelogVersion": "1.2.0",
   "packages": [
     "npm:pi-cache-optimizer",
     "npm:pi-mcp-adapter",
     "npm:@ollama/pi-web-search"
   ],
   "steeringMode": "all",
-  "theme": "dark"
+  "theme": "system",
+  "extensions": [
+    "-builtin:mcp"
+  ]
 }
