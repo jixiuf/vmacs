@@ -4,6 +4,7 @@
 // ============================================================================
 
 import type { InboundMessage, Envelope, IGateway } from './types.js'
+import { logEvent } from './logger.js'
 
 export interface RouterDeps {
   /** 斜杠命令/中文别名执行；返回回复文本（null 表示非命令，继续走普通消息） */
@@ -30,7 +31,12 @@ export class Router {
         const reply = await this.deps.handleCommand(m.text, m.userId, m.channel)
         if (reply !== null) {
           const gw = this.deps.getGateway(m.channel)
-          if (gw) void gw.send(m.userId, { text: reply }).catch(() => {})
+          if (gw) {
+            // 回复发送失败必须留痕：静默吞掉会让「命令无响应」无法排查
+            void gw.send(m.userId, { text: reply }).catch((err) => {
+              logEvent('IM_SEND_ERROR', `channel=${m.channel} to=${m.userId} cmd=${m.text?.slice(0, 30) ?? ''} err=${(err as Error)?.message ?? err}`)
+            })
+          }
           return
         }
       }
@@ -41,7 +47,10 @@ export class Router {
         return
       }
       await this.deps.handleMessage(m)
-    })().catch(() => {})
+    })().catch((err) => {
+      // 命令执行异常必须留痕：静默吞掉会让「/instances 无响应」类故障无迹可寻
+      logEvent('INBOUND_ERROR', `channel=${m.channel} from=${m.userId} text=${(m.text ?? '').slice(0, 40)} err=${(err as Error)?.message ?? err}`)
+    })
   }
 
   /** envelope 入站（跨实例：message/command/takeover/lock/broadcast 统一分发） */

@@ -159,3 +159,7 @@ rime/installation.yaml
 rime/user.yaml
 rime/scripts/__pycache__/
 rime/zh-hans-t-essay-bgc.gram
+dots/pi/agent/wechat-assistant/last-wechat-msg.json
+dots/pi/agent/wechat-assistant/cursor.json
+dots/pi/agent/wechat-assistant/seen-ids.json
+dots/pi/agent/wechat-assistant/wechat-state.json
