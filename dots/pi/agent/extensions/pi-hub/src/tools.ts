@@ -8,6 +8,7 @@ import { Type } from '@sinclair/typebox'
 // @ts-ignore — @earendil-works is the current package, but the older package still carries TS declarations used for compatibility here
 import type { ExtensionAPI } from '@mariozechner/pi-coding-agent'
 import type { InstanceInfo } from './types.js'
+import { sameInstance } from './registry.js'
 import type { TaskRegistry, SubTask } from './task.js'
 
 export interface ToolsDeps {
@@ -56,7 +57,7 @@ export function registerTools(pi: ExtensionAPI, deps: ToolsDeps): void {
           if (inst.name === coordinatorName) marks.push('协调中心')
           else if (inst.role === 'subagent') marks.push('subagent')
           if (inst.pid === process.pid) marks.push('当前')
-          if (!local.some((l) => l.name === inst.name)) marks.push('远程')
+          if (!local.some((l) => sameInstance(l, inst))) marks.push('远程')
           const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
           return `${inst.name}${inst.host ? '@' + inst.host : ''}${mark}`
         })

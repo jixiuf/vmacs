@@ -53,6 +53,19 @@ export function baseInstanceName(name: string): string {
   return name.replace(/-\d{2,7}(-[0-9a-z]{4})?$/, '')
 }
 
+/**
+ * 同一实例判定：name + host。
+ * 跨机器可能存在同名实例（如本机与线上都有 ddpushv2），合并/去重/目标解析
+ * 必须按 name@host 区分，只按 name 会把远程同名实例静默丢掉。
+ * host 未知（空）时退化为按 name 匹配（兼容 remoteInstanceNames 等无 host 的条目）。
+ */
+export function sameInstance(
+  a: Pick<InstanceInfo, 'name' | 'host'>,
+  b: Pick<InstanceInfo, 'name' | 'host'>,
+): boolean {
+  return a.name === b.name && (!a.host || !b.host || a.host === b.host)
+}
+
 export function registerInstance(info: Omit<InstanceInfo, 'lastSeen'>): string {
   const instances = readJson<Record<string, InstanceInfo>>(instancesFile()) ?? {}
   // 同 pid 去重：同一进程（pid）重复注册时只保留一条。

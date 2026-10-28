@@ -4,6 +4,7 @@
 // ============================================================================
 
 import type { InstanceInfo } from './types.js'
+import { sameInstance } from './registry.js'
 import type { TaskRegistry } from './task.js'
 
 export interface CommandCtx {
@@ -87,7 +88,7 @@ async function cmdInstances(_args: string, ctx: CommandCtx): Promise<CommandResu
     // 不能用名字末段纯数字猜测：同名冲突自动改名的普通实例（如 jixiuf-59741）会被误标。
     else if (inst.role === 'subagent') marks.push('subagent')
     if (inst.pid === process.pid) marks.push('当前')
-    if (!local.some((l) => l.name === inst.name)) marks.push('远程')
+    if (!local.some((l) => sameInstance(l, inst))) marks.push('远程')
     const mark = marks.length > 0 ? `（${marks.join('，')}）` : ''
     const host = inst.host ? `@${inst.host}` : ''
     // cwd 列在行尾（远程实例 cwd 可能为空则不显示）

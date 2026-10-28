@@ -18,7 +18,7 @@ import { Type } from '@sinclair/typebox'
 // @ts-ignore — @earendil-works is the current package, but the older package still carries TS declarations used for compatibility here
 import type { ExtensionAPI, ExtensionContext, ExtensionCommandContext } from '@mariozechner/pi-coding-agent'
 import { loadHubConfig, isChannelEnabled, type HubConfig } from './src/config.js'
-import { registerInstance, unregisterInstance, listInstances, pruneInstances } from './src/registry.js'
+import { registerInstance, unregisterInstance, listInstances, pruneInstances, sameInstance } from './src/registry.js'
 import {
   coordinatorTryLock,
   coordinatorReleaseLock,
@@ -826,7 +826,7 @@ export default function hubExtension(pi: ExtensionAPI) {
       const activeNames = new Set<string>()
       for (const name of active) {
         activeNames.add(name)
-        if (!all.some((i) => i.name === name)) {
+        if (!all.some((i) => sameInstance(i, { name, host: clientHostName(name) }))) {
           all.push({ name, pid: 0, cwd: '', sessionId: '', lastSeen: 0, host: clientHostName(name) })
         }
       }
@@ -845,18 +845,19 @@ export default function hubExtension(pi: ExtensionAPI) {
       const ci = await fetchCoordinatorInstances(config.coordinatorUrl)
       if (ci) {
         for (const li of ci.local) {
-          if (!all.some((i) => i.name === li.name)) all.push({ name: li.name, pid: li.pid, cwd: li.cwd, sessionId: '', lastSeen: 0, host: li.host })
-          coordinatorName = li.name
+          if (!all.some((i) => sameInstance(i, li))) all.push({ name: li.name, pid: li.pid, cwd: li.cwd, sessionId: '', lastSeen: 0, host: li.host })
         }
+        // 协调中心身份：优先用响应中的专用字段；旧版响应无此字段时回退为 local 首个实例
+        coordinatorName = ci.coordinatorName ?? ci.local[0]?.name
         for (const c of ci.clients ?? []) {
-          if (!all.some((i) => i.name === c.name)) all.push({ name: c.name, pid: 0, cwd: c.cwd ?? '', sessionId: '', lastSeen: 0, host: c.host })
+          if (!all.some((i) => sameInstance(i, c))) all.push({ name: c.name, pid: 0, cwd: c.cwd ?? '', sessionId: '', lastSeen: 0, host: c.host })
         }
       }
     }
     try {
       const sshRemote = await listRemoteInstances(remoteCfg, path.join(STATE_DIR, 'instances.json'))
       for (const r of sshRemote) {
-        if (!all.some((i) => i.name === r.name)) all.push(r)
+        if (!all.some((i) => sameInstance(i, r))) all.push(r)
       }
     } catch {
       // ignore
@@ -868,10 +869,17 @@ export default function hubExtension(pi: ExtensionAPI) {
     const num = toNumber(name)
     if (Number.isFinite(num) && num >= 1) return all[num - 1]
     // 支持 name 与 name@host 两种形式（list_instances 展示的是 name@host）
-    return (
-      all.find((i) => i.name === name) ??
-      all.find((i) => i.host && `${i.name}@${i.host}` === name)
-    )
+    // 1. name@host 全名精确匹配（跨机器同名实例的唯一消歧方式）
+    const byFullName = all.find((i) => i.host && `${i.name}@${i.host}` === name)
+    if (byFullName) return byFullName
+    // 2. 按 name 匹配；跨机器同名时优先本机，否则取第一个（兼容旧行为）
+    const byName = all.filter((i) => i.name === name)
+    if (byName.length === 1) return byName[0]
+    if (byName.length > 1) {
+      const localHost = os.hostname()
+      return byName.find((i) => i.host === localHost) ?? byName[0]
+    }
+    return undefined
   }
 
   const instanceCompletions = async (argumentPrefix: string) => {
@@ -879,7 +887,7 @@ export default function hubExtension(pi: ExtensionAPI) {
     return all
       .filter((i) => i.name.startsWith(argumentPrefix))
       .map((i) => {
-        const isRemote = !local.some((l) => l.name === i.name)
+        const isRemote = !local.some((l) => sameInstance(l, i))
         const isCurrent = i.name === currentInstanceName || i.pid === process.pid
         const marks: string[] = []
         if (isCurrent) marks.push('当前')

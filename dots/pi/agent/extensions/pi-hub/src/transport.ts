@@ -12,6 +12,7 @@ import * as crypto from 'node:crypto'
 import { execFile } from 'node:child_process'
 import type { Envelope, InstanceInfo, TakeoverRequest } from './types.js'
 import { EnvelopeQueue } from './queue.js'
+import { listInstances } from './registry.js'
 import { logEvent } from './logger.js'
 import { preassignLock, coordinatorTryLock, coordinatorReleaseLock, getGlobalLockHolder } from './lock.js'
 
@@ -494,7 +495,10 @@ export function startCoordinatorServer(
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(
           JSON.stringify({
-            local: [{ name: local.name, pid: local.pid, cwd: local.cwd, host: local.host }],
+            // 上报本机全部存活实例（而非仅协调中心自身）：
+            // 同机未以 WS 客户端接入的实例（如启动顺序靠后、连接断开）否则永远不会出现在 /instances
+            local: listInstances(),
+            coordinatorName: local.name,
             remoteNames,
             clients,
           }),
@@ -814,6 +818,7 @@ export async function fetchCoordinatorInstances(
   baseUrl: string,
 ): Promise<{
   local: { name: string; pid: number; cwd: string; host?: string }[]
+  coordinatorName?: string
   remoteNames: string[]
   clients?: { name: string; pid: number; cwd?: string; host?: string }[]
 } | null> {
@@ -822,6 +827,7 @@ export async function fetchCoordinatorInstances(
     if (!res.ok) return null
     return (await res.json()) as {
       local: { name: string; pid: number; cwd: string; host?: string }[]
+      coordinatorName?: string
       remoteNames: string[]
       clients?: { name: string; pid: number; cwd?: string; host?: string }[]
     }
