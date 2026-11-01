@@ -17,7 +17,7 @@
            (file-exists-p "~/repos/liberime/src/liberime-core.dylib"))
   (setq liberime-module-file (expand-file-name "~/repos/liberime/src/liberime-core.dylib")))
 (if (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
-    (setq rimel-show-candidate 'echo-area)
+    (setq rimel-show-candidate 'prompt)
   (setq rimel-show-candidate 'posframe))
 (setq rimel-posframe-style 'horizontal)
 (setq default-input-method "rimel")

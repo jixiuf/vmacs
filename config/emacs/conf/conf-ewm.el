@@ -11,9 +11,17 @@
   ;; `ewm-intercept-prefixes' variable is obsolete since 2026-10.
   (keymap-set ewm-mode-map "C-<tab>" (ewm-key :intercept))
   (keymap-set ewm-mode-map "C-s-d" (ewm-key :intercept))
-  ;; (keymap-set ewm-mode-map "C-s-M-d" (ewm-key :intercept))
+  (keymap-set ewm-mode-map "C-M-s-d" (ewm-key :intercept))
   (keymap-set ewm-mode-map "<f11>" (ewm-key :intercept))
   (keymap-set ewm-mode-map "M-:" (ewm-key :intercept))
+  (define-keymap :keymap ewm-mode-map
+    "<swipe-4-up>"     (ewm-key #'ewm-overview-open :fullscreen)  ; the overview on four fingers
+    "<swipe-4-down>"     (ewm-key #'ewm-overview-close :fullscreen)  ; the overview off four fingers
+    "<swipe-4-right>"     (ewm-key #'ewm-frame-left :fullscreen)  ; the overview off four fingers
+    ;; "<swipe-3-up>"     #'my-screenshot                             ; three fingers up, yours
+    ;; "s-<swipe-3-down>" #'my-control-panel                          ; with Super held
+    "<swipe-4-left>"   (ewm-key #'ewm-frame-right :fullscreen))   ; four fingers left, the next frame when they lift
+  
   (ewm--send-intercept-keys)
   (setq ewm-output-config ;; wlr-randr
         '(("eDP-1" :width 2880 :height 1800 :scale 1.75 :x 0 :y 0)))
@@ -58,6 +66,8 @@
     (start-process-shell-command     "dex" nil     "dex -a -s /etc/xdg/autostart/:~/.config/autostart/")
     (start-process-shell-command     "sway-session" nil     "systemctl --user restart sway-session.target")
     (start-process-shell-command     "xremap" " *xremap*"     "systemctl --user restart xremap")
+    ;; (setopt ewm-text-input-provider 'external)
+    ;; (start-process "fcitx5" nil "fcitx5" "--disable=xim")
     )
   (when after-init-time
     (vmacs-ewm-init)
