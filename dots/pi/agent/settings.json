@@ -2,10 +2,12 @@
   "defaultModel": "glm-5.3-flash",
   "defaultProvider": "zai-coding-cn",
   "defaultThinkingLevel": "high",
-  "defaultTools": ["+codemode"],
+  "defaultTools": [
+    "+codemode"
+  ],
   "followUpMode": "all",
   "hideThinkingBlock": false,
-  "lastChangelogVersion": "1.2.0",
+  "lastChangelogVersion": "1.4.0",
   "packages": [
     "npm:pi-cache-optimizer",
     "npm:pi-mcp-adapter",
