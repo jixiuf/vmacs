@@ -163,3 +163,5 @@ dots/pi/agent/wechat-assistant/last-wechat-msg.json
 dots/pi/agent/wechat-assistant/cursor.json
 dots/pi/agent/wechat-assistant/seen-ids.json
 dots/pi/agent/wechat-assistant/wechat-state.json
+dots/pi/agent/pi-cache-optimizer-stats.d/maintenance/last-compaction
+dots/pi/agent/mcp-last-seen-version.json
