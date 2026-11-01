@@ -7,12 +7,13 @@
 (when (string-equal (getenv "XDG_SESSION_DESKTOP") "ewm")
   (require 'ewm)
   (global-set-key (kbd "C-<tab>") #'consult-buffer)
-  (add-to-list 'ewm-intercept-prefixes "C-<tab>")
-  (add-to-list 'ewm-intercept-prefixes "C-s-d")
-  (add-to-list 'ewm-intercept-prefixes "C-s-M-d")
-  
-  (add-to-list 'ewm-intercept-prefixes "<f11>")
-  (add-to-list 'ewm-intercept-prefixes ?\M-:)
+  ;; Intercepted keys bind in `ewm-mode-map' through `ewm-key'; the
+  ;; `ewm-intercept-prefixes' variable is obsolete since 2026-10.
+  (keymap-set ewm-mode-map "C-<tab>" (ewm-key :intercept))
+  (keymap-set ewm-mode-map "C-s-d" (ewm-key :intercept))
+  ;; (keymap-set ewm-mode-map "C-s-M-d" (ewm-key :intercept))
+  (keymap-set ewm-mode-map "<f11>" (ewm-key :intercept))
+  (keymap-set ewm-mode-map "M-:" (ewm-key :intercept))
   (ewm--send-intercept-keys)
   (setq ewm-output-config ;; wlr-randr
         '(("eDP-1" :width 2880 :height 1800 :scale 1.75 :x 0 :y 0)))
@@ -36,18 +37,12 @@
   ;; /usr/bin/dbus-update-activation-environment --systemd --all
   ;; EWM compositor must start immediately in daemon mode (runs on TTY)
   ;; It doesn't need a graphical frame - the compositor creates the display
-  (defun ewm-key (key)
-    (add-to-list 'ewm-intercept-prefixes `(,(kbd key) :fullscreen))
-    (kbd key))
-
   (defun vmacs-ewm-init()
     (require 'lazy-wayland)
     (setq wayland-compositor 'ewm)
 
     (ewm--send-intercept-keys)
     (ewm-start-module)
-    ;; meep need this
-    (setq interprogram-paste-function ewm--saved-interprogram-paste-function)
 
     (start-process-shell-command
      "import-environment" nil
