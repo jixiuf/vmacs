@@ -96,7 +96,7 @@ keymap:
       super-C-comma: [C-x, o]
       super-C-o: [C-x, o]
       super-C-dot: [C-x, O ]
-      super-C-Enter:    { launch: ["sh","-c","term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
+      # super-C-Enter:    { launch: ["sh","-c","term.sh --working-directory=$(cwd||echo $HOME) --tmux-session $RANDOM"] }
       super-C-M-Enter: { launch: [ "term.sh","--tmux-session","$RANDOM"] }
       # term.sh --working-directory "/admin@bj-mjq-client-apm-05:~" tmux  attach 
       super-C-Shift-e: { launch: ["sh","-c","term.sh --termenv=tmux-direct --class=sshemacs --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux  new-session -A  -s emacs" ] }
