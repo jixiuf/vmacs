@@ -12,6 +12,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -35,6 +36,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -66,6 +68,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -100,6 +103,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
@@ -130,6 +134,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
@@ -155,6 +160,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
@@ -186,6 +192,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
@@ -264,6 +271,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -300,6 +308,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$"
                                         ],
                                         "file_paths": ["/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
@@ -435,6 +444,17 @@
                                 "type": "basic"
                             },
                             {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.alacritty$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.electron\\.lark$"
+                                        ],
+                                        "file_paths": ["/usr/local/bin/alacritty"],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
                                 "description": "spacebar-w = command-w",
                                 "from": {
                                     "key_code": "w",
@@ -447,17 +467,6 @@
                                     {
                                         "key_code": "w",
                                         "modifiers": ["right_command"]
-                                    }
-                                ],
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.alacritty$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.electron\\.lark$"
-                                        ],
-                                        "file_paths": ["/usr/local/bin/alacritty"],
-                                        "type": "frontmost_application_unless"
                                     }
                                 ],
                                 "type": "basic"
@@ -572,6 +581,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.gnu\\.AquamacsEmacs$",
                                             "^org\\.gnu\\.Aquamacs$"
                                         ],
@@ -592,7 +602,7 @@
                                         "key_code": "spacebar",
                                         "modifiers": ["left_control"]
                                     },
-                                  { "shell_command": "/usr/local/bin/run-or-raise --toggle --title 'GNU/Emacs' --cmd emacs" }
+                                    { "shell_command": "/usr/local/bin/run-or-raise --toggle --title 'GNU/Emacs' --cmd emacs" }
                                 ],
                                 "type": "basic"
                             },
@@ -673,11 +683,11 @@
                                 "from": {
                                     "key_code": "e",
                                     "modifiers": {
-                                      "mandatory": ["right_command", "right_option"],
+                                        "mandatory": ["right_command", "right_option"],
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:emacs:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh emacs " }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:emacs:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh emacs " }],
                                 "type": "basic"
                             },
                             {
@@ -689,7 +699,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:vc|ck' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh vc" }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:vc|ck' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh vc" }],
                                 "type": "basic"
                             },
                             {
@@ -713,7 +723,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                              "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --title 'mitmproxy' --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh --title=mitmproxy    /Users/jixiuf/venv/bin/mitmproxy " }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle --exec alacritty  --title 'mitmproxy' --skip-title 'ssh'  --cmd  /usr/local/bin/term.sh --title=mitmproxy    /Users/jixiuf/venv/bin/mitmproxy " }],
                                 "type": "basic"
                             },
                             {
@@ -3032,6 +3042,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.alacritty$",
                                             "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3060,6 +3071,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^org\\.alacritty$",
                                             "^com\\.apple\\.Terminal$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3088,6 +3100,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3134,6 +3147,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3162,6 +3176,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3190,6 +3205,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3218,6 +3234,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3246,6 +3263,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3274,6 +3292,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$"
@@ -3527,7 +3546,8 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.alacritty",
-                                            "^org\\.gnu\\.Emacs$"
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$"
                                         ],
                                         "file_paths": ["/usr/local/bin/alacritty", "/usr/local/emacs/bin/emacs", "/usr/local/bin/emacs"],
                                         "type": "frontmost_application_unless"
@@ -3583,6 +3603,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3621,6 +3642,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3655,6 +3677,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3689,6 +3712,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3718,6 +3742,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3747,6 +3772,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3787,6 +3813,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3816,6 +3843,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3845,6 +3873,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3874,6 +3903,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3903,6 +3933,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3937,6 +3968,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -3971,6 +4003,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -4000,6 +4033,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -4034,6 +4068,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
@@ -4068,6 +4103,7 @@
                                     {
                                         "bundle_identifiers": [
                                             "^org\\.gnu\\.Emacs$",
+                                            "^org\\.neomacs$",
                                             "^com\\.apple\\.Terminal$",
                                             "^org\\.alacritty$",
                                             "^com\\.googlecode\\.iterm2$",
