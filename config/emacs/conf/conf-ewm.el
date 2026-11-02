@@ -66,6 +66,7 @@
     (start-process-shell-command     "dex" nil     "dex -a -s /etc/xdg/autostart/:~/.config/autostart/")
     (start-process-shell-command     "sway-session" nil     "systemctl --user restart sway-session.target")
     (start-process-shell-command     "xremap" " *xremap*"     "systemctl --user restart xremap")
+    (start-process-shell-command     "waybar" " *waybar*"     "systemctl --user restart waybar")
     ;; (setopt ewm-text-input-provider 'external)
     ;; (start-process "fcitx5" nil "fcitx5" "--disable=xim")
     )
