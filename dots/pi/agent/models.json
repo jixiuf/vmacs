@@ -25,22 +25,6 @@
           "maxTokens": 128000,
           "name": "claude-opus-4-7",
           "reasoning": true
-        },
-        {
-          "contextWindow": 200000,
-          "cost": {
-            "cacheRead": 1.05,
-            "cacheWrite": 13.125,
-            "input": 10.5,
-            "output": 52.5
-          },
-          "id": "claude-opus-5",
-          "input": [
-            "text"
-          ],
-          "maxTokens": 128000,
-          "name": "claude-opus-5",
-          "reasoning": true
         }
       ]
     },
@@ -152,11 +136,22 @@
       "models": [
         {
           "_launch": true,
-          "contextWindow": 131072,
-          "id": "qwen3.8-27b-uncensored:latest",
+          "contextWindow": 32768,
+          "id": "qwen38-abliterated:latest",
           "input": [
             "text"
-          ]
+          ],
+          "name": "Qwen3.8-27B Abliterated (local)"
+        },
+        {
+          "_launch": true,
+          "contextWindow": 262144,
+          "id": "qwen35-9b-uncensored:latest",
+          "input": [
+            "text"
+          ],
+          "name": "Qwen3.5-9B Uncensored (local)",
+          "maxTokens": 240000
         }
       ]
     }
