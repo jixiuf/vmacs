@@ -8,8 +8,8 @@
   "passthrough": false,
   "fixed-center": true,
   // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
-  "modules-left": ["cffi/niri-windows"], // "ext/workspaces","custom/sep","wlr/taskbar"
-  "modules-center": ["hyprland/window","niri/window"], // sway/window
+  "modules-left": ["ext/workspaces","cffi/niri-windows"], // "ext/workspaces","custom/sep","wlr/taskbar"
+  "modules-center": ["niri/window"], // sway/window
   // group/power "group/tools"
   "modules-right": [ "mpris",  "tray","privacy","wireplumber", "network","bluetooth","battery","idle_inhibitor","clock","custom/notification"],
   "ext/workspaces": {
