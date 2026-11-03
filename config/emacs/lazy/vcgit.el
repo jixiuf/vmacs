@@ -22,6 +22,8 @@
   (declare-function vc-git-working-branch "vc-git")
   (declare-function vc-git-expanded-log-entry "vc-git")
   (declare-function log-view-toggle-entry-display "log-view")
+  (declare-function ewoc-get-hf "ewoc")
+  (declare-function ewoc-set-hf "ewoc" (ewoc header footer))
   (declare-function outline-next-visible-heading "outline")
   (declare-function outline-previous-visible-heading "outline"))
 
@@ -135,69 +137,85 @@ buffer) lands while a previous refresh's git log is still running.");;
 (defun vcgit--run-git-log (buf args vcdir-buf section-title count-p gen)
   "Run `git log' with ARGS into BUF, then insert result into VCDIR-BUF.
 Uses `start-file-process' so that for remote (Tramp) vc-dir buffers
-`git' runs on the remote host.  The sentinel tolerates `quit' (e.g.
-C-g interrupting a Tramp operation), which `with-demoted-errors'
-does not catch.  GEN is the refresh generation at spawn time; the
-result is discarded if BUF has been refreshed since."
+`git' runs on the remote host.  GEN is the refresh generation at
+spawn time; the result is discarded if VCDIR-BUF has been refreshed
+since."
   (let ((default-directory (with-current-buffer vcdir-buf
                              default-directory))
-        (process-connection-type nil))   ; pipe, not pty (no pager)
+        (process-connection-type nil)   ; pipe, not pty (no pager)
+        ;; Bound before spawning so any error path can refer to it.
+        (proc nil))
     (with-current-buffer buf
-      (let ((proc (apply #'start-file-process "vcgit-log" buf
-                         "git" "--no-pager" "log" "--no-color"
-                         "--graph"
-                         "--decorate"
-                         "--date=short"
-                         (format "--pretty=tformat:%s"
-                                 (car vc-git-root-log-format))
-                         "--abbrev-commit"
-                         "-n" (number-to-string vcgit-log-commit-count)
-                         args)))
-        (set-process-query-on-exit-flag proc nil)
-        (set-process-sentinel
-         proc
-         (lambda (proc _event)
-           ;; Sentinels may also fire on non-exit events (e.g. Tramp
-           ;; connection events); only act on real termination.
-           (when (memq (process-status proc) '(exit signal))
-             (condition-case err
-                 (unwind-protect
-                     (with-demoted-errors "vcgit: %S"
-                       (when (vcgit--gen-current-p vcdir-buf gen)
-                         (with-current-buffer buf
-                           ;; Apply faces manually using the regex and specs from
-                           ;; `vc-git-root-log-format'. Each spec is (GROUP FACE ...).
-                           (let ((re (nth 1 vc-git-root-log-format))
-                                 (specs (nth 2 vc-git-root-log-format)))
-                             (goto-char (point-min))
-                             (while (re-search-forward re nil t)
-                               (dolist (spec specs)
-                                 (let ((grp (car spec))
-                                       (face (eval (nth 1 spec) t)))
-                                   (when (and grp face (facep face)
-                                              (match-beginning grp))
-                                     (put-text-property
-                                      (match-beginning grp)
-                                      (match-end grp)
-                                      'face face))))))
-                           (let ((total (count-lines (point-min) (point-max))))
-                             (unless (zerop total)
-                               (let* ((shown (min vcgit-log-commit-count total))
-                                      (body (buffer-substring
-                                             (point-min)
-                                             (save-excursion
-                                               (goto-char (point-min))
-                                               (line-end-position shown)))))
-                                 (with-current-buffer vcdir-buf
-                                   (vcgit--append-to-header
-                                    (vcgit--format-log-section
-                                     section-title
-                                     (and count-p shown)
-                                     body
-                                     log-view-mode-map)))))))))
-                   (when (buffer-live-p buf)
-                     (kill-buffer buf)))
-               (quit (message "vcgit: git log interrupted: %S" err))))))))))
+      (condition-case err
+          (progn
+            (setq proc (apply #'start-file-process "vcgit-log" buf
+                              "git" "--no-pager" "log" "--no-color"
+                              "--graph"
+                              "--decorate"
+                              "--date=short"
+                              (format "--pretty=tformat:%s"
+                                      (car vc-git-root-log-format))
+                              "--abbrev-commit"
+                              "-n" (number-to-string vcgit-log-commit-count)
+                              args))
+            (set-process-query-on-exit-flag proc nil)
+            (set-process-sentinel
+             proc
+             (lambda (proc _event)
+               ;; A sentinel can also fire on non-termination events
+               ;; (e.g. a Tramp connection change) while the process is
+               ;; still live; act only once it is really gone.
+               (when (not (process-live-p proc))
+                 (vcgit--log-finish buf vcdir-buf section-title count-p gen)))))
+        (error
+         ;; `start-file-process' failed; BUF was created by the caller,
+         ;; so it has to be killed here to avoid leaking a hidden buffer.
+         (message "vcgit: git log start-process failed: %S" err)
+         (kill-buffer buf))))))
+
+(defun vcgit--log-finish (buf vcdir-buf section-title count-p gen)
+  "Insert the git log output in BUF into VCDIR-BUF.
+SECTION-TITLE, COUNT-P and GEN are as in `vcgit--run-git-log'.  BUF
+is killed afterwards; the result is skipped when VCDIR-BUF has been
+refreshed since GEN was captured."
+  (condition-case err
+      (unwind-protect
+          (with-demoted-errors "vcgit: %S"
+            (when (vcgit--gen-current-p vcdir-buf gen)
+              (with-current-buffer buf
+                ;; Apply faces manually using the regex and specs from
+                ;; `vc-git-root-log-format'. Each spec is (GROUP FACE ...).
+                (let ((re (nth 1 vc-git-root-log-format))
+                      (specs (nth 2 vc-git-root-log-format)))
+                  (goto-char (point-min))
+                  (while (re-search-forward re nil t)
+                    (dolist (spec specs)
+                      (let ((grp (car spec))
+                            (face (eval (nth 1 spec) t)))
+                        (when (and grp face (facep face)
+                                   (match-beginning grp))
+                          (put-text-property
+                           (match-beginning grp)
+                           (match-end grp)
+                           'face face))))))
+                (let ((total (count-lines (point-min) (point-max))))
+                  (unless (zerop total)
+                    (let* ((shown (min vcgit-log-commit-count total))
+                           (body (buffer-substring
+                                  (point-min)
+                                  (save-excursion
+                                    (goto-char (point-min))
+                                    (line-end-position shown)))))
+                      (with-current-buffer vcdir-buf
+                        (vcgit--append-to-header
+                         (vcgit--format-log-section
+                          section-title
+                          (and count-p shown)
+                          body
+                          log-view-mode-map)))))))))
+        (when (buffer-live-p buf)
+          (kill-buffer buf)))
+    (quit (message "vcgit: git log interrupted: %S" err))))
 
 (defun vcgit--async-unpulled (gen)
   "Start async computation of the unpulled commit log for generation GEN."
@@ -250,66 +268,39 @@ backward for the nearest `::' header to get the file path."
           (forward-line (1- linenum)))))))
 
 (defvar-local vcgit--todo-section nil
-  "Cons (BEG-MARKER . END-MARKER) delimiting the inserted TODO section.
-Used to replace the section on every refresh instead of appending:
-`vc-dir-refresh' rebuilds the ewoc header (which drops the
-Unpulled/Recent sections inserted there) but never touches the
-region after the last entry where the TODO section lives, so a
-plain append would duplicate it.")
+  "Exact string this package appended to the ewoc footer, or nil.
+The section lives in the ewoc footer itself, so `vc-dir-refresh',
+which calls `vc-dir--set-header' with RESET-FOOTER, removes it for
+free: `ewoc--refresh-node' deletes the whole [footer, point-max)
+region.  That is the same mechanism that keeps the Unpulled/Recent
+sections (inserted right after the header) from accumulating, so no
+bookkeeping of our own is needed.  This string only exists so that a
+re-run can strip its own previous copy instead of appending twice.")
 
-(defun vcgit--todo-delete-section ()
-  "Delete the previously inserted TODO section of this vc-dir buffer."
-  (let ((section vcgit--todo-section))
-    (when (and (consp section)
-               (markerp (car section)) (marker-buffer (car section))
-               (markerp (cdr section)) (marker-buffer (cdr section)))
-      (let ((inhibit-read-only t))
-        (delete-region (car section) (cdr section)))))
-  (setq vcgit--todo-section nil))
+(defun vcgit--todo-set (text)
+  "Install TODO section TEXT at the head of this buffer's ewoc footer.
+TEXT nil or empty only removes the previous section.  Any other
+footer content (e.g. the `vc-dir-process-output-limit' button) is
+preserved and kept after the section.  Does nothing unless the
+current buffer still looks like a Git vc-dir buffer."
+  (when (and (eq (bound-and-true-p vc-dir-backend) 'Git)
+             (bound-and-true-p vc-ewoc))
+    (let* ((footer (cdr (ewoc-get-hf vc-ewoc)))
+           (base (if (and vcgit--todo-section
+                          (string-prefix-p vcgit--todo-section footer))
+                     (substring footer (length vcgit--todo-section))
+                   footer))
+           (section (if (and text (> (length text) 0))
+                        (concat "\n"
+                                (propertize "TODOs:" 'face 'vc-dir-header)
+                                "\n" text)
+                      ""))
+           (inhibit-read-only t))
+      (setq vcgit--todo-section (and (> (length section) 0) section))
+      (ewoc-set-hf vc-ewoc nil (concat section base)))))
 
-(defun vcgit-dir--todo (gen)
-  "Search for TODO/FIXME items and display them in the vc-dir footer.
-Uses `start-file-process' so remote (Tramp) directories run `rg'
-on the remote host.  Skips when `rg' is unavailable there.
-GEN is the refresh generation at spawn time; the result is
-dropped if the vc-dir buffer has been refreshed since."
-  (if (executable-find "rg" t)
-      (let* ((default-directory (expand-file-name default-directory))
-             ;; Fresh hidden buffer per run: `start-file-process' reuses
-             ;; an existing buffer without erasing it, so a fixed name
-             ;; would accumulate output across refreshes.
-             (buf (generate-new-buffer " *vc-todo*"))
-             (curbuf (current-buffer)))
-        (condition-case err
-            (let ((proc (start-file-process "vc-todo" buf
-                                            "rg" "--line-number"
-                                            "--max-filesize=1M"
-                                            "-g" "!*.git*"
-                                            "TODO:|FIXME:" ".")))
-              (set-process-query-on-exit-flag proc nil)
-              (set-process-sentinel
-               proc
-               (lambda (proc _ev)
-                 ;; Sentinels may also fire on non-exit events (e.g.
-                 ;; Tramp connection events) while rg is still running;
-                 ;; only act on real termination to avoid killing a live
-                 ;; process buffer.
-                 (when (memq (process-status proc) '(exit signal))
-                   (when (vcgit--gen-current-p curbuf gen)
-                     (vcgit--todo-finish (process-buffer proc) curbuf))
-                   (let ((kill-buffer-query-functions nil))
-                     (when (buffer-live-p (process-buffer proc))
-                       (kill-buffer (process-buffer proc))))))))
-          (error
-           (message "vcgit: todo start-process failed: %S" err)
-           (let ((kill-buffer-query-functions nil))
-             (when (process-live-p proc)
-               (delete-process proc))
-             (when (buffer-live-p buf)
-               (kill-buffer buf))))))
-    (message "vcgit: skip TODO search (no rg available)")))
 (defun vcgit--todo-finish (buf curbuf)
-  "Process TODO rg output in BUF and insert into CURBUF footer."
+  "Process TODO rg output in BUF and install it into CURBUF's footer."
   (when (and (buffer-live-p buf) (buffer-live-p curbuf))
     (with-current-buffer buf
       (condition-case nil
@@ -335,30 +326,62 @@ dropped if the vc-dir buffer has been refreshed since."
                                    (line-end-position lines)))
                               "")))
               (with-current-buffer curbuf
-                ;; Replace the previous section instead of appending:
-                ;; vc-dir refresh rebuilds the ewoc header (dropping the
-                ;; Unpulled/Recent sections) but never removes the TODO
-                ;; section after the last entry, so a plain append would
-                ;; duplicate it on every refresh.
-                (vcgit--todo-delete-section))
-              (when (> (length results) 0)
-                (setq results (propertize results 'keymap vcgit-todo-map))
-                (with-current-buffer curbuf
-                  ;; Insert TODO footer at end of buffer, before ewoc footer.
-                  (let* ((footer-len (length (cdr (ewoc-get-hf vc-ewoc))))
-                         (inhibit-read-only t)
-                         beg)
-                    (goto-char (point-max))
-                    (when (> footer-len 0)
-                      (backward-char footer-len))
-                    (setq beg (point-marker))
-                    (insert "\n"
-                            (propertize "TODOs:" 'face 'vc-dir-header)
-                            "\n" results)
-                    (setq vcgit--todo-section
-                          (cons beg (point-marker))))
-                  (vcgit--goto-stage)))))
+                (vcgit--todo-set
+                 (if (> (length results) 0)
+                     (propertize results 'keymap vcgit-todo-map)
+                   ""))
+                (vcgit--goto-stage))))
         (error (message "vcgit: todo output processing error"))))))
+
+(defun vcgit-dir--todo (gen)
+  "Search for TODO/FIXME items and display them in the vc-dir footer.
+Uses `start-file-process' so remote (Tramp) directories run `rg'
+on the remote host (the trailing t in `executable-find' asks for a
+remote search).  Skips when `rg' is unavailable there.  GEN is the
+refresh generation at spawn time; the result is dropped if the
+vc-dir buffer has been refreshed since."
+  (if (executable-find "rg" t)
+      (let* ((default-directory (expand-file-name default-directory))
+             ;; Fresh hidden buffer per run: `start-file-process' reuses
+             ;; an existing buffer without erasing it, so a fixed name
+             ;; would accumulate output across refreshes.
+             (buf (generate-new-buffer " *vc-todo*"))
+             (curbuf (current-buffer))
+             ;; Bound before spawning so the handler below can always
+             ;; refer to it: if `start-file-process' itself signals,
+             ;; `proc' would otherwise be an unbound lexical variable
+             ;; and the handler would fail with `void-variable proc'.
+             (proc nil))
+        (condition-case err
+            (progn
+              (setq proc (start-file-process "vc-todo" buf
+                                             "rg" "--line-number"
+                                             "--max-filesize=1M"
+                                             "-g" "!*.git*"
+                                             "TODO:|FIXME:" "."))
+              (set-process-query-on-exit-flag proc nil)
+              (set-process-sentinel
+               proc
+               (lambda (proc _ev)
+                 ;; A sentinel can also fire on non-termination events
+                 ;; (e.g. a Tramp connection change) while rg is still
+                 ;; running; act only once the process is really gone.
+                 ;; `process-live-p' covers exit/signal/closed/failed,
+                 ;; unlike a hand-written status list.
+                 (when (not (process-live-p proc))
+                   (when (vcgit--gen-current-p curbuf gen)
+                     (vcgit--todo-finish (process-buffer proc) curbuf))
+                   (let ((kill-buffer-query-functions nil))
+                     (when (buffer-live-p (process-buffer proc))
+                       (kill-buffer (process-buffer proc))))))))
+          (error
+           (message "vcgit: todo start-process failed: %S" err)
+           (let ((kill-buffer-query-functions nil))
+             (when (process-live-p proc)
+               (delete-process proc))
+             (when (buffer-live-p buf)
+               (kill-buffer buf))))))
+    (message "vcgit: skip TODO search (no rg available)")))
 
 
 ;;; Outline setup
