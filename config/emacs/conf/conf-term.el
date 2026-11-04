@@ -8,6 +8,12 @@
 (setq ghostel-enable-osc52 t)
 (setq ghostel-ignore-cursor-change t)
 (setq ghostel-copy-mode-auto-load-scrollback t)
+(defun ghostel-bury-buffer (arg)
+  "Switch to the next ghostel terminal buffer, or create one."
+  (interactive "P")
+  (if current-prefix-arg
+      (call-interactively #'ghostel)
+    (bury-buffer)))
 
 (defun ghostel-latest ()
   "Switch to the next ghostel terminal buffer, or create one."
@@ -55,6 +61,7 @@ the row must be offset by the scrollback line count."
 (with-eval-after-load 'ghostel
   (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
   (define-key  ghostel-mode-map (kbd "C-c C-f") #'ghostel-char-mode)
+  (define-key  ghostel-mode-map (kbd "C-s-<return>") #'ghostel-char-mode)
   (define-key  ghostel-char-mode-map (kbd "C-s-<return>") #'ghostel-semi-char-mode)
   (helixel-define-key 'insert (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
   (helixel-define-key 'normal (kbd "C-s-v") #'ghostel-yank 'ghostel-mode)
