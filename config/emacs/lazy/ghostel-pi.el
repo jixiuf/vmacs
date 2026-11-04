@@ -3,17 +3,21 @@
 (require 'ghostel)
 (require 'project)
 
-(defun ghostel-pi--find-buffer (identity)
-  "Return the live ghostel-mode buffer whose buffer-identity equals IDENTITY.
-Falls back to `get-buffer' by IDENTITY (the buffer name)."
-  (or (seq-find (lambda (b)
-                  (and (buffer-live-p b)
-                       (with-current-buffer b
-                         (derived-mode-p 'ghostel-mode))
-                       (equal (buffer-local-value 'ghostel--buffer-identity b)
-                              identity)))
-                (buffer-list))
-      (get-buffer identity)))
+(defun ghostel-pi--find-buffer (root buf-name)
+  "Return the live ghostel buffer running pi for project ROOT.
+Buffers are matched by `ghostel-identity' (stable across renames and
+`cd'), falling back to `get-buffer' by BUF-NAME."
+  (or (seq-find
+       (lambda (b)
+         (and (buffer-live-p b)
+              (with-current-buffer b
+                (and (derived-mode-p 'ghostel-mode)
+                     (ghostel-identity-match-p
+                      `((kind . exec)
+                        (project-root . ,(ghostel--normalize-root root)))
+                      ghostel-identity)))))
+       (buffer-list))
+      (get-buffer buf-name)))
 
 ;;;###autoload
 (defun ghostel-pi-project-toggle-chat ()
@@ -29,7 +33,7 @@ in the project root directory."
          (root (project-root proj))
          (proj-name (project-name proj))
          (buf-name (format "*pi-%s*" proj-name))
-         (buf (ghostel-pi--find-buffer buf-name)))
+         (buf (ghostel-pi--find-buffer root buf-name)))
     (cond
      ;; Buffer exists and is current → bury it
      ((and buf (eq buf (current-buffer)))
@@ -44,13 +48,16 @@ in the project root directory."
             (buffer (get-buffer-create buf-name)))
         (pop-to-buffer buffer (append display-buffer--same-window-action
                                        '((category . comint))))
-        (ghostel-exec buffer "pi")
-        ;; Set after ghostel-exec (which calls ghostel--init-buffer →
-        ;; ghostel-mode → kill-all-local-variables), so our local
-        ;; settings survive.
+        ;; Store the project-scoped identity so `ghostel-pi--find-buffer'
+        ;; can match by `ghostel-identity' instead of buffer name.
+        (ghostel-exec buffer "pi" nil
+                      `((kind . exec)
+                        (command . ("pi"))
+                        (project-root . ,(ghostel--normalize-root root))))
+        ;; Keep the fixed name after ghostel-exec (which may reset
+        ;; buffer-local state when initializing the terminal).
         (with-current-buffer buffer
-          (setq-local ghostel-buffer-name-function nil)
-          (setq ghostel--buffer-identity buf-name)))))))
+          (setq-local ghostel-buffer-name-function nil)))))))
 
 (provide 'ghostel-pi)
 ;;; ghostel-pi.el ends here
