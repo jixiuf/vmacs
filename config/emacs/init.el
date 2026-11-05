@@ -25,7 +25,8 @@
 (require 'conf-keybind)
 (with-eval-after-load 'reka (require 'conf-wayland))
 
-(with-eval-after-load 'ewm (require 'conf-ewm))
+(with-eval-after-load 'ewm (require 'conf-ewm)   (vmacs-ewm-init)
+)
 (require 'conf-icomplete)
 ;; (require 'conf-minibuffer)
 
@@ -107,12 +108,9 @@
 (beacon-mode 1)
 (run-with-idle-timer 300 t 'vmacs-idle-timer) ;idle 300=5*60s
 (require 'conf-tmp nil t)
-;; (require 'conf-vterm)
 (require 'server)
 (unless (server-running-p) (server-start))
 
-;; (with-eval-after-load 'ewm
-;;   (require 'conf-ewm))
 
 ;; Local Variables:
 ;; coding: utf-8
