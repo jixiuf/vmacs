@@ -113,8 +113,13 @@
     (my/ewm-apply-state-face)))
 
 (defun my/ewm-modal-sync ()
+  ;; 只在键盘真在 Emacs frame 上时才同步：
+  ;; 否则 xremap 启动键的 emacsclient eval、定时器等在应用聚焦时跑的
+  ;; 任意命令，会把全局状态偷改成那些 buffer 的状态（偶发 i 被拦截的根因）。
   (when (and (boundp 'helixel--current-state)
-             (not (ewm-surface-buffer-p (window-buffer))))
+             (not (ewm-surface-buffer-p (window-buffer)))
+             (fboundp 'ewm-input--emacs-frame-focused-p)
+             (ewm-input--emacs-frame-focused-p))
     (my/hx-set-state helixel--current-state)))
 (add-hook 'post-command-hook #'my/ewm-modal-sync)
 
@@ -125,6 +130,9 @@
              (ewm-surface-buffer-p (window-buffer (selected-window))))
     (my/hx-set-state 'insert)))
 (add-hook 'window-selection-change-functions #'my/ewm-focus-to-insert)
+;; switch-to-buffer 换到 surface buffer 时只触发 buffer-change，
+;; 不触发 selection-change（如 xremap run-or-raise 的聚焦路径）
+(add-hook 'window-buffer-change-functions #'my/ewm-focus-to-insert)
 
 (my/ewm-apply-state-face)
 
