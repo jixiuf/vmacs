@@ -86,7 +86,7 @@
     '((t :background "#2d7a4a"))
     "Tab-line background for helixel normal/motion/visual state.")
   (defface my/ewm-tab-insert
-    '((t :background nil))
+    '((t :background "#27408b"))
     "Tab-line background for helixel insert state.")
 
   (defun my/ewm-apply-state-face ()
