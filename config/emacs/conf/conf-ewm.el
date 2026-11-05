@@ -226,6 +226,7 @@
   (start-process-shell-command     "waybar" " *waybar*"     "systemctl --user restart waybar")
   ;; (setopt ewm-text-input-provider 'external)
   ;; (start-process "fcitx5" nil "fcitx5" "--disable=xim")
+  )
 
 
 
