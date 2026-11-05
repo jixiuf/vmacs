@@ -75,8 +75,8 @@ keymap:
 
   - name: Global
     remap:
-      C-c: C-c
-      C-C: C-c
+      C-c: [C-c, { escape_next_key: true }]
+      C-C: [C-c, { escape_next_key: true }]
     # 使用 niri spawn","-- 执行的命令，重启 xremap 不会导致这些程序也跟着重启
       super-C-e:
         - { launch: ["emacsclient","--eval","(wayland-run-or-raise-emacs)"] }

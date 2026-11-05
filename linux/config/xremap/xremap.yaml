@@ -310,6 +310,11 @@ keymap:
       # C-a: home
       # C-e: end
       # C-f: right
+  - name: Emacs prefix -- next key bypasses remap
+    remap:
+      C-x: [C-x, { escape_next_key: true }]
+      C-c: [C-c, { escape_next_key: true }]
+      C-u: [C-u, { escape_next_key: true }]
   - name: Default -- some of these are overridden by the above definitions
     application:
       not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty,mitp   ,org.wezfurlong.wezterm ,APMSSH,sshemacs ]
