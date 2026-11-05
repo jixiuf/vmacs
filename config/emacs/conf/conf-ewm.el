@@ -1,9 +1,9 @@
 ;;; conf-wayland.el --- Description -*- lexical-binding: t; -*-
 ;; EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so   emacs   --fg-daemon -L ~/repos/ewm/lisp -l ewm
 
-(add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
-(setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
-(setenv "XDG_CONFIG_HOME" (expand-file-name "~/.config"))
+;; (add-to-list 'load-path (expand-file-name "~/repos/ewm/lisp"))
+;; (setenv "EWM_MODULE_PATH" (expand-file-name "~/repos/ewm/compositor/target/debug/libewm_core.so"))
+;; (setenv "XDG_CONFIG_HOME" (expand-file-name "~/.config"))
 (require 'ewm)
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 ;; Intercepted keys bind in `ewm-mode-map' through `ewm-key'; the
@@ -195,11 +195,6 @@
           ;; Per-device override (exact name from libinput)
           ("ELAN0676:00 04F3:3195 Touchpad" :tap nil :accel-speed -0.2)))
 
-(setenv "XDG_SESSION_DESKTOP" "ewm")
-(shell-command "/usr/bin/dbus-update-activation-environment --systemd --all;")
-;; /usr/local/bin/xremap-ewm /Users/jixiuf/.config/xremap/xremap.yaml /Users/jixiuf/.config/xremap/xremap-ewm.yaml --watch=device --ignore=dotool keyboard --ignore=Yubico YubiKey OTP+CCID
-
-;; /usr/bin/dbus-update-activation-environment --systemd --all
 ;; EWM compositor must start immediately in daemon mode (runs on TTY)
 ;; It doesn't need a graphical frame - the compositor creates the display
 (defun vmacs-ewm-init()
@@ -212,10 +207,7 @@
   (start-process-shell-command
    "import-environment" nil
    "systemctl --user import-environment XCURSOR_SIZE GTK_THEME SSH_AUTH_SOCK GPG_TTY DISPLAY  WAYLAND_DISPLAY  XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_RUNTIME_DIR QT_QPA_PLATFORM _JAVA_AWT_WM_NONREPARENTING SDL_VIDEODRIVER")
-  (start-process-shell-command
-   "dbus-update-activation-environment" nil
-   "dbus-update-activation-environment --systemd --all")
-  ;; (start-process-shell-command     "xremap" " *xremap*"     "/usr/local/bin/xremap-ewm ~/.config/xremap/xremap.yaml ~/.config/xremap/xremap-ewm.yaml --watch=device --ignore='dotool keyboard' ")
+  (start-process-shell-command "dbus-update-activation-environment" nil "dbus-update-activation-environment --systemd --all")
   (start-process-shell-command     "kpmenu" nil     "kpmenu --daemon")
   (start-process-shell-command     "swaylock" nil     "pidof swaylock || swaylock")
   (start-process-shell-command     "hypridle" nil     "pidof hypridle||hypridle")

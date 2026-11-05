@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 export XDG_SESSION_DESKTOP=ewm
 export EWM_MODULE_PATH=~/repos/ewm/compositor/target/debug/libewm_core.so
+export XDG_CONFIG_HOME=~/.config
 # key classification logs go to journald: journalctl --user -t ewm -f
 export RUST_LOG="${RUST_LOG:-ewm=debug,smithay=warn}"
 systemctl --user stop emacs
@@ -11,13 +12,13 @@ dbus-update-activation-environment --systemd --all
 # 只能作为依赖被拉起。创建一个常驻的临时单元 Requires 它：
 # - 它活着 → target 保持 active → waybar/swayidle/swaync 自动启动
 # - 退出时 stop 它 → target 变 unneeded 自动停 → PartOf 的服务跟着停
-systemd-run --user --unit=ewm-dev-session \
+systemd-run --user --unit=ewm-session \
   --property=Requires=graphical-session.target \
   --property=After=graphical-session.target \
   sleep infinity
 
 cleanup() {
-  systemctl --user stop ewm-dev-session.service
+  systemctl --user stop ewm-session.service
 }
 trap cleanup EXIT
 
