@@ -4,8 +4,8 @@
 (defvar ime (cond
              ((string-equal (getenv "XDG_SESSION_DESKTOP") "ewm") 'rime)
              ((eq system-type 'darwin) 'rime)
-             ((eq system-type 'gnu/linux) 'rime)
              ((executable-find "fcitx5")    'fcitx5)
+             ((eq system-type 'gnu/linux) 'rime)
              ((executable-find "ibus")    'ibus)))
 
 (if (eq system-type 'gnu/linux)
@@ -24,6 +24,7 @@
 (defun vmacs-init-rimel()
   (liberime-sync)
   (setq rimel-regexp-schema-id "egret_py")
+  (setq rimel-schema "egret_wubi_py")
   (rimel-regexp-enable)  )
   (add-hook 'after-init-hook #'vmacs-init-rimel)
 (with-eval-after-load 'rimel
@@ -94,7 +95,7 @@ Only active in `prog-mode' derived buffers."
 
 (defun vmacs-toggle-input-method()
   (interactive)
-  (when (and (eq system-type 'gnu/linux) (eq ime 'rime))
+  (when (and (eq system-type 'gnu/linux) (eq ime 'fcitx5))
     (switch-to-english-input-method 'fcitx5))
   (if (string-equal (get-input-method-state) "rime")
       (switch-to-english-input-method)
