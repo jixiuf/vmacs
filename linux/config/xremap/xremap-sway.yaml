@@ -16,8 +16,8 @@ keymap:
       # super-C-b: { launch: ["swaymsg","exec","--","sway-run-or-raise weixin weixin-uos" ] }
       super-C-3: { launch: ["swaymsg","exec","--","sway-run-or-raise","Bytedance-lark","bytedance-feishu-stable  2>&1 >/dev/null"] }
       super-C-0: { launch: ["swaymsg","exec","--","sway-run-or-raise org.gnome.Nautilus nautilus"] }
-      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
 
       super-C-8: { launch: ["swaymsg","exec","--","sway-run-or-raise org.keepassxc.KeePassXC keepassxc"] }
       super-M-f: { launch: ["swaymsg","floating toggle"] }

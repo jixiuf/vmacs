@@ -6,10 +6,15 @@
 # super = cmd on macos and win on windows
 # journalctl -u xremap
 keypress_delay_ms: 10           # https://github.com/k0kubun/xremap/issues/179
+default_mode: insert            # 由 ewm/hexixel 同步：C-M-f13→normal, C-M-f14→insert
 # shared:
 #   sleep: &sleep {sleep: 100}  # increase this delay to be larger than your bouncekeys delay
   # f11: [a, { sleep: 500 }, b]
   # C-delete: [{set_mark: false}, C-shift-right, *sleep, C-shift-right, *sleep, C-shift-left, delete]
+ipc:                    # omit the whole section to disable IPC entirely
+  socket: true          # listen on $XDG_RUNTIME_DIR/xremap.sock (or an explicit path)
+  # socket: /run/user/1000/my-xremap.sock
+  inject: true         # allow the key-injection commands (default: false)
 
 modmap:
   - name: Global for jxfhome
@@ -290,10 +295,10 @@ keymap:
       M-p: C-up
       C-j: C-Enter
       C-v:
-        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;echo click left |dotoolc;echo click left |dotoolc"] }
+        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;printf 'click left\nclick left\n' | xremap --client -"] }
         - Pagedown
       M-v:
-        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;echo click left |dotoolc;echo click left |dotoolc"] }
+        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;printf 'click left\nclick left\n' | xremap --client -"] }
         - Pageup
 
       # C-j: C-RIGHTBRACE
@@ -314,7 +319,10 @@ keymap:
     remap:
       C-x: [C-x, { escape_next_key: true }]
       C-c: [C-c, { escape_next_key: true }]
-      C-u: [C-u, { escape_next_key: true }]
+  - name: space leader (normal mode only, synced from ewm/hexixel)
+    mode: [normal]
+    remap:
+      space: [space, { escape_next_key: true }]
   - name: Default -- some of these are overridden by the above definitions
     application:
       not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty,mitp   ,org.wezfurlong.wezterm ,APMSSH,sshemacs ]
@@ -425,8 +433,8 @@ keymap:
       # super-C-o: { launch: ["other-window"] }
 
       super-M-v: Shift-Insert
-      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
-      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo buttondown middle | dotoolc;echo buttonup middle | dotoolc","&"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
       
       # Super-M-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       Super-C-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }

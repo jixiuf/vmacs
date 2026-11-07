@@ -12,10 +12,10 @@ toggle_fullscreen(){
         # niri msg action fullscreen-window
     elif [ "$XDG_SESSION_DESKTOP"  = "ewm" ]; then
         sleep 0.1
-        echo key ctrl+super+m|dotoolc
+        echo 'key raw ctrl+super+m' | xremap --client -
     elif [ "$XDG_SESSION_DESKTOP"  = "reka" ]; then
         sleep 0.1
-        echo key ctrl+super+m|dotoolc
+        echo 'key raw ctrl+super+m' | xremap --client -
     else
         swaymsg "fullscreen"
     fi
@@ -57,7 +57,7 @@ if [ -n "$class" ]; then
     # fullscreen=`echo $appinfo|jq -r '.fullscreen'|head -n 1`
     if [[ "$class" = "emacs"  ]]; then
         sleep 0.1
-        echo key ctrl+super+m|dotoolc
+        echo 'key raw ctrl+super+m' | xremap --client -
     elif [[ "$class" = "foot"* ||"$class" = *"Alacritty"* || "$class" = *"term"* ]]; then
         #tmux: set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'
         if [[ "$title" == "TMUX:"* ]]; then

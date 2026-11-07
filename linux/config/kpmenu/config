@@ -19,7 +19,7 @@ else
     emacsclient --eval "(ewm-get-window-info-json)"|jq -r |jq -c   '"\\(.title) - \\(.app)"';  
 fi
  """
-customAutotypeTyper="dotoolc"
+customAutotypeTyper="xremap"
 autotype=false
 
 # Always prompt user to select the entry to autotype
