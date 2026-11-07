@@ -25,6 +25,11 @@ modmap:
 #         #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
 #       alt_r : f9
 keymap:
+  - name: ewm mode sync (reserved keys from emacs, via xremap IPC injection)
+    exact_match: true
+    remap:
+      f13: { set_mode: normal }
+      f14: { set_mode: insert }
   - name: Emacs Ghostel Term
     application:
       only: [emacs,Emacs]

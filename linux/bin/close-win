@@ -15,7 +15,7 @@ if [ "$wincnt" = "1" ]; then
     kill $pid
 else
     hyprctl dispatch movecursor $close_btn_x $close_btn_y
-    echo 'mousemove 1 1'|dotoolc
-    echo 'click left'|dotoolc
+    echo 'mousemove 1 1' | xremap --client -
+    echo 'click left' | xremap --client -
     hyprctl dispatch movecursor $oldpos
 fi

@@ -51,7 +51,7 @@ for i in "$@"; do
             echo "    set -g set-titles on"
             echo "    set -g set-titles-string 'TMUX:#{session_name}:#{pane_title}'"
             echo "  see script 'cwd' and 'cd.sh' for more details"
-            echo "  you need install https://sr.ht/~geb/dotool/ if you do not use tmux"
+            echo "  you need xremap (ipc: inject enabled) if you do not use tmux"
             echo "--term-class terminal-class"
             echo "  terminal-class: the class of terminal, this should work with --cd, if \$TERM_CLASS_REGEX don't match your terminal,you can custom it"|fmt
             echo " --auto-type 'args for autotype.sh '"
