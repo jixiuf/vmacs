@@ -21,7 +21,9 @@
   (let* ((bufs (cl-remove-if-not
                 (lambda (b)
                   (with-current-buffer b
-                    (derived-mode-p 'ghostel-mode)))
+                    (and
+                     (derived-mode-p 'ghostel-mode)
+                     (not (string-match-p "-pi*" (buffer-name))))))
                 (buffer-list)))
          )
     (if bufs
