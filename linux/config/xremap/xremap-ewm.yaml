@@ -35,6 +35,7 @@ keymap:
       only: [emacs,Emacs]
     window:
       only: [/.*Ghostel.*/]
+      not: [/.*-pi\*.*/]
     remap:
       Super-C-d: 
         - C-super-M-w           #bury buffer
