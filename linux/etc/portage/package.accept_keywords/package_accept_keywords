@@ -1,7 +1,6 @@
 */*::t2
 sys-kernel/gentoo-sources  ~amd64  
 app-editors/emacs ~amd64 **
-app-editors/vscode ~amd64
 app-office/bytedance-feishu ~amd64
 dev-db/dbeaver-bin  ~amd64 
 dev-go/delve ~amd64
@@ -77,8 +76,6 @@ app-i18n/librime-octagram **
 gui-apps/satty  ~amd64
 app-emulation/fuse  ~amd64
 app-emulation/libspectrum  ~amd64
-dev-libs/hyprgraphics  ~amd64
-gui-libs/hyprland-qtutils   ~amd64
 gui-apps/xremap   ~amd64
 app-emacs/emacs-common ~amd64
 net-im/wechat ~amd64
@@ -99,8 +96,6 @@ net-analyzer/http-toolkit-bin ~amd64
 dev-db/mongodb-compass-bin  ~amd64
 dev-libs/libinput ~amd64
 app-misc/qwen-code  ~amd64
-sys-libs/glibc   ~amd64
-sys-apps/pnpm   ~amd64
 dev-build/node-gyp ~amd64
 app-misc/copilot ~amd64
 dev-lang/zig-bin ~amd64 
@@ -108,13 +103,12 @@ gui-wm/river **
 gui-libs/wlroots ** 
 gui-apps/wayfreeze ** 
 media-fonts/sarasa-term-sc-nerd ~amd64
-app-admin/keepassxc ~amd64
 app-misc/cliphist  ~amd64
 app-i18n/librime ~amd64
 app-i18n/librime-lua ~amd64
 app-i18n/librime-octagram ~amd64
+media-gfx/timg ~amd64
 
 # Local Variables:
 # mode: conf
 # End:
-media-gfx/timg ~amd64
