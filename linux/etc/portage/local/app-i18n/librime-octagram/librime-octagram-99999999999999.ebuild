@@ -39,7 +39,7 @@ fi
 
 src_prepare() {
 	sed \
-		-e "1icmake_minimum_required(VERSION 3.0)\nproject(${PN})\n" \
+		-e "1icmake_minimum_required(VERSION 3.5)\nproject(${PN} CXX)\n" \
 		-e "s/ PARENT_SCOPE//" \
 		-e "\$a\\\n" \
 		-e "\$aadd_library(\${plugin_modules} MODULE \${plugin_objs})" \
@@ -58,5 +58,10 @@ src_prepare() {
 src_configure() {
 	local -x CXXFLAGS="${CXXFLAGS} -I${ESYSROOT}/usr/include/utf8cpp"
 
+	# librime's headers (rime/common.h path::operator<<) are incompatible with
+	# C++20 char8_t std::u8string; librime itself builds with C++14/17.
+	local mycmakeargs=(
+		-DCMAKE_CXX_STANDARD=17
+	)
 	cmake_src_configure
 }
