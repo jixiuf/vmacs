@@ -110,7 +110,28 @@
   (when (and (boundp 'ewm-mode-map) (not (eq my/hx-last-state state)))
     (setq my/hx-last-state state)
     (my/ewm-modal-apply)
-    (my/ewm-apply-state-face)))
+    (my/ewm-apply-state-face)
+    (my/ewm-sync-xremap-mode state)))
+
+(defun my/xremap-ipc (command)
+  "Send COMMAND to the xremap IPC socket (fire-and-forget)."
+  (condition-case err
+      (let ((proc (make-network-process
+                   :name "xremap-ipc" :family 'local :noquery t
+                   :service (or (getenv "XREMAP_SOCKET")
+                                (expand-file-name
+                                 "xremap.sock"
+                                 (or (getenv "XDG_RUNTIME_DIR") "/run/user/1000"))))))
+        (process-send-string proc (concat command "\n"))
+        (delete-process proc))
+    (error (message "xremap ipc: %s" err))))
+
+(defun my/ewm-sync-xremap-mode (state)
+  "把全局 modal 状态同步给 xremap 的 mode。
+通过 xremap 内置 IPC socket 发 set-mode，不再依赖 dotool 合成按键。
+motion/visual 等中间态沿用原语义归并到 normal（与原 f13 行为一致）。"
+  (my/xremap-ipc
+   (concat "set-mode " (if (eq state 'insert) "insert" "normal"))))
 
 (defun my/ewm-modal-sync ()
   ;; 只在键盘真在 Emacs frame 上时才同步：
