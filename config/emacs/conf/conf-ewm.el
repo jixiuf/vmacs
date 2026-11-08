@@ -233,6 +233,11 @@ motion/visual 等中间态沿用原语义归并到 normal（与原 f13 行为一
   (ewm--send-intercept-keys)
   (ewm-start-module)
 
+(run-with-timer 3 nil 'vmacs-ewm-init-app)
+  ;; (setopt ewm-text-input-provider 'external)
+  ;; (start-process "fcitx5" nil "fcitx5" "--disable=xim")
+  )
+(defun vmacs-ewm-init-app()
   (start-process-shell-command
    "import-environment" nil
    "systemctl --user import-environment XCURSOR_SIZE GTK_THEME SSH_AUTH_SOCK GPG_TTY DISPLAY  WAYLAND_DISPLAY  XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_RUNTIME_DIR QT_QPA_PLATFORM _JAVA_AWT_WM_NONREPARENTING SDL_VIDEODRIVER")
@@ -244,10 +249,7 @@ motion/visual 等中间态沿用原语义归并到 normal（与原 f13 行为一
   (start-process-shell-command     "dex" nil     "dex -a -s /etc/xdg/autostart/:~/.config/autostart/")
   (start-process-shell-command     "sway-session" nil     "systemctl --user restart sway-session.target")
   (start-process-shell-command     "xremap" " *xremap*"     "systemctl --user restart xremap")
-  (start-process-shell-command     "waybar" " *waybar*"     "systemctl --user restart waybar")
-  ;; (setopt ewm-text-input-provider 'external)
-  ;; (start-process "fcitx5" nil "fcitx5" "--disable=xim")
-  )
+  (start-process-shell-command     "waybar" " *waybar*"     "systemctl --user restart waybar"))
 
 
 
