@@ -1,3 +1,4 @@
+
 modmap:
   - name: input method
     remap:
@@ -30,6 +31,7 @@ keymap:
     remap:
       f13: { set_mode: normal }
       f14: { set_mode: insert }
+      f4:  { launch: ["xremap","--client","type  helloworld@helloworld@helloworld helloworld@132ad20397704461481212.onwqaliyun.com\\n"] }
   - name: Emacs Ghostel Term
     application:
       only: [emacs,Emacs]

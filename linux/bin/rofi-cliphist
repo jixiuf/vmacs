@@ -19,9 +19,9 @@ content=`cliphist list | rofi -dmenu -i  `
 if [ $? = 0 ]; then
     echo "$content"| cliphist decode | wl-copy
     if [[ ("$front_class" == "org.wezfurlong.wezterm" || "$front_class" == "Alacritty"* || "$front_class" == "kitty"|| "$front_class" == "foot"*|| "$front_class" == *"term") ]]; then
-        echo 'key raw super+ctrl+v' | xremap --client -
+        xremap key raw super+ctrl+v
     elif [[ "$front_class" == "emacs" ]]; then
-        echo 'key raw super+ctrl+v' | xremap --client -
-        # echo 'key raw ctrl+y' | xremap --client -
+        xremap key raw super+ctrl+v
+        # xremap key raw ctrl+y
     fi
 fi

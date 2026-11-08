@@ -5,8 +5,11 @@
 # systemctl --user restart xremap
 # super = cmd on macos and win on windows
 # journalctl -u xremap
+# https://github.com/xremap/xremap/blob/master/doc/reference_config_options.md
 keypress_delay_ms: 10           # https://github.com/k0kubun/xremap/issues/179
+type_delay_ms: 6               # IPC type 注入字符间隔，防 Wayland 丢字（xremap#611）
 default_mode: insert            # 由 ewm/hexixel 同步：C-M-f13→normal, C-M-f14→insert
+
 # shared:
 #   sleep: &sleep {sleep: 100}  # increase this delay to be larger than your bouncekeys delay
   # f11: [a, { sleep: 500 }, b]
@@ -295,10 +298,10 @@ keymap:
       M-p: C-up
       C-j: C-Enter
       C-v:
-        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;printf 'click left\nclick left\n' | xremap --client -"] }
+        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;xremap click left left"] }
         - Pagedown
       M-v:
-        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;printf 'click left\nclick left\n' | xremap --client -"] }
+        - { launch: ["sh","-c"," hyprctl dispatch movecursor 373 800;sleep 1;xremap click left left"] }
         - Pageup
 
       # C-j: C-RIGHTBRACE
@@ -433,8 +436,8 @@ keymap:
       # super-C-o: { launch: ["other-window"] }
 
       super-M-v: Shift-Insert
-      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
-      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;xremap click middle","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;xremap click middle","&"] }
       
       # Super-M-7: { launch: ["sh","-c","if ! pgrep -x 'kpmenu' > /dev/null; then; kpmenu --daemon&; fi;gpg  --pinentry-mode ask -d /usr/local/bin/master.gpg|sh"] }
       Super-C-7: { launch: ["sh","-c"," XDG_CONFIG_HOME=~/.config kpmenu  --autotype --autotypeConfirm"] }

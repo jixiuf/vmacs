@@ -58,8 +58,8 @@ keymap:
       super-C-g: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","wechat","/usr/bin/wechat" ] }
       super-C-3: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","Bytedance-lark|Bytedance-feishu|^飞书$","--","bytedance-feishu-stable","--","--enable-features=UseOzonePlatform","--ozone-platform=wayland","--enable-wayland-ime" ] }
       # super-C-0: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","org.gnome.Nautilus","nautilus"] }
-      # super-M-v: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
-      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;echo 'click middle' | xremap --client","&"] }
+      # super-M-v: { launch: ["sh","-c","sleep 0.2;xremap click middle","&"] }
+      # super-M-BTN_MIDDLE: { launch: ["sh","-c","sleep 0.2;xremap click middle","&"] }
       super-C-8: { launch: ["niri","msg","action","spawn","--","niri-run-or-raise","--toggle","--move-to-current-workspace-if-floating","--hide-front-floating-window","org.keepassxc.KeePassXC","keepassxc"] }
 
       Super-M-f: { launch: ["niri","msg","action","toggle-window-floating"] }      

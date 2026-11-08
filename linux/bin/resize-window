@@ -61,16 +61,16 @@ sway_resize_window() {
 resize_emacs_window() {
     case "$1" in
         left*)
-            echo 'key raw ctrl+alt+3' | xremap --client -
+            xremap key raw ctrl+alt+3
             ;;
         right*)
-            echo 'key raw ctrl+alt+4' | xremap --client -
+            xremap key raw ctrl+alt+4
             ;;
         up*)
-            echo 'key raw ctrl+alt+1' | xremap --client -
+            xremap key raw ctrl+alt+1
             ;;
         down*)
-            echo 'key raw ctrl+alt+2' | xremap --client -
+            xremap key raw ctrl+alt+2
             ;;
     esac
 }
