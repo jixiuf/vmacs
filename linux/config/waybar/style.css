@@ -1,3 +1,5 @@
+@import '/tmp/colors.css';
+
 /* @define-color foreground white; */
 /* @define-color background grey; */
 @define-color foreground #bfbfc0;
@@ -41,7 +43,7 @@
 window#waybar {
     transition-property: background-color;
     transition-duration: 0.5s;
-    background-color: #1e1e2e;
+    background-color: @theme_bg;
     /* background-color: rgba(24, 24, 37, 255); */
     /* color: @color7; */
     /* background-color: #1e1e2e; */
@@ -53,7 +55,7 @@ window#waybar.hidden {
     opacity: 0.5;
 }
 #workspaces {
-    background: @background-color;
+    background: @theme_bg;
     margin: 0px 0px 0px 0px;
     /* padding: 4px 1px; */
     border-radius: 12px;
@@ -69,7 +71,7 @@ window#waybar.hidden {
     /* color: @color7; */
     /* color: #dcd7ba; */
     color: #89b4fa;
-    background-color: #16161d;
+    background-color: @theme_bg;
     /* background: #16161d; */
     /* background-color: rgba(24, 24, 37, 0); */
     transition: all 0.3s ease-in-out;

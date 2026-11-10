@@ -16,7 +16,7 @@ sys-auth/seatd server
 media-libs/mesa llvm 
 sys-fs/lvm2 lvm 
 >=dev-libs/libdbusmenu-16.04.0-r2 gtk3
-gui-apps/waybar wifi  network pipewire upower tray experimental mpd mpris niri 
+gui-apps/waybar wifi  network pipewire upower tray experimental mpd mpris
 media-video/pipewire ffmpeg  extra bluetooth dbus  sound-server 
 media-sound/pulseaudio -daemon
 media-video/ffmpeg   libsoxr opus theora vpx openh264 lame -sdl

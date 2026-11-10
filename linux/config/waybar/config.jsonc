@@ -1,4 +1,5 @@
 {
+//  ExecStartPre=cp $h/vmacs/linux/config/waybar/colors.css /tmp/
   "layer": "top",
   "position": "top",
   "height": 37,
@@ -7,6 +8,7 @@
   "gtk-layer-shell": true,
   "passthrough": false,
   "fixed-center": true,
+  "reload_style_on_change": true,
   // "modules-left": ["wlr/workspaces","sway/workspaces",, "hyprland/window"],
   "modules-left": ["ext/workspaces","cffi/niri-windows"], // "ext/workspaces","custom/sep","wlr/taskbar"
   "modules-center": ["niri/window"], // sway/window

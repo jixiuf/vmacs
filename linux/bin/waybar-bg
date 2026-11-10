@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# 动态修改 waybar 背景色（可选前景色）。
+# 用法: waybar-bg <bg色> [fg色]
+# 示例: waybar-bg "#282a36"
+#       waybar-bg "#282a36" "#f8f8f2"
+#
+# 原理: 写 ~/.config/waybar/colors.css；waybar 配置了 reload_style_on_change，
+# 会自动监听 CSS 变化并热重载，无需发信号或重启。
+set -euo pipefail
+
+# waybar 未运行时先通过 user 服务拉起
+if ! pgrep -x waybar >/dev/null 2>&1; then
+  echo "waybar 未运行, 通过 systemctl --user 启动..."
+  systemctl --user start waybar
+  # 等待起来, 最多 5 秒
+  for _ in $(seq 1 10); do
+    pgrep -x waybar >/dev/null 2>&1 && break
+    sleep 0.5
+  done
+  if ! pgrep -x waybar >/dev/null 2>&1; then
+    echo "错误: waybar 启动失败, 请检查: journalctl --user -u waybar" >&2
+    exit 1
+  fi
+fi
+
+css_dir="${XDG_CONFIG_HOME:-$HOME/.config}/waybar"
+css="/tmp/colors.css"
+
+if [[ $# -lt 1 || $# -gt 2 ]]; then
+  echo "usage: waybar-bg <bg-color> [fg-color]" >&2
+  exit 1
+fi
+bg="$1"
+
+if [[ $# -eq 2 ]]; then
+  fg="$2"
+else
+  # 未指定前景色时保留当前值
+  fg=$(grep -oP '@define-color theme_fg \K[^;]+' "$css" 2>/dev/null || true)
+  fg=${fg:-#bfbfc0}
+fi
+
+# 原地覆写（保留 inode，waybar 的文件监听才能收到事件）
+printf '@define-color theme_bg %s;\n@define-color theme_fg %s;\n' "$bg" "$fg" > "$css"
+
+echo "waybar theme: bg=$bg fg=$fg (已自动生效)"

@@ -38,13 +38,19 @@ keymap:
     # (keymap-set ewm-mode-map "<Launch9>" (ewm-key :intercept)) ;<Launch9>=f18
     # (define-key key-translation-map (kbd "<Launch9>") (kbd "C-c")) ;<Launch9>=f18
       space: [f18, { escape_next_key: true }] # f18 is remaped to C-c in emacs
-      i:  { set_mode: insert }
+      i:  
+        - set_mode: insert
+        - { launch: ["/usr/local/bin/waybar-bg", "#1e1e2e"] }
   - name: space leader 
     mode: [insert]
     application:
       not: emacs
     remap:
-      esc:  { set_mode: normal }
+      esc: 
+        - set_mode: normal
+        - { launch: ["/usr/local/bin/waybar-bg", "#7e9cd8"] }
+        
+        
       
       # f4:  { launch: ["xremap","--client","type  helloworld@helloworld@helloworld helloworld@132ad20397704461481212.onwqaliyun.com\\n"] }
   - name: Emacs Ghostel Term
