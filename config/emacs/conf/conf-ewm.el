@@ -28,26 +28,26 @@
   "<swipe-4-left>"   (ewm-key #'ewm-frame-right :fullscreen))   ; four fingers left, the next frame when they lift
 
 
-;; (defun my/xremap-ipc (command)
-;;   "Send COMMAND to the xremap IPC socket (fire-and-forget)."
-;;   (condition-case err
-;;       (let ((proc (make-network-process
-;;                    :name "xremap-ipc" :family 'local :noquery t
-;;                    :service (or (getenv "XREMAP_SOCKET")
-;;                                 (expand-file-name
-;;                                  "xremap.sock"
-;;                                  (or (getenv "XDG_RUNTIME_DIR") "/run/user/1000"))))))
-;;         (process-send-string proc (concat command "\n"))
-;;         (message "xremap ipc: %s" command)
-;;         (delete-process proc))
-;;     (error (message "xremap ipc: %s" err))))
+(defun my/xremap-ipc (command)
+  "Send COMMAND to the xremap IPC socket (fire-and-forget)."
+  (condition-case err
+      (let ((proc (make-network-process
+                   :name "xremap-ipc" :family 'local :noquery t
+                   :service (or (getenv "XREMAP_SOCKET")
+                                (expand-file-name
+                                 "xremap.sock"
+                                 (or (getenv "XDG_RUNTIME_DIR") "/run/user/1000"))))))
+        (process-send-string proc (concat command "\n"))
+        (message "xremap ipc: %s" command)
+        (delete-process proc))
+    (error (message "xremap ipc: %s" err))))
 
-;; (defun my/ewm-sync-xremap-mode (state)
-;;   "把全局 modal 状态同步给 xremap 的 mode。
-;; 通过 xremap 内置 IPC socket 发 set-mode，不再依赖 dotool 合成按键。
-;; motion/visual 等中间态沿用原语义归并到 normal（与原 f13 行为一致）。"
-;;   (my/xremap-ipc
-;;    (concat "set-mode " (if (eq state 'insert) "insert" "normal"))))
+(defun my/ewm-sync-xremap-mode (state)
+  "把全局 modal 状态同步给 xremap 的 mode。
+通过 xremap 内置 IPC socket 发 set-mode，不再依赖 dotool 合成按键。
+motion/visual 等中间态沿用原语义归并到 normal（与原 f13 行为一致）。"
+  (my/xremap-ipc
+   (concat "set-mode " (if (eq state 'insert) "insert" "normal"))))
 
 
 ;; surface 代理 buffer 禁用 helixel normal 态；ewm-edit buffer 归位 normal
@@ -111,6 +111,93 @@
           :action ,#'ewm-launch-xdg-command))
 (with-eval-after-load 'conf-icomplete
   (add-to-list 'consult-buffer-sources 'consult-source-xdg-apps))
+
+;; Sync waybar background color with the current helixel state
+;; (Linux/Wayland only; mirrors the keyd space-leader color scheme).
+;;   insert -> #1e1e2e (dark), normal/motion -> #565f89 (dim blue),
+;;   visual -> #ff5370 (red).
+;; Special case: in `ewm-surface-mode' buffers the color follows xremap's
+;; mode instead, queried over its IPC socket ("xremap get-mode").
+(defvar helixel-waybar-state-colors
+  '((insert . "#1e1e2e")
+    (normal . "#2d4f67")
+    (motion . "##2d3057")
+    (visual . "#8b7d6b"))
+  "Alist of helixel state symbol to waybar background color.")
+
+(defvar helixel-waybar--last-color nil
+  "Last color applied to waybar, to skip redundant writes.")
+
+(defvar helixel-waybar--xremap-querying nil
+  "Non-nil while an async `xremap get-mode' query is in flight.")
+
+(defconst helixel-waybar--css-file "/tmp/colors.css"
+  "Waybar colors file; waybar watches it via reload_style_on_change.")
+
+(defvar helixel-waybar--fg-color nil
+  "Foreground color carried over when rewriting the colors file.")
+
+(defun helixel-waybar--write-css (bg)
+  "Rewrite the waybar colors file with background BG, keeping the current fg.
+`write-region' truncates in place, so the inode is preserved and waybar's
+file watcher (reload_style_on_change) picks up the change for free."
+  (unless helixel-waybar--fg-color
+    (setq helixel-waybar--fg-color
+          (or (and (file-exists-p helixel-waybar--css-file)
+                   (with-temp-buffer
+                     (insert-file-contents helixel-waybar--css-file)
+                     (and (re-search-forward
+                           "@define-color theme_fg \\([^;\n]+\\)" nil t)
+                          (match-string 1))))
+              "#bfbfc0")))
+  (let ((backup-inhibited t))
+    (write-region
+     (format "@define-color theme_bg %s;\n@define-color theme_fg %s;\n"
+             bg helixel-waybar--fg-color)
+     nil helixel-waybar--css-file nil 'silent)))
+
+(defun helixel-waybar--apply-color (color)
+  "Apply COLOR to waybar unless it equals the last applied one."
+  (when (and color (not (equal color helixel-waybar--last-color)))
+    (setq helixel-waybar--last-color color)
+    (helixel-waybar--write-css color)))
+
+(defun helixel-waybar--sync-from-xremap ()
+  "Apply the color matching xremap's current mode, via an async IPC query."
+  (when (and (executable-find "xremap")
+             (not helixel-waybar--xremap-querying))
+    (setq helixel-waybar--xremap-querying t)
+    (let ((buf (generate-new-buffer " *xremap get-mode*")))
+      (make-process
+       :name "xremap-get-mode" :buffer buf :noquery t
+       :command '("xremap" "get-mode")
+       :sentinel
+       (lambda (proc _event)
+         (unwind-protect
+             (let ((mode (string-trim
+                          (with-current-buffer (process-buffer proc)
+                            (buffer-string)))))
+               (helixel-waybar--apply-color
+                (alist-get (intern mode) helixel-waybar-state-colors)))
+           (kill-buffer (process-buffer proc))
+           (setq helixel-waybar--xremap-querying nil)))))))
+
+(defun helixel-waybar-sync-bg (&optional _frame)
+  "Apply the waybar background color for the selected window's modal state.
+For helixel buffers this is `helixel--current-state'; for
+`ewm-surface-mode' buffers xremap's mode decides (IPC `get-mode')."
+  (with-current-buffer (window-buffer (selected-window))
+    (if (derived-mode-p 'ewm-surface-mode)
+        (helixel-waybar--sync-from-xremap)
+      (helixel-waybar--apply-color
+       (alist-get helixel--current-state helixel-waybar-state-colors)))))
+
+(add-hook 'helixel-state-change-hook #'helixel-waybar-sync-bg)
+;; abnormal hooks: each function receives the changed frame as argument.
+(add-hook 'window-selection-change-functions #'helixel-waybar-sync-bg)
+(add-hook 'window-buffer-change-functions #'helixel-waybar-sync-bg)
+(add-function :after after-focus-change-function #'helixel-waybar-sync-bg)
+(helixel-waybar-sync-bg)
 
 (provide 'conf-ewm)
 

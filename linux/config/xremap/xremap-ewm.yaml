@@ -48,10 +48,7 @@ keymap:
     remap:
       esc: 
         - set_mode: normal
-        - { launch: ["/usr/local/bin/waybar-bg", "#7e9cd8"] }
-        
-        
-      
+        - { launch: ["/usr/local/bin/waybar-bg", "#2d4f67"] }
       # f4:  { launch: ["xremap","--client","type  helloworld@helloworld@helloworld helloworld@132ad20397704461481212.onwqaliyun.com\\n"] }
   - name: Emacs Ghostel Term
     application:
