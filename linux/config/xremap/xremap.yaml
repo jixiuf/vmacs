@@ -39,28 +39,28 @@ modmap:
         #     - {sleep: 20 }
         #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
       alt_r : f9
-  - name: Global for luojilab
-    device:
-      #evtest
-      only: ["Apple Inc. Apple Internal Keyboard / Trackpad","SONiX Touch68@Lofree","SONiX Touch68@Lofree Keyboard","AT Translated Set 2 keyboard" ]
-    remap:
-      super_l :
-        held: super_l
-        # free_hold: true
-        alone_timeout_millis: 1000
-        alone: f9
-        # alone: 
-        #     - { launch: ["fcitx5-remote","-s","keyboard-us"] }
-        #     - {sleep: 20 }
-        #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
-      ctrl_l :
-        held: ctrl_l
-        alone: esc
-        free_hold: true
+  # - name: Global for luojilab
+  #   device:
+  #     #evtest
+  #     only: ["Apple Inc. Apple Internal Keyboard / Trackpad","SONiX Touch68@Lofree","SONiX Touch68@Lofree Keyboard","AT Translated Set 2 keyboard" ]
+  #   remap:
+  #     super_l :
+  #       held: super_l
+  #       # free_hold: true
+  #       alone_timeout_millis: 1000
+  #       alone: f9
+  #       # alone: 
+  #       #     - { launch: ["fcitx5-remote","-s","keyboard-us"] }
+  #       #     - {sleep: 20 }
+  #       #     - { launch: ["sh","-c","if pgrep waylock > /dev/null || pgrep hyprlock > /dev/null; then  XDG_CONFIG_HOME=~/.config kpmenu --autotype --customAutotypeWindowID 'echo -n KeePassXC' ;else  XDG_CONFIG_HOME=~/.config kpmenu --autotype ;fi"] }
+  #     ctrl_l :
+  #       held: ctrl_l
+  #       alone: esc
+  #       free_hold: true
 
   - name: Global
     remap:
-      BTN_TRIGGER_HAPPY1: space
+      # BTN_TRIGGER_HAPPY1: space
       space:
         held: [ctrl_l,super_l]
         alone: space
@@ -97,6 +97,7 @@ experimental_map:
         timeout: 200 # Optional. Default is 200ms.
         double: space
 keymap:
+
   - name: swappy
     application:
       only: [swappy]
@@ -318,14 +319,6 @@ keymap:
       # C-a: home
       # C-e: end
       # C-f: right
-  - name: Emacs prefix -- next key bypasses remap
-    remap:
-      C-x: [C-x, { escape_next_key: true }]
-      C-c: [C-c, { escape_next_key: true }]
-  - name: space leader (normal mode only, synced from ewm/hexixel)
-    mode: [normal]
-    remap:
-      space: [space, { escape_next_key: true }]
   - name: Default -- some of these are overridden by the above definitions
     application:
       not: [Gnome-terminal, Emacs,emacs ,foot,foot-ws,dterm,bterm,kitty,Alacritty,mitp   ,org.wezfurlong.wezterm ,APMSSH,sshemacs ]
