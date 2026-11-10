@@ -95,18 +95,7 @@
 (require 'leadkey)
 (require 'leadkey-which-key)
 
-;; SPC/leader 的去留由 ewm 联动的全局状态决定（见 conf-ewm.el 的 my/ewm-modal-sync）。
-;; surface 聚焦时 current buffer 是 surface buffer，buffer-local 状态不可信，
-;; 所以 leadkey 的 pass-through 也用这个全局状态。
-(defvar my/hx-last-state 'normal)
-(defun my/hx-insert-p ()
-  (if (featurep 'ewm)
-      (eq my/hx-last-state 'insert)
-    (helixel-insert-state-p)))
-
-(setq leadkey-pass-through-predicates
-      (cons #'my/hx-insert-p leadkey-pass-through-predicates))
-;; (add-to-list 'leadkey-pass-through-predicates #'helixel-insert-state-p)
+(add-to-list 'leadkey-pass-through-predicates #'helixel-insert-state-p) 
 
 (global-unset-key (kbd "C-x C-SPC"))
 (global-unset-key (kbd "C-x SPC"))
