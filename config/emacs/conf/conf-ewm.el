@@ -121,7 +121,7 @@ motion/visual 等中间态沿用原语义归并到 normal（与原 f13 行为一
 (defvar helixel-waybar-state-colors
   '((insert . "#1e1e2e")
     (normal . "#2d4f67")
-    (motion . "##2d3057")
+    (motion . "#2d3057")
     (visual . "#8b7d6b"))
   "Alist of helixel state symbol to waybar background color.")
 
@@ -185,12 +185,15 @@ file watcher (reload_style_on_change) picks up the change for free."
 (defun helixel-waybar-sync-bg (&optional _frame)
   "Apply the waybar background color for the selected window's modal state.
 For helixel buffers this is `helixel--current-state'; for
-`ewm-surface-mode' buffers xremap's mode decides (IPC `get-mode')."
-  (with-current-buffer (window-buffer (selected-window))
-    (if (derived-mode-p 'ewm-surface-mode)
-        (helixel-waybar--sync-from-xremap)
-      (helixel-waybar--apply-color
-       (alist-get helixel--current-state helixel-waybar-state-colors)))))
+`ewm-surface-mode' buffers xremap's mode decides (IPC `get-mode').
+Does nothing while the minibuffer is selected, to keep the
+background of the window that invoked the minibuffer."
+  (unless (minibuffer-selected-window)
+    (with-current-buffer (window-buffer (selected-window))
+      (if (derived-mode-p 'ewm-surface-mode)
+          (helixel-waybar--sync-from-xremap)
+        (helixel-waybar--apply-color
+         (alist-get helixel--current-state helixel-waybar-state-colors))))))
 
 (add-hook 'helixel-state-change-hook #'helixel-waybar-sync-bg)
 ;; abnormal hooks: each function receives the changed frame as argument.
