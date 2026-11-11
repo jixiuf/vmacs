@@ -43,7 +43,7 @@ Only active in `prog-mode' derived buffers."
                   (nth 4 ppss)))))) ; in comment
 
 (setq rimel-disable-predicates
-      '(rimel-predicate-in-code-p
+      '(;rimel-predicate-in-code-p
         rimel-predicate-after-alphabet-char-p
         rimel-predicate-current-uppercase-letter-p))
 
