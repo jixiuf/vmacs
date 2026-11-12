@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (global-tab-line-mode t)
-(global-set-key  (kbd "C-,") 'tab-line-switch-to-prev-tab)
-(global-set-key  (kbd "C-.") 'tab-line-switch-to-next-tab)
+(global-set-key  (kbd "C-,") 'vmacs-tab-line-switch-to-prev-tab)
+(global-set-key  (kbd "C-.") 'vmacs-tab-line-switch-to-next-tab)
 (setq tab-line-new-button-show nil)  ;; do no
 (setq tab-line-close-button-show nil)  ;; do not show close button
 (setq tab-line-separator " ")
@@ -15,6 +15,62 @@
            ))
 
 (setq tab-line-tabs-function #'tab-line-tabs-window-buffers)
+
+;;; ghostel 单独分组 {{{
+;; ghostel-mode 的 buffer 自成一组：tab line 只显示当前 buffer 所在组的 tab，
+;; 组内仍按窗口的访问顺序排列（`tab-line-tabs-window-buffers' 的天然顺序），
+;; C-, / C-. 也只在当前组内前后切换。
+
+(defun vmacs-ghostel-buffer-p (&optional buffer)
+  "Return non-nil if BUFFER (default: current buffer) is a ghostel terminal."
+  (let ((buffer (or buffer (current-buffer))))
+    (and (buffer-live-p buffer)
+         (with-current-buffer buffer
+           (derived-mode-p 'ghostel-mode)))))
+
+(defun vmacs-tab-line-ghostel-group-p (&optional window)
+  "Return non-nil if WINDOW's buffer belongs to the ghostel tab group."
+  (vmacs-ghostel-buffer-p (window-buffer (or window (selected-window)))))
+
+(define-advice tab-line-tabs-window-buffers (:around (orig &rest args) vmacs-ghostel-group)
+  "Only show window buffers belonging to the same group as the current one."
+  (let ((group (vmacs-tab-line-ghostel-group-p)))
+    (seq-filter (lambda (buf)
+                  (eq group (vmacs-ghostel-buffer-p buf)))
+                (apply orig args))))
+
+(defvar vmacs-tab-line-switch-group-scope nil
+  "Non-nil while switching tabs, restricting the switch to the current group.")
+
+(defun vmacs-switch-to-prev-buffer-skip (window buffer &optional _bury-or-kill)
+  "Skip BUFFER when it is in another tab group than WINDOW's buffer.
+Only applies while cycling tabs, see `vmacs-tab-line-switch-group-scope'."
+  (and vmacs-tab-line-switch-group-scope
+       (not (eq (vmacs-tab-line-ghostel-group-p window)
+                (vmacs-ghostel-buffer-p buffer)))))
+
+(setq switch-to-prev-buffer-skip #'vmacs-switch-to-prev-buffer-skip)
+
+(defun vmacs-tab-line-switch-to-prev-tab (&optional event arg)
+  "Like `tab-line-switch-to-prev-tab' but stay inside the current tab group."
+  (interactive (list last-nonmenu-event
+                     (prefix-numeric-value current-prefix-arg)))
+  (let ((vmacs-tab-line-switch-group-scope t))
+    (condition-case nil
+        (tab-line-switch-to-prev-tab event arg)
+      (user-error nil))))
+
+(defun vmacs-tab-line-switch-to-next-tab (&optional event arg)
+  "Like `tab-line-switch-to-next-tab' but stay inside the current tab group."
+  (interactive (list last-nonmenu-event
+                     (prefix-numeric-value current-prefix-arg)))
+  (let ((vmacs-tab-line-switch-group-scope t))
+    (condition-case nil
+        (tab-line-switch-to-next-tab event arg)
+      (user-error nil))))
+
+;; }}}
+
 ;; (define-advice tab-line-tabs-window-buffers (:around (orig-fun &rest args) reverse-list)
 ;;   "Return a list of tabs that should be displayed in the tab line
 ;; but skip uninterested buffers."
