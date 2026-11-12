@@ -10,8 +10,7 @@
   "lastChangelogVersion": "1.4.0",
   "packages": [
     "npm:pi-cache-optimizer",
-    "npm:pi-mcp-adapter",
-    "npm:@ollama/pi-web-search"
+    "npm:pi-mcp-adapter"
   ],
   "steeringMode": "all",
   "theme": "system",
