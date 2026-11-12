@@ -9,11 +9,12 @@
 (setq ghostel-ignore-cursor-change t)
 (setq ghostel-copy-mode-auto-load-scrollback t)
 (defun ghostel-bury-buffer (arg)
-  "Switch to the next ghostel terminal buffer, or create one."
+  "Bury the whole ghostel tab group and land on the main group.
+With a prefix arg, create a new ghostel terminal instead."
   (interactive "P")
   (if current-prefix-arg
       (call-interactively #'ghostel)
-    (bury-buffer)))
+    (vmacs-bury-tab-group 'ghostel)))
 
 (defun ghostel-latest ()
   "Switch to the next ghostel terminal buffer, or create one."

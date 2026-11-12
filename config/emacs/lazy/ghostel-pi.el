@@ -37,9 +37,10 @@ identity key and project-prefixed naming), so they also show up in
          (buf-name (format "*%s-pi*" (project-name proj)))
          (buf (ghostel-pi--find-buffer root)))
     (cond
-     ;; Buffer exists and is current → bury it
+     ;; Buffer exists and is current → bury the whole ghostel group and
+     ;; land on the main group
      ((and buf (eq buf (current-buffer)))
-      (bury-buffer))
+      (vmacs-bury-tab-group 'ghostel))
      ;; Buffer exists but is not current → switch to it
      (buf
       (pop-to-buffer buf (append display-buffer--same-window-action

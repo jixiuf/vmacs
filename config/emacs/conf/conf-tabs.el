@@ -117,6 +117,25 @@ Only applies while cycling tabs, see `vmacs-tab-line-switch-group-scope'."
 (defvar tab-line-tabs-function)  ; dynamic binding, defined in tab-line.el
 (defvar tab-line-switch-cycling) ; dynamic binding, defined in tab-line.el
 
+(defun vmacs-bury-tab-group (group)
+  "Bury every live buffer in tab GROUP, then switch out of it.
+Switches to the most recent buffer outside GROUP, so after hiding a
+whole group (ghostel terminals, firefox surfaces, ...) the tab line
+lands on the main group."
+  (let ((matched (seq-filter (lambda (buf)
+                               (and (buffer-live-p buf)
+                                    (eq (vmacs-tab-line-buffer-group buf) group)))
+                             (buffer-list))))
+    (dolist (buf matched)
+      (bury-buffer buf))
+    (let ((target (seq-find
+                   (lambda (buf)
+                     (and (not (memq buf matched))
+                          (not (string-prefix-p " " (buffer-name buf)))))
+                   (buffer-list))))
+      (when target
+        (switch-to-buffer target)))))
+
 ;; TEMP DEBUG: remove after investigation
 (defun vmacs-tab-line--log (format-string &rest args)
   "Append a debug line to /tmp/vmacs-tabs.log."
