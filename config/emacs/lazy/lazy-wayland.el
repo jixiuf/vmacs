@@ -8,13 +8,41 @@
 (defvar wayland-compositor 'ewm
   "Current wayland compositor. Valid values: `ewm`, `reka`.")
 
+(defvar wayland-run-or-raise--prev-group-buffer nil
+  "Last buffer outside the matched group.
+Recorded on each run-or-raise while the current buffer does not match;
+used by hide-all to switch back to the previous tab-line group.")
+
 ;;;; Internal Helpers
+
+;; TEMP DEBUG: remove after investigation
+(defun wayland-run-or-raise--debug-log (format-string &rest args)
+  "Append a debug line to /tmp/vmacs-tabs.log."
+  (ignore-errors
+    (let ((line (concat (format-time-string "[%H:%M:%S] [ror] ")
+                        (apply #'format format-string args) "\n"))
+          (old (if (file-exists-p "/tmp/vmacs-tabs.log")
+                   (with-temp-buffer
+                     (insert-file-contents "/tmp/vmacs-tabs.log")
+                     (buffer-string))
+                 "")))
+      (with-temp-file "/tmp/vmacs-tabs.log"
+        (insert old line)))))
 
 (defun wayland-run-or-raise--get-buffers (emacs)
   "Get list of wayland-managed buffers based on `wayland-compositor'."
   (let ((buffers (pcase wayland-compositor
-                   ('ewm (cl-loop for buf being the hash-values of ewm--surfaces
-                                  when (buffer-live-p buf) collect buf))
+                   ('ewm
+                    (let ((bl (buffer-list)))
+                      ;; ewm--surfaces is a hash table, whose iteration order
+                      ;; is arbitrary.  Sort live surface buffers by MRU
+                      ;; (buffer-list) order so run-or-raise/cycle focus the
+                      ;; most recently used window first.
+                      (sort (cl-loop for buf being the hash-values of ewm--surfaces
+                                     when (buffer-live-p buf) collect buf)
+                            (lambda (a b)
+                              (< (or (cl-position a bl) most-positive-fixnum)
+                                 (or (cl-position b bl) most-positive-fixnum))))))
                    ('reka (seq-filter #'reka--is-reka-buffer (buffer-list)))
                    (_ (user-error "Unknown compositor: %s" wayland-compositor)))))
     (when emacs
@@ -85,24 +113,68 @@ Otherwise switch to the most recent matched buffer (first in buffer-list)."
      (t
       (wayland-run-or-raise--switch-to (car matched-buffers))))))
 
+(defun wayland-run-or-raise--hide-matched (matched-buffers)
+  "Bury all MATCHED-BUFFERS so ewm hides (minimizes) every one of them."
+  (dolist (buf matched-buffers)
+    (when (buffer-live-p buf)
+      (bury-buffer buf))))
+
+(defun wayland-run-or-raise--switch-to-prev-group (matched-buffers)
+  "Switch back to the buffer recorded before entering the matched group.
+Fall back to the most recent ordinary buffer outside MATCHED-BUFFERS."
+  (let* ((prev wayland-run-or-raise--prev-group-buffer)
+         (prev (and (buffer-live-p prev)
+                    (not (memq prev matched-buffers))
+                    prev))
+         (rest (seq-remove
+                (lambda (buf)
+                  (or (memq buf matched-buffers)
+                      (string-prefix-p " " (buffer-name buf))
+                      (member (buffer-name buf) '("ewm-events"))))
+                (buffer-list)))
+         ;; Prefer non-surface buffers, so we land in the regular tab group.
+         (target (or prev
+                     (seq-find (lambda (buf)
+                                 (not (buffer-local-value 'ewm-surface-app buf)))
+                               rest)
+                     (car rest))))
+    (if target
+        (wayland-run-or-raise--switch-to target)
+      (bury-buffer))))
+
 (defun wayland-run-or-raise--exec (title app-id command args after-exec)
   "Execute run-or-raise logic with parsed arguments.
-AFTER-EXEC is a function to call after running the command (only when no matching buffer found)."
+AFTER-EXEC is a function to call after running the command (only when no matching buffer found).
+When the current buffer is itself matched, hide ALL matched buffers and
+switch back to the previous tab-line group instead of cycling."
   (let* ((buffers (wayland-run-or-raise--get-buffers (string= app-id "emacs")))
          (matched-buffers (cl-loop for buf in buffers
                                    when (wayland-run-or-raise--match-p buf app-id title)
                                    collect buf)))
+    ;; Remember where we came from, so hide-all can switch back.
+    (unless (memq (current-buffer) matched-buffers)
+      (setq wayland-run-or-raise--prev-group-buffer (current-buffer)))
+    (wayland-run-or-raise--debug-log
+     "exec title=%S app-id=%S cur=%s(%S) matched=%s"
+     title app-id (buffer-name)
+     (and (fboundp 'vmacs-tab-line-buffer-group)
+          (vmacs-tab-line-buffer-group))
+     (mapcar #'buffer-name matched-buffers))
     (cond
      ((null matched-buffers)
       (when-let* ((p (wayland-run-or-raise--run command args))
                   (run (process-live-p p)))
         (when after-exec
           (funcall after-exec))))
-     ((= (length matched-buffers) 1)
-      (if (eq (current-buffer) (car matched-buffers))
-          (bury-buffer)
-        (wayland-run-or-raise--switch-to (car matched-buffers))))
+     ((memq (current-buffer) matched-buffers)
+      ;; Already inside the group: hide every matched window and go back.
+      (wayland-run-or-raise--debug-log "exec -> hide-all %s"
+                                       (mapcar #'buffer-name matched-buffers))
+      (wayland-run-or-raise--hide-matched matched-buffers)
+      (wayland-run-or-raise--switch-to-prev-group matched-buffers))
      (t
+      (wayland-run-or-raise--debug-log "exec -> cycle to %s"
+                                       (buffer-name (car matched-buffers)))
       (wayland-run-or-raise--cycle matched-buffers)))))
 
 ;;;; Main API
@@ -165,6 +237,7 @@ Example:
   (dolist (buf (buffer-list))
     (when (string-match-p "\\*ewm:feishu:" (buffer-name buf))
       (kill-buffer buf))))
+
 
 (wayland-run-or-raise :name "Bytedance-feishu"  :title "飞书" :after-exec 'kill-feishu-icon :command "bytedance-feishu-stable" "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--enable-wayland-ime" "--wayland-text-input-version=3" )
 (wayland-run-or-raise :name "keepassxc" :app-id "org.keepassxc.KeePassXC" :command "keepassxc")

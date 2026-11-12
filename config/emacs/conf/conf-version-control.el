@@ -14,6 +14,16 @@
 (connection-local-set-profiles
  '(:application tramp :protocol "ssh") 'remote-direct-async)
 
+;; macOS reports POSIX PIPE_BUF = 512 from `getconf PIPE_BUF /', but the
+;; direct-async connection is a `-t -t' pty, not a pipe; the real limit is
+;; much higher.  Without this, vc-git commands (~600 chars with the env
+;; prefix) signal "Command too long" on macOS remotes.
+;; `tramp-connection-properties' only seeds a fresh connection cache, so
+;; run `M-x tramp-cleanup-all-connections' once after changing it.
+(with-eval-after-load 'tramp
+  (add-to-list 'tramp-connection-properties
+               (list "/ssh:ljmacjxf" "pipe-buf" 4096)))
+
 ;; smerge
 ;; cn next
 ;; cu （upper） 选择上面的部分，cl (lower) 选下部分

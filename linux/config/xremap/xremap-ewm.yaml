@@ -71,6 +71,9 @@ keymap:
     application:
       only: [firefox,firefox-esr,firefox-bin]
     remap:
+    # C-, / C-. are remapped to C-x <left>/<right> so they reach Emacs via
+    # prefix-key capture even when a firefox surface has focus; Emacs
+    # rebinds those to group-scoped tab cycling (see conf-tabs.el).
     # http://7is7.com/software/firefox/shortcuts.html
       C-comma: [C-x ,left]
       C-dot: [C-x ,right]
@@ -83,6 +86,8 @@ keymap:
     window:
       only: [/TMUX:/ ]
     remap:
+    # C-, / C-. → C-x <left>/<right>; Emacs rebinds those to group-scoped
+    # tab cycling (see conf-tabs.el).
       C-comma: [C-x ,left]
       C-dot: [C-x ,right]
       super-M-comma: [C-c ,p] 
@@ -95,9 +100,11 @@ keymap:
     # application:
     #   only: [Bytedance-lark Bytedance-feishu]
     remap:
-      Super-C-w: [C-x ,k]
+    # C-, / C-. → C-x <left>/<right>; Emacs rebinds those to group-scoped
+    # tab cycling (see conf-tabs.el).
       C-comma: [C-x ,left]
       C-dot: [C-x ,right]
+      Super-C-w: [C-x ,k]
 
   - name: Global
     remap:

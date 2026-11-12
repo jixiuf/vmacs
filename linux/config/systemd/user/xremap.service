@@ -12,7 +12,7 @@ After=default.target
 
 [Service]
 # Environment="LANG=zh_CN.UTF-8"
-Environment=RUST_LOG=debug
+# Environment=RUST_LOG=debug
 # Environment="XDG_SESSION_DESKTOP=niri"
 Type=simple
 # User=jixiuf
