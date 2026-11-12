@@ -46,13 +46,16 @@ used by hide-all to switch back to the previous tab-line group.")
                    ('reka (seq-filter #'reka--is-reka-buffer (buffer-list)))
                    (_ (user-error "Unknown compositor: %s" wayland-compositor)))))
     (when emacs
-      (setq buffers (seq-filter (lambda (buf)
-                                  (and
-                                   (not (memq (buffer-name buf) '("ewm-events")))
-                                   (not (string-match-p "^ .*" (buffer-name buf)))
-                                   (not (memq buf buffers))))
-                                (tab-line-tabs-window-buffers)))
-      (setq buffers (last  buffers 1)))
+      ;; super-C-e: target the main tab group (ordinary buffers, no
+      ;; ghostel/firefox surfaces), most recent first.
+      (setq buffers
+            (seq-filter
+             (lambda (buf)
+               (and (not (string-prefix-p " " (buffer-name buf)))
+                    (not (member (buffer-name buf) '("ewm-events" " *server*")))
+                    (or (not (fboundp 'vmacs-tab-line-buffer-group))
+                        (eq (vmacs-tab-line-buffer-group buf) 'main))))
+             (buffer-list))))
     buffers))
 
 (defun wayland-run-or-raise--get-app-id (&optional buf)
@@ -166,6 +169,31 @@ switch back to the previous tab-line group instead of cycling."
                   (run (process-live-p p)))
         (when after-exec
           (funcall after-exec))))
+     ((string= app-id "emacs")
+      ;; super-C-e: toggle the main tab group.
+      ;; Outside the main group: switch to its most recent buffer.
+      ;; Already on the main group: hide (bury) the current buffer and
+      ;; fall back to the most recent buffer outside the main group
+      ;; (raises e.g. the firefox window that was behind).
+      (if (and (fboundp 'vmacs-tab-line-buffer-group)
+               (eq (vmacs-tab-line-buffer-group) 'main))
+          (let* ((current (current-buffer))
+                 (target (seq-find
+                          (lambda (buf)
+                            (and (buffer-live-p buf)
+                                 (not (eq buf current))
+                                 (not (string-prefix-p " " (buffer-name buf)))
+                                 (not (eq (vmacs-tab-line-buffer-group buf) 'main))))
+                          (buffer-list))))
+            (wayland-run-or-raise--debug-log
+             "exec emacs -> hide %s, fall back to %s"
+             (buffer-name current) (and target (buffer-name target)))
+            (bury-buffer current)
+            (when target
+              (wayland-run-or-raise--switch-to target)))
+        (wayland-run-or-raise--debug-log "exec emacs -> main group %s"
+                                         (buffer-name (car matched-buffers)))
+        (wayland-run-or-raise--switch-to (car matched-buffers))))
      ((memq (current-buffer) matched-buffers)
       ;; Already inside the group: hide every matched window and go back.
       (wayland-run-or-raise--debug-log "exec -> hide-all %s"

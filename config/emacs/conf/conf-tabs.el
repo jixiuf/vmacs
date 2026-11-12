@@ -47,12 +47,68 @@
   "Return non-nil if BUFFER is a firefox/chrome ewm surface."
   (vmacs-ewm-app-buffer-p (rx (or "firefox" "firefox-bin" "firefox-esr" "google-chrome")) buffer))
 
-(defun vmacs-tab-line-buffer-group (&optional buffer)
-  "Return the tab group symbol BUFFER (default: current buffer) belongs to."
+(defcustom vmacs-tab-line-groups
+  '((ghostel . vmacs-ghostel-buffer-p)
+    (firefox . "firefox\\|firefox-bin\\|firefox-esr\\|google-chrome")
+    (apps . t))
+  "Ordered alist of tab groups, first match wins.
+
+The car is the group symbol; the cdr (MATCHER) is one of:
+- a string: regexp matched against the buffer's `ewm-surface-app'
+  (only ewm surface buffers can match);
+- a function: called with the buffer, non-nil means match;
+- t: matches any ewm surface buffer (use as the LAST surface group,
+  as a catch-all for surfaces not covered by earlier groups).
+
+Buffers matching no group land in `main'.  To add a group, edit this
+list (order matters: put specific groups before the catch-all) or
+call `vmacs-tab-line-define-group'."
+  :type '(repeat (cons symbol sexp))
+  :group 'convenience)
+
+(defun vmacs-tab-line--group-match-p (matcher buffer)
+  "Return non-nil if BUFFER matches tab group MATCHER."
   (cond
-   ((vmacs-ghostel-buffer-p buffer) 'ghostel)
-   ((vmacs-firefox-buffer-p buffer) 'firefox)
-   (t 'main)))
+   ((eq matcher t)
+    (and (buffer-live-p buffer)
+         (buffer-local-value 'ewm-surface-app buffer)))
+   ((stringp matcher)
+    (vmacs-ewm-app-buffer-p matcher buffer))
+   ((functionp matcher)
+    (and (buffer-live-p buffer) (funcall matcher buffer)))
+   (t nil)))
+
+(defun vmacs-tab-line-buffer-group (&optional buffer)
+  "Return the tab group symbol BUFFER (default: current buffer) belongs to.
+First matching entry in `vmacs-tab-line-groups' wins; falls back to
+`main'."
+  (let ((buffer (or buffer (current-buffer))))
+    (or (cl-loop for (name . matcher) in vmacs-tab-line-groups
+                 when (vmacs-tab-line--group-match-p matcher buffer)
+                 return name)
+        'main)))
+
+(defun vmacs-tab-line-define-group (name matcher &optional first)
+  "Define or update tab group NAME with MATCHER in `vmacs-tab-line-groups'.
+MATCHER is documented in `vmacs-tab-line-groups'.  With FIRST non-nil
+the group takes precedence (inserted at the front); otherwise it is
+inserted before the catch-all (t) entry, or appended when there is none."
+  (interactive
+   (list (intern (read-string "Group name: "))
+         (read-from-minibuffer "Matcher (regexp / function / t): ")))
+  (let ((entry (cons name matcher))
+        (rest (assq-delete-all name vmacs-tab-line-groups)))
+    (setq vmacs-tab-line-groups
+          (cond
+           (first (cons entry rest))
+           ((cl-position t rest :key #'cdr :test #'eq)
+            ;; insert right before the catch-all
+            (let* ((pos (cl-position t rest :key #'cdr :test #'eq))
+                   (head (cl-subseq rest 0 pos)))
+              (append head (list entry)
+                      (nthcdr pos rest))))
+           (t (append rest (list entry))))))
+    name)
 
 (define-advice tab-line-tabs-window-buffers (:around (orig &rest args) vmacs-ghostel-group)
   "Only show window buffers belonging to the same group as the current one."
@@ -135,6 +191,26 @@ lands on the main group."
                    (buffer-list))))
       (when target
         (switch-to-buffer target)))))
+
+(defun vmacs-raise-tab-group (group)
+  "Switch to the most recent buffer of tab GROUP."
+  (let ((target (seq-find
+                 (lambda (buf)
+                   (and (buffer-live-p buf)
+                        (not (string-prefix-p " " (buffer-name buf)))
+                        (eq (vmacs-tab-line-buffer-group buf) group)))
+                 (buffer-list))))
+    (when target
+      (switch-to-buffer target))))
+
+(defun vmacs-toggle-tab-group (group)
+  "Toggle tab GROUP: raise it when outside, bury it whole when inside.
+Bind this to a key per group, e.g. for an `apps' surface group:
+  (global-set-key (kbd "s-C-x") (lambda () (interactive)
+                                  (vmacs-toggle-tab-group 'apps)))"
+  (if (eq (vmacs-tab-line-buffer-group) group)
+      (vmacs-bury-tab-group group)
+    (vmacs-raise-tab-group group)))
 
 ;; TEMP DEBUG: remove after investigation
 (defun vmacs-tab-line--log (format-string &rest args)

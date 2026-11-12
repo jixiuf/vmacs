@@ -9,6 +9,7 @@
 (global-set-key (kbd "C-s-<return>") #'ghostel)
 (global-set-key (kbd "C-s-M-<return>") #'ghostel-other)
 (global-set-key (kbd "C-s-M-d") #'ghostel-latest)
+(global-set-key (kbd "C-s-M-t") #'ghostel-new) ;xremapC-t ->
 (global-set-key (kbd "C-s-M-w") #'ghostel-bury-buffer)
 
 
