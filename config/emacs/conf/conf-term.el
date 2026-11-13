@@ -15,6 +15,7 @@ With a prefix arg, create a new ghostel terminal instead."
   (interactive "P")
   (if current-prefix-arg
       (call-interactively #'ghostel)
+      (call-interactively #'ghostel-tmux-detach)
     (vmacs-bury-tab-group 'ghostel)))
 
 (defun ghostel-latest ()
@@ -25,13 +26,14 @@ With a prefix arg, create a new ghostel terminal instead."
                   (with-current-buffer b
                     (and
                      (derived-mode-p 'ghostel-mode)
+                     (string-match-p "*ghostel-tmux" (buffer-name))
                      (not (string-match-p "-pi*" (buffer-name))))))
                 (buffer-list)))
          )
     (if bufs
         (pop-to-buffer (car bufs) (append display-buffer--same-window-action
                                           '((category . comint))))
-      (ghostel))))
+      (call-interactively #'ghostel-tmux-attach))))
 
 (defun ghostel-reset-cursor-point ()
   "Move Emacs point to the terminal cursor position.
