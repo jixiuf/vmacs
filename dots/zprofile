@@ -41,7 +41,7 @@ prependPath() {
 
 
 export PATH="/usr/local/bin:$PATH"
-prependPath "$HOME/bin"
+prependPath "$HOME/.local/bin"
 appendPath "$HOME/.emacs.d/bin"
 appendPath "/usr/local/mysql/bin"
 appendPath "/usr/local/sbin"
