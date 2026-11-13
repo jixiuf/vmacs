@@ -36,12 +36,24 @@
          (with-current-buffer buffer
            (derived-mode-p 'ghostel-mode)))))
 
-(defun vmacs-ewm-app-buffer-p (app-regexp &optional buffer)
-  "Return non-nil if BUFFER is an ewm surface whose app matches APP-REGEXP."
+(defun vmacs-ewm-surface-app (&optional buffer)
+  "Return BUFFER's `ewm-surface-app', or nil when it has none.
+Safe while ewm is not loaded: the variable is void then, and the tab
+line evaluates this during redisplay for every buffer, which would
+signal `void-variable'."
   (let ((buffer (or buffer (current-buffer))))
     (and (buffer-live-p buffer)
-         (buffer-local-value 'ewm-surface-app buffer)
-         (string-match-p app-regexp (buffer-local-value 'ewm-surface-app buffer)))))
+         ;; Ordinary buffers have no local binding; the global value is
+         ;; only set once ewm is loaded, so this skips the switch below.
+         (or (local-variable-p 'ewm-surface-app buffer)
+             (boundp 'ewm-surface-app))
+         (with-current-buffer buffer
+           (and (boundp 'ewm-surface-app) ewm-surface-app)))))
+
+(defun vmacs-ewm-app-buffer-p (app-regexp &optional buffer)
+  "Return non-nil if BUFFER is an ewm surface whose app matches APP-REGEXP."
+  (let ((app (vmacs-ewm-surface-app buffer)))
+    (and app (string-match-p app-regexp app))))
 
 (defun vmacs-firefox-buffer-p (&optional buffer)
   "Return non-nil if BUFFER is a firefox/chrome ewm surface."
@@ -70,8 +82,7 @@ call `vmacs-tab-line-define-group'."
   "Return non-nil if BUFFER matches tab group MATCHER."
   (cond
    ((eq matcher t)
-    (and (buffer-live-p buffer)
-         (buffer-local-value 'ewm-surface-app buffer)))
+    (vmacs-ewm-surface-app buffer))
    ((stringp matcher)
     (vmacs-ewm-app-buffer-p matcher buffer))
    ((functionp matcher)
