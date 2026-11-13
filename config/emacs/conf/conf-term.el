@@ -3,6 +3,7 @@
 ;;; Code:
 
 ;; (package-vc-install '(ghostel :url "https://github.com/dakra/ghostel.git" :branch "main"))
+;; (package-vc-install '(ghostel-tmux :url "https://github.com/dakra/ghostel-tmux.git" :branch "main"))
 
 (setq-default term-prompt-regexp "^[^#$%>\n]*[#$%>] *") ;默认 regex 相当于没定义，term-bol 无法正常中转到开头处
 (setq ghostel-enable-osc52 t)

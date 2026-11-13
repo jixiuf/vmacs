@@ -75,12 +75,13 @@
  '(outline-minor-mode-use-buttons 'in-margins)
  '(package-selected-packages
    '(async avy beacon cape clipetty consult-dir copilot dape dired-filetype-face eglot-java embark
-           embark-consult evil-textobj-tree-sitter exec-path-from-shell flex-x ghostel git-link
-           go-translate golden-ratio-scroll-screen goto-chg gptel gt helixel-mode kdl-mode kkp
-           leadkey liberime marginalia orderless package-lint pi pimacs posframe rimel verb vundo
-           web-mode wgrep with-editor yasnippet))
+           embark-consult evil-textobj-tree-sitter exec-path-from-shell flex-x ghostel ghostel-tmux
+           git-link go-translate golden-ratio-scroll-screen goto-chg gptel gt helixel-mode kdl-mode
+           kkp leadkey liberime marginalia orderless package-lint pi pimacs posframe rimel verb
+           vundo web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
-   '((flex-x :url "https://github.com/kn66/flex-x")
+   '((ghostel-tmux :url "https://github.com/dakra/ghostel-tmux.git" :branch "main")
+     (flex-x :url "https://github.com/kn66/flex-x")
      (pi :url "https://github.com/ananthakumaran/pi.el.git" :branch "master")
      (leadkey :url "https://github.com/jixiuf/emacs-leadkey.git" :branch "main")
      (helixel-mode :url "https://github.com/jixiuf/helixel-mode.git" :branch "main")
