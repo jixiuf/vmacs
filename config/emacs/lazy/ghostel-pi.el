@@ -4,6 +4,7 @@
 (require 'ghostel-project)
 (require 'project)
 
+(defvar ghostel-pi-cmd "octet")
 (defun ghostel-pi--find-buffer (root)
   "Return the pi ghostel buffer for project ROOT by `ghostel-identity'.
 Identity matching is stable across buffer renames and shell `cd'."
@@ -13,7 +14,7 @@ Identity matching is stable across buffer renames and shell `cd'."
        (and (derived-mode-p 'ghostel-mode)
             (ghostel-identity-match-p
              `((kind . exec)
-               (command . ("pi"))
+               (command . (ghostel-pi-cmd))
                (project-root . ,(ghostel--normalize-root root)))
              ghostel-identity))))
    (buffer-list)))
@@ -51,9 +52,9 @@ identity key and project-prefixed naming), so they also show up in
             (buffer (get-buffer-create buf-name)))
         (pop-to-buffer buffer (append display-buffer--same-window-action
                                        '((category . comint))))
-        (ghostel-exec buffer "pi" nil
+        (ghostel-exec buffer ghostel-pi-cmd nil
                       `((kind . exec)
-                        (command . ("pi"))
+                        (command . (ghostel-pi-cmd))
                         (project-root . ,(ghostel--normalize-root root)))))))))
 
 (provide 'ghostel-pi)
