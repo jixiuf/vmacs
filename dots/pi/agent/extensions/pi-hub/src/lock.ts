@@ -168,6 +168,11 @@ export function getGlobalLockHolder(): { name: string; capability?: string } | n
 /** 预占全局锁：让当前持有者心跳失败自动让位，目标实例可续约接管 */
 export function preassignLock(name: string, pid: number, capability?: string): void {
   if (!capability) return
+  // BUG（本次修复）：/cmd 远程指令是通过 takeover envelope 投递的（capability='command'），
+  // 旧代码会给目标实例预占全局锁 → 把正在生效的 wechat 锁覆盖成 {name:目标, cap:'command'}，
+  // 表现为「给某实例发一条 /hub-ps 之类的指令，微信持锁方 3s 内让位、微信断流」。
+  // 'command' 不是能力标识，不应该参与锁仲裁。
+  if (capability === 'command') return
   writeJson(GLOBAL_LOCK_FILE, {
     name,
     pid,
