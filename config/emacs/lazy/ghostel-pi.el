@@ -61,16 +61,16 @@ otherwise, so an agent left running in tmux comes back with its state."
   (let* ((root (expand-file-name root))
          (default-directory root))
     (ghostel-tmux--check-spawn)
+    ;; The controller returns at once; it fills the selected window with
+    ;; tmux's active pane when that pane arrives.
     (let ((ghostel-tmux--server (ghostel-tmux--resolve-server)))
-      (ghostel-tmux--wait-for-pane
-       (ghostel-tmux--spawn-controller
-        session
-        (if (ghostel-tmux--session-exists-p session)
-            (ghostel-tmux--attach-args session)
-          ;; tmux does not expand `~' in the directory it starts in.
-          (list "new-session" "-As" (ghostel-tmux--literal-format session)
-                "-n" "octet" "-c" (file-local-name root) ghostel-pi-cmd)))
-       5.0))))
+      (ghostel-tmux--spawn-controller
+       session
+       (if (ghostel-tmux--session-exists-p session)
+           (ghostel-tmux--attach-args session)
+         ;; tmux does not expand `~' in the directory it starts in.
+         (list "new-session" "-As" (ghostel-tmux--literal-format session)
+               "-n" "octet" "-c" (file-local-name root) ghostel-pi-cmd))))))
 
 ;;;###autoload
 (defun ghostel-pi-project-toggle-chat ()
