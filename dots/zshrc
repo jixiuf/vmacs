@@ -580,6 +580,10 @@ alias rcp='rsync -avz -Erltm  --delete '
 export GOTOOLCHAIN=local
 alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
 
+# octet-pi-compat 读取 Pi 配置时拒绝跟随符号链接（~/.pi -> ~/vmacs/dots/pi），
+# 所以指向真实路径；pi 自己同样认这个变量。
+export PI_CODING_AGENT_DIR="$HOME/vmacs/dots/pi/agent"
+
 # OpenClaw Completion
 if [ -f "~/.openclaw/completions/openclaw.zsh"  ]; then
     source "~/.openclaw/completions/openclaw.zsh"
