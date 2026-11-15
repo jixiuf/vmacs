@@ -227,7 +227,42 @@ a full screen program or typed input."
           (vmacs-ghostel-cd target directory)
           (pop-to-buffer target (append display-buffer--same-window-action
                                         '((category . comint)))))
-      (call-interactively #'ghostel-tmux-attach))))
+      (ghostel-tmux-attach (ghostel-tmux--read-shell-session))
+      )))
+
+(defvar ghostel-pi-tmux-session-prefix "octet"
+  "Name of the tmux session `ghostel-pi' runs every project's agent in.
+That session holds a window per project, see `ghostel-pi--session-name'.
+`ghostel-pi' owns the value; this is its default for the time before
+that file is loaded.")
+
+(defun ghostel-tmux--agent-session-p (name)
+  "Return non-nil when tmux session NAME holds a `ghostel-pi' agent.
+That is the session `ghostel-pi-tmux-session-prefix' names, whose panes
+run the agent and not a shell, and the PREFIX-PROJECT sessions an
+earlier `ghostel-pi' made for the same reason."
+  (or (equal name ghostel-pi-tmux-session-prefix)
+      (string-prefix-p (concat ghostel-pi-tmux-session-prefix "-") name)))
+
+(defun ghostel-tmux--read-shell-session (&optional ask)
+  "Return the name of the shell session tmux would attach.
+That is the first of `ghostel-tmux--parse-session-rows' that is no
+`ghostel-pi' agent session, see `ghostel-tmux--agent-session-p'.  With
+ASK non-nil, prompt for a session, with that one as the default.
+A non-zero exit (no server running) counts as no sessions."
+  (let* ((result (ghostel-tmux--process-file
+                  "list-sessions" "-F" ghostel-tmux--session-rows-format))
+         (sessions (and (eql (car result) 0)
+                        (cl-remove-if #'ghostel-tmux--agent-session-p
+                                      (mapcar #'car
+                                              (ghostel-tmux--parse-session-rows
+                                               (cdr result)))))))
+    (cond
+     ((null sessions)
+      (user-error "Ghostel-tmux: No tmux shell sessions found%s"
+                  (ghostel-tmux--server-label)))
+     (ask (ghostel-tmux--completing-read-session "tmux session" sessions))
+     (t (car sessions)))))
 
 (defun ghostel-reset-cursor-point ()
   "Move Emacs point to the terminal cursor position.
