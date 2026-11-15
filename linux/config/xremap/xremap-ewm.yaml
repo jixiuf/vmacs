@@ -38,7 +38,7 @@ keymap:
     # (keymap-set ewm-mode-map "<Launch9>" (ewm-key :intercept)) ;<Launch9>=f18
     # (define-key key-translation-map (kbd "<Launch9>") (kbd "C-c")) ;<Launch9>=f18
       space: [f18, { escape_next_key: true }] # f18 is remaped to C-c in emacs
-      i:  
+      esc:  
         - set_mode: insert
         - { launch: ["/usr/local/bin/waybar-bg", "#1e1e2e"] }
   - name: space leader 
