@@ -258,7 +258,7 @@ Example:
 (wayland-run-or-raise :app-id "DBeaver" :command "dbeaver")
 (wayland-run-or-raise :name "mongodb" :app-id "MongoDB Compass" :command "mongodb-compass" "--ignore-additional-command-line-flags" "--password-store=gnome-libsecret")
 (wayland-run-or-raise :name "mitp" :app-id "mitp" :command "sh" "-c" "EDITOR=ec term.sh  --title=mimtproxy --class=mitp  -- mitmproxy")
-(wayland-run-or-raise :name "apmssh" :app-id "APMSSH" :command "sh" "-c" "term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~'  -- tmux new-session -A -s vc")
+(wayland-run-or-raise :name "apmssh" :app-id "APMSSH" :command "sh" "-c" "term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@apmprod:~'  -- tmux new-session -A -s vc")
 (wayland-run-or-raise :app-id "wechat" :command "/opt/bin/wechat")
 (defun kill-feishu-icon()
   (sleep-for 0.5)
