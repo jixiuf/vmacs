@@ -687,7 +687,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:emacs:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh emacs " }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:emacs:' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@apmprod:~'  -- /home/admin/bin/tmux-attach.sh emacs " }],
                                 "type": "basic"
                             },
                             {
@@ -699,7 +699,7 @@
                                         "optional": ["caps_lock"]
                                     }
                                 },
-                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:vc|ck' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@bj-vc-client-apm-01:~'  -- /home/admin/bin/tmux-attach.sh vc" }],
+                                "to": [{ "shell_command": "export PATH=/usr/local/bin:$PATH; /usr/local/bin/run-or-raise --toggle  --exec alacritty --title 'TMUX:vc|ck' --cmd /usr/local/bin/term.sh  --termenv=tmux-direct  --working-directory '/admin@apmprod:~'  -- /home/admin/bin/tmux-attach.sh vc" }],
                                 "type": "basic"
                             },
                             {
