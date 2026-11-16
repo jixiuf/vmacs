@@ -128,32 +128,6 @@
           "reasoning": true
         }
       ]
-    },
-    "ollama": {
-      "api": "openai-completions",
-      "apiKey": "ollama",
-      "baseUrl": "http://127.0.0.1:11434/v1",
-      "models": [
-        {
-          "_launch": true,
-          "contextWindow": 32768,
-          "id": "qwen38-abliterated:latest",
-          "input": [
-            "text"
-          ],
-          "name": "Qwen3.8-27B Abliterated (local)"
-        },
-        {
-          "_launch": true,
-          "contextWindow": 262144,
-          "id": "qwen35-9b-uncensored:latest",
-          "input": [
-            "text"
-          ],
-          "name": "Qwen3.5-9B Uncensored (local)",
-          "maxTokens": 240000
-        }
-      ]
     }
   }
 }
