@@ -1,4 +1,4 @@
 {
-  "autoStart": true,
+  "autoStart": false,
   "coordinatorUrl": "http://10.170.16.16:8089"
 }
