@@ -241,7 +241,7 @@ describe('start 命令（在实例 tmux 中启动 pi）', () => {
       local: [],
       all: [
         { name: 'extensions', pid: 1, cwd: '/home/ext', sessionId: '', lastSeen: Date.now(), host: 'ljmacjxf' },
-        { name: 'home', pid: 2, cwd: '/home/admin', sessionId: '', lastSeen: Date.now(), host: 'bj-vc-client-apm-01' },
+        { name: 'home', pid: 2, cwd: '/home/admin', sessionId: '', lastSeen: Date.now(), host: 'apmprod' },
       ],
     }),
     resolveTarget: (all, name) => all.find((i) => i.name === name),

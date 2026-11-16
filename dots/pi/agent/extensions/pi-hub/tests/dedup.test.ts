@@ -37,7 +37,7 @@ describe('实例列表去重', () => {
 
 describe('跨机器同名实例去重（sameInstance）', () => {
   const local = { name: 'ddpushv2', pid: 1, cwd: '', sessionId: '', lastSeen: 0, host: 'ljmacjxf' }
-  const remote = { name: 'ddpushv2', pid: 2, cwd: '', sessionId: '', lastSeen: 0, host: 'bj-vc-client-apm-01' }
+  const remote = { name: 'ddpushv2', pid: 2, cwd: '', sessionId: '', lastSeen: 0, host: 'apmprod' }
 
   it('跨机器同名实例不被误判为同一实例', () => {
     expect(sameInstance(local, remote)).toBe(false)
@@ -56,6 +56,6 @@ describe('跨机器同名实例去重（sameInstance）', () => {
     const all = [local]
     if (!all.some((i) => sameInstance(i, remote))) all.push(remote)
     expect(all).toHaveLength(2)
-    expect(all.map((i) => i.host)).toEqual(['ljmacjxf', 'bj-vc-client-apm-01'])
+    expect(all.map((i) => i.host)).toEqual(['ljmacjxf', 'apmprod'])
   })
 })

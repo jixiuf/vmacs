@@ -123,7 +123,7 @@ PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
 alias le=less.sh
 alias curl2='curl --http2-prior-knowledge'
 alias apmdev='TERM=xterm-256color  ssh apmdev'
-alias apmprod="niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@bj-vc-client-apm-01:~' tmux  attach "
+alias apmprod="niri-run-or-raise --toggle APMSSH -- term.sh --termenv=tmux-direct --class=APMSSH --working-directory '/admin@apmprod:~' tmux  attach "
 alias bench='TERM=xterm-256color ssh bench'
 alias k8s='TERM=xterm-256color  ssh k8sdev'
 alias gc='git clone '
@@ -220,7 +220,7 @@ ta(){
  }
 alias tt=ta
 alias tn='tmux new -A -s'
-# rcp /usr/share/terminfo/t/tmux-direct root@bj-vc-client-apm-01:
+# rcp /usr/share/terminfo/t/tmux-direct root@apmprod:
 # alias ssh='TERM=xterm-256color ssh'
 # bindkey -s '^T' 'ta\n'
 bindkey -s '^[[116;13u' 'ta\n'
@@ -552,7 +552,7 @@ json2csv() {
     else . end) as $headers
     | [$headers[]], (.[] | [.[$headers[]]]) | @csv'
 }
-# rsync -avz -CErltm  --delete 'root@bj-vc-client-apm-01:/data/gentoo/*'  /var/db/repos/gentoo/
+# rsync -avz -CErltm  --delete 'root@apmprod:/data/gentoo/*'  /var/db/repos/gentoo/
 # rsync -avz -CErltm  --delete src dst
 # 同步两个目录
 # - -a: 归档模式
@@ -567,13 +567,13 @@ json2csv() {
 # - --delete: 删除目标多余文件
 alias rcp='rsync -avz -Erltm  --delete '
 # up(){
-#     /usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ admin@bj-vc-client-apm-01:/data/binpkgs;
-#     # /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@bj-vc-client-apm-01:/data/gentoo/
+#     /usr/bin/rsync -avz -CErltm  --delete /var/cache/binpkgs/ admin@apmprod:/data/binpkgs;
+#     # /usr/bin/rsync -avz -CErltm  --delete /var/db/repos/gentoo/* admin@apmprod:/data/gentoo/
 # }
 # down(){
 #     # sudo chown jixiuf:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/;
-#     /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/binpkgs/* /var/cache/binpkgs/;
-#     # /usr/bin/rsync -avz -CErltm  --delete admin@bj-vc-client-apm-01:/data/gentoo/* /var/db/repos/gentoo/;
+#     /usr/bin/rsync -avz -CErltm  --delete admin@apmprod:/data/binpkgs/* /var/cache/binpkgs/;
+#     # /usr/bin/rsync -avz -CErltm  --delete admin@apmprod:/data/gentoo/* /var/db/repos/gentoo/;
 #     # sudo chown root:portage -R /var/cache/binpkgs/ /var/db/repos/gentoo/
 # }
 

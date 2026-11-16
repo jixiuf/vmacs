@@ -89,7 +89,7 @@ src/config.ts     配置读取（双文件回退 + 自动重建）
   "coordinatorUrl": "http://10.170.16.16:8089",
   "remoteInstanceNames": ["ljmacjxf"],
   "remoteHosts": {
-    "pigw": { "target": "bj-vc-client-apm-01", "port": 22 }
+    "pigw": { "target": "apmprod", "port": 22 }
   },
   "channels": {
     "wechat": { "enabled": true, "autoTakeover": true }

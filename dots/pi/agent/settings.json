@@ -6,7 +6,7 @@
     "+codemode"
   ],
   "followUpMode": "all",
-  "hideThinkingBlock": false,
+  "hideThinkingBlock": true,
   "lastChangelogVersion": "1.4.0",
   "packages": [
     "npm:pi-cache-optimizer",
