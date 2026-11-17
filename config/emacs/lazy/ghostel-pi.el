@@ -42,13 +42,15 @@ tmux rewrites `:' and `.' in a window name, so every character outside
 
 (defun ghostel-pi--window-id (root)
   "Return the id of the tmux window that runs the agent of ROOT, or nil.
-Nil also when tmux has no agent session."
+Nil also when tmux has no agent session.  ROOT may be a remote file
+name: `ghostel-pi--create-window' keeps the local name of the root in
+the window option, so the local name is what is looked for here."
   (let* ((result (ghostel-tmux--process-file
                   "list-windows" "-t" (ghostel-tmux--exact-session-target
                                        (ghostel-pi--session-name))
                   "-F" (concat "#{" ghostel-pi--window-root-option
                                "} #{window_id}")))
-         (prefix (concat root " ")))
+         (prefix (concat (file-local-name (expand-file-name root)) " ")))
     (when (eql 0 (car result))
       (seq-some (lambda (line)
                   (when (string-prefix-p prefix line)
@@ -59,8 +61,10 @@ Nil also when tmux has no agent session."
 
 (defun ghostel-pi--create-window (root name)
   "Start the agent of ROOT in a new tmux window called NAME.
-Return the id of the window.  The session is created too, detached,
-when tmux does not have it yet; the controller attaches to it."
+ROOT may be a remote file name; the window runs the agent in its local
+name, the path as the host of tmux sees it.  Return the id of the
+window.  The session is created too, detached, when tmux does not have
+it yet; the controller attaches to it."
   (let* ((session (ghostel-pi--session-name))
          (root (file-local-name (expand-file-name root)))
          (result (apply #'ghostel-tmux--process-file

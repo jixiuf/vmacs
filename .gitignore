@@ -166,3 +166,4 @@ dots/pi/agent/wechat-assistant/wechat-state.json
 dots/pi/agent/pi-cache-optimizer-stats.d/maintenance/last-compaction
 dots/pi/agent/mcp-last-seen-version.json
 dots/pi/agent/pi-cache-optimizer-stats.d/archive/
+.rpi/

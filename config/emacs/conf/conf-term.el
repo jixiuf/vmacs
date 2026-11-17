@@ -10,6 +10,8 @@
 (setq ghostel-ignore-cursor-change t)
 (setq ghostel-copy-mode-auto-load-scrollback t)
 (setq ghostel-tmux-keep-detached-panes nil)
+(setq ghostel-tmux-history-lines 100000)
+(require 'ghostel-tmux)
 (defun ghostel-bury-buffer (arg)
   "Bury the whole ghostel tab group and land on the main group.
 With a prefix arg, create a new ghostel terminal instead."
