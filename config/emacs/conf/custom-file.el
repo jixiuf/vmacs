@@ -77,8 +77,8 @@
    '(async avy beacon cape clipetty consult-dir copilot dape dired-filetype-face eglot-java embark
            embark-consult evil-textobj-tree-sitter exec-path-from-shell flex-x ghostel ghostel-tmux
            git-link go-translate golden-ratio-scroll-screen goto-chg gptel gt helixel-mode kdl-mode
-           kkp leadkey liberime marginalia orderless package-lint pi pimacs posframe rimel verb
-           vundo web-mode wgrep with-editor yasnippet))
+           kkp leadkey liberime marginalia orderless package-lint pi posframe rimel verb vundo
+           web-mode wgrep with-editor yasnippet))
  '(package-vc-selected-packages
    '((ghostel-tmux :url "https://github.com/dakra/ghostel-tmux.git" :branch "main")
      (flex-x :url "https://github.com/kn66/flex-x")
