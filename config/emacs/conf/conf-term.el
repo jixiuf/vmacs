@@ -110,46 +110,27 @@ that ends with `vmacs-ghostel-empty-prompt-regexp' stands in when not."
                          (line-beginning-position) (line-end-position)))))
              (string-match-p vmacs-ghostel-empty-prompt-regexp row)))))
 
-(defcustom vmacs-ghostel-cd-timeout 3
-  "Seconds `vmacs-ghostel-cd' waits for a shell to come back to its prompt.
-A shell that is still printing, or that finishes a command meanwhile, is
-cdded as soon as it is promptable again; one that stays busy is left
-alone when the wait runs out."
-  :type 'number
-  :group 'ghostel)
-
-(defvar vmacs-ghostel--cd-timers nil
-  "Pending `vmacs-ghostel-cd' retries, as a list of timers.
-A new request drops the ones an earlier one left, so that a stale
-`cd' never lands in a shell the user has moved on from.")
-
 (defun vmacs-ghostel-cd (buffer directory)
   "Send a `cd' to DIRECTORY to ghostel BUFFER, once it sits at a shell prompt.
 Does nothing unless the terminal's foreground program is a shell from
 `vmacs-ghostel-shell-programs', so an agent's or another program's
 directory stays what it is.  A shell that is not promptable yet - still
-printing, or busy finishing a command - is retried for
-`vmacs-ghostel-cd-timeout' seconds."
+printing, or busy finishing a command - takes no `cd'."
   (when (and vmacs-ghostel-latest-cd
              directory
              (not (file-remote-p directory))
              (buffer-live-p buffer))
-    (mapc #'cancel-timer vmacs-ghostel--cd-timers)
-    (setq vmacs-ghostel--cd-timers nil)
-    (vmacs-ghostel--cd-attempt buffer (expand-file-name directory)
-                               (+ (float-time) vmacs-ghostel-cd-timeout))))
+    (vmacs-ghostel--cd-attempt buffer (expand-file-name directory))))
 
-(defun vmacs-ghostel--cd-attempt (buffer directory deadline)
-  "`cd' to DIRECTORY in ghostel BUFFER, unless it cannot take one yet.
-DEADLINE is the `float-time' at which waiting for the prompt ends."
+(defun vmacs-ghostel--cd-attempt (buffer directory)
+  "`cd' to DIRECTORY in ghostel BUFFER, unless it cannot take one yet."
   (when (and (buffer-live-p buffer)
              (not (file-remote-p directory)))
     (with-current-buffer buffer
       (when (and (derived-mode-p 'ghostel-mode)
                  ghostel--term
                  (not (file-remote-p default-directory)))
-        (let* ((expired (> (float-time) deadline))
-               (state (vmacs-ghostel--terminal-state))
+        (let* ((state (vmacs-ghostel--terminal-state))
                (foreground (plist-get state :foreground))
                (here (plist-get state :directory))
                ;; The pane's own program stays the shell while commands come
@@ -172,18 +153,11 @@ DEADLINE is the `float-time' at which waiting for the prompt ends."
              (concat "cd " (shell-quote-argument
                             (file-local-name directory))))
             (ghostel-send-key "return"))
-           ;; Busy, still printing, or between commands: the shell pane is
-           ;; worth waiting for, a program that is not a shell never is.
+           ;; Busy, still printing, or between commands: not a shell
+           ;; says why, a busy shell pane just takes no `cd' this time.
            ((not shell-pane)
             (message "Ghostel: %s runs %s, not a shell"
-                     (buffer-name) foreground))
-           (expired
-            (message "Ghostel: %s never came back to a prompt, staying in %s"
-                     (buffer-name) here))
-           (t
-            (push (run-at-time 0.15 nil #'vmacs-ghostel--cd-attempt
-                               buffer directory deadline)
-                  vmacs-ghostel--cd-timers))))))))
+                     (buffer-name) foreground))))))))
 
 (defun vmacs-ghostel--shell-buffer-p (&optional buffer)
   "Return non-nil when BUFFER is a terminal whose own program is a shell.
@@ -203,13 +177,41 @@ In a ghostel terminal that is where its program is, not the buffer's
       (plist-get (vmacs-ghostel--terminal-state) :directory)
     default-directory))
 
+(defvar vmacs-ghostel--pending-attach-cd nil
+  "The session and directory `ghostel-latest' left for its attach, a cons.
+No pane buffer of the session is in Emacs yet when it is set: the `cd'
+cannot be sent before `ghostel-tmux-attach-hook' says the session's
+panes are there, and `vmacs-ghostel--cd-after-attach' sends it then.
+An attach to another session drops it.")
+
+(defun vmacs-ghostel--cd-after-attach ()
+  "Send a `cd' that `ghostel-latest' left to this session's active pane.
+`ghostel-tmux-attach-hook' runs this in the controller buffer, once the
+session's panes are there: the moment an attach to an already running
+session gains them, where `ghostel-latest' dropped its `cd' before.  A
+shell that is busy or still printing takes no `cd', see
+`vmacs-ghostel-cd'."
+  (when vmacs-ghostel--pending-attach-cd
+    (if (equal (car vmacs-ghostel--pending-attach-cd)
+               ghostel-tmux--session-name)
+        (let ((directory (cdr vmacs-ghostel--pending-attach-cd)))
+          (setq vmacs-ghostel--pending-attach-cd nil)
+          (when-let* ((pane (ghostel-tmux-active-pane)))
+            (vmacs-ghostel-cd pane directory)))
+      ;; The user attached elsewhere; the `cd' was for a session that
+      ;; may never be attached.
+      (setq vmacs-ghostel--pending-attach-cd nil))))
+
 (defun ghostel-latest ()
   "Switch to the next ghostel terminal buffer, or create one.
 A terminal whose foreground is a shell is preferred over an agent's
 pane: that pane has `ghostel-pi-project-toggle-chat', and it would not
 take a `cd'.  With `vmacs-ghostel-latest-cd', the buffer is first sent
 a `cd' to the directory this command ran in, unless it holds a command,
-a full screen program or typed input."
+a full screen program or typed input.  When no terminal of the tmux
+session is in Emacs yet, the `cd' is remembered and sent to the
+session's active pane once `ghostel-tmux-attach-hook' reports its
+panes, so an attach to an existing session takes the directory too."
   (interactive)
   (let* ((directory (vmacs-ghostel--origin-directory))
          (bufs (cl-remove-if-not
@@ -227,10 +229,16 @@ a full screen program or typed input."
           (vmacs-ghostel-cd target directory)
           (pop-to-buffer target (append display-buffer--same-window-action
                                         '((category . comint)))))
-      (ghostel-tmux-attach (ghostel-tmux--read-shell-session))
+      ;; No pane of the session is in Emacs yet, whether the session
+      ;; exists or is to be created: remember where to `cd', and let
+      ;; `vmacs-ghostel--cd-after-attach' send it when the session's
+      ;; panes are there.
+      (let ((session (ghostel-tmux--read-shell-session)))
+        (setq vmacs-ghostel--pending-attach-cd (cons session directory))
+        (ghostel-tmux-attach session))
       )))
 
-(defvar ghostel-pi-tmux-session-prefix "octet"
+(defvar ghostel-pi-tmux-session-prefix "rpi"
   "Name of the tmux session `ghostel-pi' runs every project's agent in.
 That session holds a window per project, see `ghostel-pi--session-name'.
 `ghostel-pi' owns the value; this is its default for the time before
@@ -293,6 +301,9 @@ the row must be offset by the scrollback line count."
                                  ghostel
                                  ghostel-other))
       (ghostel-line-mode))))
+(with-eval-after-load 'ghostel
+  (add-hook 'ghostel-tmux-attach-hook #'vmacs-ghostel--cd-after-attach))
+
 (with-eval-after-load 'ghostel
   (define-key  ghostel-mode-map (kbd "C-s-v") #'ghostel-yank)
   (define-key  ghostel-mode-map (kbd "C-c C-f") #'ghostel-char-mode)

@@ -16,11 +16,11 @@
 (require 'project)
 (require 'seq)
 
-(defvar ghostel-pi-cmd "octet"
+(defvar ghostel-pi-cmd "rpi"
   "Command that starts the coding agent in its tmux window.
 It runs as a shell command, so arguments are allowed too.")
 
-(defvar ghostel-pi-tmux-session-prefix "octet"
+(defvar ghostel-pi-tmux-session-prefix "rpi"
   "Name of the tmux session that holds every project's agent window.
 `ghostel-tmux--read-shell-session' leaves that session out of the ones
 it offers, as its panes run the agent and not a shell.")
