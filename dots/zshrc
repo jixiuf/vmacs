@@ -584,3 +584,11 @@ alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
 # 所以指向真实路径；pi 自己同样认这个变量。
 export PI_CODING_AGENT_DIR="$HOME/vmacs/dots/pi/agent"
 
+# ghostel (emacs vterm-like) shell integration: OSC 133 prompt markers + OSC 7 cwd.
+# 让 ghostel 精确识别 prompt 位置（input-start 落在提示符后），否则只能靠
+# ghostel-prompt-regexp 猜，robbyrussell 这类含两个 prompt 字符的主题会猜错。
+# 脚本带幂等 guard，重复 source 无害；对 iTerm2/kitty 等普通终端也无副作用。
+_ghostel_zsh="$HOME/vmacs/config/emacs/elpa/ghostel/etc/shell/ghostel.zsh"
+[ -r "$_ghostel_zsh" ] && source "$_ghostel_zsh"
+unset _ghostel_zsh
+
