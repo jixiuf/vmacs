@@ -41,7 +41,7 @@ REPL, a pager or an agent is never sent a `cd'."
   :group 'ghostel)
 
 (defcustom vmacs-ghostel-empty-prompt-regexp
-  "\\`[^[:cntrl:]]*[$%#>❯➜→λ❱»][ \u00a0]*\\'"
+  "\\`[^[:cntrl:]]*[$%#>❯→λ❱»][ \u00a0]*\\'"
   "Regexp matching a terminal row that holds a prompt and nothing typed after it.
 Consulted when the shell marks no OSC 133 prompt, as a shell inside tmux
 does; with the markers ghostel knows the input start itself."
