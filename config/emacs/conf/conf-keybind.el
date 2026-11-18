@@ -170,7 +170,6 @@
              ((control meta) . global-text-scale)
              ((control) . text-scale)))
   
-  (global-kkp-mode)
   (require 'clipetty)
   (global-clipetty-mode))
 (add-hook 'tty-setup-hook #'vmacs-tui)
