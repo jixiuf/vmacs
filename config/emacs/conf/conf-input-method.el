@@ -33,6 +33,7 @@
   (add-to-list 'rimel-keymap '(?\C-o . "<pageup>"))
   (add-to-list 'rimel-keymap '("C-s" . "<down>"))
   (add-to-list 'rimel-keymap '("C-h" . "C-h"))
+  (add-to-list 'rimel-keymap '("C-k" . "C-k"))
   (add-to-list 'rimel-keymap '("C-l" . "C-l")))
 
 (defun rimel-predicate-in-code-p ()
