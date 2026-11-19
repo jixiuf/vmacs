@@ -89,8 +89,8 @@ keymap:
     remap:
     # C-, / C-. → C-x <left>/<right>; Emacs rebinds those to group-scoped
     # tab cycling (see conf-tabs.el).
-      C-comma: [C-x ,left]
-      C-dot: [C-x ,right]
+      # C-comma: [C-x ,left]
+      # C-dot: [C-x ,right]
       super-M-comma: [C-c ,p] 
       super-M-dot: [C-c ,n] 
 
