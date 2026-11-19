@@ -11,3 +11,6 @@ GPATH
 GRTAGS
 GTAGS
 .ccls-cache/*
+.rpi/sessions/*
+.rpi/.resource-lease
+
