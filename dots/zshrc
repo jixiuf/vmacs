@@ -82,42 +82,6 @@ source $ZSH/oh-my-zsh.sh
 export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT%{$fg[blue]%}$ %{$reset_color%}"
 # export   PROMPT="%{$fg[blue]%}%m%{$reset_color%} $PROMPT"
 
-
-
-function vterm_printf(){
-    if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ] ); then
-        # Tell tmux to pass the escape sequences through
-        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-    elif [ "${TERM%%-*}" = "screen" ]; then
-        # GNU screen (screen, screen-256color, screen-256color-bce)
-        printf "\eP\e]%s\007\e\\" "$1"
-    else
-        printf "\e]%s\e\\" "$1"
-    fi
-}
-
-if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
-    alias clear='vterm_printf "51;Evterm-clear-scrollback";tput clear'
-fi
-# Sync directory and host in the shell with Emacs's current directory.
-# You may need to manually specify the hostname instead of $(hostname) in case
-# $(hostname) does not return the correct string to connect to the server.
-#
-# The escape sequence "51;A" has also the role of identifying the end of the
-# prompt
-vterm_prompt_end() {
-    vterm_printf "51;A$(whoami)@$(hostname):$(pwd)"
-}
-setopt PROMPT_SUBST
-PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
 #解决这个问题用 Ignore insecure directories and continue [y]
 # compaudit | xargs chmod g-w
 alias le=less.sh
@@ -139,11 +103,6 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_INSTALL_FROM_API=1
 export HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK=1
 export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.cloud.tencent.com/homebrew-bottles
-function gomod(){
-    go mod edit -replace=gitlab.luojilab.com/zeroteam/artemis=../../zeroteam/artemis
-    go mod edit -replace=gitlab.luojilab.com/zeroteam/common=../../zeroteam/common
-    go mod edit -replace=gitlab.luojilab.com/zeroteam/ddns/app/goddns=../../zeroteam/ddns/app/goddns
-}
 function schedgo(){
     GODEBUG=scheddetail=1,schedtrace=1000  $@
 }
@@ -436,6 +395,13 @@ case $TERM in
             # print "\ePtmux;\e\e]2;TMUX:$(pwd)\007\e\\"
         }
         add-zsh-hook precmd update_cwd
+        # ghostel (emacs vterm-like) shell integration: OSC 133 prompt markers + OSC 7 cwd.
+        # 让 ghostel 精确识别 prompt 位置（input-start 落在提示符后），否则只能靠
+        # ghostel-prompt-regexp 猜，robbyrussell 这类含两个 prompt 字符的主题会猜错。
+        # 脚本带幂等 guard，重复 source 无害；对 iTerm2/kitty 等普通终端也无副作用。
+        _ghostel_zsh="$HOME/vmacs/config/emacs/elpa/ghostel/etc/shell/ghostel.zsh"
+        [ -r "$_ghostel_zsh" ] && source "$_ghostel_zsh"
+        unset _ghostel_zsh
         ;;
 esac
 
@@ -584,11 +550,4 @@ alias pi=' gpg -q --no-tty -d ~/.authinfo.gpg > /dev/null; pi'
 # 所以指向真实路径；pi 自己同样认这个变量。
 export PI_CODING_AGENT_DIR="$HOME/vmacs/dots/pi/agent"
 
-# ghostel (emacs vterm-like) shell integration: OSC 133 prompt markers + OSC 7 cwd.
-# 让 ghostel 精确识别 prompt 位置（input-start 落在提示符后），否则只能靠
-# ghostel-prompt-regexp 猜，robbyrussell 这类含两个 prompt 字符的主题会猜错。
-# 脚本带幂等 guard，重复 source 无害；对 iTerm2/kitty 等普通终端也无副作用。
-_ghostel_zsh="$HOME/vmacs/config/emacs/elpa/ghostel/etc/shell/ghostel.zsh"
-[ -r "$_ghostel_zsh" ] && source "$_ghostel_zsh"
-unset _ghostel_zsh
 
